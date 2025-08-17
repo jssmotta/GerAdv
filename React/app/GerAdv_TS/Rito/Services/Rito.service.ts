@@ -79,7 +79,8 @@ export class RitoService implements IRitoService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Rito list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Rito list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class RitoService implements IRitoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Rito');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Rito');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class RitoService implements IRitoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Rito');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Rito');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Rito:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Rito:');
       return [];
     }
   }

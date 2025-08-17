@@ -1,0 +1,124 @@
+﻿namespace MenphisSI;
+
+public static partial class DevourerOne
+{
+    public static string ApplyWildCard(char? wildcardChar, string value)
+    {
+        if (wildcardChar is null or '\0' or ' ')
+            return value;
+
+        var wildcard = wildcardChar.Value;
+
+        if (!value.Contains(' '))
+            return $"{wildcard}{value}{wildcard}";
+
+        // Pre-calculate result length to avoid reallocations
+        int resultLength = value.Length + 2; // +2 for leading and trailing wildcard
+
+        return string.Create(resultLength, (value, wildcard), static (span, state) =>
+        {
+            var (sourceValue, wildcardChar) = state;
+            span[0] = wildcardChar;
+
+            int writeIndex = 1;
+            foreach (char c in sourceValue)
+            {
+                span[writeIndex++] = c == ' ' ? wildcardChar : c;
+            }
+            span[^1] = wildcardChar; // Last position
+        });
+    }
+
+    public static void PopupBox(this string? tab, string message ) => Console.Write( tab  + " " + message );
+    public static int InteropOperId32() => 1;
+
+
+    public static void ExplodeErrorWindows(string tabela, string texto, string errorDescription, string cSql)
+    {
+
+        throw new(texto + " : " + errorDescription + " - Erro sql: [" + cSql + "]");
+    }
+
+
+    public static int ClassRating(string cClass) => cClass switch
+    {
+        "6" => 0,
+        "1" => 7,
+        "A" => 6,
+        "B" => 5,
+        "C" => 4,
+        "D" => 3,
+        "E" => 2,
+        "Z" => 1,
+        _ => 1
+    };
+
+    public static decimal ConvertString2Decimal(string value)
+    {
+        if (string.IsNullOrEmpty(value)) return 0;
+        
+        try
+        {
+            // First try with comma as decimal separator (Brazilian format)
+            string normalizedValue = value.Replace(",", ".");
+            return Convert.ToDecimal(normalizedValue, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch
+        {
+            // For strings like "12.34.56" that contain only digits and dots, extract digits
+            if (value.All(c => char.IsDigit(c) || c == '.'))
+            {
+                try
+                {
+                    string digitsOnly = value.WhereDigits();
+                    if (string.IsNullOrEmpty(digitsOnly)) return 0;
+                    return Convert.ToDecimal(digitsOnly);
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+            
+            // For strings containing letters or other invalid characters, return 0
+            return 0;
+        }
+    }
+
+
+
+  
+     
+   
+    internal static string MaskCep2(string cCep) => string.IsNullOrEmpty(cCep)
+                ? string.Empty
+                : cCep.Length == 8
+                ? cCep[..2] + "." + cCep.Substring(startIndex: 2, length: 3) + "-" +
+                       cCep.Substring(startIndex: 5, length: 3)
+                : cCep; 
+
+    public static string MaskCep(this string dado) => MaskCep2(dado);
+
+
+    private static string MaskCpf2(string? cCpf)
+    {
+
+        return cCpf == null
+            ? string.Empty
+            : cCpf.IsCpf()
+            ? $"{cCpf[..3]}.{cCpf.Substring(startIndex: 3, length: 3)}.{cCpf.Substring(startIndex: 6, length: 3)}-{cCpf.Substring(startIndex: 9, length: 2)}"
+            : $"{cCpf}";
+    }
+
+    public static string MaskCnpj2(string? cCnpj) =>
+    cCnpj == null ? string.Empty :
+    cCnpj.Length == 14 ? //'01477890000190 01.477.890/0001-90
+    $"{cCnpj.Substring(startIndex: 0, length: 2)}.{cCnpj.Substring(startIndex: 2, length: 3)}.{cCnpj.Substring(startIndex: 5, length: 3)}/{cCnpj.Substring(startIndex: 8, length: 4)}-{cCnpj.Substring(startIndex: 12, length: 2)}" :
+    cCnpj;
+
+    public static string MaskCpf(this string dado) => MaskCpf2(dado);
+    public static string MaskCnpj(this string dado) => MaskCnpj2(dado);
+    public static bool IsCpf(this string documento) => DevourerOne.CPFValido(documento);
+
+}
+

@@ -59,34 +59,13 @@ export const useDiario2Filter = ({ handleFetchWithFilter }: UseDiario2FilterProp
   <>
   <InputInput
   type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
-  />
-  <InputDate
-  type='text'
   id='hora'
-  label='Hora (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
   name='hora'
   value={handlers.windowFilter?.hora ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('hora', value)}
-  />
-  <InputDate
-  type='text'
-  id='hora_end'
-  label='Hora (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='hora_end'
-  value={handlers.windowFilter?.hora_end ?? ''}
-  disabled={handlers.windowFilter?.hora ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('hora_end', value)}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Hora'
+  label='Hora'
+  className='inputIncNome inputSearch'
   />
   <OperadorComboBox
   name='operador'

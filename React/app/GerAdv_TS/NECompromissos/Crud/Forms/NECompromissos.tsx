@@ -58,127 +58,129 @@ if (getParamFromUrl('tipocompromisso') > 0) {
       setNomeTipoCompromisso(response.data.descricao);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    necompromissosData.tipocompromisso = getParamFromUrl('tipocompromisso');
+      necompromissosData.tipocompromisso = getParamFromUrl('tipocompromisso');
+    }
   }
-}
-const addValorTipoCompromisso = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'tipocompromisso', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorTipoCompromisso = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'tipocompromisso', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de NECompromissos:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`NECompromissosForm-${necompromissosData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de NECompromissos:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar NECompromissos diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = necompromissosData?.id == 0 ? 'Editar NECompromissos' : 'Adicionar N E Compromissos';
+        }
+      }, [necompromissosData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-NECompromissos' : 'form-container5 form-container-NECompromissos'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`NECompromissosForm-${necompromissosData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar NECompromissos diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = necompromissosData?.id == 0 ? 'Editar NECompromissos' : 'Adicionar N E Compromissos';
-    }
-  }, [necompromissosData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
-
-    <div className={isMobile ? 'form-container form-container-NECompromissos' : 'form-container5 form-container-NECompromissos'}>
-
-      <form className='formInputCadInc' id={`NECompromissosForm-${necompromissosData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='NECompromissos' data={necompromissosData} isSubmitting={isSubmitting} onClose={onClose} formId={`NECompromissosForm-${necompromissosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+          <form className='formInputCadInc' id={`NECompromissosForm-${necompromissosData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='NECompromissos' data={necompromissosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`NECompromissosForm-${necompromissosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='palavrachave'
-            label='PalavraChave'
-            dataForm={necompromissosData}
-            className='inputIncNome'
-            name='palavrachave'
-            value={necompromissosData.palavrachave}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='palavrachave'
+                label='PalavraChave'
+                dataForm={necompromissosData}
+                className='inputIncNome'
+                name='palavrachave'
+                value={necompromissosData.palavrachave}
+                onChange={onChange}
+                />
 
-            <InputCheckbox dataForm={necompromissosData} label='Provisionar' name='provisionar' checked={necompromissosData.provisionar} onChange={onChange} />
+                <InputCheckbox dataForm={necompromissosData} label='Provisionar' name='provisionar' checked={necompromissosData.provisionar} onChange={onChange} />
 
-            <TipoCompromissoComboBox
-            name={'tipocompromisso'}
-            dataForm={necompromissosData}
-            value={necompromissosData.tipocompromisso}
-            setValue={addValorTipoCompromisso}
-            label={'Tipo Compromisso'}
-            />
+                <TipoCompromissoComboBox
+                name={'tipocompromisso'}
+                dataForm={necompromissosData}
+                value={necompromissosData.tipocompromisso}
+                setValue={addValorTipoCompromisso}
+                label={'Tipo Compromisso'}
+                />
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='textocompromisso'
-            label='TextoCompromisso'
-            dataForm={necompromissosData}
-            className='inputIncNome'
-            name='textocompromisso'
-            value={necompromissosData.textocompromisso}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='textocompromisso'
+                label='TextoCompromisso'
+                dataForm={necompromissosData}
+                className='inputIncNome'
+                name='textocompromisso'
+                value={necompromissosData.textocompromisso}
+                onChange={onChange}
+                />
 
-          </div>
-        </form>
+              </div>
+            </form>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='NECompromissos' data={necompromissosData} isSubmitting={isSubmitting} onClose={onClose} formId={`NECompromissosForm-${necompromissosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/necompromissos'} id={necompromissosData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='NECompromissos' data={necompromissosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`NECompromissosForm-${necompromissosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/necompromissos'} id={necompromissosData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

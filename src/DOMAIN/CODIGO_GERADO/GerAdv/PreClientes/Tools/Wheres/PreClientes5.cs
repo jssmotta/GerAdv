@@ -13,7 +13,7 @@ public partial interface IPreClientesWhere
 
 public partial class PreClientesWhere(IFPreClientesFactory preclientesFactory) : IPreClientesWhere
 {
-    private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory;
+    private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory ?? throw new ArgumentNullException(nameof(preclientesFactory));
     public PreClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _preclientesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

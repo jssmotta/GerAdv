@@ -79,7 +79,8 @@ export class NEPalavrasChavesService implements INEPalavrasChavesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching NEPalavrasChaves list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching NEPalavrasChaves list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class NEPalavrasChavesService implements INEPalavrasChavesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online NEPalavrasChaves');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online NEPalavrasChaves');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class NEPalavrasChavesService implements INEPalavrasChavesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online NEPalavrasChaves');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online NEPalavrasChaves');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all NEPalavrasChaves:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all NEPalavrasChaves:');
       return [];
     }
   }

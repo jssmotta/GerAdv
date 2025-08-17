@@ -80,59 +80,60 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar RegimeTributacao diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar RegimeTributacao diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = regimetributacaoData?.id == 0 ? 'Editar RegimeTributacao' : 'Adicionar Regime Tributacao';
-  }
-}, [regimetributacaoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-RegimeTributacao' : 'form-container5 form-container-RegimeTributacao'}>
-
-    <form className='formInputCadInc' id={`RegimeTributacaoForm-${regimetributacaoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='RegimeTributacao' data={regimetributacaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`RegimeTributacaoForm-${regimetributacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={regimetributacaoData}
-          className='inputIncNome'
-          name='nome'
-          value={regimetributacaoData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='RegimeTributacao' data={regimetributacaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`RegimeTributacaoForm-${regimetributacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/regimetributacao'} id={regimetributacaoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = regimetributacaoData?.id == 0 ? 'Editar RegimeTributacao' : 'Adicionar Regime Tributacao';
+    }
+  }, [regimetributacaoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-RegimeTributacao' : 'form-container5 form-container-RegimeTributacao'}>
+
+      <form className='formInputCadInc' id={`RegimeTributacaoForm-${regimetributacaoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='RegimeTributacao' data={regimetributacaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`RegimeTributacaoForm-${regimetributacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={regimetributacaoData}
+            className='inputIncNome'
+            name='nome'
+            value={regimetributacaoData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='RegimeTributacao' data={regimetributacaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`RegimeTributacaoForm-${regimetributacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/regimetributacao'} id={regimetributacaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

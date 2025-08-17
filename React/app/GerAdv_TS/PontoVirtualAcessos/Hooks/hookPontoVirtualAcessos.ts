@@ -41,7 +41,8 @@ export const usePontoVirtualAcessosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Ponto Virtual Acessos';
       setError(errorMessage);
-      //console.log('Erro ao carregar Ponto Virtual Acessos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Ponto Virtual Acessos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePontoVirtualAcessosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePontoVirtualAcessosList = (dataService: IPontoVirtualAcessosServ
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar pontovirtualacessos';
       setError(errorMessage);
-      //console.log('Erro ao carregar pontovirtualacessos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar pontovirtualacessos');
     } finally {
       setLoading(false);
     }

@@ -13,6 +13,5 @@ public partial interface IGUTPeriodicidadeStatusReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     GUTPeriodicidadeStatusResponseAll? ReadAll(FGUTPeriodicidadeStatus dbRec, IDataRecord dr);
     GUTPeriodicidadeStatusResponseAll? ReadAll(SG.GerAdv.DBGUTPeriodicidadeStatus dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

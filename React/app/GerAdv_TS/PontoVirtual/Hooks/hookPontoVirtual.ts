@@ -41,7 +41,8 @@ export const usePontoVirtualForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Ponto Virtual';
       setError(errorMessage);
-      //console.log('Erro ao carregar Ponto Virtual');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Ponto Virtual');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePontoVirtualNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePontoVirtualList = (dataService: IPontoVirtualService, currentFi
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar pontovirtual';
       setError(errorMessage);
-      //console.log('Erro ao carregar pontovirtual');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar pontovirtual');
     } finally {
       setLoading(false);
     }

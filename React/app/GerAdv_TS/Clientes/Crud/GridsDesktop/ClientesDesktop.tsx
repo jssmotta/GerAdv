@@ -72,18 +72,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAnexamentoRegistros = (id: number) => {
-  router.push(`/pages/anexamentoregistros/?clientes=${id}`);
-};
-const SearchFromCellAnexamentoRegistros = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAnexamentoRegistros(props.dataItem.id)}><span title='Pesquisar relacionados em Anexamento Registros'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellClientesSocios = (id: number) => {
   router.push(`/pages/clientessocios/?clientes=${id}`);
 };
@@ -164,18 +152,6 @@ const SearchFromCellGruposEmpresas = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellGruposEmpresas(props.dataItem.id)}><span title='Pesquisar relacionados em Grupos Empresas'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellGruposEmpresasCli = (id: number) => {
-  router.push(`/pages/gruposempresascli/?clientes=${id}`);
-};
-const SearchFromCellGruposEmpresasCli = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellGruposEmpresasCli(props.dataItem.id)}><span title='Pesquisar relacionados em Grupos Empresas Cli'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -329,7 +305,31 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'nomecidade': (
+  <GridColumn
+  key='nomecidade'
+  field='nomecidade'
+  title='Cidade'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'nomeregimetributacao': (
+  <GridColumn
+  key='nomeregimetributacao'
+  field='nomeregimetributacao'
+  title='Regime Tributacao'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'nomeenquadramentoempresa': (
+  <GridColumn
+  key='nomeenquadramentoempresa'
+  field='nomeenquadramentoempresa'
+  title='Enquadramento Empresa'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_Agenda': (
   <GridColumn
   key='Agenda'
@@ -339,17 +339,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellAgenda }}
-  />
-  ), /* Track G.03 */
-  'id_edit_AnexamentoRegistros': (
-  <GridColumn
-  key='AnexamentoRegistros'
-  field='AnexamentoRegistros'
-  title='Anexamento Registros'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellAnexamentoRegistros }}
   />
   ), /* Track G.03 */
   'id_edit_ClientesSocios': (
@@ -429,17 +418,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellGruposEmpresas }}
   />
   ), /* Track G.03 */
-  'id_edit_GruposEmpresasCli': (
-  <GridColumn
-  key='GruposEmpresasCli'
-  field='GruposEmpresasCli'
-  title='Grupos Empresas Cli'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellGruposEmpresasCli }}
-  />
-  ), /* Track G.03 */
   'id_edit_HonorariosDadosContrato': (
   <GridColumn
   key='HonorariosDadosContrato'
@@ -517,36 +495,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellReuniao }}
   />
   ), /* Track G.03 */
-  'nomecidade': (
-  <GridColumn
-  key='nomecidade'
-
-  field='nomecidade'
-  title='Cidade'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'nomeregimetributacao': (
-  <GridColumn
-  key='nomeregimetributacao'
-
-  field='nomeregimetributacao'
-  title='Regime Tributacao'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'nomeenquadramentoempresa': (
-  <GridColumn
-  key='nomeenquadramentoempresa'
-
-  field='nomeenquadramentoempresa'
-  title='Enquadramento Empresa'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
@@ -560,14 +508,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AnexamentoRegistros'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Anexamento Registros'
-  cells={{ data: SearchFromCellAnexamentoRegistros }}
   />, 
   <GridColumn
   field='id_edit_ClientesSocios'
@@ -624,14 +564,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Grupos Empresas'
   cells={{ data: SearchFromCellGruposEmpresas }}
-  />, 
-  <GridColumn
-  field='id_edit_GruposEmpresasCli'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Grupos Empresas Cli'
-  cells={{ data: SearchFromCellGruposEmpresasCli }}
   />, 
   <GridColumn
   field='id_edit_HonorariosDadosContrato'
@@ -732,14 +664,6 @@ const finalGridColumns = useMemo(() => {
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_AnexamentoRegistros'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Anexamento Registros'
-  cells={{ data: SearchFromCellAnexamentoRegistros }}
-  />, 
-  <GridColumn
   field='id_edit_ClientesSocios'
   filterable={false}
   sortable={false}
@@ -794,14 +718,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Grupos Empresas'
   cells={{ data: SearchFromCellGruposEmpresas }}
-  />, 
-  <GridColumn
-  field='id_edit_GruposEmpresasCli'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Grupos Empresas Cli'
-  cells={{ data: SearchFromCellGruposEmpresasCli }}
   />, 
   <GridColumn
   field='id_edit_HonorariosDadosContrato'

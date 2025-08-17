@@ -41,7 +41,8 @@ export const useEnderecosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Endereço';
       setError(errorMessage);
-      //console.log('Erro ao carregar Endereço');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Endereço');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useEnderecosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useEnderecosList = (dataService: IEnderecosService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar enderecos';
       setError(errorMessage);
-      //console.log('Erro ao carregar enderecos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar enderecos');
     } finally {
       setLoading(false);
     }
@@ -246,7 +249,8 @@ if (data.quemindicou.length > 150) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

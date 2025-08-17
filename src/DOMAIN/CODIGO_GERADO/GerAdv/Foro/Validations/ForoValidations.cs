@@ -9,25 +9,25 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IForoValidation
 {
     Task<bool> ValidateReg(Models.Foro reg, IForoService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ForoValidation : IForoValidation
 {
-    public async Task<bool> CanDelete(int id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var divisaotribunalExists0 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Foro = id }, uri);
+        var divisaotribunalExists0 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Foro = id ?? default }, uri);
         if (divisaotribunalExists0 != null && divisaotribunalExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
-        var instanciaExists1 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { Foro = id }, uri);
+        var instanciaExists1 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { Foro = id ?? default }, uri);
         if (instanciaExists1 != null && instanciaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.");
-        var poderjudiciarioassociadoExists2 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Foro = id }, uri);
+        var poderjudiciarioassociadoExists2 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Foro = id ?? default }, uri);
         if (poderjudiciarioassociadoExists2 != null && poderjudiciarioassociadoExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
         return true;
@@ -35,18 +35,18 @@ public class ForoValidation : IForoValidation
 
     private bool ValidSizes(Models.Foro reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 40)
-            throw new SGValidationException($"Nome deve ter no máximo 40 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 150)
-            throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 50)
-            throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 255)
-            throw new SGValidationException($"Bairro deve ter no máximo 255 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Web != null && reg.Web.Length > 255)
-            throw new SGValidationException($"Web deve ter no máximo 255 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBForoDicInfo.ForNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBForoDicInfo.ForNome.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBForoDicInfo.ForSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBForoDicInfo.ForSite.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBForoDicInfo.ForEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBForoDicInfo.ForEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBForoDicInfo.ForBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBForoDicInfo.ForBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBForoDicInfo.ForCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBForoDicInfo.ForCEP.FTamanho} caracteres.");
+        if (reg.Web != null && reg.Web.Length > DBForoDicInfo.ForWeb.FTamanho)
+            throw new SGValidationException($"Web deve ter no máximo {DBForoDicInfo.ForWeb.FTamanho} caracteres.");
         return true;
     }
 
@@ -59,7 +59,7 @@ public class ForoValidation : IForoValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())

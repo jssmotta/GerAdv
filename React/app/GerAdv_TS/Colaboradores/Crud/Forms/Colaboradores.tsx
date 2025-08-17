@@ -68,321 +68,325 @@ if (getParamFromUrl('cargos') > 0) {
       setNomeCargos(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    colaboradoresData.cargo = getParamFromUrl('cargos');
+      colaboradoresData.cargo = getParamFromUrl('cargos');
+    }
   }
-}
 
-if (getParamFromUrl('clientes') > 0) {
-  if (colaboradoresData.id === 0 && colaboradoresData.cliente == 0) {
-    clientesApi
-    .getById(getParamFromUrl('clientes'))
-    .then((response) => {
-      setNomeClientes(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('clientes') > 0) {
+    if (colaboradoresData.id === 0 && colaboradoresData.cliente == 0) {
+      clientesApi
+      .getById(getParamFromUrl('clientes'))
+      .then((response) => {
+        setNomeClientes(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    colaboradoresData.cliente = getParamFromUrl('clientes');
-  }
-}
+        colaboradoresData.cliente = getParamFromUrl('clientes');
+      }
+    }
 
-if (getParamFromUrl('cidade') > 0) {
-  if (colaboradoresData.id === 0 && colaboradoresData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('cidade') > 0) {
+      if (colaboradoresData.id === 0 && colaboradoresData.cidade == 0) {
+        cidadeApi
+        .getById(getParamFromUrl('cidade'))
+        .then((response) => {
+          setNomeCidade(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    colaboradoresData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorCargo = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cargo', value: e.id } });
-  };
-  const addValorCliente = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cliente', value: e.id } });
-    };
-    const addValorCidade = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'cidade', value: e.id } });
-      };
-      const onConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (e.stopPropagation) e.stopPropagation();
-
-          if (!isSubmitting) {
-            setIsSubmitting(true);
-
-            try {
-              onSubmit(e);
-            } catch (error) {
-            console.log('Erro ao submeter formulário de Colaboradores:');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
+          colaboradoresData.cidade = getParamFromUrl('cidade');
+        }
+      }
+      const addValorCargo = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cargo', value: e.id } });
         };
-        const handleCancel = () => {
-          if (onReload) {
-            onReload(); // Recarrega os dados originais
-          } else {
-          onClose(); // Comportamento padrão se não há callback de recarga
-        }
-      };
+        const addValorCliente = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'cliente', value: e.id } });
+          };
+          const addValorCidade = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'cidade', value: e.id } });
+            };
+            const onConfirm = (e: React.FormEvent) => {
+              e.preventDefault();
+              if (e.stopPropagation) e.stopPropagation();
 
-      const handleDirectSave = () => {
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+                if (!isSubmitting) {
+                  setIsSubmitting(true);
 
-          try {
-            const syntheticEvent = {
-              preventDefault: () => { }, 
-              target: document.getElementById(`ColaboradoresForm-${colaboradoresData.id}`)
-            } as unknown as React.FormEvent;
+                  try {
+                    onSubmit(e);
+                  } catch (error) {
+                  console.log('Erro ao submeter formulário de Colaboradores:');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              const handleCancel = () => {
+                if (onReload) {
+                  onReload(); // Recarrega os dados originais
+                } else {
+                onClose(); // Comportamento padrão se não há callback de recarga
+              }
+            };
 
-            onSubmit(syntheticEvent);
-          } catch (error) {
-          console.log('Erro ao salvar Colaboradores diretamente');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      useEffect(() => {
-        const el = document.querySelector('.nameFormMobile');
-        if (el) {
-          el.textContent = colaboradoresData?.id == 0 ? 'Editar Colaboradores' : 'Adicionar Colaborador';
-        }
-      }, [colaboradoresData.id]);
-      return (
-      <>
-      {!isMobile ? <style jsx global>{`
-        @media (max-width: 1366px) {
-          html {
-            zoom: 0.8 !important;
-          }
-        }
-        `}</style> : null}
+            const handleDirectSave = () => {
+              if (!isSubmitting) {
+                setIsSubmitting(true);
 
-        <div className={isMobile ? 'form-container form-container-Colaboradores' : 'form-container form-container-Colaboradores'}>
+                try {
+                  const syntheticEvent = {
+                    preventDefault: () => { }, 
+                    target: document.getElementById(`ColaboradoresForm-${colaboradoresData.id}`)
+                  } as unknown as React.FormEvent;
 
-          <form className='formInputCadInc' id={`ColaboradoresForm-${colaboradoresData.id}`} onSubmit={onConfirm}>
-            {!isMobile && (
-              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Colaboradores' data={colaboradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <div className='grid-container'>
+                  onSubmit(syntheticEvent);
+                } catch (error) {
+                if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                  console.log('Erro ao salvar Colaboradores diretamente');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              useEffect(() => {
+                const el = document.querySelector('.nameFormMobile');
+                if (el) {
+                  el.textContent = colaboradoresData?.id == 0 ? 'Editar Colaboradores' : 'Adicionar Colaborador';
+                }
+              }, [colaboradoresData.id]);
+              return (
+              <>
+              {!isMobile ? <style jsx global>{`
+                @media (max-width: 1366px) {
+                  html {
+                    zoom: 0.8 !important;
+                  }
+                }
+                `}</style> : null}
 
-                <InputName
-                type='text'
-                id='nome'
-                label='Nome'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='nome'
-                value={colaboradoresData.nome}
-                placeholder={`Informe Nome`}
-                onChange={onChange}
-                required
-                />
+                <div className={isMobile ? 'form-container form-container-Colaboradores' : 'form-container form-container-Colaboradores'}>
 
-                <CargosComboBox
-                name={'cargo'}
-                dataForm={colaboradoresData}
-                value={colaboradoresData.cargo}
-                setValue={addValorCargo}
-                label={'Cargo'}
-                />
+                  <form className='formInputCadInc' id={`ColaboradoresForm-${colaboradoresData.id}`} onSubmit={onConfirm}>
+                    {!isMobile && (
+                      <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Colaboradores' data={colaboradoresData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <div className='grid-container'>
 
-                <ClientesComboBox
-                name={'cliente'}
-                dataForm={colaboradoresData}
-                value={colaboradoresData.cliente}
-                setValue={addValorCliente}
-                label={'Clientes'}
-                />
-                <InputCheckbox dataForm={colaboradoresData} label='Sexo' name='sexo' checked={colaboradoresData.sexo} onChange={onChange} />
+                        <InputName
+                        type='text'
+                        id='nome'
+                        label='Nome'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='nome'
+                        value={colaboradoresData.nome}
+                        placeholder={`Informe Nome`}
+                        onChange={onChange}
+                        required
+                        />
 
-                <InputCpf
-                type='text'
-                id='cpf'
-                label='CPF'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='cpf'
-                value={colaboradoresData.cpf}
-                onChange={onChange}
-                />
+                        <CargosComboBox
+                        name={'cargo'}
+                        dataForm={colaboradoresData}
+                        value={colaboradoresData.cargo}
+                        setValue={addValorCargo}
+                        label={'Cargo'}
+                        />
 
+                        <ClientesComboBox
+                        name={'cliente'}
+                        dataForm={colaboradoresData}
+                        value={colaboradoresData.cliente}
+                        setValue={addValorCliente}
+                        label={'Clientes'}
+                        />
+                        <InputCheckbox dataForm={colaboradoresData} label='Sexo' name='sexo' checked={colaboradoresData.sexo} onChange={onChange} />
 
-                <InputInput
-                type='text'
-                maxLength={30}
-                id='rg'
-                label='RG'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='rg'
-                value={colaboradoresData.rg}
-                onChange={onChange}
-                />
-
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='dtnasc'
-                label='DtNasc'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='dtnasc'
-                value={colaboradoresData.dtnasc}
-                onChange={onChange}
-                />
-
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='idade'
-                label='Idade'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='idade'
-                value={colaboradoresData.idade}
-                onChange={onChange}
-                />
+                        <InputCpf
+                        type='text'
+                        id='cpf'
+                        label='CPF'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='cpf'
+                        value={colaboradoresData.cpf}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={80}
-                id='endereco'
-                label='Endereco'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='endereco'
-                value={colaboradoresData.endereco}
-                onChange={onChange}
-                />
-
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={50}
-                id='bairro'
-                label='Bairro'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='bairro'
-                value={colaboradoresData.bairro}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={30}
+                        id='rg'
+                        label='RG'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='rg'
+                        value={colaboradoresData.rg}
+                        onChange={onChange}
+                        />
 
 
-                <InputCep
-                type='text'
-                id='cep'
-                label='CEP'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='cep'
-                value={colaboradoresData.cep}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='dtnasc'
+                        label='DtNasc'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='dtnasc'
+                        value={colaboradoresData.dtnasc}
+                        onChange={onChange}
+                        />
 
 
-                <CidadeComboBox
-                name={'cidade'}
-                dataForm={colaboradoresData}
-                value={colaboradoresData.cidade}
-                setValue={addValorCidade}
-                label={'Cidade'}
-                />
-
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='fone'
-                label='Fone'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='fone'
-                value={colaboradoresData.fone}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='idade'
+                        label='Idade'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='idade'
+                        value={colaboradoresData.idade}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='observacao'
-                label='Observacao'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='observacao'
-                value={colaboradoresData.observacao}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={80}
+                        id='endereco'
+                        label='Endereco'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='endereco'
+                        value={colaboradoresData.endereco}
+                        onChange={onChange}
+                        />
+
+                      </div><div className='grid-container'>
+                        <InputInput
+                        type='text'
+                        maxLength={50}
+                        id='bairro'
+                        label='Bairro'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='bairro'
+                        value={colaboradoresData.bairro}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='email'
-                maxLength={150}
-                id='email'
-                label='EMail'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='email'
-                value={colaboradoresData.email}
-                onChange={onChange}
-                />
+                        <InputCep
+                        type='text'
+                        id='cep'
+                        label='CEP'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='cep'
+                        value={colaboradoresData.cep}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={100}
-                id='cnh'
-                label='CNH'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='cnh'
-                value={colaboradoresData.cnh}
-                onChange={onChange}
-                />
+                        <CidadeComboBox
+                        name={'cidade'}
+                        dataForm={colaboradoresData}
+                        value={colaboradoresData.cidade}
+                        setValue={addValorCidade}
+                        label={'Cidade'}
+                        />
+
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='fone'
+                        label='Fone'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='fone'
+                        value={colaboradoresData.fone}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={1}
-                id='class'
-                label='Class'
-                dataForm={colaboradoresData}
-                className='inputIncNome'
-                name='class'
-                value={colaboradoresData.class}
-                onChange={onChange}
-                />
-
-              </div>
-            </form>
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='observacao'
+                        label='Observacao'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='observacao'
+                        value={colaboradoresData.observacao}
+                        onChange={onChange}
+                        />
 
 
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Colaboradores' data={colaboradoresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/colaboradores'} id={colaboradoresData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+                        <InputInput
+                        type='email'
+                        maxLength={150}
+                        id='email'
+                        label='EMail'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='email'
+                        value={colaboradoresData.email}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={100}
+                        id='cnh'
+                        label='CNH'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='cnh'
+                        value={colaboradoresData.cnh}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={1}
+                        id='class'
+                        label='Class'
+                        dataForm={colaboradoresData}
+                        className='inputIncNome'
+                        name='class'
+                        value={colaboradoresData.class}
+                        onChange={onChange}
+                        />
+
+                      </div>
+                    </form>
+
+
+                    {isMobile && (
+                      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Colaboradores' data={colaboradoresData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ColaboradoresForm-${colaboradoresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <DeleteButton page={'/pages/colaboradores'} id={colaboradoresData.id} closeModel={onClose} dadoApi={dadoApi} />
+                    </div>
+                    <div className='form-spacer'></div>
+                    </>
+                  );
+                };

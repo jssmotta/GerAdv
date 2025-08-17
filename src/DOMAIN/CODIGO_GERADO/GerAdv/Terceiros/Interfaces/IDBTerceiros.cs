@@ -16,8 +16,8 @@ public partial interface IDBTerceiros
     public string? FFax { get; set; }
     public string? FOBS { get; set; }
     public string? FEMail { get; set; }
+    public string? FGUID { get; set; }
     public string? FClass { get; set; }
     public string? FVaraForoComarca { get; set; }
     public bool FSexo { get; set; }
-    public string? FGUID { get; set; }
 }

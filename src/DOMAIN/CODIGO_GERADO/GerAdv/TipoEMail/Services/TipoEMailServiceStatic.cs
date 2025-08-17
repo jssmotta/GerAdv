@@ -8,22 +8,23 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoEMailService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoEMail filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoEMail? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBTipoEMailDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBTipoEMailDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTipoEMailDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBTipoEMailDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBTipoEMailDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTipoEMailDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -32,28 +33,17 @@ public partial class TipoEMailService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoEMailDicInfo.Nome)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBTipoEMailDicInfo.Nome)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.CampoCodigo}] = @{nameof(DBTipoEMailDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEMailDicInfo.PTabelaNome}].[{DBTipoEMailDicInfo.CampoCodigo}] = @{(DBTipoEMailDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEMailDicInfo.PTabelaNome}].{DBTipoEMailDicInfo.CampoCodigo} BETWEEN @{nameof(DBTipoEMailDicInfo.CampoCodigo)} AND @{nameof(DBTipoEMailDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEMailDicInfo.PTabelaNome}].{DBTipoEMailDicInfo.CampoCodigo} BETWEEN @{(DBTipoEMailDicInfo.CampoCodigo)} AND @{(DBTipoEMailDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterTipoEMail? filtro)

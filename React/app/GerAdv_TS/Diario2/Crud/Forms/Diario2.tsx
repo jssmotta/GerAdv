@@ -61,181 +61,184 @@ if (getParamFromUrl('operador') > 0) {
       setNomeOperador(response.data.rnome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    diario2Data.operador = getParamFromUrl('operador');
+      diario2Data.operador = getParamFromUrl('operador');
+    }
   }
-}
 
-if (getParamFromUrl('clientes') > 0) {
-  if (diario2Data.id === 0 && diario2Data.cliente == 0) {
-    clientesApi
-    .getById(getParamFromUrl('clientes'))
-    .then((response) => {
-      setNomeClientes(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('clientes') > 0) {
+    if (diario2Data.id === 0 && diario2Data.cliente == 0) {
+      clientesApi
+      .getById(getParamFromUrl('clientes'))
+      .then((response) => {
+        setNomeClientes(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    diario2Data.cliente = getParamFromUrl('clientes');
-  }
-}
-const addValorOperador = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'operador', value: e.id } });
-  };
-  const addValorCliente = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cliente', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        diario2Data.cliente = getParamFromUrl('clientes');
+      }
+    }
+    const addValorOperador = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'operador', value: e.id } });
+      };
+      const addValorCliente = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cliente', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Diario2:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de Diario2:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`Diario2Form-${diario2Data.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`Diario2Form-${diario2Data.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar Diario2 diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = diario2Data?.id == 0 ? 'Editar Diario2' : 'Adicionar Diário';
-      }
-    }, [diario2Data.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar Diario2 diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = diario2Data?.id == 0 ? 'Editar Diario2' : 'Adicionar Diário';
+            }
+          }, [diario2Data.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-Diario2' : 'form-container5 form-container-Diario2'}>
+            <div className={isMobile ? 'form-container form-container-Diario2' : 'form-container5 form-container-Diario2'}>
 
-        <form className='formInputCadInc' id={`Diario2Form-${diario2Data.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Diario2' data={diario2Data} isSubmitting={isSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`Diario2Form-${diario2Data.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Diario2' data={diario2Data} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='data'
-              label='Data'
-              dataForm={diario2Data}
-              className='inputIncNome'
-              name='data'
-              value={diario2Data.data}
-              placeholder={`Informe Data`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='data'
+                    label='Data'
+                    dataForm={diario2Data}
+                    className='inputIncNome'
+                    name='data'
+                    value={diario2Data.data}
+                    placeholder={`Informe Data`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='hora'
-              label='Hora'
-              dataForm={diario2Data}
-              className='inputIncNome'
-              name='hora'
-              value={diario2Data.hora}
-              onChange={onChange}
-              />
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='hora'
+                    label='Hora'
+                    dataForm={diario2Data}
+                    className='inputIncNome'
+                    name='hora'
+                    value={diario2Data.hora}
+                    onChange={onChange}
+                    />
 
 
-              <OperadorComboBox
-              name={'operador'}
-              dataForm={diario2Data}
-              value={diario2Data.operador}
-              setValue={addValorOperador}
-              label={'Operador'}
-              />
+                    <OperadorComboBox
+                    name={'operador'}
+                    dataForm={diario2Data}
+                    value={diario2Data.operador}
+                    setValue={addValorOperador}
+                    label={'Operador'}
+                    />
 
-              <InputInput
-              required
-              type='text'
-              maxLength={150}
-              id='nome'
-              label='Nome'
-              dataForm={diario2Data}
-              className='inputIncNome'
-              name='nome'
-              value={diario2Data.nome}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='ocorrencia'
-              label='Ocorrencia'
-              dataForm={diario2Data}
-              className='inputIncNome'
-              name='ocorrencia'
-              value={diario2Data.ocorrencia}
-              onChange={onChange}
-              />
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={150}
+                    id='nome'
+                    label='Nome'
+                    dataForm={diario2Data}
+                    className='inputIncNome'
+                    name='nome'
+                    value={diario2Data.nome}
+                    onChange={onChange}
+                    />
 
 
-              <ClientesComboBox
-              name={'cliente'}
-              dataForm={diario2Data}
-              value={diario2Data.cliente}
-              setValue={addValorCliente}
-              label={'Clientes'}
-              />
-            </div>
-          </form>
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='ocorrencia'
+                    label='Ocorrencia'
+                    dataForm={diario2Data}
+                    className='inputIncNome'
+                    name='ocorrencia'
+                    value={diario2Data.ocorrencia}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Diario2' data={diario2Data} isSubmitting={isSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/diario2'} id={diario2Data.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <ClientesComboBox
+                    name={'cliente'}
+                    dataForm={diario2Data}
+                    value={diario2Data.cliente}
+                    setValue={addValorCliente}
+                    label={'Clientes'}
+                    />
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Diario2' data={diario2Data} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`Diario2Form-${diario2Data.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/diario2'} id={diario2Data.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

@@ -36,6 +36,7 @@ public partial interface IDBAgenda
     public int FPreposto { get; set; }
     public int FQuemID { get; set; }
     public int FQuemCodigo { get; set; }
+    public string? FGUID { get; set; }
     public string? FStatus { get; set; }
     public decimal FValor { get; set; }
     public string? FDecisao { get; set; }
@@ -44,5 +45,4 @@ public partial interface IDBAgenda
     public int FProtocoloIntegrado { get; set; }
     public string? FDataInicioPrazo { get; set; }
     public bool FUsuarioCiente { get; set; }
-    public string? FGUID { get; set; }
 }

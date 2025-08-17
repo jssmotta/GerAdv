@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class SetorReader(IFSetorFactory setorFactory) : ISetorReader
 {
-    private readonly IFSetorFactory _setorFactory = setorFactory;
+    private readonly IFSetorFactory _setorFactory = setorFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("setCodigo, setDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<SetorResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBSetor.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<SetorResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

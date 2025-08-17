@@ -14,6 +14,6 @@ export enum FieldsPoderJudiciarioAssociado
 	subdivisaonome = `SubDivisaoNome`,
 	cidadenome = `CidadeNome`,
 	subdivisao = `SubDivisao`,
-	tipo = `Tipo`,
 	guid = `GUID`,
+	tipo = `Tipo`,
 }

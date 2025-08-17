@@ -14,13 +14,13 @@ public partial interface IStatusHTrabWriter
 
 public class StatusHTrabWriter(IFStatusHTrabFactory statushtrabFactory) : IStatusHTrabWriter
 {
-    private readonly IFStatusHTrabFactory _statushtrabFactory = statushtrabFactory;
-    public async Task Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFStatusHTrabFactory _statushtrabFactory = statushtrabFactory ?? throw new ArgumentNullException(nameof(statushtrabFactory));
+    public virtual async Task Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection oCnn)
     {
         await _statushtrabFactory.DeleteAsync(operadorId, statushtrab.Id, oCnn);
     }
 
-    public async Task<FStatusHTrab> WriteAsync(Models.StatusHTrab statushtrab, MsiSqlConnection oCnn)
+    public virtual async Task<FStatusHTrab> WriteAsync(Models.StatusHTrab statushtrab, MsiSqlConnection oCnn)
     {
         using var dbRec = await (statushtrab.Id.IsEmptyIDNumber() ? _statushtrabFactory.CreateAsync() : _statushtrabFactory.CreateFromIdAsync(statushtrab.Id, oCnn));
         dbRec.FDescricao = statushtrab.Descricao;

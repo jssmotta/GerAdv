@@ -94,18 +94,18 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         }
     }
 
-    private async Task<ParceriaProcResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ParceriaProcResponse?> AddAndUpdate([FromBody] Models.ParceriaProc regParceriaProc, [FromRoute, Required] string uri)
+    private async Task<ParceriaProcResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ParceriaProcResponse?> AddAndUpdate([FromBody] Models.ParceriaProc? regParceriaProc, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ParceriaProc: URI inválida");
-        }
-
         if (regParceriaProc == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ParceriaProc: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
             var validade = await validation.ValidateReg(regParceriaProc, this, advogadosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ParceriaProcResponse?> Validation([FromBody] Models.ParceriaProc regParceriaProc, [FromRoute, Required] string uri)
+    public async Task<ParceriaProcResponse?> Validation([FromBody] Models.ParceriaProc? regParceriaProc, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ParceriaProc: URI inválida");
-        }
-
         if (regParceriaProc == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ParceriaProc: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
             var validade = await validation.ValidateReg(regParceriaProc, this, advogadosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regParceriaProc.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         return await reader.Read(regParceriaProc.Id, oCnn);
     }
 
-    public async Task<ParceriaProcResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ParceriaProcResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ParceriaProc: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var parceriaproc = await reader.Read(id, oCnn);
+        var parceriaproc = await reader.Read(id ?? default, oCnn);
         try
         {
             if (parceriaproc != null)
@@ -237,7 +237,7 @@ public partial class ParceriaProcService(IOptions<AppSettings> appSettings, IFPa
         return parceriaproc;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

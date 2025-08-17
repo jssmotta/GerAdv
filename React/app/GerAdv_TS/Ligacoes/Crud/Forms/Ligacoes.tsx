@@ -62,378 +62,381 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    ligacoesData.cliente = getParamFromUrl('clientes');
+      ligacoesData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
 
-if (getParamFromUrl('ramal') > 0) {
-  if (ligacoesData.id === 0 && ligacoesData.ramal == 0) {
-    ramalApi
-    .getById(getParamFromUrl('ramal'))
-    .then((response) => {
-      setNomeRamal(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('ramal') > 0) {
+    if (ligacoesData.id === 0 && ligacoesData.ramal == 0) {
+      ramalApi
+      .getById(getParamFromUrl('ramal'))
+      .then((response) => {
+        setNomeRamal(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    ligacoesData.ramal = getParamFromUrl('ramal');
-  }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const addValorRamal = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'ramal', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        ligacoesData.ramal = getParamFromUrl('ramal');
+      }
+    }
+    const addValorCliente = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'cliente', value: e.id } });
+      };
+      const addValorRamal = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'ramal', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Ligacoes:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de Ligacoes:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`LigacoesForm-${ligacoesData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`LigacoesForm-${ligacoesData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar Ligacoes diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = ligacoesData?.id == 0 ? 'Editar Ligacoes' : 'Adicionar Ligacoes';
-      }
-    }, [ligacoesData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar Ligacoes diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = ligacoesData?.id == 0 ? 'Editar Ligacoes' : 'Adicionar Ligacoes';
+            }
+          }, [ligacoesData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-Ligacoes' : 'form-container form-container-Ligacoes'}>
+            <div className={isMobile ? 'form-container form-container-Ligacoes' : 'form-container form-container-Ligacoes'}>
 
-        <form className='formInputCadInc' id={`LigacoesForm-${ligacoesData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Ligacoes' data={ligacoesData} isSubmitting={isSubmitting} onClose={onClose} formId={`LigacoesForm-${ligacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`LigacoesForm-${ligacoesData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Ligacoes' data={ligacoesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`LigacoesForm-${ligacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='nome'
-              value={ligacoesData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={ligacoesData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={200}
-              id='assunto'
-              label='Assunto'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='assunto'
-              value={ligacoesData.assunto}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={200}
+                    id='assunto'
+                    label='Assunto'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='assunto'
+                    value={ligacoesData.assunto}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='ageclienteavisado'
-              label='AgeClienteAvisado'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='ageclienteavisado'
-              value={ligacoesData.ageclienteavisado}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='ageclienteavisado'
+                    label='AgeClienteAvisado'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='ageclienteavisado'
+                    value={ligacoesData.ageclienteavisado}
+                    onChange={onChange}
+                    />
 
-              <InputCheckbox dataForm={ligacoesData} label='Celular' name='celular' checked={ligacoesData.celular} onChange={onChange} />
+                    <InputCheckbox dataForm={ligacoesData} label='Celular' name='celular' checked={ligacoesData.celular} onChange={onChange} />
 
-              <ClientesComboBox
-              name={'cliente'}
-              dataForm={ligacoesData}
-              value={ligacoesData.cliente}
-              setValue={addValorCliente}
-              label={'Clientes'}
-              />
+                    <ClientesComboBox
+                    name={'cliente'}
+                    dataForm={ligacoesData}
+                    value={ligacoesData.cliente}
+                    setValue={addValorCliente}
+                    label={'Clientes'}
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={200}
-              id='contato'
-              label='Contato'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='contato'
-              value={ligacoesData.contato}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='datarealizada'
-              label='DataRealizada'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='datarealizada'
-              value={ligacoesData.datarealizada}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={200}
+                    id='contato'
+                    label='Contato'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='contato'
+                    value={ligacoesData.contato}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='quemid'
-              label='QuemID'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='quemid'
-              value={ligacoesData.quemid}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='datarealizada'
+                    label='DataRealizada'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='datarealizada'
+                    value={ligacoesData.datarealizada}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='telefonista'
-              label='Telefonista'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='telefonista'
-              value={ligacoesData.telefonista}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='ultimoaviso'
-              label='UltimoAviso'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='ultimoaviso'
-              value={ligacoesData.ultimoaviso}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='quemid'
+                    label='QuemID'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='quemid'
+                    value={ligacoesData.quemid}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='horafinal'
-              label='HoraFinal'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='horafinal'
-              value={ligacoesData.horafinal}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='telefonista'
+                    label='Telefonista'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='telefonista'
+                    value={ligacoesData.telefonista}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='ultimoaviso'
+                    label='UltimoAviso'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='ultimoaviso'
+                    value={ligacoesData.ultimoaviso}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='quemcodigo'
-              label='QuemCodigo'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='quemcodigo'
-              value={ligacoesData.quemcodigo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='horafinal'
+                    label='HoraFinal'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='horafinal'
+                    value={ligacoesData.horafinal}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='solicitante'
-              label='Solicitante'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='solicitante'
-              value={ligacoesData.solicitante}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='quemcodigo'
+                    label='QuemCodigo'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='quemcodigo'
+                    value={ligacoesData.quemcodigo}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='para'
-              label='Para'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='para'
-              value={ligacoesData.para}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='solicitante'
+                    label='Solicitante'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='solicitante'
+                    value={ligacoesData.solicitante}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='fone'
-              value={ligacoesData.fone}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='para'
+                    label='Para'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='para'
+                    value={ligacoesData.para}
+                    onChange={onChange}
+                    />
 
 
-              <RamalComboBox
-              name={'ramal'}
-              dataForm={ligacoesData}
-              value={ligacoesData.ramal}
-              setValue={addValorRamal}
-              label={'Ramal'}
-              />
-              <InputCheckbox dataForm={ligacoesData} label='Particular' name='particular' checked={ligacoesData.particular} onChange={onChange} />
-              <InputCheckbox dataForm={ligacoesData} label='Realizada' name='realizada' checked={ligacoesData.realizada} onChange={onChange} />
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='status'
-              label='Status'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='status'
-              value={ligacoesData.status}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={ligacoesData.fone}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='data'
-              value={ligacoesData.data}
-              onChange={onChange}
-              />
+                    <RamalComboBox
+                    name={'ramal'}
+                    dataForm={ligacoesData}
+                    value={ligacoesData.ramal}
+                    setValue={addValorRamal}
+                    label={'Ramal'}
+                    />
+                    <InputCheckbox dataForm={ligacoesData} label='Particular' name='particular' checked={ligacoesData.particular} onChange={onChange} />
+                    <InputCheckbox dataForm={ligacoesData} label='Realizada' name='realizada' checked={ligacoesData.realizada} onChange={onChange} />
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='status'
+                    label='Status'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='status'
+                    value={ligacoesData.status}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='hora'
-              label='Hora'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='hora'
-              value={ligacoesData.hora}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={ligacoesData} label='Urgente' name='urgente' checked={ligacoesData.urgente} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={255}
-              id='ligarpara'
-              label='LigarPara'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='ligarpara'
-              value={ligacoesData.ligarpara}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='data'
+                    label='Data'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='data'
+                    value={ligacoesData.data}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='processo'
-              label='Processo'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='processo'
-              value={ligacoesData.processo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='hora'
+                    label='Hora'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='hora'
+                    value={ligacoesData.hora}
+                    onChange={onChange}
+                    />
 
-              <InputCheckbox dataForm={ligacoesData} label='StartScreen' name='startscreen' checked={ligacoesData.startscreen} onChange={onChange} />
+                    <InputCheckbox dataForm={ligacoesData} label='Urgente' name='urgente' checked={ligacoesData.urgente} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='emotion'
-              label='Emotion'
-              dataForm={ligacoesData}
-              className='inputIncNome'
-              name='emotion'
-              value={ligacoesData.emotion}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={255}
+                    id='ligarpara'
+                    label='LigarPara'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='ligarpara'
+                    value={ligacoesData.ligarpara}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Ligacoes' data={ligacoesData} isSubmitting={isSubmitting} onClose={onClose} formId={`LigacoesForm-${ligacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/ligacoes'} id={ligacoesData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='processo'
+                    label='Processo'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='processo'
+                    value={ligacoesData.processo}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={ligacoesData} label='StartScreen' name='startscreen' checked={ligacoesData.startscreen} onChange={onChange} />
+
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='emotion'
+                    label='Emotion'
+                    dataForm={ligacoesData}
+                    className='inputIncNome'
+                    name='emotion'
+                    value={ligacoesData.emotion}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Ligacoes' data={ligacoesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`LigacoesForm-${ligacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/ligacoes'} id={ligacoesData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

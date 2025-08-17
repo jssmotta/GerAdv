@@ -8,69 +8,71 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class PenhoraService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPenhora filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterPenhora? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Processo)}", filtro.Processo));
+            parameters.Add(new($"@{(DBPenhoraDicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBPenhoraDicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
-        if (filtro.Processo_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBPenhoraDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.Descricao))
-        {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBPenhoraDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
         if (!filtro.DataPenhora.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DataPenhora, out var dataParam))
-                parameters.Add(new($"@{nameof(DBPenhoraDicInfo.DataPenhora)}", dataParam));
-        }
-
-        if (!filtro.DataPenhora_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.DataPenhora_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBPenhoraDicInfo.DataPenhora)}_end", dataParam));
+            if (DateTime.TryParse(filtro.DataPenhora, out var dataParam1))
+                parameters.Add(new($"@{(DBPenhoraDicInfo.DataPenhora)}", dataParam1));
+            if (!filtro.DataPenhora_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DataPenhora_end, out var dataParam2))
+                    parameters.Add(new($"@{(DBPenhoraDicInfo.DataPenhora)}_end", dataParam2));
+            }
         }
 
         if (filtro.PenhoraStatus != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.PenhoraStatus)}", filtro.PenhoraStatus));
+            parameters.Add(new($"@{(DBPenhoraDicInfo.PenhoraStatus)}", filtro.PenhoraStatus));
+            if (filtro.PenhoraStatus_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBPenhoraDicInfo.PenhoraStatus)}_end", filtro.PenhoraStatus_end));
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBPenhoraDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Master != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Master)}", filtro.Master));
-        }
-
-        if (filtro.Master_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.Master)}_end", filtro.Master_end));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBPenhoraDicInfo.Master)}", filtro.Master));
+            if (filtro.Master_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBPenhoraDicInfo.Master)}_end", filtro.Master_end));
+            }
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBPenhoraDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBPenhoraDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBPenhoraDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -81,56 +83,53 @@ public partial class PenhoraService
         var cWhere = new StringBuilder();
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Processo}] = @{nameof(DBPenhoraDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Processo}] = @{(DBPenhoraDicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.Processo} BETWEEN @{nameof(DBPenhoraDicInfo.Processo)} AND @{nameof(DBPenhoraDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.Processo} BETWEEN @{(DBPenhoraDicInfo.Processo)} AND @{(DBPenhoraDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBPenhoraDicInfo.Nome)}");
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBPenhoraDicInfo.Descricao)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBPenhoraDicInfo.Nome)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBPenhoraDicInfo.Descricao)}");
         if (!(filtro.DataPenhora.IsEmptyDX()) && filtro.DataPenhora_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataPenhora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.DataPenhora}], 103) = CONVERT(DATE, @{nameof(DBPenhoraDicInfo.DataPenhora)}, 103)");
+            cWhere.Append(filtro.DataPenhora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.DataPenhora}], 103) = CONVERT(DATE, @{(DBPenhoraDicInfo.DataPenhora)}, 103)");
         }
         else if (!(filtro.DataPenhora.IsEmptyDX()) && !(filtro.DataPenhora_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.DataPenhora} BETWEEN @{nameof(DBPenhoraDicInfo.DataPenhora)} AND @{nameof(DBPenhoraDicInfo.DataPenhora)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.DataPenhora} BETWEEN @{(DBPenhoraDicInfo.DataPenhora)} AND @{(DBPenhoraDicInfo.DataPenhora)}_end");
         }
 
-        cWhere.Append(filtro.PenhoraStatus.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.PenhoraStatus}] = @{nameof(DBPenhoraDicInfo.PenhoraStatus)}");
+        if (!(filtro.PenhoraStatus.IsEmptyX()) && filtro.PenhoraStatus_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.PenhoraStatus.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.PenhoraStatus}] = @{(DBPenhoraDicInfo.PenhoraStatus)}");
+        }
+        else if (!(filtro.PenhoraStatus.IsEmptyX()) && !(filtro.PenhoraStatus_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.PenhoraStatus} BETWEEN @{(DBPenhoraDicInfo.PenhoraStatus)} AND @{(DBPenhoraDicInfo.PenhoraStatus)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBPenhoraDicInfo.GUID)}");
         if (!(filtro.Master.IsEmptyX()) && filtro.Master_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Master.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Master}] = @{nameof(DBPenhoraDicInfo.Master)}");
+            cWhere.Append(filtro.Master.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.Master}] = @{(DBPenhoraDicInfo.Master)}");
         }
         else if (!(filtro.Master.IsEmptyX()) && !(filtro.Master_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.Master} BETWEEN @{nameof(DBPenhoraDicInfo.Master)} AND @{nameof(DBPenhoraDicInfo.Master)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.Master} BETWEEN @{(DBPenhoraDicInfo.Master)} AND @{(DBPenhoraDicInfo.Master)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBPenhoraDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.CampoCodigo}] = @{nameof(DBPenhoraDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].[{DBPenhoraDicInfo.CampoCodigo}] = @{(DBPenhoraDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.CampoCodigo} BETWEEN @{nameof(DBPenhoraDicInfo.CampoCodigo)} AND @{nameof(DBPenhoraDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBPenhoraDicInfo.PTabelaNome}].{DBPenhoraDicInfo.CampoCodigo} BETWEEN @{(DBPenhoraDicInfo.CampoCodigo)} AND @{(DBPenhoraDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterPenhora? filtro)

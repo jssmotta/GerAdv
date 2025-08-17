@@ -86,16 +86,16 @@ namespace MenphisSI.GerAdv.Models
         public int SubDivisao { get; set; }
 
         /// <summary>
-        /// Tipo - pjaTipo  
-        /// </summary>
-        [JsonPropertyName("tipo")]
-        public int Tipo { get; set; }
-
-        /// <summary>
         /// GUID - pjaGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Tipo - pjaTipo  
+        /// </summary>
+        [JsonPropertyName("tipo")]
+        public int Tipo { get; set; }
     }
 }
 
@@ -180,16 +180,16 @@ namespace MenphisSI.GerAdv.Models.All
         public int SubDivisao { get; set; }
 
         /// <summary>
-        /// Tipo - pjaTipo  
-        /// </summary>
-        [JsonPropertyName("tipo")]
-        public int Tipo { get; set; }
-
-        /// <summary>
         /// GUID - pjaGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Tipo - pjaTipo  
+        /// </summary>
+        [JsonPropertyName("tipo")]
+        public int Tipo { get; set; }
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;

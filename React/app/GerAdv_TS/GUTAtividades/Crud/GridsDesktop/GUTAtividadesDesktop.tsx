@@ -59,6 +59,12 @@ useEffect(() => {
 }
 }, []);
 
+const MaskagtMinutosParaRealizarCell = (props: any) => {
+  const valor = props.dataItem[props.field];
+  const formattedValue = valor ? formatCurrency(valor, 'BRL') : 'R$ 0,00';
+  return <td>{formattedValue}</td>;
+};
+
 const openSearchCellGUTAtividadesMatriz = (id: number) => {
   router.push(`/pages/gutatividadesmatriz/?gutatividades=${id}`);
 };
@@ -82,11 +88,6 @@ const SearchFromCellGUTPeriodicidadeStatus = (props: any) => {
   </td>
 </>
 );
-};
-const MaskagtMinutosParaRealizarCell = (props: any) => {
-  const valor = props.dataItem[props.field];
-  const formattedValue = valor ? formatCurrency(valor, 'BRL') : 'R$ 0,00';
-  return <td>{formattedValue}</td>;
 };
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
@@ -153,7 +154,23 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'nomegutperiodicidade': (
+  <GridColumn
+  key='nomegutperiodicidade'
+  field='nomegutperiodicidade'
+  title='G U T Periodicidade'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'rnomeoperador': (
+  <GridColumn
+  key='rnomeoperador'
+  field='rnomeoperador'
+  title='Operador'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_GUTAtividadesMatriz': (
   <GridColumn
   key='GUTAtividadesMatriz'
@@ -176,26 +193,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellGUTPeriodicidadeStatus }}
   />
   ), /* Track G.03 */
-  'nomegutperiodicidade': (
-  <GridColumn
-  key='nomegutperiodicidade'
-
-  field='nomegutperiodicidade'
-  title='G U T Periodicidade'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'rnomeoperador': (
-  <GridColumn
-  key='rnomeoperador'
-
-  field='rnomeoperador'
-  title='Operador'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====

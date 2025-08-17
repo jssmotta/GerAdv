@@ -14,13 +14,13 @@ public partial interface IAgendaWriter
 
 public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
 {
-    private readonly IFAgendaFactory _agendaFactory = agendaFactory;
-    public async Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFAgendaFactory _agendaFactory = agendaFactory ?? throw new ArgumentNullException(nameof(agendaFactory));
+    public virtual async Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection oCnn)
     {
         await _agendaFactory.DeleteAsync(operadorId, agenda.Id, oCnn);
     }
 
-    public async Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (agenda.Id.IsEmptyIDNumber() ? _agendaFactory.CreateAsync() : _agendaFactory.CreateFromIdAsync(agenda.Id, oCnn));
         dbRec.FIDCOB = agenda.IDCOB;
@@ -31,8 +31,7 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         dbRec.FOculto = agenda.Oculto;
         dbRec.FCartaPrecatoria = agenda.CartaPrecatoria;
         dbRec.FRevisar = agenda.Revisar;
-        if (agenda.HrFinal != null)
-            dbRec.FHrFinal = agenda.HrFinal.ToString();
+        dbRec.FHrFinal = agenda.HrFinal;
         dbRec.FAdvogado = agenda.Advogado;
         dbRec.FEventoGerador = agenda.EventoGerador;
         if (agenda.EventoData != null)
@@ -40,8 +39,7 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         dbRec.FFuncionario = agenda.Funcionario;
         dbRec.FData = agenda.Data;
         dbRec.FEventoPrazo = agenda.EventoPrazo;
-        if (agenda.Hora != null)
-            dbRec.FHora = agenda.Hora.ToString();
+        dbRec.FHora = agenda.Hora;
         dbRec.FCompromisso = agenda.Compromisso;
         dbRec.FTipoCompromisso = agenda.TipoCompromisso;
         dbRec.FCliente = agenda.Cliente;
@@ -57,6 +55,7 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         dbRec.FPreposto = agenda.Preposto;
         dbRec.FQuemID = agenda.QuemID;
         dbRec.FQuemCodigo = agenda.QuemCodigo;
+        dbRec.FGUID = agenda.GUID;
         dbRec.FStatus = agenda.Status;
         dbRec.FValor = agenda.Valor;
         dbRec.FDecisao = agenda.Decisao;
@@ -66,7 +65,6 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         if (agenda.DataInicioPrazo != null)
             dbRec.FDataInicioPrazo = agenda.DataInicioPrazo.ToString();
         dbRec.FUsuarioCiente = agenda.UsuarioCiente;
-        dbRec.FGUID = agenda.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

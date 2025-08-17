@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TribEnderecosReader(IFTribEnderecosFactory tribenderecosFactory) : ITribEnderecosReader
 {
-    private readonly IFTribEnderecosFactory _tribenderecosFactory = tribenderecosFactory;
+    private readonly IFTribEnderecosFactory _tribenderecosFactory = tribenderecosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<TribEnderecosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTribEnderecos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TribEnderecosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ProcessOutputEngineReader(IFProcessOutputEngineFactory processoutputengineFactory) : IProcessOutputEngineReader
 {
-    private readonly IFProcessOutputEngineFactory _processoutputengineFactory = processoutputengineFactory;
+    private readonly IFProcessOutputEngineFactory _processoutputengineFactory = processoutputengineFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("poeCodigo, poeNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProcessOutputEngineResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProcessOutputEngine.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProcessOutputEngineResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -61,12 +61,12 @@ public partial class ProcessOutputEngineReader(IFProcessOutputEngineFactory proc
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
+            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }
@@ -99,12 +99,12 @@ public partial class ProcessOutputEngineReader(IFProcessOutputEngineFactory proc
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
+            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }
@@ -126,12 +126,12 @@ public partial class ProcessOutputEngineReader(IFProcessOutputEngineFactory proc
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
+            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }
@@ -153,12 +153,12 @@ public partial class ProcessOutputEngineReader(IFProcessOutputEngineFactory proc
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
+            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }
@@ -180,12 +180,12 @@ public partial class ProcessOutputEngineReader(IFProcessOutputEngineFactory proc
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
+            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }

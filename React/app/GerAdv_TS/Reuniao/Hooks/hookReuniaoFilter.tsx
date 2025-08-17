@@ -87,16 +87,6 @@ export const useReuniaoFilter = ({ handleFetchWithFilter }: UseReuniaoFilterProp
   />
   <InputInput
   type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
   id='pauta'
   name='pauta'
   value={handlers.windowFilter?.pauta ?? ''}
@@ -136,26 +126,15 @@ export const useReuniaoFilter = ({ handleFetchWithFilter }: UseReuniaoFilterProp
   disabled={handlers.windowFilter?.horainicial ? false: true}
   onChange={(value: string) => handlers.handleDateChange('horainicial_end', value)}
   />
-  <InputDate
+  <InputInput
   type='text'
   id='horafinal'
-  label='HoraFinal (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
   name='horafinal'
   value={handlers.windowFilter?.horafinal ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('horafinal', value)}
-  />
-  <InputDate
-  type='text'
-  id='horafinal_end'
-  label='HoraFinal (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='horafinal_end'
-  value={handlers.windowFilter?.horafinal_end ?? ''}
-  disabled={handlers.windowFilter?.horafinal ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('horafinal_end', value)}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe HoraFinal'
+  label='HoraFinal'
+  className='inputIncNome inputSearch'
   />
   <InputComboFilterYesNo
   type='text'

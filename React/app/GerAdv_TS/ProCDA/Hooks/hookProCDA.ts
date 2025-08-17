@@ -41,7 +41,8 @@ export const useProCDAForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro C D A';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro C D A');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro C D A');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProCDANotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProCDAList = (dataService: IProCDAService, currentFilter?: Filte
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar procda';
       setError(errorMessage);
-      //console.log('Erro ao carregar procda');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar procda');
     } finally {
       setLoading(false);
     }
@@ -213,7 +216,8 @@ if (data.nrointerno.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

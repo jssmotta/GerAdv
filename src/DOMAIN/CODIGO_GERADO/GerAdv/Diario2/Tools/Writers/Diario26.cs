@@ -14,23 +14,22 @@ public partial interface IDiario2Writer
 
 public class Diario2Writer(IFDiario2Factory diario2Factory) : IDiario2Writer
 {
-    private readonly IFDiario2Factory _diario2Factory = diario2Factory;
-    public async Task Delete(Diario2Response diario2, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFDiario2Factory _diario2Factory = diario2Factory ?? throw new ArgumentNullException(nameof(diario2Factory));
+    public virtual async Task Delete(Diario2Response diario2, int operadorId, MsiSqlConnection oCnn)
     {
         await _diario2Factory.DeleteAsync(operadorId, diario2.Id, oCnn);
     }
 
-    public async Task<FDiario2> WriteAsync(Models.Diario2 diario2, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FDiario2> WriteAsync(Models.Diario2 diario2, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (diario2.Id.IsEmptyIDNumber() ? _diario2Factory.CreateAsync() : _diario2Factory.CreateFromIdAsync(diario2.Id, oCnn));
         dbRec.FData = diario2.Data;
-        if (diario2.Hora != null)
-            dbRec.FHora = diario2.Hora.ToString();
+        dbRec.FHora = diario2.Hora;
         dbRec.FOperador = diario2.Operador;
+        dbRec.FGUID = diario2.GUID;
         dbRec.FNome = diario2.Nome;
         dbRec.FOcorrencia = diario2.Ocorrencia;
         dbRec.FCliente = diario2.Cliente;
-        dbRec.FGUID = diario2.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -85,9 +85,6 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
 
-        [JsonPropertyName("horafinal_date")]
-        public DateTime? HoraFinal_date { get; set; }
-
         /// <summary>
         /// Nome - ligNome - tamanho máximo: 50 
         /// </summary>
@@ -148,14 +145,17 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
 
-        [JsonPropertyName("hora_date")]
-        public DateTime? Hora_date { get; set; }
-
         /// <summary>
         /// Urgente - ligUrgente  
         /// </summary>
         [JsonPropertyName("urgente")]
         public bool Urgente { get; set; }
+
+        /// <summary>
+        /// GUID - ligGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
 
         /// <summary>
         /// LigarPara - ligLigarPara - tamanho máximo: 255 
@@ -180,12 +180,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("emotion")]
         public int Emotion { get; set; }
-
-        /// <summary>
-        /// GUID - ligGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -269,9 +263,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
 
-        [JsonPropertyName("horafinal_date")]
-        public DateTime? HoraFinal_date { get; set; }
-
         /// <summary>
         /// Nome - ligNome - tamanho máximo: 50 
         /// </summary>
@@ -332,14 +323,17 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
 
-        [JsonPropertyName("hora_date")]
-        public DateTime? Hora_date { get; set; }
-
         /// <summary>
         /// Urgente - ligUrgente  
         /// </summary>
         [JsonPropertyName("urgente")]
         public bool Urgente { get; set; }
+
+        /// <summary>
+        /// GUID - ligGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
 
         /// <summary>
         /// LigarPara - ligLigarPara - tamanho máximo: 255 
@@ -364,12 +358,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("emotion")]
         public int Emotion { get; set; }
-
-        /// <summary>
-        /// GUID - ligGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

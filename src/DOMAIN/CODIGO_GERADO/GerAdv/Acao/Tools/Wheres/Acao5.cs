@@ -13,17 +13,17 @@ public partial interface IAcaoWhere
 
 public partial class AcaoWhere(IFAcaoFactory acaoFactory) : IAcaoWhere
 {
-    private readonly IFAcaoFactory _acaoFactory = acaoFactory;
+    private readonly IFAcaoFactory _acaoFactory = acaoFactory ?? throw new ArgumentNullException(nameof(acaoFactory));
     public AcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _acaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var acao = new AcaoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return acao;
     }

@@ -54,7 +54,7 @@ public partial class FEnquadramentoEmpresaFactory : IFEnquadramentoEmpresaFactor
             throw new ObjectDisposedException(nameof(FEnquadramentoEmpresaFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

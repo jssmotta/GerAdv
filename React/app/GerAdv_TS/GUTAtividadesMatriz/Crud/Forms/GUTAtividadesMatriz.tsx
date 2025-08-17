@@ -60,139 +60,130 @@ if (getParamFromUrl('gutmatriz') > 0) {
       setNomeGUTMatriz(response.data.descricao);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    gutatividadesmatrizData.gutmatriz = getParamFromUrl('gutmatriz');
+      gutatividadesmatrizData.gutmatriz = getParamFromUrl('gutmatriz');
+    }
   }
-}
 
-if (getParamFromUrl('gutatividades') > 0) {
-  if (gutatividadesmatrizData.id === 0 && gutatividadesmatrizData.gutatividade == 0) {
-    gutatividadesApi
-    .getById(getParamFromUrl('gutatividades'))
-    .then((response) => {
-      setNomeGUTAtividades(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('gutatividades') > 0) {
+    if (gutatividadesmatrizData.id === 0 && gutatividadesmatrizData.gutatividade == 0) {
+      gutatividadesApi
+      .getById(getParamFromUrl('gutatividades'))
+      .then((response) => {
+        setNomeGUTAtividades(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    gutatividadesmatrizData.gutatividade = getParamFromUrl('gutatividades');
-  }
-}
-const addValorGUTMatriz = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'gutmatriz', value: e.id } });
-  };
-  const addValorGUTAtividade = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'gutatividade', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        gutatividadesmatrizData.gutatividade = getParamFromUrl('gutatividades');
+      }
+    }
+    const addValorGUTMatriz = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'gutmatriz', value: e.id } });
+      };
+      const addValorGUTAtividade = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'gutatividade', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de GUTAtividadesMatriz:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de GUTAtividadesMatriz:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar GUTAtividadesMatriz diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = gutatividadesmatrizData?.id == 0 ? 'Editar GUTAtividadesMatriz' : 'Adicionar G U T Atividades Matriz';
-      }
-    }, [gutatividadesmatrizData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar GUTAtividadesMatriz diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = gutatividadesmatrizData?.id == 0 ? 'Editar GUTAtividadesMatriz' : 'Adicionar G U T Atividades Matriz';
+            }
+          }, [gutatividadesmatrizData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-GUTAtividadesMatriz' : 'form-container5 form-container-GUTAtividadesMatriz'}>
+            <div className={isMobile ? 'form-container form-container-GUTAtividadesMatriz' : 'form-container5 form-container-GUTAtividadesMatriz'}>
 
-        <form className='formInputCadInc' id={`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTAtividadesMatriz' data={gutatividadesmatrizData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
-
-              <InputName
-              type='text'
-              id='guid'
-              label='GUID'
-              dataForm={gutatividadesmatrizData}
-              className='inputIncNome'
-              name='guid'
-              value={gutatividadesmatrizData.guid}
-              placeholder={`Informe GUID`}
-              onChange={onChange}
-              required
-              />
-
-              <GUTMatrizComboBox
-              name={'gutmatriz'}
-              dataForm={gutatividadesmatrizData}
-              value={gutatividadesmatrizData.gutmatriz}
-              setValue={addValorGUTMatriz}
-              label={'G U T Matriz'}
-              />
-
-              <GUTAtividadesComboBox
-              name={'gutatividade'}
-              dataForm={gutatividadesmatrizData}
-              value={gutatividadesmatrizData.gutatividade}
-              setValue={addValorGUTAtividade}
-              label={'G U T Atividades'}
-              />
-            </div>
-          </form>
+              <form className='formInputCadInc' id={`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTAtividadesMatriz' data={gutatividadesmatrizData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTAtividadesMatriz' data={gutatividadesmatrizData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/gutatividadesmatriz'} id={gutatividadesmatrizData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <GUTMatrizComboBox
+                    name={'gutmatriz'}
+                    dataForm={gutatividadesmatrizData}
+                    value={gutatividadesmatrizData.gutmatriz}
+                    setValue={addValorGUTMatriz}
+                    label={'G U T Matriz'}
+                    />
+
+                    <GUTAtividadesComboBox
+                    name={'gutatividade'}
+                    dataForm={gutatividadesmatrizData}
+                    value={gutatividadesmatrizData.gutatividade}
+                    setValue={addValorGUTAtividade}
+                    label={'G U T Atividades'}
+                    />
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTAtividadesMatriz' data={gutatividadesmatrizData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTAtividadesMatrizForm-${gutatividadesmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/gutatividadesmatriz'} id={gutatividadesmatrizData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterContratos
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -24,8 +24,14 @@ public partial record FilterContratos
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("advogado")]
     public int Advogado { get; set; } = int.MinValue;
+
+    [JsonPropertyName("advogado_end")]
+    public int Advogado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("dia")]
     public int Dia { get; set; } = int.MinValue;
@@ -40,16 +46,16 @@ public partial record FilterContratos
     public decimal Valor_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("datainicio")]
-    public string DataInicio { get; set; } = string.Empty;
+    public string? DataInicio { get; set; } = string.Empty;
 
     [JsonPropertyName("datainicio_end")]
-    public string DataInicio_end { get; set; } = string.Empty;
+    public string? DataInicio_end { get; set; } = string.Empty;
 
     [JsonPropertyName("datatermino")]
-    public string DataTermino { get; set; } = string.Empty;
+    public string? DataTermino { get; set; } = string.Empty;
 
     [JsonPropertyName("datatermino_end")]
-    public string DataTermino_end { get; set; } = string.Empty;
+    public string? DataTermino_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ocultarrelatorio")]
     public int OcultarRelatorio { get; set; } = int.MinValue;
@@ -66,6 +72,12 @@ public partial record FilterContratos
     [JsonPropertyName("valorconsultoria_end")]
     public decimal ValorConsultoria_end { get; set; } = decimal.MinValue;
 
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
+
     [JsonPropertyName("tipocobranca")]
     public int TipoCobranca { get; set; } = int.MinValue;
 
@@ -73,16 +85,16 @@ public partial record FilterContratos
     public int TipoCobranca_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("protestar")]
-    public string Protestar { get; set; } = string.Empty;
+    public string? Protestar { get; set; } = string.Empty;
 
     [JsonPropertyName("protestar_end")]
-    public string Protestar_end { get; set; } = string.Empty;
+    public string? Protestar_end { get; set; } = string.Empty;
 
     [JsonPropertyName("juros")]
-    public string Juros { get; set; } = string.Empty;
+    public string? Juros { get; set; } = string.Empty;
 
     [JsonPropertyName("juros_end")]
-    public string Juros_end { get; set; } = string.Empty;
+    public string? Juros_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valorrealizavel")]
     public decimal ValorRealizavel { get; set; } = decimal.MinValue;
@@ -91,52 +103,52 @@ public partial record FilterContratos
     public decimal ValorRealizavel_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("documento")]
-    public string DOCUMENTO { get; set; } = string.Empty;
+    public string? DOCUMENTO { get; set; } = string.Empty;
 
     [JsonPropertyName("documento_end")]
-    public string DOCUMENTO_end { get; set; } = string.Empty;
+    public string? DOCUMENTO_end { get; set; } = string.Empty;
 
     [JsonPropertyName("email1")]
-    public string EMail1 { get; set; } = string.Empty;
+    public string? EMail1 { get; set; } = string.Empty;
 
     [JsonPropertyName("email1_end")]
-    public string EMail1_end { get; set; } = string.Empty;
+    public string? EMail1_end { get; set; } = string.Empty;
 
     [JsonPropertyName("email2")]
-    public string EMail2 { get; set; } = string.Empty;
+    public string? EMail2 { get; set; } = string.Empty;
 
     [JsonPropertyName("email2_end")]
-    public string EMail2_end { get; set; } = string.Empty;
+    public string? EMail2_end { get; set; } = string.Empty;
 
     [JsonPropertyName("email3")]
-    public string EMail3 { get; set; } = string.Empty;
+    public string? EMail3 { get; set; } = string.Empty;
 
     [JsonPropertyName("email3_end")]
-    public string EMail3_end { get; set; } = string.Empty;
+    public string? EMail3_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pessoa1")]
-    public string Pessoa1 { get; set; } = string.Empty;
+    public string? Pessoa1 { get; set; } = string.Empty;
 
     [JsonPropertyName("pessoa1_end")]
-    public string Pessoa1_end { get; set; } = string.Empty;
+    public string? Pessoa1_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pessoa2")]
-    public string Pessoa2 { get; set; } = string.Empty;
+    public string? Pessoa2 { get; set; } = string.Empty;
 
     [JsonPropertyName("pessoa2_end")]
-    public string Pessoa2_end { get; set; } = string.Empty;
+    public string? Pessoa2_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pessoa3")]
-    public string Pessoa3 { get; set; } = string.Empty;
+    public string? Pessoa3 { get; set; } = string.Empty;
 
     [JsonPropertyName("pessoa3_end")]
-    public string Pessoa3_end { get; set; } = string.Empty;
+    public string? Pessoa3_end { get; set; } = string.Empty;
 
     [JsonPropertyName("obs")]
-    public string OBS { get; set; } = string.Empty;
+    public string? OBS { get; set; } = string.Empty;
 
     [JsonPropertyName("obs_end")]
-    public string OBS_end { get; set; } = string.Empty;
+    public string? OBS_end { get; set; } = string.Empty;
 
     [JsonPropertyName("clientecontrato")]
     public int ClienteContrato { get; set; } = int.MinValue;
@@ -151,10 +163,10 @@ public partial record FilterContratos
     public int IdExtrangeiro_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("chavecontrato")]
-    public string ChaveContrato { get; set; } = string.Empty;
+    public string? ChaveContrato { get; set; } = string.Empty;
 
     [JsonPropertyName("chavecontrato_end")]
-    public string ChaveContrato_end { get; set; } = string.Empty;
+    public string? ChaveContrato_end { get; set; } = string.Empty;
 
     [JsonPropertyName("avulso")]
     public int Avulso { get; set; } = int.MinValue;
@@ -163,16 +175,10 @@ public partial record FilterContratos
     public int Suspenso { get; set; } = int.MinValue;
 
     [JsonPropertyName("multa")]
-    public string Multa { get; set; } = string.Empty;
+    public string? Multa { get; set; } = string.Empty;
 
     [JsonPropertyName("multa_end")]
-    public string Multa_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? Multa_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

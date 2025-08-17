@@ -79,7 +79,8 @@ export class ProSucumbenciaService implements IProSucumbenciaService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ProSucumbencia list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ProSucumbencia list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ProSucumbenciaService implements IProSucumbenciaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ProSucumbencia');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProSucumbencia');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ProSucumbenciaService implements IProSucumbenciaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ProSucumbencia');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProSucumbencia');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ProSucumbencia:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ProSucumbencia:');
       return [];
     }
   }

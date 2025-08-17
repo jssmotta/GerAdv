@@ -23,6 +23,7 @@ export enum FieldsOperador
 	statusid = `StatusId`,
 	statusmessage = `StatusMessage`,
 	isfinanceiro = `IsFinanceiro`,
+	guid = `GUID`,
 	top = `Top`,
 	sexo = `Sexo`,
 	basico = `Basico`,
@@ -35,5 +36,4 @@ export enum FieldsOperador
 	suportenomesolicitante = `SuporteNomeSolicitante`,
 	suporteultimoacesso = `SuporteUltimoAcesso`,
 	suporteipultimoacesso = `SuporteIpUltimoAcesso`,
-	guid = `GUID`,
 }

@@ -54,7 +54,7 @@ public partial class FPenhoraStatusFactory : IFPenhoraStatusFactory, IDisposable
             throw new ObjectDisposedException(nameof(FPenhoraStatusFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

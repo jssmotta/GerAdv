@@ -41,7 +41,8 @@ export const usePenhoraForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Penhora';
       setError(errorMessage);
-      //console.log('Erro ao carregar Penhora');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Penhora');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePenhoraNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePenhoraList = (dataService: IPenhoraService, currentFilter?: Fil
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar penhora';
       setError(errorMessage);
-      //console.log('Erro ao carregar penhora');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar penhora');
     } finally {
       setLoading(false);
     }
@@ -213,7 +216,8 @@ if (data.descricao.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

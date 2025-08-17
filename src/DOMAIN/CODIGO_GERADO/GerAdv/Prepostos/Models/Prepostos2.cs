@@ -32,6 +32,12 @@ namespace MenphisSI.GerAdv.Models
         public int Cidade { get; set; }
 
         /// <summary>
+        /// GUID - preGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Nome - preNome - tamanho máximo: 80 
         /// </summary>
         [JsonPropertyName("nome")]
@@ -198,12 +204,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
-
-        /// <summary>
-        /// GUID - preGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -234,6 +234,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int Cidade { get; set; }
 
         /// <summary>
+        /// GUID - preGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Nome - preNome - tamanho máximo: 80 
         /// </summary>
         [JsonPropertyName("nome")]
@@ -400,12 +406,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
-
-        /// <summary>
-        /// GUID - preGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("descricaofuncao")]
         public string DescricaoFuncao { get; set; } = string.Empty;

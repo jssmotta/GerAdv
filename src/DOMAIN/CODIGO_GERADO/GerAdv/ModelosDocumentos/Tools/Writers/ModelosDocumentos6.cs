@@ -14,13 +14,13 @@ public partial interface IModelosDocumentosWriter
 
 public class ModelosDocumentosWriter(IFModelosDocumentosFactory modelosdocumentosFactory) : IModelosDocumentosWriter
 {
-    private readonly IFModelosDocumentosFactory _modelosdocumentosFactory = modelosdocumentosFactory;
-    public async Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFModelosDocumentosFactory _modelosdocumentosFactory = modelosdocumentosFactory ?? throw new ArgumentNullException(nameof(modelosdocumentosFactory));
+    public virtual async Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection oCnn)
     {
         await _modelosdocumentosFactory.DeleteAsync(operadorId, modelosdocumentos.Id, oCnn);
     }
 
-    public async Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (modelosdocumentos.Id.IsEmptyIDNumber() ? _modelosdocumentosFactory.CreateAsync() : _modelosdocumentosFactory.CreateFromIdAsync(modelosdocumentos.Id, oCnn));
         dbRec.FNome = modelosdocumentos.Nome;

@@ -14,13 +14,13 @@ public partial interface IContratosWriter
 
 public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWriter
 {
-    private readonly IFContratosFactory _contratosFactory = contratosFactory;
-    public async Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFContratosFactory _contratosFactory = contratosFactory ?? throw new ArgumentNullException(nameof(contratosFactory));
+    public virtual async Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection oCnn)
     {
         await _contratosFactory.DeleteAsync(operadorId, contratos.Id, oCnn);
     }
 
-    public async Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (contratos.Id.IsEmptyIDNumber() ? _contratosFactory.CreateAsync() : _contratosFactory.CreateFromIdAsync(contratos.Id, oCnn));
         dbRec.FProcesso = contratos.Processo;
@@ -35,6 +35,7 @@ public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWr
         dbRec.FOcultarRelatorio = contratos.OcultarRelatorio;
         dbRec.FPercEscritorio = contratos.PercEscritorio;
         dbRec.FValorConsultoria = contratos.ValorConsultoria;
+        dbRec.FGUID = contratos.GUID;
         dbRec.FTipoCobranca = contratos.TipoCobranca;
         dbRec.FProtestar = contratos.Protestar;
         dbRec.FJuros = contratos.Juros;
@@ -53,7 +54,6 @@ public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWr
         dbRec.FAvulso = contratos.Avulso;
         dbRec.FSuspenso = contratos.Suspenso;
         dbRec.FMulta = contratos.Multa;
-        dbRec.FGUID = contratos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

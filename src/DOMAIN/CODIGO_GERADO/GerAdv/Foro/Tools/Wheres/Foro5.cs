@@ -13,7 +13,7 @@ public partial interface IForoWhere
 
 public partial class ForoWhere(IFForoFactory foroFactory) : IForoWhere
 {
-    private readonly IFForoFactory _foroFactory = foroFactory;
+    private readonly IFForoFactory _foroFactory = foroFactory ?? throw new ArgumentNullException(nameof(foroFactory));
     public ForoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _foroFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

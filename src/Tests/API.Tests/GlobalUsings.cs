@@ -1,0 +1,8 @@
+﻿global using FluentAssertions;
+global using Microsoft.AspNetCore.Mvc;
+global using Moq;
+global using Xunit;
+global using MenphisSI.BaseCommon;
+global using MenphisSI.GerAdv.Interface;
+global using MenphisSI.GerAdv.Controller;
+global using Microsoft.AspNetCore.Http;

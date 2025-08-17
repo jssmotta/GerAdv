@@ -79,7 +79,8 @@ export class EnquadramentoEmpresaService implements IEnquadramentoEmpresaService
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching EnquadramentoEmpresa list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching EnquadramentoEmpresa list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class EnquadramentoEmpresaService implements IEnquadramentoEmpresaService
             }
           })
           .catch(error => {
-            console.log('Error fetching online EnquadramentoEmpresa');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online EnquadramentoEmpresa');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class EnquadramentoEmpresaService implements IEnquadramentoEmpresaService
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online EnquadramentoEmpresa');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online EnquadramentoEmpresa');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all EnquadramentoEmpresa:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all EnquadramentoEmpresa:');
       return [];
     }
   }

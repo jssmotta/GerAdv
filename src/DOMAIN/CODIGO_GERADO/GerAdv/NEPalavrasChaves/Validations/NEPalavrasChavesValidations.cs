@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface INEPalavrasChavesValidation
 {
     Task<bool> ValidateReg(Models.NEPalavrasChaves reg, INEPalavrasChavesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, INEPalavrasChavesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, INEPalavrasChavesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class NEPalavrasChavesValidation : INEPalavrasChavesValidation
 {
-    public async Task<bool> CanDelete(int id, INEPalavrasChavesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, INEPalavrasChavesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class NEPalavrasChavesValidation : INEPalavrasChavesValidation
 
     private bool ValidSizes(Models.NEPalavrasChaves reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBNEPalavrasChavesDicInfo.NpcNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBNEPalavrasChavesDicInfo.NpcNome.FTamanho} caracteres.");
         return true;
     }
 

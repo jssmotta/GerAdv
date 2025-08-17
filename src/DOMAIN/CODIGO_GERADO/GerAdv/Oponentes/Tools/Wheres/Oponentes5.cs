@@ -13,7 +13,7 @@ public partial interface IOponentesWhere
 
 public partial class OponentesWhere(IFOponentesFactory oponentesFactory) : IOponentesWhere
 {
-    private readonly IFOponentesFactory _oponentesFactory = oponentesFactory;
+    private readonly IFOponentesFactory _oponentesFactory = oponentesFactory ?? throw new ArgumentNullException(nameof(oponentesFactory));
     public OponentesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _oponentesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,6 +21,7 @@ public partial class OponentesWhere(IFOponentesFactory oponentesFactory) : IOpon
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
+            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -47,7 +48,6 @@ public partial class OponentesWhere(IFOponentesFactory oponentesFactory) : IOpon
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return oponentes;
     }

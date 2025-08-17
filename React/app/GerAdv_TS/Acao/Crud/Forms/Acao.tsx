@@ -60,140 +60,143 @@ if (getParamFromUrl('justica') > 0) {
       setNomeJustica(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    acaoData.justica = getParamFromUrl('justica');
+      acaoData.justica = getParamFromUrl('justica');
+    }
   }
-}
 
-if (getParamFromUrl('area') > 0) {
-  if (acaoData.id === 0 && acaoData.area == 0) {
-    areaApi
-    .getById(getParamFromUrl('area'))
-    .then((response) => {
-      setNomeArea(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('area') > 0) {
+    if (acaoData.id === 0 && acaoData.area == 0) {
+      areaApi
+      .getById(getParamFromUrl('area'))
+      .then((response) => {
+        setNomeArea(response.data.descricao);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    acaoData.area = getParamFromUrl('area');
-  }
-}
-const addValorJustica = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'justica', value: e.id } });
-  };
-  const addValorArea = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'area', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        acaoData.area = getParamFromUrl('area');
+      }
+    }
+    const addValorJustica = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'justica', value: e.id } });
+      };
+      const addValorArea = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'area', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Acao:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de Acao:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`AcaoForm-${acaoData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`AcaoForm-${acaoData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar Acao diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = acaoData?.id == 0 ? 'Editar Acao' : 'Adicionar Acao';
-      }
-    }, [acaoData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar Acao diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = acaoData?.id == 0 ? 'Editar Acao' : 'Adicionar Acao';
+            }
+          }, [acaoData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-Acao' : 'form-container5 form-container-Acao'}>
+            <div className={isMobile ? 'form-container form-container-Acao' : 'form-container5 form-container-Acao'}>
 
-        <form className='formInputCadInc' id={`AcaoForm-${acaoData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Acao' data={acaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`AcaoForm-${acaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`AcaoForm-${acaoData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Acao' data={acaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AcaoForm-${acaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputDescription
-              type='text'
-              id='descricao'
-              label='acao'
-              dataForm={acaoData}
-              className='inputIncNome'
-              name='descricao'
-              value={acaoData.descricao}
-              placeholder={`Digite nome acao`}
-              onChange={onChange}
-              required
-              disabled={acaoData.id > 0}
-              />
+                    <InputDescription
+                    type='text'
+                    id='descricao'
+                    label='acao'
+                    dataForm={acaoData}
+                    className='inputIncNome'
+                    name='descricao'
+                    value={acaoData.descricao}
+                    placeholder={`Digite nome acao`}
+                    onChange={onChange}
+                    required
+                    disabled={acaoData.id > 0}
+                    />
 
-              <JusticaComboBox
-              name={'justica'}
-              dataForm={acaoData}
-              value={acaoData.justica}
-              setValue={addValorJustica}
-              label={'Justiça'}
-              />
+                    <JusticaComboBox
+                    name={'justica'}
+                    dataForm={acaoData}
+                    value={acaoData.justica}
+                    setValue={addValorJustica}
+                    label={'Justiça'}
+                    />
 
-              <AreaComboBox
-              name={'area'}
-              dataForm={acaoData}
-              value={acaoData.area}
-              setValue={addValorArea}
-              label={'Área'}
-              />
-            </div>
-          </form>
+                    <AreaComboBox
+                    name={'area'}
+                    dataForm={acaoData}
+                    value={acaoData.area}
+                    setValue={addValorArea}
+                    label={'Área'}
+                    />
+                  </div>
+                </form>
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Acao' data={acaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`AcaoForm-${acaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/acao'} id={acaoData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Acao' data={acaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AcaoForm-${acaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/acao'} id={acaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

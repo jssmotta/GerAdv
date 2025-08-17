@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
 {
-    private readonly IFAgendaFactory _agendaFactory = agendaFactory;
+    private readonly IFAgendaFactory _agendaFactory = agendaFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ageCodigo, ageData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<AgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAgenda.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AgendaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -62,11 +62,13 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
+            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
             Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
+            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -82,6 +84,7 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -89,24 +92,11 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHrFinal, out DateTime XHrFinal))
-        {
-            agenda.HrFinal = dbRec.FHrFinal;
-            agenda.HrFinal_date = XHrFinal;
-        }
-
         if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
         {
             agenda.EventoData = dbRec.FEventoData;
             agenda.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            agenda.Hora = dbRec.FHora;
-            agenda.Hora_date = XHora;
         }
 
         if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
@@ -147,11 +137,13 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
+            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
             Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
+            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -167,6 +159,7 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -174,24 +167,11 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHrFinal, out DateTime XHrFinal))
-        {
-            agenda.HrFinal = dbRec.FHrFinal;
-            agenda.HrFinal_date = XHrFinal;
-        }
-
         if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
         {
             agenda.EventoData = dbRec.FEventoData;
             agenda.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            agenda.Hora = dbRec.FHora;
-            agenda.Hora_date = XHora;
         }
 
         if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
@@ -221,11 +201,13 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
+            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
             Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
+            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -241,6 +223,7 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -248,24 +231,11 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHrFinal, out DateTime XHrFinal))
-        {
-            agenda.HrFinal = dbRec.FHrFinal;
-            agenda.HrFinal_date = XHrFinal;
-        }
-
         if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
         {
             agenda.EventoData = dbRec.FEventoData;
             agenda.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            agenda.Hora = dbRec.FHora;
-            agenda.Hora_date = XHora;
         }
 
         if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
@@ -295,11 +265,13 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
+            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
             Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
+            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -315,6 +287,7 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -322,24 +295,11 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHrFinal, out DateTime XHrFinal))
-        {
-            agenda.HrFinal = dbRec.FHrFinal;
-            agenda.HrFinal_date = XHrFinal;
-        }
-
         if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
         {
             agenda.EventoData = dbRec.FEventoData;
             agenda.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            agenda.Hora = dbRec.FHora;
-            agenda.Hora_date = XHora;
         }
 
         if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
@@ -441,11 +401,13 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
+            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
             Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
+            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -461,6 +423,7 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -468,24 +431,11 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHrFinal, out DateTime XHrFinal))
-        {
-            agenda.HrFinal = dbRec.FHrFinal;
-            agenda.HrFinal_date = XHrFinal;
-        }
-
         if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
         {
             agenda.EventoData = dbRec.FEventoData;
             agenda.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            agenda.Hora = dbRec.FHora;
-            agenda.Hora_date = XHora;
         }
 
         if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))

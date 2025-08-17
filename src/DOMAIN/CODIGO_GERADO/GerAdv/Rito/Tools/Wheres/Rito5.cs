@@ -13,7 +13,7 @@ public partial interface IRitoWhere
 
 public partial class RitoWhere(IFRitoFactory ritoFactory) : IRitoWhere
 {
-    private readonly IFRitoFactory _ritoFactory = ritoFactory;
+    private readonly IFRitoFactory _ritoFactory = ritoFactory ?? throw new ArgumentNullException(nameof(ritoFactory));
     public RitoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _ritoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,8 +21,8 @@ public partial class RitoWhere(IFRitoFactory ritoFactory) : IRitoWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
+            Top = dbRec.FTop,
         };
         return rito;
     }

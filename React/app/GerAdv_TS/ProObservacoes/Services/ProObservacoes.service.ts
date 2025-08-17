@@ -79,7 +79,8 @@ export class ProObservacoesService implements IProObservacoesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ProObservacoes list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ProObservacoes list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ProObservacoesService implements IProObservacoesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ProObservacoes');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProObservacoes');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ProObservacoesService implements IProObservacoesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ProObservacoes');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProObservacoes');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ProObservacoes:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ProObservacoes:');
       return [];
     }
   }

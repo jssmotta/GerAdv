@@ -14,17 +14,17 @@ public partial interface ITipoEnderecoWriter
 
 public class TipoEnderecoWriter(IFTipoEnderecoFactory tipoenderecoFactory) : ITipoEnderecoWriter
 {
-    private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory;
-    public async Task Delete(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory ?? throw new ArgumentNullException(nameof(tipoenderecoFactory));
+    public virtual async Task Delete(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection oCnn)
     {
         await _tipoenderecoFactory.DeleteAsync(operadorId, tipoendereco.Id, oCnn);
     }
 
-    public async Task<FTipoEndereco> WriteAsync(Models.TipoEndereco tipoendereco, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoEndereco> WriteAsync(Models.TipoEndereco tipoendereco, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipoendereco.Id.IsEmptyIDNumber() ? _tipoenderecoFactory.CreateAsync() : _tipoenderecoFactory.CreateFromIdAsync(tipoendereco.Id, oCnn));
-        dbRec.FDescricao = tipoendereco.Descricao;
         dbRec.FGUID = tipoendereco.GUID;
+        dbRec.FDescricao = tipoendereco.Descricao;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

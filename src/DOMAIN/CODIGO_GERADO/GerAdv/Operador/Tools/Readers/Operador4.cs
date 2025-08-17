@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperadorReader
 {
-    private readonly IFOperadorFactory _operadorFactory = operadorFactory;
+    private readonly IFOperadorFactory _operadorFactory = operadorFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<OperadorResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperador.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<OperadorResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -74,6 +74,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
+            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -81,7 +82,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
         {
@@ -151,6 +151,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
+            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -158,7 +159,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
         {
@@ -222,6 +222,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
+            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -229,7 +230,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
         {
@@ -293,6 +293,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
+            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -300,7 +301,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
         {
@@ -359,6 +359,7 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
+            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -366,7 +367,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
         {

@@ -13,8 +13,8 @@ export enum FieldsTerceiros
 	fax = `Fax`,
 	obs = `OBS`,
 	email = `EMail`,
+	guid = `GUID`,
 	class = `Class`,
 	varaforocomarca = `VaraForoComarca`,
 	sexo = `Sexo`,
-	guid = `GUID`,
 }

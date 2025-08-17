@@ -13,7 +13,7 @@ public partial interface IAdvogadosWhere
 
 public partial class AdvogadosWhere(IFAdvogadosFactory advogadosFactory) : IAdvogadosWhere
 {
-    private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory;
+    private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException(nameof(advogadosFactory));
     public AdvogadosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _advogadosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -28,6 +28,7 @@ public partial class AdvogadosWhere(IFAdvogadosFactory advogadosFactory) : IAdvo
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
+            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -52,7 +53,6 @@ public partial class AdvogadosWhere(IFAdvogadosFactory advogadosFactory) : IAdvo
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
         {

@@ -94,7 +94,8 @@ export class PontoVirtualService implements IPontoVirtualService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online PontoVirtual');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PontoVirtual');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -104,12 +105,14 @@ export class PontoVirtualService implements IPontoVirtualService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online PontoVirtual');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PontoVirtual');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all PontoVirtual:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all PontoVirtual:');
       return [];
     }
   }

@@ -54,7 +54,7 @@ public partial class FProValoresFactory : IFProValoresFactory, IDisposable
             throw new ObjectDisposedException(nameof(FProValoresFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

@@ -95,18 +95,18 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
     }
 
-    private async Task<EscritoriosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<EscritoriosResponse?> AddAndUpdate([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
+    private async Task<EscritoriosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<EscritoriosResponse?> AddAndUpdate([FromBody] Models.Escritorios? regEscritorios, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Escritorios: URI inválida");
-        }
-
         if (regEscritorios == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Escritorios: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<EscritoriosResponse?> Validation([FromBody] Models.Escritorios regEscritorios, [FromRoute, Required] string uri)
+    public async Task<EscritoriosResponse?> Validation([FromBody] Models.Escritorios? regEscritorios, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Escritorios: URI inválida");
-        }
-
         if (regEscritorios == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Escritorios: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             var validade = await validation.ValidateReg(regEscritorios, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regEscritorios.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         return await reader.Read(regEscritorios.Id, oCnn);
     }
 
-    public async Task<EscritoriosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<EscritoriosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Escritorios: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
             var deleteValidation = await validation.CanDelete(id, this, advogadosService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var escritorios = await reader.Read(id, oCnn);
+        var escritorios = await reader.Read(id ?? default, oCnn);
         try
         {
             if (escritorios != null)
@@ -238,7 +238,7 @@ public partial class EscritoriosService(IOptions<AppSettings> appSettings, IFEsc
         return escritorios;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

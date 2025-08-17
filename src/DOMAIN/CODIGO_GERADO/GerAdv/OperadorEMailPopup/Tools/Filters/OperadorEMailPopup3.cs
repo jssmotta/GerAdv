@@ -10,52 +10,61 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterOperadorEMailPopup
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = int.MinValue;
 
+    [JsonPropertyName("operador_end")]
+    public int Operador_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("senha")]
-    public string Senha { get; set; } = string.Empty;
+    public string? Senha { get; set; } = string.Empty;
 
     [JsonPropertyName("senha_end")]
-    public string Senha_end { get; set; } = string.Empty;
+    public string? Senha_end { get; set; } = string.Empty;
 
     [JsonPropertyName("smtp")]
-    public string SMTP { get; set; } = string.Empty;
+    public string? SMTP { get; set; } = string.Empty;
 
     [JsonPropertyName("smtp_end")]
-    public string SMTP_end { get; set; } = string.Empty;
+    public string? SMTP_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pop3")]
-    public string POP3 { get; set; } = string.Empty;
+    public string? POP3 { get; set; } = string.Empty;
 
     [JsonPropertyName("pop3_end")]
-    public string POP3_end { get; set; } = string.Empty;
+    public string? POP3_end { get; set; } = string.Empty;
 
     [JsonPropertyName("autenticacao")]
     public int Autenticacao { get; set; } = int.MinValue;
 
     [JsonPropertyName("descricao")]
-    public string Descricao { get; set; } = string.Empty;
+    public string? Descricao { get; set; } = string.Empty;
 
     [JsonPropertyName("descricao_end")]
-    public string Descricao_end { get; set; } = string.Empty;
+    public string? Descricao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("usuario")]
-    public string Usuario { get; set; } = string.Empty;
+    public string? Usuario { get; set; } = string.Empty;
 
     [JsonPropertyName("usuario_end")]
-    public string Usuario_end { get; set; } = string.Empty;
+    public string? Usuario_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("portasmtp")]
     public int PortaSmtp { get; set; } = int.MinValue;
@@ -70,22 +79,16 @@ public partial record FilterOperadorEMailPopup
     public int PortaPop3_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("assinatura")]
-    public string Assinatura { get; set; } = string.Empty;
+    public string? Assinatura { get; set; } = string.Empty;
 
     [JsonPropertyName("assinatura_end")]
-    public string Assinatura_end { get; set; } = string.Empty;
+    public string? Assinatura_end { get; set; } = string.Empty;
 
     [JsonPropertyName("senha256")]
-    public string Senha256 { get; set; } = string.Empty;
+    public string? Senha256 { get; set; } = string.Empty;
 
     [JsonPropertyName("senha256_end")]
-    public string Senha256_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? Senha256_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

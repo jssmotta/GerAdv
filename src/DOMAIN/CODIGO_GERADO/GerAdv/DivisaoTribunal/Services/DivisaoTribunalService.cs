@@ -98,18 +98,18 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private async Task<DivisaoTribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<DivisaoTribunalResponse?> AddAndUpdate([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
+    private async Task<DivisaoTribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<DivisaoTribunalResponse?> AddAndUpdate([FromBody] Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("DivisaoTribunal: URI inválida");
-        }
-
         if (regDivisaoTribunal == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("DivisaoTribunal: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -123,7 +123,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -132,7 +132,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -140,17 +140,17 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<DivisaoTribunalResponse?> Validation([FromBody] Models.DivisaoTribunal regDivisaoTribunal, [FromRoute, Required] string uri)
+    public async Task<DivisaoTribunalResponse?> Validation([FromBody] Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("DivisaoTribunal: URI inválida");
-        }
-
         if (regDivisaoTribunal == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("DivisaoTribunal: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -164,7 +164,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regDivisaoTribunal, this, justicaReader, areaReader, cidadeReader, foroReader, tribunalReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -173,7 +173,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regDivisaoTribunal.Id.IsEmptyIDNumber())
@@ -184,17 +184,17 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         return await reader.Read(regDivisaoTribunal.Id, oCnn);
     }
 
-    public async Task<DivisaoTribunalResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<DivisaoTribunalResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("DivisaoTribunal: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -209,7 +209,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -218,10 +218,10 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var divisaotribunal = await reader.Read(id, oCnn);
+        var divisaotribunal = await reader.Read(id ?? default, oCnn);
         try
         {
             if (divisaotribunal != null)
@@ -241,7 +241,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         return divisaotribunal;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

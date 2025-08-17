@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactory) : IFuncionariosReader
 {
-    private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory;
+    private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("funCodigo, funNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<FuncionariosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBFuncionarios.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<FuncionariosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,6 +54,7 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
         var funcionarios = new Models.Funcionarios
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -80,7 +81,6 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
         {
@@ -130,6 +130,7 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
         var funcionarios = new FuncionariosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -156,7 +157,6 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
         {
@@ -195,6 +195,7 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
         var funcionarios = new FuncionariosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -221,7 +222,6 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
         {
@@ -260,6 +260,7 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
         var funcionarios = new FuncionariosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -286,7 +287,6 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
         {
@@ -349,6 +349,7 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
         var funcionarios = new FuncionariosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -375,7 +376,6 @@ public partial class FuncionariosReader(IFFuncionariosFactory funcionariosFactor
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
         {

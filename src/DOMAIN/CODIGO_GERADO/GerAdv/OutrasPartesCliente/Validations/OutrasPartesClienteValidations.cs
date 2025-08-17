@@ -9,50 +9,47 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOutrasPartesClienteValidation
 {
     Task<bool> ValidateReg(Models.OutrasPartesCliente reg, IOutrasPartesClienteService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOutrasPartesClienteService service, IParteClienteOutrasService parteclienteoutrasService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOutrasPartesClienteService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
 {
-    public async Task<bool> CanDelete(int id, IOutrasPartesClienteService service, IParteClienteOutrasService parteclienteoutrasService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOutrasPartesClienteService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var parteclienteoutrasExists0 = await parteclienteoutrasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParteClienteOutras { Cliente = id }, uri);
-        if (parteclienteoutrasExists0 != null && parteclienteoutrasExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Parte Cliente Outras associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.OutrasPartesCliente reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
-            throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.InscEst != null && reg.InscEst.Length > 15)
-            throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.NomeFantasia != null && reg.NomeFantasia.Length > 255)
-            throw new SGValidationException($"NomeFantasia deve ter no máximo 255 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 150)
-            throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBOutrasPartesClienteDicInfo.OpcNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcNome.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBOutrasPartesClienteDicInfo.OpcCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcCPF.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBOutrasPartesClienteDicInfo.OpcRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcRG.FTamanho} caracteres.");
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > DBOutrasPartesClienteDicInfo.OpcCNPJ.FTamanho)
+            throw new SGValidationException($"CNPJ deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcCNPJ.FTamanho} caracteres.");
+        if (reg.InscEst != null && reg.InscEst.Length > DBOutrasPartesClienteDicInfo.OpcInscEst.FTamanho)
+            throw new SGValidationException($"InscEst deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcInscEst.FTamanho} caracteres.");
+        if (reg.NomeFantasia != null && reg.NomeFantasia.Length > DBOutrasPartesClienteDicInfo.OpcNomeFantasia.FTamanho)
+            throw new SGValidationException($"NomeFantasia deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcNomeFantasia.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBOutrasPartesClienteDicInfo.OpcEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcEndereco.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBOutrasPartesClienteDicInfo.OpcCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcCEP.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBOutrasPartesClienteDicInfo.OpcBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcBairro.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBOutrasPartesClienteDicInfo.OpcSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcSite.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBOutrasPartesClienteDicInfo.OpcClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcClass.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBOutrasPartesClienteDicInfo.OpcGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBOutrasPartesClienteDicInfo.OpcGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -65,8 +62,21 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DtNasc))
+        {
+            if (DateTime.TryParse(reg.DtNasc, out DateTime dataAniversario))
+            {
+                if (dataAniversario < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data Nascimento não pode ser anterior a 01/01/1900.");
+                if (dataAniversario > DateTime.Now)
+                    throw new SGValidationException("DtNasc não pode ser uma data futura.");
+            }
+        }
+
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -80,6 +90,8 @@ public class OutrasPartesClienteValidation : IOutrasPartesClienteValidation
             }
         }
 
+        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+            throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Outras Partes Cliente com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade

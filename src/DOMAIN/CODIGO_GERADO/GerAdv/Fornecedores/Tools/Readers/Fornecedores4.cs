@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class FornecedoresReader(IFFornecedoresFactory fornecedoresFactory) : IFornecedoresReader
 {
-    private readonly IFFornecedoresFactory _fornecedoresFactory = fornecedoresFactory;
+    private readonly IFFornecedoresFactory _fornecedoresFactory = fornecedoresFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("forCodigo, forNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<FornecedoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBFornecedores.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<FornecedoresResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

@@ -41,7 +41,8 @@ export const useGUTPeriodicidadeStatusForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar G U T Periodicidade Status';
       setError(errorMessage);
-      //console.log('Erro ao carregar G U T Periodicidade Status');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar G U T Periodicidade Status');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useGUTPeriodicidadeStatusNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useGUTPeriodicidadeStatusList = (dataService: IGUTPeriodicidadeStat
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar gutperiodicidadestatus';
       setError(errorMessage);
-      //console.log('Erro ao carregar gutperiodicidadestatus');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar gutperiodicidadestatus');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsGUTPeriodicidadeStatus() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-
+        
 
 
         return { isValid: true, message: '' };

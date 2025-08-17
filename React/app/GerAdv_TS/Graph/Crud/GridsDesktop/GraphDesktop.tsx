@@ -41,7 +41,7 @@ const router = useRouter();
 const { systemContext } = useSystemContext();
 const defaultHiddenColumns = [''];
 // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['guid']);
+const [columnsOrder, setColumnsOrder] = useState<string[]>(['id']);
 // Carregar ordem salva do localStorage na inicialização
 useEffect(() => {
   try {
@@ -114,15 +114,6 @@ const EditRow = useCallback((e: any) => {
 // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
 const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
 
-  'guid': (
-  <GridColumn
-  key='guid'
-  field='guid'
-  title='GUID'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.02 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====

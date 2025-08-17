@@ -8,92 +8,90 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class OperadorEMailPopupService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorEMailPopup filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorEMailPopup? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Operador != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Operador)}", filtro.Operador));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Operador)}", filtro.Operador));
+            if (filtro.Operador_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Operador)}_end", filtro.Operador_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Senha))
+        if (!string.IsNullOrWhiteSpace(filtro.Senha))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Senha)}", ApplyWildCard(filtro.WildcardChar, filtro.Senha)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Senha)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Senha)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.SMTP))
+        if (!string.IsNullOrWhiteSpace(filtro.SMTP))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.SMTP)}", ApplyWildCard(filtro.WildcardChar, filtro.SMTP)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.SMTP)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.SMTP)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.POP3))
+        if (!string.IsNullOrWhiteSpace(filtro.POP3))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.POP3)}", ApplyWildCard(filtro.WildcardChar, filtro.POP3)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.POP3)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.POP3)));
         }
 
         if (filtro.Autenticacao != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Autenticacao)}", filtro.Autenticacao));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Autenticacao)}", filtro.Autenticacao));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Usuario))
+        if (!string.IsNullOrWhiteSpace(filtro.Usuario))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Usuario)}", ApplyWildCard(filtro.WildcardChar, filtro.Usuario)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Usuario)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Usuario)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.PortaSmtp != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}", filtro.PortaSmtp));
-        }
-
-        if (filtro.PortaSmtp_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end", filtro.PortaSmtp_end));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.PortaSmtp)}", filtro.PortaSmtp));
+            if (filtro.PortaSmtp_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end", filtro.PortaSmtp_end));
+            }
         }
 
         if (filtro.PortaPop3 != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}", filtro.PortaPop3));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.PortaPop3)}", filtro.PortaPop3));
+            if (filtro.PortaPop3_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.PortaPop3)}_end", filtro.PortaPop3_end));
+            }
         }
 
-        if (filtro.PortaPop3_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Assinatura))
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}_end", filtro.PortaPop3_end));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.Assinatura))
-        {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Assinatura)}", ApplyWildCard(filtro.WildcardChar, filtro.Assinatura)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.Senha256))
-        {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.Senha256)}", ApplyWildCard(filtro.WildcardChar, filtro.Senha256)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Assinatura)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Assinatura)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -102,56 +100,52 @@ public partial class OperadorEMailPopupService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Operador}] = @{nameof(DBOperadorEMailPopupDicInfo.Operador)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Nome)}");
-        cWhere.Append(filtro.Senha.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Senha)}");
-        cWhere.Append(filtro.SMTP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.SMTP}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.SMTP)}");
-        cWhere.Append(filtro.POP3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.POP3}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.POP3)}");
-        cWhere.Append(filtro.Autenticacao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Autenticacao}] = @{nameof(DBOperadorEMailPopupDicInfo.Autenticacao)}");
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Descricao)}");
-        cWhere.Append(filtro.Usuario.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Usuario}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Usuario)}");
+        if (!(filtro.Operador.IsEmptyX()) && filtro.Operador_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Operador}] = @{(DBOperadorEMailPopupDicInfo.Operador)}");
+        }
+        else if (!(filtro.Operador.IsEmptyX()) && !(filtro.Operador_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.Operador} BETWEEN @{(DBOperadorEMailPopupDicInfo.Operador)} AND @{(DBOperadorEMailPopupDicInfo.Operador)}_end");
+        }
+
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Nome)}");
+        cWhere.Append(filtro.Senha.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Senha)}");
+        cWhere.Append(filtro.SMTP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.SMTP}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.SMTP)}");
+        cWhere.Append(filtro.POP3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.POP3}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.POP3)}");
+        cWhere.Append(filtro.Autenticacao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Autenticacao}] = @{(DBOperadorEMailPopupDicInfo.Autenticacao)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Descricao)}");
+        cWhere.Append(filtro.Usuario.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Usuario}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Usuario)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.GUID)}");
         if (!(filtro.PortaSmtp.IsEmptyX()) && filtro.PortaSmtp_end.IsEmptyX())
         {
-            cWhere.Append(filtro.PortaSmtp.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaSmtp}] = @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}");
+            cWhere.Append(filtro.PortaSmtp.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaSmtp}] = @{(DBOperadorEMailPopupDicInfo.PortaSmtp)}");
         }
         else if (!(filtro.PortaSmtp.IsEmptyX()) && !(filtro.PortaSmtp_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.PortaSmtp} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)} AND @{nameof(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.PortaSmtp} BETWEEN @{(DBOperadorEMailPopupDicInfo.PortaSmtp)} AND @{(DBOperadorEMailPopupDicInfo.PortaSmtp)}_end");
         }
 
         if (!(filtro.PortaPop3.IsEmptyX()) && filtro.PortaPop3_end.IsEmptyX())
         {
-            cWhere.Append(filtro.PortaPop3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaPop3}] = @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}");
+            cWhere.Append(filtro.PortaPop3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.PortaPop3}] = @{(DBOperadorEMailPopupDicInfo.PortaPop3)}");
         }
         else if (!(filtro.PortaPop3.IsEmptyX()) && !(filtro.PortaPop3_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.PortaPop3} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)} AND @{nameof(DBOperadorEMailPopupDicInfo.PortaPop3)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.PortaPop3} BETWEEN @{(DBOperadorEMailPopupDicInfo.PortaPop3)} AND @{(DBOperadorEMailPopupDicInfo.PortaPop3)}_end");
         }
 
-        cWhere.Append(filtro.Assinatura.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Assinatura)}");
-        cWhere.Append(filtro.Senha256.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha256}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.Senha256)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorEMailPopupDicInfo.GUID)}");
+        cWhere.Append(filtro.Assinatura.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Assinatura)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.CampoCodigo}] = @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.CampoCodigo}] = @{(DBOperadorEMailPopupDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.CampoCodigo} BETWEEN @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)} AND @{nameof(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].{DBOperadorEMailPopupDicInfo.CampoCodigo} BETWEEN @{(DBOperadorEMailPopupDicInfo.CampoCodigo)} AND @{(DBOperadorEMailPopupDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterOperadorEMailPopup? filtro)

@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPoderJudiciarioAssociadoValidation
 {
     Task<bool> ValidateReg(Models.PoderJudiciarioAssociado reg, IPoderJudiciarioAssociadoService service, IJusticaReader justicaReader, IAreaReader areaReader, ITribunalReader tribunalReader, IForoReader foroReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPoderJudiciarioAssociadoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IPoderJudiciarioAssociadoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValidation
 {
-    public async Task<bool> CanDelete(int id, IPoderJudiciarioAssociadoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPoderJudiciarioAssociadoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,20 +26,20 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
 
     private bool ValidSizes(Models.PoderJudiciarioAssociado reg)
     {
-        if (reg.JusticaNome != null && reg.JusticaNome.Length > 255)
-            throw new SGValidationException($"JusticaNome deve ter no máximo 255 caracteres.");
-        if (reg.AreaNome != null && reg.AreaNome.Length > 255)
-            throw new SGValidationException($"AreaNome deve ter no máximo 255 caracteres.");
-        if (reg.TribunalNome != null && reg.TribunalNome.Length > 255)
-            throw new SGValidationException($"TribunalNome deve ter no máximo 255 caracteres.");
-        if (reg.ForoNome != null && reg.ForoNome.Length > 255)
-            throw new SGValidationException($"ForoNome deve ter no máximo 255 caracteres.");
-        if (reg.SubDivisaoNome != null && reg.SubDivisaoNome.Length > 255)
-            throw new SGValidationException($"SubDivisaoNome deve ter no máximo 255 caracteres.");
-        if (reg.CidadeNome != null && reg.CidadeNome.Length > 255)
-            throw new SGValidationException($"CidadeNome deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.JusticaNome != null && reg.JusticaNome.Length > DBPoderJudiciarioAssociadoDicInfo.PjaJusticaNome.FTamanho)
+            throw new SGValidationException($"JusticaNome deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaJusticaNome.FTamanho} caracteres.");
+        if (reg.AreaNome != null && reg.AreaNome.Length > DBPoderJudiciarioAssociadoDicInfo.PjaAreaNome.FTamanho)
+            throw new SGValidationException($"AreaNome deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaAreaNome.FTamanho} caracteres.");
+        if (reg.TribunalNome != null && reg.TribunalNome.Length > DBPoderJudiciarioAssociadoDicInfo.PjaTribunalNome.FTamanho)
+            throw new SGValidationException($"TribunalNome deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaTribunalNome.FTamanho} caracteres.");
+        if (reg.ForoNome != null && reg.ForoNome.Length > DBPoderJudiciarioAssociadoDicInfo.PjaForoNome.FTamanho)
+            throw new SGValidationException($"ForoNome deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaForoNome.FTamanho} caracteres.");
+        if (reg.SubDivisaoNome != null && reg.SubDivisaoNome.Length > DBPoderJudiciarioAssociadoDicInfo.PjaSubDivisaoNome.FTamanho)
+            throw new SGValidationException($"SubDivisaoNome deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaSubDivisaoNome.FTamanho} caracteres.");
+        if (reg.CidadeNome != null && reg.CidadeNome.Length > DBPoderJudiciarioAssociadoDicInfo.PjaCidadeNome.FTamanho)
+            throw new SGValidationException($"CidadeNome deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaCidadeNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBPoderJudiciarioAssociadoDicInfo.PjaGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBPoderJudiciarioAssociadoDicInfo.PjaGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,8 +47,6 @@ public class PoderJudiciarioAssociadoValidation : IPoderJudiciarioAssociadoValid
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

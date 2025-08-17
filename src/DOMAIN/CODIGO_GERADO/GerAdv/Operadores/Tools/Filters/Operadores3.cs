@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterOperadores
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("enviado")]
     public int Enviado { get; set; } = int.MinValue;
@@ -39,6 +39,9 @@ public partial record FilterOperadores
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("grupo")]
     public int Grupo { get; set; } = int.MinValue;
 
@@ -46,22 +49,22 @@ public partial record FilterOperadores
     public int Grupo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("email")]
-    public string EMail { get; set; } = string.Empty;
+    public string? EMail { get; set; } = string.Empty;
 
     [JsonPropertyName("email_end")]
-    public string EMail_end { get; set; } = string.Empty;
+    public string? EMail_end { get; set; } = string.Empty;
 
     [JsonPropertyName("senha")]
-    public string Senha { get; set; } = string.Empty;
+    public string? Senha { get; set; } = string.Empty;
 
     [JsonPropertyName("senha_end")]
-    public string Senha_end { get; set; } = string.Empty;
+    public string? Senha_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ativado")]
     public int Ativado { get; set; } = int.MinValue;
@@ -70,22 +73,22 @@ public partial record FilterOperadores
     public int AtualizarSenha { get; set; } = int.MinValue;
 
     [JsonPropertyName("senha256")]
-    public string Senha256 { get; set; } = string.Empty;
+    public string? Senha256 { get; set; } = string.Empty;
 
     [JsonPropertyName("senha256_end")]
-    public string Senha256_end { get; set; } = string.Empty;
+    public string? Senha256_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suportesenha256")]
-    public string SuporteSenha256 { get; set; } = string.Empty;
+    public string? SuporteSenha256 { get; set; } = string.Empty;
 
     [JsonPropertyName("suportesenha256_end")]
-    public string SuporteSenha256_end { get; set; } = string.Empty;
+    public string? SuporteSenha256_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suportemaxage")]
-    public string SuporteMaxAge { get; set; } = string.Empty;
+    public string? SuporteMaxAge { get; set; } = string.Empty;
 
     [JsonPropertyName("suportemaxage_end")]
-    public string SuporteMaxAge_end { get; set; } = string.Empty;
+    public string? SuporteMaxAge_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

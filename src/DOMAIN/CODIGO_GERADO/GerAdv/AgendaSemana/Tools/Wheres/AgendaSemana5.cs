@@ -13,7 +13,7 @@ public partial interface IAgendaSemanaWhere
 
 public partial class AgendaSemanaWhere(IFAgendaSemanaFactory agendasemanaFactory) : IAgendaSemanaWhere
 {
-    private readonly IFAgendaSemanaFactory _agendasemanaFactory = agendasemanaFactory;
+    private readonly IFAgendaSemanaFactory _agendasemanaFactory = agendasemanaFactory ?? throw new ArgumentNullException(nameof(agendasemanaFactory));
     public AgendaSemanaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _agendasemanaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -24,13 +24,13 @@ public partial class AgendaSemanaWhere(IFAgendaSemanaFactory agendasemanaFactory
             Data = dbRec.FData ?? string.Empty,
             Funcionario = dbRec.FFuncionario,
             Advogado = dbRec.FAdvogado,
-            Hora = dbRec.FHora,
+            Hora = dbRec.FHora ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             Concluido = dbRec.FConcluido,
             Liberado = dbRec.FLiberado,
             Importante = dbRec.FImportante,
-            HoraFinal = dbRec.FHoraFinal,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Cliente = dbRec.FCliente,
             NomeCliente = dbRec.FNomeCliente ?? string.Empty,

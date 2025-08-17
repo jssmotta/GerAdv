@@ -14,13 +14,13 @@ public partial interface IPenhoraWriter
 
 public class PenhoraWriter(IFPenhoraFactory penhoraFactory) : IPenhoraWriter
 {
-    private readonly IFPenhoraFactory _penhoraFactory = penhoraFactory;
-    public async Task Delete(PenhoraResponse penhora, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPenhoraFactory _penhoraFactory = penhoraFactory ?? throw new ArgumentNullException(nameof(penhoraFactory));
+    public virtual async Task Delete(PenhoraResponse penhora, int operadorId, MsiSqlConnection oCnn)
     {
         await _penhoraFactory.DeleteAsync(operadorId, penhora.Id, oCnn);
     }
 
-    public async Task<FPenhora> WriteAsync(Models.Penhora penhora, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPenhora> WriteAsync(Models.Penhora penhora, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (penhora.Id.IsEmptyIDNumber() ? _penhoraFactory.CreateAsync() : _penhoraFactory.CreateFromIdAsync(penhora.Id, oCnn));
         dbRec.FProcesso = penhora.Processo;
@@ -29,8 +29,8 @@ public class PenhoraWriter(IFPenhoraFactory penhoraFactory) : IPenhoraWriter
         if (penhora.DataPenhora != null)
             dbRec.FDataPenhora = penhora.DataPenhora.ToString();
         dbRec.FPenhoraStatus = penhora.PenhoraStatus;
-        dbRec.FMaster = penhora.Master;
         dbRec.FGUID = penhora.GUID;
+        dbRec.FMaster = penhora.Master;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

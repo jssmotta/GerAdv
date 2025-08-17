@@ -79,7 +79,8 @@ export class GUTPeriodicidadeService implements IGUTPeriodicidadeService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching GUTPeriodicidade list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching GUTPeriodicidade list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class GUTPeriodicidadeService implements IGUTPeriodicidadeService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online GUTPeriodicidade');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTPeriodicidade');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class GUTPeriodicidadeService implements IGUTPeriodicidadeService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online GUTPeriodicidade');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTPeriodicidade');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all GUTPeriodicidade:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all GUTPeriodicidade:');
       return [];
     }
   }

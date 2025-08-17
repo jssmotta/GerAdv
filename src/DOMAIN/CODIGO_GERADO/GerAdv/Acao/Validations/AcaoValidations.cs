@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAcaoValidation
 {
     Task<bool> ValidateReg(Models.Acao reg, IAcaoService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAcaoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IAcaoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AcaoValidation : IAcaoValidation
 {
-    public async Task<bool> CanDelete(int id, IAcaoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAcaoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var instanciaExists0 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { Acao = id }, uri);
+        var instanciaExists0 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { Acao = id ?? default }, uri);
         if (instanciaExists0 != null && instanciaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class AcaoValidation : IAcaoValidation
 
     private bool ValidSizes(Models.Acao reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 255)
-            throw new SGValidationException($"Descricao deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBAcaoDicInfo.AcaDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBAcaoDicInfo.AcaDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBAcaoDicInfo.AcaGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBAcaoDicInfo.AcaGUID.FTamanho} caracteres.");
         return true;
     }
 

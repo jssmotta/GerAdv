@@ -8,47 +8,52 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class UFService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterUF filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterUF? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.DDD))
+        if (!string.IsNullOrWhiteSpace(filtro.DDD))
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.DDD)}", ApplyWildCard(filtro.WildcardChar, filtro.DDD)));
+            parameters.Add(new($"@{(DBUFDicInfo.DDD)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.DDD)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.IdUF))
+        if (!string.IsNullOrWhiteSpace(filtro.IdUF))
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.ID)}", ApplyWildCard(filtro.WildcardChar, filtro.IdUF)));
+            parameters.Add(new($"@{(DBUFDicInfo.ID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.IdUF)));
         }
 
         if (filtro.Pais != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.Pais)}", filtro.Pais));
+            parameters.Add(new($"@{(DBUFDicInfo.Pais)}", filtro.Pais));
+            if (filtro.Pais_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBUFDicInfo.Pais)}_end", filtro.Pais_end));
+            }
         }
 
         if (filtro.Top != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.Top)}", filtro.Top));
+            parameters.Add(new($"@{(DBUFDicInfo.Top)}", filtro.Top));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBUFDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBUFDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBUFDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBUFDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBUFDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -57,33 +62,30 @@ public partial class UFService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.DDD.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.DDD}]  {DevourerConsts.MsiCollate} like @{nameof(DBUFDicInfo.DDD)}");
-        cWhere.Append(filtro.IdUF.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.ID}]  {DevourerConsts.MsiCollate} like @{nameof(DBUFDicInfo.ID)}");
-        cWhere.Append(filtro.Pais.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}] = @{nameof(DBUFDicInfo.Pais)}");
-        cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Top}] = @{nameof(DBUFDicInfo.Top)}");
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBUFDicInfo.Descricao)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBUFDicInfo.GUID)}");
+        cWhere.Append(filtro.DDD.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.DDD}]  {DevourerConsts.MsiCollate} like @{(DBUFDicInfo.DDD)}");
+        cWhere.Append(filtro.IdUF.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.ID}]  {DevourerConsts.MsiCollate} like @{(DBUFDicInfo.ID)}");
+        if (!(filtro.Pais.IsEmptyX()) && filtro.Pais_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Pais.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}] = @{(DBUFDicInfo.Pais)}");
+        }
+        else if (!(filtro.Pais.IsEmptyX()) && !(filtro.Pais_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].{DBUFDicInfo.Pais} BETWEEN @{(DBUFDicInfo.Pais)} AND @{(DBUFDicInfo.Pais)}_end");
+        }
+
+        cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Top}] = @{(DBUFDicInfo.Top)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBUFDicInfo.Descricao)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBUFDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}] = @{nameof(DBUFDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}] = @{(DBUFDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].{DBUFDicInfo.CampoCodigo} BETWEEN @{nameof(DBUFDicInfo.CampoCodigo)} AND @{nameof(DBUFDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBUFDicInfo.PTabelaNome}].{DBUFDicInfo.CampoCodigo} BETWEEN @{(DBUFDicInfo.CampoCodigo)} AND @{(DBUFDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterUF? filtro)

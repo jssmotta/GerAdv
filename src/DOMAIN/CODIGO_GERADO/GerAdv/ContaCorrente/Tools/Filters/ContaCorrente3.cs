@@ -10,16 +10,22 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterContaCorrente
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("ciacordo")]
     public int CIAcordo { get; set; } = int.MinValue;
 
     [JsonPropertyName("ciacordo_end")]
     public int CIAcordo_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("quitado")]
     public int Quitado { get; set; } = int.MinValue;
@@ -55,10 +61,10 @@ public partial record FilterContaCorrente
     public int DistRegra { get; set; } = int.MinValue;
 
     [JsonPropertyName("dtoriginal")]
-    public string DtOriginal { get; set; } = string.Empty;
+    public string? DtOriginal { get; set; } = string.Empty;
 
     [JsonPropertyName("dtoriginal_end")]
-    public string DtOriginal_end { get; set; } = string.Empty;
+    public string? DtOriginal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -79,19 +85,22 @@ public partial record FilterContaCorrente
     public decimal Valor_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("historico")]
-    public string Historico { get; set; } = string.Empty;
+    public string? Historico { get; set; } = string.Empty;
 
     [JsonPropertyName("historico_end")]
-    public string Historico_end { get; set; } = string.Empty;
+    public string? Historico_end { get; set; } = string.Empty;
 
     [JsonPropertyName("contrato")]
     public int Contrato { get; set; } = int.MinValue;
@@ -133,16 +142,10 @@ public partial record FilterContaCorrente
     public int Hide { get; set; } = int.MinValue;
 
     [JsonPropertyName("datapgto")]
-    public string DataPgto { get; set; } = string.Empty;
+    public string? DataPgto { get; set; } = string.Empty;
 
     [JsonPropertyName("datapgto_end")]
-    public string DataPgto_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? DataPgto_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

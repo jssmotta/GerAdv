@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ISituacaoValidation
 {
     Task<bool> ValidateReg(Models.Situacao reg, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class SituacaoValidation : ISituacaoValidation
 {
-    public async Task<bool> CanDelete(int id, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ISituacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,12 +26,12 @@ public class SituacaoValidation : ISituacaoValidation
 
     private bool ValidSizes(Models.Situacao reg)
     {
-        if (reg.Parte_Int != null && reg.Parte_Int.Length > 30)
-            throw new SGValidationException($"Parte_Int deve ter no máximo 30 caracteres.");
-        if (reg.Parte_Opo != null && reg.Parte_Opo.Length > 30)
-            throw new SGValidationException($"Parte_Opo deve ter no máximo 30 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Parte_Int != null && reg.Parte_Int.Length > DBSituacaoDicInfo.SitParte_Int.FTamanho)
+            throw new SGValidationException($"Parte_Int deve ter no máximo {DBSituacaoDicInfo.SitParte_Int.FTamanho} caracteres.");
+        if (reg.Parte_Opo != null && reg.Parte_Opo.Length > DBSituacaoDicInfo.SitParte_Opo.FTamanho)
+            throw new SGValidationException($"Parte_Opo deve ter no máximo {DBSituacaoDicInfo.SitParte_Opo.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBSituacaoDicInfo.SitGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBSituacaoDicInfo.SitGUID.FTamanho} caracteres.");
         return true;
     }
 

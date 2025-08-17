@@ -54,7 +54,7 @@ public partial class FCidadeFactory : IFCidadeFactory, IDisposable
             throw new ObjectDisposedException(nameof(FCidadeFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

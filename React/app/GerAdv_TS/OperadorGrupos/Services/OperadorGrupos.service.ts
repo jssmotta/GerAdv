@@ -79,7 +79,8 @@ export class OperadorGruposService implements IOperadorGruposService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching OperadorGrupos list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching OperadorGrupos list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class OperadorGruposService implements IOperadorGruposService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online OperadorGrupos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online OperadorGrupos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class OperadorGruposService implements IOperadorGruposService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online OperadorGrupos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online OperadorGrupos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all OperadorGrupos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all OperadorGrupos:');
       return [];
     }
   }

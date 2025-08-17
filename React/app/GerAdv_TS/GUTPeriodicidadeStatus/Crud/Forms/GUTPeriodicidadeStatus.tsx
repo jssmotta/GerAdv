@@ -57,126 +57,116 @@ if (getParamFromUrl('gutatividades') > 0) {
       setNomeGUTAtividades(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    gutperiodicidadestatusData.gutatividade = getParamFromUrl('gutatividades');
+      gutperiodicidadestatusData.gutatividade = getParamFromUrl('gutatividades');
+    }
   }
-}
-const addValorGUTAtividade = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'gutatividade', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorGUTAtividade = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'gutatividade', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de GUTPeriodicidadeStatus:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de GUTPeriodicidadeStatus:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar GUTPeriodicidadeStatus diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = gutperiodicidadestatusData?.id == 0 ? 'Editar GUTPeriodicidadeStatus' : 'Adicionar G U T Periodicidade Status';
+        }
+      }, [gutperiodicidadestatusData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-GUTPeriodicidadeStatus' : 'form-container5 form-container-GUTPeriodicidadeStatus'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar GUTPeriodicidadeStatus diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = gutperiodicidadestatusData?.id == 0 ? 'Editar GUTPeriodicidadeStatus' : 'Adicionar G U T Periodicidade Status';
-    }
-  }, [gutperiodicidadestatusData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
-
-    <div className={isMobile ? 'form-container form-container-GUTPeriodicidadeStatus' : 'form-container5 form-container-GUTPeriodicidadeStatus'}>
-
-      <form className='formInputCadInc' id={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTPeriodicidadeStatus' data={gutperiodicidadestatusData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='guid'
-            label='GUID'
-            dataForm={gutperiodicidadestatusData}
-            className='inputIncNome'
-            name='guid'
-            value={gutperiodicidadestatusData.guid}
-            placeholder={`Informe GUID`}
-            onChange={onChange}
-            required
-            />
-
-            <GUTAtividadesComboBox
-            name={'gutatividade'}
-            dataForm={gutperiodicidadestatusData}
-            value={gutperiodicidadestatusData.gutatividade}
-            setValue={addValorGUTAtividade}
-            label={'G U T Atividades'}
-            />
-
-            <InputInput
-            required
-            type='text'
-            maxLength={2048}
-            id='datarealizado'
-            label='DataRealizado'
-            dataForm={gutperiodicidadestatusData}
-            className='inputIncNome'
-            name='datarealizado'
-            value={gutperiodicidadestatusData.datarealizado}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+          <form className='formInputCadInc' id={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTPeriodicidadeStatus' data={gutperiodicidadestatusData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTPeriodicidadeStatus' data={gutperiodicidadestatusData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/gutperiodicidadestatus'} id={gutperiodicidadestatusData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <GUTAtividadesComboBox
+                name={'gutatividade'}
+                dataForm={gutperiodicidadestatusData}
+                value={gutperiodicidadestatusData.gutatividade}
+                setValue={addValorGUTAtividade}
+                label={'G U T Atividades'}
+                />
+
+                <InputInput
+                required
+                type='text'
+                maxLength={2048}
+                id='datarealizado'
+                label='DataRealizado'
+                dataForm={gutperiodicidadestatusData}
+                className='inputIncNome'
+                name='datarealizado'
+                value={gutperiodicidadestatusData.datarealizado}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTPeriodicidadeStatus' data={gutperiodicidadestatusData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTPeriodicidadeStatusForm-${gutperiodicidadestatusData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/gutperiodicidadestatus'} id={gutperiodicidadestatusData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

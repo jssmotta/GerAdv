@@ -41,7 +41,8 @@ export const usePoderJudiciarioAssociadoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Poder Judiciario Associado';
       setError(errorMessage);
-      //console.log('Erro ao carregar Poder Judiciario Associado');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Poder Judiciario Associado');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePoderJudiciarioAssociadoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePoderJudiciarioAssociadoList = (dataService: IPoderJudiciarioAss
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar poderjudiciarioassociado';
       setError(errorMessage);
-      //console.log('Erro ao carregar poderjudiciarioassociado');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar poderjudiciarioassociado');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsPoderJudiciarioAssociado() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.justicanome.length > 255) { 
+        if (data.justicanome.length > 255) { 
                                              return { isValid: false, message: 'O campo JusticaNome não pode ter mais de 255 caracteres.' };
                                          } 
 if (data.areanome.length > 255) { 

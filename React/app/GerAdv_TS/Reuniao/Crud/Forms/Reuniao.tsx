@@ -58,217 +58,219 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    reuniaoData.cliente = getParamFromUrl('clientes');
+      reuniaoData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorCliente = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'cliente', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de Reuniao:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`ReuniaoForm-${reuniaoData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de Reuniao:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar Reuniao diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = reuniaoData?.id == 0 ? 'Editar Reuniao' : 'Adicionar Reunião';
+        }
+      }, [reuniaoData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-Reuniao' : 'form-container form-container-Reuniao'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`ReuniaoForm-${reuniaoData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`ReuniaoForm-${reuniaoData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Reuniao' data={reuniaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar Reuniao diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = reuniaoData?.id == 0 ? 'Editar Reuniao' : 'Adicionar Reunião';
-    }
-  }, [reuniaoData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='data'
+                label='Data'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='data'
+                value={reuniaoData.data}
+                placeholder={`Informe Data`}
+                onChange={onChange}
+                required
+                />
 
-    <div className={isMobile ? 'form-container form-container-Reuniao' : 'form-container form-container-Reuniao'}>
+                <ClientesComboBox
+                name={'cliente'}
+                dataForm={reuniaoData}
+                value={reuniaoData.cliente}
+                setValue={addValorCliente}
+                label={'Clientes'}
+                />
 
-      <form className='formInputCadInc' id={`ReuniaoForm-${reuniaoData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Reuniao' data={reuniaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='data'
-            label='Data'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='data'
-            value={reuniaoData.data}
-            placeholder={`Informe Data`}
-            onChange={onChange}
-            required
-            />
-
-            <ClientesComboBox
-            name={'cliente'}
-            dataForm={reuniaoData}
-            value={reuniaoData.cliente}
-            setValue={addValorCliente}
-            label={'Clientes'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='idagenda'
-            label='IDAgenda'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='idagenda'
-            value={reuniaoData.idagenda}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='idagenda'
+                label='IDAgenda'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='idagenda'
+                value={reuniaoData.idagenda}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='pauta'
-            label='Pauta'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='pauta'
-            value={reuniaoData.pauta}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='pauta'
+                label='Pauta'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='pauta'
+                value={reuniaoData.pauta}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='ata'
-            label='ATA'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='ata'
-            value={reuniaoData.ata}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='ata'
+                label='ATA'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='ata'
+                value={reuniaoData.ata}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='horainicial'
-            label='HoraInicial'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='horainicial'
-            value={reuniaoData.horainicial}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='horainicial'
+                label='HoraInicial'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='horainicial'
+                value={reuniaoData.horainicial}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='horafinal'
-            label='HoraFinal'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='horafinal'
-            value={reuniaoData.horafinal}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='horafinal'
+                label='HoraFinal'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='horafinal'
+                value={reuniaoData.horafinal}
+                onChange={onChange}
+                />
 
-            <InputCheckbox dataForm={reuniaoData} label='Externa' name='externa' checked={reuniaoData.externa} onChange={onChange} />
+                <InputCheckbox dataForm={reuniaoData} label='Externa' name='externa' checked={reuniaoData.externa} onChange={onChange} />
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='horasaida'
-            label='HoraSaida'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='horasaida'
-            value={reuniaoData.horasaida}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='horasaida'
+                label='HoraSaida'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='horasaida'
+                value={reuniaoData.horasaida}
+                onChange={onChange}
+                />
 
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='horaretorno'
-            label='HoraRetorno'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='horaretorno'
-            value={reuniaoData.horaretorno}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='principaisdecisoes'
-            label='PrincipaisDecisoes'
-            dataForm={reuniaoData}
-            className='inputIncNome'
-            name='principaisdecisoes'
-            value={reuniaoData.principaisdecisoes}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='horaretorno'
+                label='HoraRetorno'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='horaretorno'
+                value={reuniaoData.horaretorno}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Reuniao' data={reuniaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/reuniao'} id={reuniaoData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='principaisdecisoes'
+                label='PrincipaisDecisoes'
+                dataForm={reuniaoData}
+                className='inputIncNome'
+                name='principaisdecisoes'
+                value={reuniaoData.principaisdecisoes}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Reuniao' data={reuniaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ReuniaoForm-${reuniaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/reuniao'} id={reuniaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

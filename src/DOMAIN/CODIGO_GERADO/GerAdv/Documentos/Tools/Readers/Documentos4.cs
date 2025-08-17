@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : IDocumentosReader
 {
-    private readonly IFDocumentosFactory _documentosFactory = documentosFactory;
+    private readonly IFDocumentosFactory _documentosFactory = documentosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("docCodigo, docData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<DocumentosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDocumentos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<DocumentosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,10 +54,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         var documentos = new Models.Documentos
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return documentos;
     }
@@ -83,10 +83,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         var documentos = new DocumentosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return documentos;
     }
@@ -101,10 +101,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         var documentos = new DocumentosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return documentos;
     }
@@ -119,10 +119,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         var documentos = new DocumentosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return documentos;
     }
@@ -137,10 +137,10 @@ public partial class DocumentosReader(IFDocumentosFactory documentosFactory) : I
         var documentos = new DocumentosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return documentos;
     }

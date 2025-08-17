@@ -94,18 +94,18 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private async Task<ProProcuradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ProProcuradoresResponse?> AddAndUpdate([FromBody] Models.ProProcuradores regProProcuradores, [FromRoute, Required] string uri)
+    private async Task<ProProcuradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ProProcuradoresResponse?> AddAndUpdate([FromBody] Models.ProProcuradores? regProProcuradores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProProcuradores: URI inválida");
-        }
-
         if (regProProcuradores == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProProcuradores: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ProProcuradoresResponse?> Validation([FromBody] Models.ProProcuradores regProProcuradores, [FromRoute, Required] string uri)
+    public async Task<ProProcuradoresResponse?> Validation([FromBody] Models.ProProcuradores? regProProcuradores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProProcuradores: URI inválida");
-        }
-
         if (regProProcuradores == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProProcuradores: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regProProcuradores, this, advogadosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regProProcuradores.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         return await reader.Read(regProProcuradores.Id, oCnn);
     }
 
-    public async Task<ProProcuradoresResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProProcuradoresResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ProProcuradores: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var proprocuradores = await reader.Read(id, oCnn);
+        var proprocuradores = await reader.Read(id ?? default, oCnn);
         try
         {
             if (proprocuradores != null)
@@ -237,7 +237,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         return proprocuradores;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

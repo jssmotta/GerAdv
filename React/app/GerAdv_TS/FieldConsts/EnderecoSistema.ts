@@ -6,6 +6,7 @@ export enum FieldsEnderecoSistema
 	cidade = `Cidade`,
 	cadastro = `Cadastro`,
 	cadastroexcod = `CadastroExCod`,
+	guid = `GUID`,
 	processo = `Processo`,
 	motivo = `Motivo`,
 	contatonolocal = `ContatoNoLocal`,
@@ -15,5 +16,4 @@ export enum FieldsEnderecoSistema
 	fone = `Fone`,
 	fax = `Fax`,
 	observacao = `Observacao`,
-	guid = `GUID`,
 }

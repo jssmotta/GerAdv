@@ -81,59 +81,60 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar TiposAcao diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar TiposAcao diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = tiposacaoData?.id == 0 ? 'Editar TiposAcao' : 'Adicionar Tipos Acao';
-  }
-}, [tiposacaoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-TiposAcao' : 'form-container5 form-container-TiposAcao'}>
-
-    <form className='formInputCadInc' id={`TiposAcaoForm-${tiposacaoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='TiposAcao' data={tiposacaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`TiposAcaoForm-${tiposacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={tiposacaoData}
-          className='inputIncNome'
-          name='nome'
-          value={tiposacaoData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-          <InputCheckbox dataForm={tiposacaoData} label='Inativo' name='inativo' checked={tiposacaoData.inativo} onChange={onChange} />
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='TiposAcao' data={tiposacaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`TiposAcaoForm-${tiposacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/tiposacao'} id={tiposacaoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = tiposacaoData?.id == 0 ? 'Editar TiposAcao' : 'Adicionar Tipos Acao';
+    }
+  }, [tiposacaoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-TiposAcao' : 'form-container5 form-container-TiposAcao'}>
+
+      <form className='formInputCadInc' id={`TiposAcaoForm-${tiposacaoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='TiposAcao' data={tiposacaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TiposAcaoForm-${tiposacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={tiposacaoData}
+            className='inputIncNome'
+            name='nome'
+            value={tiposacaoData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+            <InputCheckbox dataForm={tiposacaoData} label='Inativo' name='inativo' checked={tiposacaoData.inativo} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='TiposAcao' data={tiposacaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TiposAcaoForm-${tiposacaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/tiposacao'} id={tiposacaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

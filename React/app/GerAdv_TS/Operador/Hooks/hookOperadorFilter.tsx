@@ -214,16 +214,6 @@ export const useOperadorFilter = ({ handleFetchWithFilter }: UseOperadorFilterPr
   label='Externo'
   className='inputSearch inputSearchCheckbox'
   />
-  <InputInput
-  type='text'
-  id='senha256'
-  name='senha256'
-  value={handlers.windowFilter?.senha256 ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Senha256'
-  label='Senha256'
-  className='inputIncNome inputSearch'
-  />
   <InputComboFilterYesNo
   type='text'
   id='emailconfirmado'

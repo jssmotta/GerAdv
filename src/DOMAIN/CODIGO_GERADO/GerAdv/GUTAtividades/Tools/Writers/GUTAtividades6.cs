@@ -14,13 +14,13 @@ public partial interface IGUTAtividadesWriter
 
 public class GUTAtividadesWriter(IFGUTAtividadesFactory gutatividadesFactory) : IGUTAtividadesWriter
 {
-    private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory;
-    public async Task Delete(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory ?? throw new ArgumentNullException(nameof(gutatividadesFactory));
+    public virtual async Task Delete(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection oCnn)
     {
         await _gutatividadesFactory.DeleteAsync(operadorId, gutatividades.Id, oCnn);
     }
 
-    public async Task<FGUTAtividades> WriteAsync(Models.GUTAtividades gutatividades, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTAtividades> WriteAsync(Models.GUTAtividades gutatividades, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (gutatividades.Id.IsEmptyIDNumber() ? _gutatividadesFactory.CreateAsync() : _gutatividadesFactory.CreateFromIdAsync(gutatividades.Id, oCnn));
         dbRec.FNome = gutatividades.Nome;
@@ -28,12 +28,12 @@ public class GUTAtividadesWriter(IFGUTAtividadesFactory gutatividadesFactory) : 
         dbRec.FGUTGrupo = gutatividades.GUTGrupo;
         dbRec.FGUTPeriodicidade = gutatividades.GUTPeriodicidade;
         dbRec.FOperador = gutatividades.Operador;
+        dbRec.FGUID = gutatividades.GUID;
         dbRec.FConcluido = gutatividades.Concluido;
         if (gutatividades.DataConcluido != null)
             dbRec.FDataConcluido = gutatividades.DataConcluido.ToString();
         dbRec.FDiasParaIniciar = gutatividades.DiasParaIniciar;
         dbRec.FMinutosParaRealizar = gutatividades.MinutosParaRealizar;
-        dbRec.FGUID = gutatividades.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

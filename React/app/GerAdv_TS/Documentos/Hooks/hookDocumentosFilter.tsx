@@ -78,16 +78,6 @@ export const useDocumentosFilter = ({ handleFetchWithFilter }: UseDocumentosFilt
   />
   <InputInput
   type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
   id='observacao'
   name='observacao'
   value={handlers.windowFilter?.observacao ?? ''}

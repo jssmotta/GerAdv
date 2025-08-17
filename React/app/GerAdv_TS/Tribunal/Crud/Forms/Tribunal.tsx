@@ -65,205 +65,209 @@ if (getParamFromUrl('area') > 0) {
       setNomeArea(response.data.descricao);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    tribunalData.area = getParamFromUrl('area');
+      tribunalData.area = getParamFromUrl('area');
+    }
   }
-}
 
-if (getParamFromUrl('justica') > 0) {
-  if (tribunalData.id === 0 && tribunalData.justica == 0) {
-    justicaApi
-    .getById(getParamFromUrl('justica'))
-    .then((response) => {
-      setNomeJustica(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('justica') > 0) {
+    if (tribunalData.id === 0 && tribunalData.justica == 0) {
+      justicaApi
+      .getById(getParamFromUrl('justica'))
+      .then((response) => {
+        setNomeJustica(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    tribunalData.justica = getParamFromUrl('justica');
-  }
-}
+        tribunalData.justica = getParamFromUrl('justica');
+      }
+    }
 
-if (getParamFromUrl('instancia') > 0) {
-  if (tribunalData.id === 0 && tribunalData.instancia == 0) {
-    instanciaApi
-    .getById(getParamFromUrl('instancia'))
-    .then((response) => {
-      setNomeInstancia(response.data.nroprocesso);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('instancia') > 0) {
+      if (tribunalData.id === 0 && tribunalData.instancia == 0) {
+        instanciaApi
+        .getById(getParamFromUrl('instancia'))
+        .then((response) => {
+          setNomeInstancia(response.data.nroprocesso);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    tribunalData.instancia = getParamFromUrl('instancia');
-  }
-}
-const addValorArea = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'area', value: e.id } });
-  };
-  const addValorJustica = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'justica', value: e.id } });
-    };
-    const addValorInstancia = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'instancia', value: e.id } });
-      };
-      const onConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (e.stopPropagation) e.stopPropagation();
-
-          if (!isSubmitting) {
-            setIsSubmitting(true);
-
-            try {
-              onSubmit(e);
-            } catch (error) {
-            console.log('Erro ao submeter formulário de Tribunal:');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
+          tribunalData.instancia = getParamFromUrl('instancia');
+        }
+      }
+      const addValorArea = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'area', value: e.id } });
         };
-        const handleCancel = () => {
-          if (onReload) {
-            onReload(); // Recarrega os dados originais
-          } else {
-          onClose(); // Comportamento padrão se não há callback de recarga
-        }
-      };
+        const addValorJustica = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'justica', value: e.id } });
+          };
+          const addValorInstancia = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'instancia', value: e.id } });
+            };
+            const onConfirm = (e: React.FormEvent) => {
+              e.preventDefault();
+              if (e.stopPropagation) e.stopPropagation();
 
-      const handleDirectSave = () => {
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+                if (!isSubmitting) {
+                  setIsSubmitting(true);
 
-          try {
-            const syntheticEvent = {
-              preventDefault: () => { }, 
-              target: document.getElementById(`TribunalForm-${tribunalData.id}`)
-            } as unknown as React.FormEvent;
+                  try {
+                    onSubmit(e);
+                  } catch (error) {
+                  console.log('Erro ao submeter formulário de Tribunal:');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              const handleCancel = () => {
+                if (onReload) {
+                  onReload(); // Recarrega os dados originais
+                } else {
+                onClose(); // Comportamento padrão se não há callback de recarga
+              }
+            };
 
-            onSubmit(syntheticEvent);
-          } catch (error) {
-          console.log('Erro ao salvar Tribunal diretamente');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      useEffect(() => {
-        const el = document.querySelector('.nameFormMobile');
-        if (el) {
-          el.textContent = tribunalData?.id == 0 ? 'Editar Tribunal' : 'Adicionar Tribunal';
-        }
-      }, [tribunalData.id]);
-      return (
-      <>
-      {!isMobile ? <style jsx global>{`
-        @media (max-width: 1366px) {
-          html {
-            zoom: 0.8 !important;
-          }
-        }
-        `}</style> : null}
+            const handleDirectSave = () => {
+              if (!isSubmitting) {
+                setIsSubmitting(true);
 
-        <div className={isMobile ? 'form-container form-container-Tribunal' : 'form-container5 form-container-Tribunal'}>
+                try {
+                  const syntheticEvent = {
+                    preventDefault: () => { }, 
+                    target: document.getElementById(`TribunalForm-${tribunalData.id}`)
+                  } as unknown as React.FormEvent;
 
-          <form className='formInputCadInc' id={`TribunalForm-${tribunalData.id}`} onSubmit={onConfirm}>
-            {!isMobile && (
-              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Tribunal' data={tribunalData} isSubmitting={isSubmitting} onClose={onClose} formId={`TribunalForm-${tribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <div className='grid-container'>
+                  onSubmit(syntheticEvent);
+                } catch (error) {
+                if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                  console.log('Erro ao salvar Tribunal diretamente');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              useEffect(() => {
+                const el = document.querySelector('.nameFormMobile');
+                if (el) {
+                  el.textContent = tribunalData?.id == 0 ? 'Editar Tribunal' : 'Adicionar Tribunal';
+                }
+              }, [tribunalData.id]);
+              return (
+              <>
+              {!isMobile ? <style jsx global>{`
+                @media (max-width: 1366px) {
+                  html {
+                    zoom: 0.8 !important;
+                  }
+                }
+                `}</style> : null}
 
-                <InputName
-                type='text'
-                id='nome'
-                label='Nome'
-                dataForm={tribunalData}
-                className='inputIncNome'
-                name='nome'
-                value={tribunalData.nome}
-                placeholder={`Informe Nome`}
-                onChange={onChange}
-                required
-                />
+                <div className={isMobile ? 'form-container form-container-Tribunal' : 'form-container5 form-container-Tribunal'}>
 
-                <AreaComboBox
-                name={'area'}
-                dataForm={tribunalData}
-                value={tribunalData.area}
-                setValue={addValorArea}
-                label={'Área'}
-                />
+                  <form className='formInputCadInc' id={`TribunalForm-${tribunalData.id}`} onSubmit={onConfirm}>
+                    {!isMobile && (
+                      <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Tribunal' data={tribunalData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TribunalForm-${tribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <div className='grid-container'>
 
-                <JusticaComboBox
-                name={'justica'}
-                dataForm={tribunalData}
-                value={tribunalData.justica}
-                setValue={addValorJustica}
-                label={'Justiça'}
-                />
+                        <InputName
+                        type='text'
+                        id='nome'
+                        label='Nome'
+                        dataForm={tribunalData}
+                        className='inputIncNome'
+                        name='nome'
+                        value={tribunalData.nome}
+                        placeholder={`Informe Nome`}
+                        onChange={onChange}
+                        required
+                        />
 
-                <InputInput
-                type='text'
-                maxLength={50}
-                id='descricao'
-                label='Descricao'
-                dataForm={tribunalData}
-                className='inputIncNome'
-                name='descricao'
-                value={tribunalData.descricao}
-                onChange={onChange}
-                />
+                        <AreaComboBox
+                        name={'area'}
+                        dataForm={tribunalData}
+                        value={tribunalData.area}
+                        setValue={addValorArea}
+                        label={'Área'}
+                        />
 
+                        <JusticaComboBox
+                        name={'justica'}
+                        dataForm={tribunalData}
+                        value={tribunalData.justica}
+                        setValue={addValorJustica}
+                        label={'Justiça'}
+                        />
 
-                <InstanciaComboBox
-                name={'instancia'}
-                dataForm={tribunalData}
-                value={tribunalData.instancia}
-                setValue={addValorInstancia}
-                label={'Instancia'}
-                />
-
-                <InputInput
-                type='text'
-                maxLength={20}
-                id='sigla'
-                label='Sigla'
-                dataForm={tribunalData}
-                className='inputIncNome'
-                name='sigla'
-                value={tribunalData.sigla}
-                onChange={onChange}
-                />
-
-
-                <InputInput
-                type='text'
-                maxLength={255}
-                id='web'
-                label='Web'
-                dataForm={tribunalData}
-                className='inputIncNome'
-                name='web'
-                value={tribunalData.web}
-                onChange={onChange}
-                />
-
-              </div>
-            </form>
+                        <InputInput
+                        type='text'
+                        maxLength={50}
+                        id='descricao'
+                        label='Descricao'
+                        dataForm={tribunalData}
+                        className='inputIncNome'
+                        name='descricao'
+                        value={tribunalData.descricao}
+                        onChange={onChange}
+                        />
 
 
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Tribunal' data={tribunalData} isSubmitting={isSubmitting} onClose={onClose} formId={`TribunalForm-${tribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/tribunal'} id={tribunalData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+                        <InstanciaComboBox
+                        name={'instancia'}
+                        dataForm={tribunalData}
+                        value={tribunalData.instancia}
+                        setValue={addValorInstancia}
+                        label={'Instancia'}
+                        />
+
+                        <InputInput
+                        type='text'
+                        maxLength={20}
+                        id='sigla'
+                        label='Sigla'
+                        dataForm={tribunalData}
+                        className='inputIncNome'
+                        name='sigla'
+                        value={tribunalData.sigla}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={255}
+                        id='web'
+                        label='Web'
+                        dataForm={tribunalData}
+                        className='inputIncNome'
+                        name='web'
+                        value={tribunalData.web}
+                        onChange={onChange}
+                        />
+
+                      </div>
+                    </form>
+
+
+                    {isMobile && (
+                      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Tribunal' data={tribunalData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TribunalForm-${tribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <DeleteButton page={'/pages/tribunal'} id={tribunalData.id} closeModel={onClose} dadoApi={dadoApi} />
+                    </div>
+                    <div className='form-spacer'></div>
+                    </>
+                  );
+                };

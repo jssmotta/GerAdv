@@ -68,507 +68,511 @@ if (getParamFromUrl('cargos') > 0) {
       setNomeCargos(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    advogadosData.cargo = getParamFromUrl('cargos');
+      advogadosData.cargo = getParamFromUrl('cargos');
+    }
   }
-}
 
-if (getParamFromUrl('escritorios') > 0) {
-  if (advogadosData.id === 0 && advogadosData.escritorio == 0) {
-    escritoriosApi
-    .getById(getParamFromUrl('escritorios'))
-    .then((response) => {
-      setNomeEscritorios(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('escritorios') > 0) {
+    if (advogadosData.id === 0 && advogadosData.escritorio == 0) {
+      escritoriosApi
+      .getById(getParamFromUrl('escritorios'))
+      .then((response) => {
+        setNomeEscritorios(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    advogadosData.escritorio = getParamFromUrl('escritorios');
-  }
-}
+        advogadosData.escritorio = getParamFromUrl('escritorios');
+      }
+    }
 
-if (getParamFromUrl('cidade') > 0) {
-  if (advogadosData.id === 0 && advogadosData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('cidade') > 0) {
+      if (advogadosData.id === 0 && advogadosData.cidade == 0) {
+        cidadeApi
+        .getById(getParamFromUrl('cidade'))
+        .then((response) => {
+          setNomeCidade(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    advogadosData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorCargo = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cargo', value: e.id } });
-  };
-  const addValorEscritorio = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'escritorio', value: e.id } });
-    };
-    const addValorCidade = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'cidade', value: e.id } });
-      };
-      const onConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (e.stopPropagation) e.stopPropagation();
-
-          if (!isSubmitting) {
-            setIsSubmitting(true);
-
-            try {
-              onSubmit(e);
-            } catch (error) {
-            console.log('Erro ao submeter formulário de Advogados:');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
+          advogadosData.cidade = getParamFromUrl('cidade');
+        }
+      }
+      const addValorCargo = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cargo', value: e.id } });
         };
-        const handleCancel = () => {
-          if (onReload) {
-            onReload(); // Recarrega os dados originais
-          } else {
-          onClose(); // Comportamento padrão se não há callback de recarga
-        }
-      };
+        const addValorEscritorio = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'escritorio', value: e.id } });
+          };
+          const addValorCidade = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'cidade', value: e.id } });
+            };
+            const onConfirm = (e: React.FormEvent) => {
+              e.preventDefault();
+              if (e.stopPropagation) e.stopPropagation();
 
-      const handleDirectSave = () => {
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+                if (!isSubmitting) {
+                  setIsSubmitting(true);
 
-          try {
-            const syntheticEvent = {
-              preventDefault: () => { }, 
-              target: document.getElementById(`AdvogadosForm-${advogadosData.id}`)
-            } as unknown as React.FormEvent;
+                  try {
+                    onSubmit(e);
+                  } catch (error) {
+                  console.log('Erro ao submeter formulário de Advogados:');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              const handleCancel = () => {
+                if (onReload) {
+                  onReload(); // Recarrega os dados originais
+                } else {
+                onClose(); // Comportamento padrão se não há callback de recarga
+              }
+            };
 
-            onSubmit(syntheticEvent);
-          } catch (error) {
-          console.log('Erro ao salvar Advogados diretamente');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      useEffect(() => {
-        const el = document.querySelector('.nameFormMobile');
-        if (el) {
-          el.textContent = advogadosData?.id == 0 ? 'Editar Advogados' : 'Adicionar Advogados';
-        }
-      }, [advogadosData.id]);
-      return (
-      <>
-      {!isMobile ? <style jsx global>{`
-        @media (max-width: 1366px) {
-          html {
-            zoom: 0.8 !important;
-          }
-        }
-        `}</style> : null}
+            const handleDirectSave = () => {
+              if (!isSubmitting) {
+                setIsSubmitting(true);
 
-        <div className={isMobile ? 'form-container form-container-Advogados' : 'form-container form-container-Advogados'}>
+                try {
+                  const syntheticEvent = {
+                    preventDefault: () => { }, 
+                    target: document.getElementById(`AdvogadosForm-${advogadosData.id}`)
+                  } as unknown as React.FormEvent;
 
-          <form className='formInputCadInc' id={`AdvogadosForm-${advogadosData.id}`} onSubmit={onConfirm}>
-            {!isMobile && (
-              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Advogados' data={advogadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`AdvogadosForm-${advogadosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <div className='grid-container'>
+                  onSubmit(syntheticEvent);
+                } catch (error) {
+                if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                  console.log('Erro ao salvar Advogados diretamente');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              useEffect(() => {
+                const el = document.querySelector('.nameFormMobile');
+                if (el) {
+                  el.textContent = advogadosData?.id == 0 ? 'Editar Advogados' : 'Adicionar Advogados';
+                }
+              }, [advogadosData.id]);
+              return (
+              <>
+              {!isMobile ? <style jsx global>{`
+                @media (max-width: 1366px) {
+                  html {
+                    zoom: 0.8 !important;
+                  }
+                }
+                `}</style> : null}
 
-                <InputName
-                type='text'
-                id='nome'
-                label='Nome'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='nome'
-                value={advogadosData.nome}
-                placeholder={`Informe Nome`}
-                onChange={onChange}
-                required
-                />
+                <div className={isMobile ? 'form-container form-container-Advogados' : 'form-container form-container-Advogados'}>
 
-                <CargosComboBox
-                name={'cargo'}
-                dataForm={advogadosData}
-                value={advogadosData.cargo}
-                setValue={addValorCargo}
-                label={'Cargo'}
-                />
+                  <form className='formInputCadInc' id={`AdvogadosForm-${advogadosData.id}`} onSubmit={onConfirm}>
+                    {!isMobile && (
+                      <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Advogados' data={advogadosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AdvogadosForm-${advogadosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <div className='grid-container'>
 
-                <InputInput
-                type='email'
-                maxLength={255}
-                id='emailpro'
-                label='EMailPro'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='emailpro'
-                value={advogadosData.emailpro}
-                onChange={onChange}
-                />
+                        <InputName
+                        type='text'
+                        id='nome'
+                        label='Nome'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='nome'
+                        value={advogadosData.nome}
+                        placeholder={`Informe Nome`}
+                        onChange={onChange}
+                        required
+                        />
 
+                        <CargosComboBox
+                        name={'cargo'}
+                        dataForm={advogadosData}
+                        value={advogadosData.cargo}
+                        setValue={addValorCargo}
+                        label={'Cargo'}
+                        />
 
-                <InputCpf
-                type='text'
-                id='cpf'
-                label='CPF'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='cpf'
-                value={advogadosData.cpf}
-                onChange={onChange}
-                />
-
-
-                <InputInput
-                type='text'
-                maxLength={30}
-                id='rg'
-                label='RG'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='rg'
-                value={advogadosData.rg}
-                onChange={onChange}
-                />
-
-                <InputCheckbox dataForm={advogadosData} label='Casa' name='casa' checked={advogadosData.casa} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={80}
-                id='nomemae'
-                label='NomeMae'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='nomemae'
-                value={advogadosData.nomemae}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='email'
+                        maxLength={255}
+                        id='emailpro'
+                        label='EMailPro'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='emailpro'
+                        value={advogadosData.emailpro}
+                        onChange={onChange}
+                        />
 
 
-                <EscritoriosComboBox
-                name={'escritorio'}
-                dataForm={advogadosData}
-                value={advogadosData.escritorio}
-                setValue={addValorEscritorio}
-                label={'Escritorios'}
-                />
-                <InputCheckbox dataForm={advogadosData} label='Estagiario' name='estagiario' checked={advogadosData.estagiario} onChange={onChange} />
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={12}
-                id='oab'
-                label='OAB'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='oab'
-                value={advogadosData.oab}
-                onChange={onChange}
-                />
+                        <InputCpf
+                        type='text'
+                        id='cpf'
+                        label='CPF'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='cpf'
+                        value={advogadosData.cpf}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={50}
-                id='nomecompleto'
-                label='NomeCompleto'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='nomecompleto'
-                value={advogadosData.nomecompleto}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={30}
+                        id='rg'
+                        label='RG'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='rg'
+                        value={advogadosData.rg}
+                        onChange={onChange}
+                        />
+
+                        <InputCheckbox dataForm={advogadosData} label='Casa' name='casa' checked={advogadosData.casa} onChange={onChange} />
+
+                        <InputInput
+                        type='text'
+                        maxLength={80}
+                        id='nomemae'
+                        label='NomeMae'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='nomemae'
+                        value={advogadosData.nomemae}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={80}
-                id='endereco'
-                label='Endereco'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='endereco'
-                value={advogadosData.endereco}
-                onChange={onChange}
-                />
+                        <EscritoriosComboBox
+                        name={'escritorio'}
+                        dataForm={advogadosData}
+                        value={advogadosData.escritorio}
+                        setValue={addValorEscritorio}
+                        label={'Escritorios'}
+                        />
+                        <InputCheckbox dataForm={advogadosData} label='Estagiario' name='estagiario' checked={advogadosData.estagiario} onChange={onChange} />
+                      </div><div className='grid-container'>
+                        <InputInput
+                        type='text'
+                        maxLength={12}
+                        id='oab'
+                        label='OAB'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='oab'
+                        value={advogadosData.oab}
+                        onChange={onChange}
+                        />
 
 
-                <CidadeComboBox
-                name={'cidade'}
-                dataForm={advogadosData}
-                value={advogadosData.cidade}
-                setValue={addValorCidade}
-                label={'Cidade'}
-                />
-
-                <InputCep
-                type='text'
-                id='cep'
-                label='CEP'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='cep'
-                value={advogadosData.cep}
-                onChange={onChange}
-                />
-
-                <InputCheckbox dataForm={advogadosData} label='Sexo' name='sexo' checked={advogadosData.sexo} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={50}
-                id='bairro'
-                label='Bairro'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='bairro'
-                value={advogadosData.bairro}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={50}
+                        id='nomecompleto'
+                        label='NomeCompleto'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='nomecompleto'
+                        value={advogadosData.nomecompleto}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={10}
-                id='ctpsserie'
-                label='CTPSSerie'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='ctpsserie'
-                value={advogadosData.ctpsserie}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={80}
+                        id='endereco'
+                        label='Endereco'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='endereco'
+                        value={advogadosData.endereco}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={15}
-                id='ctps'
-                label='CTPS'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='ctps'
-                value={advogadosData.ctps}
-                onChange={onChange}
-                />
+                        <CidadeComboBox
+                        name={'cidade'}
+                        dataForm={advogadosData}
+                        value={advogadosData.cidade}
+                        setValue={addValorCidade}
+                        label={'Cidade'}
+                        />
 
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='fone'
-                label='Fone'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='fone'
-                value={advogadosData.fone}
-                onChange={onChange}
-                />
+                        <InputCep
+                        type='text'
+                        id='cep'
+                        label='CEP'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='cep'
+                        value={advogadosData.cep}
+                        onChange={onChange}
+                        />
 
+                        <InputCheckbox dataForm={advogadosData} label='Sexo' name='sexo' checked={advogadosData.sexo} onChange={onChange} />
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='fax'
-                label='Fax'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='fax'
-                value={advogadosData.fax}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={50}
+                        id='bairro'
+                        label='Bairro'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='bairro'
+                        value={advogadosData.bairro}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='comissao'
-                label='Comissao'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='comissao'
-                value={advogadosData.comissao}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={10}
+                        id='ctpsserie'
+                        label='CTPSSerie'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='ctpsserie'
+                        value={advogadosData.ctpsserie}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='dtinicio'
-                label='DtInicio'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='dtinicio'
-                value={advogadosData.dtinicio}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={15}
+                        id='ctps'
+                        label='CTPS'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='ctps'
+                        value={advogadosData.ctps}
+                        onChange={onChange}
+                        />
+
+                      </div><div className='grid-container'>
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='fone'
+                        label='Fone'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='fone'
+                        value={advogadosData.fone}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='dtfim'
-                label='DtFim'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='dtfim'
-                value={advogadosData.dtfim}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='fax'
+                        label='Fax'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='fax'
+                        value={advogadosData.fax}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='dtnasc'
-                label='DtNasc'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='dtnasc'
-                value={advogadosData.dtnasc}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='comissao'
+                        label='Comissao'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='comissao'
+                        value={advogadosData.comissao}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='salario'
-                label='Salario'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='salario'
-                value={advogadosData.salario}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='dtinicio'
+                        label='DtInicio'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='dtinicio'
+                        value={advogadosData.dtinicio}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={20}
-                id='secretaria'
-                label='Secretaria'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='secretaria'
-                value={advogadosData.secretaria}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='dtfim'
+                        label='DtFim'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='dtfim'
+                        value={advogadosData.dtfim}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={200}
-                id='textoprocuracao'
-                label='TextoProcuracao'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='textoprocuracao'
-                value={advogadosData.textoprocuracao}
-                onChange={onChange}
-                />
-
-              </div><div className='grid-container'>
-                <InputInput
-                type='email'
-                maxLength={100}
-                id='email'
-                label='EMail'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='email'
-                value={advogadosData.email}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='dtnasc'
+                        label='DtNasc'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='dtnasc'
+                        value={advogadosData.dtnasc}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='especializacao'
-                label='Especializacao'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='especializacao'
-                value={advogadosData.especializacao}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='salario'
+                        label='Salario'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='salario'
+                        value={advogadosData.salario}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={200}
-                id='pasta'
-                label='Pasta'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='pasta'
-                value={advogadosData.pasta}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={20}
+                        id='secretaria'
+                        label='Secretaria'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='secretaria'
+                        value={advogadosData.secretaria}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='observacao'
-                label='Observacao'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='observacao'
-                value={advogadosData.observacao}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={200}
+                        id='textoprocuracao'
+                        label='TextoProcuracao'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='textoprocuracao'
+                        value={advogadosData.textoprocuracao}
+                        onChange={onChange}
+                        />
+
+                      </div><div className='grid-container'>
+                        <InputInput
+                        type='email'
+                        maxLength={100}
+                        id='email'
+                        label='EMail'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='email'
+                        value={advogadosData.email}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='contabancaria'
-                label='ContaBancaria'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='contabancaria'
-                value={advogadosData.contabancaria}
-                onChange={onChange}
-                />
-
-                <InputCheckbox dataForm={advogadosData} label='ParcTop' name='parctop' checked={advogadosData.parctop} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={1}
-                id='class'
-                label='Class'
-                dataForm={advogadosData}
-                className='inputIncNome'
-                name='class'
-                value={advogadosData.class}
-                onChange={onChange}
-                />
-
-                <InputCheckbox dataForm={advogadosData} label='Top' name='top' checked={advogadosData.top} onChange={onChange} />
-              </div>
-            </form>
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='especializacao'
+                        label='Especializacao'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='especializacao'
+                        value={advogadosData.especializacao}
+                        onChange={onChange}
+                        />
 
 
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Advogados' data={advogadosData} isSubmitting={isSubmitting} onClose={onClose} formId={`AdvogadosForm-${advogadosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/advogados'} id={advogadosData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+                        <InputInput
+                        type='text'
+                        maxLength={200}
+                        id='pasta'
+                        label='Pasta'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='pasta'
+                        value={advogadosData.pasta}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='observacao'
+                        label='Observacao'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='observacao'
+                        value={advogadosData.observacao}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='contabancaria'
+                        label='ContaBancaria'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='contabancaria'
+                        value={advogadosData.contabancaria}
+                        onChange={onChange}
+                        />
+
+                        <InputCheckbox dataForm={advogadosData} label='ParcTop' name='parctop' checked={advogadosData.parctop} onChange={onChange} />
+
+                        <InputInput
+                        type='text'
+                        maxLength={1}
+                        id='class'
+                        label='Class'
+                        dataForm={advogadosData}
+                        className='inputIncNome'
+                        name='class'
+                        value={advogadosData.class}
+                        onChange={onChange}
+                        />
+
+                        <InputCheckbox dataForm={advogadosData} label='Top' name='top' checked={advogadosData.top} onChange={onChange} />
+                      </div>
+                    </form>
+
+
+                    {isMobile && (
+                      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Advogados' data={advogadosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AdvogadosForm-${advogadosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <DeleteButton page={'/pages/advogados'} id={advogadosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                    </div>
+                    <div className='form-spacer'></div>
+                    </>
+                  );
+                };

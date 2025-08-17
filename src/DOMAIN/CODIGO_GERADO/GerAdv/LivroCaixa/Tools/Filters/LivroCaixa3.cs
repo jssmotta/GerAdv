@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterLivroCaixa
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("iddes")]
     public int IDDes { get; set; } = int.MinValue;
@@ -46,10 +46,10 @@ public partial record FilterLivroCaixa
     public int IDHonSuc { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -67,10 +67,10 @@ public partial record FilterLivroCaixa
     public int Tipo { get; set; } = int.MinValue;
 
     [JsonPropertyName("historico")]
-    public string Historico { get; set; } = string.Empty;
+    public string? Historico { get; set; } = string.Empty;
 
     [JsonPropertyName("historico_end")]
-    public string Historico_end { get; set; } = string.Empty;
+    public string? Historico_end { get; set; } = string.Empty;
 
     [JsonPropertyName("previsto")]
     public int Previsto { get; set; } = int.MinValue;

@@ -4,6 +4,7 @@
 export enum FieldsEnderecos
 {	cidade = `Cidade`,
 	topindex = `TopIndex`,
+	guid = `GUID`,
 	descricao = `Descricao`,
 	contato = `Contato`,
 	dtnasc = `DtNasc`,
@@ -22,5 +23,4 @@ export enum FieldsEnderecos
 	quem = `Quem`,
 	quemindicou = `QuemIndicou`,
 	reportecbonly = `ReportECBOnly`,
-	guid = `GUID`,
 }

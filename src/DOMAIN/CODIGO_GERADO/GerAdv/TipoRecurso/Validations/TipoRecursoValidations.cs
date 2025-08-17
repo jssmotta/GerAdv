@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoRecursoValidation
 {
     Task<bool> ValidateReg(Models.TipoRecurso reg, ITipoRecursoService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoRecursoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoRecursoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoRecursoValidation : ITipoRecursoValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoRecursoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoRecursoService service, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var instanciaExists0 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { TipoRecurso = id }, uri);
+        var instanciaExists0 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { TipoRecurso = id ?? default }, uri);
         if (instanciaExists0 != null && instanciaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class TipoRecursoValidation : ITipoRecursoValidation
 
     private bool ValidSizes(Models.TipoRecurso reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 50)
-            throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBTipoRecursoDicInfo.TrcDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBTipoRecursoDicInfo.TrcDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTipoRecursoDicInfo.TrcGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTipoRecursoDicInfo.TrcGUID.FTamanho} caracteres.");
         return true;
     }
 

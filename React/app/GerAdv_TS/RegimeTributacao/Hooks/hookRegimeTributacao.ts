@@ -41,7 +41,8 @@ export const useRegimeTributacaoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Regime Tributacao';
       setError(errorMessage);
-      //console.log('Erro ao carregar Regime Tributacao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Regime Tributacao');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useRegimeTributacaoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useRegimeTributacaoList = (dataService: IRegimeTributacaoService, c
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar regimetributacao';
       setError(errorMessage);
-      //console.log('Erro ao carregar regimetributacao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar regimetributacao');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 50) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

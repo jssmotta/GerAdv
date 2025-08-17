@@ -41,7 +41,8 @@ export const useSMSAliceForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar S M S Alice';
       setError(errorMessage);
-      //console.log('Erro ao carregar S M S Alice');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar S M S Alice');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useSMSAliceNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useSMSAliceList = (dataService: ISMSAliceService, currentFilter?: F
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar smsalice';
       setError(errorMessage);
-      //console.log('Erro ao carregar smsalice');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar smsalice');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 150) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

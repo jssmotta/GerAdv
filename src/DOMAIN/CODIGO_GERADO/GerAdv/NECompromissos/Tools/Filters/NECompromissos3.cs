@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterNECompromissos
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("palavrachave")]
     public int PalavraChave { get; set; } = int.MinValue;
@@ -27,11 +27,14 @@ public partial record FilterNECompromissos
     [JsonPropertyName("tipocompromisso")]
     public int TipoCompromisso { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tipocompromisso_end")]
+    public int TipoCompromisso_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("textocompromisso")]
-    public string TextoCompromisso { get; set; } = string.Empty;
+    public string? TextoCompromisso { get; set; } = string.Empty;
 
     [JsonPropertyName("textocompromisso_end")]
-    public string TextoCompromisso_end { get; set; } = string.Empty;
+    public string? TextoCompromisso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

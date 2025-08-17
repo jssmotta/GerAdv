@@ -10,10 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterProDespesas
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ligacaoid")]
     public int LigacaoID { get; set; } = int.MinValue;
@@ -24,14 +30,17 @@ public partial record FilterProDespesas
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("corrigido")]
     public int Corrigido { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valororiginal")]
     public decimal ValorOriginal { get; set; } = decimal.MinValue;
@@ -52,10 +61,10 @@ public partial record FilterProDespesas
     public int Quitado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("datacorrecao")]
-    public string DataCorrecao { get; set; } = string.Empty;
+    public string? DataCorrecao { get; set; } = string.Empty;
 
     [JsonPropertyName("datacorrecao_end")]
-    public string DataCorrecao_end { get; set; } = string.Empty;
+    public string? DataCorrecao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valor")]
     public decimal Valor { get; set; } = decimal.MinValue;
@@ -67,19 +76,13 @@ public partial record FilterProDespesas
     public int Tipo { get; set; } = int.MinValue;
 
     [JsonPropertyName("historico")]
-    public string Historico { get; set; } = string.Empty;
+    public string? Historico { get; set; } = string.Empty;
 
     [JsonPropertyName("historico_end")]
-    public string Historico_end { get; set; } = string.Empty;
+    public string? Historico_end { get; set; } = string.Empty;
 
     [JsonPropertyName("livrocaixa")]
     public int LivroCaixa { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

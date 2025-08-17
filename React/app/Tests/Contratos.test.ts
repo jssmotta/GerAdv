@@ -14,7 +14,7 @@ import { ContratosTestEmpty } from '../GerAdv_TS/Models/Contratos';
 const mockContratosService: jest.Mocked<IContratosService> = {
   fetchContratosById: jest.fn(),
   saveContratos: jest.fn(),
-  getList: jest.fn(),
+  
   getAll: jest.fn(),
   deleteContratos: jest.fn(),
   validateContratos: jest.fn(),
@@ -211,30 +211,9 @@ describe('useValidationsContratos', () => {
   });
 
 
-    test('deve invalidar guid vazio', () => {
-    const { result } = renderHook(() => useValidationsContratos());
-
-    const invalidData = { ...initialContratos, guid: '' };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ficar vazio.');
-  });
+  
 
   
-  test('deve invalidar guid muito longo', () => {
-    const { result } = renderHook(() => useValidationsContratos());
-
-    const invalidData = { 
-      ...initialContratos, 
-      guid: 'a'.repeat(100+1)
-    };
-    const validation = result.current.validate(invalidData);
-
-    expect(validation.isValid).toBe(false);
-    expect(validation.message).toBe('O campo GUID não pode ter mais de 100 caracteres.');
-  });
-
 
   test('deve invalidar dados nulos', () => {
     const { result } = renderHook(() => useValidationsContratos());

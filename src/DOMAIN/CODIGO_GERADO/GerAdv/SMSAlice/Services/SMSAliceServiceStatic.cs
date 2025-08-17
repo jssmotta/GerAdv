@@ -8,37 +8,46 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class SMSAliceService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterSMSAlice filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterSMSAlice? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Operador != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBSMSAliceDicInfo.Operador)}", filtro.Operador));
+            parameters.Add(new($"@{(DBSMSAliceDicInfo.Operador)}", filtro.Operador));
+            if (filtro.Operador_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBSMSAliceDicInfo.Operador)}_end", filtro.Operador_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBSMSAliceDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBSMSAliceDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.TipoEMail != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBSMSAliceDicInfo.TipoEMail)}", filtro.TipoEMail));
+            parameters.Add(new($"@{(DBSMSAliceDicInfo.TipoEMail)}", filtro.TipoEMail));
+            if (filtro.TipoEMail_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBSMSAliceDicInfo.TipoEMail)}_end", filtro.TipoEMail_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBSMSAliceDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBSMSAliceDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBSMSAliceDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBSMSAliceDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBSMSAliceDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBSMSAliceDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +56,36 @@ public partial class SMSAliceService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.Operador}] = @{nameof(DBSMSAliceDicInfo.Operador)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBSMSAliceDicInfo.Nome)}");
-        cWhere.Append(filtro.TipoEMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.TipoEMail}] = @{nameof(DBSMSAliceDicInfo.TipoEMail)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBSMSAliceDicInfo.GUID)}");
+        if (!(filtro.Operador.IsEmptyX()) && filtro.Operador_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.Operador}] = @{(DBSMSAliceDicInfo.Operador)}");
+        }
+        else if (!(filtro.Operador.IsEmptyX()) && !(filtro.Operador_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].{DBSMSAliceDicInfo.Operador} BETWEEN @{(DBSMSAliceDicInfo.Operador)} AND @{(DBSMSAliceDicInfo.Operador)}_end");
+        }
+
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBSMSAliceDicInfo.Nome)}");
+        if (!(filtro.TipoEMail.IsEmptyX()) && filtro.TipoEMail_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.TipoEMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.TipoEMail}] = @{(DBSMSAliceDicInfo.TipoEMail)}");
+        }
+        else if (!(filtro.TipoEMail.IsEmptyX()) && !(filtro.TipoEMail_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].{DBSMSAliceDicInfo.TipoEMail} BETWEEN @{(DBSMSAliceDicInfo.TipoEMail)} AND @{(DBSMSAliceDicInfo.TipoEMail)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBSMSAliceDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.CampoCodigo}] = @{nameof(DBSMSAliceDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].[{DBSMSAliceDicInfo.CampoCodigo}] = @{(DBSMSAliceDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].{DBSMSAliceDicInfo.CampoCodigo} BETWEEN @{nameof(DBSMSAliceDicInfo.CampoCodigo)} AND @{nameof(DBSMSAliceDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSMSAliceDicInfo.PTabelaNome}].{DBSMSAliceDicInfo.CampoCodigo} BETWEEN @{(DBSMSAliceDicInfo.CampoCodigo)} AND @{(DBSMSAliceDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterSMSAlice? filtro)

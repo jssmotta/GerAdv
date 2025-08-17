@@ -59,230 +59,232 @@ if (getParamFromUrl('cidade') > 0) {
       setNomeCidade(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    foroData.cidade = getParamFromUrl('cidade');
+      foroData.cidade = getParamFromUrl('cidade');
+    }
   }
-}
-const addValorCidade = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cidade', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorCidade = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'cidade', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de Foro:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`ForoForm-${foroData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de Foro:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar Foro diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = foroData?.id == 0 ? 'Editar Foro' : 'Adicionar Foro';
+        }
+      }, [foroData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-Foro' : 'form-container form-container-Foro'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`ForoForm-${foroData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`ForoForm-${foroData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Foro' data={foroData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ForoForm-${foroData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar Foro diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = foroData?.id == 0 ? 'Editar Foro' : 'Adicionar Foro';
-    }
-  }, [foroData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='nome'
+                label='Nome'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='nome'
+                value={foroData.nome}
+                placeholder={`Informe Nome`}
+                onChange={onChange}
+                required
+                />
 
-    <div className={isMobile ? 'form-container form-container-Foro' : 'form-container form-container-Foro'}>
+                <InputInput
+                type='email'
+                maxLength={150}
+                id='email'
+                label='EMail'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='email'
+                value={foroData.email}
+                onChange={onChange}
+                />
 
-      <form className='formInputCadInc' id={`ForoForm-${foroData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Foro' data={foroData} isSubmitting={isSubmitting} onClose={onClose} formId={`ForoForm-${foroData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+                <InputCheckbox dataForm={foroData} label='Unico' name='unico' checked={foroData.unico} onChange={onChange} />
 
-            <InputName
-            type='text'
-            id='nome'
-            label='Nome'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='nome'
-            value={foroData.nome}
-            placeholder={`Informe Nome`}
-            onChange={onChange}
-            required
-            />
+                <CidadeComboBox
+                name={'cidade'}
+                dataForm={foroData}
+                value={foroData.cidade}
+                setValue={addValorCidade}
+                label={'Cidade'}
+                />
 
-            <InputInput
-            type='email'
-            maxLength={150}
-            id='email'
-            label='EMail'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='email'
-            value={foroData.email}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={foroData} label='Unico' name='unico' checked={foroData.unico} onChange={onChange} />
-
-            <CidadeComboBox
-            name={'cidade'}
-            dataForm={foroData}
-            value={foroData.cidade}
-            setValue={addValorCidade}
-            label={'Cidade'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={150}
-            id='site'
-            label='Site'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='site'
-            value={foroData.site}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={150}
+                id='site'
+                label='Site'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='site'
+                value={foroData.site}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={50}
-            id='endereco'
-            label='Endereco'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='endereco'
-            value={foroData.endereco}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='endereco'
+                label='Endereco'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='endereco'
+                value={foroData.endereco}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={255}
-            id='bairro'
-            label='Bairro'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='bairro'
-            value={foroData.bairro}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={255}
+                id='bairro'
+                label='Bairro'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='bairro'
+                value={foroData.bairro}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='fone'
-            label='Fone'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='fone'
-            value={foroData.fone}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fone'
+                label='Fone'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='fone'
+                value={foroData.fone}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='fax'
-            label='Fax'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='fax'
-            value={foroData.fax}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fax'
+                label='Fax'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='fax'
+                value={foroData.fax}
+                onChange={onChange}
+                />
 
-          </div><div className='grid-container'>
-            <InputCep
-            type='text'
-            id='cep'
-            label='CEP'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='cep'
-            value={foroData.cep}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='obs'
-            label='OBS'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='obs'
-            value={foroData.obs}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={foroData} label='UnicoConfirmado' name='unicoconfirmado' checked={foroData.unicoconfirmado} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={255}
-            id='web'
-            label='Web'
-            dataForm={foroData}
-            className='inputIncNome'
-            name='web'
-            value={foroData.web}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+              </div><div className='grid-container'>
+                <InputCep
+                type='text'
+                id='cep'
+                label='CEP'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='cep'
+                value={foroData.cep}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Foro' data={foroData} isSubmitting={isSubmitting} onClose={onClose} formId={`ForoForm-${foroData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/foro'} id={foroData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='obs'
+                label='OBS'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='obs'
+                value={foroData.obs}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={foroData} label='UnicoConfirmado' name='unicoconfirmado' checked={foroData.unicoconfirmado} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={255}
+                id='web'
+                label='Web'
+                dataForm={foroData}
+                className='inputIncNome'
+                name='web'
+                value={foroData.web}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Foro' data={foroData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ForoForm-${foroData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/foro'} id={foroData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

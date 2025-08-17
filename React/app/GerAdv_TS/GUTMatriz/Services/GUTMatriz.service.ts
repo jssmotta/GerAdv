@@ -79,7 +79,8 @@ export class GUTMatrizService implements IGUTMatrizService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching GUTMatriz list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching GUTMatriz list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class GUTMatrizService implements IGUTMatrizService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online GUTMatriz');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTMatriz');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class GUTMatrizService implements IGUTMatrizService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online GUTMatriz');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTMatriz');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all GUTMatriz:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all GUTMatriz:');
       return [];
     }
   }

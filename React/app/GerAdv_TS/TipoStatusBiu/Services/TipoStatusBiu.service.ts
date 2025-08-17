@@ -79,7 +79,8 @@ export class TipoStatusBiuService implements ITipoStatusBiuService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching TipoStatusBiu list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching TipoStatusBiu list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class TipoStatusBiuService implements ITipoStatusBiuService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online TipoStatusBiu');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoStatusBiu');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class TipoStatusBiuService implements ITipoStatusBiuService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online TipoStatusBiu');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoStatusBiu');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all TipoStatusBiu:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all TipoStatusBiu:');
       return [];
     }
   }

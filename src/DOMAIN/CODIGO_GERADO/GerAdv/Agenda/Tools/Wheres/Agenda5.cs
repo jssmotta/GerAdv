@@ -13,7 +13,7 @@ public partial interface IAgendaWhere
 
 public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
 {
-    private readonly IFAgendaFactory _agendaFactory = agendaFactory;
+    private readonly IFAgendaFactory _agendaFactory = agendaFactory ?? throw new ArgumentNullException(nameof(agendaFactory));
     public AgendaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _agendaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -28,11 +28,13 @@ public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
+            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
             Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
+            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -48,6 +50,7 @@ public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -55,24 +58,11 @@ public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHrFinal, out DateTime XHrFinal))
-        {
-            agenda.HrFinal = dbRec.FHrFinal;
-            agenda.HrFinal_date = XHrFinal;
-        }
-
         if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
         {
             agenda.EventoData = dbRec.FEventoData;
             agenda.EventoData_date = XEventoData;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            agenda.Hora = dbRec.FHora;
-            agenda.Hora_date = XHora;
         }
 
         if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))

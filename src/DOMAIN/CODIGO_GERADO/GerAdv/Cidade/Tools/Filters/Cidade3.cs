@@ -10,16 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterCidade
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("ddd")]
-    public string DDD { get; set; } = string.Empty;
+    public string? DDD { get; set; } = string.Empty;
 
     [JsonPropertyName("ddd_end")]
-    public string DDD_end { get; set; } = string.Empty;
+    public string? DDD_end { get; set; } = string.Empty;
 
     [JsonPropertyName("top")]
     public int Top { get; set; } = int.MinValue;
@@ -31,25 +31,28 @@ public partial record FilterCidade
     public int Capital { get; set; } = int.MinValue;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("uf")]
     public int UF { get; set; } = int.MinValue;
 
+    [JsonPropertyName("uf_end")]
+    public int UF_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("sigla")]
-    public string Sigla { get; set; } = string.Empty;
+    public string? Sigla { get; set; } = string.Empty;
 
     [JsonPropertyName("sigla_end")]
-    public string Sigla_end { get; set; } = string.Empty;
+    public string? Sigla_end { get; set; } = string.Empty;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? GUID { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

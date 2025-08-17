@@ -4,8 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class PoderJudiciarioAssociadoReader(IFPoderJudiciarioAssociadoFactory poderjudiciarioassociadoFactory) : IPoderJudiciarioAssociadoReader
 {
-    private readonly IFPoderJudiciarioAssociadoFactory _poderjudiciarioassociadoFactory = poderjudiciarioassociadoFactory;
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("pjaCodigo, pjaGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    private readonly IFPoderJudiciarioAssociadoFactory _poderjudiciarioassociadoFactory = poderjudiciarioassociadoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<PoderJudiciarioAssociadoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBPoderJudiciarioAssociado.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<PoderJudiciarioAssociadoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -66,8 +65,8 @@ public partial class PoderJudiciarioAssociadoReader(IFPoderJudiciarioAssociadoFa
             SubDivisaoNome = dbRec.FSubDivisaoNome ?? string.Empty,
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
-            Tipo = dbRec.FTipo,
             GUID = dbRec.FGUID ?? string.Empty,
+            Tipo = dbRec.FTipo,
         };
         return poderjudiciarioassociado;
     }
@@ -105,8 +104,8 @@ public partial class PoderJudiciarioAssociadoReader(IFPoderJudiciarioAssociadoFa
             SubDivisaoNome = dbRec.FSubDivisaoNome ?? string.Empty,
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
-            Tipo = dbRec.FTipo,
             GUID = dbRec.FGUID ?? string.Empty,
+            Tipo = dbRec.FTipo,
         };
         return poderjudiciarioassociado;
     }
@@ -133,8 +132,8 @@ public partial class PoderJudiciarioAssociadoReader(IFPoderJudiciarioAssociadoFa
             SubDivisaoNome = dbRec.FSubDivisaoNome ?? string.Empty,
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
-            Tipo = dbRec.FTipo,
             GUID = dbRec.FGUID ?? string.Empty,
+            Tipo = dbRec.FTipo,
         };
         return poderjudiciarioassociado;
     }
@@ -161,8 +160,8 @@ public partial class PoderJudiciarioAssociadoReader(IFPoderJudiciarioAssociadoFa
             SubDivisaoNome = dbRec.FSubDivisaoNome ?? string.Empty,
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
-            Tipo = dbRec.FTipo,
             GUID = dbRec.FGUID ?? string.Empty,
+            Tipo = dbRec.FTipo,
         };
         try
         {
@@ -229,8 +228,8 @@ public partial class PoderJudiciarioAssociadoReader(IFPoderJudiciarioAssociadoFa
             SubDivisaoNome = dbRec.FSubDivisaoNome ?? string.Empty,
             CidadeNome = dbRec.FCidadeNome ?? string.Empty,
             SubDivisao = dbRec.FSubDivisao,
-            Tipo = dbRec.FTipo,
             GUID = dbRec.FGUID ?? string.Empty,
+            Tipo = dbRec.FTipo,
         };
         try
         {

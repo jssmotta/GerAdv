@@ -3,6 +3,7 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsDadosProcuracao
 {	cliente = `Cliente`,
+	guid = `GUID`,
 	estadocivil = `EstadoCivil`,
 	nacionalidade = `Nacionalidade`,
 	profissao = `Profissao`,
@@ -10,5 +11,4 @@ export enum FieldsDadosProcuracao
 	pispasep = `PisPasep`,
 	remuneracao = `Remuneracao`,
 	objeto = `Objeto`,
-	guid = `GUID`,
 }

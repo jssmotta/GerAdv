@@ -13,7 +13,7 @@ public partial interface IServicosWhere
 
 public partial class ServicosWhere(IFServicosFactory servicosFactory) : IServicosWhere
 {
-    private readonly IFServicosFactory _servicosFactory = servicosFactory;
+    private readonly IFServicosFactory _servicosFactory = servicosFactory ?? throw new ArgumentNullException(nameof(servicosFactory));
     public ServicosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _servicosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

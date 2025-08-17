@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IServicosValidation
 {
     Task<bool> ValidateReg(Models.Servicos reg, IServicosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IServicosService service, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IServicosService service, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ServicosValidation : IServicosValidation
 {
-    public async Task<bool> CanDelete(int id, IServicosService service, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IServicosService service, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var horastrabExists0 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Servico = id }, uri);
+        var horastrabExists0 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Servico = id ?? default }, uri);
         if (horastrabExists0 != null && horastrabExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class ServicosValidation : IServicosValidation
 
     private bool ValidSizes(Models.Servicos reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 200)
-            throw new SGValidationException($"Descricao deve ter no máximo 200 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBServicosDicInfo.SerDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBServicosDicInfo.SerDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBServicosDicInfo.SerGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBServicosDicInfo.SerGUID.FTamanho} caracteres.");
         return true;
     }
 

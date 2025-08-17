@@ -14,15 +14,16 @@ public partial interface IInstanciaWriter
 
 public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWriter
 {
-    private readonly IFInstanciaFactory _instanciaFactory = instanciaFactory;
-    public async Task Delete(InstanciaResponse instancia, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFInstanciaFactory _instanciaFactory = instanciaFactory ?? throw new ArgumentNullException(nameof(instanciaFactory));
+    public virtual async Task Delete(InstanciaResponse instancia, int operadorId, MsiSqlConnection oCnn)
     {
         await _instanciaFactory.DeleteAsync(operadorId, instancia.Id, oCnn);
     }
 
-    public async Task<FInstancia> WriteAsync(Models.Instancia instancia, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FInstancia> WriteAsync(Models.Instancia instancia, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (instancia.Id.IsEmptyIDNumber() ? _instanciaFactory.CreateAsync() : _instanciaFactory.CreateFromIdAsync(instancia.Id, oCnn));
+        dbRec.FGUID = instancia.GUID;
         dbRec.FLiminarPedida = instancia.LiminarPedida;
         dbRec.FObjeto = instancia.Objeto;
         dbRec.FStatusResultado = instancia.StatusResultado;
@@ -51,7 +52,6 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
         dbRec.FAccessCode = instancia.AccessCode;
         dbRec.FJulgador = instancia.Julgador;
         dbRec.FZKeyIA = instancia.ZKeyIA;
-        dbRec.FGUID = instancia.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

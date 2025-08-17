@@ -41,7 +41,8 @@ export const useReuniaoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Reunião';
       setError(errorMessage);
-      //console.log('Erro ao carregar Reunião');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Reunião');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useReuniaoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useReuniaoList = (dataService: IReuniaoService, currentFilter?: Fil
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar reuniao';
       setError(errorMessage);
-      //console.log('Erro ao carregar reuniao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar reuniao');
     } finally {
       setLoading(false);
     }

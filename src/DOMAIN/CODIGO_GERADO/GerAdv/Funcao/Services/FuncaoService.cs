@@ -95,18 +95,18 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         }
     }
 
-    private async Task<FuncaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<FuncaoResponse?> AddAndUpdate([FromBody] Models.Funcao regFuncao, [FromRoute, Required] string uri)
+    private async Task<FuncaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<FuncaoResponse?> AddAndUpdate([FromBody] Models.Funcao? regFuncao, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Funcao: URI inválida");
-        }
-
         if (regFuncao == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Funcao: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
             var validade = await validation.ValidateReg(regFuncao, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<FuncaoResponse?> Validation([FromBody] Models.Funcao regFuncao, [FromRoute, Required] string uri)
+    public async Task<FuncaoResponse?> Validation([FromBody] Models.Funcao? regFuncao, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Funcao: URI inválida");
-        }
-
         if (regFuncao == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Funcao: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
             var validade = await validation.ValidateReg(regFuncao, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regFuncao.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         return await reader.Read(regFuncao.Id, oCnn);
     }
 
-    public async Task<FuncaoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<FuncaoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Funcao: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
             var deleteValidation = await validation.CanDelete(id, this, funcionariosService, prepostosService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var funcao = await reader.Read(id, oCnn);
+        var funcao = await reader.Read(id ?? default, oCnn);
         try
         {
             if (funcao != null)
@@ -238,7 +238,7 @@ public partial class FuncaoService(IOptions<AppSettings> appSettings, IFFuncaoFa
         return funcao;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

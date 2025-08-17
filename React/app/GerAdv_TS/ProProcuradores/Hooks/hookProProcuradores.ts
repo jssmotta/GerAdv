@@ -41,7 +41,8 @@ export const useProProcuradoresForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Procuradores';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro Procuradores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro Procuradores');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProProcuradoresNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProProcuradoresList = (dataService: IProProcuradoresService, cur
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar proprocuradores';
       setError(errorMessage);
-      //console.log('Erro ao carregar proprocuradores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar proprocuradores');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

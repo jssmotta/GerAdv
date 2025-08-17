@@ -79,7 +79,8 @@ export class TipoModeloDocumentoService implements ITipoModeloDocumentoService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching TipoModeloDocumento list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching TipoModeloDocumento list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class TipoModeloDocumentoService implements ITipoModeloDocumentoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online TipoModeloDocumento');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoModeloDocumento');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class TipoModeloDocumentoService implements ITipoModeloDocumentoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online TipoModeloDocumento');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoModeloDocumento');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all TipoModeloDocumento:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all TipoModeloDocumento:');
       return [];
     }
   }

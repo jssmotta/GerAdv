@@ -13,17 +13,17 @@ public partial interface IDocumentosWhere
 
 public partial class DocumentosWhere(IFDocumentosFactory documentosFactory) : IDocumentosWhere
 {
-    private readonly IFDocumentosFactory _documentosFactory = documentosFactory;
+    private readonly IFDocumentosFactory _documentosFactory = documentosFactory ?? throw new ArgumentNullException(nameof(documentosFactory));
     public DocumentosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _documentosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var documentos = new DocumentosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return documentos;
     }

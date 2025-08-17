@@ -54,7 +54,7 @@ public partial class FNECompromissosFactory : IFNECompromissosFactory, IDisposab
             throw new ObjectDisposedException(nameof(FNECompromissosFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

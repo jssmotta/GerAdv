@@ -80,59 +80,60 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar EventoPrazoAgenda diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar EventoPrazoAgenda diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = eventoprazoagendaData?.id == 0 ? 'Editar EventoPrazoAgenda' : 'Adicionar Evento Prazo Agenda';
-  }
-}, [eventoprazoagendaData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-EventoPrazoAgenda' : 'form-container5 form-container-EventoPrazoAgenda'}>
-
-    <form className='formInputCadInc' id={`EventoPrazoAgendaForm-${eventoprazoagendaData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='EventoPrazoAgenda' data={eventoprazoagendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`EventoPrazoAgendaForm-${eventoprazoagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={eventoprazoagendaData}
-          className='inputIncNome'
-          name='nome'
-          value={eventoprazoagendaData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='EventoPrazoAgenda' data={eventoprazoagendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`EventoPrazoAgendaForm-${eventoprazoagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/eventoprazoagenda'} id={eventoprazoagendaData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = eventoprazoagendaData?.id == 0 ? 'Editar EventoPrazoAgenda' : 'Adicionar Evento Prazo Agenda';
+    }
+  }, [eventoprazoagendaData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-EventoPrazoAgenda' : 'form-container5 form-container-EventoPrazoAgenda'}>
+
+      <form className='formInputCadInc' id={`EventoPrazoAgendaForm-${eventoprazoagendaData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='EventoPrazoAgenda' data={eventoprazoagendaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`EventoPrazoAgendaForm-${eventoprazoagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={eventoprazoagendaData}
+            className='inputIncNome'
+            name='nome'
+            value={eventoprazoagendaData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='EventoPrazoAgenda' data={eventoprazoagendaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`EventoPrazoAgendaForm-${eventoprazoagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/eventoprazoagenda'} id={eventoprazoagendaData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

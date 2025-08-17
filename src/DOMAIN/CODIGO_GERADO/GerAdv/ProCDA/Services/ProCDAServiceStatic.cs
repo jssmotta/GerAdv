@@ -8,42 +8,42 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProCDAService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProCDA filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProCDA? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.Processo)}", filtro.Processo));
+            parameters.Add(new($"@{(DBProCDADicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProCDADicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
-        if (filtro.Processo_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBProCDADicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.NroInterno))
         {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBProCDADicInfo.NroInterno)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.NroInterno)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.NroInterno))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.NroInterno)}", ApplyWildCard(filtro.WildcardChar, filtro.NroInterno)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBProCDADicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProCDADicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBProCDADicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProCDADicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -54,37 +54,26 @@ public partial class ProCDAService
         var cWhere = new StringBuilder();
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.Processo}] = @{nameof(DBProCDADicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.Processo}] = @{(DBProCDADicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].{DBProCDADicInfo.Processo} BETWEEN @{nameof(DBProCDADicInfo.Processo)} AND @{nameof(DBProCDADicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].{DBProCDADicInfo.Processo} BETWEEN @{(DBProCDADicInfo.Processo)} AND @{(DBProCDADicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProCDADicInfo.Nome)}");
-        cWhere.Append(filtro.NroInterno.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.NroInterno}]  {DevourerConsts.MsiCollate} like @{nameof(DBProCDADicInfo.NroInterno)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProCDADicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBProCDADicInfo.Nome)}");
+        cWhere.Append(filtro.NroInterno.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.NroInterno}]  {DevourerConsts.MsiCollate} like @{(DBProCDADicInfo.NroInterno)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBProCDADicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.CampoCodigo}] = @{nameof(DBProCDADicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].[{DBProCDADicInfo.CampoCodigo}] = @{(DBProCDADicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].{DBProCDADicInfo.CampoCodigo} BETWEEN @{nameof(DBProCDADicInfo.CampoCodigo)} AND @{nameof(DBProCDADicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProCDADicInfo.PTabelaNome}].{DBProCDADicInfo.CampoCodigo} BETWEEN @{(DBProCDADicInfo.CampoCodigo)} AND @{(DBProCDADicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterProCDA? filtro)

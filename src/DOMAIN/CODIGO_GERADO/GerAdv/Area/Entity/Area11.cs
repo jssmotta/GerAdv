@@ -54,7 +54,7 @@ public partial class FAreaFactory : IFAreaFactory, IDisposable
             throw new ObjectDisposedException(nameof(FAreaFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

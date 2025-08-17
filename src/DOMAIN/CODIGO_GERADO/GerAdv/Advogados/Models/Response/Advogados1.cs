@@ -68,6 +68,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public string NomeMae { get; set; } = "";
 
         /// <summary>
+        /// GUID - advGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Estagiario - advEstagiario  
         /// </summary>
         [JsonPropertyName("estagiario")]
@@ -231,12 +237,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
-
-        /// <summary>
-        /// GUID - advGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -303,6 +303,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string NomeMae { get; set; } = "";
 
         /// <summary>
+        /// GUID - advGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Estagiario - advEstagiario  
         /// </summary>
         [JsonPropertyName("estagiario")]
@@ -466,12 +472,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
-
-        /// <summary>
-        /// GUID - advGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomecargos")]
         public string NomeCargos { get; set; } = string.Empty;

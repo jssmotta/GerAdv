@@ -57,126 +57,128 @@ if (getParamFromUrl('operador') > 0) {
       setNomeOperador(response.data.rnome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    operadorgruposagendaData.operador = getParamFromUrl('operador');
+      operadorgruposagendaData.operador = getParamFromUrl('operador');
+    }
   }
-}
-const addValorOperador = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'operador', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorOperador = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'operador', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de OperadorGruposAgenda:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de OperadorGruposAgenda:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar OperadorGruposAgenda diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = operadorgruposagendaData?.id == 0 ? 'Editar OperadorGruposAgenda' : 'Adicionar Operador Grupos Agenda';
+        }
+      }, [operadorgruposagendaData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-OperadorGruposAgenda' : 'form-container5 form-container-OperadorGruposAgenda'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='OperadorGruposAgenda' data={operadorgruposagendaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar OperadorGruposAgenda diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = operadorgruposagendaData?.id == 0 ? 'Editar OperadorGruposAgenda' : 'Adicionar Operador Grupos Agenda';
-    }
-  }, [operadorgruposagendaData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='nome'
+                label='Nome'
+                dataForm={operadorgruposagendaData}
+                className='inputIncNome'
+                name='nome'
+                value={operadorgruposagendaData.nome}
+                placeholder={`Informe Nome`}
+                onChange={onChange}
+                required
+                />
 
-    <div className={isMobile ? 'form-container form-container-OperadorGruposAgenda' : 'form-container5 form-container-OperadorGruposAgenda'}>
-
-      <form className='formInputCadInc' id={`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='OperadorGruposAgenda' data={operadorgruposagendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='nome'
-            label='Nome'
-            dataForm={operadorgruposagendaData}
-            className='inputIncNome'
-            name='nome'
-            value={operadorgruposagendaData.nome}
-            placeholder={`Informe Nome`}
-            onChange={onChange}
-            required
-            />
-
-            <InputInput
-            required
-            type='text'
-            maxLength={2147483647}
-            id='sqlwhere'
-            label='SQLWhere'
-            dataForm={operadorgruposagendaData}
-            className='inputIncNome'
-            name='sqlwhere'
-            value={operadorgruposagendaData.sqlwhere}
-            onChange={onChange}
-            />
+                <InputInput
+                required
+                type='text'
+                maxLength={2147483647}
+                id='sqlwhere'
+                label='SQLWhere'
+                dataForm={operadorgruposagendaData}
+                className='inputIncNome'
+                name='sqlwhere'
+                value={operadorgruposagendaData.sqlwhere}
+                onChange={onChange}
+                />
 
 
-            <OperadorComboBox
-            name={'operador'}
-            dataForm={operadorgruposagendaData}
-            value={operadorgruposagendaData.operador}
-            setValue={addValorOperador}
-            label={'Operador'}
-            />
-          </div>
-        </form>
+                <OperadorComboBox
+                name={'operador'}
+                dataForm={operadorgruposagendaData}
+                value={operadorgruposagendaData.operador}
+                setValue={addValorOperador}
+                label={'Operador'}
+                />
+              </div>
+            </form>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OperadorGruposAgenda' data={operadorgruposagendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/operadorgruposagenda'} id={operadorgruposagendaData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OperadorGruposAgenda' data={operadorgruposagendaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OperadorGruposAgendaForm-${operadorgruposagendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/operadorgruposagenda'} id={operadorgruposagendaData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

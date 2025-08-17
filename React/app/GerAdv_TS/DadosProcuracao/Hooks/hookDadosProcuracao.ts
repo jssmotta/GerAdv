@@ -41,7 +41,8 @@ export const useDadosProcuracaoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Dados Procuracao';
       setError(errorMessage);
-      //console.log('Erro ao carregar Dados Procuracao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Dados Procuracao');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useDadosProcuracaoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useDadosProcuracaoList = (dataService: IDadosProcuracaoService, cur
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar dadosprocuracao';
       setError(errorMessage);
-      //console.log('Erro ao carregar dadosprocuracao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar dadosprocuracao');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsDadosProcuracao() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.estadocivil.length > 100) { 
+        if (data.estadocivil.length > 100) { 
                                              return { isValid: false, message: 'O campo EstadoCivil não pode ter mais de 100 caracteres.' };
                                          } 
 if (data.nacionalidade.length > 100) { 

@@ -44,6 +44,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Tribunal { get; set; }
 
         /// <summary>
+        /// GUID - divGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// NumCodigo - divNumCodigo  
         /// </summary>
         [JsonPropertyName("numcodigo")]
@@ -102,12 +108,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("andar")]
         public string Andar { get; set; } = "";
-
-        /// <summary>
-        /// GUID - divGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -150,6 +150,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Tribunal { get; set; }
 
         /// <summary>
+        /// GUID - divGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// NumCodigo - divNumCodigo  
         /// </summary>
         [JsonPropertyName("numcodigo")]
@@ -208,12 +214,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("andar")]
         public string Andar { get; set; } = "";
-
-        /// <summary>
-        /// GUID - divGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;

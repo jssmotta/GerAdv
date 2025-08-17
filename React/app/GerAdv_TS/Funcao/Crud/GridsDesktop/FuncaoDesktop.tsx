@@ -146,7 +146,7 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
   'id_edit_Funcionarios': (
   <GridColumn
   key='Funcionarios'

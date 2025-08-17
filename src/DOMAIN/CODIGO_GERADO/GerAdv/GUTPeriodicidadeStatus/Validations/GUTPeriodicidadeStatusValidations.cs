@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGUTPeriodicidadeStatusValidation
 {
     Task<bool> ValidateReg(Models.GUTPeriodicidadeStatus reg, IGUTPeriodicidadeStatusService service, IGUTAtividadesReader gutatividadesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGUTPeriodicidadeStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGUTPeriodicidadeStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidation
 {
-    public async Task<bool> CanDelete(int id, IGUTPeriodicidadeStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTPeriodicidadeStatusService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
 
     private bool ValidSizes(Models.GUTPeriodicidadeStatus reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGUTPeriodicidadeStatusDicInfo.PgsGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGUTPeriodicidadeStatusDicInfo.PgsGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -35,8 +35,6 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -53,6 +51,15 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
             throw new SGValidationException("DataRealizado é obrigatório.");
         if (reg.GUID.IsEmpty())
             throw new SGValidationException("GUID é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.DataRealizado))
+        {
+            if (DateTime.TryParse(reg.DataRealizado, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataRealizado não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // GUTAtividades
         {
             var regGUTAtividades = await gutatividadesReader.Read(reg.GUTAtividade, oCnn);

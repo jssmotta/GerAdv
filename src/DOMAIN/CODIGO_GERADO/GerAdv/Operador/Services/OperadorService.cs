@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperadorFactory operadorFactory, IOperadorReader reader, IOperadorValidation validation, IOperadorWriter writer, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOperadorService, IDisposable
+public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperadorFactory operadorFactory, IOperadorReader reader, IOperadorValidation validation, IOperadorWriter writer, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOperadorService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,16 +18,12 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
     private readonly IOperadorValidation validation = validation;
     private readonly IOperadorWriter writer = writer;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAlertasService alertasService = alertasService;
-    private readonly IAlertasEnviadosService alertasenviadosService = alertasenviadosService;
     private readonly IDiario2Service diario2Service = diario2Service;
     private readonly IGUTAtividadesService gutatividadesService = gutatividadesService;
     private readonly IOperadorEMailPopupService operadoremailpopupService = operadoremailpopupService;
-    private readonly IOperadorGrupoService operadorgrupoService = operadorgrupoService;
     private readonly IOperadorGruposAgendaService operadorgruposagendaService = operadorgruposagendaService;
     private readonly IPontoVirtualService pontovirtualService = pontovirtualService;
     private readonly IPontoVirtualAcessosService pontovirtualacessosService = pontovirtualacessosService;
-    private readonly IProcessosParadosService processosparadosService = processosparadosService;
     private readonly IProcessOutputRequestService processoutputrequestService = processoutputrequestService;
     private readonly ISMSAliceService smsaliceService = smsaliceService;
     public async Task<IEnumerable<OperadorResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
@@ -106,18 +102,18 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
     }
 
-    private async Task<OperadorResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<OperadorResponse?> AddAndUpdate([FromBody] Models.Operador regOperador, [FromRoute, Required] string uri)
+    private async Task<OperadorResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<OperadorResponse?> AddAndUpdate([FromBody] Models.Operador? regOperador, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Operador: URI inválida");
-        }
-
         if (regOperador == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Operador: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -131,7 +127,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             var validade = await validation.ValidateReg(regOperador, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -140,7 +136,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -148,17 +144,17 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<OperadorResponse?> Validation([FromBody] Models.Operador regOperador, [FromRoute, Required] string uri)
+    public async Task<OperadorResponse?> Validation([FromBody] Models.Operador? regOperador, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Operador: URI inválida");
-        }
-
         if (regOperador == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Operador: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -172,7 +168,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
             var validade = await validation.ValidateReg(regOperador, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -181,7 +177,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regOperador.Id.IsEmptyIDNumber())
@@ -192,17 +188,17 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         return await reader.Read(regOperador.Id, oCnn);
     }
 
-    public async Task<OperadorResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<OperadorResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Operador: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -225,10 +221,10 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, alertasService, alertasenviadosService, diario2Service, gutatividadesService, operadoremailpopupService, operadorgrupoService, operadorgruposagendaService, pontovirtualService, pontovirtualacessosService, processosparadosService, processoutputrequestService, smsaliceService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, diario2Service, gutatividadesService, operadoremailpopupService, operadorgruposagendaService, pontovirtualService, pontovirtualacessosService, processoutputrequestService, smsaliceService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -237,15 +233,15 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var operador = await reader.Read(id, oCnn);
+        var operador = await reader.Read(id ?? default, oCnn);
         try
         {
             if (operador != null)
             {
-                var operWrite = await reader.ReadM(id, oCnn);
+                var operWrite = await reader.ReadM(id ?? default, oCnn);
                 if (operWrite == null)
                 {
                     throw new Exception("Operador não encontrado para exclusão.");
@@ -265,7 +261,7 @@ public partial class OperadorService(IOptions<AppSettings> appSettings, IFOperad
         return operador;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

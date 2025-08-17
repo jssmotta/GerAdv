@@ -54,7 +54,7 @@ public partial class FPontoVirtualFactory : IFPontoVirtualFactory, IDisposable
             throw new ObjectDisposedException(nameof(FPontoVirtualFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

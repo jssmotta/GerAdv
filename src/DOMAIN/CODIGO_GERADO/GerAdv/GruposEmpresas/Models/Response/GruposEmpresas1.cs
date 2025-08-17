@@ -50,6 +50,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Observacoes { get; set; } = "";
 
         /// <summary>
+        /// GUID - grpGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Icone - grpIcone - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("icone")]
@@ -60,12 +66,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("despesaunificada")]
         public bool DespesaUnificada { get; set; }
-
-        /// <summary>
-        /// GUID - grpGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -114,6 +114,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Observacoes { get; set; } = "";
 
         /// <summary>
+        /// GUID - grpGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Icone - grpIcone - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("icone")]
@@ -124,12 +130,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("despesaunificada")]
         public bool DespesaUnificada { get; set; }
-
-        /// <summary>
-        /// GUID - grpGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeoponentes")]
         public string NomeOponentes { get; set; } = string.Empty;

@@ -41,7 +41,8 @@ export const useContratosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Contratos';
       setError(errorMessage);
-      //console.log('Erro ao carregar Contratos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Contratos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useContratosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useContratosList = (dataService: IContratosService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar contratos';
       setError(errorMessage);
-      //console.log('Erro ao carregar contratos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar contratos');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsContratos() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.protestar.length > 50) { 
+        if (data.protestar.length > 50) { 
                                              return { isValid: false, message: 'O campo Protestar não pode ter mais de 50 caracteres.' };
                                          } 
 if (data.juros.length > 5) { 

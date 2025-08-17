@@ -94,18 +94,18 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         }
     }
 
-    private async Task<TipoModeloDocumentoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<TipoModeloDocumentoResponse?> AddAndUpdate([FromBody] Models.TipoModeloDocumento regTipoModeloDocumento, [FromRoute, Required] string uri)
+    private async Task<TipoModeloDocumentoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<TipoModeloDocumentoResponse?> AddAndUpdate([FromBody] Models.TipoModeloDocumento? regTipoModeloDocumento, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("TipoModeloDocumento: URI inválida");
-        }
-
         if (regTipoModeloDocumento == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("TipoModeloDocumento: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regTipoModeloDocumento, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<TipoModeloDocumentoResponse?> Validation([FromBody] Models.TipoModeloDocumento regTipoModeloDocumento, [FromRoute, Required] string uri)
+    public async Task<TipoModeloDocumentoResponse?> Validation([FromBody] Models.TipoModeloDocumento? regTipoModeloDocumento, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("TipoModeloDocumento: URI inválida");
-        }
-
         if (regTipoModeloDocumento == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("TipoModeloDocumento: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regTipoModeloDocumento, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regTipoModeloDocumento.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         return await reader.Read(regTipoModeloDocumento.Id, oCnn);
     }
 
-    public async Task<TipoModeloDocumentoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<TipoModeloDocumentoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("TipoModeloDocumento: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
             var deleteValidation = await validation.CanDelete(id, this, modelosdocumentosService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var tipomodelodocumento = await reader.Read(id, oCnn);
+        var tipomodelodocumento = await reader.Read(id ?? default, oCnn);
         try
         {
             if (tipomodelodocumento != null)
@@ -237,7 +237,7 @@ public partial class TipoModeloDocumentoService(IOptions<AppSettings> appSetting
         return tipomodelodocumento;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

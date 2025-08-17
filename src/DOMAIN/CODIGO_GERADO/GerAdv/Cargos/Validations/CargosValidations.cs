@@ -9,25 +9,25 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ICargosValidation
 {
     Task<bool> ValidateReg(Models.Cargos reg, ICargosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ICargosService service, IAdvogadosService advogadosService, IColaboradoresService colaboradoresService, IFuncionariosService funcionariosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ICargosService service, IAdvogadosService advogadosService, IColaboradoresService colaboradoresService, IFuncionariosService funcionariosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class CargosValidation : ICargosValidation
 {
-    public async Task<bool> CanDelete(int id, ICargosService service, IAdvogadosService advogadosService, IColaboradoresService colaboradoresService, IFuncionariosService funcionariosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ICargosService service, IAdvogadosService advogadosService, IColaboradoresService colaboradoresService, IFuncionariosService funcionariosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Cargo = id }, uri);
+        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Cargo = id ?? default }, uri);
         if (advogadosExists0 != null && advogadosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.");
-        var colaboradoresExists1 = await colaboradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { Cargo = id }, uri);
+        var colaboradoresExists1 = await colaboradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { Cargo = id ?? default }, uri);
         if (colaboradoresExists1 != null && colaboradoresExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.");
-        var funcionariosExists2 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Cargo = id }, uri);
+        var funcionariosExists2 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Cargo = id ?? default }, uri);
         if (funcionariosExists2 != null && funcionariosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
         return true;
@@ -35,8 +35,8 @@ public class CargosValidation : ICargosValidation
 
     private bool ValidSizes(Models.Cargos reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBCargosDicInfo.CarNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBCargosDicInfo.CarNome.FTamanho} caracteres.");
         return true;
     }
 

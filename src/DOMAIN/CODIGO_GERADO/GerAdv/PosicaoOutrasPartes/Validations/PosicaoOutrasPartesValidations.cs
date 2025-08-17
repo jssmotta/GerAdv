@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPosicaoOutrasPartesValidation
 {
     Task<bool> ValidateReg(Models.PosicaoOutrasPartes reg, IPosicaoOutrasPartesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
 {
-    public async Task<bool> CanDelete(int id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var terceirosExists0 = await terceirosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTerceiros { Situacao = id }, uri);
+        var terceirosExists0 = await terceirosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTerceiros { Situacao = id ?? default }, uri);
         if (terceirosExists0 != null && terceirosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Terceiros associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
 
     private bool ValidSizes(Models.PosicaoOutrasPartes reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 30)
-            throw new SGValidationException($"Descricao deve ter no máximo 30 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBPosicaoOutrasPartesDicInfo.PosDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBPosicaoOutrasPartesDicInfo.PosDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBPosicaoOutrasPartesDicInfo.PosGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBPosicaoOutrasPartesDicInfo.PosGUID.FTamanho} caracteres.");
         return true;
     }
 

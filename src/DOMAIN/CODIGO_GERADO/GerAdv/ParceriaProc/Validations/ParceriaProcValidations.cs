@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IParceriaProcValidation
 {
     Task<bool> ValidateReg(Models.ParceriaProc reg, IParceriaProcService service, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IParceriaProcService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IParceriaProcService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ParceriaProcValidation : IParceriaProcValidation
 {
-    public async Task<bool> CanDelete(int id, IParceriaProcService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IParceriaProcService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class ParceriaProcValidation : IParceriaProcValidation
 
     private bool ValidSizes(Models.ParceriaProc reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBParceriaProcDicInfo.ParGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBParceriaProcDicInfo.ParGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -35,8 +35,6 @@ public class ParceriaProcValidation : IParceriaProcValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

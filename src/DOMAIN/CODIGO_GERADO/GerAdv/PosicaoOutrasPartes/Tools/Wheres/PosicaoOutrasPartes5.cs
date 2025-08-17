@@ -13,7 +13,7 @@ public partial interface IPosicaoOutrasPartesWhere
 
 public partial class PosicaoOutrasPartesWhere(IFPosicaoOutrasPartesFactory posicaooutraspartesFactory) : IPosicaoOutrasPartesWhere
 {
-    private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory;
+    private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory ?? throw new ArgumentNullException(nameof(posicaooutraspartesFactory));
     public PosicaoOutrasPartesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _posicaooutraspartesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

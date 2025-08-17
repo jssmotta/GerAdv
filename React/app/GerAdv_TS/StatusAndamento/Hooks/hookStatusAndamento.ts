@@ -41,7 +41,8 @@ export const useStatusAndamentoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Status Andamento';
       setError(errorMessage);
-      //console.log('Erro ao carregar Status Andamento');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Status Andamento');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useStatusAndamentoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useStatusAndamentoList = (dataService: IStatusAndamentoService, cur
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar statusandamento';
       setError(errorMessage);
-      //console.log('Erro ao carregar statusandamento');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar statusandamento');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 80) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

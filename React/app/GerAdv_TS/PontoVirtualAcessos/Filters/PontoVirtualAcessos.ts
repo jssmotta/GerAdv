@@ -7,7 +7,6 @@ export interface FilterPontoVirtualAcessos
     wildcardChar?: string;
     operador?: number;
     operador_end?: number;
- datahora_end?: string;
  datahora?: string;
  tipo?: number;
  origem?: string;
@@ -20,7 +19,6 @@ export class FilterPontoVirtualAcessosDefaults implements FilterPontoVirtualAces
     wildcardChar?: string = '';
     operador?: number = -2147483648;
     operador_end?: number = -2147483648;
-    datahora_end?: string = '';
     datahora?: string = '';
     tipo?: number= -2147483648;
     origem?: string = '';

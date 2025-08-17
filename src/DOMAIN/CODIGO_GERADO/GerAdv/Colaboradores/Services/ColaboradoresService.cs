@@ -96,18 +96,18 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
     }
 
-    private async Task<ColaboradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ColaboradoresResponse?> AddAndUpdate([FromBody] Models.Colaboradores regColaboradores, [FromRoute, Required] string uri)
+    private async Task<ColaboradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ColaboradoresResponse?> AddAndUpdate([FromBody] Models.Colaboradores? regColaboradores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Colaboradores: URI inválida");
-        }
-
         if (regColaboradores == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Colaboradores: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -121,7 +121,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -130,7 +130,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -138,17 +138,17 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ColaboradoresResponse?> Validation([FromBody] Models.Colaboradores regColaboradores, [FromRoute, Required] string uri)
+    public async Task<ColaboradoresResponse?> Validation([FromBody] Models.Colaboradores? regColaboradores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Colaboradores: URI inválida");
-        }
-
         if (regColaboradores == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Colaboradores: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -162,7 +162,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             var validade = await validation.ValidateReg(regColaboradores, this, cargosReader, clientesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -171,7 +171,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regColaboradores.Id.IsEmptyIDNumber())
@@ -182,17 +182,17 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         return await reader.Read(regColaboradores.Id, oCnn);
     }
 
-    public async Task<ColaboradoresResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ColaboradoresResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Colaboradores: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -207,7 +207,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -216,10 +216,10 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var colaboradores = await reader.Read(id, oCnn);
+        var colaboradores = await reader.Read(id ?? default, oCnn);
         try
         {
             if (colaboradores != null)
@@ -239,7 +239,7 @@ public partial class ColaboradoresService(IOptions<AppSettings> appSettings, IFC
         return colaboradores;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

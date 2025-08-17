@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITribEnderecosValidation
 {
     Task<bool> ValidateReg(Models.TribEnderecos reg, ITribEnderecosService service, ITribunalReader tribunalReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITribEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITribEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TribEnderecosValidation : ITribEnderecosValidation
 {
-    public async Task<bool> CanDelete(int id, ITribEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITribEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class TribEnderecosValidation : ITribEnderecosValidation
 
     private bool ValidSizes(Models.TribEnderecos reg)
     {
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBTribEnderecosDicInfo.TreEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBTribEnderecosDicInfo.TreEndereco.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBTribEnderecosDicInfo.TreCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBTribEnderecosDicInfo.TreCEP.FTamanho} caracteres.");
         return true;
     }
 

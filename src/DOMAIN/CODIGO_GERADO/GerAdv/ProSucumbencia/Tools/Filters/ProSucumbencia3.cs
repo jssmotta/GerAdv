@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterProSucumbencia
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -24,20 +24,26 @@ public partial record FilterProSucumbencia
     [JsonPropertyName("instancia")]
     public int Instancia { get; set; } = int.MinValue;
 
+    [JsonPropertyName("instancia_end")]
+    public int Instancia_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipoorigemsucumbencia")]
     public int TipoOrigemSucumbencia { get; set; } = int.MinValue;
+
+    [JsonPropertyName("tipoorigemsucumbencia_end")]
+    public int TipoOrigemSucumbencia_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("valor")]
     public decimal Valor { get; set; } = decimal.MinValue;
@@ -46,16 +52,16 @@ public partial record FilterProSucumbencia
     public decimal Valor_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("percentual")]
-    public string Percentual { get; set; } = string.Empty;
+    public string? Percentual { get; set; } = string.Empty;
 
     [JsonPropertyName("percentual_end")]
-    public string Percentual_end { get; set; } = string.Empty;
+    public string? Percentual_end { get; set; } = string.Empty;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? GUID { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

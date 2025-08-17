@@ -41,7 +41,8 @@ export const useInstanciaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Instancia';
       setError(errorMessage);
-      //console.log('Erro ao carregar Instancia');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Instancia');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useInstanciaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useInstanciaList = (dataService: IInstanciaService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar instancia';
       setError(errorMessage);
-      //console.log('Erro ao carregar instancia');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar instancia');
     } finally {
       setLoading(false);
     }

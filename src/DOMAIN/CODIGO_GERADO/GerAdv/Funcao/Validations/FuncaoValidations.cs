@@ -9,22 +9,22 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IFuncaoValidation
 {
     Task<bool> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FuncaoValidation : IFuncaoValidation
 {
-    public async Task<bool> CanDelete(int id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var funcionariosExists0 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Funcao = id }, uri);
+        var funcionariosExists0 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Funcao = id ?? default }, uri);
         if (funcionariosExists0 != null && funcionariosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
-        var prepostosExists1 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Funcao = id }, uri);
+        var prepostosExists1 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Funcao = id ?? default }, uri);
         if (prepostosExists1 != null && prepostosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
         return true;
@@ -32,8 +32,8 @@ public class FuncaoValidation : IFuncaoValidation
 
     private bool ValidSizes(Models.Funcao reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 40)
-            throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBFuncaoDicInfo.FunDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBFuncaoDicInfo.FunDescricao.FTamanho} caracteres.");
         return true;
     }
 

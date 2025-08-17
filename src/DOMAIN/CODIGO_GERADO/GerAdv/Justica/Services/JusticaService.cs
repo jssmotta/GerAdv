@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class JusticaService(IOptions<AppSettings> appSettings, IFJusticaFactory justicaFactory, IJusticaReader reader, IJusticaValidation validation, IJusticaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IJusticaService, IDisposable
+public partial class JusticaService(IOptions<AppSettings> appSettings, IFJusticaFactory justicaFactory, IJusticaReader reader, IJusticaValidation validation, IJusticaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IJusticaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
     private readonly IJusticaWriter writer = writer;
     private readonly IAcaoService acaoService = acaoService;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAreasJusticaService areasjusticaService = areasjusticaService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly IFaseService faseService = faseService;
     private readonly IObjetosService objetosService = objetosService;
@@ -102,18 +101,18 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
     }
 
-    private async Task<JusticaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<JusticaResponse?> AddAndUpdate([FromBody] Models.Justica regJustica, [FromRoute, Required] string uri)
+    private async Task<JusticaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<JusticaResponse?> AddAndUpdate([FromBody] Models.Justica? regJustica, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Justica: URI inválida");
-        }
-
         if (regJustica == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Justica: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -127,7 +126,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             var validade = await validation.ValidateReg(regJustica, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -136,7 +135,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -144,17 +143,17 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<JusticaResponse?> Validation([FromBody] Models.Justica regJustica, [FromRoute, Required] string uri)
+    public async Task<JusticaResponse?> Validation([FromBody] Models.Justica? regJustica, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Justica: URI inválida");
-        }
-
         if (regJustica == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Justica: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -168,7 +167,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
             var validade = await validation.ValidateReg(regJustica, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -177,7 +176,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regJustica.Id.IsEmptyIDNumber())
@@ -188,17 +187,17 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         return await reader.Read(regJustica.Id, oCnn);
     }
 
-    public async Task<JusticaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<JusticaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Justica: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -210,10 +209,10 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, areasjusticaService, divisaotribunalService, faseService, objetosService, poderjudiciarioassociadoService, tiporecursoService, tribunalService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, faseService, objetosService, poderjudiciarioassociadoService, tiporecursoService, tribunalService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -222,10 +221,10 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var justica = await reader.Read(id, oCnn);
+        var justica = await reader.Read(id ?? default, oCnn);
         try
         {
             if (justica != null)
@@ -245,7 +244,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
         return justica;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

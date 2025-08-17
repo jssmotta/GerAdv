@@ -10,31 +10,34 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterPontoVirtual
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("horaentrada")]
-    public string HoraEntrada { get; set; } = string.Empty;
+    public string? HoraEntrada { get; set; } = string.Empty;
 
     [JsonPropertyName("horaentrada_end")]
-    public string HoraEntrada_end { get; set; } = string.Empty;
+    public string? HoraEntrada_end { get; set; } = string.Empty;
 
     [JsonPropertyName("horasaida")]
-    public string HoraSaida { get; set; } = string.Empty;
+    public string? HoraSaida { get; set; } = string.Empty;
 
     [JsonPropertyName("horasaida_end")]
-    public string HoraSaida_end { get; set; } = string.Empty;
+    public string? HoraSaida_end { get; set; } = string.Empty;
 
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = int.MinValue;
 
+    [JsonPropertyName("operador_end")]
+    public int Operador_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("key")]
-    public string Key { get; set; } = string.Empty;
+    public string? Key { get; set; } = string.Empty;
 
     [JsonPropertyName("key_end")]
-    public string Key_end { get; set; } = string.Empty;
+    public string? Key_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

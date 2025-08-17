@@ -62,441 +62,432 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    contratosData.cliente = getParamFromUrl('clientes');
+      contratosData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
 
-if (getParamFromUrl('advogados') > 0) {
-  if (contratosData.id === 0 && contratosData.advogado == 0) {
-    advogadosApi
-    .getById(getParamFromUrl('advogados'))
-    .then((response) => {
-      setNomeAdvogados(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('advogados') > 0) {
+    if (contratosData.id === 0 && contratosData.advogado == 0) {
+      advogadosApi
+      .getById(getParamFromUrl('advogados'))
+      .then((response) => {
+        setNomeAdvogados(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    contratosData.advogado = getParamFromUrl('advogados');
-  }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const addValorAdvogado = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'advogado', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
-
-        if (!isSubmitting) {
-          setIsSubmitting(true);
-
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Contratos:');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
+        contratosData.advogado = getParamFromUrl('advogados');
+      }
+    }
+    const addValorCliente = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'cliente', value: e.id } });
       };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+      const addValorAdvogado = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'advogado', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ContratosForm-${contratosData.id}`)
-          } as unknown as React.FormEvent;
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de Contratos:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
+          }
+        };
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar Contratos diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = contratosData?.id == 0 ? 'Editar Contratos' : 'Adicionar Contratos';
-      }
-    }, [contratosData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-      <div className={isMobile ? 'form-container form-container-Contratos' : 'form-container form-container-Contratos'}>
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`ContratosForm-${contratosData.id}`)
+              } as unknown as React.FormEvent;
 
-        <form className='formInputCadInc' id={`ContratosForm-${contratosData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar Contratos diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = contratosData?.id == 0 ? 'Editar Contratos' : 'Adicionar Contratos';
+            }
+          }, [contratosData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-              <InputName
-              type='text'
-              id='guid'
-              label='GUID'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='guid'
-              value={contratosData.guid}
-              placeholder={`Informe GUID`}
-              onChange={onChange}
-              required
-              />
+            <div className={isMobile ? 'form-container form-container-Contratos' : 'form-container form-container-Contratos'}>
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='processo'
-              label='Processo'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='processo'
-              value={contratosData.processo}
-              onChange={onChange}
-              />
+              <form className='formInputCadInc' id={`ContratosForm-${contratosData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
 
-              <ClientesComboBox
-              name={'cliente'}
-              dataForm={contratosData}
-              value={contratosData.cliente}
-              setValue={addValorCliente}
-              label={'Clientes'}
-              />
-
-              <AdvogadosComboBox
-              name={'advogado'}
-              dataForm={contratosData}
-              value={contratosData.advogado}
-              setValue={addValorAdvogado}
-              label={'Advogados'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dia'
-              label='Dia'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='dia'
-              value={contratosData.dia}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='processo'
+                    label='Processo'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='processo'
+                    value={contratosData.processo}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valor'
-              label='Valor'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='valor'
-              value={contratosData.valor}
-              onChange={onChange}
-              />
+                    <ClientesComboBox
+                    name={'cliente'}
+                    dataForm={contratosData}
+                    value={contratosData.cliente}
+                    setValue={addValorCliente}
+                    label={'Clientes'}
+                    />
+
+                    <AdvogadosComboBox
+                    name={'advogado'}
+                    dataForm={contratosData}
+                    value={contratosData.advogado}
+                    setValue={addValorAdvogado}
+                    label={'Advogados'}
+                    />
+
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='dia'
+                    label='Dia'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='dia'
+                    value={contratosData.dia}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='datainicio'
-              label='DataInicio'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='datainicio'
-              value={contratosData.datainicio}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='valor'
+                    label='Valor'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='valor'
+                    value={contratosData.valor}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='datatermino'
-              label='DataTermino'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='datatermino'
-              value={contratosData.datatermino}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={contratosData} label='OcultarRelatorio' name='ocultarrelatorio' checked={contratosData.ocultarrelatorio} onChange={onChange} />
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='percescritorio'
-              label='PercEscritorio'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='percescritorio'
-              value={contratosData.percescritorio}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='datainicio'
+                    label='DataInicio'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='datainicio'
+                    value={contratosData.datainicio}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valorconsultoria'
-              label='ValorConsultoria'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='valorconsultoria'
-              value={contratosData.valorconsultoria}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='datatermino'
+                    label='DataTermino'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='datatermino'
+                    value={contratosData.datatermino}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={contratosData} label='OcultarRelatorio' name='ocultarrelatorio' checked={contratosData.ocultarrelatorio} onChange={onChange} />
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='percescritorio'
+                    label='PercEscritorio'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='percescritorio'
+                    value={contratosData.percescritorio}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='tipocobranca'
-              label='TipoCobranca'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='tipocobranca'
-              value={contratosData.tipocobranca}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='valorconsultoria'
+                    label='ValorConsultoria'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='valorconsultoria'
+                    value={contratosData.valorconsultoria}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='protestar'
-              label='Protestar'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='protestar'
-              value={contratosData.protestar}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='tipocobranca'
+                    label='TipoCobranca'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='tipocobranca'
+                    value={contratosData.tipocobranca}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={5}
-              id='juros'
-              label='Juros'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='juros'
-              value={contratosData.juros}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='protestar'
+                    label='Protestar'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='protestar'
+                    value={contratosData.protestar}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valorrealizavel'
-              label='ValorRealizavel'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='valorrealizavel'
-              value={contratosData.valorrealizavel}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={5}
+                    id='juros'
+                    label='Juros'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='juros'
+                    value={contratosData.juros}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={15}
-              id='documento'
-              label='DOCUMENTO'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='documento'
-              value={contratosData.documento}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='valorrealizavel'
+                    label='ValorRealizavel'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='valorrealizavel'
+                    value={contratosData.valorrealizavel}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='email'
-              maxLength={300}
-              id='email1'
-              label='EMail1'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='email1'
-              value={contratosData.email1}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={15}
+                    id='documento'
+                    label='DOCUMENTO'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='documento'
+                    value={contratosData.documento}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='email'
-              maxLength={300}
-              id='email2'
-              label='EMail2'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='email2'
-              value={contratosData.email2}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='email'
-              maxLength={300}
-              id='email3'
-              label='EMail3'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='email3'
-              value={contratosData.email3}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='email'
+                    maxLength={300}
+                    id='email1'
+                    label='EMail1'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='email1'
+                    value={contratosData.email1}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='pessoa1'
-              label='Pessoa1'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='pessoa1'
-              value={contratosData.pessoa1}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='email'
+                    maxLength={300}
+                    id='email2'
+                    label='EMail2'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='email2'
+                    value={contratosData.email2}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='email'
+                    maxLength={300}
+                    id='email3'
+                    label='EMail3'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='email3'
+                    value={contratosData.email3}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='pessoa2'
-              label='Pessoa2'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='pessoa2'
-              value={contratosData.pessoa2}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='pessoa1'
+                    label='Pessoa1'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='pessoa1'
+                    value={contratosData.pessoa1}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='pessoa3'
-              label='Pessoa3'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='pessoa3'
-              value={contratosData.pessoa3}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='pessoa2'
+                    label='Pessoa2'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='pessoa2'
+                    value={contratosData.pessoa2}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='obs'
-              label='OBS'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='obs'
-              value={contratosData.obs}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='pessoa3'
+                    label='Pessoa3'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='pessoa3'
+                    value={contratosData.pessoa3}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='clientecontrato'
-              label='ClienteContrato'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='clientecontrato'
-              value={contratosData.clientecontrato}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='obs'
+                    label='OBS'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='obs'
+                    value={contratosData.obs}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='idextrangeiro'
-              label='IdExtrangeiro'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='idextrangeiro'
-              value={contratosData.idextrangeiro}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='clientecontrato'
+                    label='ClienteContrato'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='clientecontrato'
+                    value={contratosData.clientecontrato}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='chavecontrato'
-              label='ChaveContrato'
-              dataForm={contratosData}
-              className='inputIncNome'
-              name='chavecontrato'
-              value={contratosData.chavecontrato}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={contratosData} label='Avulso' name='avulso' checked={contratosData.avulso} onChange={onChange} />
-            </div><div className='grid-container'><InputCheckbox dataForm={contratosData} label='Suspenso' name='suspenso' checked={contratosData.suspenso} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={10}
-            id='multa'
-            label='Multa'
-            dataForm={contratosData}
-            className='inputIncNome'
-            name='multa'
-            value={contratosData.multa}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='idextrangeiro'
+                    label='IdExtrangeiro'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='idextrangeiro'
+                    value={contratosData.idextrangeiro}
+                    onChange={onChange}
+                    />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/contratos'} id={contratosData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='chavecontrato'
+                    label='ChaveContrato'
+                    dataForm={contratosData}
+                    className='inputIncNome'
+                    name='chavecontrato'
+                    value={contratosData.chavecontrato}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={contratosData} label='Avulso' name='avulso' checked={contratosData.avulso} onChange={onChange} />
+                  </div><div className='grid-container'><InputCheckbox dataForm={contratosData} label='Suspenso' name='suspenso' checked={contratosData.suspenso} onChange={onChange} />
+
+                  <InputInput
+                  type='text'
+                  maxLength={10}
+                  id='multa'
+                  label='Multa'
+                  dataForm={contratosData}
+                  className='inputIncNome'
+                  name='multa'
+                  value={contratosData.multa}
+                  onChange={onChange}
+                  />
+
+                </div>
+              </form>
+
+
+              {isMobile && (
+                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Contratos' data={contratosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ContratosForm-${contratosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                )}
+                <DeleteButton page={'/pages/contratos'} id={contratosData.id} closeModel={onClose} dadoApi={dadoApi} />
+              </div>
+              <div className='form-spacer'></div>
+              </>
+            );
+          };

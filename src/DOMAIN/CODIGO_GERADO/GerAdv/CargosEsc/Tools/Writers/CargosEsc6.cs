@@ -14,13 +14,13 @@ public partial interface ICargosEscWriter
 
 public class CargosEscWriter(IFCargosEscFactory cargosescFactory) : ICargosEscWriter
 {
-    private readonly IFCargosEscFactory _cargosescFactory = cargosescFactory;
-    public async Task Delete(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFCargosEscFactory _cargosescFactory = cargosescFactory ?? throw new ArgumentNullException(nameof(cargosescFactory));
+    public virtual async Task Delete(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection oCnn)
     {
         await _cargosescFactory.DeleteAsync(operadorId, cargosesc.Id, oCnn);
     }
 
-    public async Task<FCargosEsc> WriteAsync(Models.CargosEsc cargosesc, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FCargosEsc> WriteAsync(Models.CargosEsc cargosesc, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (cargosesc.Id.IsEmptyIDNumber() ? _cargosescFactory.CreateAsync() : _cargosescFactory.CreateFromIdAsync(cargosesc.Id, oCnn));
         dbRec.FPercentual = cargosesc.Percentual;

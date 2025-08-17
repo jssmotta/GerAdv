@@ -79,7 +79,8 @@ export class ProCDAService implements IProCDAService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ProCDA list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ProCDA list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ProCDAService implements IProCDAService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ProCDA');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProCDA');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ProCDAService implements IProCDAService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ProCDA');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProCDA');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ProCDA:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ProCDA:');
       return [];
     }
   }

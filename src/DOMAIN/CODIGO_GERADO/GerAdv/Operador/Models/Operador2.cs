@@ -143,6 +143,12 @@ namespace MenphisSI.GerAdv.Models
         public bool IsFinanceiro { get; set; }
 
         /// <summary>
+        /// GUID - operGUID - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Top - operTop  
         /// </summary>
         [JsonPropertyName("top")]
@@ -222,12 +228,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("suporteipultimoacesso")]
         public string SuporteIpUltimoAcesso { get; set; } = "";
-
-        /// <summary>
-        /// GUID - operGUID - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -369,6 +369,12 @@ namespace MenphisSI.GerAdv.Models.All
         public bool IsFinanceiro { get; set; }
 
         /// <summary>
+        /// GUID - operGUID - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Top - operTop  
         /// </summary>
         [JsonPropertyName("top")]
@@ -448,11 +454,5 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("suporteipultimoacesso")]
         public string SuporteIpUltimoAcesso { get; set; } = "";
-
-        /// <summary>
-        /// GUID - operGUID - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }

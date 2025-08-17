@@ -13,7 +13,7 @@ public partial interface IPenhoraWhere
 
 public partial class PenhoraWhere(IFPenhoraFactory penhoraFactory) : IPenhoraWhere
 {
-    private readonly IFPenhoraFactory _penhoraFactory = penhoraFactory;
+    private readonly IFPenhoraFactory _penhoraFactory = penhoraFactory ?? throw new ArgumentNullException(nameof(penhoraFactory));
     public PenhoraResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _penhoraFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -24,8 +24,8 @@ public partial class PenhoraWhere(IFPenhoraFactory penhoraFactory) : IPenhoraWhe
             Nome = dbRec.FNome ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
-            Master = dbRec.FMaster,
             GUID = dbRec.FGUID ?? string.Empty,
+            Master = dbRec.FMaster,
         };
         if (DateTime.TryParse(dbRec.FDataPenhora, out DateTime XDataPenhora))
         {

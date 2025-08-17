@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBFuncionarios
 {
     public int ID { get; set; }
+    public string? FGUID { get; set; }
     public string? FEMailPro { get; set; }
     public int FCargo { get; set; }
     public string? FNome { get; set; }
@@ -35,5 +36,4 @@ public partial interface IDBFuncionarios
     public bool FLiberaAgenda { get; set; }
     public string? FPasta { get; set; }
     public string? FClass { get; set; }
-    public string? FGUID { get; set; }
 }

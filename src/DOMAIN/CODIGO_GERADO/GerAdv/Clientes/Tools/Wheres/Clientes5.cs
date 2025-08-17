@@ -13,7 +13,7 @@ public partial interface IClientesWhere
 
 public partial class ClientesWhere(IFClientesFactory clientesFactory) : IClientesWhere
 {
-    private readonly IFClientesFactory _clientesFactory = clientesFactory;
+    private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException(nameof(clientesFactory));
     public ClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _clientesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -23,6 +23,7 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -60,7 +61,6 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
         {

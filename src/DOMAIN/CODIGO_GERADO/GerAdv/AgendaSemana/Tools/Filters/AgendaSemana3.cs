@@ -10,43 +10,52 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterAgendaSemana
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("paranome")]
-    public string ParaNome { get; set; } = string.Empty;
+    public string? ParaNome { get; set; } = string.Empty;
 
     [JsonPropertyName("paranome_end")]
-    public string ParaNome_end { get; set; } = string.Empty;
+    public string? ParaNome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("funcionario")]
     public int Funcionario { get; set; } = int.MinValue;
 
+    [JsonPropertyName("funcionario_end")]
+    public int Funcionario_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("advogado")]
     public int Advogado { get; set; } = int.MinValue;
 
+    [JsonPropertyName("advogado_end")]
+    public int Advogado_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("hora")]
-    public string Hora { get; set; } = string.Empty;
+    public string? Hora { get; set; } = string.Empty;
 
     [JsonPropertyName("hora_end")]
-    public string Hora_end { get; set; } = string.Empty;
+    public string? Hora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipocompromisso")]
     public int TipoCompromisso { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tipocompromisso_end")]
+    public int TipoCompromisso_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("compromisso")]
-    public string Compromisso { get; set; } = string.Empty;
+    public string? Compromisso { get; set; } = string.Empty;
 
     [JsonPropertyName("compromisso_end")]
-    public string Compromisso_end { get; set; } = string.Empty;
+    public string? Compromisso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("concluido")]
     public int Concluido { get; set; } = int.MinValue;
@@ -58,31 +67,34 @@ public partial record FilterAgendaSemana
     public int Importante { get; set; } = int.MinValue;
 
     [JsonPropertyName("horafinal")]
-    public string HoraFinal { get; set; } = string.Empty;
+    public string? HoraFinal { get; set; } = string.Empty;
 
     [JsonPropertyName("horafinal_end")]
-    public string HoraFinal_end { get; set; } = string.Empty;
+    public string? HoraFinal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("nomecliente")]
-    public string NomeCliente { get; set; } = string.Empty;
+    public string? NomeCliente { get; set; } = string.Empty;
 
     [JsonPropertyName("nomecliente_end")]
-    public string NomeCliente_end { get; set; } = string.Empty;
+    public string? NomeCliente_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipo")]
-    public string Tipo { get; set; } = string.Empty;
+    public string? Tipo { get; set; } = string.Empty;
 
     [JsonPropertyName("tipo_end")]
-    public string Tipo_end { get; set; } = string.Empty;
+    public string? Tipo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

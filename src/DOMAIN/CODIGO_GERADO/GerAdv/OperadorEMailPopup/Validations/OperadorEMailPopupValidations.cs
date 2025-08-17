@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOperadorEMailPopupValidation
 {
     Task<bool> ValidateReg(Models.OperadorEMailPopup reg, IOperadorEMailPopupService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
 {
-    public async Task<bool> CanDelete(int id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,22 +26,20 @@ public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
 
     private bool ValidSizes(Models.OperadorEMailPopup reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.Senha != null && reg.Senha.Length > 50)
-            throw new SGValidationException($"Senha deve ter no máximo 50 caracteres.");
-        if (reg.SMTP != null && reg.SMTP.Length > 255)
-            throw new SGValidationException($"SMTP deve ter no máximo 255 caracteres.");
-        if (reg.POP3 != null && reg.POP3.Length > 255)
-            throw new SGValidationException($"POP3 deve ter no máximo 255 caracteres.");
-        if (reg.Descricao != null && reg.Descricao.Length > 100)
-            throw new SGValidationException($"Descricao deve ter no máximo 100 caracteres.");
-        if (reg.Usuario != null && reg.Usuario.Length > 50)
-            throw new SGValidationException($"Usuario deve ter no máximo 50 caracteres.");
-        if (reg.Senha256 != null && reg.Senha256.Length > 4000)
-            throw new SGValidationException($"Senha256 deve ter no máximo 4000 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBOperadorEMailPopupDicInfo.OepNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBOperadorEMailPopupDicInfo.OepNome.FTamanho} caracteres.");
+        if (reg.Senha != null && reg.Senha.Length > DBOperadorEMailPopupDicInfo.OepSenha.FTamanho)
+            throw new SGValidationException($"Senha deve ter no máximo {DBOperadorEMailPopupDicInfo.OepSenha.FTamanho} caracteres.");
+        if (reg.SMTP != null && reg.SMTP.Length > DBOperadorEMailPopupDicInfo.OepSMTP.FTamanho)
+            throw new SGValidationException($"SMTP deve ter no máximo {DBOperadorEMailPopupDicInfo.OepSMTP.FTamanho} caracteres.");
+        if (reg.POP3 != null && reg.POP3.Length > DBOperadorEMailPopupDicInfo.OepPOP3.FTamanho)
+            throw new SGValidationException($"POP3 deve ter no máximo {DBOperadorEMailPopupDicInfo.OepPOP3.FTamanho} caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBOperadorEMailPopupDicInfo.OepDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBOperadorEMailPopupDicInfo.OepDescricao.FTamanho} caracteres.");
+        if (reg.Usuario != null && reg.Usuario.Length > DBOperadorEMailPopupDicInfo.OepUsuario.FTamanho)
+            throw new SGValidationException($"Usuario deve ter no máximo {DBOperadorEMailPopupDicInfo.OepUsuario.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBOperadorEMailPopupDicInfo.OepGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBOperadorEMailPopupDicInfo.OepGUID.FTamanho} caracteres.");
         return true;
     }
 

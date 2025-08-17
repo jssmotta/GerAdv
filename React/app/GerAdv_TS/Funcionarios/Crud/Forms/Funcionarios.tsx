@@ -68,466 +68,470 @@ if (getParamFromUrl('cargos') > 0) {
       setNomeCargos(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    funcionariosData.cargo = getParamFromUrl('cargos');
+      funcionariosData.cargo = getParamFromUrl('cargos');
+    }
   }
-}
 
-if (getParamFromUrl('funcao') > 0) {
-  if (funcionariosData.id === 0 && funcionariosData.funcao == 0) {
-    funcaoApi
-    .getById(getParamFromUrl('funcao'))
-    .then((response) => {
-      setNomeFuncao(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('funcao') > 0) {
+    if (funcionariosData.id === 0 && funcionariosData.funcao == 0) {
+      funcaoApi
+      .getById(getParamFromUrl('funcao'))
+      .then((response) => {
+        setNomeFuncao(response.data.descricao);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    funcionariosData.funcao = getParamFromUrl('funcao');
-  }
-}
+        funcionariosData.funcao = getParamFromUrl('funcao');
+      }
+    }
 
-if (getParamFromUrl('cidade') > 0) {
-  if (funcionariosData.id === 0 && funcionariosData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('cidade') > 0) {
+      if (funcionariosData.id === 0 && funcionariosData.cidade == 0) {
+        cidadeApi
+        .getById(getParamFromUrl('cidade'))
+        .then((response) => {
+          setNomeCidade(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    funcionariosData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorCargo = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cargo', value: e.id } });
-  };
-  const addValorFuncao = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'funcao', value: e.id } });
-    };
-    const addValorCidade = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'cidade', value: e.id } });
-      };
-      const onConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (e.stopPropagation) e.stopPropagation();
-
-          if (!isSubmitting) {
-            setIsSubmitting(true);
-
-            try {
-              onSubmit(e);
-            } catch (error) {
-            console.log('Erro ao submeter formulário de Funcionarios:');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
+          funcionariosData.cidade = getParamFromUrl('cidade');
+        }
+      }
+      const addValorCargo = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cargo', value: e.id } });
         };
-        const handleCancel = () => {
-          if (onReload) {
-            onReload(); // Recarrega os dados originais
-          } else {
-          onClose(); // Comportamento padrão se não há callback de recarga
-        }
-      };
+        const addValorFuncao = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'funcao', value: e.id } });
+          };
+          const addValorCidade = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'cidade', value: e.id } });
+            };
+            const onConfirm = (e: React.FormEvent) => {
+              e.preventDefault();
+              if (e.stopPropagation) e.stopPropagation();
 
-      const handleDirectSave = () => {
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+                if (!isSubmitting) {
+                  setIsSubmitting(true);
 
-          try {
-            const syntheticEvent = {
-              preventDefault: () => { }, 
-              target: document.getElementById(`FuncionariosForm-${funcionariosData.id}`)
-            } as unknown as React.FormEvent;
+                  try {
+                    onSubmit(e);
+                  } catch (error) {
+                  console.log('Erro ao submeter formulário de Funcionarios:');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              const handleCancel = () => {
+                if (onReload) {
+                  onReload(); // Recarrega os dados originais
+                } else {
+                onClose(); // Comportamento padrão se não há callback de recarga
+              }
+            };
 
-            onSubmit(syntheticEvent);
-          } catch (error) {
-          console.log('Erro ao salvar Funcionarios diretamente');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      useEffect(() => {
-        const el = document.querySelector('.nameFormMobile');
-        if (el) {
-          el.textContent = funcionariosData?.id == 0 ? 'Editar Funcionarios' : 'Adicionar Colaborador';
-        }
-      }, [funcionariosData.id]);
-      return (
-      <>
-      {!isMobile ? <style jsx global>{`
-        @media (max-width: 1366px) {
-          html {
-            zoom: 0.8 !important;
-          }
-        }
-        `}</style> : null}
+            const handleDirectSave = () => {
+              if (!isSubmitting) {
+                setIsSubmitting(true);
 
-        <div className={isMobile ? 'form-container form-container-Funcionarios' : 'form-container form-container-Funcionarios'}>
+                try {
+                  const syntheticEvent = {
+                    preventDefault: () => { }, 
+                    target: document.getElementById(`FuncionariosForm-${funcionariosData.id}`)
+                  } as unknown as React.FormEvent;
 
-          <form className='formInputCadInc' id={`FuncionariosForm-${funcionariosData.id}`} onSubmit={onConfirm}>
-            {!isMobile && (
-              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Funcionarios' data={funcionariosData} isSubmitting={isSubmitting} onClose={onClose} formId={`FuncionariosForm-${funcionariosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <div className='grid-container'>
+                  onSubmit(syntheticEvent);
+                } catch (error) {
+                if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                  console.log('Erro ao salvar Funcionarios diretamente');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              useEffect(() => {
+                const el = document.querySelector('.nameFormMobile');
+                if (el) {
+                  el.textContent = funcionariosData?.id == 0 ? 'Editar Funcionarios' : 'Adicionar Colaborador';
+                }
+              }, [funcionariosData.id]);
+              return (
+              <>
+              {!isMobile ? <style jsx global>{`
+                @media (max-width: 1366px) {
+                  html {
+                    zoom: 0.8 !important;
+                  }
+                }
+                `}</style> : null}
 
-                <InputName
-                type='text'
-                id='nome'
-                label='Nome'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='nome'
-                value={funcionariosData.nome}
-                placeholder={`Informe Nome`}
-                onChange={onChange}
-                required
-                />
+                <div className={isMobile ? 'form-container form-container-Funcionarios' : 'form-container form-container-Funcionarios'}>
 
-                <InputInput
-                type='email'
-                maxLength={255}
-                id='emailpro'
-                label='EMailPro'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='emailpro'
-                value={funcionariosData.emailpro}
-                onChange={onChange}
-                />
+                  <form className='formInputCadInc' id={`FuncionariosForm-${funcionariosData.id}`} onSubmit={onConfirm}>
+                    {!isMobile && (
+                      <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Funcionarios' data={funcionariosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`FuncionariosForm-${funcionariosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <div className='grid-container'>
 
+                        <InputName
+                        type='text'
+                        id='nome'
+                        label='Nome'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='nome'
+                        value={funcionariosData.nome}
+                        placeholder={`Informe Nome`}
+                        onChange={onChange}
+                        required
+                        />
 
-                <CargosComboBox
-                name={'cargo'}
-                dataForm={funcionariosData}
-                value={funcionariosData.cargo}
-                setValue={addValorCargo}
-                label={'Cargo'}
-                />
-
-                <FuncaoComboBox
-                name={'funcao'}
-                dataForm={funcionariosData}
-                value={funcionariosData.funcao}
-                setValue={addValorFuncao}
-                label={'Função'}
-                />
-                <InputCheckbox dataForm={funcionariosData} label='Sexo' name='sexo' checked={funcionariosData.sexo} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={20}
-                id='registro'
-                label='Registro'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='registro'
-                value={funcionariosData.registro}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='email'
+                        maxLength={255}
+                        id='emailpro'
+                        label='EMailPro'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='emailpro'
+                        value={funcionariosData.emailpro}
+                        onChange={onChange}
+                        />
 
 
-                <InputCpf
-                type='text'
-                id='cpf'
-                label='CPF'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='cpf'
-                value={funcionariosData.cpf}
-                onChange={onChange}
-                />
+                        <CargosComboBox
+                        name={'cargo'}
+                        dataForm={funcionariosData}
+                        value={funcionariosData.cargo}
+                        setValue={addValorCargo}
+                        label={'Cargo'}
+                        />
+
+                        <FuncaoComboBox
+                        name={'funcao'}
+                        dataForm={funcionariosData}
+                        value={funcionariosData.funcao}
+                        setValue={addValorFuncao}
+                        label={'Função'}
+                        />
+                        <InputCheckbox dataForm={funcionariosData} label='Sexo' name='sexo' checked={funcionariosData.sexo} onChange={onChange} />
+
+                        <InputInput
+                        type='text'
+                        maxLength={20}
+                        id='registro'
+                        label='Registro'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='registro'
+                        value={funcionariosData.registro}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={30}
-                id='rg'
-                label='RG'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='rg'
-                value={funcionariosData.rg}
-                onChange={onChange}
-                />
-
-                <InputCheckbox dataForm={funcionariosData} label='Tipo' name='tipo' checked={funcionariosData.tipo} onChange={onChange} />
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='observacao'
-                label='Observacao'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='observacao'
-                value={funcionariosData.observacao}
-                onChange={onChange}
-                />
+                        <InputCpf
+                        type='text'
+                        id='cpf'
+                        label='CPF'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='cpf'
+                        value={funcionariosData.cpf}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={80}
-                id='endereco'
-                label='Endereco'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='endereco'
-                value={funcionariosData.endereco}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={30}
+                        id='rg'
+                        label='RG'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='rg'
+                        value={funcionariosData.rg}
+                        onChange={onChange}
+                        />
+
+                        <InputCheckbox dataForm={funcionariosData} label='Tipo' name='tipo' checked={funcionariosData.tipo} onChange={onChange} />
+                      </div><div className='grid-container'>
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='observacao'
+                        label='Observacao'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='observacao'
+                        value={funcionariosData.observacao}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={50}
-                id='bairro'
-                label='Bairro'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='bairro'
-                value={funcionariosData.bairro}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={80}
+                        id='endereco'
+                        label='Endereco'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='endereco'
+                        value={funcionariosData.endereco}
+                        onChange={onChange}
+                        />
 
 
-                <CidadeComboBox
-                name={'cidade'}
-                dataForm={funcionariosData}
-                value={funcionariosData.cidade}
-                setValue={addValorCidade}
-                label={'Cidade'}
-                />
-
-                <InputCep
-                type='text'
-                id='cep'
-                label='CEP'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='cep'
-                value={funcionariosData.cep}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={50}
+                        id='bairro'
+                        label='Bairro'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='bairro'
+                        value={funcionariosData.bairro}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='contato'
-                label='Contato'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='contato'
-                value={funcionariosData.contato}
-                onChange={onChange}
-                />
+                        <CidadeComboBox
+                        name={'cidade'}
+                        dataForm={funcionariosData}
+                        value={funcionariosData.cidade}
+                        setValue={addValorCidade}
+                        label={'Cidade'}
+                        />
+
+                        <InputCep
+                        type='text'
+                        id='cep'
+                        label='CEP'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='cep'
+                        value={funcionariosData.cep}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='fax'
-                label='Fax'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='fax'
-                value={funcionariosData.fax}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='contato'
+                        label='Contato'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='contato'
+                        value={funcionariosData.contato}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='fone'
-                label='Fone'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='fone'
-                value={funcionariosData.fone}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='fax'
+                        label='Fax'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='fax'
+                        value={funcionariosData.fax}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='email'
-                maxLength={60}
-                id='email'
-                label='EMail'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='email'
-                value={funcionariosData.email}
-                onChange={onChange}
-                />
-
-              </div><div className='grid-container'>
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='periodo_ini'
-                label='Periodo_Ini'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='periodo_ini'
-                value={funcionariosData.periodo_ini}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='fone'
+                        label='Fone'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='fone'
+                        value={funcionariosData.fone}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='periodo_fim'
-                label='Periodo_Fim'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='periodo_fim'
-                value={funcionariosData.periodo_fim}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='email'
+                        maxLength={60}
+                        id='email'
+                        label='EMail'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='email'
+                        value={funcionariosData.email}
+                        onChange={onChange}
+                        />
+
+                      </div><div className='grid-container'>
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='periodo_ini'
+                        label='Periodo_Ini'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='periodo_ini'
+                        value={funcionariosData.periodo_ini}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={15}
-                id='ctpsnumero'
-                label='CTPSNumero'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='ctpsnumero'
-                value={funcionariosData.ctpsnumero}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='periodo_fim'
+                        label='Periodo_Fim'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='periodo_fim'
+                        value={funcionariosData.periodo_fim}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={10}
-                id='ctpsserie'
-                label='CTPSSerie'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='ctpsserie'
-                value={funcionariosData.ctpsserie}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={15}
+                        id='ctpsnumero'
+                        label='CTPSNumero'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='ctpsnumero'
+                        value={funcionariosData.ctpsnumero}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={20}
-                id='pis'
-                label='PIS'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='pis'
-                value={funcionariosData.pis}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={10}
+                        id='ctpsserie'
+                        label='CTPSSerie'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='ctpsserie'
+                        value={funcionariosData.ctpsserie}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='salario'
-                label='Salario'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='salario'
-                value={funcionariosData.salario}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={20}
+                        id='pis'
+                        label='PIS'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='pis'
+                        value={funcionariosData.pis}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='ctpsdtemissao'
-                label='CTPSDtEmissao'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='ctpsdtemissao'
-                value={funcionariosData.ctpsdtemissao}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='salario'
+                        label='Salario'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='salario'
+                        value={funcionariosData.salario}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='dtnasc'
-                label='DtNasc'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='dtnasc'
-                value={funcionariosData.dtnasc}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='ctpsdtemissao'
+                        label='CTPSDtEmissao'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='ctpsdtemissao'
+                        value={funcionariosData.ctpsdtemissao}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='data'
-                label='Data'
-                dataForm={funcionariosData}
-                className='inputIncNome'
-                name='data'
-                value={funcionariosData.data}
-                onChange={onChange}
-                />
-
-              </div><div className='grid-container'><InputCheckbox dataForm={funcionariosData} label='LiberaAgenda' name='liberaagenda' checked={funcionariosData.liberaagenda} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={200}
-              id='pasta'
-              label='Pasta'
-              dataForm={funcionariosData}
-              className='inputIncNome'
-              name='pasta'
-              value={funcionariosData.pasta}
-              onChange={onChange}
-              />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='dtnasc'
+                        label='DtNasc'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='dtnasc'
+                        value={funcionariosData.dtnasc}
+                        onChange={onChange}
+                        />
 
 
-              <InputInput
-              type='text'
-              maxLength={1}
-              id='class'
-              label='Class'
-              dataForm={funcionariosData}
-              className='inputIncNome'
-              name='class'
-              value={funcionariosData.class}
-              onChange={onChange}
-              />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='data'
+                        label='Data'
+                        dataForm={funcionariosData}
+                        className='inputIncNome'
+                        name='data'
+                        value={funcionariosData.data}
+                        onChange={onChange}
+                        />
 
-            </div>
-          </form>
+                      </div><div className='grid-container'><InputCheckbox dataForm={funcionariosData} label='LiberaAgenda' name='liberaagenda' checked={funcionariosData.liberaagenda} onChange={onChange} />
+
+                      <InputInput
+                      type='text'
+                      maxLength={200}
+                      id='pasta'
+                      label='Pasta'
+                      dataForm={funcionariosData}
+                      className='inputIncNome'
+                      name='pasta'
+                      value={funcionariosData.pasta}
+                      onChange={onChange}
+                      />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Funcionarios' data={funcionariosData} isSubmitting={isSubmitting} onClose={onClose} formId={`FuncionariosForm-${funcionariosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/funcionarios'} id={funcionariosData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                      <InputInput
+                      type='text'
+                      maxLength={1}
+                      id='class'
+                      label='Class'
+                      dataForm={funcionariosData}
+                      className='inputIncNome'
+                      name='class'
+                      value={funcionariosData.class}
+                      onChange={onChange}
+                      />
+
+                    </div>
+                  </form>
+
+
+                  {isMobile && (
+                    <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Funcionarios' data={funcionariosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`FuncionariosForm-${funcionariosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                    )}
+                    <DeleteButton page={'/pages/funcionarios'} id={funcionariosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                  </div>
+                  <div className='form-spacer'></div>
+                  </>
+                );
+              };

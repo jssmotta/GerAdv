@@ -8,37 +8,38 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class SituacaoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterSituacao filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterSituacao? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Parte_Int))
+        if (!string.IsNullOrWhiteSpace(filtro.Parte_Int))
         {
-            parameters.Add(new($"@{nameof(DBSituacaoDicInfo.Parte_Int)}", ApplyWildCard(filtro.WildcardChar, filtro.Parte_Int)));
+            parameters.Add(new($"@{(DBSituacaoDicInfo.Parte_Int)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Parte_Int)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Parte_Opo))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBSituacaoDicInfo.Parte_Opo)}", ApplyWildCard(filtro.WildcardChar, filtro.Parte_Opo)));
+            parameters.Add(new($"@{(DBSituacaoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.Parte_Opo))
+        {
+            parameters.Add(new($"@{(DBSituacaoDicInfo.Parte_Opo)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Parte_Opo)));
         }
 
         if (filtro.Top != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBSituacaoDicInfo.Top)}", filtro.Top));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBSituacaoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBSituacaoDicInfo.Top)}", filtro.Top));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBSituacaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBSituacaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBSituacaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBSituacaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +48,20 @@ public partial class SituacaoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Parte_Int.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.Parte_Int}]  {DevourerConsts.MsiCollate} like @{nameof(DBSituacaoDicInfo.Parte_Int)}");
-        cWhere.Append(filtro.Parte_Opo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.Parte_Opo}]  {DevourerConsts.MsiCollate} like @{nameof(DBSituacaoDicInfo.Parte_Opo)}");
-        cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.Top}] = @{nameof(DBSituacaoDicInfo.Top)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBSituacaoDicInfo.GUID)}");
+        cWhere.Append(filtro.Parte_Int.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.Parte_Int}]  {DevourerConsts.MsiCollate} like @{(DBSituacaoDicInfo.Parte_Int)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBSituacaoDicInfo.GUID)}");
+        cWhere.Append(filtro.Parte_Opo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.Parte_Opo}]  {DevourerConsts.MsiCollate} like @{(DBSituacaoDicInfo.Parte_Opo)}");
+        cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.Top}] = @{(DBSituacaoDicInfo.Top)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.CampoCodigo}] = @{nameof(DBSituacaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].[{DBSituacaoDicInfo.CampoCodigo}] = @{(DBSituacaoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].{DBSituacaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBSituacaoDicInfo.CampoCodigo)} AND @{nameof(DBSituacaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBSituacaoDicInfo.PTabelaNome}].{DBSituacaoDicInfo.CampoCodigo} BETWEEN @{(DBSituacaoDicInfo.CampoCodigo)} AND @{(DBSituacaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterSituacao? filtro)

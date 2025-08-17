@@ -13,7 +13,7 @@ public partial interface IEventoPrazoAgendaWhere
 
 public partial class EventoPrazoAgendaWhere(IFEventoPrazoAgendaFactory eventoprazoagendaFactory) : IEventoPrazoAgendaWhere
 {
-    private readonly IFEventoPrazoAgendaFactory _eventoprazoagendaFactory = eventoprazoagendaFactory;
+    private readonly IFEventoPrazoAgendaFactory _eventoprazoagendaFactory = eventoprazoagendaFactory ?? throw new ArgumentNullException(nameof(eventoprazoagendaFactory));
     public EventoPrazoAgendaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _eventoprazoagendaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

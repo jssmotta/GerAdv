@@ -10,16 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterGruposEmpresas
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("email")]
-    public string EMail { get; set; } = string.Empty;
+    public string? EMail { get; set; } = string.Empty;
 
     [JsonPropertyName("email_end")]
-    public string EMail_end { get; set; } = string.Empty;
+    public string? EMail_end { get; set; } = string.Empty;
 
     [JsonPropertyName("inativo")]
     public int Inativo { get; set; } = int.MinValue;
@@ -27,35 +27,41 @@ public partial record FilterGruposEmpresas
     [JsonPropertyName("oponente")]
     public int Oponente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("oponente_end")]
+    public int Oponente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("descricao")]
-    public string Descricao { get; set; } = string.Empty;
+    public string? Descricao { get; set; } = string.Empty;
 
     [JsonPropertyName("descricao_end")]
-    public string Descricao_end { get; set; } = string.Empty;
+    public string? Descricao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("observacoes")]
-    public string Observacoes { get; set; } = string.Empty;
+    public string? Observacoes { get; set; } = string.Empty;
 
     [JsonPropertyName("observacoes_end")]
-    public string Observacoes_end { get; set; } = string.Empty;
+    public string? Observacoes_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
+
     [JsonPropertyName("icone")]
-    public string Icone { get; set; } = string.Empty;
+    public string? Icone { get; set; } = string.Empty;
 
     [JsonPropertyName("icone_end")]
-    public string Icone_end { get; set; } = string.Empty;
+    public string? Icone_end { get; set; } = string.Empty;
 
     [JsonPropertyName("despesaunificada")]
     public int DespesaUnificada { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

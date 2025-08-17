@@ -13,7 +13,7 @@ public partial interface IUFWhere
 
 public partial class UFWhere(IFUFFactory ufFactory) : IUFWhere
 {
-    private readonly IFUFFactory _ufFactory = ufFactory;
+    private readonly IFUFFactory _ufFactory = ufFactory ?? throw new ArgumentNullException(nameof(ufFactory));
     public UFResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _ufFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

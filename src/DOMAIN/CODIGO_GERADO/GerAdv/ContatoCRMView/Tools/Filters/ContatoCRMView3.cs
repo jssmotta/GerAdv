@@ -10,28 +10,28 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterContatoCRMView
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("cguid")]
-    public string CGUID { get; set; } = string.Empty;
+    public string? CGUID { get; set; } = string.Empty;
 
     [JsonPropertyName("cguid_end")]
-    public string CGUID_end { get; set; } = string.Empty;
+    public string? CGUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ip")]
-    public string IP { get; set; } = string.Empty;
+    public string? IP { get; set; } = string.Empty;
 
     [JsonPropertyName("ip_end")]
-    public string IP_end { get; set; } = string.Empty;
+    public string? IP_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

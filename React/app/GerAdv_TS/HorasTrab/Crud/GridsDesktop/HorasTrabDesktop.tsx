@@ -127,55 +127,45 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
   'nomeclientes': (
   <GridColumn
   key='nomeclientes'
-
   field='nomeclientes'
   title='Clientes'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nropastaprocessos': (
   <GridColumn
   key='nropastaprocessos'
-
   field='nropastaprocessos'
   title='Processos'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeadvogados': (
   <GridColumn
   key='nomeadvogados'
-
   field='nomeadvogados'
   title='Advogados'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomefuncionarios': (
   <GridColumn
   key='nomefuncionarios'
-
   field='nomefuncionarios'
   title='Colaborador'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'descricaoservicos': (
   <GridColumn
   key='descricaoservicos'
-
   field='descricaoservicos'
   title='Serviço'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

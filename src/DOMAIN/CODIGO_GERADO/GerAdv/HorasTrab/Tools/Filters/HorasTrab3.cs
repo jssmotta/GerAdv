@@ -10,10 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterHorasTrab
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("idcontatocrm")]
     public int IDContatoCRM { get; set; } = int.MinValue;
@@ -31,13 +37,16 @@ public partial record FilterHorasTrab
     public int IDAgenda_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
+
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("status")]
     public int Status { get; set; } = int.MinValue;
@@ -54,20 +63,26 @@ public partial record FilterHorasTrab
     [JsonPropertyName("advogado")]
     public int Advogado { get; set; } = int.MinValue;
 
+    [JsonPropertyName("advogado_end")]
+    public int Advogado_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("funcionario")]
     public int Funcionario { get; set; } = int.MinValue;
 
+    [JsonPropertyName("funcionario_end")]
+    public int Funcionario_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("hrini")]
-    public string HrIni { get; set; } = string.Empty;
+    public string? HrIni { get; set; } = string.Empty;
 
     [JsonPropertyName("hrini_end")]
-    public string HrIni_end { get; set; } = string.Empty;
+    public string? HrIni_end { get; set; } = string.Empty;
 
     [JsonPropertyName("hrfim")]
-    public string HrFim { get; set; } = string.Empty;
+    public string? HrFim { get; set; } = string.Empty;
 
     [JsonPropertyName("hrfim_end")]
-    public string HrFim_end { get; set; } = string.Empty;
+    public string? HrFim_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tempo")]
     public decimal Tempo { get; set; } = decimal.MinValue;
@@ -82,37 +97,34 @@ public partial record FilterHorasTrab
     public decimal Valor_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("obs")]
-    public string OBS { get; set; } = string.Empty;
+    public string? OBS { get; set; } = string.Empty;
 
     [JsonPropertyName("obs_end")]
-    public string OBS_end { get; set; } = string.Empty;
+    public string? OBS_end { get; set; } = string.Empty;
 
     [JsonPropertyName("anexo")]
-    public string Anexo { get; set; } = string.Empty;
+    public string? Anexo { get; set; } = string.Empty;
 
     [JsonPropertyName("anexo_end")]
-    public string Anexo_end { get; set; } = string.Empty;
+    public string? Anexo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("anexocomp")]
-    public string AnexoComp { get; set; } = string.Empty;
+    public string? AnexoComp { get; set; } = string.Empty;
 
     [JsonPropertyName("anexocomp_end")]
-    public string AnexoComp_end { get; set; } = string.Empty;
+    public string? AnexoComp_end { get; set; } = string.Empty;
 
     [JsonPropertyName("anexounc")]
-    public string AnexoUNC { get; set; } = string.Empty;
+    public string? AnexoUNC { get; set; } = string.Empty;
 
     [JsonPropertyName("anexounc_end")]
-    public string AnexoUNC_end { get; set; } = string.Empty;
+    public string? AnexoUNC_end { get; set; } = string.Empty;
 
     [JsonPropertyName("servico")]
     public int Servico { get; set; } = int.MinValue;
 
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    [JsonPropertyName("servico_end")]
+    public int Servico_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

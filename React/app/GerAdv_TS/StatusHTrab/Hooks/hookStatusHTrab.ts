@@ -41,7 +41,8 @@ export const useStatusHTrabForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Status H Trab';
       setError(errorMessage);
-      //console.log('Erro ao carregar Status H Trab');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Status H Trab');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useStatusHTrabNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useStatusHTrabList = (dataService: IStatusHTrabService, currentFilt
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar statushtrab';
       setError(errorMessage);
-      //console.log('Erro ao carregar statushtrab');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar statushtrab');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 50) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) : ITipoRecursoReader
 {
-    private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory;
+    private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("trcCodigo, trcDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TipoRecursoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoRecurso.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TipoRecursoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,10 +54,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new Models.TipoRecurso
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tiporecurso;
     }
@@ -83,10 +83,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tiporecurso;
     }
@@ -101,10 +101,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tiporecurso;
     }
@@ -119,10 +119,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -153,10 +153,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

@@ -15,7 +15,7 @@ public partial class ProcessOutputRequestReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBProcessOutputRequestDicInfo.CampoNome}";
+        var orderQuery = $"{TSql.OrderBy} {DBProcessOutputRequestDicInfo.CampoCodigo}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

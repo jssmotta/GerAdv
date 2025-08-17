@@ -79,7 +79,8 @@ export class LivroCaixaService implements ILivroCaixaService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching LivroCaixa list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching LivroCaixa list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class LivroCaixaService implements ILivroCaixaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online LivroCaixa');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online LivroCaixa');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class LivroCaixaService implements ILivroCaixaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online LivroCaixa');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online LivroCaixa');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all LivroCaixa:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all LivroCaixa:');
       return [];
     }
   }

@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class ProcessOutputEngineHealthCheck(IOptions<AppSettings> appSettings, ProcessOutputEngineService processoutputengineService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class ProcessOutputEngineHealthCheck(IOptions<AppSettings> appSettings, P
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) poeNome,poeDatabase,poeTabela,poeCampo,poeValor,poeOutput,poeAdministrador,poeOutputSource,poeDisabledItem,poeIDModulo,poeIsOnlyProcesso,poeMyID,poeGUID FROM {"ProcessOutputEngine".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) poeNome,poeDatabase,poeTabela,poeCampo,poeValor,poeOutput,poeAdministrador,poeGUID,poeOutputSource,poeDisabledItem,poeIDModulo,poeIsOnlyProcesso,poeMyID FROM {"ProcessOutputEngine".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class ProcessOutputEngineHealthCheck(IOptions<AppSettings> appSettings, P
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

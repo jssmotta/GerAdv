@@ -116,11 +116,9 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   'descricaotipocompromisso': (
   <GridColumn
   key='descricaotipocompromisso'
-
   field='descricaotipocompromisso'
   title='Tipo Compromisso'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

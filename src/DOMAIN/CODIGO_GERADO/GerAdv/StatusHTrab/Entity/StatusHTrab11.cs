@@ -54,7 +54,7 @@ public partial class FStatusHTrabFactory : IFStatusHTrabFactory, IDisposable
             throw new ObjectDisposedException(nameof(FStatusHTrabFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

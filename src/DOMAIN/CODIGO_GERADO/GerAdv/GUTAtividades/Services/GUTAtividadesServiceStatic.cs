@@ -8,89 +8,94 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GUTAtividadesService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTAtividades filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTAtividades? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Observacao))
+        if (!string.IsNullOrWhiteSpace(filtro.Observacao))
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.Observacao)}", ApplyWildCard(filtro.WildcardChar, filtro.Observacao)));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.Observacao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Observacao)));
         }
 
         if (filtro.GUTGrupo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.GUTGrupo)}", filtro.GUTGrupo));
-        }
-
-        if (filtro.GUTGrupo_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.GUTGrupo)}_end", filtro.GUTGrupo_end));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.GUTGrupo)}", filtro.GUTGrupo));
+            if (filtro.GUTGrupo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.GUTGrupo)}_end", filtro.GUTGrupo_end));
+            }
         }
 
         if (filtro.GUTPeriodicidade != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.GUTPeriodicidade)}", filtro.GUTPeriodicidade));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.GUTPeriodicidade)}", filtro.GUTPeriodicidade));
+            if (filtro.GUTPeriodicidade_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.GUTPeriodicidade)}_end", filtro.GUTPeriodicidade_end));
+            }
         }
 
         if (filtro.Operador != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.Operador)}", filtro.Operador));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.Operador)}", filtro.Operador));
+            if (filtro.Operador_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.Operador)}_end", filtro.Operador_end));
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Concluido != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.Concluido)}", filtro.Concluido));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.Concluido)}", filtro.Concluido));
         }
 
         if (!filtro.DataConcluido.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DataConcluido, out var dataParam))
-                parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.DataConcluido)}", dataParam));
-        }
-
-        if (!filtro.DataConcluido_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.DataConcluido_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.DataConcluido)}_end", dataParam));
+            if (DateTime.TryParse(filtro.DataConcluido, out var dataParam1))
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.DataConcluido)}", dataParam1));
+            if (!filtro.DataConcluido_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DataConcluido_end, out var dataParam2))
+                    parameters.Add(new($"@{(DBGUTAtividadesDicInfo.DataConcluido)}_end", dataParam2));
+            }
         }
 
         if (filtro.DiasParaIniciar != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.DiasParaIniciar)}", filtro.DiasParaIniciar));
-        }
-
-        if (filtro.DiasParaIniciar_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.DiasParaIniciar)}_end", filtro.DiasParaIniciar_end));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.DiasParaIniciar)}", filtro.DiasParaIniciar));
+            if (filtro.DiasParaIniciar_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.DiasParaIniciar)}_end", filtro.DiasParaIniciar_end));
+            }
         }
 
         if (filtro.MinutosParaRealizar != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.MinutosParaRealizar)}", filtro.MinutosParaRealizar));
-        }
-
-        if (filtro.MinutosParaRealizar_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.MinutosParaRealizar)}_end", filtro.MinutosParaRealizar_end));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.MinutosParaRealizar)}", filtro.MinutosParaRealizar));
+            if (filtro.MinutosParaRealizar_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.MinutosParaRealizar)}_end", filtro.MinutosParaRealizar_end));
+            }
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBGUTAtividadesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -99,69 +104,74 @@ public partial class GUTAtividadesService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTAtividadesDicInfo.Nome)}");
-        cWhere.Append(filtro.Observacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTAtividadesDicInfo.Observacao)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBGUTAtividadesDicInfo.Nome)}");
+        cWhere.Append(filtro.Observacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{(DBGUTAtividadesDicInfo.Observacao)}");
         if (!(filtro.GUTGrupo.IsEmptyX()) && filtro.GUTGrupo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.GUTGrupo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUTGrupo}] = @{nameof(DBGUTAtividadesDicInfo.GUTGrupo)}");
+            cWhere.Append(filtro.GUTGrupo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUTGrupo}] = @{(DBGUTAtividadesDicInfo.GUTGrupo)}");
         }
         else if (!(filtro.GUTGrupo.IsEmptyX()) && !(filtro.GUTGrupo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.GUTGrupo} BETWEEN @{nameof(DBGUTAtividadesDicInfo.GUTGrupo)} AND @{nameof(DBGUTAtividadesDicInfo.GUTGrupo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.GUTGrupo} BETWEEN @{(DBGUTAtividadesDicInfo.GUTGrupo)} AND @{(DBGUTAtividadesDicInfo.GUTGrupo)}_end");
         }
 
-        cWhere.Append(filtro.GUTPeriodicidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUTPeriodicidade}] = @{nameof(DBGUTAtividadesDicInfo.GUTPeriodicidade)}");
-        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Operador}] = @{nameof(DBGUTAtividadesDicInfo.Operador)}");
-        cWhere.Append(filtro.Concluido == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Concluido}] = @{nameof(DBGUTAtividadesDicInfo.Concluido)}");
+        if (!(filtro.GUTPeriodicidade.IsEmptyX()) && filtro.GUTPeriodicidade_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.GUTPeriodicidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUTPeriodicidade}] = @{(DBGUTAtividadesDicInfo.GUTPeriodicidade)}");
+        }
+        else if (!(filtro.GUTPeriodicidade.IsEmptyX()) && !(filtro.GUTPeriodicidade_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.GUTPeriodicidade} BETWEEN @{(DBGUTAtividadesDicInfo.GUTPeriodicidade)} AND @{(DBGUTAtividadesDicInfo.GUTPeriodicidade)}_end");
+        }
+
+        if (!(filtro.Operador.IsEmptyX()) && filtro.Operador_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Operador}] = @{(DBGUTAtividadesDicInfo.Operador)}");
+        }
+        else if (!(filtro.Operador.IsEmptyX()) && !(filtro.Operador_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.Operador} BETWEEN @{(DBGUTAtividadesDicInfo.Operador)} AND @{(DBGUTAtividadesDicInfo.Operador)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBGUTAtividadesDicInfo.GUID)}");
+        cWhere.Append(filtro.Concluido == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Concluido}] = @{(DBGUTAtividadesDicInfo.Concluido)}");
         if (!(filtro.DataConcluido.IsEmptyDX()) && filtro.DataConcluido_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataConcluido.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DataConcluido}], 103) = CONVERT(DATE, @{nameof(DBGUTAtividadesDicInfo.DataConcluido)}, 103)");
+            cWhere.Append(filtro.DataConcluido.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DataConcluido}], 103) = CONVERT(DATE, @{(DBGUTAtividadesDicInfo.DataConcluido)}, 103)");
         }
         else if (!(filtro.DataConcluido.IsEmptyDX()) && !(filtro.DataConcluido_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.DataConcluido} BETWEEN @{nameof(DBGUTAtividadesDicInfo.DataConcluido)} AND @{nameof(DBGUTAtividadesDicInfo.DataConcluido)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.DataConcluido} BETWEEN @{(DBGUTAtividadesDicInfo.DataConcluido)} AND @{(DBGUTAtividadesDicInfo.DataConcluido)}_end");
         }
 
         if (!(filtro.DiasParaIniciar.IsEmptyX()) && filtro.DiasParaIniciar_end.IsEmptyX())
         {
-            cWhere.Append(filtro.DiasParaIniciar.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DiasParaIniciar}] = @{nameof(DBGUTAtividadesDicInfo.DiasParaIniciar)}");
+            cWhere.Append(filtro.DiasParaIniciar.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DiasParaIniciar}] = @{(DBGUTAtividadesDicInfo.DiasParaIniciar)}");
         }
         else if (!(filtro.DiasParaIniciar.IsEmptyX()) && !(filtro.DiasParaIniciar_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.DiasParaIniciar} BETWEEN @{nameof(DBGUTAtividadesDicInfo.DiasParaIniciar)} AND @{nameof(DBGUTAtividadesDicInfo.DiasParaIniciar)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.DiasParaIniciar} BETWEEN @{(DBGUTAtividadesDicInfo.DiasParaIniciar)} AND @{(DBGUTAtividadesDicInfo.DiasParaIniciar)}_end");
         }
 
         if (!(filtro.MinutosParaRealizar.IsEmptyX()) && filtro.MinutosParaRealizar_end.IsEmptyX())
         {
-            cWhere.Append(filtro.MinutosParaRealizar.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.MinutosParaRealizar}] = @{nameof(DBGUTAtividadesDicInfo.MinutosParaRealizar)}");
+            cWhere.Append(filtro.MinutosParaRealizar.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.MinutosParaRealizar}] = @{(DBGUTAtividadesDicInfo.MinutosParaRealizar)}");
         }
         else if (!(filtro.MinutosParaRealizar.IsEmptyX()) && !(filtro.MinutosParaRealizar_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.MinutosParaRealizar} BETWEEN @{nameof(DBGUTAtividadesDicInfo.MinutosParaRealizar)} AND @{nameof(DBGUTAtividadesDicInfo.MinutosParaRealizar)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.MinutosParaRealizar} BETWEEN @{(DBGUTAtividadesDicInfo.MinutosParaRealizar)} AND @{(DBGUTAtividadesDicInfo.MinutosParaRealizar)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTAtividadesDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.CampoCodigo}] = @{nameof(DBGUTAtividadesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.CampoCodigo}] = @{(DBGUTAtividadesDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTAtividadesDicInfo.CampoCodigo)} AND @{nameof(DBGUTAtividadesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.CampoCodigo} BETWEEN @{(DBGUTAtividadesDicInfo.CampoCodigo)} AND @{(DBGUTAtividadesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterGUTAtividades? filtro)

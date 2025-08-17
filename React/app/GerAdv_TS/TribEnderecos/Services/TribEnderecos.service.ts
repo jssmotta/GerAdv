@@ -94,7 +94,8 @@ export class TribEnderecosService implements ITribEnderecosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online TribEnderecos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TribEnderecos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -104,12 +105,14 @@ export class TribEnderecosService implements ITribEnderecosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online TribEnderecos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TribEnderecos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all TribEnderecos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all TribEnderecos:');
       return [];
     }
   }

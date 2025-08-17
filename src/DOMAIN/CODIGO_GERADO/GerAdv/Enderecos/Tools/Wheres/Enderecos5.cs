@@ -13,7 +13,7 @@ public partial interface IEnderecosWhere
 
 public partial class EnderecosWhere(IFEnderecosFactory enderecosFactory) : IEnderecosWhere
 {
-    private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory;
+    private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory ?? throw new ArgumentNullException(nameof(enderecosFactory));
     public EnderecosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _enderecosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,6 +21,7 @@ public partial class EnderecosWhere(IFEnderecosFactory enderecosFactory) : IEnde
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
+            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -39,7 +40,6 @@ public partial class EnderecosWhere(IFEnderecosFactory enderecosFactory) : IEnde
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

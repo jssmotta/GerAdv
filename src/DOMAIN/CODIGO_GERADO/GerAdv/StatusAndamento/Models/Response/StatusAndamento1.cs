@@ -20,16 +20,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// Icone - sanIcone  
-        /// </summary>
-        [JsonPropertyName("icone")]
-        public int Icone { get; set; }
-
-        /// <summary>
         /// GUID - sanGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Icone - sanIcone  
+        /// </summary>
+        [JsonPropertyName("icone")]
+        public int Icone { get; set; }
     }
 }
 
@@ -48,15 +48,15 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// Icone - sanIcone  
-        /// </summary>
-        [JsonPropertyName("icone")]
-        public int Icone { get; set; }
-
-        /// <summary>
         /// GUID - sanGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Icone - sanIcone  
+        /// </summary>
+        [JsonPropertyName("icone")]
+        public int Icone { get; set; }
     }
 }

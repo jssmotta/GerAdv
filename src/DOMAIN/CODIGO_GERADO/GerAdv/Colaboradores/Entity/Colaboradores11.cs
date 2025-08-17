@@ -54,7 +54,7 @@ public partial class FColaboradoresFactory : IFColaboradoresFactory, IDisposable
             throw new ObjectDisposedException(nameof(FColaboradoresFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

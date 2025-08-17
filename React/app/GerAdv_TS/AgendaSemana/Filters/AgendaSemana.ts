@@ -11,7 +11,6 @@ export interface FilterAgendaSemana
     funcionario_end?: number;
     advogado?: number;
     advogado_end?: number;
- hora_end?: string;
  hora?: string;
     tipocompromisso?: number;
     tipocompromisso_end?: number;
@@ -19,7 +18,6 @@ export interface FilterAgendaSemana
  concluido?: number;
  liberado?: number;
  importante?: number;
- horafinal_end?: string;
  horafinal?: string;
  nome?: string;
     cliente?: number;
@@ -39,7 +37,6 @@ export class FilterAgendaSemanaDefaults implements FilterAgendaSemana {
     funcionario_end?: number = -2147483648;
     advogado?: number = -2147483648;
     advogado_end?: number = -2147483648;
-    hora_end?: string = '';
     hora?: string = '';
     tipocompromisso?: number = -2147483648;
     tipocompromisso_end?: number = -2147483648;
@@ -47,7 +44,6 @@ export class FilterAgendaSemanaDefaults implements FilterAgendaSemana {
     concluido?: number= -2147483648;
     liberado?: number= -2147483648;
     importante?: number= -2147483648;
-    horafinal_end?: string = '';
     horafinal?: string = '';
     nome?: string = '';
     cliente?: number = -2147483648;

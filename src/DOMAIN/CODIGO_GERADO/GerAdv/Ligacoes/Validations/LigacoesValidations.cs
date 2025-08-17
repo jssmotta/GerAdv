@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ILigacoesValidation
 {
     Task<bool> ValidateReg(Models.Ligacoes reg, ILigacoesService service, IClientesReader clientesReader, IRamalReader ramalReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ILigacoesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ILigacoesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class LigacoesValidation : ILigacoesValidation
 {
-    public async Task<bool> CanDelete(int id, ILigacoesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ILigacoesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,18 +26,18 @@ public class LigacoesValidation : ILigacoesValidation
 
     private bool ValidSizes(Models.Ligacoes reg)
     {
-        if (reg.Assunto != null && reg.Assunto.Length > 200)
-            throw new SGValidationException($"Assunto deve ter no máximo 200 caracteres.");
-        if (reg.Contato != null && reg.Contato.Length > 200)
-            throw new SGValidationException($"Contato deve ter no máximo 200 caracteres.");
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Para != null && reg.Para.Length > 100)
-            throw new SGValidationException($"Para deve ter no máximo 100 caracteres.");
-        if (reg.LigarPara != null && reg.LigarPara.Length > 255)
-            throw new SGValidationException($"LigarPara deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Assunto != null && reg.Assunto.Length > DBLigacoesDicInfo.LigAssunto.FTamanho)
+            throw new SGValidationException($"Assunto deve ter no máximo {DBLigacoesDicInfo.LigAssunto.FTamanho} caracteres.");
+        if (reg.Contato != null && reg.Contato.Length > DBLigacoesDicInfo.LigContato.FTamanho)
+            throw new SGValidationException($"Contato deve ter no máximo {DBLigacoesDicInfo.LigContato.FTamanho} caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBLigacoesDicInfo.LigNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBLigacoesDicInfo.LigNome.FTamanho} caracteres.");
+        if (reg.Para != null && reg.Para.Length > DBLigacoesDicInfo.LigPara.FTamanho)
+            throw new SGValidationException($"Para deve ter no máximo {DBLigacoesDicInfo.LigPara.FTamanho} caracteres.");
+        if (reg.LigarPara != null && reg.LigarPara.Length > DBLigacoesDicInfo.LigLigarPara.FTamanho)
+            throw new SGValidationException($"LigarPara deve ter no máximo {DBLigacoesDicInfo.LigLigarPara.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBLigacoesDicInfo.LigGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBLigacoesDicInfo.LigGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -50,6 +50,24 @@ public class LigacoesValidation : ILigacoesValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.DataRealizada))
+        {
+            if (DateTime.TryParse(reg.DataRealizada, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataRealizada não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.UltimoAviso))
+        {
+            if (DateTime.TryParse(reg.UltimoAviso, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("UltimoAviso não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {

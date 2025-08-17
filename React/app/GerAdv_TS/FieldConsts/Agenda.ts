@@ -33,6 +33,7 @@ export enum FieldsAgenda
 	idinsprocesso = `IDInsProcesso`,
 	quemid = `QuemID`,
 	quemcodigo = `QuemCodigo`,
+	guid = `GUID`,
 	status = `Status`,
 	valor = `Valor`,
 	decisao = `Decisao`,
@@ -41,5 +42,4 @@ export enum FieldsAgenda
 	protocolointegrado = `ProtocoloIntegrado`,
 	datainicioprazo = `DataInicioPrazo`,
 	usuariociente = `UsuarioCiente`,
-	guid = `GUID`,
 }

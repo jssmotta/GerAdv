@@ -118,8 +118,9 @@ export class EnderecoSistemaApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -152,8 +153,9 @@ export class EnderecoSistemaApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -174,42 +176,6 @@ export class EnderecoSistemaApi {
                 } as AxiosResponse;
             }
             this.handleApiError(error, `Erro ao buscar Endereco Sistema com ID ${id}`);
-        }
-    }
-    
-        public async getListN(max?: number, filtro?: FilterEnderecoSistema): Promise<AxiosResponse> {
-        if (max === undefined) max = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS;
-        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-EnderecoSistema_last_listN_data`);
-
-        try {
-            const response = await axios.post(`${this.baseUrl}/GetListN/?max=${max}`, filtro, this.getHeaders());
-            
-                Promise.resolve().then(() => {
-                    try {
-                        const encoded = encodeDataForStorage(response.data);
-                        localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
-                    }
-                });
-        
-            return response;
-        } catch (error: any) {
-            const offlineData = localStorage.getItem(storageKey);
-            if (offlineData) {
-                const decoded = decodeDataFromStorage(offlineData);
-                this.notificationService.notify(
-                    this.createNotificationOffLiveEntity(0, NotifySystemActions.INFO)
-                );
-                return {
-                    data: decoded,
-                    status: 200,
-                    statusText: 'OK (offline)',
-                    headers: {},
-                    config: {},
-                } as AxiosResponse;
-            }
-            this.handleApiError(error, 'Erro ao buscar lista de EnderecoSistema');
         }
     }
  public async filterPreload(max: number, filtro: FilterEnderecoSistema): Promise<AxiosResponse> {
@@ -236,8 +202,9 @@ export class EnderecoSistemaApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -351,7 +318,8 @@ export class EnderecoSistemaApi {
           revalidateOnFocus: false,
           revalidateOnReconnect: false,
           onError: (error) => {            
-            console.log('Erro no SWR para filtro de EnderecoSistema');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Erro no SWR para filtro de EnderecoSistema');
             this.notificationService.notify({
               entity: 'EnderecoSistema',
               id: 0,

@@ -14,13 +14,13 @@ public partial interface IFuncaoWriter
 
 public class FuncaoWriter(IFFuncaoFactory funcaoFactory) : IFuncaoWriter
 {
-    private readonly IFFuncaoFactory _funcaoFactory = funcaoFactory;
-    public async Task Delete(FuncaoResponse funcao, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFFuncaoFactory _funcaoFactory = funcaoFactory ?? throw new ArgumentNullException(nameof(funcaoFactory));
+    public virtual async Task Delete(FuncaoResponse funcao, int operadorId, MsiSqlConnection oCnn)
     {
         await _funcaoFactory.DeleteAsync(operadorId, funcao.Id, oCnn);
     }
 
-    public async Task<FFuncao> WriteAsync(Models.Funcao funcao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FFuncao> WriteAsync(Models.Funcao funcao, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (funcao.Id.IsEmptyIDNumber() ? _funcaoFactory.CreateAsync() : _funcaoFactory.CreateFromIdAsync(funcao.Id, oCnn));
         dbRec.FDescricao = funcao.Descricao;

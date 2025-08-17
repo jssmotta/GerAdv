@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterNENotas
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("apenso")]
     public int Apenso { get; set; } = int.MinValue;
@@ -30,14 +30,17 @@ public partial record FilterNENotas
     [JsonPropertyName("instancia")]
     public int Instancia { get; set; } = int.MinValue;
 
+    [JsonPropertyName("instancia_end")]
+    public int Instancia_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("movpro")]
     public int MovPro { get; set; } = int.MinValue;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("notaexpedida")]
     public int NotaExpedida { get; set; } = int.MinValue;
@@ -58,16 +61,16 @@ public partial record FilterNENotas
     public int PalavraChave_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("notapublicada")]
-    public string NotaPublicada { get; set; } = string.Empty;
+    public string? NotaPublicada { get; set; } = string.Empty;
 
     [JsonPropertyName("notapublicada_end")]
-    public string NotaPublicada_end { get; set; } = string.Empty;
+    public string? NotaPublicada_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

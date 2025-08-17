@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class FuncionariosHealthCheck(IOptions<AppSettings> appSettings, FuncionariosService funcionariosService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class FuncionariosHealthCheck(IOptions<AppSettings> appSettings, Funciona
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) funEMailPro,funCargo,funNome,funFuncao,funSexo,funRegistro,funCPF,funRG,funTipo,funObservacao,funEndereco,funBairro,funCidade,funCEP,funContato,funFax,funFone,funEMail,funPeriodo_Ini,funPeriodo_Fim,funCTPSNumero,funCTPSSerie,funPIS,funSalario,funCTPSDtEmissao,funDtNasc,funData,funLiberaAgenda,funPasta,funClass,funGUID FROM {"Funcionarios".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) funGUID,funEMailPro,funCargo,funNome,funFuncao,funSexo,funRegistro,funCPF,funRG,funTipo,funObservacao,funEndereco,funBairro,funCidade,funCEP,funContato,funFax,funFone,funEMail,funPeriodo_Ini,funPeriodo_Fim,funCTPSNumero,funCTPSSerie,funPIS,funSalario,funCTPSDtEmissao,funDtNasc,funData,funLiberaAgenda,funPasta,funClass FROM {"Funcionarios".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class FuncionariosHealthCheck(IOptions<AppSettings> appSettings, Funciona
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

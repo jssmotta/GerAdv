@@ -93,18 +93,18 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private async Task<StatusAndamentoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<StatusAndamentoResponse?> AddAndUpdate([FromBody] Models.StatusAndamento regStatusAndamento, [FromRoute, Required] string uri)
+    private async Task<StatusAndamentoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<StatusAndamentoResponse?> AddAndUpdate([FromBody] Models.StatusAndamento? regStatusAndamento, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("StatusAndamento: URI inválida");
-        }
-
         if (regStatusAndamento == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("StatusAndamento: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -118,7 +118,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regStatusAndamento, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -127,7 +127,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -135,17 +135,17 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<StatusAndamentoResponse?> Validation([FromBody] Models.StatusAndamento regStatusAndamento, [FromRoute, Required] string uri)
+    public async Task<StatusAndamentoResponse?> Validation([FromBody] Models.StatusAndamento? regStatusAndamento, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("StatusAndamento: URI inválida");
-        }
-
         if (regStatusAndamento == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("StatusAndamento: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -159,7 +159,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
             var validade = await validation.ValidateReg(regStatusAndamento, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -168,7 +168,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regStatusAndamento.Id.IsEmptyIDNumber())
@@ -179,17 +179,17 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         return await reader.Read(regStatusAndamento.Id, oCnn);
     }
 
-    public async Task<StatusAndamentoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<StatusAndamentoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("StatusAndamento: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,7 +204,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -213,10 +213,10 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var statusandamento = await reader.Read(id, oCnn);
+        var statusandamento = await reader.Read(id ?? default, oCnn);
         try
         {
             if (statusandamento != null)
@@ -236,7 +236,7 @@ public partial class StatusAndamentoService(IOptions<AppSettings> appSettings, I
         return statusandamento;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

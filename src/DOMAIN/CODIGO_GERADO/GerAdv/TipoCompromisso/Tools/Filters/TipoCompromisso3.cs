@@ -10,10 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterTipoCompromisso
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("icone")]
     public int Icone { get; set; } = int.MinValue;
@@ -22,19 +28,13 @@ public partial record FilterTipoCompromisso
     public int Icone_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("descricao")]
-    public string Descricao { get; set; } = string.Empty;
+    public string? Descricao { get; set; } = string.Empty;
 
     [JsonPropertyName("descricao_end")]
-    public string Descricao_end { get; set; } = string.Empty;
+    public string? Descricao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("financeiro")]
     public int Financeiro { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

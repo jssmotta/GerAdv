@@ -82,165 +82,166 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar ProcessOutputEngine diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar ProcessOutputEngine diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = processoutputengineData?.id == 0 ? 'Editar ProcessOutputEngine' : 'Adicionar Process Output Engine';
-  }
-}, [processoutputengineData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-ProcessOutputEngine' : 'form-container form-container-ProcessOutputEngine'}>
-
-    <form className='formInputCadInc' id={`ProcessOutputEngineForm-${processoutputengineData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessOutputEngine' data={processoutputengineData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessOutputEngineForm-${processoutputengineData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='nome'
-          value={processoutputengineData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={255}
-          id='database'
-          label='Database'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='database'
-          value={processoutputengineData.database}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={255}
-          id='tabela'
-          label='Tabela'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='tabela'
-          value={processoutputengineData.tabela}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={255}
-          id='campo'
-          label='Campo'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='campo'
-          value={processoutputengineData.campo}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={255}
-          id='valor'
-          label='Valor'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='valor'
-          value={processoutputengineData.valor}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='output'
-          label='Output'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='output'
-          value={processoutputengineData.output}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={processoutputengineData} label='Administrador' name='administrador' checked={processoutputengineData.administrador} onChange={onChange} />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='outputsource'
-          label='OutputSource'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='outputsource'
-          value={processoutputengineData.outputsource}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={processoutputengineData} label='DisabledItem' name='disableditem' checked={processoutputengineData.disableditem} onChange={onChange} />
-        </div><div className='grid-container'>
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='idmodulo'
-          label='IDModulo'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='idmodulo'
-          value={processoutputengineData.idmodulo}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={processoutputengineData} label='IsOnlyProcesso' name='isonlyprocesso' checked={processoutputengineData.isonlyprocesso} onChange={onChange} />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='myid'
-          label='MyID'
-          dataForm={processoutputengineData}
-          className='inputIncNome'
-          name='myid'
-          value={processoutputengineData.myid}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessOutputEngine' data={processoutputengineData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessOutputEngineForm-${processoutputengineData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/processoutputengine'} id={processoutputengineData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = processoutputengineData?.id == 0 ? 'Editar ProcessOutputEngine' : 'Adicionar Process Output Engine';
+    }
+  }, [processoutputengineData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-ProcessOutputEngine' : 'form-container form-container-ProcessOutputEngine'}>
+
+      <form className='formInputCadInc' id={`ProcessOutputEngineForm-${processoutputengineData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessOutputEngine' data={processoutputengineData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProcessOutputEngineForm-${processoutputengineData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='nome'
+            value={processoutputengineData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={255}
+            id='database'
+            label='Database'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='database'
+            value={processoutputengineData.database}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={255}
+            id='tabela'
+            label='Tabela'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='tabela'
+            value={processoutputengineData.tabela}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={255}
+            id='campo'
+            label='Campo'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='campo'
+            value={processoutputengineData.campo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={255}
+            id='valor'
+            label='Valor'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='valor'
+            value={processoutputengineData.valor}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='output'
+            label='Output'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='output'
+            value={processoutputengineData.output}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={processoutputengineData} label='Administrador' name='administrador' checked={processoutputengineData.administrador} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='outputsource'
+            label='OutputSource'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='outputsource'
+            value={processoutputengineData.outputsource}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={processoutputengineData} label='DisabledItem' name='disableditem' checked={processoutputengineData.disableditem} onChange={onChange} />
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='idmodulo'
+            label='IDModulo'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='idmodulo'
+            value={processoutputengineData.idmodulo}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={processoutputengineData} label='IsOnlyProcesso' name='isonlyprocesso' checked={processoutputengineData.isonlyprocesso} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='myid'
+            label='MyID'
+            dataForm={processoutputengineData}
+            className='inputIncNome'
+            name='myid'
+            value={processoutputengineData.myid}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessOutputEngine' data={processoutputengineData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProcessOutputEngineForm-${processoutputengineData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/processoutputengine'} id={processoutputengineData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

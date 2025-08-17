@@ -81,100 +81,89 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Graph diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Graph diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = graphData?.id == 0 ? 'Editar Graph' : 'Adicionar Graph';
-  }
-}, [graphData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Graph' : 'form-container5 form-container-Graph'}>
-
-    <form className='formInputCadInc' id={`GraphForm-${graphData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Graph' data={graphData} isSubmitting={isSubmitting} onClose={onClose} formId={`GraphForm-${graphData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='guid'
-          label='GUID'
-          dataForm={graphData}
-          className='inputIncNome'
-          name='guid'
-          value={graphData.guid}
-          placeholder={`Informe GUID`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          required
-          type='text'
-          maxLength={80}
-          id='tabela'
-          label='Tabela'
-          dataForm={graphData}
-          className='inputIncNome'
-          name='tabela'
-          value={graphData.tabela}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          required
-          type='text'
-          maxLength={2048}
-          id='tabelaid'
-          label='TabelaId'
-          dataForm={graphData}
-          className='inputIncNome'
-          name='tabelaid'
-          value={graphData.tabelaid}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          required
-          type='text'
-          maxLength={2048}
-          id='imagem'
-          label='Imagem'
-          dataForm={graphData}
-          className='inputIncNome'
-          name='imagem'
-          value={graphData.imagem}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Graph' data={graphData} isSubmitting={isSubmitting} onClose={onClose} formId={`GraphForm-${graphData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/graph'} id={graphData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = graphData?.id == 0 ? 'Editar Graph' : 'Adicionar Graph';
+    }
+  }, [graphData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Graph' : 'form-container5 form-container-Graph'}>
+
+      <form className='formInputCadInc' id={`GraphForm-${graphData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Graph' data={graphData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GraphForm-${graphData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+
+            <InputInput
+            required
+            type='text'
+            maxLength={80}
+            id='tabela'
+            label='Tabela'
+            dataForm={graphData}
+            className='inputIncNome'
+            name='tabela'
+            value={graphData.tabela}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='tabelaid'
+            label='TabelaId'
+            dataForm={graphData}
+            className='inputIncNome'
+            name='tabelaid'
+            value={graphData.tabelaid}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='imagem'
+            label='Imagem'
+            dataForm={graphData}
+            className='inputIncNome'
+            name='imagem'
+            value={graphData.imagem}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Graph' data={graphData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GraphForm-${graphData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/graph'} id={graphData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

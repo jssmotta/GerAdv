@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProSucumbenciaValidation
 {
     Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProSucumbenciaValidation : IProSucumbenciaValidation
 {
-    public async Task<bool> CanDelete(int id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,12 +26,12 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
 
     private bool ValidSizes(Models.ProSucumbencia reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 2048)
-            throw new SGValidationException($"Nome deve ter no máximo 2048 caracteres.");
-        if (reg.Percentual != null && reg.Percentual.Length > 5)
-            throw new SGValidationException($"Percentual deve ter no máximo 5 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBProSucumbenciaDicInfo.ScbNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBProSucumbenciaDicInfo.ScbNome.FTamanho} caracteres.");
+        if (reg.Percentual != null && reg.Percentual.Length > DBProSucumbenciaDicInfo.ScbPercentual.FTamanho)
+            throw new SGValidationException($"Percentual deve ter no máximo {DBProSucumbenciaDicInfo.ScbPercentual.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProSucumbenciaDicInfo.ScbGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProSucumbenciaDicInfo.ScbGUID.FTamanho} caracteres.");
         return true;
     }
 

@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProcessOutputEngineValidation
 {
     Task<bool> ValidateReg(Models.ProcessOutputEngine reg, IProcessOutputEngineService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
 {
-    public async Task<bool> CanDelete(int id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var processoutputrequestExists0 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { ProcessOutputEngine = id }, uri);
+        var processoutputrequestExists0 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { ProcessOutputEngine = id ?? default }, uri);
         if (processoutputrequestExists0 != null && processoutputrequestExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.");
         return true;
@@ -29,18 +29,18 @@ public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
 
     private bool ValidSizes(Models.ProcessOutputEngine reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.Database != null && reg.Database.Length > 255)
-            throw new SGValidationException($"Database deve ter no máximo 255 caracteres.");
-        if (reg.Tabela != null && reg.Tabela.Length > 255)
-            throw new SGValidationException($"Tabela deve ter no máximo 255 caracteres.");
-        if (reg.Campo != null && reg.Campo.Length > 255)
-            throw new SGValidationException($"Campo deve ter no máximo 255 caracteres.");
-        if (reg.Valor != null && reg.Valor.Length > 255)
-            throw new SGValidationException($"Valor deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBProcessOutputEngineDicInfo.PoeNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBProcessOutputEngineDicInfo.PoeNome.FTamanho} caracteres.");
+        if (reg.Database != null && reg.Database.Length > DBProcessOutputEngineDicInfo.PoeDatabase.FTamanho)
+            throw new SGValidationException($"Database deve ter no máximo {DBProcessOutputEngineDicInfo.PoeDatabase.FTamanho} caracteres.");
+        if (reg.Tabela != null && reg.Tabela.Length > DBProcessOutputEngineDicInfo.PoeTabela.FTamanho)
+            throw new SGValidationException($"Tabela deve ter no máximo {DBProcessOutputEngineDicInfo.PoeTabela.FTamanho} caracteres.");
+        if (reg.Campo != null && reg.Campo.Length > DBProcessOutputEngineDicInfo.PoeCampo.FTamanho)
+            throw new SGValidationException($"Campo deve ter no máximo {DBProcessOutputEngineDicInfo.PoeCampo.FTamanho} caracteres.");
+        if (reg.Valor != null && reg.Valor.Length > DBProcessOutputEngineDicInfo.PoeValor.FTamanho)
+            throw new SGValidationException($"Valor deve ter no máximo {DBProcessOutputEngineDicInfo.PoeValor.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProcessOutputEngineDicInfo.PoeGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProcessOutputEngineDicInfo.PoeGUID.FTamanho} caracteres.");
         return true;
     }
 

@@ -115,9 +115,6 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("hrfinal")]
         public string HrFinal { get; set; } = "";
 
-        [JsonPropertyName("hrfinal_date")]
-        public DateTime? HrFinal_date { get; set; }
-
         /// <summary>
         /// EventoGerador - ageEventoGerador  
         /// </summary>
@@ -150,9 +147,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
-
-        [JsonPropertyName("hora_date")]
-        public DateTime? Hora_date { get; set; }
 
         /// <summary>
         /// Compromisso - ageCompromisso  
@@ -209,6 +203,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int QuemCodigo { get; set; }
 
         /// <summary>
+        /// GUID - ageGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Status - ageStatus  
         /// </summary>
         [JsonPropertyName("status")]
@@ -258,12 +258,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("usuariociente")]
         public bool UsuarioCiente { get; set; }
-
-        /// <summary>
-        /// GUID - ageGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -377,9 +371,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("hrfinal")]
         public string HrFinal { get; set; } = "";
 
-        [JsonPropertyName("hrfinal_date")]
-        public DateTime? HrFinal_date { get; set; }
-
         /// <summary>
         /// EventoGerador - ageEventoGerador  
         /// </summary>
@@ -412,9 +403,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
-
-        [JsonPropertyName("hora_date")]
-        public DateTime? Hora_date { get; set; }
 
         /// <summary>
         /// Compromisso - ageCompromisso  
@@ -471,6 +459,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int QuemCodigo { get; set; }
 
         /// <summary>
+        /// GUID - ageGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Status - ageStatus  
         /// </summary>
         [JsonPropertyName("status")]
@@ -520,12 +514,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("usuariociente")]
         public bool UsuarioCiente { get; set; }
-
-        /// <summary>
-        /// GUID - ageGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

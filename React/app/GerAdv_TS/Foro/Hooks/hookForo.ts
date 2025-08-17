@@ -41,7 +41,8 @@ export const useForoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Foro';
       setError(errorMessage);
-      //console.log('Erro ao carregar Foro');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Foro');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useForoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useForoList = (dataService: IForoService, currentFilter?: FilterFor
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar foro';
       setError(errorMessage);
-      //console.log('Erro ao carregar foro');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar foro');
     } finally {
       setLoading(false);
     }
@@ -237,7 +240,8 @@ if (data.web.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

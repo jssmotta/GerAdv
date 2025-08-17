@@ -95,18 +95,18 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         }
     }
 
-    private async Task<OponentesRepLegalResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<OponentesRepLegalResponse?> AddAndUpdate([FromBody] Models.OponentesRepLegal regOponentesRepLegal, [FromRoute, Required] string uri)
+    private async Task<OponentesRepLegalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<OponentesRepLegalResponse?> AddAndUpdate([FromBody] Models.OponentesRepLegal? regOponentesRepLegal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("OponentesRepLegal: URI inválida");
-        }
-
         if (regOponentesRepLegal == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("OponentesRepLegal: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regOponentesRepLegal, this, oponentesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<OponentesRepLegalResponse?> Validation([FromBody] Models.OponentesRepLegal regOponentesRepLegal, [FromRoute, Required] string uri)
+    public async Task<OponentesRepLegalResponse?> Validation([FromBody] Models.OponentesRepLegal? regOponentesRepLegal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("OponentesRepLegal: URI inválida");
-        }
-
         if (regOponentesRepLegal == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("OponentesRepLegal: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
             var validade = await validation.ValidateReg(regOponentesRepLegal, this, oponentesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regOponentesRepLegal.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         return await reader.Read(regOponentesRepLegal.Id, oCnn);
     }
 
-    public async Task<OponentesRepLegalResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<OponentesRepLegalResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("OponentesRepLegal: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var oponentesreplegal = await reader.Read(id, oCnn);
+        var oponentesreplegal = await reader.Read(id ?? default, oCnn);
         try
         {
             if (oponentesreplegal != null)
@@ -238,7 +238,7 @@ public partial class OponentesRepLegalService(IOptions<AppSettings> appSettings,
         return oponentesreplegal;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

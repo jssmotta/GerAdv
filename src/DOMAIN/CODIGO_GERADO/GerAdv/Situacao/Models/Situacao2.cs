@@ -20,6 +20,12 @@ namespace MenphisSI.GerAdv.Models
         public string Parte_Int { get; set; } = "";
 
         /// <summary>
+        /// GUID - sitGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Parte_Opo - sitParte_Opo - tamanho máximo: 30 
         /// </summary>
         [JsonPropertyName("parte_opo")]
@@ -30,12 +36,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
-
-        /// <summary>
-        /// GUID - sitGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -54,6 +54,12 @@ namespace MenphisSI.GerAdv.Models.All
         public string Parte_Int { get; set; } = "";
 
         /// <summary>
+        /// GUID - sitGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Parte_Opo - sitParte_Opo - tamanho máximo: 30 
         /// </summary>
         [JsonPropertyName("parte_opo")]
@@ -64,11 +70,5 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
-
-        /// <summary>
-        /// GUID - sitGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }

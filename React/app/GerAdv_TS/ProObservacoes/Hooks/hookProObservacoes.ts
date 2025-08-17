@@ -41,7 +41,8 @@ export const useProObservacoesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Observacoes';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro Observacoes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro Observacoes');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProObservacoesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProObservacoesList = (dataService: IProObservacoesService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar proobservacoes';
       setError(errorMessage);
-      //console.log('Erro ao carregar proobservacoes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar proobservacoes');
     } finally {
       setLoading(false);
     }
@@ -213,7 +216,8 @@ if (data.observacoes.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPaisesValidation
 {
     Task<bool> ValidateReg(Models.Paises reg, IPaisesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPaisesService service, IUFService ufService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IPaisesService service, IUFService ufService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PaisesValidation : IPaisesValidation
 {
-    public async Task<bool> CanDelete(int id, IPaisesService service, IUFService ufService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPaisesService service, IUFService ufService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var ufExists0 = await ufService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterUF { Pais = id }, uri);
+        var ufExists0 = await ufService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterUF { Pais = id ?? default }, uri);
         if (ufExists0 != null && ufExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela UF associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class PaisesValidation : IPaisesValidation
 
     private bool ValidSizes(Models.Paises reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBPaisesDicInfo.PaiNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBPaisesDicInfo.PaiNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBPaisesDicInfo.PaiGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBPaisesDicInfo.PaiGUID.FTamanho} caracteres.");
         return true;
     }
 

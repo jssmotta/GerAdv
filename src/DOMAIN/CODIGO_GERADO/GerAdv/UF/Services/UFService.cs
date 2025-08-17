@@ -95,18 +95,18 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         }
     }
 
-    private async Task<UFResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<UFResponse?> AddAndUpdate([FromBody] Models.UF regUF, [FromRoute, Required] string uri)
+    private async Task<UFResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<UFResponse?> AddAndUpdate([FromBody] Models.UF? regUF, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("UF: URI inválida");
-        }
-
         if (regUF == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("UF: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
             var validade = await validation.ValidateReg(regUF, this, paisesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<UFResponse?> Validation([FromBody] Models.UF regUF, [FromRoute, Required] string uri)
+    public async Task<UFResponse?> Validation([FromBody] Models.UF? regUF, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("UF: URI inválida");
-        }
-
         if (regUF == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("UF: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
             var validade = await validation.ValidateReg(regUF, this, paisesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regUF.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         return await reader.Read(regUF.Id, oCnn);
     }
 
-    public async Task<UFResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<UFResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("UF: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
             var deleteValidation = await validation.CanDelete(id, this, cidadeService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var uf = await reader.Read(id, oCnn);
+        var uf = await reader.Read(id ?? default, oCnn);
         try
         {
             if (uf != null)
@@ -238,7 +238,7 @@ public partial class UFService(IOptions<AppSettings> appSettings, IFUFFactory uf
         return uf;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

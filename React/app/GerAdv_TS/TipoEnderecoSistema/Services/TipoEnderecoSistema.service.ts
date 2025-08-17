@@ -79,7 +79,8 @@ export class TipoEnderecoSistemaService implements ITipoEnderecoSistemaService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching TipoEnderecoSistema list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching TipoEnderecoSistema list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class TipoEnderecoSistemaService implements ITipoEnderecoSistemaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online TipoEnderecoSistema');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoEnderecoSistema');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class TipoEnderecoSistemaService implements ITipoEnderecoSistemaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online TipoEnderecoSistema');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoEnderecoSistema');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all TipoEnderecoSistema:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all TipoEnderecoSistema:');
       return [];
     }
   }

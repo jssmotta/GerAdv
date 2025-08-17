@@ -10,31 +10,31 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterSituacao
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("parte_int")]
-    public string Parte_Int { get; set; } = string.Empty;
+    public string? Parte_Int { get; set; } = string.Empty;
 
     [JsonPropertyName("parte_int_end")]
-    public string Parte_Int_end { get; set; } = string.Empty;
+    public string? Parte_Int_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("parte_opo")]
-    public string Parte_Opo { get; set; } = string.Empty;
+    public string? Parte_Opo { get; set; } = string.Empty;
 
     [JsonPropertyName("parte_opo_end")]
-    public string Parte_Opo_end { get; set; } = string.Empty;
+    public string? Parte_Opo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("top")]
     public int Top { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

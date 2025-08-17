@@ -13,7 +13,7 @@ public partial interface IProcessOutPutIDsWhere
 
 public partial class ProcessOutPutIDsWhere(IFProcessOutPutIDsFactory processoutputidsFactory) : IProcessOutPutIDsWhere
 {
-    private readonly IFProcessOutPutIDsFactory _processoutputidsFactory = processoutputidsFactory;
+    private readonly IFProcessOutPutIDsFactory _processoutputidsFactory = processoutputidsFactory ?? throw new ArgumentNullException(nameof(processoutputidsFactory));
     public ProcessOutPutIDsResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _processoutputidsFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

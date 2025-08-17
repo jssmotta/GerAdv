@@ -79,7 +79,8 @@ export class TipoOrigemSucumbenciaService implements ITipoOrigemSucumbenciaServi
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching TipoOrigemSucumbencia list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching TipoOrigemSucumbencia list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class TipoOrigemSucumbenciaService implements ITipoOrigemSucumbenciaServi
             }
           })
           .catch(error => {
-            console.log('Error fetching online TipoOrigemSucumbencia');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoOrigemSucumbencia');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class TipoOrigemSucumbenciaService implements ITipoOrigemSucumbenciaServi
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online TipoOrigemSucumbencia');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoOrigemSucumbencia');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all TipoOrigemSucumbencia:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all TipoOrigemSucumbencia:');
       return [];
     }
   }

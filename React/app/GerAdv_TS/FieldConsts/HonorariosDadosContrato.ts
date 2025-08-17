@@ -11,6 +11,6 @@ export enum FieldsHonorariosDadosContrato
 	textocontrato = `TextoContrato`,
 	valorfixo = `ValorFixo`,
 	observacao = `Observacao`,
+	guid = `Guid`,
 	datacontrato = `DataContrato`,
-	guid = `GUID`,
 }

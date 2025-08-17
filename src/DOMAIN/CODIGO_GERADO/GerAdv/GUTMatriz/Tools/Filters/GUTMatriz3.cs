@@ -10,19 +10,22 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterGUTMatriz
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("descricao")]
-    public string Descricao { get; set; } = string.Empty;
+    public string? Descricao { get; set; } = string.Empty;
 
     [JsonPropertyName("descricao_end")]
-    public string Descricao_end { get; set; } = string.Empty;
+    public string? Descricao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("guttipo")]
     public int GUTTipo { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guttipo_end")]
+    public int GUTTipo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("valor")]
     public int Valor { get; set; } = int.MinValue;

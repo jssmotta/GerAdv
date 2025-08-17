@@ -26,6 +26,7 @@ public partial interface IDBOperador
     public int FStatusId { get; set; }
     public string? FStatusMessage { get; set; }
     public bool FIsFinanceiro { get; set; }
+    public string? FGUID { get; set; }
     public bool FTop { get; set; }
     public bool FSexo { get; set; }
     public bool FBasico { get; set; }
@@ -38,5 +39,4 @@ public partial interface IDBOperador
     public string? FSuporteNomeSolicitante { get; set; }
     public string? FSuporteUltimoAcesso { get; set; }
     public string? FSuporteIpUltimoAcesso { get; set; }
-    public string? FGUID { get; set; }
 }

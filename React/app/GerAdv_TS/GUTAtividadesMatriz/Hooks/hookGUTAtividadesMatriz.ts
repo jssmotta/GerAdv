@@ -41,7 +41,8 @@ export const useGUTAtividadesMatrizForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar G U T Atividades Matriz';
       setError(errorMessage);
-      //console.log('Erro ao carregar G U T Atividades Matriz');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar G U T Atividades Matriz');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useGUTAtividadesMatrizNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useGUTAtividadesMatrizList = (dataService: IGUTAtividadesMatrizServ
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar gutatividadesmatriz';
       setError(errorMessage);
-      //console.log('Erro ao carregar gutatividadesmatriz');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar gutatividadesmatriz');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsGUTAtividadesMatriz() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-
+        
 
 
         return { isValid: true, message: '' };

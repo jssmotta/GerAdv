@@ -13,16 +13,8 @@ public static class AddServices
         builder.Services.ConfigureAcaoJson();
         builder.Services.ConfigureAdvogadosJson();
         builder.Services.ConfigureAgendaJson();
-        builder.Services.ConfigureAgendaQuemJson();
-        builder.Services.ConfigureAgendaRepetirDiasJson();
-        builder.Services.ConfigureAlertasJson();
-        builder.Services.ConfigureAlertasEnviadosJson();
         builder.Services.ConfigureAndamentosMDJson();
-        builder.Services.ConfigureAndCompJson();
-        builder.Services.ConfigureAnexamentoRegistrosJson();
-        builder.Services.ConfigureApenso2Json();
         builder.Services.ConfigureAreaJson();
-        builder.Services.ConfigureAreasJusticaJson();
         builder.Services.ConfigureAtividadesJson();
         builder.Services.ConfigureBensClassificacaoJson();
         builder.Services.ConfigureBensMateriaisJson();
@@ -43,7 +35,6 @@ public static class AddServices
         builder.Services.ConfigureEMPClassRiscosJson();
         builder.Services.ConfigureEnderecosJson();
         builder.Services.ConfigureEnderecoSistemaJson();
-        builder.Services.ConfigureEndTitJson();
         builder.Services.ConfigureEnquadramentoEmpresaJson();
         builder.Services.ConfigureEscritoriosJson();
         builder.Services.ConfigureEventoPrazoAgendaJson();
@@ -54,7 +45,6 @@ public static class AddServices
         builder.Services.ConfigureFuncionariosJson();
         builder.Services.ConfigureGraphJson();
         builder.Services.ConfigureGruposEmpresasJson();
-        builder.Services.ConfigureGruposEmpresasCliJson();
         builder.Services.ConfigureGUTAtividadesJson();
         builder.Services.ConfigureGUTAtividadesMatrizJson();
         builder.Services.ConfigureGUTMatrizJson();
@@ -75,7 +65,6 @@ public static class AddServices
         builder.Services.ConfigureOperadorJson();
         builder.Services.ConfigureOperadorEMailPopupJson();
         builder.Services.ConfigureOperadoresJson();
-        builder.Services.ConfigureOperadorGrupoJson();
         builder.Services.ConfigureOperadorGruposJson();
         builder.Services.ConfigureOperadorGruposAgendaJson();
         builder.Services.ConfigureOponentesJson();
@@ -83,7 +72,6 @@ public static class AddServices
         builder.Services.ConfigureOutrasPartesClienteJson();
         builder.Services.ConfigurePaisesJson();
         builder.Services.ConfigureParceriaProcJson();
-        builder.Services.ConfigureParteClienteOutrasJson();
         builder.Services.ConfigurePenhoraJson();
         builder.Services.ConfigurePenhoraStatusJson();
         builder.Services.ConfigurePoderJudiciarioAssociadoJson();
@@ -94,15 +82,12 @@ public static class AddServices
         builder.Services.ConfigurePrepostosJson();
         builder.Services.ConfigureProCDAJson();
         builder.Services.ConfigureProcessosObsReportJson();
-        builder.Services.ConfigureProcessosParadosJson();
         builder.Services.ConfigureProcessOutputEngineJson();
         builder.Services.ConfigureProcessOutPutIDsJson();
         builder.Services.ConfigureProcessOutputRequestJson();
         builder.Services.ConfigureProcessOutputSourcesJson();
-        builder.Services.ConfigureProDepositosJson();
         builder.Services.ConfigureProDespesasJson();
         builder.Services.ConfigureProObservacoesJson();
-        builder.Services.ConfigureProPartesJson();
         builder.Services.ConfigureProProcuradoresJson();
         builder.Services.ConfigureProResumosJson();
         builder.Services.ConfigureProSucumbenciaJson();
@@ -132,11 +117,9 @@ public static class AddServices
         builder.Services.ConfigureTipoRecursoJson();
         builder.Services.ConfigureTiposAcaoJson();
         builder.Services.ConfigureTipoStatusBiuJson();
-        builder.Services.ConfigureTipoValorProcessoJson();
         builder.Services.ConfigureTribEnderecosJson();
         builder.Services.ConfigureTribunalJson();
         builder.Services.ConfigureUFJson();
-        builder.Services.ConfigureUltimosProcessosJson();
         builder.Services.ConfigureViaRecebimentoJson();
         builder.Services.ConfigureAgendaRelatorioJson();
         builder.Services.ConfigureAgendaSemanaJson();

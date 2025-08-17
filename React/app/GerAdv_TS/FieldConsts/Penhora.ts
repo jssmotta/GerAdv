@@ -7,6 +7,6 @@ export enum FieldsPenhora
 	nome = `Nome`,
 	descricao = `Descricao`,
 	datapenhora = `DataPenhora`,
-	master = `Master`,
 	guid = `GUID`,
+	master = `Master`,
 }

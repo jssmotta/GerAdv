@@ -16,8 +16,6 @@ import { useIsMobile } from '@/app/context/MobileContext';
 import DeleteButton from '@/app/components/Cruds/DeleteButton';
 import { ProValoresApi } from '../../Apis/ApiProValores';
 import { useValidationsProValores } from '../../Hooks/hookProValores';
-import TipoValorProcessoComboBox from '@/app/GerAdv_TS/TipoValorProcesso/ComboBox/TipoValorProcesso';
-import { TipoValorProcessoApi } from '@/app/GerAdv_TS/TipoValorProcesso/Apis/ApiTipoValorProcesso';
 import InputName from '@/app/components/Inputs/InputName';
 import InputInput from '@/app/components/Inputs/InputInput'
 import InputCheckbox from '@/app/components/Inputs/InputCheckbox';
@@ -47,63 +45,44 @@ const dadoApi = new ProValoresApi(systemContext?.Uri ?? '', systemContext?.Token
 const [isSubmitting, setIsSubmitting] = useState(false);
 const initialized = useRef(false);
 const validationForm = useValidationsProValores();
-const [nomeTipoValorProcesso, setNomeTipoValorProcesso] = useState('');
-const tipovalorprocessoApi = new TipoValorProcessoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '');
 
-if (getParamFromUrl('tipovalorprocesso') > 0) {
-  if (provaloresData.id === 0 && provaloresData.tipovalorprocesso == 0) {
-    tipovalorprocessoApi
-    .getById(getParamFromUrl('tipovalorprocesso'))
-    .then((response) => {
-      setNomeTipoValorProcesso(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+const onConfirm = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (e.stopPropagation) e.stopPropagation();
 
-    provaloresData.tipovalorprocesso = getParamFromUrl('tipovalorprocesso');
-  }
-}
-const addValorTipoValorProcesso = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'tipovalorprocesso', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-
-      if (!isSubmitting) {
-        setIsSubmitting(true);
-
-        try {
-          onSubmit(e);
-        } catch (error) {
-        console.log('Erro ao submeter formulário de ProValores:');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
-
-  const handleDirectSave = () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
 
       try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`ProValoresForm-${provaloresData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
+        onSubmit(e);
       } catch (error) {
+      console.log('Erro ao submeter formulário de ProValores:');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
+    }
+  };
+  const handleCancel = () => {
+    if (onReload) {
+      onReload(); // Recarrega os dados originais
+    } else {
+    onClose(); // Comportamento padrão se não há callback de recarga
+  }
+};
+
+const handleDirectSave = () => {
+  if (!isSubmitting) {
+    setIsSubmitting(true);
+
+    try {
+      const syntheticEvent = {
+        preventDefault: () => { }, 
+        target: document.getElementById(`ProValoresForm-${provaloresData.id}`)
+      } as unknown as React.FormEvent;
+
+      onSubmit(syntheticEvent);
+    } catch (error) {
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
       console.log('Erro ao salvar ProValores diretamente');
       setIsSubmitting(false);
       if (onError) onError();
@@ -130,7 +109,7 @@ const addValorTipoValorProcesso = (e: any) => {
 
       <form className='formInputCadInc' id={`ProValoresForm-${provaloresData.id}`} onSubmit={onConfirm}>
         {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
           )}
           <div className='grid-container'>
 
@@ -161,13 +140,19 @@ const addValorTipoValorProcesso = (e: any) => {
             />
 
 
-            <TipoValorProcessoComboBox
-            name={'tipovalorprocesso'}
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='tipovalorprocesso'
+            label='TipoValorProcesso'
             dataForm={provaloresData}
+            className='inputIncNome'
+            name='tipovalorprocesso'
             value={provaloresData.tipovalorprocesso}
-            setValue={addValorTipoValorProcesso}
-            label={'Tipo Valor Processo'}
+            onChange={onChange}
             />
+
 
             <InputInput
             required
@@ -306,7 +291,7 @@ const addValorTipoValorProcesso = (e: any) => {
 
 
         {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProValores' data={provaloresData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProValoresForm-${provaloresData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
           )}
           <DeleteButton page={'/pages/provalores'} id={provaloresData.id} closeModel={onClose} dadoApi={dadoApi} />
         </div>

@@ -19,5 +19,5 @@ public partial interface IDBProValores
     public decimal FValorJurosCorrigido { get; set; }
     public decimal FValorFinal { get; set; }
     public string? FDataUltimaCorrecao { get; set; }
-    public string? FGUID { get; set; }
+    public string? FGuid { get; set; }
 }

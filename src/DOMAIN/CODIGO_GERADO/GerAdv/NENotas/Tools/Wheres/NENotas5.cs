@@ -13,7 +13,7 @@ public partial interface INENotasWhere
 
 public partial class NENotasWhere(IFNENotasFactory nenotasFactory) : INENotasWhere
 {
-    private readonly IFNENotasFactory _nenotasFactory = nenotasFactory;
+    private readonly IFNENotasFactory _nenotasFactory = nenotasFactory ?? throw new ArgumentNullException(nameof(nenotasFactory));
     public NENotasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _nenotasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

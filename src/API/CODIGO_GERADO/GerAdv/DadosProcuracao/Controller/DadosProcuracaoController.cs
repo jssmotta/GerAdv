@@ -51,20 +51,6 @@ public partial class DadosProcuracaoController(IDadosProcuracaoService dadosproc
         return Ok(result);
     }
 
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterDadosProcuracao? filtro, [FromRoute, Required] string uri)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        //_logger.Info($"DadosProcuracao: GetListN called, max {max}, {filtro} uri");
-        var result = await _dadosprocuracaoService.GetListN(max, filtro, uri);
-        return Ok(result);
-    }
-
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

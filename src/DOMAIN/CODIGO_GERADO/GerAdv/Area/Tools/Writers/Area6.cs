@@ -14,18 +14,18 @@ public partial interface IAreaWriter
 
 public class AreaWriter(IFAreaFactory areaFactory) : IAreaWriter
 {
-    private readonly IFAreaFactory _areaFactory = areaFactory;
-    public async Task Delete(AreaResponse area, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFAreaFactory _areaFactory = areaFactory ?? throw new ArgumentNullException(nameof(areaFactory));
+    public virtual async Task Delete(AreaResponse area, int operadorId, MsiSqlConnection oCnn)
     {
         await _areaFactory.DeleteAsync(operadorId, area.Id, oCnn);
     }
 
-    public async Task<FArea> WriteAsync(Models.Area area, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FArea> WriteAsync(Models.Area area, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (area.Id.IsEmptyIDNumber() ? _areaFactory.CreateAsync() : _areaFactory.CreateFromIdAsync(area.Id, oCnn));
         dbRec.FDescricao = area.Descricao;
-        dbRec.FTop = area.Top;
         dbRec.FGUID = area.GUID;
+        dbRec.FTop = area.Top;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

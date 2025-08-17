@@ -79,7 +79,8 @@ export class Diario2Service implements IDiario2Service {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Diario2 list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Diario2 list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class Diario2Service implements IDiario2Service {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Diario2');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Diario2');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class Diario2Service implements IDiario2Service {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Diario2');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Diario2');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Diario2:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Diario2:');
       return [];
     }
   }

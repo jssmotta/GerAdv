@@ -79,7 +79,8 @@ export class HorasTrabService implements IHorasTrabService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching HorasTrab list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching HorasTrab list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class HorasTrabService implements IHorasTrabService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online HorasTrab');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online HorasTrab');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class HorasTrabService implements IHorasTrabService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online HorasTrab');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online HorasTrab');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all HorasTrab:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all HorasTrab:');
       return [];
     }
   }

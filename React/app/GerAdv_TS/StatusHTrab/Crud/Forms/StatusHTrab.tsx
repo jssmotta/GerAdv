@@ -81,72 +81,73 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar StatusHTrab diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar StatusHTrab diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = statushtrabData?.id == 0 ? 'Editar StatusHTrab' : 'Adicionar Status H Trab';
-  }
-}, [statushtrabData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-StatusHTrab' : 'form-container5 form-container-StatusHTrab'}>
-
-    <form className='formInputCadInc' id={`StatusHTrabForm-${statushtrabData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='StatusHTrab' data={statushtrabData} isSubmitting={isSubmitting} onClose={onClose} formId={`StatusHTrabForm-${statushtrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='status h trab'
-          dataForm={statushtrabData}
-          className='inputIncNome'
-          name='descricao'
-          value={statushtrabData.descricao}
-          placeholder={`Digite nome status h trab`}
-          onChange={onChange}
-          required
-          disabled={statushtrabData.id > 0}
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='resid'
-          label='ResID'
-          dataForm={statushtrabData}
-          className='inputIncNome'
-          name='resid'
-          value={statushtrabData.resid}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='StatusHTrab' data={statushtrabData} isSubmitting={isSubmitting} onClose={onClose} formId={`StatusHTrabForm-${statushtrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/statushtrab'} id={statushtrabData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = statushtrabData?.id == 0 ? 'Editar StatusHTrab' : 'Adicionar Status H Trab';
+    }
+  }, [statushtrabData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-StatusHTrab' : 'form-container5 form-container-StatusHTrab'}>
+
+      <form className='formInputCadInc' id={`StatusHTrabForm-${statushtrabData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='StatusHTrab' data={statushtrabData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`StatusHTrabForm-${statushtrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='status h trab'
+            dataForm={statushtrabData}
+            className='inputIncNome'
+            name='descricao'
+            value={statushtrabData.descricao}
+            placeholder={`Digite nome status h trab`}
+            onChange={onChange}
+            required
+            disabled={statushtrabData.id > 0}
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='resid'
+            label='ResID'
+            dataForm={statushtrabData}
+            className='inputIncNome'
+            name='resid'
+            value={statushtrabData.resid}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='StatusHTrab' data={statushtrabData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`StatusHTrabForm-${statushtrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/statushtrab'} id={statushtrabData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

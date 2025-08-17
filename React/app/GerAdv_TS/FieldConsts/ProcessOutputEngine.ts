@@ -9,10 +9,10 @@ export enum FieldsProcessOutputEngine
 	valor = `Valor`,
 	output = `Output`,
 	administrador = `Administrador`,
+	guid = `GUID`,
 	outputsource = `OutputSource`,
 	disableditem = `DisabledItem`,
 	idmodulo = `IDModulo`,
 	isonlyprocesso = `IsOnlyProcesso`,
 	myid = `MyID`,
-	guid = `GUID`,
 }

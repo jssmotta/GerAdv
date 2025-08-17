@@ -46,9 +46,10 @@ const fetchDados = async () => {
     setDados(dado);
     setFilteredDados(dado);
   } catch (error) {
-  console.log('Erro ao buscar dados');
-} finally {
-setLoading(false);
+  if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+    console.log('Erro ao buscar dados');
+  } finally {
+  setLoading(false);
 }
 };
 React.useEffect(() => {
@@ -69,13 +70,14 @@ useEffect(() => {
         setEditRecord(response.data);
         setAction(ActionEditar);
       } catch (error) {
-      console.log('Erro ao buscar tipo compromisso por ID');
-    }
-  };
-  fetchData();
-} else if (!value) {
-setSelectedValue(null);
-setAction(ActionAdicionar);
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao buscar tipo compromisso por ID');
+      }
+    };
+    fetchData();
+  } else if (!value) {
+  setSelectedValue(null);
+  setAction(ActionAdicionar);
 }
 }, [value]);
 const loadRecordForEdit = async (id: number) => {
@@ -85,8 +87,9 @@ const loadRecordForEdit = async (id: number) => {
     setAction(ActionEditar);
     setSelectedValue({ id: record.id, nome: record.nome, icone: record.icone });
   } catch (error) {
-  //console.log('Erro ao carregar Tipo Compromisso:');
-}
+  if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+    console.log('Erro ao carregar Tipo Compromisso:');
+  }
 };
 const handleComboChange = (e: any) => {
   const newValue = e.target.value;

@@ -14,13 +14,13 @@ public partial interface IReuniaoWriter
 
 public class ReuniaoWriter(IFReuniaoFactory reuniaoFactory) : IReuniaoWriter
 {
-    private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory;
-    public async Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory ?? throw new ArgumentNullException(nameof(reuniaoFactory));
+    public virtual async Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection oCnn)
     {
         await _reuniaoFactory.DeleteAsync(operadorId, reuniao.Id, oCnn);
     }
 
-    public async Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (reuniao.Id.IsEmptyIDNumber() ? _reuniaoFactory.CreateAsync() : _reuniaoFactory.CreateFromIdAsync(reuniao.Id, oCnn));
         dbRec.FCliente = reuniao.Cliente;
@@ -30,8 +30,7 @@ public class ReuniaoWriter(IFReuniaoFactory reuniaoFactory) : IReuniaoWriter
         dbRec.FATA = reuniao.ATA;
         if (reuniao.HoraInicial != null)
             dbRec.FHoraInicial = reuniao.HoraInicial.ToString();
-        if (reuniao.HoraFinal != null)
-            dbRec.FHoraFinal = reuniao.HoraFinal.ToString();
+        dbRec.FHoraFinal = reuniao.HoraFinal;
         dbRec.FExterna = reuniao.Externa;
         if (reuniao.HoraSaida != null)
             dbRec.FHoraSaida = reuniao.HoraSaida.ToString();

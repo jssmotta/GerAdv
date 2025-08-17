@@ -15,6 +15,7 @@ public partial interface IDBContratos
     public bool FOcultarRelatorio { get; set; }
     public decimal FPercEscritorio { get; set; }
     public decimal FValorConsultoria { get; set; }
+    public string? FGUID { get; set; }
     public int FTipoCobranca { get; set; }
     public string? FProtestar { get; set; }
     public string? FJuros { get; set; }
@@ -33,5 +34,4 @@ public partial interface IDBContratos
     public bool FAvulso { get; set; }
     public bool FSuspenso { get; set; }
     public string? FMulta { get; set; }
-    public string? FGUID { get; set; }
 }

@@ -8,144 +8,139 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProValoresService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProValores filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProValores? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Processo)}", filtro.Processo));
-        }
-
-        if (filtro.Processo_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
         if (filtro.TipoValorProcesso != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.TipoValorProcesso)}", filtro.TipoValorProcesso));
+            parameters.Add(new($"@{(DBProValoresDicInfo.TipoValorProcesso)}", filtro.TipoValorProcesso));
+            if (filtro.TipoValorProcesso_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.TipoValorProcesso)}_end", filtro.TipoValorProcesso_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Indice))
+        if (!string.IsNullOrWhiteSpace(filtro.Indice))
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Indice)}", ApplyWildCard(filtro.WildcardChar, filtro.Indice)));
+            parameters.Add(new($"@{(DBProValoresDicInfo.Indice)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Indice)));
         }
 
         if (filtro.Ignorar != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Ignorar)}", filtro.Ignorar));
+            parameters.Add(new($"@{(DBProValoresDicInfo.Ignorar)}", filtro.Ignorar));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Data))
+        if (!string.IsNullOrWhiteSpace(filtro.Data))
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
+            parameters.Add(new($"@{(DBProValoresDicInfo.Data)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
         if (filtro.ValorOriginal != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorOriginal)}", filtro.ValorOriginal));
-        }
-
-        if (filtro.ValorOriginal_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorOriginal)}_end", filtro.ValorOriginal_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.ValorOriginal)}", filtro.ValorOriginal));
+            if (filtro.ValorOriginal_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.ValorOriginal)}_end", filtro.ValorOriginal_end));
+            }
         }
 
         if (filtro.PercMulta != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.PercMulta)}", filtro.PercMulta));
-        }
-
-        if (filtro.PercMulta_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.PercMulta)}_end", filtro.PercMulta_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.PercMulta)}", filtro.PercMulta));
+            if (filtro.PercMulta_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.PercMulta)}_end", filtro.PercMulta_end));
+            }
         }
 
         if (filtro.ValorMulta != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorMulta)}", filtro.ValorMulta));
-        }
-
-        if (filtro.ValorMulta_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorMulta)}_end", filtro.ValorMulta_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.ValorMulta)}", filtro.ValorMulta));
+            if (filtro.ValorMulta_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.ValorMulta)}_end", filtro.ValorMulta_end));
+            }
         }
 
         if (filtro.PercJuros != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.PercJuros)}", filtro.PercJuros));
-        }
-
-        if (filtro.PercJuros_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.PercJuros)}_end", filtro.PercJuros_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.PercJuros)}", filtro.PercJuros));
+            if (filtro.PercJuros_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.PercJuros)}_end", filtro.PercJuros_end));
+            }
         }
 
         if (filtro.ValorOriginalCorrigidoIndice != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}", filtro.ValorOriginalCorrigidoIndice));
-        }
-
-        if (filtro.ValorOriginalCorrigidoIndice_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}_end", filtro.ValorOriginalCorrigidoIndice_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}", filtro.ValorOriginalCorrigidoIndice));
+            if (filtro.ValorOriginalCorrigidoIndice_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}_end", filtro.ValorOriginalCorrigidoIndice_end));
+            }
         }
 
         if (filtro.ValorMultaCorrigido != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorMultaCorrigido)}", filtro.ValorMultaCorrigido));
-        }
-
-        if (filtro.ValorMultaCorrigido_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorMultaCorrigido)}_end", filtro.ValorMultaCorrigido_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.ValorMultaCorrigido)}", filtro.ValorMultaCorrigido));
+            if (filtro.ValorMultaCorrigido_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.ValorMultaCorrigido)}_end", filtro.ValorMultaCorrigido_end));
+            }
         }
 
         if (filtro.ValorJurosCorrigido != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorJurosCorrigido)}", filtro.ValorJurosCorrigido));
-        }
-
-        if (filtro.ValorJurosCorrigido_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorJurosCorrigido)}_end", filtro.ValorJurosCorrigido_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.ValorJurosCorrigido)}", filtro.ValorJurosCorrigido));
+            if (filtro.ValorJurosCorrigido_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.ValorJurosCorrigido)}_end", filtro.ValorJurosCorrigido_end));
+            }
         }
 
         if (filtro.ValorFinal != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorFinal)}", filtro.ValorFinal));
-        }
-
-        if (filtro.ValorFinal_end != decimal.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.ValorFinal)}_end", filtro.ValorFinal_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.ValorFinal)}", filtro.ValorFinal));
+            if (filtro.ValorFinal_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.ValorFinal)}_end", filtro.ValorFinal_end));
+            }
         }
 
         if (!filtro.DataUltimaCorrecao.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DataUltimaCorrecao, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProValoresDicInfo.DataUltimaCorrecao)}", dataParam));
+            if (DateTime.TryParse(filtro.DataUltimaCorrecao, out var dataParam1))
+                parameters.Add(new($"@{(DBProValoresDicInfo.DataUltimaCorrecao)}", dataParam1));
+            if (!filtro.DataUltimaCorrecao_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DataUltimaCorrecao_end, out var dataParam2))
+                    parameters.Add(new($"@{(DBProValoresDicInfo.DataUltimaCorrecao)}_end", dataParam2));
+            }
         }
 
-        if (!filtro.DataUltimaCorrecao_end.IsEmptyDX())
+        if (!string.IsNullOrWhiteSpace(filtro.Guid))
         {
-            if (DateTime.TryParse(filtro.DataUltimaCorrecao_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBProValoresDicInfo.DataUltimaCorrecao)}_end", dataParam));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBProValoresDicInfo.Guid)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Guid)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProValoresDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBProValoresDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProValoresDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -156,120 +151,117 @@ public partial class ProValoresService
         var cWhere = new StringBuilder();
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Processo}] = @{nameof(DBProValoresDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Processo}] = @{(DBProValoresDicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.Processo} BETWEEN @{nameof(DBProValoresDicInfo.Processo)} AND @{nameof(DBProValoresDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.Processo} BETWEEN @{(DBProValoresDicInfo.Processo)} AND @{(DBProValoresDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.TipoValorProcesso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}] = @{nameof(DBProValoresDicInfo.TipoValorProcesso)}");
-        cWhere.Append(filtro.Indice.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Indice}]  {DevourerConsts.MsiCollate} like @{nameof(DBProValoresDicInfo.Indice)}");
-        cWhere.Append(filtro.Ignorar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Ignorar}] = @{nameof(DBProValoresDicInfo.Ignorar)}");
-        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProValoresDicInfo.Data)}");
+        if (!(filtro.TipoValorProcesso.IsEmptyX()) && filtro.TipoValorProcesso_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.TipoValorProcesso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}] = @{(DBProValoresDicInfo.TipoValorProcesso)}");
+        }
+        else if (!(filtro.TipoValorProcesso.IsEmptyX()) && !(filtro.TipoValorProcesso_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.TipoValorProcesso} BETWEEN @{(DBProValoresDicInfo.TipoValorProcesso)} AND @{(DBProValoresDicInfo.TipoValorProcesso)}_end");
+        }
+
+        cWhere.Append(filtro.Indice.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Indice}]  {DevourerConsts.MsiCollate} like @{(DBProValoresDicInfo.Indice)}");
+        cWhere.Append(filtro.Ignorar == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Ignorar}] = @{(DBProValoresDicInfo.Ignorar)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{(DBProValoresDicInfo.Data)}");
         if (!(filtro.ValorOriginal == decimal.MinValue) && filtro.ValorOriginal_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorOriginal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorOriginal}] = @{nameof(DBProValoresDicInfo.ValorOriginal)}");
+            cWhere.Append(filtro.ValorOriginal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorOriginal}] = @{(DBProValoresDicInfo.ValorOriginal)}");
         }
         else if (!(filtro.ValorOriginal == decimal.MinValue) && !(filtro.ValorOriginal_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorOriginal} BETWEEN @{nameof(DBProValoresDicInfo.ValorOriginal)} AND @{nameof(DBProValoresDicInfo.ValorOriginal)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorOriginal} BETWEEN @{(DBProValoresDicInfo.ValorOriginal)} AND @{(DBProValoresDicInfo.ValorOriginal)}_end");
         }
 
         if (!(filtro.PercMulta == decimal.MinValue) && filtro.PercMulta_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.PercMulta == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.PercMulta}] = @{nameof(DBProValoresDicInfo.PercMulta)}");
+            cWhere.Append(filtro.PercMulta == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.PercMulta}] = @{(DBProValoresDicInfo.PercMulta)}");
         }
         else if (!(filtro.PercMulta == decimal.MinValue) && !(filtro.PercMulta_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.PercMulta} BETWEEN @{nameof(DBProValoresDicInfo.PercMulta)} AND @{nameof(DBProValoresDicInfo.PercMulta)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.PercMulta} BETWEEN @{(DBProValoresDicInfo.PercMulta)} AND @{(DBProValoresDicInfo.PercMulta)}_end");
         }
 
         if (!(filtro.ValorMulta == decimal.MinValue) && filtro.ValorMulta_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorMulta == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorMulta}] = @{nameof(DBProValoresDicInfo.ValorMulta)}");
+            cWhere.Append(filtro.ValorMulta == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorMulta}] = @{(DBProValoresDicInfo.ValorMulta)}");
         }
         else if (!(filtro.ValorMulta == decimal.MinValue) && !(filtro.ValorMulta_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorMulta} BETWEEN @{nameof(DBProValoresDicInfo.ValorMulta)} AND @{nameof(DBProValoresDicInfo.ValorMulta)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorMulta} BETWEEN @{(DBProValoresDicInfo.ValorMulta)} AND @{(DBProValoresDicInfo.ValorMulta)}_end");
         }
 
         if (!(filtro.PercJuros == decimal.MinValue) && filtro.PercJuros_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.PercJuros == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.PercJuros}] = @{nameof(DBProValoresDicInfo.PercJuros)}");
+            cWhere.Append(filtro.PercJuros == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.PercJuros}] = @{(DBProValoresDicInfo.PercJuros)}");
         }
         else if (!(filtro.PercJuros == decimal.MinValue) && !(filtro.PercJuros_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.PercJuros} BETWEEN @{nameof(DBProValoresDicInfo.PercJuros)} AND @{nameof(DBProValoresDicInfo.PercJuros)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.PercJuros} BETWEEN @{(DBProValoresDicInfo.PercJuros)} AND @{(DBProValoresDicInfo.PercJuros)}_end");
         }
 
         if (!(filtro.ValorOriginalCorrigidoIndice == decimal.MinValue) && filtro.ValorOriginalCorrigidoIndice_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorOriginalCorrigidoIndice == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorOriginalCorrigidoIndice}] = @{nameof(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}");
+            cWhere.Append(filtro.ValorOriginalCorrigidoIndice == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorOriginalCorrigidoIndice}] = @{(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}");
         }
         else if (!(filtro.ValorOriginalCorrigidoIndice == decimal.MinValue) && !(filtro.ValorOriginalCorrigidoIndice_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorOriginalCorrigidoIndice} BETWEEN @{nameof(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)} AND @{nameof(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorOriginalCorrigidoIndice} BETWEEN @{(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)} AND @{(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)}_end");
         }
 
         if (!(filtro.ValorMultaCorrigido == decimal.MinValue) && filtro.ValorMultaCorrigido_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorMultaCorrigido == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorMultaCorrigido}] = @{nameof(DBProValoresDicInfo.ValorMultaCorrigido)}");
+            cWhere.Append(filtro.ValorMultaCorrigido == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorMultaCorrigido}] = @{(DBProValoresDicInfo.ValorMultaCorrigido)}");
         }
         else if (!(filtro.ValorMultaCorrigido == decimal.MinValue) && !(filtro.ValorMultaCorrigido_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorMultaCorrigido} BETWEEN @{nameof(DBProValoresDicInfo.ValorMultaCorrigido)} AND @{nameof(DBProValoresDicInfo.ValorMultaCorrigido)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorMultaCorrigido} BETWEEN @{(DBProValoresDicInfo.ValorMultaCorrigido)} AND @{(DBProValoresDicInfo.ValorMultaCorrigido)}_end");
         }
 
         if (!(filtro.ValorJurosCorrigido == decimal.MinValue) && filtro.ValorJurosCorrigido_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorJurosCorrigido == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorJurosCorrigido}] = @{nameof(DBProValoresDicInfo.ValorJurosCorrigido)}");
+            cWhere.Append(filtro.ValorJurosCorrigido == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorJurosCorrigido}] = @{(DBProValoresDicInfo.ValorJurosCorrigido)}");
         }
         else if (!(filtro.ValorJurosCorrigido == decimal.MinValue) && !(filtro.ValorJurosCorrigido_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorJurosCorrigido} BETWEEN @{nameof(DBProValoresDicInfo.ValorJurosCorrigido)} AND @{nameof(DBProValoresDicInfo.ValorJurosCorrigido)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorJurosCorrigido} BETWEEN @{(DBProValoresDicInfo.ValorJurosCorrigido)} AND @{(DBProValoresDicInfo.ValorJurosCorrigido)}_end");
         }
 
         if (!(filtro.ValorFinal == decimal.MinValue) && filtro.ValorFinal_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.ValorFinal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorFinal}] = @{nameof(DBProValoresDicInfo.ValorFinal)}");
+            cWhere.Append(filtro.ValorFinal == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.ValorFinal}] = @{(DBProValoresDicInfo.ValorFinal)}");
         }
         else if (!(filtro.ValorFinal == decimal.MinValue) && !(filtro.ValorFinal_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorFinal} BETWEEN @{nameof(DBProValoresDicInfo.ValorFinal)} AND @{nameof(DBProValoresDicInfo.ValorFinal)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.ValorFinal} BETWEEN @{(DBProValoresDicInfo.ValorFinal)} AND @{(DBProValoresDicInfo.ValorFinal)}_end");
         }
 
         if (!(filtro.DataUltimaCorrecao.IsEmptyDX()) && filtro.DataUltimaCorrecao_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataUltimaCorrecao.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.DataUltimaCorrecao}], 103) = CONVERT(DATE, @{nameof(DBProValoresDicInfo.DataUltimaCorrecao)}, 103)");
+            cWhere.Append(filtro.DataUltimaCorrecao.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.DataUltimaCorrecao}], 103) = CONVERT(DATE, @{(DBProValoresDicInfo.DataUltimaCorrecao)}, 103)");
         }
         else if (!(filtro.DataUltimaCorrecao.IsEmptyDX()) && !(filtro.DataUltimaCorrecao_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.DataUltimaCorrecao} BETWEEN @{nameof(DBProValoresDicInfo.DataUltimaCorrecao)} AND @{nameof(DBProValoresDicInfo.DataUltimaCorrecao)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.DataUltimaCorrecao} BETWEEN @{(DBProValoresDicInfo.DataUltimaCorrecao)} AND @{(DBProValoresDicInfo.DataUltimaCorrecao)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProValoresDicInfo.GUID)}");
+        cWhere.Append(filtro.Guid.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.Guid}]  {DevourerConsts.MsiCollate} like @{(DBProValoresDicInfo.Guid)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.CampoCodigo}] = @{nameof(DBProValoresDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.CampoCodigo}] = @{(DBProValoresDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.CampoCodigo} BETWEEN @{nameof(DBProValoresDicInfo.CampoCodigo)} AND @{nameof(DBProValoresDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProValoresDicInfo.PTabelaNome}].{DBProValoresDicInfo.CampoCodigo} BETWEEN @{(DBProValoresDicInfo.CampoCodigo)} AND @{(DBProValoresDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterProValores? filtro)

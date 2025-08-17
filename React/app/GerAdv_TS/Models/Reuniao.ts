@@ -13,7 +13,6 @@ export interface Reuniao
 	horainicial : string;
 	horainicial_date? : Date;
 	horafinal : string;
-	horafinal_date? : Date;
 	externa : boolean;
 	horasaida : string;
 	horasaida_date? : Date;

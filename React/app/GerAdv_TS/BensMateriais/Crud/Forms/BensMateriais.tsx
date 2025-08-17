@@ -66,284 +66,288 @@ if (getParamFromUrl('bensclassificacao') > 0) {
       setNomeBensClassificacao(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    bensmateriaisData.bensclassificacao = getParamFromUrl('bensclassificacao');
+      bensmateriaisData.bensclassificacao = getParamFromUrl('bensclassificacao');
+    }
   }
-}
 
-if (getParamFromUrl('fornecedores') > 0) {
-  if (bensmateriaisData.id === 0 && bensmateriaisData.fornecedor == 0) {
-    fornecedoresApi
-    .getById(getParamFromUrl('fornecedores'))
-    .then((response) => {
-      setNomeFornecedores(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('fornecedores') > 0) {
+    if (bensmateriaisData.id === 0 && bensmateriaisData.fornecedor == 0) {
+      fornecedoresApi
+      .getById(getParamFromUrl('fornecedores'))
+      .then((response) => {
+        setNomeFornecedores(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    bensmateriaisData.fornecedor = getParamFromUrl('fornecedores');
-  }
-}
+        bensmateriaisData.fornecedor = getParamFromUrl('fornecedores');
+      }
+    }
 
-if (getParamFromUrl('cidade') > 0) {
-  if (bensmateriaisData.id === 0 && bensmateriaisData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('cidade') > 0) {
+      if (bensmateriaisData.id === 0 && bensmateriaisData.cidade == 0) {
+        cidadeApi
+        .getById(getParamFromUrl('cidade'))
+        .then((response) => {
+          setNomeCidade(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    bensmateriaisData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorBensClassificacao = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'bensclassificacao', value: e.id } });
-  };
-  const addValorFornecedor = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'fornecedor', value: e.id } });
-    };
-    const addValorCidade = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'cidade', value: e.id } });
-      };
-      const onConfirm = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (e.stopPropagation) e.stopPropagation();
-
-          if (!isSubmitting) {
-            setIsSubmitting(true);
-
-            try {
-              onSubmit(e);
-            } catch (error) {
-            console.log('Erro ao submeter formulário de BensMateriais:');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
+          bensmateriaisData.cidade = getParamFromUrl('cidade');
+        }
+      }
+      const addValorBensClassificacao = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'bensclassificacao', value: e.id } });
         };
-        const handleCancel = () => {
-          if (onReload) {
-            onReload(); // Recarrega os dados originais
-          } else {
-          onClose(); // Comportamento padrão se não há callback de recarga
-        }
-      };
+        const addValorFornecedor = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'fornecedor', value: e.id } });
+          };
+          const addValorCidade = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'cidade', value: e.id } });
+            };
+            const onConfirm = (e: React.FormEvent) => {
+              e.preventDefault();
+              if (e.stopPropagation) e.stopPropagation();
 
-      const handleDirectSave = () => {
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+                if (!isSubmitting) {
+                  setIsSubmitting(true);
 
-          try {
-            const syntheticEvent = {
-              preventDefault: () => { }, 
-              target: document.getElementById(`BensMateriaisForm-${bensmateriaisData.id}`)
-            } as unknown as React.FormEvent;
+                  try {
+                    onSubmit(e);
+                  } catch (error) {
+                  console.log('Erro ao submeter formulário de BensMateriais:');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              const handleCancel = () => {
+                if (onReload) {
+                  onReload(); // Recarrega os dados originais
+                } else {
+                onClose(); // Comportamento padrão se não há callback de recarga
+              }
+            };
 
-            onSubmit(syntheticEvent);
-          } catch (error) {
-          console.log('Erro ao salvar BensMateriais diretamente');
-          setIsSubmitting(false);
-          if (onError) onError();
-          }
-        }
-      };
-      useEffect(() => {
-        const el = document.querySelector('.nameFormMobile');
-        if (el) {
-          el.textContent = bensmateriaisData?.id == 0 ? 'Editar BensMateriais' : 'Adicionar Bens Materiais';
-        }
-      }, [bensmateriaisData.id]);
-      return (
-      <>
-      {!isMobile ? <style jsx global>{`
-        @media (max-width: 1366px) {
-          html {
-            zoom: 0.8 !important;
-          }
-        }
-        `}</style> : null}
+            const handleDirectSave = () => {
+              if (!isSubmitting) {
+                setIsSubmitting(true);
 
-        <div className={isMobile ? 'form-container form-container-BensMateriais' : 'form-container form-container-BensMateriais'}>
+                try {
+                  const syntheticEvent = {
+                    preventDefault: () => { }, 
+                    target: document.getElementById(`BensMateriaisForm-${bensmateriaisData.id}`)
+                  } as unknown as React.FormEvent;
 
-          <form className='formInputCadInc' id={`BensMateriaisForm-${bensmateriaisData.id}`} onSubmit={onConfirm}>
-            {!isMobile && (
-              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='BensMateriais' data={bensmateriaisData} isSubmitting={isSubmitting} onClose={onClose} formId={`BensMateriaisForm-${bensmateriaisData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <div className='grid-container'>
+                  onSubmit(syntheticEvent);
+                } catch (error) {
+                if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                  console.log('Erro ao salvar BensMateriais diretamente');
+                  setIsSubmitting(false);
+                  if (onError) onError();
+                  }
+                }
+              };
+              useEffect(() => {
+                const el = document.querySelector('.nameFormMobile');
+                if (el) {
+                  el.textContent = bensmateriaisData?.id == 0 ? 'Editar BensMateriais' : 'Adicionar Bens Materiais';
+                }
+              }, [bensmateriaisData.id]);
+              return (
+              <>
+              {!isMobile ? <style jsx global>{`
+                @media (max-width: 1366px) {
+                  html {
+                    zoom: 0.8 !important;
+                  }
+                }
+                `}</style> : null}
 
-                <InputName
-                type='text'
-                id='nome'
-                label='Nome'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='nome'
-                value={bensmateriaisData.nome}
-                placeholder={`Informe Nome`}
-                onChange={onChange}
-                required
-                />
+                <div className={isMobile ? 'form-container form-container-BensMateriais' : 'form-container form-container-BensMateriais'}>
 
-                <BensClassificacaoComboBox
-                name={'bensclassificacao'}
-                dataForm={bensmateriaisData}
-                value={bensmateriaisData.bensclassificacao}
-                setValue={addValorBensClassificacao}
-                label={'Bens Classificacao'}
-                />
+                  <form className='formInputCadInc' id={`BensMateriaisForm-${bensmateriaisData.id}`} onSubmit={onConfirm}>
+                    {!isMobile && (
+                      <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='BensMateriais' data={bensmateriaisData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`BensMateriaisForm-${bensmateriaisData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <div className='grid-container'>
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='datacompra'
-                label='DataCompra'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='datacompra'
-                value={bensmateriaisData.datacompra}
-                onChange={onChange}
-                />
+                        <InputName
+                        type='text'
+                        id='nome'
+                        label='Nome'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='nome'
+                        value={bensmateriaisData.nome}
+                        placeholder={`Informe Nome`}
+                        onChange={onChange}
+                        required
+                        />
 
+                        <BensClassificacaoComboBox
+                        name={'bensclassificacao'}
+                        dataForm={bensmateriaisData}
+                        value={bensmateriaisData.bensclassificacao}
+                        setValue={addValorBensClassificacao}
+                        label={'Bens Classificacao'}
+                        />
 
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='datafimdagarantia'
-                label='DataFimDaGarantia'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='datafimdagarantia'
-                value={bensmateriaisData.datafimdagarantia}
-                onChange={onChange}
-                />
-
-
-                <InputInput
-                type='text'
-                maxLength={255}
-                id='nfnro'
-                label='NFNRO'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='nfnro'
-                value={bensmateriaisData.nfnro}
-                onChange={onChange}
-                />
-
-
-                <FornecedoresComboBox
-                name={'fornecedor'}
-                dataForm={bensmateriaisData}
-                value={bensmateriaisData.fornecedor}
-                setValue={addValorFornecedor}
-                label={'Fornecedor'}
-                />
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='valorbem'
-                label='ValorBem'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='valorbem'
-                value={bensmateriaisData.valorbem}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='datacompra'
+                        label='DataCompra'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='datacompra'
+                        value={bensmateriaisData.datacompra}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={100}
-                id='nroserieproduto'
-                label='NroSerieProduto'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='nroserieproduto'
-                value={bensmateriaisData.nroserieproduto}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='datafimdagarantia'
+                        label='DataFimDaGarantia'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='datafimdagarantia'
+                        value={bensmateriaisData.datafimdagarantia}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={100}
-                id='comprador'
-                label='Comprador'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='comprador'
-                value={bensmateriaisData.comprador}
-                onChange={onChange}
-                />
-
-              </div><div className='grid-container'>
-                <CidadeComboBox
-                name={'cidade'}
-                dataForm={bensmateriaisData}
-                value={bensmateriaisData.cidade}
-                setValue={addValorCidade}
-                label={'Cidade'}
-                />
-                <InputCheckbox dataForm={bensmateriaisData} label='GarantiaLoja' name='garantialoja' checked={bensmateriaisData.garantialoja} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='dataterminodagarantiadaloja'
-                label='DataTerminoDaGarantiaDaLoja'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='dataterminodagarantiadaloja'
-                value={bensmateriaisData.dataterminodagarantiadaloja}
-                onChange={onChange}
-                />
+                        <InputInput
+                        type='text'
+                        maxLength={255}
+                        id='nfnro'
+                        label='NFNRO'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='nfnro'
+                        value={bensmateriaisData.nfnro}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={2147483647}
-                id='observacoes'
-                label='Observacoes'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='observacoes'
-                value={bensmateriaisData.observacoes}
-                onChange={onChange}
-                />
+                        <FornecedoresComboBox
+                        name={'fornecedor'}
+                        dataForm={bensmateriaisData}
+                        value={bensmateriaisData.fornecedor}
+                        setValue={addValorFornecedor}
+                        label={'Fornecedor'}
+                        />
+
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='valorbem'
+                        label='ValorBem'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='valorbem'
+                        value={bensmateriaisData.valorbem}
+                        onChange={onChange}
+                        />
 
 
-                <InputInput
-                type='text'
-                maxLength={255}
-                id='nomevendedor'
-                label='NomeVendedor'
-                dataForm={bensmateriaisData}
-                className='inputIncNome'
-                name='nomevendedor'
-                value={bensmateriaisData.nomevendedor}
-                onChange={onChange}
-                />
-
-              </div>
-            </form>
+                        <InputInput
+                        type='text'
+                        maxLength={100}
+                        id='nroserieproduto'
+                        label='NroSerieProduto'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='nroserieproduto'
+                        value={bensmateriaisData.nroserieproduto}
+                        onChange={onChange}
+                        />
 
 
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='BensMateriais' data={bensmateriaisData} isSubmitting={isSubmitting} onClose={onClose} formId={`BensMateriaisForm-${bensmateriaisData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/bensmateriais'} id={bensmateriaisData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+                        <InputInput
+                        type='text'
+                        maxLength={100}
+                        id='comprador'
+                        label='Comprador'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='comprador'
+                        value={bensmateriaisData.comprador}
+                        onChange={onChange}
+                        />
+
+                      </div><div className='grid-container'>
+                        <CidadeComboBox
+                        name={'cidade'}
+                        dataForm={bensmateriaisData}
+                        value={bensmateriaisData.cidade}
+                        setValue={addValorCidade}
+                        label={'Cidade'}
+                        />
+                        <InputCheckbox dataForm={bensmateriaisData} label='GarantiaLoja' name='garantialoja' checked={bensmateriaisData.garantialoja} onChange={onChange} />
+
+                        <InputInput
+                        type='text'
+                        maxLength={2048}
+                        id='dataterminodagarantiadaloja'
+                        label='DataTerminoDaGarantiaDaLoja'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='dataterminodagarantiadaloja'
+                        value={bensmateriaisData.dataterminodagarantiadaloja}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={2147483647}
+                        id='observacoes'
+                        label='Observacoes'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='observacoes'
+                        value={bensmateriaisData.observacoes}
+                        onChange={onChange}
+                        />
+
+
+                        <InputInput
+                        type='text'
+                        maxLength={255}
+                        id='nomevendedor'
+                        label='NomeVendedor'
+                        dataForm={bensmateriaisData}
+                        className='inputIncNome'
+                        name='nomevendedor'
+                        value={bensmateriaisData.nomevendedor}
+                        onChange={onChange}
+                        />
+
+                      </div>
+                    </form>
+
+
+                    {isMobile && (
+                      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='BensMateriais' data={bensmateriaisData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`BensMateriaisForm-${bensmateriaisData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                      )}
+                      <DeleteButton page={'/pages/bensmateriais'} id={bensmateriaisData.id} closeModel={onClose} dadoApi={dadoApi} />
+                    </div>
+                    <div className='form-spacer'></div>
+                    </>
+                  );
+                };

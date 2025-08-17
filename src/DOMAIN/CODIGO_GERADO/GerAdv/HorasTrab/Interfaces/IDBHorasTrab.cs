@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBHorasTrab
 {
     public int ID { get; set; }
+    public string? FGUID { get; set; }
     public int FIDContatoCRM { get; set; }
     public bool FHonorario { get; set; }
     public int FIDAgenda { get; set; }
@@ -23,5 +24,4 @@ public partial interface IDBHorasTrab
     public string? FAnexoComp { get; set; }
     public string? FAnexoUNC { get; set; }
     public int FServico { get; set; }
-    public string? FGUID { get; set; }
 }

@@ -54,7 +54,7 @@ public partial class FSMSAliceFactory : IFSMSAliceFactory, IDisposable
             throw new ObjectDisposedException(nameof(FSMSAliceFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

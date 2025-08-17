@@ -41,7 +41,8 @@ export const usePosicaoOutrasPartesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Posicao Outras Partes';
       setError(errorMessage);
-      //console.log('Erro ao carregar Posicao Outras Partes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Posicao Outras Partes');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePosicaoOutrasPartesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePosicaoOutrasPartesList = (dataService: IPosicaoOutrasPartesServ
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar posicaooutraspartes';
       setError(errorMessage);
-      //console.log('Erro ao carregar posicaooutraspartes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar posicaooutraspartes');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 30) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

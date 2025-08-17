@@ -59,18 +59,6 @@ useEffect(() => {
 }
 }, []);
 
-const openSearchCellGruposEmpresasCli = (id: number) => {
-  router.push(`/pages/gruposempresascli/?gruposempresas=${id}`);
-};
-const SearchFromCellGruposEmpresasCli = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellGruposEmpresasCli(props.dataItem.id)}><span title='Pesquisar relacionados em Grupos Empresas Cli'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -136,36 +124,21 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
-  'id_edit_GruposEmpresasCli': (
-  <GridColumn
-  key='GruposEmpresasCli'
-  field='GruposEmpresasCli'
-  title='Grupos Empresas Cli'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellGruposEmpresasCli }}
-  />
-  ), /* Track G.03 */
+  ), /* Track G.12 */
   'nomeoponentes': (
   <GridColumn
   key='nomeoponentes'
-
   field='nomeoponentes'
   title='Oponentes'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeclientes': (
   <GridColumn
   key='nomeclientes'
-
   field='nomeclientes'
   title='Clientes'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui
@@ -174,14 +147,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
 const baseGridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_GruposEmpresasCli'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Grupos Empresas Cli'
-  cells={{ data: SearchFromCellGruposEmpresasCli }}
-  />, 
   ], [RowNumberCell, EditRow, DeleteRow]);
   // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
   const {
@@ -216,14 +181,6 @@ const finalGridColumns = useMemo(() => {
   const finalColumns = [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_GruposEmpresasCli'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Grupos Empresas Cli'
-  cells={{ data: SearchFromCellGruposEmpresasCli }}
-  />, 
 
   // Colunas reordenáveis na ordem especificada
   ...columnsOrder.map(field => basicColumnMap[field]).filter(Boolean).map(column => {

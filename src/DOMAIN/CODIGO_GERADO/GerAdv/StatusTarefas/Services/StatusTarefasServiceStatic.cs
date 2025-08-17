@@ -8,27 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class StatusTarefasService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterStatusTarefas filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterStatusTarefas? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBStatusTarefasDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBStatusTarefasDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBStatusTarefasDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBStatusTarefasDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBStatusTarefasDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBStatusTarefasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBStatusTarefasDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBStatusTarefasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -37,29 +38,18 @@ public partial class StatusTarefasService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBStatusTarefasDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBStatusTarefasDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBStatusTarefasDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBStatusTarefasDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.CampoCodigo}] = @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].[{DBStatusTarefasDicInfo.CampoCodigo}] = @{(DBStatusTarefasDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].{DBStatusTarefasDicInfo.CampoCodigo} BETWEEN @{nameof(DBStatusTarefasDicInfo.CampoCodigo)} AND @{nameof(DBStatusTarefasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBStatusTarefasDicInfo.PTabelaNome}].{DBStatusTarefasDicInfo.CampoCodigo} BETWEEN @{(DBStatusTarefasDicInfo.CampoCodigo)} AND @{(DBStatusTarefasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterStatusTarefas? filtro)

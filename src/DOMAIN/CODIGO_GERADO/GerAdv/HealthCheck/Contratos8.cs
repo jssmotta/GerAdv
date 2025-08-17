@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosService contratosService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta,cttGUID FROM {"Contratos".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) cttProcesso,cttCliente,cttAdvogado,cttDia,cttValor,cttDataInicio,cttDataTermino,cttOcultarRelatorio,cttPercEscritorio,cttValorConsultoria,cttGUID,cttTipoCobranca,cttProtestar,cttJuros,cttValorRealizavel,cttDOCUMENTO,cttEMail1,cttEMail2,cttEMail3,cttPessoa1,cttPessoa2,cttPessoa3,cttOBS,cttClienteContrato,cttIdExtrangeiro,cttChaveContrato,cttAvulso,cttSuspenso,cttMulta FROM {"Contratos".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class ContratosHealthCheck(IOptions<AppSettings> appSettings, ContratosSe
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

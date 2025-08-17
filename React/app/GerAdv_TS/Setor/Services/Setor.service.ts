@@ -79,7 +79,8 @@ export class SetorService implements ISetorService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Setor list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Setor list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class SetorService implements ISetorService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Setor');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Setor');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class SetorService implements ISetorService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Setor');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Setor');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Setor:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Setor:');
       return [];
     }
   }

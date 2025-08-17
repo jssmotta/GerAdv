@@ -58,141 +58,143 @@ if (getParamFromUrl('uf') > 0) {
       setNomeUF(response.data.d);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    cidadeData.uf = getParamFromUrl('uf');
+      cidadeData.uf = getParamFromUrl('uf');
+    }
   }
-}
-const addValorUF = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'uf', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorUF = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'uf', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de Cidade:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`CidadeForm-${cidadeData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de Cidade:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar Cidade diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = cidadeData?.id == 0 ? 'Editar Cidade' : 'Adicionar Cidade';
+        }
+      }, [cidadeData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-Cidade' : 'form-container5 form-container-Cidade'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`CidadeForm-${cidadeData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`CidadeForm-${cidadeData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Cidade' data={cidadeData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`CidadeForm-${cidadeData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar Cidade diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = cidadeData?.id == 0 ? 'Editar Cidade' : 'Adicionar Cidade';
-    }
-  }, [cidadeData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='nome'
+                label='Nome'
+                dataForm={cidadeData}
+                className='inputIncNome'
+                name='nome'
+                value={cidadeData.nome}
+                placeholder={`Informe Nome`}
+                onChange={onChange}
+                required
+                />
 
-    <div className={isMobile ? 'form-container form-container-Cidade' : 'form-container5 form-container-Cidade'}>
+                <InputInput
+                type='text'
+                maxLength={10}
+                id='ddd'
+                label='DDD'
+                dataForm={cidadeData}
+                className='inputIncNome'
+                name='ddd'
+                value={cidadeData.ddd}
+                onChange={onChange}
+                />
 
-      <form className='formInputCadInc' id={`CidadeForm-${cidadeData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Cidade' data={cidadeData} isSubmitting={isSubmitting} onClose={onClose} formId={`CidadeForm-${cidadeData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+                <InputCheckbox dataForm={cidadeData} label='Top' name='top' checked={cidadeData.top} onChange={onChange} />
+                <InputCheckbox dataForm={cidadeData} label='Comarca' name='comarca' checked={cidadeData.comarca} onChange={onChange} />
+                <InputCheckbox dataForm={cidadeData} label='Capital' name='capital' checked={cidadeData.capital} onChange={onChange} />
 
-            <InputName
-            type='text'
-            id='nome'
-            label='Nome'
-            dataForm={cidadeData}
-            className='inputIncNome'
-            name='nome'
-            value={cidadeData.nome}
-            placeholder={`Informe Nome`}
-            onChange={onChange}
-            required
-            />
+                <UFComboBox
+                name={'uf'}
+                dataForm={cidadeData}
+                value={cidadeData.uf}
+                setValue={addValorUF}
+                label={'UF'}
+                />
 
-            <InputInput
-            type='text'
-            maxLength={10}
-            id='ddd'
-            label='DDD'
-            dataForm={cidadeData}
-            className='inputIncNome'
-            name='ddd'
-            value={cidadeData.ddd}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={10}
+                id='sigla'
+                label='Sigla'
+                dataForm={cidadeData}
+                className='inputIncNome'
+                name='sigla'
+                value={cidadeData.sigla}
+                onChange={onChange}
+                />
 
-            <InputCheckbox dataForm={cidadeData} label='Top' name='top' checked={cidadeData.top} onChange={onChange} />
-            <InputCheckbox dataForm={cidadeData} label='Comarca' name='comarca' checked={cidadeData.comarca} onChange={onChange} />
-            <InputCheckbox dataForm={cidadeData} label='Capital' name='capital' checked={cidadeData.capital} onChange={onChange} />
-
-            <UFComboBox
-            name={'uf'}
-            dataForm={cidadeData}
-            value={cidadeData.uf}
-            setValue={addValorUF}
-            label={'UF'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={10}
-            id='sigla'
-            label='Sigla'
-            dataForm={cidadeData}
-            className='inputIncNome'
-            name='sigla'
-            value={cidadeData.sigla}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+              </div>
+            </form>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Cidade' data={cidadeData} isSubmitting={isSubmitting} onClose={onClose} formId={`CidadeForm-${cidadeData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/cidade'} id={cidadeData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Cidade' data={cidadeData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`CidadeForm-${cidadeData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/cidade'} id={cidadeData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

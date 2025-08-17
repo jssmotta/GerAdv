@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) : IEscritoriosReader
 {
-    private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory;
+    private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("escCodigo, escNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<EscritoriosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEscritorios.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<EscritoriosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,6 +54,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         var escritorios = new Models.Escritorios
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ?.MaskCnpj() ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -73,7 +74,6 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return escritorios;
     }
@@ -99,6 +99,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         var escritorios = new EscritoriosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ?.MaskCnpj() ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -118,7 +119,6 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return escritorios;
     }
@@ -133,6 +133,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         var escritorios = new EscritoriosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ?.MaskCnpj() ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -152,7 +153,6 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return escritorios;
     }
@@ -167,6 +167,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         var escritorios = new EscritoriosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ?.MaskCnpj() ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -186,7 +187,6 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -209,6 +209,7 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         var escritorios = new EscritoriosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ?.MaskCnpj() ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -228,7 +229,6 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

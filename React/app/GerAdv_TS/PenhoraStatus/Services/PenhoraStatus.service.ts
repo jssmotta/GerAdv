@@ -79,7 +79,8 @@ export class PenhoraStatusService implements IPenhoraStatusService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching PenhoraStatus list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching PenhoraStatus list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class PenhoraStatusService implements IPenhoraStatusService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online PenhoraStatus');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PenhoraStatus');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class PenhoraStatusService implements IPenhoraStatusService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online PenhoraStatus');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PenhoraStatus');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all PenhoraStatus:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all PenhoraStatus:');
       return [];
     }
   }

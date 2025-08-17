@@ -8,27 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AtividadesService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAtividades filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAtividades? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBAtividadesDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBAtividadesDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBAtividadesDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBAtividadesDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAtividadesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBAtividadesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBAtividadesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAtividadesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -37,29 +38,18 @@ public partial class AtividadesService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].[{DBAtividadesDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAtividadesDicInfo.Descricao)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].[{DBAtividadesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAtividadesDicInfo.GUID)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].[{DBAtividadesDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBAtividadesDicInfo.Descricao)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].[{DBAtividadesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBAtividadesDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].[{DBAtividadesDicInfo.CampoCodigo}] = @{nameof(DBAtividadesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].[{DBAtividadesDicInfo.CampoCodigo}] = @{(DBAtividadesDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].{DBAtividadesDicInfo.CampoCodigo} BETWEEN @{nameof(DBAtividadesDicInfo.CampoCodigo)} AND @{nameof(DBAtividadesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAtividadesDicInfo.PTabelaNome}].{DBAtividadesDicInfo.CampoCodigo} BETWEEN @{(DBAtividadesDicInfo.CampoCodigo)} AND @{(DBAtividadesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterAtividades? filtro)

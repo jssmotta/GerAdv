@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBPrepostos
 {
     public int ID { get; set; }
+    public string? FGUID { get; set; }
     public string? FNome { get; set; }
     public int FFuncao { get; set; }
     public int FSetor { get; set; }
@@ -34,5 +35,4 @@ public partial interface IDBPrepostos
     public string? FPai { get; set; }
     public string? FMae { get; set; }
     public string? FClass { get; set; }
-    public string? FGUID { get; set; }
 }

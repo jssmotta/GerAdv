@@ -13,7 +13,7 @@ public partial interface IGUTMatrizWhere
 
 public partial class GUTMatrizWhere(IFGUTMatrizFactory gutmatrizFactory) : IGUTMatrizWhere
 {
-    private readonly IFGUTMatrizFactory _gutmatrizFactory = gutmatrizFactory;
+    private readonly IFGUTMatrizFactory _gutmatrizFactory = gutmatrizFactory ?? throw new ArgumentNullException(nameof(gutmatrizFactory));
     public GUTMatrizResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _gutmatrizFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

@@ -8,27 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProTipoBaixaService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProTipoBaixa filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProTipoBaixa? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBProTipoBaixaDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBProTipoBaixaDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBProTipoBaixaDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBProTipoBaixaDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProTipoBaixaDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProTipoBaixaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBProTipoBaixaDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProTipoBaixaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -37,29 +38,18 @@ public partial class ProTipoBaixaService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].[{DBProTipoBaixaDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProTipoBaixaDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].[{DBProTipoBaixaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProTipoBaixaDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].[{DBProTipoBaixaDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBProTipoBaixaDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].[{DBProTipoBaixaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBProTipoBaixaDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].[{DBProTipoBaixaDicInfo.CampoCodigo}] = @{nameof(DBProTipoBaixaDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].[{DBProTipoBaixaDicInfo.CampoCodigo}] = @{(DBProTipoBaixaDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].{DBProTipoBaixaDicInfo.CampoCodigo} BETWEEN @{nameof(DBProTipoBaixaDicInfo.CampoCodigo)} AND @{nameof(DBProTipoBaixaDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProTipoBaixaDicInfo.PTabelaNome}].{DBProTipoBaixaDicInfo.CampoCodigo} BETWEEN @{(DBProTipoBaixaDicInfo.CampoCodigo)} AND @{(DBProTipoBaixaDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterProTipoBaixa? filtro)

@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IReuniaoValidation
 {
     Task<bool> ValidateReg(Models.Reuniao reg, IReuniaoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IReuniaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IReuniaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ReuniaoValidation : IReuniaoValidation
 {
-    public async Task<bool> CanDelete(int id, IReuniaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IReuniaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class ReuniaoValidation : IReuniaoValidation
 
     private bool ValidSizes(Models.Reuniao reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBReuniaoDicInfo.RenGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBReuniaoDicInfo.RenGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -40,6 +40,33 @@ public class ReuniaoValidation : IReuniaoValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.HoraInicial))
+        {
+            if (DateTime.TryParse(reg.HoraInicial, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraInicial não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.HoraSaida))
+        {
+            if (DateTime.TryParse(reg.HoraSaida, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraSaida não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.HoraRetorno))
+        {
+            if (DateTime.TryParse(reg.HoraRetorno, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraRetorno não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {

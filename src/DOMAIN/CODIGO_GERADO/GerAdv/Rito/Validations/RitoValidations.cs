@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IRitoValidation
 {
     Task<bool> ValidateReg(Models.Rito reg, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class RitoValidation : IRitoValidation
 {
-    public async Task<bool> CanDelete(int id, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IRitoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class RitoValidation : IRitoValidation
 
     private bool ValidSizes(Models.Rito reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 20)
-            throw new SGValidationException($"Descricao deve ter no máximo 20 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBRitoDicInfo.RitDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBRitoDicInfo.RitDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBRitoDicInfo.RitGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBRitoDicInfo.RitGUID.FTamanho} caracteres.");
         return true;
     }
 

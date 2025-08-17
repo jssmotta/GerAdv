@@ -54,7 +54,7 @@ public partial class FStatusTarefasFactory : IFStatusTarefasFactory, IDisposable
             throw new ObjectDisposedException(nameof(FStatusTarefasFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

@@ -23,11 +23,9 @@ public partial class ProValoresReader
 
         var cWhere = whereClause.IsEmpty() ? string.Empty : (whereClause.Contains("WHERE", StringComparison.CurrentCultureIgnoreCase) ? whereClause : $" WHERE {whereClause}");
         var query = $@"SELECT TOP ({max})
-                   {campos}, 
-[{DBTipoValorProcessoDicInfo.PTabelaNome}].[{DBTipoValorProcessoDicInfo.Descricao}]
+                   {campos}
                    FROM {DBProValores.PTabelaNome.dbo(oCnn)}
-                   LEFT JOIN {DBTipoValorProcessoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoValorProcessoDicInfo.PTabelaNome}].[{DBTipoValorProcessoDicInfo.CampoCodigo}]=[{DBProValoresDicInfo.PTabelaNome}].[{DBProValoresDicInfo.TipoValorProcesso}]
- 
+                    
                    {cWhere}
                    {orderQuery}
                    OPTION (OPTIMIZE FOR UNKNOWN)";

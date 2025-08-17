@@ -13,17 +13,17 @@ public partial interface ITipoRecursoWhere
 
 public partial class TipoRecursoWhere(IFTipoRecursoFactory tiporecursoFactory) : ITipoRecursoWhere
 {
-    private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory;
+    private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory ?? throw new ArgumentNullException(nameof(tiporecursoFactory));
     public TipoRecursoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tiporecursoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tiporecurso = new TipoRecursoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tiporecurso;
     }

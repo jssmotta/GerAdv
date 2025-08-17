@@ -62,181 +62,184 @@ if (getParamFromUrl('oponentes') > 0) {
       setNomeOponentes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    gruposempresasData.oponente = getParamFromUrl('oponentes');
+      gruposempresasData.oponente = getParamFromUrl('oponentes');
+    }
   }
-}
 
-if (getParamFromUrl('clientes') > 0) {
-  if (gruposempresasData.id === 0 && gruposempresasData.cliente == 0) {
-    clientesApi
-    .getById(getParamFromUrl('clientes'))
-    .then((response) => {
-      setNomeClientes(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('clientes') > 0) {
+    if (gruposempresasData.id === 0 && gruposempresasData.cliente == 0) {
+      clientesApi
+      .getById(getParamFromUrl('clientes'))
+      .then((response) => {
+        setNomeClientes(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    gruposempresasData.cliente = getParamFromUrl('clientes');
-  }
-}
-const addValorOponente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'oponente', value: e.id } });
-  };
-  const addValorCliente = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cliente', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        gruposempresasData.cliente = getParamFromUrl('clientes');
+      }
+    }
+    const addValorOponente = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'oponente', value: e.id } });
+      };
+      const addValorCliente = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cliente', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de GruposEmpresas:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de GruposEmpresas:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`GruposEmpresasForm-${gruposempresasData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`GruposEmpresasForm-${gruposempresasData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar GruposEmpresas diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = gruposempresasData?.id == 0 ? 'Editar GruposEmpresas' : 'Adicionar Grupos Empresas';
-      }
-    }, [gruposempresasData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar GruposEmpresas diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = gruposempresasData?.id == 0 ? 'Editar GruposEmpresas' : 'Adicionar Grupos Empresas';
+            }
+          }, [gruposempresasData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-GruposEmpresas' : 'form-container5 form-container-GruposEmpresas'}>
+            <div className={isMobile ? 'form-container form-container-GruposEmpresas' : 'form-container5 form-container-GruposEmpresas'}>
 
-        <form className='formInputCadInc' id={`GruposEmpresasForm-${gruposempresasData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GruposEmpresas' data={gruposempresasData} isSubmitting={isSubmitting} onClose={onClose} formId={`GruposEmpresasForm-${gruposempresasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`GruposEmpresasForm-${gruposempresasData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GruposEmpresas' data={gruposempresasData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GruposEmpresasForm-${gruposempresasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputDescription
-              type='text'
-              id='descricao'
-              label='grupos empresas'
-              dataForm={gruposempresasData}
-              className='inputIncNome'
-              name='descricao'
-              value={gruposempresasData.descricao}
-              placeholder={`Digite nome grupos empresas`}
-              onChange={onChange}
-              required
-              disabled={gruposempresasData.id > 0}
-              />
+                    <InputDescription
+                    type='text'
+                    id='descricao'
+                    label='grupos empresas'
+                    dataForm={gruposempresasData}
+                    className='inputIncNome'
+                    name='descricao'
+                    value={gruposempresasData.descricao}
+                    placeholder={`Digite nome grupos empresas`}
+                    onChange={onChange}
+                    required
+                    disabled={gruposempresasData.id > 0}
+                    />
 
-              <InputInput
-              type='email'
-              maxLength={255}
-              id='email'
-              label='EMail'
-              dataForm={gruposempresasData}
-              className='inputIncNome'
-              name='email'
-              value={gruposempresasData.email}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='email'
+                    maxLength={255}
+                    id='email'
+                    label='EMail'
+                    dataForm={gruposempresasData}
+                    className='inputIncNome'
+                    name='email'
+                    value={gruposempresasData.email}
+                    onChange={onChange}
+                    />
 
-              <InputCheckbox dataForm={gruposempresasData} label='Inativo' name='inativo' checked={gruposempresasData.inativo} onChange={onChange} />
+                    <InputCheckbox dataForm={gruposempresasData} label='Inativo' name='inativo' checked={gruposempresasData.inativo} onChange={onChange} />
 
-              <OponentesComboBox
-              name={'oponente'}
-              dataForm={gruposempresasData}
-              value={gruposempresasData.oponente}
-              setValue={addValorOponente}
-              label={'Oponentes'}
-              />
+                    <OponentesComboBox
+                    name={'oponente'}
+                    dataForm={gruposempresasData}
+                    value={gruposempresasData.oponente}
+                    setValue={addValorOponente}
+                    label={'Oponentes'}
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='observacoes'
-              label='Observacoes'
-              dataForm={gruposempresasData}
-              className='inputIncNome'
-              name='observacoes'
-              value={gruposempresasData.observacoes}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='observacoes'
+                    label='Observacoes'
+                    dataForm={gruposempresasData}
+                    className='inputIncNome'
+                    name='observacoes'
+                    value={gruposempresasData.observacoes}
+                    onChange={onChange}
+                    />
 
 
-              <ClientesComboBox
-              name={'cliente'}
-              dataForm={gruposempresasData}
-              value={gruposempresasData.cliente}
-              setValue={addValorCliente}
-              label={'Clientes'}
-              />
+                    <ClientesComboBox
+                    name={'cliente'}
+                    dataForm={gruposempresasData}
+                    value={gruposempresasData.cliente}
+                    setValue={addValorCliente}
+                    label={'Clientes'}
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={255}
-              id='icone'
-              label='Icone'
-              dataForm={gruposempresasData}
-              className='inputIncNome'
-              name='icone'
-              value={gruposempresasData.icone}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={255}
+                    id='icone'
+                    label='Icone'
+                    dataForm={gruposempresasData}
+                    className='inputIncNome'
+                    name='icone'
+                    value={gruposempresasData.icone}
+                    onChange={onChange}
+                    />
 
-              <InputCheckbox dataForm={gruposempresasData} label='DespesaUnificada' name='despesaunificada' checked={gruposempresasData.despesaunificada} onChange={onChange} />
-            </div>
-          </form>
+                    <InputCheckbox dataForm={gruposempresasData} label='DespesaUnificada' name='despesaunificada' checked={gruposempresasData.despesaunificada} onChange={onChange} />
+                  </div>
+                </form>
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GruposEmpresas' data={gruposempresasData} isSubmitting={isSubmitting} onClose={onClose} formId={`GruposEmpresasForm-${gruposempresasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/gruposempresas'} id={gruposempresasData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GruposEmpresas' data={gruposempresasData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GruposEmpresasForm-${gruposempresasData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/gruposempresas'} id={gruposempresasData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

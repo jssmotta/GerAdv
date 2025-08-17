@@ -33,7 +33,6 @@ export const usePoderJudiciarioAssociadoGrid = ({
 const [columnsOrder, setColumnsOrder] = useState<string[]>([]);
 // Definir ordem padrão das colunas
 const defaultColumnsOrder = useMemo(() => [
-  'guid',
   'nomejustica',
   'descricaoarea',
   'nometribunal',
@@ -87,13 +86,12 @@ const defaultColumnsOrder = useMemo(() => [
 }, []);
 // ===== CONFIGURAÇÕES DE FILTROS =====
 const initialFilters = useMemo(() => ({
-  guid: '',
+
 }), []);
 // Lógica de filtro customizada
 const filterLogic = useCallback((data: IPoderJudiciarioAssociado, filters: Record<string, any>) => {
-  const guidMatches = applyFilter(data, 'guid', filters.guid);
-  return guidMatches
-  ;
+
+  return true;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({

@@ -70,350 +70,355 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    horastrabData.cliente = getParamFromUrl('clientes');
+      horastrabData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
 
-if (getParamFromUrl('advogados') > 0) {
-  if (horastrabData.id === 0 && horastrabData.advogado == 0) {
-    advogadosApi
-    .getById(getParamFromUrl('advogados'))
-    .then((response) => {
-      setNomeAdvogados(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('advogados') > 0) {
+    if (horastrabData.id === 0 && horastrabData.advogado == 0) {
+      advogadosApi
+      .getById(getParamFromUrl('advogados'))
+      .then((response) => {
+        setNomeAdvogados(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    horastrabData.advogado = getParamFromUrl('advogados');
-  }
-}
+        horastrabData.advogado = getParamFromUrl('advogados');
+      }
+    }
 
-if (getParamFromUrl('funcionarios') > 0) {
-  if (horastrabData.id === 0 && horastrabData.funcionario == 0) {
-    funcionariosApi
-    .getById(getParamFromUrl('funcionarios'))
-    .then((response) => {
-      setNomeFuncionarios(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('funcionarios') > 0) {
+      if (horastrabData.id === 0 && horastrabData.funcionario == 0) {
+        funcionariosApi
+        .getById(getParamFromUrl('funcionarios'))
+        .then((response) => {
+          setNomeFuncionarios(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    horastrabData.funcionario = getParamFromUrl('funcionarios');
-  }
-}
+          horastrabData.funcionario = getParamFromUrl('funcionarios');
+        }
+      }
 
-if (getParamFromUrl('servicos') > 0) {
-  if (horastrabData.id === 0 && horastrabData.servico == 0) {
-    servicosApi
-    .getById(getParamFromUrl('servicos'))
-    .then((response) => {
-      setNomeServicos(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (getParamFromUrl('servicos') > 0) {
+        if (horastrabData.id === 0 && horastrabData.servico == 0) {
+          servicosApi
+          .getById(getParamFromUrl('servicos'))
+          .then((response) => {
+            setNomeServicos(response.data.descricao);
+          })
+          .catch((error) => {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Error unexpected');
+            });
 
-    horastrabData.servico = getParamFromUrl('servicos');
-  }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const addValorAdvogado = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'advogado', value: e.id } });
-    };
-    const addValorFuncionario = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'funcionario', value: e.id } });
-      };
-      const addValorServico = (e: any) => {
-        if (e?.id>0)
-          onChange({ target: { name: 'servico', value: e.id } });
-        };
-        const onConfirm = (e: React.FormEvent) => {
-          e.preventDefault();
-          if (e.stopPropagation) e.stopPropagation();
-
-            if (!isSubmitting) {
-              setIsSubmitting(true);
-
-              try {
-                onSubmit(e);
-              } catch (error) {
-              console.log('Erro ao submeter formulário de HorasTrab:');
-              setIsSubmitting(false);
-              if (onError) onError();
-              }
-            }
+            horastrabData.servico = getParamFromUrl('servicos');
+          }
+        }
+        const addValorCliente = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'cliente', value: e.id } });
           };
-          const handleCancel = () => {
-            if (onReload) {
-              onReload(); // Recarrega os dados originais
-            } else {
-            onClose(); // Comportamento padrão se não há callback de recarga
-          }
-        };
+          const addValorAdvogado = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'advogado', value: e.id } });
+            };
+            const addValorFuncionario = (e: any) => {
+              if (e?.id>0)
+                onChange({ target: { name: 'funcionario', value: e.id } });
+              };
+              const addValorServico = (e: any) => {
+                if (e?.id>0)
+                  onChange({ target: { name: 'servico', value: e.id } });
+                };
+                const onConfirm = (e: React.FormEvent) => {
+                  e.preventDefault();
+                  if (e.stopPropagation) e.stopPropagation();
 
-        const handleDirectSave = () => {
-          if (!isSubmitting) {
-            setIsSubmitting(true);
+                    if (!isSubmitting) {
+                      setIsSubmitting(true);
 
-            try {
-              const syntheticEvent = {
-                preventDefault: () => { }, 
-                target: document.getElementById(`HorasTrabForm-${horastrabData.id}`)
-              } as unknown as React.FormEvent;
+                      try {
+                        onSubmit(e);
+                      } catch (error) {
+                      console.log('Erro ao submeter formulário de HorasTrab:');
+                      setIsSubmitting(false);
+                      if (onError) onError();
+                      }
+                    }
+                  };
+                  const handleCancel = () => {
+                    if (onReload) {
+                      onReload(); // Recarrega os dados originais
+                    } else {
+                    onClose(); // Comportamento padrão se não há callback de recarga
+                  }
+                };
 
-              onSubmit(syntheticEvent);
-            } catch (error) {
-            console.log('Erro ao salvar HorasTrab diretamente');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
-        };
-        useEffect(() => {
-          const el = document.querySelector('.nameFormMobile');
-          if (el) {
-            el.textContent = horastrabData?.id == 0 ? 'Editar HorasTrab' : 'Adicionar Horas Trab';
-          }
-        }, [horastrabData.id]);
-        return (
-        <>
-        {!isMobile ? <style jsx global>{`
-          @media (max-width: 1366px) {
-            html {
-              zoom: 0.8 !important;
-            }
-          }
-          `}</style> : null}
+                const handleDirectSave = () => {
+                  if (!isSubmitting) {
+                    setIsSubmitting(true);
 
-          <div className={isMobile ? 'form-container form-container-HorasTrab' : 'form-container form-container-HorasTrab'}>
+                    try {
+                      const syntheticEvent = {
+                        preventDefault: () => { }, 
+                        target: document.getElementById(`HorasTrabForm-${horastrabData.id}`)
+                      } as unknown as React.FormEvent;
 
-            <form className='formInputCadInc' id={`HorasTrabForm-${horastrabData.id}`} onSubmit={onConfirm}>
-              {!isMobile && (
-                <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='HorasTrab' data={horastrabData} isSubmitting={isSubmitting} onClose={onClose} formId={`HorasTrabForm-${horastrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <div className='grid-container'>
+                      onSubmit(syntheticEvent);
+                    } catch (error) {
+                    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                      console.log('Erro ao salvar HorasTrab diretamente');
+                      setIsSubmitting(false);
+                      if (onError) onError();
+                      }
+                    }
+                  };
+                  useEffect(() => {
+                    const el = document.querySelector('.nameFormMobile');
+                    if (el) {
+                      el.textContent = horastrabData?.id == 0 ? 'Editar HorasTrab' : 'Adicionar Horas Trab';
+                    }
+                  }, [horastrabData.id]);
+                  return (
+                  <>
+                  {!isMobile ? <style jsx global>{`
+                    @media (max-width: 1366px) {
+                      html {
+                        zoom: 0.8 !important;
+                      }
+                    }
+                    `}</style> : null}
 
-                  <InputName
-                  type='text'
-                  id='data'
-                  label='Data'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='data'
-                  value={horastrabData.data}
-                  placeholder={`Informe Data`}
-                  onChange={onChange}
-                  required
-                  />
+                    <div className={isMobile ? 'form-container form-container-HorasTrab' : 'form-container form-container-HorasTrab'}>
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='idcontatocrm'
-                  label='IDContatoCRM'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='idcontatocrm'
-                  value={horastrabData.idcontatocrm}
-                  onChange={onChange}
-                  />
+                      <form className='formInputCadInc' id={`HorasTrabForm-${horastrabData.id}`} onSubmit={onConfirm}>
+                        {!isMobile && (
+                          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='HorasTrab' data={horastrabData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`HorasTrabForm-${horastrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                          )}
+                          <div className='grid-container'>
 
-                  <InputCheckbox dataForm={horastrabData} label='Honorario' name='honorario' checked={horastrabData.honorario} onChange={onChange} />
+                            <InputName
+                            type='text'
+                            id='data'
+                            label='Data'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='data'
+                            value={horastrabData.data}
+                            placeholder={`Informe Data`}
+                            onChange={onChange}
+                            required
+                            />
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='idagenda'
-                  label='IDAgenda'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='idagenda'
-                  value={horastrabData.idagenda}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='idcontatocrm'
+                            label='IDContatoCRM'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='idcontatocrm'
+                            value={horastrabData.idcontatocrm}
+                            onChange={onChange}
+                            />
 
+                            <InputCheckbox dataForm={horastrabData} label='Honorario' name='honorario' checked={horastrabData.honorario} onChange={onChange} />
 
-                  <ClientesComboBox
-                  name={'cliente'}
-                  dataForm={horastrabData}
-                  value={horastrabData.cliente}
-                  setValue={addValorCliente}
-                  label={'Clientes'}
-                  />
-
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='status'
-                  label='Status'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='status'
-                  value={horastrabData.status}
-                  onChange={onChange}
-                  />
-
-
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='processo'
-                  label='Processo'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='processo'
-                  value={horastrabData.processo}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='idagenda'
+                            label='IDAgenda'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='idagenda'
+                            value={horastrabData.idagenda}
+                            onChange={onChange}
+                            />
 
 
-                  <AdvogadosComboBox
-                  name={'advogado'}
-                  dataForm={horastrabData}
-                  value={horastrabData.advogado}
-                  setValue={addValorAdvogado}
-                  label={'Advogados'}
-                  />
+                            <ClientesComboBox
+                            name={'cliente'}
+                            dataForm={horastrabData}
+                            value={horastrabData.cliente}
+                            setValue={addValorCliente}
+                            label={'Clientes'}
+                            />
 
-                  <FuncionariosComboBox
-                  name={'funcionario'}
-                  dataForm={horastrabData}
-                  value={horastrabData.funcionario}
-                  setValue={addValorFuncionario}
-                  label={'Colaborador'}
-                  />
-                </div><div className='grid-container'>
-                  <InputInput
-                  type='text'
-                  maxLength={5}
-                  id='hrini'
-                  label='HrIni'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='hrini'
-                  value={horastrabData.hrini}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='status'
+                            label='Status'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='status'
+                            value={horastrabData.status}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={5}
-                  id='hrfim'
-                  label='HrFim'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='hrfim'
-                  value={horastrabData.hrfim}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='processo'
+                            label='Processo'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='processo'
+                            value={horastrabData.processo}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='tempo'
-                  label='Tempo'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='tempo'
-                  value={horastrabData.tempo}
-                  onChange={onChange}
-                  />
+                            <AdvogadosComboBox
+                            name={'advogado'}
+                            dataForm={horastrabData}
+                            value={horastrabData.advogado}
+                            setValue={addValorAdvogado}
+                            label={'Advogados'}
+                            />
+
+                            <FuncionariosComboBox
+                            name={'funcionario'}
+                            dataForm={horastrabData}
+                            value={horastrabData.funcionario}
+                            setValue={addValorFuncionario}
+                            label={'Colaborador'}
+                            />
+                          </div><div className='grid-container'>
+                            <InputInput
+                            type='text'
+                            maxLength={5}
+                            id='hrini'
+                            label='HrIni'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='hrini'
+                            value={horastrabData.hrini}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='valor'
-                  label='Valor'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='valor'
-                  value={horastrabData.valor}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={5}
+                            id='hrfim'
+                            label='HrFim'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='hrfim'
+                            value={horastrabData.hrfim}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={2147483647}
-                  id='obs'
-                  label='OBS'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='obs'
-                  value={horastrabData.obs}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='tempo'
+                            label='Tempo'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='tempo'
+                            value={horastrabData.tempo}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={255}
-                  id='anexo'
-                  label='Anexo'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='anexo'
-                  value={horastrabData.anexo}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='valor'
+                            label='Valor'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='valor'
+                            value={horastrabData.valor}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={50}
-                  id='anexocomp'
-                  label='AnexoComp'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='anexocomp'
-                  value={horastrabData.anexocomp}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={2147483647}
+                            id='obs'
+                            label='OBS'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='obs'
+                            value={horastrabData.obs}
+                            onChange={onChange}
+                            />
 
 
-                  <InputInput
-                  type='text'
-                  maxLength={255}
-                  id='anexounc'
-                  label='AnexoUNC'
-                  dataForm={horastrabData}
-                  className='inputIncNome'
-                  name='anexounc'
-                  value={horastrabData.anexounc}
-                  onChange={onChange}
-                  />
+                            <InputInput
+                            type='text'
+                            maxLength={255}
+                            id='anexo'
+                            label='Anexo'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='anexo'
+                            value={horastrabData.anexo}
+                            onChange={onChange}
+                            />
 
 
-                  <ServicosComboBox
-                  name={'servico'}
-                  dataForm={horastrabData}
-                  value={horastrabData.servico}
-                  setValue={addValorServico}
-                  label={'Serviço'}
-                  />
-                </div>
-              </form>
+                            <InputInput
+                            type='text'
+                            maxLength={50}
+                            id='anexocomp'
+                            label='AnexoComp'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='anexocomp'
+                            value={horastrabData.anexocomp}
+                            onChange={onChange}
+                            />
 
 
-              {isMobile && (
-                <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='HorasTrab' data={horastrabData} isSubmitting={isSubmitting} onClose={onClose} formId={`HorasTrabForm-${horastrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <DeleteButton page={'/pages/horastrab'} id={horastrabData.id} closeModel={onClose} dadoApi={dadoApi} />
-              </div>
-              <div className='form-spacer'></div>
-              </>
-            );
-          };
+                            <InputInput
+                            type='text'
+                            maxLength={255}
+                            id='anexounc'
+                            label='AnexoUNC'
+                            dataForm={horastrabData}
+                            className='inputIncNome'
+                            name='anexounc'
+                            value={horastrabData.anexounc}
+                            onChange={onChange}
+                            />
+
+
+                            <ServicosComboBox
+                            name={'servico'}
+                            dataForm={horastrabData}
+                            value={horastrabData.servico}
+                            setValue={addValorServico}
+                            label={'Serviço'}
+                            />
+                          </div>
+                        </form>
+
+
+                        {isMobile && (
+                          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='HorasTrab' data={horastrabData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`HorasTrabForm-${horastrabData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                          )}
+                          <DeleteButton page={'/pages/horastrab'} id={horastrabData.id} closeModel={onClose} dadoApi={dadoApi} />
+                        </div>
+                        <div className='form-spacer'></div>
+                        </>
+                      );
+                    };

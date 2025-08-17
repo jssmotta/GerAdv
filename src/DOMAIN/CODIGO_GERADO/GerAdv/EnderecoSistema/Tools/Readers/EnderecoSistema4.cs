@@ -4,8 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosistemaFactory) : IEnderecoSistemaReader
 {
-    private readonly IFEnderecoSistemaFactory _enderecosistemaFactory = enderecosistemaFactory;
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("estCodigo, estGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    private readonly IFEnderecoSistemaFactory _enderecosistemaFactory = enderecosistemaFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<EnderecoSistemaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEnderecoSistema.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<EnderecoSistemaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -57,6 +56,7 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Cadastro = dbRec.FCadastro,
             CadastroExCod = dbRec.FCadastroExCod,
             TipoEnderecoSistema = dbRec.FTipoEnderecoSistema,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Motivo = dbRec.FMotivo ?? string.Empty,
             ContatoNoLocal = dbRec.FContatoNoLocal ?? string.Empty,
@@ -67,7 +67,6 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return enderecosistema;
     }
@@ -96,6 +95,7 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Cadastro = dbRec.FCadastro,
             CadastroExCod = dbRec.FCadastroExCod,
             TipoEnderecoSistema = dbRec.FTipoEnderecoSistema,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Motivo = dbRec.FMotivo ?? string.Empty,
             ContatoNoLocal = dbRec.FContatoNoLocal ?? string.Empty,
@@ -106,7 +106,6 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return enderecosistema;
     }
@@ -124,6 +123,7 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Cadastro = dbRec.FCadastro,
             CadastroExCod = dbRec.FCadastroExCod,
             TipoEnderecoSistema = dbRec.FTipoEnderecoSistema,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Motivo = dbRec.FMotivo ?? string.Empty,
             ContatoNoLocal = dbRec.FContatoNoLocal ?? string.Empty,
@@ -134,7 +134,6 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return enderecosistema;
     }
@@ -152,6 +151,7 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Cadastro = dbRec.FCadastro,
             CadastroExCod = dbRec.FCadastroExCod,
             TipoEnderecoSistema = dbRec.FTipoEnderecoSistema,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Motivo = dbRec.FMotivo ?? string.Empty,
             ContatoNoLocal = dbRec.FContatoNoLocal ?? string.Empty,
@@ -162,7 +162,6 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -196,6 +195,7 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Cadastro = dbRec.FCadastro,
             CadastroExCod = dbRec.FCadastroExCod,
             TipoEnderecoSistema = dbRec.FTipoEnderecoSistema,
+            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
             Motivo = dbRec.FMotivo ?? string.Empty,
             ContatoNoLocal = dbRec.FContatoNoLocal ?? string.Empty,
@@ -206,7 +206,6 @@ public partial class EnderecoSistemaReader(IFEnderecoSistemaFactory enderecosist
             Fone = dbRec.FFone ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

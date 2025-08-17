@@ -41,7 +41,8 @@ export const useEscritoriosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Escritorios';
       setError(errorMessage);
-      //console.log('Erro ao carregar Escritorios');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Escritorios');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useEscritoriosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useEscritoriosList = (dataService: IEscritoriosService, currentFilt
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar escritorios';
       setError(errorMessage);
-      //console.log('Erro ao carregar escritorios');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar escritorios');
     } finally {
       setLoading(false);
     }
@@ -246,7 +249,8 @@ if (data.inscest.length > 15) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

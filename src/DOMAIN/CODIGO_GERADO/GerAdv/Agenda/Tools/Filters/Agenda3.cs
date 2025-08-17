@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterAgenda
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("idcob")]
     public int IDCOB { get; set; } = int.MinValue;
@@ -36,6 +36,9 @@ public partial record FilterAgenda
     [JsonPropertyName("cidade")]
     public int Cidade { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cidade_end")]
+    public int Cidade_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("oculto")]
     public int Oculto { get; set; } = int.MinValue;
 
@@ -52,13 +55,16 @@ public partial record FilterAgenda
     public int Revisar { get; set; } = int.MinValue;
 
     [JsonPropertyName("hrfinal")]
-    public string HrFinal { get; set; } = string.Empty;
+    public string? HrFinal { get; set; } = string.Empty;
 
     [JsonPropertyName("hrfinal_end")]
-    public string HrFinal_end { get; set; } = string.Empty;
+    public string? HrFinal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("advogado")]
     public int Advogado { get; set; } = int.MinValue;
+
+    [JsonPropertyName("advogado_end")]
+    public int Advogado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("eventogerador")]
     public int EventoGerador { get; set; } = int.MinValue;
@@ -67,19 +73,22 @@ public partial record FilterAgenda
     public int EventoGerador_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("eventodata")]
-    public string EventoData { get; set; } = string.Empty;
+    public string? EventoData { get; set; } = string.Empty;
 
     [JsonPropertyName("eventodata_end")]
-    public string EventoData_end { get; set; } = string.Empty;
+    public string? EventoData_end { get; set; } = string.Empty;
 
     [JsonPropertyName("funcionario")]
     public int Funcionario { get; set; } = int.MinValue;
 
+    [JsonPropertyName("funcionario_end")]
+    public int Funcionario_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("eventoprazo")]
     public int EventoPrazo { get; set; } = int.MinValue;
@@ -88,22 +97,28 @@ public partial record FilterAgenda
     public int EventoPrazo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("hora")]
-    public string Hora { get; set; } = string.Empty;
+    public string? Hora { get; set; } = string.Empty;
 
     [JsonPropertyName("hora_end")]
-    public string Hora_end { get; set; } = string.Empty;
+    public string? Hora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("compromisso")]
-    public string Compromisso { get; set; } = string.Empty;
+    public string? Compromisso { get; set; } = string.Empty;
 
     [JsonPropertyName("compromisso_end")]
-    public string Compromisso_end { get; set; } = string.Empty;
+    public string? Compromisso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipocompromisso")]
     public int TipoCompromisso { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tipocompromisso_end")]
+    public int TipoCompromisso_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
+
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("liberado")]
     public int Liberado { get; set; } = int.MinValue;
@@ -117,8 +132,14 @@ public partial record FilterAgenda
     [JsonPropertyName("area")]
     public int Area { get; set; } = int.MinValue;
 
+    [JsonPropertyName("area_end")]
+    public int Area_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("justica")]
     public int Justica { get; set; } = int.MinValue;
+
+    [JsonPropertyName("justica_end")]
+    public int Justica_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -141,8 +162,14 @@ public partial record FilterAgenda
     [JsonPropertyName("usuario")]
     public int Usuario { get; set; } = int.MinValue;
 
+    [JsonPropertyName("usuario_end")]
+    public int Usuario_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("preposto")]
     public int Preposto { get; set; } = int.MinValue;
+
+    [JsonPropertyName("preposto_end")]
+    public int Preposto_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("quemid")]
     public int QuemID { get; set; } = int.MinValue;
@@ -156,11 +183,17 @@ public partial record FilterAgenda
     [JsonPropertyName("quemcodigo_end")]
     public int QuemCodigo_end { get; set; } = int.MinValue;
 
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
+
     [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
+    public string? Status { get; set; } = string.Empty;
 
     [JsonPropertyName("status_end")]
-    public string Status_end { get; set; } = string.Empty;
+    public string? Status_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valor")]
     public decimal Valor { get; set; } = decimal.MinValue;
@@ -169,10 +202,10 @@ public partial record FilterAgenda
     public decimal Valor_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("decisao")]
-    public string Decisao { get; set; } = string.Empty;
+    public string? Decisao { get; set; } = string.Empty;
 
     [JsonPropertyName("decisao_end")]
-    public string Decisao_end { get; set; } = string.Empty;
+    public string? Decisao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("sempre")]
     public int Sempre { get; set; } = int.MinValue;
@@ -193,19 +226,13 @@ public partial record FilterAgenda
     public int ProtocoloIntegrado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("datainicioprazo")]
-    public string DataInicioPrazo { get; set; } = string.Empty;
+    public string? DataInicioPrazo { get; set; } = string.Empty;
 
     [JsonPropertyName("datainicioprazo_end")]
-    public string DataInicioPrazo_end { get; set; } = string.Empty;
+    public string? DataInicioPrazo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("usuariociente")]
     public int UsuarioCiente { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

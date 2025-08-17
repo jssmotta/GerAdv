@@ -57,203 +57,193 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    dadosprocuracaoData.cliente = getParamFromUrl('clientes');
+      dadosprocuracaoData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorCliente = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'cliente', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de DadosProcuracao:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`DadosProcuracaoForm-${dadosprocuracaoData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de DadosProcuracao:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar DadosProcuracao diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = dadosprocuracaoData?.id == 0 ? 'Editar DadosProcuracao' : 'Adicionar Dados Procuracao';
+        }
+      }, [dadosprocuracaoData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-DadosProcuracao' : 'form-container5 form-container-DadosProcuracao'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`DadosProcuracaoForm-${dadosprocuracaoData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar DadosProcuracao diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = dadosprocuracaoData?.id == 0 ? 'Editar DadosProcuracao' : 'Adicionar Dados Procuracao';
-    }
-  }, [dadosprocuracaoData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
-
-    <div className={isMobile ? 'form-container form-container-DadosProcuracao' : 'form-container5 form-container-DadosProcuracao'}>
-
-      <form className='formInputCadInc' id={`DadosProcuracaoForm-${dadosprocuracaoData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='DadosProcuracao' data={dadosprocuracaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`DadosProcuracaoForm-${dadosprocuracaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='guid'
-            label='GUID'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='guid'
-            value={dadosprocuracaoData.guid}
-            placeholder={`Informe GUID`}
-            onChange={onChange}
-            required
-            />
-
-            <ClientesComboBox
-            name={'cliente'}
-            dataForm={dadosprocuracaoData}
-            value={dadosprocuracaoData.cliente}
-            setValue={addValorCliente}
-            label={'Clientes'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='estadocivil'
-            label='EstadoCivil'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='estadocivil'
-            value={dadosprocuracaoData.estadocivil}
-            onChange={onChange}
-            />
+          <form className='formInputCadInc' id={`DadosProcuracaoForm-${dadosprocuracaoData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='DadosProcuracao' data={dadosprocuracaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`DadosProcuracaoForm-${dadosprocuracaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
 
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='nacionalidade'
-            label='Nacionalidade'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='nacionalidade'
-            value={dadosprocuracaoData.nacionalidade}
-            onChange={onChange}
-            />
+                <ClientesComboBox
+                name={'cliente'}
+                dataForm={dadosprocuracaoData}
+                value={dadosprocuracaoData.cliente}
+                setValue={addValorCliente}
+                label={'Clientes'}
+                />
+
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='estadocivil'
+                label='EstadoCivil'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='estadocivil'
+                value={dadosprocuracaoData.estadocivil}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='profissao'
-            label='Profissao'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='profissao'
-            value={dadosprocuracaoData.profissao}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='nacionalidade'
+                label='Nacionalidade'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='nacionalidade'
+                value={dadosprocuracaoData.nacionalidade}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='ctps'
-            label='CTPS'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='ctps'
-            value={dadosprocuracaoData.ctps}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='profissao'
+                label='Profissao'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='profissao'
+                value={dadosprocuracaoData.profissao}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='pispasep'
-            label='PisPasep'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='pispasep'
-            value={dadosprocuracaoData.pispasep}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='ctps'
+                label='CTPS'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='ctps'
+                value={dadosprocuracaoData.ctps}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='remuneracao'
-            label='Remuneracao'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='remuneracao'
-            value={dadosprocuracaoData.remuneracao}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='pispasep'
+                label='PisPasep'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='pispasep'
+                value={dadosprocuracaoData.pispasep}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='objeto'
-            label='Objeto'
-            dataForm={dadosprocuracaoData}
-            className='inputIncNome'
-            name='objeto'
-            value={dadosprocuracaoData.objeto}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='remuneracao'
+                label='Remuneracao'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='remuneracao'
+                value={dadosprocuracaoData.remuneracao}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='DadosProcuracao' data={dadosprocuracaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`DadosProcuracaoForm-${dadosprocuracaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/dadosprocuracao'} id={dadosprocuracaoData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='objeto'
+                label='Objeto'
+                dataForm={dadosprocuracaoData}
+                className='inputIncNome'
+                name='objeto'
+                value={dadosprocuracaoData.objeto}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='DadosProcuracao' data={dadosprocuracaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`DadosProcuracaoForm-${dadosprocuracaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/dadosprocuracao'} id={dadosprocuracaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

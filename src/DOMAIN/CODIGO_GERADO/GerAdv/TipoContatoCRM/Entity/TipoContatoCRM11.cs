@@ -54,7 +54,7 @@ public partial class FTipoContatoCRMFactory : IFTipoContatoCRMFactory, IDisposab
             throw new ObjectDisposedException(nameof(FTipoContatoCRMFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

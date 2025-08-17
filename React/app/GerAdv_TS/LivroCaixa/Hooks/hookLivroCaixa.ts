@@ -41,7 +41,8 @@ export const useLivroCaixaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Livro Caixa';
       setError(errorMessage);
-      //console.log('Erro ao carregar Livro Caixa');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Livro Caixa');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useLivroCaixaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useLivroCaixaList = (dataService: ILivroCaixaService, currentFilter
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar livrocaixa';
       setError(errorMessage);
-      //console.log('Erro ao carregar livrocaixa');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar livrocaixa');
     } finally {
       setLoading(false);
     }

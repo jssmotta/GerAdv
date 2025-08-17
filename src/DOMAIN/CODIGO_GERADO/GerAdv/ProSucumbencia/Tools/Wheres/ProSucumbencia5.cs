@@ -13,7 +13,7 @@ public partial interface IProSucumbenciaWhere
 
 public partial class ProSucumbenciaWhere(IFProSucumbenciaFactory prosucumbenciaFactory) : IProSucumbenciaWhere
 {
-    private readonly IFProSucumbenciaFactory _prosucumbenciaFactory = prosucumbenciaFactory;
+    private readonly IFProSucumbenciaFactory _prosucumbenciaFactory = prosucumbenciaFactory ?? throw new ArgumentNullException(nameof(prosucumbenciaFactory));
     public ProSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _prosucumbenciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

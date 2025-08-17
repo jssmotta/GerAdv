@@ -81,61 +81,62 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Servicos diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Servicos diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = servicosData?.id == 0 ? 'Editar Servicos' : 'Adicionar Serviço';
-  }
-}, [servicosData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Servicos' : 'form-container5 form-container-Servicos'}>
-
-    <form className='formInputCadInc' id={`ServicosForm-${servicosData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Servicos' data={servicosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ServicosForm-${servicosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='serviço'
-          dataForm={servicosData}
-          className='inputIncNome'
-          name='descricao'
-          value={servicosData.descricao}
-          placeholder={`Digite nome serviço`}
-          onChange={onChange}
-          required
-          disabled={servicosData.id > 0}
-          />
-          <InputCheckbox dataForm={servicosData} label='Cobrar' name='cobrar' checked={servicosData.cobrar} onChange={onChange} />
-          <InputCheckbox dataForm={servicosData} label='Basico' name='basico' checked={servicosData.basico} onChange={onChange} />
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Servicos' data={servicosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ServicosForm-${servicosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/servicos'} id={servicosData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = servicosData?.id == 0 ? 'Editar Servicos' : 'Adicionar Serviço';
+    }
+  }, [servicosData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Servicos' : 'form-container5 form-container-Servicos'}>
+
+      <form className='formInputCadInc' id={`ServicosForm-${servicosData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Servicos' data={servicosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ServicosForm-${servicosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='serviço'
+            dataForm={servicosData}
+            className='inputIncNome'
+            name='descricao'
+            value={servicosData.descricao}
+            placeholder={`Digite nome serviço`}
+            onChange={onChange}
+            required
+            disabled={servicosData.id > 0}
+            />
+            <InputCheckbox dataForm={servicosData} label='Cobrar' name='cobrar' checked={servicosData.cobrar} onChange={onChange} />
+            <InputCheckbox dataForm={servicosData} label='Basico' name='basico' checked={servicosData.basico} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Servicos' data={servicosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ServicosForm-${servicosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/servicos'} id={servicosData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

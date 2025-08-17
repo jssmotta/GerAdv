@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TipoContatoCRMReader(IFTipoContatoCRMFactory tipocontatocrmFactory) : ITipoContatoCRMReader
 {
-    private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory;
+    private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tccCodigo, tccNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TipoContatoCRMResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoContatoCRM.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TipoContatoCRMResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

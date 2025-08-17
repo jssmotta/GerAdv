@@ -18,7 +18,6 @@ export interface FilterAgenda
     cartaprecatoria?: number;
     cartaprecatoria_end?: number;
  revisar?: number;
- hrfinal_end?: string;
  hrfinal?: string;
     advogado?: number;
     advogado_end?: number;
@@ -31,7 +30,6 @@ export interface FilterAgenda
  data?: string;
     eventoprazo?: number;
     eventoprazo_end?: number;
- hora_end?: string;
  hora?: string;
  compromisso?: string;
     tipocompromisso?: number;
@@ -92,7 +90,6 @@ export class FilterAgendaDefaults implements FilterAgenda {
     cartaprecatoria?: number = -2147483648;
     cartaprecatoria_end?: number = -2147483648;
     revisar?: number= -2147483648;
-    hrfinal_end?: string = '';
     hrfinal?: string = '';
     advogado?: number = -2147483648;
     advogado_end?: number = -2147483648;
@@ -105,7 +102,6 @@ export class FilterAgendaDefaults implements FilterAgenda {
     data?: string = '';
     eventoprazo?: number = -2147483648;
     eventoprazo_end?: number = -2147483648;
-    hora_end?: string = '';
     hora?: string = '';
     compromisso?: string = '';
     tipocompromisso?: number = -2147483648;

@@ -41,7 +41,8 @@ export const useAcaoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Acao';
       setError(errorMessage);
-      //console.log('Erro ao carregar Acao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Acao');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useAcaoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useAcaoList = (dataService: IAcaoService, currentFilter?: FilterAca
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar acao';
       setError(errorMessage);
-      //console.log('Erro ao carregar acao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar acao');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

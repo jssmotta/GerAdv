@@ -9,25 +9,25 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITribunalValidation
 {
     Task<bool> ValidateReg(Models.Tribunal reg, ITribunalService service, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TribunalValidation : ITribunalValidation
 {
-    public async Task<bool> CanDelete(int id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var divisaotribunalExists0 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Tribunal = id }, uri);
+        var divisaotribunalExists0 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Tribunal = id ?? default }, uri);
         if (divisaotribunalExists0 != null && divisaotribunalExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
-        var poderjudiciarioassociadoExists1 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Tribunal = id }, uri);
+        var poderjudiciarioassociadoExists1 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Tribunal = id ?? default }, uri);
         if (poderjudiciarioassociadoExists1 != null && poderjudiciarioassociadoExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var tribenderecosExists2 = await tribenderecosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribEnderecos { Tribunal = id }, uri);
+        var tribenderecosExists2 = await tribenderecosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribEnderecos { Tribunal = id ?? default }, uri);
         if (tribenderecosExists2 != null && tribenderecosExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Trib Endereços associados a ele.");
         return true;
@@ -35,16 +35,16 @@ public class TribunalValidation : ITribunalValidation
 
     private bool ValidSizes(Models.Tribunal reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Descricao != null && reg.Descricao.Length > 50)
-            throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.Sigla != null && reg.Sigla.Length > 20)
-            throw new SGValidationException($"Sigla deve ter no máximo 20 caracteres.");
-        if (reg.Web != null && reg.Web.Length > 255)
-            throw new SGValidationException($"Web deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTribunalDicInfo.TriNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTribunalDicInfo.TriNome.FTamanho} caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBTribunalDicInfo.TriDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBTribunalDicInfo.TriDescricao.FTamanho} caracteres.");
+        if (reg.Sigla != null && reg.Sigla.Length > DBTribunalDicInfo.TriSigla.FTamanho)
+            throw new SGValidationException($"Sigla deve ter no máximo {DBTribunalDicInfo.TriSigla.FTamanho} caracteres.");
+        if (reg.Web != null && reg.Web.Length > DBTribunalDicInfo.TriWeb.FTamanho)
+            throw new SGValidationException($"Web deve ter no máximo {DBTribunalDicInfo.TriWeb.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTribunalDicInfo.TriGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTribunalDicInfo.TriGUID.FTamanho} caracteres.");
         return true;
     }
 

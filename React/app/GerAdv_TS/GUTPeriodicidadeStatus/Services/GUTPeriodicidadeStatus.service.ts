@@ -25,7 +25,7 @@ export class GUTPeriodicidadeStatusValidator {
 export interface IGUTPeriodicidadeStatusService {
   fetchGUTPeriodicidadeStatusById: (id: number) => Promise<IGUTPeriodicidadeStatus>;
   saveGUTPeriodicidadeStatus: (gutperiodicidadestatus: IGUTPeriodicidadeStatus) => Promise<IGUTPeriodicidadeStatus>;  
-  getList: (filtro?: FilterGUTPeriodicidadeStatus) => Promise<IGUTPeriodicidadeStatus[]>;
+  
   getAll: (filtro?: FilterGUTPeriodicidadeStatus) => Promise<IGUTPeriodicidadeStatus[]>;
   deleteGUTPeriodicidadeStatus: (id: number) => Promise<void>;
   validateGUTPeriodicidadeStatus: (gutperiodicidadestatus: IGUTPeriodicidadeStatus) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class GUTPeriodicidadeStatusService implements IGUTPeriodicidadeStatusSer
   }
 
   
-    async getList(filtro?: FilterGUTPeriodicidadeStatus): Promise<IGUTPeriodicidadeStatus[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching GUTPeriodicidadeStatus list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class GUTPeriodicidadeStatusService implements IGUTPeriodicidadeStatusSer
             }
           })
           .catch(error => {
-            console.log('Error fetching online GUTPeriodicidadeStatus');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTPeriodicidadeStatus');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class GUTPeriodicidadeStatusService implements IGUTPeriodicidadeStatusSer
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online GUTPeriodicidadeStatus');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTPeriodicidadeStatus');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all GUTPeriodicidadeStatus:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all GUTPeriodicidadeStatus:');
       return [];
     }
   }

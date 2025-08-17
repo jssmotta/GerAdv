@@ -79,7 +79,8 @@ export class BensMateriaisService implements IBensMateriaisService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching BensMateriais list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching BensMateriais list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class BensMateriaisService implements IBensMateriaisService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online BensMateriais');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online BensMateriais');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class BensMateriaisService implements IBensMateriaisService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online BensMateriais');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online BensMateriais');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all BensMateriais:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all BensMateriais:');
       return [];
     }
   }

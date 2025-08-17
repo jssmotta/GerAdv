@@ -6,6 +6,7 @@ public partial interface IDBContaCorrente
 {
     public int ID { get; set; }
     public int FCIAcordo { get; set; }
+    public string? FGUID { get; set; }
     public bool FQuitado { get; set; }
     public int FIDContrato { get; set; }
     public int FQuitadoID { get; set; }
@@ -30,5 +31,4 @@ public partial interface IDBContaCorrente
     public int FParcelaPrincipalID { get; set; }
     public bool FHide { get; set; }
     public string? FDataPgto { get; set; }
-    public string? FGUID { get; set; }
 }

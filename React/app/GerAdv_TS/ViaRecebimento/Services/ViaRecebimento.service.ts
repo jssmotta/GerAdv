@@ -79,7 +79,8 @@ export class ViaRecebimentoService implements IViaRecebimentoService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ViaRecebimento list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ViaRecebimento list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ViaRecebimentoService implements IViaRecebimentoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ViaRecebimento');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ViaRecebimento');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ViaRecebimentoService implements IViaRecebimentoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ViaRecebimento');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ViaRecebimento');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ViaRecebimento:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ViaRecebimento:');
       return [];
     }
   }

@@ -8,32 +8,33 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TiposAcaoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTiposAcao filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTiposAcao? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBTiposAcaoDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBTiposAcaoDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Inativo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTiposAcaoDicInfo.Inativo)}", filtro.Inativo));
+            parameters.Add(new($"@{(DBTiposAcaoDicInfo.Inativo)}", filtro.Inativo));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBTiposAcaoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBTiposAcaoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTiposAcaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBTiposAcaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBTiposAcaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTiposAcaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -42,30 +43,19 @@ public partial class TiposAcaoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBTiposAcaoDicInfo.Nome)}");
-        cWhere.Append(filtro.Inativo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.Inativo}] = @{nameof(DBTiposAcaoDicInfo.Inativo)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTiposAcaoDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBTiposAcaoDicInfo.Nome)}");
+        cWhere.Append(filtro.Inativo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.Inativo}] = @{(DBTiposAcaoDicInfo.Inativo)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBTiposAcaoDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.CampoCodigo}] = @{nameof(DBTiposAcaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].[{DBTiposAcaoDicInfo.CampoCodigo}] = @{(DBTiposAcaoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].{DBTiposAcaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBTiposAcaoDicInfo.CampoCodigo)} AND @{nameof(DBTiposAcaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTiposAcaoDicInfo.PTabelaNome}].{DBTiposAcaoDicInfo.CampoCodigo} BETWEEN @{(DBTiposAcaoDicInfo.CampoCodigo)} AND @{(DBTiposAcaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterTiposAcao? filtro)

@@ -14,17 +14,17 @@ public partial interface IJusticaWriter
 
 public class JusticaWriter(IFJusticaFactory justicaFactory) : IJusticaWriter
 {
-    private readonly IFJusticaFactory _justicaFactory = justicaFactory;
-    public async Task Delete(JusticaResponse justica, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFJusticaFactory _justicaFactory = justicaFactory ?? throw new ArgumentNullException(nameof(justicaFactory));
+    public virtual async Task Delete(JusticaResponse justica, int operadorId, MsiSqlConnection oCnn)
     {
         await _justicaFactory.DeleteAsync(operadorId, justica.Id, oCnn);
     }
 
-    public async Task<FJustica> WriteAsync(Models.Justica justica, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FJustica> WriteAsync(Models.Justica justica, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (justica.Id.IsEmptyIDNumber() ? _justicaFactory.CreateAsync() : _justicaFactory.CreateFromIdAsync(justica.Id, oCnn));
-        dbRec.FNome = justica.Nome;
         dbRec.FGUID = justica.GUID;
+        dbRec.FNome = justica.Nome;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

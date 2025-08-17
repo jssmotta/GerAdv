@@ -13,7 +13,7 @@ public partial interface IEMPClassRiscosWhere
 
 public partial class EMPClassRiscosWhere(IFEMPClassRiscosFactory empclassriscosFactory) : IEMPClassRiscosWhere
 {
-    private readonly IFEMPClassRiscosFactory _empclassriscosFactory = empclassriscosFactory;
+    private readonly IFEMPClassRiscosFactory _empclassriscosFactory = empclassriscosFactory ?? throw new ArgumentNullException(nameof(empclassriscosFactory));
     public EMPClassRiscosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _empclassriscosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

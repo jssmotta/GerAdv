@@ -32,6 +32,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int TipoRecurso { get; set; }
 
         /// <summary>
+        /// GUID - insGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// LiminarPedida - insLiminarPedida  
         /// </summary>
         [JsonPropertyName("liminarpedida")]
@@ -177,12 +183,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("zkeyia")]
         public string ZKeyIA { get; set; } = "";
-
-        /// <summary>
-        /// GUID - insGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -213,6 +213,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int TipoRecurso { get; set; }
 
         /// <summary>
+        /// GUID - insGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// LiminarPedida - insLiminarPedida  
         /// </summary>
         [JsonPropertyName("liminarpedida")]
@@ -358,12 +364,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("zkeyia")]
         public string ZKeyIA { get; set; } = "";
-
-        /// <summary>
-        /// GUID - insGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("descricaoacao")]
         public string DescricaoAcao { get; set; } = string.Empty;

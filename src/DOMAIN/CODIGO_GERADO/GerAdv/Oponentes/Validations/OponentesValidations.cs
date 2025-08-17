@@ -9,22 +9,22 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOponentesValidation
 {
     Task<bool> ValidateReg(Models.Oponentes reg, IOponentesService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OponentesValidation : IOponentesValidation
 {
-    public async Task<bool> CanDelete(int id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOponentesService service, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gruposempresasExists0 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Oponente = id }, uri);
+        var gruposempresasExists0 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Oponente = id ?? default }, uri);
         if (gruposempresasExists0 != null && gruposempresasExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.");
-        var oponentesreplegalExists1 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Oponente = id }, uri);
+        var oponentesreplegalExists1 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Oponente = id ?? default }, uri);
         if (oponentesreplegalExists1 != null && oponentesreplegalExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Oponentes Rep Legal associados a ele.");
         return true;
@@ -32,34 +32,34 @@ public class OponentesValidation : IOponentesValidation
 
     private bool ValidSizes(Models.Oponentes reg)
     {
-        if (reg.CTPSNumero != null && reg.CTPSNumero.Length > 15)
-            throw new SGValidationException($"CTPSNumero deve ter no máximo 15 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 150)
-            throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > 10)
-            throw new SGValidationException($"CTPSSerie deve ter no máximo 10 caracteres.");
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.PIS != null && reg.PIS.Length > 20)
-            throw new SGValidationException($"PIS deve ter no máximo 20 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
-            throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 12)
-            throw new SGValidationException($"RG deve ter no máximo 12 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.InscEst != null && reg.InscEst.Length > 15)
-            throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.CTPSNumero != null && reg.CTPSNumero.Length > DBOponentesDicInfo.OpoCTPSNumero.FTamanho)
+            throw new SGValidationException($"CTPSNumero deve ter no máximo {DBOponentesDicInfo.OpoCTPSNumero.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBOponentesDicInfo.OpoSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBOponentesDicInfo.OpoSite.FTamanho} caracteres.");
+        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > DBOponentesDicInfo.OpoCTPSSerie.FTamanho)
+            throw new SGValidationException($"CTPSSerie deve ter no máximo {DBOponentesDicInfo.OpoCTPSSerie.FTamanho} caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBOponentesDicInfo.OpoNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBOponentesDicInfo.OpoNome.FTamanho} caracteres.");
+        if (reg.PIS != null && reg.PIS.Length > DBOponentesDicInfo.OpoPIS.FTamanho)
+            throw new SGValidationException($"PIS deve ter no máximo {DBOponentesDicInfo.OpoPIS.FTamanho} caracteres.");
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > DBOponentesDicInfo.OpoCNPJ.FTamanho)
+            throw new SGValidationException($"CNPJ deve ter no máximo {DBOponentesDicInfo.OpoCNPJ.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBOponentesDicInfo.OpoRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBOponentesDicInfo.OpoRG.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBOponentesDicInfo.OpoCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBOponentesDicInfo.OpoCPF.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBOponentesDicInfo.OpoEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBOponentesDicInfo.OpoEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBOponentesDicInfo.OpoBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBOponentesDicInfo.OpoBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBOponentesDicInfo.OpoCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBOponentesDicInfo.OpoCEP.FTamanho} caracteres.");
+        if (reg.InscEst != null && reg.InscEst.Length > DBOponentesDicInfo.OpoInscEst.FTamanho)
+            throw new SGValidationException($"InscEst deve ter no máximo {DBOponentesDicInfo.OpoInscEst.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBOponentesDicInfo.OpoClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBOponentesDicInfo.OpoClass.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBOponentesDicInfo.OpoGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBOponentesDicInfo.OpoGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -72,8 +72,10 @@ public class OponentesValidation : IOponentesValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -87,6 +89,8 @@ public class OponentesValidation : IOponentesValidation
             }
         }
 
+        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+            throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Oponentes com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade

@@ -41,7 +41,8 @@ export const useProResumosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Resumos';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro Resumos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro Resumos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProResumosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProResumosList = (dataService: IProResumosService, currentFilter
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar proresumos';
       setError(errorMessage);
-      //console.log('Erro ao carregar proresumos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar proresumos');
     } finally {
       setLoading(false);
     }

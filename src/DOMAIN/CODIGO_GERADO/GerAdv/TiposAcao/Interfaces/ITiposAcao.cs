@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface ITiposAcaoService
 {
     Task<IEnumerable<TiposAcaoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTiposAcao filter, [FromRoute, Required] string uri = "");
-    Task<TiposAcaoResponse?> AddAndUpdate(Models.TiposAcao regTiposAcao, [FromRoute, Required] string uri = "");
-    Task<TiposAcaoResponse?> Validation(Models.TiposAcao regTiposAcao, [FromRoute, Required] string uri = "");
-    Task<TiposAcaoResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<TiposAcaoResponse?> AddAndUpdate(Models.TiposAcao? regTiposAcao, [FromRoute, Required] string uri = "");
+    Task<TiposAcaoResponse?> Validation(Models.TiposAcao? regTiposAcao, [FromRoute, Required] string uri = "");
+    Task<TiposAcaoResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<TiposAcaoResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<TiposAcaoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTiposAcao? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);

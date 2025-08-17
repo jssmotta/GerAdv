@@ -41,7 +41,8 @@ export const usePrepostosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Prepostos';
       setError(errorMessage);
-      //console.log('Erro ao carregar Prepostos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Prepostos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePrepostosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePrepostosList = (dataService: IPrepostosService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar prepostos';
       setError(errorMessage);
-      //console.log('Erro ao carregar prepostos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar prepostos');
     } finally {
       setLoading(false);
     }
@@ -258,7 +261,8 @@ if (data.class.length > 1) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

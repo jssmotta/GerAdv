@@ -13,7 +13,7 @@ public partial interface IProObservacoesWhere
 
 public partial class ProObservacoesWhere(IFProObservacoesFactory proobservacoesFactory) : IProObservacoesWhere
 {
-    private readonly IFProObservacoesFactory _proobservacoesFactory = proobservacoesFactory;
+    private readonly IFProObservacoesFactory _proobservacoesFactory = proobservacoesFactory ?? throw new ArgumentNullException(nameof(proobservacoesFactory));
     public ProObservacoesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _proobservacoesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

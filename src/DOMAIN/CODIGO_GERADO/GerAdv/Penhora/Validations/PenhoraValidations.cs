@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPenhoraValidation
 {
     Task<bool> ValidateReg(Models.Penhora reg, IPenhoraService service, IPenhoraStatusReader penhorastatusReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PenhoraValidation : IPenhoraValidation
 {
-    public async Task<bool> CanDelete(int id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class PenhoraValidation : IPenhoraValidation
 
     private bool ValidSizes(Models.Penhora reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBPenhoraDicInfo.PhrNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBPenhoraDicInfo.PhrNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBPenhoraDicInfo.PhrGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBPenhoraDicInfo.PhrGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,6 +42,15 @@ public class PenhoraValidation : IPenhoraValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.DataPenhora))
+        {
+            if (DateTime.TryParse(reg.DataPenhora, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataPenhora não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // PenhoraStatus
         if (!reg.PenhoraStatus.IsEmptyIDNumber())
         {

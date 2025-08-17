@@ -14,13 +14,13 @@ public partial interface IProcessosObsReportWriter
 
 public class ProcessosObsReportWriter(IFProcessosObsReportFactory processosobsreportFactory) : IProcessosObsReportWriter
 {
-    private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory;
-    public async Task Delete(ProcessosObsReportResponse processosobsreport, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory ?? throw new ArgumentNullException(nameof(processosobsreportFactory));
+    public virtual async Task Delete(ProcessosObsReportResponse processosobsreport, int operadorId, MsiSqlConnection oCnn)
     {
         await _processosobsreportFactory.DeleteAsync(operadorId, processosobsreport.Id, oCnn);
     }
 
-    public async Task<FProcessosObsReport> WriteAsync(Models.ProcessosObsReport processosobsreport, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProcessosObsReport> WriteAsync(Models.ProcessosObsReport processosobsreport, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (processosobsreport.Id.IsEmptyIDNumber() ? _processosobsreportFactory.CreateAsync() : _processosobsreportFactory.CreateFromIdAsync(processosobsreport.Id, oCnn));
         dbRec.FData = processosobsreport.Data;

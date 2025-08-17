@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPontoVirtualValidation
 {
     Task<bool> ValidateReg(Models.PontoVirtual reg, IPontoVirtualService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPontoVirtualService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IPontoVirtualService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PontoVirtualValidation : IPontoVirtualValidation
 {
-    public async Task<bool> CanDelete(int id, IPontoVirtualService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPontoVirtualService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class PontoVirtualValidation : IPontoVirtualValidation
 
     private bool ValidSizes(Models.PontoVirtual reg)
     {
-        if (reg.Key != null && reg.Key.Length > 23)
-            throw new SGValidationException($"Key deve ter no máximo 23 caracteres.");
+        if (reg.Key != null && reg.Key.Length > DBPontoVirtualDicInfo.PvtKey.FTamanho)
+            throw new SGValidationException($"Key deve ter no máximo {DBPontoVirtualDicInfo.PvtKey.FTamanho} caracteres.");
         return true;
     }
 
@@ -58,6 +58,24 @@ public class PontoVirtualValidation : IPontoVirtualValidation
             throw new SGValidationException("HoraSaida é obrigatório.");
         if (reg.Operador == 0)
             throw new SGValidationException("Operador é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.HoraEntrada))
+        {
+            if (DateTime.TryParse(reg.HoraEntrada, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraEntrada não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.HoraSaida))
+        {
+            if (DateTime.TryParse(reg.HoraSaida, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraSaida não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Operador
         {
             var regOperador = await operadorReader.Read(reg.Operador, oCnn);

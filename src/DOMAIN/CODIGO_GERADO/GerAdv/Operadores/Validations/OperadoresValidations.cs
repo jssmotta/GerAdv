@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOperadoresValidation
 {
     Task<bool> ValidateReg(Models.Operadores reg, IOperadoresService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOperadoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOperadoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadoresValidation : IOperadoresValidation
 {
-    public async Task<bool> CanDelete(int id, IOperadoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOperadoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,14 +26,10 @@ public class OperadoresValidation : IOperadoresValidation
 
     private bool ValidSizes(Models.Operadores reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Senha != null && reg.Senha.Length > 10)
-            throw new SGValidationException($"Senha deve ter no máximo 10 caracteres.");
-        if (reg.Senha256 != null && reg.Senha256.Length > 4000)
-            throw new SGValidationException($"Senha256 deve ter no máximo 4000 caracteres.");
-        if (reg.SuporteSenha256 != null && reg.SuporteSenha256.Length > 4000)
-            throw new SGValidationException($"SuporteSenha256 deve ter no máximo 4000 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBOperadoresDicInfo.OperNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBOperadoresDicInfo.OperNome.FTamanho} caracteres.");
+        if (reg.Senha != null && reg.Senha.Length > DBOperadoresDicInfo.OperSenha.FTamanho)
+            throw new SGValidationException($"Senha deve ter no máximo {DBOperadoresDicInfo.OperSenha.FTamanho} caracteres.");
         return true;
     }
 
@@ -46,7 +42,7 @@ public class OperadoresValidation : IOperadoresValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())

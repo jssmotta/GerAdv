@@ -41,7 +41,8 @@ export const useUFForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar UF';
       setError(errorMessage);
-      //console.log('Erro ao carregar UF');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar UF');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useUFNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useUFList = (dataService: IUFService, currentFilter?: FilterUF | un
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar uf';
       setError(errorMessage);
-      //console.log('Erro ao carregar uf');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar uf');
     } finally {
       setLoading(false);
     }
@@ -216,7 +219,8 @@ if (data.descricao.length > 40) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

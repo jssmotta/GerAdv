@@ -10,16 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterGUTPeriodicidade
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("intervalodias")]
     public int IntervaloDias { get; set; } = int.MinValue;
@@ -28,10 +28,10 @@ public partial record FilterGUTPeriodicidade
     public int IntervaloDias_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? GUID { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

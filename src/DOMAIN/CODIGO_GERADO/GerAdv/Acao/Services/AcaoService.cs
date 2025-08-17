@@ -96,18 +96,18 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
     }
 
-    private async Task<AcaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<AcaoResponse?> AddAndUpdate([FromBody] Models.Acao regAcao, [FromRoute, Required] string uri)
+    private async Task<AcaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<AcaoResponse?> AddAndUpdate([FromBody] Models.Acao? regAcao, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Acao: URI inválida");
-        }
-
         if (regAcao == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Acao: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -121,7 +121,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -130,7 +130,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -138,17 +138,17 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<AcaoResponse?> Validation([FromBody] Models.Acao regAcao, [FromRoute, Required] string uri)
+    public async Task<AcaoResponse?> Validation([FromBody] Models.Acao? regAcao, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Acao: URI inválida");
-        }
-
         if (regAcao == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Acao: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -162,7 +162,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             var validade = await validation.ValidateReg(regAcao, this, justicaReader, areaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -171,7 +171,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regAcao.Id.IsEmptyIDNumber())
@@ -182,17 +182,17 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         return await reader.Read(regAcao.Id, oCnn);
     }
 
-    public async Task<AcaoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<AcaoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Acao: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -207,7 +207,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
             var deleteValidation = await validation.CanDelete(id, this, instanciaService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -216,10 +216,10 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var acao = await reader.Read(id, oCnn);
+        var acao = await reader.Read(id ?? default, oCnn);
         try
         {
             if (acao != null)
@@ -239,7 +239,7 @@ public partial class AcaoService(IOptions<AppSettings> appSettings, IFAcaoFactor
         return acao;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

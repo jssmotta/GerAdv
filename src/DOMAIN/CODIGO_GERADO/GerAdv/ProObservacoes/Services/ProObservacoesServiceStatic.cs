@@ -8,47 +8,47 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProObservacoesService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProObservacoes filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProObservacoes? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Processo)}", filtro.Processo));
+            parameters.Add(new($"@{(DBProObservacoesDicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProObservacoesDicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
-        if (filtro.Processo_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBProObservacoesDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Observacoes))
         {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBProObservacoesDicInfo.Observacoes)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Observacoes)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Observacoes))
+        if (!string.IsNullOrWhiteSpace(filtro.Data))
         {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Observacoes)}", ApplyWildCard(filtro.WildcardChar, filtro.Observacoes)));
+            parameters.Add(new($"@{(DBProObservacoesDicInfo.Data)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Data))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBProObservacoesDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProObservacoesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBProObservacoesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProObservacoesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -59,38 +59,27 @@ public partial class ProObservacoesService
         var cWhere = new StringBuilder();
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Processo}] = @{nameof(DBProObservacoesDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Processo}] = @{(DBProObservacoesDicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].{DBProObservacoesDicInfo.Processo} BETWEEN @{nameof(DBProObservacoesDicInfo.Processo)} AND @{nameof(DBProObservacoesDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].{DBProObservacoesDicInfo.Processo} BETWEEN @{(DBProObservacoesDicInfo.Processo)} AND @{(DBProObservacoesDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Nome)}");
-        cWhere.Append(filtro.Observacoes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Observacoes)}");
-        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.Data)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProObservacoesDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBProObservacoesDicInfo.Nome)}");
+        cWhere.Append(filtro.Observacoes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Observacoes}]  {DevourerConsts.MsiCollate} like @{(DBProObservacoesDicInfo.Observacoes)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{(DBProObservacoesDicInfo.Data)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBProObservacoesDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.CampoCodigo}] = @{nameof(DBProObservacoesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].[{DBProObservacoesDicInfo.CampoCodigo}] = @{(DBProObservacoesDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].{DBProObservacoesDicInfo.CampoCodigo} BETWEEN @{nameof(DBProObservacoesDicInfo.CampoCodigo)} AND @{nameof(DBProObservacoesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProObservacoesDicInfo.PTabelaNome}].{DBProObservacoesDicInfo.CampoCodigo} BETWEEN @{(DBProObservacoesDicInfo.CampoCodigo)} AND @{(DBProObservacoesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterProObservacoes? filtro)

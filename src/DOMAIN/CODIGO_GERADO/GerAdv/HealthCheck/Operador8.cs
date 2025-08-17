@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorService operadorService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) operEMail,operPasta,operTelefonista,operMaster,operNome,operNick,operRamal,operCadID,operCadCod,operExcluido,operSituacao,operComputador,operMinhaDescricao,operUltimoLogoff,operEMailNet,operOnlineIP,operOnLine,operSysOp,operStatusId,operStatusMessage,operIsFinanceiro,operTop,operSexo,operBasico,operExterno,operSenha256,operEMailConfirmado,operDataLimiteReset,operSuporteSenha256,operSuporteMaxAge,operSuporteNomeSolicitante,operSuporteUltimoAcesso,operSuporteIpUltimoAcesso,operGUID FROM {"Operador".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) operEMail,operPasta,operTelefonista,operMaster,operNome,operNick,operRamal,operCadID,operCadCod,operExcluido,operSituacao,operComputador,operMinhaDescricao,operUltimoLogoff,operEMailNet,operOnlineIP,operOnLine,operSysOp,operStatusId,operStatusMessage,operIsFinanceiro,operGUID,operTop,operSexo,operBasico,operExterno,operSenha256,operEMailConfirmado,operDataLimiteReset,operSuporteSenha256,operSuporteMaxAge,operSuporteNomeSolicitante,operSuporteUltimoAcesso,operSuporteIpUltimoAcesso FROM {"Operador".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class OperadorHealthCheck(IOptions<AppSettings> appSettings, OperadorServ
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

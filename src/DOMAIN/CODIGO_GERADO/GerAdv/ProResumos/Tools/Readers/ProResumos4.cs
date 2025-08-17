@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : IProResumosReader
 {
-    private readonly IFProResumosFactory _proresumosFactory = proresumosFactory;
+    private readonly IFProResumosFactory _proresumosFactory = proresumosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prsCodigo, prsData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProResumosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProResumos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProResumosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -57,8 +57,8 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
         };
         return proresumos;
     }
@@ -87,8 +87,8 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
         };
         return proresumos;
     }
@@ -106,8 +106,8 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
         };
         return proresumos;
     }
@@ -125,8 +125,8 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
         };
         return proresumos;
     }
@@ -144,8 +144,8 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
         };
         return proresumos;
     }

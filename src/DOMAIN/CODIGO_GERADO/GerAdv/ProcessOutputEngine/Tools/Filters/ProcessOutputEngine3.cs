@@ -10,49 +10,55 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterProcessOutputEngine
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("database")]
-    public string Database { get; set; } = string.Empty;
+    public string? Database { get; set; } = string.Empty;
 
     [JsonPropertyName("database_end")]
-    public string Database_end { get; set; } = string.Empty;
+    public string? Database_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tabela")]
-    public string Tabela { get; set; } = string.Empty;
+    public string? Tabela { get; set; } = string.Empty;
 
     [JsonPropertyName("tabela_end")]
-    public string Tabela_end { get; set; } = string.Empty;
+    public string? Tabela_end { get; set; } = string.Empty;
 
     [JsonPropertyName("campo")]
-    public string Campo { get; set; } = string.Empty;
+    public string? Campo { get; set; } = string.Empty;
 
     [JsonPropertyName("campo_end")]
-    public string Campo_end { get; set; } = string.Empty;
+    public string? Campo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valor")]
-    public string Valor { get; set; } = string.Empty;
+    public string? Valor { get; set; } = string.Empty;
 
     [JsonPropertyName("valor_end")]
-    public string Valor_end { get; set; } = string.Empty;
+    public string? Valor_end { get; set; } = string.Empty;
 
     [JsonPropertyName("output")]
-    public string Output { get; set; } = string.Empty;
+    public string? Output { get; set; } = string.Empty;
 
     [JsonPropertyName("output_end")]
-    public string Output_end { get; set; } = string.Empty;
+    public string? Output_end { get; set; } = string.Empty;
 
     [JsonPropertyName("administrador")]
     public int Administrador { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("outputsource")]
     public int OutputSource { get; set; } = int.MinValue;
@@ -77,12 +83,6 @@ public partial record FilterProcessOutputEngine
 
     [JsonPropertyName("myid_end")]
     public int MyID_end { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

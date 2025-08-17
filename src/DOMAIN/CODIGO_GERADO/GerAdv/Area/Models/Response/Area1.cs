@@ -20,16 +20,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// Top - areTop  
-        /// </summary>
-        [JsonPropertyName("top")]
-        public bool Top { get; set; }
-
-        /// <summary>
         /// GUID - areGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Top - areTop  
+        /// </summary>
+        [JsonPropertyName("top")]
+        public bool Top { get; set; }
     }
 }
 
@@ -48,15 +48,15 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// Top - areTop  
-        /// </summary>
-        [JsonPropertyName("top")]
-        public bool Top { get; set; }
-
-        /// <summary>
         /// GUID - areGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Top - areTop  
+        /// </summary>
+        [JsonPropertyName("top")]
+        public bool Top { get; set; }
     }
 }

@@ -15,7 +15,7 @@ public partial class ContratosReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBContratosDicInfo.CampoNome}";
+        var orderQuery = $"{TSql.OrderBy} {DBContratosDicInfo.CampoCodigo}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

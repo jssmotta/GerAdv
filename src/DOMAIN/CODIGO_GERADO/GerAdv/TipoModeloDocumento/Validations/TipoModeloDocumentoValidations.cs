@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoModeloDocumentoValidation
 {
     Task<bool> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var modelosdocumentosExists0 = await modelosdocumentosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterModelosDocumentos { TipoModeloDocumento = id }, uri);
+        var modelosdocumentosExists0 = await modelosdocumentosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterModelosDocumentos { TipoModeloDocumento = id ?? default }, uri);
         if (modelosdocumentosExists0 != null && modelosdocumentosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Modelos Documentos associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
 
     private bool ValidSizes(Models.TipoModeloDocumento reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTipoModeloDocumentoDicInfo.TpdNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTipoModeloDocumentoDicInfo.TpdNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTipoModeloDocumentoDicInfo.TpdGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTipoModeloDocumentoDicInfo.TpdGUID.FTamanho} caracteres.");
         return true;
     }
 

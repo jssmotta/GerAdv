@@ -5,8 +5,8 @@ import { IProValores } from '../ProValores/Interfaces/interface.ProValores';
 export interface ProValores
 {
     id: number;
-	tipovalorprocesso : number;
 	processo : number;
+	tipovalorprocesso : number;
 	indice : string;
 	ignorar : boolean;
 	data : string;
@@ -20,7 +20,6 @@ export interface ProValores
 	valorfinal : number;
 	dataultimacorrecao : string;
 	dataultimacorrecao_date? : Date;
-	descricaotipovalorprocesso?: string;
 
 }
 
@@ -30,8 +29,8 @@ export function ProValoresEmpty(): IProValores {
     
     return {
         id: 0,
-		tipovalorprocesso: 0,
 		processo: 0,
+		tipovalorprocesso: 0,
 		indice: '',
 		ignorar: false,
 		data: '',
@@ -52,8 +51,8 @@ export function ProValoresTestEmpty(): IProValores {
     
     return {
         id: 1,
-		tipovalorprocesso: 1,
 		processo: 1,
+		tipovalorprocesso: 1,
 		indice: 'X',
 		ignorar: true,
 		data: 'X',

@@ -14,7 +14,6 @@ export interface FilterReuniao
  ata?: string;
  horainicial_end?: string;
  horainicial?: string;
- horafinal_end?: string;
  horafinal?: string;
  externa?: number;
  horasaida_end?: string;
@@ -38,7 +37,6 @@ export class FilterReuniaoDefaults implements FilterReuniao {
     ata?: string = '';
     horainicial_end?: string = '';
     horainicial?: string = '';
-    horafinal_end?: string = '';
     horafinal?: string = '';
     externa?: number= -2147483648;
     horasaida_end?: string = '';

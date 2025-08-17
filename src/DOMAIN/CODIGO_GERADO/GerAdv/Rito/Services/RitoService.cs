@@ -93,18 +93,18 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
     }
 
-    private async Task<RitoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<RitoResponse?> AddAndUpdate([FromBody] Models.Rito regRito, [FromRoute, Required] string uri)
+    private async Task<RitoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<RitoResponse?> AddAndUpdate([FromBody] Models.Rito? regRito, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Rito: URI inválida");
-        }
-
         if (regRito == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Rito: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -118,7 +118,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             var validade = await validation.ValidateReg(regRito, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -127,7 +127,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -135,17 +135,17 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<RitoResponse?> Validation([FromBody] Models.Rito regRito, [FromRoute, Required] string uri)
+    public async Task<RitoResponse?> Validation([FromBody] Models.Rito? regRito, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Rito: URI inválida");
-        }
-
         if (regRito == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Rito: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -159,7 +159,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             var validade = await validation.ValidateReg(regRito, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -168,7 +168,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regRito.Id.IsEmptyIDNumber())
@@ -179,17 +179,17 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         return await reader.Read(regRito.Id, oCnn);
     }
 
-    public async Task<RitoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<RitoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Rito: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,7 +204,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -213,10 +213,10 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var rito = await reader.Read(id, oCnn);
+        var rito = await reader.Read(id ?? default, oCnn);
         try
         {
             if (rito != null)
@@ -236,7 +236,7 @@ public partial class RitoService(IOptions<AppSettings> appSettings, IFRitoFactor
         return rito;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

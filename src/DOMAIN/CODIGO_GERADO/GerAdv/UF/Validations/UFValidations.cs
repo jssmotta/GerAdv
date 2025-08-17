@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IUFValidation
 {
     Task<bool> ValidateReg(Models.UF reg, IUFService service, IPaisesReader paisesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IUFService service, ICidadeService cidadeService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IUFService service, ICidadeService cidadeService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class UFValidation : IUFValidation
 {
-    public async Task<bool> CanDelete(int id, IUFService service, ICidadeService cidadeService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IUFService service, ICidadeService cidadeService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var cidadeExists0 = await cidadeService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterCidade { UF = id }, uri);
+        var cidadeExists0 = await cidadeService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterCidade { UF = id ?? default }, uri);
         if (cidadeExists0 != null && cidadeExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Cidade associados a ele.");
         return true;
@@ -29,14 +29,14 @@ public class UFValidation : IUFValidation
 
     private bool ValidSizes(Models.UF reg)
     {
-        if (reg.DDD != null && reg.DDD.Length > 10)
-            throw new SGValidationException($"DDD deve ter no máximo 10 caracteres.");
-        if (reg.IdUF != null && reg.IdUF.Length > 4)
-            throw new SGValidationException($"ID deve ter no máximo 4 caracteres.");
-        if (reg.Descricao != null && reg.Descricao.Length > 40)
-            throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.DDD != null && reg.DDD.Length > DBUFDicInfo.UfDDD.FTamanho)
+            throw new SGValidationException($"DDD deve ter no máximo {DBUFDicInfo.UfDDD.FTamanho} caracteres.");
+        if (reg.IdUF != null && reg.IdUF.Length > DBUFDicInfo.UfID.FTamanho)
+            throw new SGValidationException($"ID deve ter no máximo {DBUFDicInfo.UfID.FTamanho} caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBUFDicInfo.UfDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBUFDicInfo.UfDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBUFDicInfo.UfGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBUFDicInfo.UfGUID.FTamanho} caracteres.");
         return true;
     }
 

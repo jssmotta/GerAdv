@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFuncionariosFactory funcionariosFactory, IFuncionariosReader reader, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaQuemService agendaquemService, IHorasTrabService horastrabService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFuncionariosService, IDisposable
+public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFuncionariosFactory funcionariosFactory, IFuncionariosReader reader, IFuncionariosValidation validation, IFuncionariosWriter writer, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, IAgendaService agendaService, IHorasTrabService horastrabService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFuncionariosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,7 +21,6 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
     private readonly IFuncaoReader funcaoReader = funcaoReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaQuemService agendaquemService = agendaquemService;
     private readonly IHorasTrabService horastrabService = horastrabService;
     public async Task<IEnumerable<FuncionariosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
@@ -99,18 +98,18 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
     }
 
-    private async Task<FuncionariosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<FuncionariosResponse?> AddAndUpdate([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string uri)
+    private async Task<FuncionariosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<FuncionariosResponse?> AddAndUpdate([FromBody] Models.Funcionarios? regFuncionarios, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Funcionarios: URI inválida");
-        }
-
         if (regFuncionarios == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Funcionarios: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -124,7 +123,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -133,7 +132,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -141,17 +140,17 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<FuncionariosResponse?> Validation([FromBody] Models.Funcionarios regFuncionarios, [FromRoute, Required] string uri)
+    public async Task<FuncionariosResponse?> Validation([FromBody] Models.Funcionarios? regFuncionarios, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Funcionarios: URI inválida");
-        }
-
         if (regFuncionarios == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Funcionarios: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -165,7 +164,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
             var validade = await validation.ValidateReg(regFuncionarios, this, cargosReader, funcaoReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -174,7 +173,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regFuncionarios.Id.IsEmptyIDNumber())
@@ -185,17 +184,17 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         return await reader.Read(regFuncionarios.Id, oCnn);
     }
 
-    public async Task<FuncionariosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<FuncionariosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Funcionarios: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -207,10 +206,10 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendaquemService, horastrabService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, horastrabService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -219,10 +218,10 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var funcionarios = await reader.Read(id, oCnn);
+        var funcionarios = await reader.Read(id ?? default, oCnn);
         try
         {
             if (funcionarios != null)
@@ -242,7 +241,7 @@ public partial class FuncionariosService(IOptions<AppSettings> appSettings, IFFu
         return funcionarios;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

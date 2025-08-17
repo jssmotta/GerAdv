@@ -41,7 +41,8 @@ export const useEnquadramentoEmpresaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Enquadramento Empresa';
       setError(errorMessage);
-      //console.log('Erro ao carregar Enquadramento Empresa');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Enquadramento Empresa');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useEnquadramentoEmpresaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useEnquadramentoEmpresaList = (dataService: IEnquadramentoEmpresaSe
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar enquadramentoempresa';
       setError(errorMessage);
-      //console.log('Erro ao carregar enquadramentoempresa');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar enquadramentoempresa');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 50) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

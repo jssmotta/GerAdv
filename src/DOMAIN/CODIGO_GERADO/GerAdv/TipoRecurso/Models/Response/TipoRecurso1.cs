@@ -26,16 +26,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Area { get; set; }
 
         /// <summary>
-        /// Descricao - trcDescricao - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("descricao")]
-        public string Descricao { get; set; } = "";
-
-        /// <summary>
         /// GUID - trcGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Descricao - trcDescricao - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("descricao")]
+        public string Descricao { get; set; } = "";
     }
 }
 
@@ -60,16 +60,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Area { get; set; }
 
         /// <summary>
-        /// Descricao - trcDescricao - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("descricao")]
-        public string Descricao { get; set; } = "";
-
-        /// <summary>
         /// GUID - trcGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Descricao - trcDescricao - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("descricao")]
+        public string Descricao { get; set; } = "";
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;

@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProcessosObsReportValidation
 {
     Task<bool> ValidateReg(Models.ProcessosObsReport reg, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessosObsReportValidation : IProcessosObsReportValidation
 {
-    public async Task<bool> CanDelete(int id, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProcessosObsReportService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
 
     private bool ValidSizes(Models.ProcessosObsReport reg)
     {
-        if (reg.Observacao != null && reg.Observacao.Length > 2048)
-            throw new SGValidationException($"Observacao deve ter no máximo 2048 caracteres.");
+        if (reg.Observacao != null && reg.Observacao.Length > DBProcessosObsReportDicInfo.PrrObservacao.FTamanho)
+            throw new SGValidationException($"Observacao deve ter no máximo {DBProcessosObsReportDicInfo.PrrObservacao.FTamanho} caracteres.");
         return true;
     }
 

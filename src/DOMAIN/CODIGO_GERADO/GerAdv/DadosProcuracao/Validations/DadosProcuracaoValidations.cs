@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IDadosProcuracaoValidation
 {
     Task<bool> ValidateReg(Models.DadosProcuracao reg, IDadosProcuracaoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IDadosProcuracaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IDadosProcuracaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class DadosProcuracaoValidation : IDadosProcuracaoValidation
 {
-    public async Task<bool> CanDelete(int id, IDadosProcuracaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IDadosProcuracaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,18 +26,18 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
 
     private bool ValidSizes(Models.DadosProcuracao reg)
     {
-        if (reg.EstadoCivil != null && reg.EstadoCivil.Length > 100)
-            throw new SGValidationException($"EstadoCivil deve ter no máximo 100 caracteres.");
-        if (reg.Nacionalidade != null && reg.Nacionalidade.Length > 100)
-            throw new SGValidationException($"Nacionalidade deve ter no máximo 100 caracteres.");
-        if (reg.Profissao != null && reg.Profissao.Length > 100)
-            throw new SGValidationException($"Profissao deve ter no máximo 100 caracteres.");
-        if (reg.CTPS != null && reg.CTPS.Length > 100)
-            throw new SGValidationException($"CTPS deve ter no máximo 100 caracteres.");
-        if (reg.PisPasep != null && reg.PisPasep.Length > 100)
-            throw new SGValidationException($"PisPasep deve ter no máximo 100 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.EstadoCivil != null && reg.EstadoCivil.Length > DBDadosProcuracaoDicInfo.PrcEstadoCivil.FTamanho)
+            throw new SGValidationException($"EstadoCivil deve ter no máximo {DBDadosProcuracaoDicInfo.PrcEstadoCivil.FTamanho} caracteres.");
+        if (reg.Nacionalidade != null && reg.Nacionalidade.Length > DBDadosProcuracaoDicInfo.PrcNacionalidade.FTamanho)
+            throw new SGValidationException($"Nacionalidade deve ter no máximo {DBDadosProcuracaoDicInfo.PrcNacionalidade.FTamanho} caracteres.");
+        if (reg.Profissao != null && reg.Profissao.Length > DBDadosProcuracaoDicInfo.PrcProfissao.FTamanho)
+            throw new SGValidationException($"Profissao deve ter no máximo {DBDadosProcuracaoDicInfo.PrcProfissao.FTamanho} caracteres.");
+        if (reg.CTPS != null && reg.CTPS.Length > DBDadosProcuracaoDicInfo.PrcCTPS.FTamanho)
+            throw new SGValidationException($"CTPS deve ter no máximo {DBDadosProcuracaoDicInfo.PrcCTPS.FTamanho} caracteres.");
+        if (reg.PisPasep != null && reg.PisPasep.Length > DBDadosProcuracaoDicInfo.PrcPisPasep.FTamanho)
+            throw new SGValidationException($"PisPasep deve ter no máximo {DBDadosProcuracaoDicInfo.PrcPisPasep.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBDadosProcuracaoDicInfo.PrcGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBDadosProcuracaoDicInfo.PrcGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -45,10 +45,6 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
-        if (await IsDuplicado(reg, service, uri))
-            throw new SGValidationException($"Dados Procuracao '{reg.GUID}'  - Cliente");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -66,11 +62,5 @@ public class DadosProcuracaoValidation : IDadosProcuracaoValidation
         }
 
         return true;
-    }
-
-    private async Task<bool> IsDuplicado(Models.DadosProcuracao reg, IDadosProcuracaoService service, string uri)
-    {
-        var existingDadosProcuracao = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDadosProcuracao { Cliente = reg.Cliente }, uri)).FirstOrDefault(); // TRACK 10042025
-        return existingDadosProcuracao != null && existingDadosProcuracao.Id > 0 && existingDadosProcuracao.Id != reg.Id;
     }
 }

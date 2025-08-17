@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvogadosFactory advogadosFactory, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaQuemService agendaquemService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAdvogadosService, IDisposable
+public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvogadosFactory advogadosFactory, IAdvogadosReader reader, IAdvogadosValidation validation, IAdvogadosWriter writer, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, IAgendaService agendaService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAdvogadosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,7 +21,6 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
     private readonly IEscritoriosReader escritoriosReader = escritoriosReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaQuemService agendaquemService = agendaquemService;
     private readonly IContratosService contratosService = contratosService;
     private readonly IHorasTrabService horastrabService = horastrabService;
     private readonly IParceriaProcService parceriaprocService = parceriaprocService;
@@ -102,18 +101,18 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         }
     }
 
-    private async Task<AdvogadosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<AdvogadosResponse?> AddAndUpdate([FromBody] Models.Advogados regAdvogados, [FromRoute, Required] string uri)
+    private async Task<AdvogadosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<AdvogadosResponse?> AddAndUpdate([FromBody] Models.Advogados? regAdvogados, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Advogados: URI inválida");
-        }
-
         if (regAdvogados == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Advogados: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -127,7 +126,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
             var validade = await validation.ValidateReg(regAdvogados, this, cargosReader, escritoriosReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -136,7 +135,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -144,17 +143,17 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<AdvogadosResponse?> Validation([FromBody] Models.Advogados regAdvogados, [FromRoute, Required] string uri)
+    public async Task<AdvogadosResponse?> Validation([FromBody] Models.Advogados? regAdvogados, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Advogados: URI inválida");
-        }
-
         if (regAdvogados == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Advogados: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -168,7 +167,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
             var validade = await validation.ValidateReg(regAdvogados, this, cargosReader, escritoriosReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -177,7 +176,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regAdvogados.Id.IsEmptyIDNumber())
@@ -188,17 +187,17 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         return await reader.Read(regAdvogados.Id, oCnn);
     }
 
-    public async Task<AdvogadosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<AdvogadosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Advogados: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -210,10 +209,10 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendaquemService, contratosService, horastrabService, parceriaprocService, proprocuradoresService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, contratosService, horastrabService, parceriaprocService, proprocuradoresService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -222,10 +221,10 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var advogados = await reader.Read(id, oCnn);
+        var advogados = await reader.Read(id ?? default, oCnn);
         try
         {
             if (advogados != null)
@@ -245,7 +244,7 @@ public partial class AdvogadosService(IOptions<AppSettings> appSettings, IFAdvog
         return advogados;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

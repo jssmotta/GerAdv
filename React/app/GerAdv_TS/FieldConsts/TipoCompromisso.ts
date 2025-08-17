@@ -2,8 +2,8 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 export enum FieldsTipoCompromisso
-{	icone = `Icone`,
+{	guid = `GUID`,
+	icone = `Icone`,
 	descricao = `Descricao`,
 	financeiro = `Financeiro`,
-	guid = `GUID`,
 }

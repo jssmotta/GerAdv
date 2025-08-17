@@ -13,13 +13,14 @@ public partial interface IEscritoriosWhere
 
 public partial class EscritoriosWhere(IFEscritoriosFactory escritoriosFactory) : IEscritoriosWhere
 {
-    private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory;
+    private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException(nameof(escritoriosFactory));
     public EscritoriosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _escritoriosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var escritorios = new EscritoriosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -39,7 +40,6 @@ public partial class EscritoriosWhere(IFEscritoriosFactory escritoriosFactory) :
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return escritorios;
     }

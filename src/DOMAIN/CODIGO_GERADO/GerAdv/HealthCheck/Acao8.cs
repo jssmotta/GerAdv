@@ -13,6 +13,8 @@ dotnet add package AspNetCore.HealthChecks.UI.Client
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acaoService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -79,7 +81,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) acaJustica,acaArea,acaDescricao,acaGUID FROM {"Acao".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) acaGUID,acaJustica,acaArea,acaDescricao FROM {"Acao".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -236,7 +238,7 @@ public class AcaoHealthCheck(IOptions<AppSettings> appSettings, AcaoService acao
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

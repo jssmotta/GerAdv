@@ -13,7 +13,7 @@ public partial interface IViaRecebimentoWhere
 
 public partial class ViaRecebimentoWhere(IFViaRecebimentoFactory viarecebimentoFactory) : IViaRecebimentoWhere
 {
-    private readonly IFViaRecebimentoFactory _viarecebimentoFactory = viarecebimentoFactory;
+    private readonly IFViaRecebimentoFactory _viarecebimentoFactory = viarecebimentoFactory ?? throw new ArgumentNullException(nameof(viarecebimentoFactory));
     public ViaRecebimentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _viarecebimentoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

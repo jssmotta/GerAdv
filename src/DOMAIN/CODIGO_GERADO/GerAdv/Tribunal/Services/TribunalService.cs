@@ -99,18 +99,18 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
     }
 
-    private async Task<TribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<TribunalResponse?> AddAndUpdate([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
+    private async Task<TribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<TribunalResponse?> AddAndUpdate([FromBody] Models.Tribunal? regTribunal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Tribunal: URI inválida");
-        }
-
         if (regTribunal == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Tribunal: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -124,7 +124,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -133,7 +133,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -141,17 +141,17 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<TribunalResponse?> Validation([FromBody] Models.Tribunal regTribunal, [FromRoute, Required] string uri)
+    public async Task<TribunalResponse?> Validation([FromBody] Models.Tribunal? regTribunal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Tribunal: URI inválida");
-        }
-
         if (regTribunal == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Tribunal: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -165,7 +165,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             var validade = await validation.ValidateReg(regTribunal, this, areaReader, justicaReader, instanciaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -174,7 +174,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regTribunal.Id.IsEmptyIDNumber())
@@ -185,17 +185,17 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         return await reader.Read(regTribunal.Id, oCnn);
     }
 
-    public async Task<TribunalResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<TribunalResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Tribunal: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -210,7 +210,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
             var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, poderjudiciarioassociadoService, tribenderecosService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -219,10 +219,10 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var tribunal = await reader.Read(id, oCnn);
+        var tribunal = await reader.Read(id ?? default, oCnn);
         try
         {
             if (tribunal != null)
@@ -242,7 +242,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
         return tribunal;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

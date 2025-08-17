@@ -14,18 +14,17 @@ public partial interface IPontoVirtualAcessosWriter
 
 public class PontoVirtualAcessosWriter(IFPontoVirtualAcessosFactory pontovirtualacessosFactory) : IPontoVirtualAcessosWriter
 {
-    private readonly IFPontoVirtualAcessosFactory _pontovirtualacessosFactory = pontovirtualacessosFactory;
-    public async Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPontoVirtualAcessosFactory _pontovirtualacessosFactory = pontovirtualacessosFactory ?? throw new ArgumentNullException(nameof(pontovirtualacessosFactory));
+    public virtual async Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection oCnn)
     {
         await _pontovirtualacessosFactory.DeleteAsync(operadorId, pontovirtualacessos.Id, oCnn);
     }
 
-    public async Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, MsiSqlConnection oCnn)
+    public virtual async Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, MsiSqlConnection oCnn)
     {
         using var dbRec = await (pontovirtualacessos.Id.IsEmptyIDNumber() ? _pontovirtualacessosFactory.CreateAsync() : _pontovirtualacessosFactory.CreateFromIdAsync(pontovirtualacessos.Id, oCnn));
         dbRec.FOperador = pontovirtualacessos.Operador;
-        if (pontovirtualacessos.DataHora != null)
-            dbRec.FDataHora = pontovirtualacessos.DataHora.ToString();
+        dbRec.FDataHora = pontovirtualacessos.DataHora;
         dbRec.FTipo = pontovirtualacessos.Tipo;
         dbRec.FOrigem = pontovirtualacessos.Origem;
         await dbRec.UpdateAsync(oCnn);

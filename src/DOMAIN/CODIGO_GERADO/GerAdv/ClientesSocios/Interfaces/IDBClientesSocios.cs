@@ -6,6 +6,7 @@ public partial interface IDBClientesSocios
 {
     public int ID { get; set; }
     public bool FSomenteRepresentante { get; set; }
+    public string? FGUID { get; set; }
     public int FIdade { get; set; }
     public bool FIsRepresentanteLegal { get; set; }
     public string? FQualificacao { get; set; }
@@ -40,5 +41,4 @@ public partial interface IDBClientesSocios
     public bool FTipo { get; set; }
     public string? FFax { get; set; }
     public string? FClass { get; set; }
-    public string? FGUID { get; set; }
 }

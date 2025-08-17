@@ -8,32 +8,41 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GUTAtividadesMatrizService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTAtividadesMatriz filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTAtividadesMatriz? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.GUTMatriz != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}", filtro.GUTMatriz));
+            parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}", filtro.GUTMatriz));
+            if (filtro.GUTMatriz_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}_end", filtro.GUTMatriz_end));
+            }
         }
 
         if (filtro.GUTAtividade != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}", filtro.GUTAtividade));
+            parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}", filtro.GUTAtividade));
+            if (filtro.GUTAtividade_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}_end", filtro.GUTAtividade_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesMatrizDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -42,30 +51,35 @@ public partial class GUTAtividadesMatrizService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.GUTMatriz.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTMatriz}] = @{nameof(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}");
-        cWhere.Append(filtro.GUTAtividade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTAtividade}] = @{nameof(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTAtividadesMatrizDicInfo.GUID)}");
+        if (!(filtro.GUTMatriz.IsEmptyX()) && filtro.GUTMatriz_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.GUTMatriz.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTMatriz}] = @{(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}");
+        }
+        else if (!(filtro.GUTMatriz.IsEmptyX()) && !(filtro.GUTMatriz_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].{DBGUTAtividadesMatrizDicInfo.GUTMatriz} BETWEEN @{(DBGUTAtividadesMatrizDicInfo.GUTMatriz)} AND @{(DBGUTAtividadesMatrizDicInfo.GUTMatriz)}_end");
+        }
+
+        if (!(filtro.GUTAtividade.IsEmptyX()) && filtro.GUTAtividade_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.GUTAtividade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUTAtividade}] = @{(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}");
+        }
+        else if (!(filtro.GUTAtividade.IsEmptyX()) && !(filtro.GUTAtividade_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].{DBGUTAtividadesMatrizDicInfo.GUTAtividade} BETWEEN @{(DBGUTAtividadesMatrizDicInfo.GUTAtividade)} AND @{(DBGUTAtividadesMatrizDicInfo.GUTAtividade)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBGUTAtividadesMatrizDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.CampoCodigo}] = @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].[{DBGUTAtividadesMatrizDicInfo.CampoCodigo}] = @{(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].{DBGUTAtividadesMatrizDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)} AND @{nameof(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTAtividadesMatrizDicInfo.PTabelaNome}].{DBGUTAtividadesMatrizDicInfo.CampoCodigo} BETWEEN @{(DBGUTAtividadesMatrizDicInfo.CampoCodigo)} AND @{(DBGUTAtividadesMatrizDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterGUTAtividadesMatriz? filtro)
@@ -76,46 +90,6 @@ public partial class GUTAtividadesMatrizService
         using var sha256 = SHA256.Create();
         var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-    }
-
-    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTAtividadesMatriz? filtro, [FromRoute, Required] string uri, CancellationToken token)
-    {
-        // Tracking: 20250606-0
-        ThrowIfDisposed();
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new Exception($"Coneão nula.");
-        }
-
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-GUTAtividadesMatriz-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
-        };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
-    }
-
-    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
-    {
-        var result = new List<NomeID>(max);
-        var lista = await reader.ListarN(max, uri, where, parameters, DBGUTAtividadesMatrizDicInfo.CampoNome);
-        foreach (var item in lista)
-        {
-            if (token.IsCancellationRequested)
-                break;
-            if (item?.FNome != null)
-            {
-                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
-            }
-        }
-
-        return result;
     }
 
     private async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

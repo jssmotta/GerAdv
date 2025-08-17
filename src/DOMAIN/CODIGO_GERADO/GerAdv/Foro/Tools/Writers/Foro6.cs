@@ -14,13 +14,13 @@ public partial interface IForoWriter
 
 public class ForoWriter(IFForoFactory foroFactory) : IForoWriter
 {
-    private readonly IFForoFactory _foroFactory = foroFactory;
-    public async Task Delete(ForoResponse foro, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFForoFactory _foroFactory = foroFactory ?? throw new ArgumentNullException(nameof(foroFactory));
+    public virtual async Task Delete(ForoResponse foro, int operadorId, MsiSqlConnection oCnn)
     {
         await _foroFactory.DeleteAsync(operadorId, foro.Id, oCnn);
     }
 
-    public async Task<FForo> WriteAsync(Models.Foro foro, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FForo> WriteAsync(Models.Foro foro, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (foro.Id.IsEmptyIDNumber() ? _foroFactory.CreateAsync() : _foroFactory.CreateFromIdAsync(foro.Id, oCnn));
         dbRec.FEMail = foro.EMail;

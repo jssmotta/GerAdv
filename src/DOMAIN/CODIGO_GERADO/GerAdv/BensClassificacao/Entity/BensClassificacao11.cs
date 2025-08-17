@@ -54,7 +54,7 @@ public partial class FBensClassificacaoFactory : IFBensClassificacaoFactory, IDi
             throw new ObjectDisposedException(nameof(FBensClassificacaoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

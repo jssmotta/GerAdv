@@ -13,7 +13,7 @@ public partial interface IRegimeTributacaoWhere
 
 public partial class RegimeTributacaoWhere(IFRegimeTributacaoFactory regimetributacaoFactory) : IRegimeTributacaoWhere
 {
-    private readonly IFRegimeTributacaoFactory _regimetributacaoFactory = regimetributacaoFactory;
+    private readonly IFRegimeTributacaoFactory _regimetributacaoFactory = regimetributacaoFactory ?? throw new ArgumentNullException(nameof(regimetributacaoFactory));
     public RegimeTributacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _regimetributacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

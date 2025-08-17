@@ -94,7 +94,8 @@ export class NECompromissosService implements INECompromissosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online NECompromissos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online NECompromissos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -104,12 +105,14 @@ export class NECompromissosService implements INECompromissosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online NECompromissos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online NECompromissos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all NECompromissos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all NECompromissos:');
       return [];
     }
   }

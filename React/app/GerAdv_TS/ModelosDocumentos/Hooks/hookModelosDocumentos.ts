@@ -41,7 +41,8 @@ export const useModelosDocumentosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Modelos Documentos';
       setError(errorMessage);
-      //console.log('Erro ao carregar Modelos Documentos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Modelos Documentos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useModelosDocumentosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useModelosDocumentosList = (dataService: IModelosDocumentosService,
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar modelosdocumentos';
       setError(errorMessage);
-      //console.log('Erro ao carregar modelosdocumentos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar modelosdocumentos');
     } finally {
       setLoading(false);
     }
@@ -252,7 +255,8 @@ if (data.css.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosService advogadosService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosSe
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) advCargo,advEMailPro,advCPF,advNome,advRG,advCasa,advNomeMae,advEscritorio,advEstagiario,advOAB,advNomeCompleto,advEndereco,advCidade,advCEP,advSexo,advBairro,advCTPSSerie,advCTPS,advFone,advFax,advComissao,advDtInicio,advDtFim,advDtNasc,advSalario,advSecretaria,advTextoProcuracao,advEMail,advEspecializacao,advPasta,advObservacao,advContaBancaria,advParcTop,advClass,advTop,advGUID FROM {"Advogados".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) advCargo,advEMailPro,advCPF,advNome,advRG,advCasa,advNomeMae,advEscritorio,advGUID,advEstagiario,advOAB,advNomeCompleto,advEndereco,advCidade,advCEP,advSexo,advBairro,advCTPSSerie,advCTPS,advFone,advFax,advComissao,advDtInicio,advDtFim,advDtNasc,advSalario,advSecretaria,advTextoProcuracao,advEMail,advEspecializacao,advPasta,advObservacao,advContaBancaria,advParcTop,advClass,advTop FROM {"Advogados".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class AdvogadosHealthCheck(IOptions<AppSettings> appSettings, AdvogadosSe
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

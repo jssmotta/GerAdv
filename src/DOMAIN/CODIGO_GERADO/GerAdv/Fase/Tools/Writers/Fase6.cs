@@ -14,19 +14,19 @@ public partial interface IFaseWriter
 
 public class FaseWriter(IFFaseFactory faseFactory) : IFaseWriter
 {
-    private readonly IFFaseFactory _faseFactory = faseFactory;
-    public async Task Delete(FaseResponse fase, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFFaseFactory _faseFactory = faseFactory ?? throw new ArgumentNullException(nameof(faseFactory));
+    public virtual async Task Delete(FaseResponse fase, int operadorId, MsiSqlConnection oCnn)
     {
         await _faseFactory.DeleteAsync(operadorId, fase.Id, oCnn);
     }
 
-    public async Task<FFase> WriteAsync(Models.Fase fase, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FFase> WriteAsync(Models.Fase fase, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (fase.Id.IsEmptyIDNumber() ? _faseFactory.CreateAsync() : _faseFactory.CreateFromIdAsync(fase.Id, oCnn));
         dbRec.FDescricao = fase.Descricao;
+        dbRec.FGUID = fase.GUID;
         dbRec.FJustica = fase.Justica;
         dbRec.FArea = fase.Area;
-        dbRec.FGUID = fase.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

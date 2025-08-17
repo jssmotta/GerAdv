@@ -41,7 +41,8 @@ export const useAgendaRelatorioForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Agenda Relatorio';
       setError(errorMessage);
-      //console.log('Erro ao carregar Agenda Relatorio');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Agenda Relatorio');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useAgendaRelatorioNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useAgendaRelatorioList = (dataService: IAgendaRelatorioService, cur
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar agendarelatorio';
       setError(errorMessage);
-      //console.log('Erro ao carregar agendarelatorio');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar agendarelatorio');
     } finally {
       setLoading(false);
     }

@@ -10,16 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterProcessosObsReport
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -28,10 +28,10 @@ public partial record FilterProcessosObsReport
     public int Processo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("observacao")]
-    public string Observacao { get; set; } = string.Empty;
+    public string? Observacao { get; set; } = string.Empty;
 
     [JsonPropertyName("observacao_end")]
-    public string Observacao_end { get; set; } = string.Empty;
+    public string? Observacao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("historico")]
     public int Historico { get; set; } = int.MinValue;

@@ -6,6 +6,7 @@ export enum FieldsHorasTrab
 	advogado = `Advogado`,
 	funcionario = `Funcionario`,
 	servico = `Servico`,
+	guid = `GUID`,
 	idcontatocrm = `IDContatoCRM`,
 	honorario = `Honorario`,
 	idagenda = `IDAgenda`,
@@ -20,5 +21,4 @@ export enum FieldsHorasTrab
 	anexo = `Anexo`,
 	anexocomp = `AnexoComp`,
 	anexounc = `AnexoUNC`,
-	guid = `GUID`,
 }

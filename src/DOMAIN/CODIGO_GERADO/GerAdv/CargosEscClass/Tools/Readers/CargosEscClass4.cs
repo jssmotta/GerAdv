@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class CargosEscClassReader(IFCargosEscClassFactory cargosescclassFactory) : ICargosEscClassReader
 {
-    private readonly IFCargosEscClassFactory _cargosescclassFactory = cargosescclassFactory;
+    private readonly IFCargosEscClassFactory _cargosescclassFactory = cargosescclassFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cecCodigo, cecNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<CargosEscClassResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBCargosEscClass.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<CargosEscClassResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

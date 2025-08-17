@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ProObservacoesReader(IFProObservacoesFactory proobservacoesFactory) : IProObservacoesReader
 {
-    private readonly IFProObservacoesFactory _proobservacoesFactory = proobservacoesFactory;
+    private readonly IFProObservacoesFactory _proobservacoesFactory = proobservacoesFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("pobCodigo, pobNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProObservacoesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProObservacoes.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProObservacoesResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

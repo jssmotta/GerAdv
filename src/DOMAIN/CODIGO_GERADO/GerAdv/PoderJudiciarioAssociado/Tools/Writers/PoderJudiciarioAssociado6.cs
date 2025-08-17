@@ -14,13 +14,13 @@ public partial interface IPoderJudiciarioAssociadoWriter
 
 public class PoderJudiciarioAssociadoWriter(IFPoderJudiciarioAssociadoFactory poderjudiciarioassociadoFactory) : IPoderJudiciarioAssociadoWriter
 {
-    private readonly IFPoderJudiciarioAssociadoFactory _poderjudiciarioassociadoFactory = poderjudiciarioassociadoFactory;
-    public async Task Delete(PoderJudiciarioAssociadoResponse poderjudiciarioassociado, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPoderJudiciarioAssociadoFactory _poderjudiciarioassociadoFactory = poderjudiciarioassociadoFactory ?? throw new ArgumentNullException(nameof(poderjudiciarioassociadoFactory));
+    public virtual async Task Delete(PoderJudiciarioAssociadoResponse poderjudiciarioassociado, int operadorId, MsiSqlConnection oCnn)
     {
         await _poderjudiciarioassociadoFactory.DeleteAsync(operadorId, poderjudiciarioassociado.Id, oCnn);
     }
 
-    public async Task<FPoderJudiciarioAssociado> WriteAsync(Models.PoderJudiciarioAssociado poderjudiciarioassociado, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPoderJudiciarioAssociado> WriteAsync(Models.PoderJudiciarioAssociado poderjudiciarioassociado, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (poderjudiciarioassociado.Id.IsEmptyIDNumber() ? _poderjudiciarioassociadoFactory.CreateAsync() : _poderjudiciarioassociadoFactory.CreateFromIdAsync(poderjudiciarioassociado.Id, oCnn));
         dbRec.FJustica = poderjudiciarioassociado.Justica;
@@ -35,8 +35,8 @@ public class PoderJudiciarioAssociadoWriter(IFPoderJudiciarioAssociadoFactory po
         dbRec.FSubDivisaoNome = poderjudiciarioassociado.SubDivisaoNome;
         dbRec.FCidadeNome = poderjudiciarioassociado.CidadeNome;
         dbRec.FSubDivisao = poderjudiciarioassociado.SubDivisao;
-        dbRec.FTipo = poderjudiciarioassociado.Tipo;
         dbRec.FGUID = poderjudiciarioassociado.GUID;
+        dbRec.FTipo = poderjudiciarioassociado.Tipo;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

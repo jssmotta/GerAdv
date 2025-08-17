@@ -54,7 +54,7 @@ public partial class FJusticaFactory : IFJusticaFactory, IDisposable
             throw new ObjectDisposedException(nameof(FJusticaFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

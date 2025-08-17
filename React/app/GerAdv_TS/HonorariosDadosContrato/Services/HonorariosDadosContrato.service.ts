@@ -25,7 +25,7 @@ export class HonorariosDadosContratoValidator {
 export interface IHonorariosDadosContratoService {
   fetchHonorariosDadosContratoById: (id: number) => Promise<IHonorariosDadosContrato>;
   saveHonorariosDadosContrato: (honorariosdadoscontrato: IHonorariosDadosContrato) => Promise<IHonorariosDadosContrato>;  
-  getList: (filtro?: FilterHonorariosDadosContrato) => Promise<IHonorariosDadosContrato[]>;
+  
   getAll: (filtro?: FilterHonorariosDadosContrato) => Promise<IHonorariosDadosContrato[]>;
   deleteHonorariosDadosContrato: (id: number) => Promise<void>;
   validateHonorariosDadosContrato: (honorariosdadoscontrato: IHonorariosDadosContrato) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class HonorariosDadosContratoService implements IHonorariosDadosContratoS
   }
 
   
-    async getList(filtro?: FilterHonorariosDadosContrato): Promise<IHonorariosDadosContrato[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching HonorariosDadosContrato list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class HonorariosDadosContratoService implements IHonorariosDadosContratoS
             }
           })
           .catch(error => {
-            console.log('Error fetching online HonorariosDadosContrato');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online HonorariosDadosContrato');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class HonorariosDadosContratoService implements IHonorariosDadosContratoS
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online HonorariosDadosContrato');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online HonorariosDadosContrato');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all HonorariosDadosContrato:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all HonorariosDadosContrato:');
       return [];
     }
   }

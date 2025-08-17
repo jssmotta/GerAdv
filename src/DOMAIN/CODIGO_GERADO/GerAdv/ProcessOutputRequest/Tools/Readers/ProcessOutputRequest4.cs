@@ -4,8 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ProcessOutputRequestReader(IFProcessOutputRequestFactory processoutputrequestFactory) : IProcessOutputRequestReader
 {
-    private readonly IFProcessOutputRequestFactory _processoutputrequestFactory = processoutputrequestFactory;
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("porCodigo, porGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    private readonly IFProcessOutputRequestFactory _processoutputrequestFactory = processoutputrequestFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<ProcessOutputRequestResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProcessOutputRequest.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProcessOutputRequestResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {

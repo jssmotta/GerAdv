@@ -13,6 +13,7 @@ public partial interface IDBAdvogados
     public bool FCasa { get; set; }
     public string? FNomeMae { get; set; }
     public int FEscritorio { get; set; }
+    public string? FGUID { get; set; }
     public bool FEstagiario { get; set; }
     public string? FOAB { get; set; }
     public string? FNomeCompleto { get; set; }
@@ -40,5 +41,4 @@ public partial interface IDBAdvogados
     public bool FParcTop { get; set; }
     public string? FClass { get; set; }
     public bool FTop { get; set; }
-    public string? FGUID { get; set; }
 }

@@ -9,6 +9,7 @@ export enum FieldsClientes
 	icone = `Icone`,
 	nomemae = `NomeMae`,
 	rgdataexp = `RGDataExp`,
+	guid = `GUID`,
 	inativo = `Inativo`,
 	quemindicou = `QuemIndicou`,
 	sendemail = `SendEMail`,
@@ -44,5 +45,4 @@ export enum FieldsClientes
 	probono = `ProBono`,
 	cnh = `CNH`,
 	pessoacontato = `PessoaContato`,
-	guid = `GUID`,
 }

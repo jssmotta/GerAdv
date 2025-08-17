@@ -8,92 +8,93 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class NENotasService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNENotas filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterNENotas? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Apenso != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Apenso)}", filtro.Apenso));
-        }
-
-        if (filtro.Apenso_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Apenso)}_end", filtro.Apenso_end));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Apenso)}", filtro.Apenso));
+            if (filtro.Apenso_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBNENotasDicInfo.Apenso)}_end", filtro.Apenso_end));
+            }
         }
 
         if (filtro.Precatoria != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Precatoria)}", filtro.Precatoria));
-        }
-
-        if (filtro.Precatoria_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Precatoria)}_end", filtro.Precatoria_end));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Precatoria)}", filtro.Precatoria));
+            if (filtro.Precatoria_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBNENotasDicInfo.Precatoria)}_end", filtro.Precatoria_end));
+            }
         }
 
         if (filtro.Instancia != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Instancia)}", filtro.Instancia));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Instancia)}", filtro.Instancia));
+            if (filtro.Instancia_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBNENotasDicInfo.Instancia)}_end", filtro.Instancia_end));
+            }
         }
 
         if (filtro.MovPro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.MovPro)}", filtro.MovPro));
+            parameters.Add(new($"@{(DBNENotasDicInfo.MovPro)}", filtro.MovPro));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.NotaExpedida != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.NotaExpedida)}", filtro.NotaExpedida));
+            parameters.Add(new($"@{(DBNENotasDicInfo.NotaExpedida)}", filtro.NotaExpedida));
         }
 
         if (filtro.Revisada != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Revisada)}", filtro.Revisada));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Revisada)}", filtro.Revisada));
         }
 
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Processo)}", filtro.Processo));
-        }
-
-        if (filtro.Processo_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBNENotasDicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
         if (filtro.PalavraChave != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.PalavraChave)}", filtro.PalavraChave));
+            parameters.Add(new($"@{(DBNENotasDicInfo.PalavraChave)}", filtro.PalavraChave));
+            if (filtro.PalavraChave_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBNENotasDicInfo.PalavraChave)}_end", filtro.PalavraChave_end));
+            }
         }
 
-        if (filtro.PalavraChave_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Data))
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.PalavraChave)}_end", filtro.PalavraChave_end));
+            parameters.Add(new($"@{(DBNENotasDicInfo.Data)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Data))
+        if (!string.IsNullOrWhiteSpace(filtro.NotaPublicada))
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.NotaPublicada))
-        {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.NotaPublicada)}", ApplyWildCard(filtro.WildcardChar, filtro.NotaPublicada)));
+            parameters.Add(new($"@{(DBNENotasDicInfo.NotaPublicada)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.NotaPublicada)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBNENotasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBNENotasDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBNENotasDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -104,68 +105,65 @@ public partial class NENotasService
         var cWhere = new StringBuilder();
         if (!(filtro.Apenso.IsEmptyX()) && filtro.Apenso_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Apenso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Apenso}] = @{nameof(DBNENotasDicInfo.Apenso)}");
+            cWhere.Append(filtro.Apenso.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Apenso}] = @{(DBNENotasDicInfo.Apenso)}");
         }
         else if (!(filtro.Apenso.IsEmptyX()) && !(filtro.Apenso_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Apenso} BETWEEN @{nameof(DBNENotasDicInfo.Apenso)} AND @{nameof(DBNENotasDicInfo.Apenso)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Apenso} BETWEEN @{(DBNENotasDicInfo.Apenso)} AND @{(DBNENotasDicInfo.Apenso)}_end");
         }
 
         if (!(filtro.Precatoria.IsEmptyX()) && filtro.Precatoria_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Precatoria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Precatoria}] = @{nameof(DBNENotasDicInfo.Precatoria)}");
+            cWhere.Append(filtro.Precatoria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Precatoria}] = @{(DBNENotasDicInfo.Precatoria)}");
         }
         else if (!(filtro.Precatoria.IsEmptyX()) && !(filtro.Precatoria_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Precatoria} BETWEEN @{nameof(DBNENotasDicInfo.Precatoria)} AND @{nameof(DBNENotasDicInfo.Precatoria)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Precatoria} BETWEEN @{(DBNENotasDicInfo.Precatoria)} AND @{(DBNENotasDicInfo.Precatoria)}_end");
         }
 
-        cWhere.Append(filtro.Instancia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Instancia}] = @{nameof(DBNENotasDicInfo.Instancia)}");
-        cWhere.Append(filtro.MovPro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.MovPro}] = @{nameof(DBNENotasDicInfo.MovPro)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.Nome)}");
-        cWhere.Append(filtro.NotaExpedida == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaExpedida}] = @{nameof(DBNENotasDicInfo.NotaExpedida)}");
-        cWhere.Append(filtro.Revisada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Revisada}] = @{nameof(DBNENotasDicInfo.Revisada)}");
+        if (!(filtro.Instancia.IsEmptyX()) && filtro.Instancia_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Instancia.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Instancia}] = @{(DBNENotasDicInfo.Instancia)}");
+        }
+        else if (!(filtro.Instancia.IsEmptyX()) && !(filtro.Instancia_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Instancia} BETWEEN @{(DBNENotasDicInfo.Instancia)} AND @{(DBNENotasDicInfo.Instancia)}_end");
+        }
+
+        cWhere.Append(filtro.MovPro == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.MovPro}] = @{(DBNENotasDicInfo.MovPro)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBNENotasDicInfo.Nome)}");
+        cWhere.Append(filtro.NotaExpedida == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaExpedida}] = @{(DBNENotasDicInfo.NotaExpedida)}");
+        cWhere.Append(filtro.Revisada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Revisada}] = @{(DBNENotasDicInfo.Revisada)}");
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Processo}] = @{nameof(DBNENotasDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Processo}] = @{(DBNENotasDicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Processo} BETWEEN @{nameof(DBNENotasDicInfo.Processo)} AND @{nameof(DBNENotasDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.Processo} BETWEEN @{(DBNENotasDicInfo.Processo)} AND @{(DBNENotasDicInfo.Processo)}_end");
         }
 
         if (!(filtro.PalavraChave.IsEmptyX()) && filtro.PalavraChave_end.IsEmptyX())
         {
-            cWhere.Append(filtro.PalavraChave.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.PalavraChave}] = @{nameof(DBNENotasDicInfo.PalavraChave)}");
+            cWhere.Append(filtro.PalavraChave.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.PalavraChave}] = @{(DBNENotasDicInfo.PalavraChave)}");
         }
         else if (!(filtro.PalavraChave.IsEmptyX()) && !(filtro.PalavraChave_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.PalavraChave} BETWEEN @{nameof(DBNENotasDicInfo.PalavraChave)} AND @{nameof(DBNENotasDicInfo.PalavraChave)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.PalavraChave} BETWEEN @{(DBNENotasDicInfo.PalavraChave)} AND @{(DBNENotasDicInfo.PalavraChave)}_end");
         }
 
-        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.Data)}");
-        cWhere.Append(filtro.NotaPublicada.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaPublicada}]  {DevourerConsts.MsiCollate} like @{nameof(DBNENotasDicInfo.NotaPublicada)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{(DBNENotasDicInfo.Data)}");
+        cWhere.Append(filtro.NotaPublicada.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.NotaPublicada}]  {DevourerConsts.MsiCollate} like @{(DBNENotasDicInfo.NotaPublicada)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.CampoCodigo}] = @{nameof(DBNENotasDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].[{DBNENotasDicInfo.CampoCodigo}] = @{(DBNENotasDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.CampoCodigo} BETWEEN @{nameof(DBNENotasDicInfo.CampoCodigo)} AND @{nameof(DBNENotasDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBNENotasDicInfo.PTabelaNome}].{DBNENotasDicInfo.CampoCodigo} BETWEEN @{(DBNENotasDicInfo.CampoCodigo)} AND @{(DBNENotasDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterNENotas? filtro)

@@ -13,7 +13,7 @@ public partial interface IStatusInstanciaWhere
 
 public partial class StatusInstanciaWhere(IFStatusInstanciaFactory statusinstanciaFactory) : IStatusInstanciaWhere
 {
-    private readonly IFStatusInstanciaFactory _statusinstanciaFactory = statusinstanciaFactory;
+    private readonly IFStatusInstanciaFactory _statusinstanciaFactory = statusinstanciaFactory ?? throw new ArgumentNullException(nameof(statusinstanciaFactory));
     public StatusInstanciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _statusinstanciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

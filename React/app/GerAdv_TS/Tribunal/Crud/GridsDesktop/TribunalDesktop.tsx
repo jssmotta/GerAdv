@@ -161,7 +161,31 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'descricaoarea': (
+  <GridColumn
+  key='descricaoarea'
+  field='descricaoarea'
+  title='Área'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'nomejustica': (
+  <GridColumn
+  key='nomejustica'
+  field='nomejustica'
+  title='Justiça'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'nroprocessoinstancia': (
+  <GridColumn
+  key='nroprocessoinstancia'
+  field='nroprocessoinstancia'
+  title='Instancia'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_DivisaoTribunal': (
   <GridColumn
   key='DivisaoTribunal'
@@ -195,36 +219,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellTribEnderecos }}
   />
   ), /* Track G.03 */
-  'descricaoarea': (
-  <GridColumn
-  key='descricaoarea'
-
-  field='descricaoarea'
-  title='Área'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'nomejustica': (
-  <GridColumn
-  key='nomejustica'
-
-  field='nomejustica'
-  title='Justiça'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'nroprocessoinstancia': (
-  <GridColumn
-  key='nroprocessoinstancia'
-
-  field='nroprocessoinstancia'
-  title='Instancia'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====

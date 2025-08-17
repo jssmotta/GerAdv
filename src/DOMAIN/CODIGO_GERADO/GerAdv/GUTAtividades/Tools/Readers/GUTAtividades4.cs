@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class GUTAtividadesReader(IFGUTAtividadesFactory gutatividadesFactory) : IGUTAtividadesReader
 {
-    private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory;
+    private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("agtCodigo, agtNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<GUTAtividadesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGUTAtividades.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<GUTAtividadesResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -59,10 +59,10 @@ public partial class GUTAtividadesReader(IFGUTAtividadesFactory gutatividadesFac
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
         {
@@ -99,10 +99,10 @@ public partial class GUTAtividadesReader(IFGUTAtividadesFactory gutatividadesFac
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
         {
@@ -128,10 +128,10 @@ public partial class GUTAtividadesReader(IFGUTAtividadesFactory gutatividadesFac
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
         {
@@ -157,10 +157,10 @@ public partial class GUTAtividadesReader(IFGUTAtividadesFactory gutatividadesFac
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
         {
@@ -202,10 +202,10 @@ public partial class GUTAtividadesReader(IFGUTAtividadesFactory gutatividadesFac
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
         {

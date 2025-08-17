@@ -41,7 +41,8 @@ export const useProcessOutputEngineForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Process Output Engine';
       setError(errorMessage);
-      //console.log('Erro ao carregar Process Output Engine');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Process Output Engine');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProcessOutputEngineNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProcessOutputEngineList = (dataService: IProcessOutputEngineServ
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar processoutputengine';
       setError(errorMessage);
-      //console.log('Erro ao carregar processoutputengine');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar processoutputengine');
     } finally {
       setLoading(false);
     }
@@ -225,7 +228,8 @@ if (data.output.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

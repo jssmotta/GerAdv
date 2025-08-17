@@ -25,7 +25,7 @@ export class PoderJudiciarioAssociadoValidator {
 export interface IPoderJudiciarioAssociadoService {
   fetchPoderJudiciarioAssociadoById: (id: number) => Promise<IPoderJudiciarioAssociado>;
   savePoderJudiciarioAssociado: (poderjudiciarioassociado: IPoderJudiciarioAssociado) => Promise<IPoderJudiciarioAssociado>;  
-  getList: (filtro?: FilterPoderJudiciarioAssociado) => Promise<IPoderJudiciarioAssociado[]>;
+  
   getAll: (filtro?: FilterPoderJudiciarioAssociado) => Promise<IPoderJudiciarioAssociado[]>;
   deletePoderJudiciarioAssociado: (id: number) => Promise<void>;
   validatePoderJudiciarioAssociado: (poderjudiciarioassociado: IPoderJudiciarioAssociado) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class PoderJudiciarioAssociadoService implements IPoderJudiciarioAssociad
   }
 
   
-    async getList(filtro?: FilterPoderJudiciarioAssociado): Promise<IPoderJudiciarioAssociado[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching PoderJudiciarioAssociado list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class PoderJudiciarioAssociadoService implements IPoderJudiciarioAssociad
             }
           })
           .catch(error => {
-            console.log('Error fetching online PoderJudiciarioAssociado');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PoderJudiciarioAssociado');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class PoderJudiciarioAssociadoService implements IPoderJudiciarioAssociad
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online PoderJudiciarioAssociado');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PoderJudiciarioAssociado');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all PoderJudiciarioAssociado:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all PoderJudiciarioAssociado:');
       return [];
     }
   }

@@ -12,13 +12,11 @@ export interface AgendaSemana
 	paranome : string;
 	data : string;
 	hora : string;
-	hora_date? : Date;
 	compromisso : string;
 	concluido : boolean;
 	liberado : boolean;
 	importante : boolean;
 	horafinal : string;
-	horafinal_date? : Date;
 	nome : string;
 	nomecliente : string;
 	tipo : string;

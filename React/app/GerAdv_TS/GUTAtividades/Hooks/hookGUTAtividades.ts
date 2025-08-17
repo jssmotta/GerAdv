@@ -41,7 +41,8 @@ export const useGUTAtividadesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar G U T Atividades';
       setError(errorMessage);
-      //console.log('Erro ao carregar G U T Atividades');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar G U T Atividades');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useGUTAtividadesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useGUTAtividadesList = (dataService: IGUTAtividadesService, current
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar gutatividades';
       setError(errorMessage);
-      //console.log('Erro ao carregar gutatividades');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar gutatividades');
     } finally {
       setLoading(false);
     }
@@ -213,7 +216,8 @@ if (data.observacao.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

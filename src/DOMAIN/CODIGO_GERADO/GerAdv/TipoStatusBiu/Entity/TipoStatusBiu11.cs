@@ -54,7 +54,7 @@ public partial class FTipoStatusBiuFactory : IFTipoStatusBiuFactory, IDisposable
             throw new ObjectDisposedException(nameof(FTipoStatusBiuFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

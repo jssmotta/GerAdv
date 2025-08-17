@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoEnderecoValidation
 {
     Task<bool> ValidateReg(Models.TipoEndereco reg, ITipoEnderecoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoEnderecoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoEnderecoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoEnderecoValidation : ITipoEnderecoValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoEnderecoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoEnderecoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class TipoEnderecoValidation : ITipoEnderecoValidation
 
     private bool ValidSizes(Models.TipoEndereco reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 40)
-            throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBTipoEnderecoDicInfo.TipDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBTipoEnderecoDicInfo.TipDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTipoEnderecoDicInfo.TipGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTipoEnderecoDicInfo.TipGUID.FTamanho} caracteres.");
         return true;
     }
 

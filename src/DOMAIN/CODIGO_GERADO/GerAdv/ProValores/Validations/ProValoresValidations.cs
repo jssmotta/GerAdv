@@ -8,17 +8,17 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProValoresValidation
 {
-    Task<bool> ValidateReg(Models.ProValores reg, IProValoresService service, ITipoValorProcessoReader tipovalorprocessoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProValoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProValores reg, IProValoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProValoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProValoresValidation : IProValoresValidation
 {
-    public async Task<bool> CanDelete(int id, IProValoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProValoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,14 +26,14 @@ public class ProValoresValidation : IProValoresValidation
 
     private bool ValidSizes(Models.ProValores reg)
     {
-        if (reg.Indice != null && reg.Indice.Length > 20)
-            throw new SGValidationException($"Indice deve ter no máximo 20 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.Guid != null && reg.Guid.Length > DBProValoresDicInfo.PrvGuid.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProValoresDicInfo.PrvGuid.FTamanho} caracteres.");
+        if (reg.Indice != null && reg.Indice.Length > DBProValoresDicInfo.PrvIndice.FTamanho)
+            throw new SGValidationException($"Indice deve ter no máximo {DBProValoresDicInfo.PrvIndice.FTamanho} caracteres.");
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProValores reg, IProValoresService service, ITipoValorProcessoReader tipovalorprocessoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProValores reg, IProValoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
@@ -52,15 +52,16 @@ public class ProValoresValidation : IProValoresValidation
             throw new SGValidationException("Data é obrigatório.");
         if (reg.ValorOriginal.IsEmpty())
             throw new SGValidationException("ValorOriginal é obrigatório.");
-        // TipoValorProcesso
+        if (!string.IsNullOrWhiteSpace(reg.DataUltimaCorrecao))
         {
-            var regTipoValorProcesso = await tipovalorprocessoReader.Read(reg.TipoValorProcesso, oCnn);
-            if (regTipoValorProcesso == null || regTipoValorProcesso.Id != reg.TipoValorProcesso)
+            if (DateTime.TryParse(reg.DataUltimaCorrecao, out DateTime dataAntiga))
             {
-                throw new SGValidationException($"Tipo Valor Processo não encontrado ({regTipoValorProcesso?.Id}).");
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataUltimaCorrecao não pode ser anterior a 01/01/1900.");
             }
         }
 
+        await Task.Delay(0);
         return true;
     }
 }

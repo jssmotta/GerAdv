@@ -82,165 +82,166 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar LivroCaixa diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar LivroCaixa diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = livrocaixaData?.id == 0 ? 'Editar LivroCaixa' : 'Adicionar Livro Caixa';
-  }
-}, [livrocaixaData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = livrocaixaData?.id == 0 ? 'Editar LivroCaixa' : 'Adicionar Livro Caixa';
     }
-  }
-  `}</style> : null}
+  }, [livrocaixaData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
 
-  <div className={isMobile ? 'form-container form-container-LivroCaixa' : 'form-container form-container-LivroCaixa'}>
+    <div className={isMobile ? 'form-container form-container-LivroCaixa' : 'form-container form-container-LivroCaixa'}>
 
-    <form className='formInputCadInc' id={`LivroCaixaForm-${livrocaixaData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+      <form className='formInputCadInc' id={`LivroCaixaForm-${livrocaixaData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='data'
+            value={livrocaixaData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='iddes'
+            label='IDDes'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='iddes'
+            value={livrocaixaData.iddes}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='pessoal'
+            label='Pessoal'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='pessoal'
+            value={livrocaixaData.pessoal}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={livrocaixaData} label='Ajuste' name='ajuste' checked={livrocaixaData.ajuste} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='idhon'
+            label='IDHon'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='idhon'
+            value={livrocaixaData.idhon}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='idhonparc'
+            label='IDHonParc'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='idhonparc'
+            value={livrocaixaData.idhonparc}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={livrocaixaData} label='IDHonSuc' name='idhonsuc' checked={livrocaixaData.idhonsuc} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='processo'
+            value={livrocaixaData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='valor'
+            label='Valor'
+            dataForm={livrocaixaData}
+            className='inputIncNome'
+            name='valor'
+            value={livrocaixaData.valor}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'><InputCheckbox dataForm={livrocaixaData} label='Tipo' name='tipo' checked={livrocaixaData.tipo} onChange={onChange} />
+
+          <InputInput
+          type='text'
+          maxLength={255}
+          id='historico'
+          label='Historico'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='historico'
+          value={livrocaixaData.historico}
+          onChange={onChange}
+          />
+
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='grupo'
+          label='Grupo'
+          dataForm={livrocaixaData}
+          className='inputIncNome'
+          name='grupo'
+          value={livrocaixaData.grupo}
+          onChange={onChange}
+          />
+
+        </div>
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
         )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='data'
-          label='Data'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='data'
-          value={livrocaixaData.data}
-          placeholder={`Informe Data`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='iddes'
-          label='IDDes'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='iddes'
-          value={livrocaixaData.iddes}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='pessoal'
-          label='Pessoal'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='pessoal'
-          value={livrocaixaData.pessoal}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={livrocaixaData} label='Ajuste' name='ajuste' checked={livrocaixaData.ajuste} onChange={onChange} />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='idhon'
-          label='IDHon'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='idhon'
-          value={livrocaixaData.idhon}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='idhonparc'
-          label='IDHonParc'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='idhonparc'
-          value={livrocaixaData.idhonparc}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={livrocaixaData} label='IDHonSuc' name='idhonsuc' checked={livrocaixaData.idhonsuc} onChange={onChange} />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='processo'
-          label='Processo'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='processo'
-          value={livrocaixaData.processo}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='valor'
-          label='Valor'
-          dataForm={livrocaixaData}
-          className='inputIncNome'
-          name='valor'
-          value={livrocaixaData.valor}
-          onChange={onChange}
-          />
-
-        </div><div className='grid-container'><InputCheckbox dataForm={livrocaixaData} label='Tipo' name='tipo' checked={livrocaixaData.tipo} onChange={onChange} />
-
-        <InputInput
-        type='text'
-        maxLength={255}
-        id='historico'
-        label='Historico'
-        dataForm={livrocaixaData}
-        className='inputIncNome'
-        name='historico'
-        value={livrocaixaData.historico}
-        onChange={onChange}
-        />
-
-
-        <InputInput
-        type='text'
-        maxLength={2048}
-        id='grupo'
-        label='Grupo'
-        dataForm={livrocaixaData}
-        className='inputIncNome'
-        name='grupo'
-        value={livrocaixaData.grupo}
-        onChange={onChange}
-        />
-
+        <DeleteButton page={'/pages/livrocaixa'} id={livrocaixaData.id} closeModel={onClose} dadoApi={dadoApi} />
       </div>
-    </form>
-
-
-    {isMobile && (
-      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='LivroCaixa' data={livrocaixaData} isSubmitting={isSubmitting} onClose={onClose} formId={`LivroCaixaForm-${livrocaixaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-      )}
-      <DeleteButton page={'/pages/livrocaixa'} id={livrocaixaData.id} closeModel={onClose} dadoApi={dadoApi} />
-    </div>
-    <div className='form-spacer'></div>
-    </>
-  );
-};
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

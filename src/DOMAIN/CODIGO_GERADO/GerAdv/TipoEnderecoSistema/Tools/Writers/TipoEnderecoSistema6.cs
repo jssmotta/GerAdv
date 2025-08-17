@@ -14,13 +14,13 @@ public partial interface ITipoEnderecoSistemaWriter
 
 public class TipoEnderecoSistemaWriter(IFTipoEnderecoSistemaFactory tipoenderecosistemaFactory) : ITipoEnderecoSistemaWriter
 {
-    private readonly IFTipoEnderecoSistemaFactory _tipoenderecosistemaFactory = tipoenderecosistemaFactory;
-    public async Task Delete(TipoEnderecoSistemaResponse tipoenderecosistema, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTipoEnderecoSistemaFactory _tipoenderecosistemaFactory = tipoenderecosistemaFactory ?? throw new ArgumentNullException(nameof(tipoenderecosistemaFactory));
+    public virtual async Task Delete(TipoEnderecoSistemaResponse tipoenderecosistema, int operadorId, MsiSqlConnection oCnn)
     {
         await _tipoenderecosistemaFactory.DeleteAsync(operadorId, tipoenderecosistema.Id, oCnn);
     }
 
-    public async Task<FTipoEnderecoSistema> WriteAsync(Models.TipoEnderecoSistema tipoenderecosistema, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoEnderecoSistema> WriteAsync(Models.TipoEnderecoSistema tipoenderecosistema, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipoenderecosistema.Id.IsEmptyIDNumber() ? _tipoenderecosistemaFactory.CreateAsync() : _tipoenderecosistemaFactory.CreateFromIdAsync(tipoenderecosistema.Id, oCnn));
         dbRec.FNome = tipoenderecosistema.Nome;

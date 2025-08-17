@@ -10,28 +10,31 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterPontoVirtualAcessos
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = int.MinValue;
 
+    [JsonPropertyName("operador_end")]
+    public int Operador_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("datahora")]
-    public string DataHora { get; set; } = string.Empty;
+    public string? DataHora { get; set; } = string.Empty;
 
     [JsonPropertyName("datahora_end")]
-    public string DataHora_end { get; set; } = string.Empty;
+    public string? DataHora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipo")]
     public int Tipo { get; set; } = int.MinValue;
 
     [JsonPropertyName("origem")]
-    public string Origem { get; set; } = string.Empty;
+    public string? Origem { get; set; } = string.Empty;
 
     [JsonPropertyName("origem_end")]
-    public string Origem_end { get; set; } = string.Empty;
+    public string? Origem_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

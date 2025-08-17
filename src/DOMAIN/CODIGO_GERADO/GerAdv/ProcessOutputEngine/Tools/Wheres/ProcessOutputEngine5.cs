@@ -13,7 +13,7 @@ public partial interface IProcessOutputEngineWhere
 
 public partial class ProcessOutputEngineWhere(IFProcessOutputEngineFactory processoutputengineFactory) : IProcessOutputEngineWhere
 {
-    private readonly IFProcessOutputEngineFactory _processoutputengineFactory = processoutputengineFactory;
+    private readonly IFProcessOutputEngineFactory _processoutputengineFactory = processoutputengineFactory ?? throw new ArgumentNullException(nameof(processoutputengineFactory));
     public ProcessOutputEngineResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _processoutputengineFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -27,12 +27,12 @@ public partial class ProcessOutputEngineWhere(IFProcessOutputEngineFactory proce
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
+            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return processoutputengine;
     }

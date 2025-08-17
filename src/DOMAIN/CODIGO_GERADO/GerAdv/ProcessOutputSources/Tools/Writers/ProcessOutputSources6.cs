@@ -14,13 +14,13 @@ public partial interface IProcessOutputSourcesWriter
 
 public class ProcessOutputSourcesWriter(IFProcessOutputSourcesFactory processoutputsourcesFactory) : IProcessOutputSourcesWriter
 {
-    private readonly IFProcessOutputSourcesFactory _processoutputsourcesFactory = processoutputsourcesFactory;
-    public async Task Delete(ProcessOutputSourcesResponse processoutputsources, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProcessOutputSourcesFactory _processoutputsourcesFactory = processoutputsourcesFactory ?? throw new ArgumentNullException(nameof(processoutputsourcesFactory));
+    public virtual async Task Delete(ProcessOutputSourcesResponse processoutputsources, int operadorId, MsiSqlConnection oCnn)
     {
         await _processoutputsourcesFactory.DeleteAsync(operadorId, processoutputsources.Id, oCnn);
     }
 
-    public async Task<FProcessOutputSources> WriteAsync(Models.ProcessOutputSources processoutputsources, MsiSqlConnection oCnn)
+    public virtual async Task<FProcessOutputSources> WriteAsync(Models.ProcessOutputSources processoutputsources, MsiSqlConnection oCnn)
     {
         using var dbRec = await (processoutputsources.Id.IsEmptyIDNumber() ? _processoutputsourcesFactory.CreateAsync() : _processoutputsourcesFactory.CreateFromIdAsync(processoutputsources.Id, oCnn));
         dbRec.FNome = processoutputsources.Nome;

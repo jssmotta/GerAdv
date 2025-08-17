@@ -93,18 +93,18 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         }
     }
 
-    private async Task<DocumentosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<DocumentosResponse?> AddAndUpdate([FromBody] Models.Documentos regDocumentos, [FromRoute, Required] string uri)
+    private async Task<DocumentosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<DocumentosResponse?> AddAndUpdate([FromBody] Models.Documentos? regDocumentos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Documentos: URI inválida");
-        }
-
         if (regDocumentos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Documentos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -118,7 +118,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
             var validade = await validation.ValidateReg(regDocumentos, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -127,7 +127,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -135,17 +135,17 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<DocumentosResponse?> Validation([FromBody] Models.Documentos regDocumentos, [FromRoute, Required] string uri)
+    public async Task<DocumentosResponse?> Validation([FromBody] Models.Documentos? regDocumentos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Documentos: URI inválida");
-        }
-
         if (regDocumentos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Documentos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -159,7 +159,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
             var validade = await validation.ValidateReg(regDocumentos, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -168,7 +168,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regDocumentos.Id.IsEmptyIDNumber())
@@ -179,17 +179,17 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         return await reader.Read(regDocumentos.Id, oCnn);
     }
 
-    public async Task<DocumentosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<DocumentosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Documentos: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,7 +204,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -213,10 +213,10 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var documentos = await reader.Read(id, oCnn);
+        var documentos = await reader.Read(id ?? default, oCnn);
         try
         {
             if (documentos != null)
@@ -236,7 +236,7 @@ public partial class DocumentosService(IOptions<AppSettings> appSettings, IFDocu
         return documentos;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

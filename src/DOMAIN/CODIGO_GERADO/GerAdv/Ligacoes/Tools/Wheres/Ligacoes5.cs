@@ -13,7 +13,7 @@ public partial interface ILigacoesWhere
 
 public partial class LigacoesWhere(IFLigacoesFactory ligacoesFactory) : ILigacoesWhere
 {
-    private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory;
+    private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory ?? throw new ArgumentNullException(nameof(ligacoesFactory));
     public LigacoesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _ligacoesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -27,6 +27,7 @@ public partial class LigacoesWhere(IFLigacoesFactory ligacoesFactory) : ILigacoe
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -37,12 +38,13 @@ public partial class LigacoesWhere(IFLigacoesFactory ligacoesFactory) : ILigacoe
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
         {
@@ -54,18 +56,6 @@ public partial class LigacoesWhere(IFLigacoesFactory ligacoesFactory) : ILigacoe
         {
             ligacoes.UltimoAviso = dbRec.FUltimoAviso;
             ligacoes.UltimoAviso_date = XUltimoAviso;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            ligacoes.HoraFinal = dbRec.FHoraFinal;
-            ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            ligacoes.Hora = dbRec.FHora;
-            ligacoes.Hora_date = XHora;
         }
 
         return ligacoes;

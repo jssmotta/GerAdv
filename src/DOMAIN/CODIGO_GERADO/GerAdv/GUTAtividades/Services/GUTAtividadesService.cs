@@ -97,18 +97,18 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         }
     }
 
-    private async Task<GUTAtividadesResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<GUTAtividadesResponse?> AddAndUpdate([FromBody] Models.GUTAtividades regGUTAtividades, [FromRoute, Required] string uri)
+    private async Task<GUTAtividadesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<GUTAtividadesResponse?> AddAndUpdate([FromBody] Models.GUTAtividades? regGUTAtividades, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("GUTAtividades: URI inválida");
-        }
-
         if (regGUTAtividades == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("GUTAtividades: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -122,7 +122,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
             var validade = await validation.ValidateReg(regGUTAtividades, this, gutperiodicidadeReader, operadorReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -131,7 +131,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = _httpContextAccessor.HttpContext == null ? regGUTAtividades.Operador : UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -139,17 +139,17 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<GUTAtividadesResponse?> Validation([FromBody] Models.GUTAtividades regGUTAtividades, [FromRoute, Required] string uri)
+    public async Task<GUTAtividadesResponse?> Validation([FromBody] Models.GUTAtividades? regGUTAtividades, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("GUTAtividades: URI inválida");
-        }
-
         if (regGUTAtividades == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("GUTAtividades: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -163,7 +163,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
             var validade = await validation.ValidateReg(regGUTAtividades, this, gutperiodicidadeReader, operadorReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -172,7 +172,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regGUTAtividades.Id.IsEmptyIDNumber())
@@ -183,17 +183,17 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         return await reader.Read(regGUTAtividades.Id, oCnn);
     }
 
-    public async Task<GUTAtividadesResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<GUTAtividadesResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("GUTAtividades: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -208,7 +208,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
             var deleteValidation = await validation.CanDelete(id, this, gutatividadesmatrizService, gutperiodicidadestatusService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -217,10 +217,10 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var gutatividades = await reader.Read(id, oCnn);
+        var gutatividades = await reader.Read(id ?? default, oCnn);
         try
         {
             if (gutatividades != null)
@@ -240,7 +240,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
         return gutatividades;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

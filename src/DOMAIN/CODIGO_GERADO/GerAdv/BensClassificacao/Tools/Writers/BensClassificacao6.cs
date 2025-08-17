@@ -14,13 +14,13 @@ public partial interface IBensClassificacaoWriter
 
 public class BensClassificacaoWriter(IFBensClassificacaoFactory bensclassificacaoFactory) : IBensClassificacaoWriter
 {
-    private readonly IFBensClassificacaoFactory _bensclassificacaoFactory = bensclassificacaoFactory;
-    public async Task Delete(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFBensClassificacaoFactory _bensclassificacaoFactory = bensclassificacaoFactory ?? throw new ArgumentNullException(nameof(bensclassificacaoFactory));
+    public virtual async Task Delete(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection oCnn)
     {
         await _bensclassificacaoFactory.DeleteAsync(operadorId, bensclassificacao.Id, oCnn);
     }
 
-    public async Task<FBensClassificacao> WriteAsync(Models.BensClassificacao bensclassificacao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FBensClassificacao> WriteAsync(Models.BensClassificacao bensclassificacao, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (bensclassificacao.Id.IsEmptyIDNumber() ? _bensclassificacaoFactory.CreateAsync() : _bensclassificacaoFactory.CreateFromIdAsync(bensclassificacao.Id, oCnn));
         dbRec.FNome = bensclassificacao.Nome;

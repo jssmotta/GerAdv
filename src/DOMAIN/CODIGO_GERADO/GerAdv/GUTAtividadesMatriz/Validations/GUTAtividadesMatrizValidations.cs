@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGUTAtividadesMatrizValidation
 {
     Task<bool> ValidateReg(Models.GUTAtividadesMatriz reg, IGUTAtividadesMatrizService service, IGUTMatrizReader gutmatrizReader, IGUTAtividadesReader gutatividadesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGUTAtividadesMatrizService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGUTAtividadesMatrizService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
 {
-    public async Task<bool> CanDelete(int id, IGUTAtividadesMatrizService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTAtividadesMatrizService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
 
     private bool ValidSizes(Models.GUTAtividadesMatriz reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGUTAtividadesMatrizDicInfo.AmgGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGUTAtividadesMatrizDicInfo.AmgGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -35,10 +35,6 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
-        if (await IsDuplicado(reg, service, uri))
-            throw new SGValidationException($"G U T Atividades Matriz '{reg.GUID}' GUTAtividade e/ou GUTMatriz");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -67,11 +63,5 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
         }
 
         return true;
-    }
-
-    private async Task<bool> IsDuplicado(Models.GUTAtividadesMatriz reg, IGUTAtividadesMatrizService service, string uri)
-    {
-        var existingGUTAtividadesMatriz = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTAtividade = reg.GUTAtividade, GUTMatriz = reg.GUTMatriz }, uri)).FirstOrDefault(); // TRACK 10042025
-        return existingGUTAtividadesMatriz != null && existingGUTAtividadesMatriz.Id > 0 && existingGUTAtividadesMatriz.Id != reg.Id;
     }
 }

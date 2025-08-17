@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresasFactory) : IGruposEmpresasReader
 {
-    private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory;
+    private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("grpCodigo, grpDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<GruposEmpresasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGruposEmpresas.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<GruposEmpresasResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -60,9 +60,9 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return gruposempresas;
     }
@@ -94,9 +94,9 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return gruposempresas;
     }
@@ -117,9 +117,9 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return gruposempresas;
     }
@@ -140,9 +140,9 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -179,9 +179,9 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

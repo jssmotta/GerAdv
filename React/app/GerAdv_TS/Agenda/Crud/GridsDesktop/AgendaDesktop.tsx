@@ -132,105 +132,85 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
   'nomecidade': (
   <GridColumn
   key='nomecidade'
-
   field='nomecidade'
   title='Cidade'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeadvogados': (
   <GridColumn
   key='nomeadvogados'
-
   field='nomeadvogados'
   title='Advogados'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomefuncionarios': (
   <GridColumn
   key='nomefuncionarios'
-
   field='nomefuncionarios'
   title='Colaborador'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'descricaotipocompromisso': (
   <GridColumn
   key='descricaotipocompromisso'
-
   field='descricaotipocompromisso'
   title='Tipo Compromisso'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeclientes': (
   <GridColumn
   key='nomeclientes'
-
   field='nomeclientes'
   title='Clientes'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'descricaoarea': (
   <GridColumn
   key='descricaoarea'
-
   field='descricaoarea'
   title='Área'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomejustica': (
   <GridColumn
   key='nomejustica'
-
   field='nomejustica'
   title='Justiça'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nropastaprocessos': (
   <GridColumn
   key='nropastaprocessos'
-
   field='nropastaprocessos'
   title='Processos'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'rnomeoperador': (
   <GridColumn
   key='rnomeoperador'
-
   field='rnomeoperador'
   title='Operador'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeprepostos': (
   <GridColumn
   key='nomeprepostos'
-
   field='nomeprepostos'
   title='Prepostos'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

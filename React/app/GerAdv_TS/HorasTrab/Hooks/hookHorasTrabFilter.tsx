@@ -110,16 +110,6 @@ export const useHorasTrabFilter = ({ handleFetchWithFilter }: UseHorasTrabFilter
   disabled={handlers.windowFilter?.idagenda ? false: true}
   className='inputIncNome inputSearch'
   />
-  <InputInput
-  type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
-  />
   <ClientesComboBox
   name='cliente'
   dataForm={null}

@@ -10,31 +10,34 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterOperadorGruposAgenda
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("sqlwhere")]
-    public string SQLWhere { get; set; } = string.Empty;
+    public string? SQLWhere { get; set; } = string.Empty;
 
     [JsonPropertyName("sqlwhere_end")]
-    public string SQLWhere_end { get; set; } = string.Empty;
+    public string? SQLWhere_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = int.MinValue;
 
+    [JsonPropertyName("operador_end")]
+    public int Operador_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? GUID { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

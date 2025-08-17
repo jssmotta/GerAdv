@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaService instanciaService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA,insGUID FROM {"Instancia".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) insGUID,insLiminarPedida,insObjeto,insStatusResultado,insLiminarPendente,insInterpusemosRecurso,insLiminarConcedida,insLiminarNegada,insProcesso,insData,insLiminarParcial,insLiminarResultado,insNroProcesso,insDivisao,insLiminarCliente,insComarca,insSubDivisao,insPrincipal,insAcao,insForo,insTipoRecurso,insZKey,insZKeyQuem,insZKeyQuando,insNroAntigo,insAccessCode,insJulgador,insZKeyIA FROM {"Instancia".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class InstanciaHealthCheck(IOptions<AppSettings> appSettings, InstanciaSe
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

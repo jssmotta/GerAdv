@@ -2,6 +2,7 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Serialization;
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 [JsonSerializable(typeof(BensMateriaisResponseAll))]
 [JsonSerializable(typeof(IEnumerable<BensMateriaisResponseAll>))]
 [JsonSerializable(typeof(BensMateriaisResponse))]

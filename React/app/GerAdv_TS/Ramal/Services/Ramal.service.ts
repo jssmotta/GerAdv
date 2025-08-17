@@ -79,7 +79,8 @@ export class RamalService implements IRamalService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Ramal list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Ramal list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class RamalService implements IRamalService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Ramal');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Ramal');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class RamalService implements IRamalService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Ramal');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Ramal');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Ramal:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Ramal:');
       return [];
     }
   }

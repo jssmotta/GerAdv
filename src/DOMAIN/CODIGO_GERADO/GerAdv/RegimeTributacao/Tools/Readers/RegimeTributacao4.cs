@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class RegimeTributacaoReader(IFRegimeTributacaoFactory regimetributacaoFactory) : IRegimeTributacaoReader
 {
-    private readonly IFRegimeTributacaoFactory _regimetributacaoFactory = regimetributacaoFactory;
+    private readonly IFRegimeTributacaoFactory _regimetributacaoFactory = regimetributacaoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("rdtCodigo, rdtNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<RegimeTributacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBRegimeTributacao.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<RegimeTributacaoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

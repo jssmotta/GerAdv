@@ -9,84 +9,58 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOperadorValidation
 {
     Task<bool> ValidateReg(Models.Operador reg, IOperadorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOperadorService service, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOperadorService service, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorValidation : IOperadorValidation
 {
-    public async Task<bool> CanDelete(int id, IOperadorService service, IAgendaService agendaService, IAlertasService alertasService, IAlertasEnviadosService alertasenviadosService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGrupoService operadorgrupoService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessosParadosService processosparadosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOperadorService service, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Usuario = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Usuario = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var alertasExists1 = await alertasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAlertas { Operador = id }, uri);
-        if (alertasExists1 != null && alertasExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Alertas associados a ele.");
-        var alertasenviadosExists2 = await alertasenviadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAlertasEnviados { Operador = id }, uri);
-        if (alertasenviadosExists2 != null && alertasenviadosExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Alertas Enviados associados a ele.");
-        var diario2Exists3 = await diario2Service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDiario2 { Operador = id }, uri);
-        if (diario2Exists3 != null && diario2Exists3.Any())
+        var diario2Exists1 = await diario2Service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDiario2 { Operador = id ?? default }, uri);
+        if (diario2Exists1 != null && diario2Exists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Diario2 associados a ele.");
-        var gutatividadesExists4 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { Operador = id }, uri);
-        if (gutatividadesExists4 != null && gutatividadesExists4.Any())
+        var gutatividadesExists2 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { Operador = id ?? default }, uri);
+        if (gutatividadesExists2 != null && gutatividadesExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades associados a ele.");
-        var operadoremailpopupExists5 = await operadoremailpopupService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorEMailPopup { Operador = id }, uri);
-        if (operadoremailpopupExists5 != null && operadoremailpopupExists5.Any())
+        var operadoremailpopupExists3 = await operadoremailpopupService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorEMailPopup { Operador = id ?? default }, uri);
+        if (operadoremailpopupExists3 != null && operadoremailpopupExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador E Mail Popup associados a ele.");
-        var operadorgrupoExists6 = await operadorgrupoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGrupo { Operador = id }, uri);
-        if (operadorgrupoExists6 != null && operadorgrupoExists6.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupo associados a ele.");
-        var operadorgruposagendaExists7 = await operadorgruposagendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGruposAgenda { Operador = id }, uri);
-        if (operadorgruposagendaExists7 != null && operadorgruposagendaExists7.Any())
+        var operadorgruposagendaExists4 = await operadorgruposagendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGruposAgenda { Operador = id ?? default }, uri);
+        if (operadorgruposagendaExists4 != null && operadorgruposagendaExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda associados a ele.");
-        var pontovirtualExists8 = await pontovirtualService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtual { Operador = id }, uri);
-        if (pontovirtualExists8 != null && pontovirtualExists8.Any())
+        var pontovirtualExists5 = await pontovirtualService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtual { Operador = id ?? default }, uri);
+        if (pontovirtualExists5 != null && pontovirtualExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual associados a ele.");
-        var pontovirtualacessosExists9 = await pontovirtualacessosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtualAcessos { Operador = id }, uri);
-        if (pontovirtualacessosExists9 != null && pontovirtualacessosExists9.Any())
+        var pontovirtualacessosExists6 = await pontovirtualacessosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtualAcessos { Operador = id ?? default }, uri);
+        if (pontovirtualacessosExists6 != null && pontovirtualacessosExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual Acessos associados a ele.");
-        var processosparadosExists10 = await processosparadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessosParados { Operador = id }, uri);
-        if (processosparadosExists10 != null && processosparadosExists10.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Processos Parados associados a ele.");
-        var processoutputrequestExists11 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { Operador = id }, uri);
-        if (processoutputrequestExists11 != null && processoutputrequestExists11.Any())
+        var processoutputrequestExists7 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { Operador = id ?? default }, uri);
+        if (processoutputrequestExists7 != null && processoutputrequestExists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.");
-        var smsaliceExists12 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Operador = id }, uri);
-        if (smsaliceExists12 != null && smsaliceExists12.Any())
+        var smsaliceExists8 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Operador = id ?? default }, uri);
+        if (smsaliceExists8 != null && smsaliceExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Operador reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 40)
-            throw new SGValidationException($"Nome deve ter no máximo 40 caracteres.");
-        if (reg.Nick != null && reg.Nick.Length > 50)
-            throw new SGValidationException($"Nick deve ter no máximo 50 caracteres.");
-        if (reg.Ramal != null && reg.Ramal.Length > 20)
-            throw new SGValidationException($"Ramal deve ter no máximo 20 caracteres.");
-        if (reg.MinhaDescricao != null && reg.MinhaDescricao.Length > 255)
-            throw new SGValidationException($"MinhaDescricao deve ter no máximo 255 caracteres.");
-        if (reg.OnlineIP != null && reg.OnlineIP.Length > 50)
-            throw new SGValidationException($"OnlineIP deve ter no máximo 50 caracteres.");
-        if (reg.StatusMessage != null && reg.StatusMessage.Length > 1024)
-            throw new SGValidationException($"StatusMessage deve ter no máximo 1024 caracteres.");
-        if (reg.Senha256 != null && reg.Senha256.Length > 4000)
-            throw new SGValidationException($"Senha256 deve ter no máximo 4000 caracteres.");
-        if (reg.SuporteSenha256 != null && reg.SuporteSenha256.Length > 4000)
-            throw new SGValidationException($"SuporteSenha256 deve ter no máximo 4000 caracteres.");
-        if (reg.SuporteNomeSolicitante != null && reg.SuporteNomeSolicitante.Length > 100)
-            throw new SGValidationException($"SuporteNomeSolicitante deve ter no máximo 100 caracteres.");
-        if (reg.SuporteIpUltimoAcesso != null && reg.SuporteIpUltimoAcesso.Length > 80)
-            throw new SGValidationException($"SuporteIpUltimoAcesso deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBOperadorDicInfo.OperNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBOperadorDicInfo.OperNome.FTamanho} caracteres.");
+        if (reg.Nick != null && reg.Nick.Length > DBOperadorDicInfo.OperNick.FTamanho)
+            throw new SGValidationException($"Nick deve ter no máximo {DBOperadorDicInfo.OperNick.FTamanho} caracteres.");
+        if (reg.MinhaDescricao != null && reg.MinhaDescricao.Length > DBOperadorDicInfo.OperMinhaDescricao.FTamanho)
+            throw new SGValidationException($"MinhaDescricao deve ter no máximo {DBOperadorDicInfo.OperMinhaDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBOperadorDicInfo.OperGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBOperadorDicInfo.OperGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -99,10 +73,19 @@ public class OperadorValidation : IOperadorValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
-        if (reg.EMailNet.Length > 0 && !reg.EMailNet.IsValidEmail())
+        if (reg.EMailNet != null && reg.EMailNet.Length > 0 && !reg.EMailNet.IsValidEmail())
             throw new SGValidationException($"EMailNet em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DataLimiteReset))
+        {
+            if (DateTime.TryParse(reg.DataLimiteReset, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataLimiteReset não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         await Task.Delay(0);
         return true;
     }

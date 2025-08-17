@@ -54,7 +54,7 @@ public partial class FFaseFactory : IFFaseFactory, IDisposable
             throw new ObjectDisposedException(nameof(FFaseFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

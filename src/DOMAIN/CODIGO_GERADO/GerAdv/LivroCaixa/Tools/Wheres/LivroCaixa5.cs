@@ -13,7 +13,7 @@ public partial interface ILivroCaixaWhere
 
 public partial class LivroCaixaWhere(IFLivroCaixaFactory livrocaixaFactory) : ILivroCaixaWhere
 {
-    private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory;
+    private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory ?? throw new ArgumentNullException(nameof(livrocaixaFactory));
     public LivroCaixaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _livrocaixaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

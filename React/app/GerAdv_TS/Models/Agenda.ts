@@ -22,14 +22,12 @@ export interface Agenda
 	cartaprecatoria : number;
 	revisar : boolean;
 	hrfinal : string;
-	hrfinal_date? : Date;
 	eventogerador : number;
 	eventodata : string;
 	eventodata_date? : Date;
 	data : string;
 	eventoprazo : number;
 	hora : string;
-	hora_date? : Date;
 	compromisso : string;
 	liberado : boolean;
 	importante : boolean;

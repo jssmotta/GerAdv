@@ -14,16 +14,17 @@ public partial interface IClientesSociosWriter
 
 public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory) : IClientesSociosWriter
 {
-    private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory;
-    public async Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory ?? throw new ArgumentNullException(nameof(clientessociosFactory));
+    public virtual async Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection oCnn)
     {
         await _clientessociosFactory.DeleteAsync(operadorId, clientessocios.Id, oCnn);
     }
 
-    public async Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (clientessocios.Id.IsEmptyIDNumber() ? _clientessociosFactory.CreateAsync() : _clientessociosFactory.CreateFromIdAsync(clientessocios.Id, oCnn));
         dbRec.FSomenteRepresentante = clientessocios.SomenteRepresentante;
+        dbRec.FGUID = clientessocios.GUID;
         dbRec.FIdade = clientessocios.Idade;
         dbRec.FIsRepresentanteLegal = clientessocios.IsRepresentanteLegal;
         dbRec.FQualificacao = clientessocios.Qualificacao;
@@ -61,7 +62,6 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
         dbRec.FTipo = clientessocios.Tipo;
         dbRec.FFax = clientessocios.Fax;
         dbRec.FClass = clientessocios.Class;
-        dbRec.FGUID = clientessocios.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

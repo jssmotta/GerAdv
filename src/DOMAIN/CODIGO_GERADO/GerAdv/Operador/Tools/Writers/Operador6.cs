@@ -14,13 +14,13 @@ public partial interface IOperadorWriter
 
 public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
 {
-    private readonly IFOperadorFactory _operadorFactory = operadorFactory;
-    public async Task Delete(OperadorResponse operador, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFOperadorFactory _operadorFactory = operadorFactory ?? throw new ArgumentNullException(nameof(operadorFactory));
+    public virtual async Task Delete(OperadorResponse operador, int operadorId, MsiSqlConnection oCnn)
     {
         await _operadorFactory.DeleteAsync(operadorId, operador.Id, oCnn);
     }
 
-    public async Task<FOperador> WriteAsync(Models.Operador operador, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOperador> WriteAsync(Models.Operador operador, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (operador.Id.IsEmptyIDNumber() ? _operadorFactory.CreateAsync() : _operadorFactory.CreateFromIdAsync(operador.Id, oCnn));
         dbRec.FEMail = operador.EMail;
@@ -45,6 +45,7 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         dbRec.FStatusId = operador.StatusId;
         dbRec.FStatusMessage = operador.StatusMessage;
         dbRec.FIsFinanceiro = operador.IsFinanceiro;
+        dbRec.FGUID = operador.GUID;
         dbRec.FTop = operador.Top;
         dbRec.FSexo = operador.Sexo;
         dbRec.FBasico = operador.Basico;
@@ -62,7 +63,6 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         if (operador.SuporteUltimoAcesso != null)
             dbRec.FSuporteUltimoAcesso = operador.SuporteUltimoAcesso.ToString();
         dbRec.FSuporteIpUltimoAcesso = operador.SuporteIpUltimoAcesso;
-        dbRec.FGUID = operador.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

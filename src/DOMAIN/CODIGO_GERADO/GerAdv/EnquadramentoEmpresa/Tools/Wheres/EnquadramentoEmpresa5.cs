@@ -13,7 +13,7 @@ public partial interface IEnquadramentoEmpresaWhere
 
 public partial class EnquadramentoEmpresaWhere(IFEnquadramentoEmpresaFactory enquadramentoempresaFactory) : IEnquadramentoEmpresaWhere
 {
-    private readonly IFEnquadramentoEmpresaFactory _enquadramentoempresaFactory = enquadramentoempresaFactory;
+    private readonly IFEnquadramentoEmpresaFactory _enquadramentoempresaFactory = enquadramentoempresaFactory ?? throw new ArgumentNullException(nameof(enquadramentoempresaFactory));
     public EnquadramentoEmpresaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _enquadramentoempresaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

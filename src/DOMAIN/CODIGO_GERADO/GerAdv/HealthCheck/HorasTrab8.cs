@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class HorasTrabHealthCheck(IOptions<AppSettings> appSettings, HorasTrabService horastrabService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class HorasTrabHealthCheck(IOptions<AppSettings> appSettings, HorasTrabSe
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) htbIDContatoCRM,htbHonorario,htbIDAgenda,htbData,htbCliente,htbStatus,htbProcesso,htbAdvogado,htbFuncionario,htbHrIni,htbHrFim,htbTempo,htbValor,htbOBS,htbAnexo,htbAnexoComp,htbAnexoUNC,htbServico,htbGUID FROM {"HorasTrab".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) htbGUID,htbIDContatoCRM,htbHonorario,htbIDAgenda,htbData,htbCliente,htbStatus,htbProcesso,htbAdvogado,htbFuncionario,htbHrIni,htbHrFim,htbTempo,htbValor,htbOBS,htbAnexo,htbAnexoComp,htbAnexoUNC,htbServico FROM {"HorasTrab".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class HorasTrabHealthCheck(IOptions<AppSettings> appSettings, HorasTrabSe
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

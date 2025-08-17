@@ -7,7 +7,6 @@ export interface PontoVirtualAcessos
     id: number;
 	operador : number;
 	datahora : string;
-	datahora_date? : Date;
 	tipo : boolean;
 	origem : string;
 	nomeoperador?: string;

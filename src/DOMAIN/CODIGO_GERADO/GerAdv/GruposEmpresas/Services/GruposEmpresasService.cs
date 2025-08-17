@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IFGruposEmpresasFactory gruposempresasFactory, IGruposEmpresasReader reader, IGruposEmpresasValidation validation, IGruposEmpresasWriter writer, IOponentesReader oponentesReader, IClientesReader clientesReader, IGruposEmpresasCliService gruposempresascliService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IGruposEmpresasService, IDisposable
+public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IFGruposEmpresasFactory gruposempresasFactory, IGruposEmpresasReader reader, IGruposEmpresasValidation validation, IGruposEmpresasWriter writer, IOponentesReader oponentesReader, IClientesReader clientesReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IGruposEmpresasService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
     private readonly IGruposEmpresasWriter writer = writer;
     private readonly IOponentesReader oponentesReader = oponentesReader;
     private readonly IClientesReader clientesReader = clientesReader;
-    private readonly IGruposEmpresasCliService gruposempresascliService = gruposempresascliService;
     public async Task<IEnumerable<GruposEmpresasResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -96,18 +95,18 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         }
     }
 
-    private async Task<GruposEmpresasResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<GruposEmpresasResponse?> AddAndUpdate([FromBody] Models.GruposEmpresas regGruposEmpresas, [FromRoute, Required] string uri)
+    private async Task<GruposEmpresasResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<GruposEmpresasResponse?> AddAndUpdate([FromBody] Models.GruposEmpresas? regGruposEmpresas, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("GruposEmpresas: URI inválida");
-        }
-
         if (regGruposEmpresas == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("GruposEmpresas: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -121,7 +120,7 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regGruposEmpresas, this, oponentesReader, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -130,7 +129,7 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -138,17 +137,17 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<GruposEmpresasResponse?> Validation([FromBody] Models.GruposEmpresas regGruposEmpresas, [FromRoute, Required] string uri)
+    public async Task<GruposEmpresasResponse?> Validation([FromBody] Models.GruposEmpresas? regGruposEmpresas, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("GruposEmpresas: URI inválida");
-        }
-
         if (regGruposEmpresas == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("GruposEmpresas: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -162,7 +161,7 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regGruposEmpresas, this, oponentesReader, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -171,7 +170,7 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regGruposEmpresas.Id.IsEmptyIDNumber())
@@ -182,17 +181,17 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         return await reader.Read(regGruposEmpresas.Id, oCnn);
     }
 
-    public async Task<GruposEmpresasResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<GruposEmpresasResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("GruposEmpresas: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,10 +203,10 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, gruposempresascliService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -216,10 +215,10 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var gruposempresas = await reader.Read(id, oCnn);
+        var gruposempresas = await reader.Read(id ?? default, oCnn);
         try
         {
             if (gruposempresas != null)
@@ -239,7 +238,7 @@ public partial class GruposEmpresasService(IOptions<AppSettings> appSettings, IF
         return gruposempresas;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

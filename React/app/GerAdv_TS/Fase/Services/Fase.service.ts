@@ -79,7 +79,8 @@ export class FaseService implements IFaseService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Fase list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Fase list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class FaseService implements IFaseService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Fase');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Fase');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class FaseService implements IFaseService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Fase');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Fase');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Fase:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Fase:');
       return [];
     }
   }

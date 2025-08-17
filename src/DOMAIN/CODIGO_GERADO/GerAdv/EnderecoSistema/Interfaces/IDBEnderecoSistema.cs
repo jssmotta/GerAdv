@@ -8,6 +8,7 @@ public partial interface IDBEnderecoSistema
     public int FCadastro { get; set; }
     public int FCadastroExCod { get; set; }
     public int FTipoEnderecoSistema { get; set; }
+    public string? FGUID { get; set; }
     public int FProcesso { get; set; }
     public string? FMotivo { get; set; }
     public string? FContatoNoLocal { get; set; }
@@ -18,5 +19,4 @@ public partial interface IDBEnderecoSistema
     public string? FFone { get; set; }
     public string? FFax { get; set; }
     public string? FObservacao { get; set; }
-    public string? FGUID { get; set; }
 }

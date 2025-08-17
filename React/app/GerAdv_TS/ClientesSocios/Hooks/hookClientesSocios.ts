@@ -41,7 +41,8 @@ export const useClientesSociosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Clientes Socios';
       setError(errorMessage);
-      //console.log('Erro ao carregar Clientes Socios');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Clientes Socios');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useClientesSociosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useClientesSociosList = (dataService: IClientesSociosService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar clientessocios';
       setError(errorMessage);
-      //console.log('Erro ao carregar clientessocios');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar clientessocios');
     } finally {
       setLoading(false);
     }
@@ -270,7 +273,8 @@ if (data.class.length > 1) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

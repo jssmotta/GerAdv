@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class PontoVirtualAcessosReader(IFPontoVirtualAcessosFactory pontovirtualacessosFactory) : IPontoVirtualAcessosReader
 {
-    private readonly IFPontoVirtualAcessosFactory _pontovirtualacessosFactory = pontovirtualacessosFactory;
+    private readonly IFPontoVirtualAcessosFactory _pontovirtualacessosFactory = pontovirtualacessosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<PontoVirtualAcessosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBPontoVirtualAcessos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<PontoVirtualAcessosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -54,15 +54,10 @@ public partial class PontoVirtualAcessosReader(IFPontoVirtualAcessosFactory pont
         {
             Id = dbRec.ID,
             Operador = dbRec.FOperador,
+            DataHora = dbRec.FDataHora ?? string.Empty,
             Tipo = dbRec.FTipo,
             Origem = dbRec.FOrigem ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataHora, out DateTime XDataHora))
-        {
-            pontovirtualacessos.DataHora = dbRec.FDataHora;
-            pontovirtualacessos.DataHora_date = XDataHora;
-        }
-
         return pontovirtualacessos;
     }
 
@@ -88,15 +83,10 @@ public partial class PontoVirtualAcessosReader(IFPontoVirtualAcessosFactory pont
         {
             Id = dbRec.ID,
             Operador = dbRec.FOperador,
+            DataHora = dbRec.FDataHora ?? string.Empty,
             Tipo = dbRec.FTipo,
             Origem = dbRec.FOrigem ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataHora, out DateTime XDataHora))
-        {
-            pontovirtualacessos.DataHora = dbRec.FDataHora;
-            pontovirtualacessos.DataHora_date = XDataHora;
-        }
-
         return pontovirtualacessos;
     }
 
@@ -111,15 +101,10 @@ public partial class PontoVirtualAcessosReader(IFPontoVirtualAcessosFactory pont
         {
             Id = dbRec.ID,
             Operador = dbRec.FOperador,
+            DataHora = dbRec.FDataHora ?? string.Empty,
             Tipo = dbRec.FTipo,
             Origem = dbRec.FOrigem ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataHora, out DateTime XDataHora))
-        {
-            pontovirtualacessos.DataHora = dbRec.FDataHora;
-            pontovirtualacessos.DataHora_date = XDataHora;
-        }
-
         return pontovirtualacessos;
     }
 
@@ -134,15 +119,10 @@ public partial class PontoVirtualAcessosReader(IFPontoVirtualAcessosFactory pont
         {
             Id = dbRec.ID,
             Operador = dbRec.FOperador,
+            DataHora = dbRec.FDataHora ?? string.Empty,
             Tipo = dbRec.FTipo,
             Origem = dbRec.FOrigem ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataHora, out DateTime XDataHora))
-        {
-            pontovirtualacessos.DataHora = dbRec.FDataHora;
-            pontovirtualacessos.DataHora_date = XDataHora;
-        }
-
         try
         {
             pontovirtualacessos.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -165,15 +145,10 @@ public partial class PontoVirtualAcessosReader(IFPontoVirtualAcessosFactory pont
         {
             Id = dbRec.ID,
             Operador = dbRec.FOperador,
+            DataHora = dbRec.FDataHora ?? string.Empty,
             Tipo = dbRec.FTipo,
             Origem = dbRec.FOrigem ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataHora, out DateTime XDataHora))
-        {
-            pontovirtualacessos.DataHora = dbRec.FDataHora;
-            pontovirtualacessos.DataHora_date = XDataHora;
-        }
-
         try
         {
             pontovirtualacessos.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;

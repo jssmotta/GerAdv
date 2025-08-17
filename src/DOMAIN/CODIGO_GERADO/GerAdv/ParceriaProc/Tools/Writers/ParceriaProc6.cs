@@ -14,18 +14,18 @@ public partial interface IParceriaProcWriter
 
 public class ParceriaProcWriter(IFParceriaProcFactory parceriaprocFactory) : IParceriaProcWriter
 {
-    private readonly IFParceriaProcFactory _parceriaprocFactory = parceriaprocFactory;
-    public async Task Delete(ParceriaProcResponse parceriaproc, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFParceriaProcFactory _parceriaprocFactory = parceriaprocFactory ?? throw new ArgumentNullException(nameof(parceriaprocFactory));
+    public virtual async Task Delete(ParceriaProcResponse parceriaproc, int operadorId, MsiSqlConnection oCnn)
     {
         await _parceriaprocFactory.DeleteAsync(operadorId, parceriaproc.Id, oCnn);
     }
 
-    public async Task<FParceriaProc> WriteAsync(Models.ParceriaProc parceriaproc, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FParceriaProc> WriteAsync(Models.ParceriaProc parceriaproc, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (parceriaproc.Id.IsEmptyIDNumber() ? _parceriaprocFactory.CreateAsync() : _parceriaprocFactory.CreateFromIdAsync(parceriaproc.Id, oCnn));
         dbRec.FAdvogado = parceriaproc.Advogado;
-        dbRec.FProcesso = parceriaproc.Processo;
         dbRec.FGUID = parceriaproc.GUID;
+        dbRec.FProcesso = parceriaproc.Processo;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

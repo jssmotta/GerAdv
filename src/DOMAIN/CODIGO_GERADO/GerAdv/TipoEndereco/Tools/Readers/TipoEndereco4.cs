@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TipoEnderecoReader(IFTipoEnderecoFactory tipoenderecoFactory) : ITipoEnderecoReader
 {
-    private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory;
+    private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tipCodigo, tipDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TipoEnderecoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoEndereco.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TipoEnderecoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,8 +54,8 @@ public partial class TipoEnderecoReader(IFTipoEnderecoFactory tipoenderecoFactor
         var tipoendereco = new Models.TipoEndereco
         {
             Id = dbRec.ID,
-            Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Descricao = dbRec.FDescricao ?? string.Empty,
         };
         return tipoendereco;
     }
@@ -81,8 +81,8 @@ public partial class TipoEnderecoReader(IFTipoEnderecoFactory tipoenderecoFactor
         var tipoendereco = new TipoEnderecoResponse
         {
             Id = dbRec.ID,
-            Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Descricao = dbRec.FDescricao ?? string.Empty,
         };
         return tipoendereco;
     }
@@ -97,8 +97,8 @@ public partial class TipoEnderecoReader(IFTipoEnderecoFactory tipoenderecoFactor
         var tipoendereco = new TipoEnderecoResponse
         {
             Id = dbRec.ID,
-            Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Descricao = dbRec.FDescricao ?? string.Empty,
         };
         return tipoendereco;
     }
@@ -113,8 +113,8 @@ public partial class TipoEnderecoReader(IFTipoEnderecoFactory tipoenderecoFactor
         var tipoendereco = new TipoEnderecoResponseAll
         {
             Id = dbRec.ID,
-            Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Descricao = dbRec.FDescricao ?? string.Empty,
         };
         return tipoendereco;
     }
@@ -129,8 +129,8 @@ public partial class TipoEnderecoReader(IFTipoEnderecoFactory tipoenderecoFactor
         var tipoendereco = new TipoEnderecoResponseAll
         {
             Id = dbRec.ID,
-            Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Descricao = dbRec.FDescricao ?? string.Empty,
         };
         return tipoendereco;
     }

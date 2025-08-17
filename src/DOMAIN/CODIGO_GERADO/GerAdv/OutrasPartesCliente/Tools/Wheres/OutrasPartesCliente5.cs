@@ -13,7 +13,7 @@ public partial interface IOutrasPartesClienteWhere
 
 public partial class OutrasPartesClienteWhere(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteWhere
 {
-    private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory;
+    private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException(nameof(outraspartesclienteFactory));
     public OutrasPartesClienteResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _outraspartesclienteFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -38,8 +38,8 @@ public partial class OutrasPartesClienteWhere(IFOutrasPartesClienteFactory outra
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            Class = dbRec.FClass ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Class = dbRec.FClass ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

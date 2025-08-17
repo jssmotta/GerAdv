@@ -79,7 +79,8 @@ export class LigacoesService implements ILigacoesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Ligacoes list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Ligacoes list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class LigacoesService implements ILigacoesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Ligacoes');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Ligacoes');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class LigacoesService implements ILigacoesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Ligacoes');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Ligacoes');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Ligacoes:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Ligacoes:');
       return [];
     }
   }

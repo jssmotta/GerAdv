@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBEscritorios
 {
     public int ID { get; set; }
+    public string? FGUID { get; set; }
     public string? FCNPJ { get; set; }
     public bool FCasa { get; set; }
     public bool FParceria { get; set; }
@@ -24,5 +25,4 @@ public partial interface IDBEscritorios
     public string? FInscEst { get; set; }
     public bool FCorrespondente { get; set; }
     public bool FTop { get; set; }
-    public string? FGUID { get; set; }
 }

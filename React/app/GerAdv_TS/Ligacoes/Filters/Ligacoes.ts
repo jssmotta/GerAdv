@@ -20,7 +20,6 @@ export interface FilterLigacoes
     telefonista_end?: number;
  ultimoaviso_end?: string;
  ultimoaviso?: string;
- horafinal_end?: string;
  horafinal?: string;
  nome?: string;
     quemcodigo?: number;
@@ -35,7 +34,6 @@ export interface FilterLigacoes
  realizada?: number;
  status?: string;
  data?: string;
- hora_end?: string;
  hora?: string;
  urgente?: number;
  ligarpara?: string;
@@ -66,7 +64,6 @@ export class FilterLigacoesDefaults implements FilterLigacoes {
     telefonista_end?: number = -2147483648;
     ultimoaviso_end?: string = '';
     ultimoaviso?: string = '';
-    horafinal_end?: string = '';
     horafinal?: string = '';
     nome?: string = '';
     quemcodigo?: number = -2147483648;
@@ -81,7 +78,6 @@ export class FilterLigacoesDefaults implements FilterLigacoes {
     realizada?: number= -2147483648;
     status?: string = '';
     data?: string = '';
-    hora_end?: string = '';
     hora?: string = '';
     urgente?: number= -2147483648;
     ligarpara?: string = '';

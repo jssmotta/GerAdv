@@ -57,8 +57,9 @@ const loadRecordForEdit = async (id: number) => {
     setAction(ActionEditar);
     handleValueChange({ id: record.id, nome: record.nome });
   } catch (error) {
-  //console.log('Erro ao carregar Penhora:');
-}
+  if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+    console.log('Erro ao carregar Penhora:');
+  }
 };
 
 const handleComboChange = (e: any) => {

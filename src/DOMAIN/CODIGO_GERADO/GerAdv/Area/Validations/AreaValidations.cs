@@ -9,54 +9,51 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAreaValidation
 {
     Task<bool> ValidateReg(Models.Area reg, IAreaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AreaValidation : IAreaValidation
 {
-    public async Task<bool> CanDelete(int id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var acaoExists0 = await acaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAcao { Area = id }, uri);
+        var acaoExists0 = await acaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAcao { Area = id ?? default }, uri);
         if (acaoExists0 != null && acaoExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Acao associados a ele.");
-        var agendaExists1 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Area = id }, uri);
+        var agendaExists1 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Area = id ?? default }, uri);
         if (agendaExists1 != null && agendaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var areasjusticaExists2 = await areasjusticaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAreasJustica { Area = id }, uri);
-        if (areasjusticaExists2 != null && areasjusticaExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Areas Justica associados a ele.");
-        var divisaotribunalExists3 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Area = id }, uri);
-        if (divisaotribunalExists3 != null && divisaotribunalExists3.Any())
+        var divisaotribunalExists2 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Area = id ?? default }, uri);
+        if (divisaotribunalExists2 != null && divisaotribunalExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
-        var faseExists4 = await faseService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFase { Area = id }, uri);
-        if (faseExists4 != null && faseExists4.Any())
+        var faseExists3 = await faseService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFase { Area = id ?? default }, uri);
+        if (faseExists3 != null && faseExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Fase associados a ele.");
-        var objetosExists5 = await objetosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterObjetos { Area = id }, uri);
-        if (objetosExists5 != null && objetosExists5.Any())
+        var objetosExists4 = await objetosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterObjetos { Area = id ?? default }, uri);
+        if (objetosExists4 != null && objetosExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Objetos associados a ele.");
-        var poderjudiciarioassociadoExists6 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Area = id }, uri);
-        if (poderjudiciarioassociadoExists6 != null && poderjudiciarioassociadoExists6.Any())
+        var poderjudiciarioassociadoExists5 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Area = id ?? default }, uri);
+        if (poderjudiciarioassociadoExists5 != null && poderjudiciarioassociadoExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var tiporecursoExists7 = await tiporecursoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoRecurso { Area = id }, uri);
-        if (tiporecursoExists7 != null && tiporecursoExists7.Any())
+        var tiporecursoExists6 = await tiporecursoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoRecurso { Area = id ?? default }, uri);
+        if (tiporecursoExists6 != null && tiporecursoExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tipo Recurso associados a ele.");
-        var tribunalExists8 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Area = id }, uri);
-        if (tribunalExists8 != null && tribunalExists8.Any())
+        var tribunalExists7 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Area = id ?? default }, uri);
+        if (tribunalExists7 != null && tribunalExists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Area reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 40)
-            throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBAreaDicInfo.AreDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBAreaDicInfo.AreDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBAreaDicInfo.AreGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBAreaDicInfo.AreGUID.FTamanho} caracteres.");
         return true;
     }
 

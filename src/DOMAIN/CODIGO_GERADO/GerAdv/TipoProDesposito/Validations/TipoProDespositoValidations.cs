@@ -9,28 +9,25 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoProDespositoValidation
 {
     Task<bool> ValidateReg(Models.TipoProDesposito reg, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoProDespositoService service, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoProDespositoValidation : ITipoProDespositoValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoProDespositoService service, IProDepositosService prodepositosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoProDespositoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var prodepositosExists0 = await prodepositosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProDepositos { TipoProDesposito = id }, uri);
-        if (prodepositosExists0 != null && prodepositosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Depositos associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.TipoProDesposito reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTipoProDespositoDicInfo.TpdNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTipoProDespositoDicInfo.TpdNome.FTamanho} caracteres.");
         return true;
     }
 

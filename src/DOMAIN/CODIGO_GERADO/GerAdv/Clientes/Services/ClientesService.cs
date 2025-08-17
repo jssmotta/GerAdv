@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IAnexamentoRegistrosService anexamentoregistrosService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IGruposEmpresasCliService gruposempresascliService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesService, IDisposable
+public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,7 +21,6 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IRegimeTributacaoReader regimetributacaoReader = regimetributacaoReader;
     private readonly IEnquadramentoEmpresaReader enquadramentoempresaReader = enquadramentoempresaReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAnexamentoRegistrosService anexamentoregistrosService = anexamentoregistrosService;
     private readonly IClientesSociosService clientessociosService = clientessociosService;
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IContaCorrenteService contacorrenteService = contacorrenteService;
@@ -29,7 +28,6 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IDadosProcuracaoService dadosprocuracaoService = dadosprocuracaoService;
     private readonly IDiario2Service diario2Service = diario2Service;
     private readonly IGruposEmpresasService gruposempresasService = gruposempresasService;
-    private readonly IGruposEmpresasCliService gruposempresascliService = gruposempresascliService;
     private readonly IHonorariosDadosContratoService honorariosdadoscontratoService = honorariosdadoscontratoService;
     private readonly IHorasTrabService horastrabService = horastrabService;
     private readonly ILigacoesService ligacoesService = ligacoesService;
@@ -113,18 +111,18 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
     }
 
-    private async Task<ClientesResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ClientesResponse?> AddAndUpdate([FromBody] Models.Clientes regClientes, [FromRoute, Required] string uri)
+    private async Task<ClientesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ClientesResponse?> AddAndUpdate([FromBody] Models.Clientes? regClientes, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Clientes: URI inválida");
-        }
-
         if (regClientes == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Clientes: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -138,7 +136,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             var validade = await validation.ValidateReg(regClientes, this, cidadeReader, regimetributacaoReader, enquadramentoempresaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -147,7 +145,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -155,17 +153,17 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ClientesResponse?> Validation([FromBody] Models.Clientes regClientes, [FromRoute, Required] string uri)
+    public async Task<ClientesResponse?> Validation([FromBody] Models.Clientes? regClientes, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Clientes: URI inválida");
-        }
-
         if (regClientes == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Clientes: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -179,7 +177,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
             var validade = await validation.ValidateReg(regClientes, this, cidadeReader, regimetributacaoReader, enquadramentoempresaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -188,7 +186,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regClientes.Id.IsEmptyIDNumber())
@@ -199,17 +197,17 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         return await reader.Read(regClientes.Id, oCnn);
     }
 
-    public async Task<ClientesResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ClientesResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Clientes: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -221,10 +219,10 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, anexamentoregistrosService, clientessociosService, colaboradoresService, contacorrenteService, contratosService, dadosprocuracaoService, diario2Service, gruposempresasService, gruposempresascliService, honorariosdadoscontratoService, horastrabService, ligacoesService, operadoresService, preclientesService, prodespesasService, reuniaoService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, contacorrenteService, contratosService, dadosprocuracaoService, diario2Service, gruposempresasService, honorariosdadoscontratoService, horastrabService, ligacoesService, operadoresService, preclientesService, prodespesasService, reuniaoService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -233,10 +231,10 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var clientes = await reader.Read(id, oCnn);
+        var clientes = await reader.Read(id ?? default, oCnn);
         try
         {
             if (clientes != null)
@@ -256,7 +254,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
         return clientes;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

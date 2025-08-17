@@ -41,7 +41,8 @@ export const useContaCorrenteForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Conta Corrente';
       setError(errorMessage);
-      //console.log('Erro ao carregar Conta Corrente');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Conta Corrente');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useContaCorrenteNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useContaCorrenteList = (dataService: IContaCorrenteService, current
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar contacorrente';
       setError(errorMessage);
-      //console.log('Erro ao carregar contacorrente');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar contacorrente');
     } finally {
       setLoading(false);
     }

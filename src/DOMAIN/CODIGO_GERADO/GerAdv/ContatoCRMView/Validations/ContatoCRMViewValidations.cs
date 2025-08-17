@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IContatoCRMViewValidation
 {
     Task<bool> ValidateReg(Models.ContatoCRMView reg, IContatoCRMViewService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IContatoCRMViewService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IContatoCRMViewService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ContatoCRMViewValidation : IContatoCRMViewValidation
 {
-    public async Task<bool> CanDelete(int id, IContatoCRMViewService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IContatoCRMViewService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class ContatoCRMViewValidation : IContatoCRMViewValidation
 
     private bool ValidSizes(Models.ContatoCRMView reg)
     {
-        if (reg.CGUID != null && reg.CGUID.Length > 100)
-            throw new SGValidationException($"CGUID deve ter no máximo 100 caracteres.");
-        if (reg.IP != null && reg.IP.Length > 50)
-            throw new SGValidationException($"IP deve ter no máximo 50 caracteres.");
+        if (reg.CGUID != null && reg.CGUID.Length > DBContatoCRMViewDicInfo.CcwCGUID.FTamanho)
+            throw new SGValidationException($"CGUID deve ter no máximo {DBContatoCRMViewDicInfo.CcwCGUID.FTamanho} caracteres.");
+        if (reg.IP != null && reg.IP.Length > DBContatoCRMViewDicInfo.CcwIP.FTamanho)
+            throw new SGValidationException($"IP deve ter no máximo {DBContatoCRMViewDicInfo.CcwIP.FTamanho} caracteres.");
         return true;
     }
 

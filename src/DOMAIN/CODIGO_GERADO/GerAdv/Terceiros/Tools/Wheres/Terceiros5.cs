@@ -13,7 +13,7 @@ public partial interface ITerceirosWhere
 
 public partial class TerceirosWhere(IFTerceirosFactory terceirosFactory) : ITerceirosWhere
 {
-    private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory;
+    private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException(nameof(terceirosFactory));
     public TerceirosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _terceirosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -31,10 +31,10 @@ public partial class TerceirosWhere(IFTerceirosFactory terceirosFactory) : ITerc
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return terceiros;
     }

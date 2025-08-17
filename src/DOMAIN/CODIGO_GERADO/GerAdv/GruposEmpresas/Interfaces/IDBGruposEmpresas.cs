@@ -11,7 +11,7 @@ public partial interface IDBGruposEmpresas
     public string? FDescricao { get; set; }
     public string? FObservacoes { get; set; }
     public int FCliente { get; set; }
+    public string? FGUID { get; set; }
     public string? FIcone { get; set; }
     public bool FDespesaUnificada { get; set; }
-    public string? FGUID { get; set; }
 }

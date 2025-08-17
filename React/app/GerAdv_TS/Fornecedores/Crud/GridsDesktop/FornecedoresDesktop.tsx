@@ -135,7 +135,15 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'nomecidade': (
+  <GridColumn
+  key='nomecidade'
+  field='nomecidade'
+  title='Cidade'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_BensMateriais': (
   <GridColumn
   key='BensMateriais'
@@ -147,16 +155,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellBensMateriais }}
   />
   ), /* Track G.03 */
-  'nomecidade': (
-  <GridColumn
-  key='nomecidade'
-
-  field='nomecidade'
-  title='Cidade'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====

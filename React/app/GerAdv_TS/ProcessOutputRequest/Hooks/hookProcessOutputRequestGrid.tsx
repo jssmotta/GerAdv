@@ -33,7 +33,6 @@ export const useProcessOutputRequestGrid = ({
 const [columnsOrder, setColumnsOrder] = useState<string[]>([]);
 // Definir ordem padrão das colunas
 const defaultColumnsOrder = useMemo(() => [
-  'guid',
   'nomeprocessoutputengine',
   'rnomeoperador',
   'nropastaprocessos',
@@ -85,13 +84,12 @@ const defaultColumnsOrder = useMemo(() => [
 }, []);
 // ===== CONFIGURAÇÕES DE FILTROS =====
 const initialFilters = useMemo(() => ({
-  guid: '',
+
 }), []);
 // Lógica de filtro customizada
 const filterLogic = useCallback((data: IProcessOutputRequest, filters: Record<string, any>) => {
-  const guidMatches = applyFilter(data, 'guid', filters.guid);
-  return guidMatches
-  ;
+
+  return true;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IEnquadramentoEmpresaService
 {
     Task<IEnumerable<EnquadramentoEmpresaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterEnquadramentoEmpresa filter, [FromRoute, Required] string uri = "");
-    Task<EnquadramentoEmpresaResponse?> AddAndUpdate(Models.EnquadramentoEmpresa regEnquadramentoEmpresa, [FromRoute, Required] string uri = "");
-    Task<EnquadramentoEmpresaResponse?> Validation(Models.EnquadramentoEmpresa regEnquadramentoEmpresa, [FromRoute, Required] string uri = "");
-    Task<EnquadramentoEmpresaResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<EnquadramentoEmpresaResponse?> AddAndUpdate(Models.EnquadramentoEmpresa? regEnquadramentoEmpresa, [FromRoute, Required] string uri = "");
+    Task<EnquadramentoEmpresaResponse?> Validation(Models.EnquadramentoEmpresa? regEnquadramentoEmpresa, [FromRoute, Required] string uri = "");
+    Task<EnquadramentoEmpresaResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<EnquadramentoEmpresaResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<EnquadramentoEmpresaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEnquadramentoEmpresa? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);

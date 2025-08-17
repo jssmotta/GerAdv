@@ -20,6 +20,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Cliente { get; set; }
 
         /// <summary>
+        /// GUID - prcGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// EstadoCivil - prcEstadoCivil - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("estadocivil")]
@@ -60,12 +66,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("objeto")]
         public string Objeto { get; set; } = "";
-
-        /// <summary>
-        /// GUID - prcGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -84,6 +84,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Cliente { get; set; }
 
         /// <summary>
+        /// GUID - prcGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// EstadoCivil - prcEstadoCivil - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("estadocivil")]
@@ -124,12 +130,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("objeto")]
         public string Objeto { get; set; } = "";
-
-        /// <summary>
-        /// GUID - prcGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

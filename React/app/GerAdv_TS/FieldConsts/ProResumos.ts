@@ -5,6 +5,6 @@ export enum FieldsProResumos
 {	processo = `Processo`,
 	data = `Data`,
 	resumo = `Resumo`,
-	tiporesumo = `TipoResumo`,
 	guid = `GUID`,
+	tiporesumo = `TipoResumo`,
 }

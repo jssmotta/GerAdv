@@ -79,7 +79,8 @@ export class TipoContatoCRMService implements ITipoContatoCRMService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching TipoContatoCRM list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching TipoContatoCRM list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class TipoContatoCRMService implements ITipoContatoCRMService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online TipoContatoCRM');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoContatoCRM');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class TipoContatoCRMService implements ITipoContatoCRMService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online TipoContatoCRM');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online TipoContatoCRM');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all TipoContatoCRM:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all TipoContatoCRM:');
       return [];
     }
   }

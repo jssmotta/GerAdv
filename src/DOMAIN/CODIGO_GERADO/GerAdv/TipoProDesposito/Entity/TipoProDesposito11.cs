@@ -54,7 +54,7 @@ public partial class FTipoProDespositoFactory : IFTipoProDespositoFactory, IDisp
             throw new ObjectDisposedException(nameof(FTipoProDespositoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

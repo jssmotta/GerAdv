@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepostosFactory prepostosFactory, IPrepostosReader reader, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, IAgendaService agendaService, IAgendaQuemService agendaquemService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPrepostosService, IDisposable
+public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepostosFactory prepostosFactory, IPrepostosReader reader, IPrepostosValidation validation, IPrepostosWriter writer, IFuncaoReader funcaoReader, ISetorReader setorReader, ICidadeReader cidadeReader, IAgendaService agendaService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IPrepostosService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,7 +21,6 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
     private readonly ISetorReader setorReader = setorReader;
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAgendaQuemService agendaquemService = agendaquemService;
     public async Task<IEnumerable<PrepostosResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -98,18 +97,18 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         }
     }
 
-    private async Task<PrepostosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<PrepostosResponse?> AddAndUpdate([FromBody] Models.Prepostos regPrepostos, [FromRoute, Required] string uri)
+    private async Task<PrepostosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<PrepostosResponse?> AddAndUpdate([FromBody] Models.Prepostos? regPrepostos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Prepostos: URI inválida");
-        }
-
         if (regPrepostos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Prepostos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -123,7 +122,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
             var validade = await validation.ValidateReg(regPrepostos, this, funcaoReader, setorReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -132,7 +131,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -140,17 +139,17 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<PrepostosResponse?> Validation([FromBody] Models.Prepostos regPrepostos, [FromRoute, Required] string uri)
+    public async Task<PrepostosResponse?> Validation([FromBody] Models.Prepostos? regPrepostos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Prepostos: URI inválida");
-        }
-
         if (regPrepostos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Prepostos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -164,7 +163,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
             var validade = await validation.ValidateReg(regPrepostos, this, funcaoReader, setorReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -173,7 +172,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regPrepostos.Id.IsEmptyIDNumber())
@@ -184,17 +183,17 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         return await reader.Read(regPrepostos.Id, oCnn);
     }
 
-    public async Task<PrepostosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<PrepostosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Prepostos: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,10 +205,10 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, agendaquemService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -218,10 +217,10 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var prepostos = await reader.Read(id, oCnn);
+        var prepostos = await reader.Read(id ?? default, oCnn);
         try
         {
             if (prepostos != null)
@@ -241,7 +240,7 @@ public partial class PrepostosService(IOptions<AppSettings> appSettings, IFPrepo
         return prepostos;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

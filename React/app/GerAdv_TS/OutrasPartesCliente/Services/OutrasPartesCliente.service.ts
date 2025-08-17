@@ -79,7 +79,8 @@ export class OutrasPartesClienteService implements IOutrasPartesClienteService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching OutrasPartesCliente list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching OutrasPartesCliente list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class OutrasPartesClienteService implements IOutrasPartesClienteService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online OutrasPartesCliente');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online OutrasPartesCliente');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class OutrasPartesClienteService implements IOutrasPartesClienteService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online OutrasPartesCliente');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online OutrasPartesCliente');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all OutrasPartesCliente:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all OutrasPartesCliente:');
       return [];
     }
   }

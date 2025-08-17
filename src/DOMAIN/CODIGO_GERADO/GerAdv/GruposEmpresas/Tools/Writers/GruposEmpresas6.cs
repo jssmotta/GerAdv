@@ -14,13 +14,13 @@ public partial interface IGruposEmpresasWriter
 
 public class GruposEmpresasWriter(IFGruposEmpresasFactory gruposempresasFactory) : IGruposEmpresasWriter
 {
-    private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory;
-    public async Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory ?? throw new ArgumentNullException(nameof(gruposempresasFactory));
+    public virtual async Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection oCnn)
     {
         await _gruposempresasFactory.DeleteAsync(operadorId, gruposempresas.Id, oCnn);
     }
 
-    public async Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (gruposempresas.Id.IsEmptyIDNumber() ? _gruposempresasFactory.CreateAsync() : _gruposempresasFactory.CreateFromIdAsync(gruposempresas.Id, oCnn));
         dbRec.FEMail = gruposempresas.EMail;
@@ -29,9 +29,9 @@ public class GruposEmpresasWriter(IFGruposEmpresasFactory gruposempresasFactory)
         dbRec.FDescricao = gruposempresas.Descricao;
         dbRec.FObservacoes = gruposempresas.Observacoes;
         dbRec.FCliente = gruposempresas.Cliente;
+        dbRec.FGUID = gruposempresas.GUID;
         dbRec.FIcone = gruposempresas.Icone;
         dbRec.FDespesaUnificada = gruposempresas.DespesaUnificada;
-        dbRec.FGUID = gruposempresas.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

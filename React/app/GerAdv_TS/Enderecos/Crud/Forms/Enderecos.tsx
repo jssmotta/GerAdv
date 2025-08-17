@@ -59,298 +59,300 @@ if (getParamFromUrl('cidade') > 0) {
       setNomeCidade(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    enderecosData.cidade = getParamFromUrl('cidade');
+      enderecosData.cidade = getParamFromUrl('cidade');
+    }
   }
-}
-const addValorCidade = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cidade', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorCidade = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'cidade', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de Enderecos:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`EnderecosForm-${enderecosData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de Enderecos:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar Enderecos diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = enderecosData?.id == 0 ? 'Editar Enderecos' : 'Adicionar Endereço';
+        }
+      }, [enderecosData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-Enderecos' : 'form-container form-container-Enderecos'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`EnderecosForm-${enderecosData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`EnderecosForm-${enderecosData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Enderecos' data={enderecosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`EnderecosForm-${enderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar Enderecos diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = enderecosData?.id == 0 ? 'Editar Enderecos' : 'Adicionar Endereço';
-    }
-  }, [enderecosData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputDescription
+                type='text'
+                id='descricao'
+                label='endereço'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='descricao'
+                value={enderecosData.descricao}
+                placeholder={`Digite nome endereço`}
+                onChange={onChange}
+                required
+                disabled={enderecosData.id > 0}
+                />
+                <InputCheckbox dataForm={enderecosData} label='TopIndex' name='topindex' checked={enderecosData.topindex} onChange={onChange} />
 
-    <div className={isMobile ? 'form-container form-container-Enderecos' : 'form-container form-container-Enderecos'}>
-
-      <form className='formInputCadInc' id={`EnderecosForm-${enderecosData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Enderecos' data={enderecosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EnderecosForm-${enderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputDescription
-            type='text'
-            id='descricao'
-            label='endereço'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='descricao'
-            value={enderecosData.descricao}
-            placeholder={`Digite nome endereço`}
-            onChange={onChange}
-            required
-            disabled={enderecosData.id > 0}
-            />
-            <InputCheckbox dataForm={enderecosData} label='TopIndex' name='topindex' checked={enderecosData.topindex} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='contato'
-            label='Contato'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='contato'
-            value={enderecosData.contato}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='contato'
+                label='Contato'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='contato'
+                value={enderecosData.contato}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='dtnasc'
-            label='DtNasc'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='dtnasc'
-            value={enderecosData.dtnasc}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dtnasc'
+                label='DtNasc'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='dtnasc'
+                value={enderecosData.dtnasc}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={50}
-            id='endereco'
-            label='Endereco'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='endereco'
-            value={enderecosData.endereco}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='endereco'
+                label='Endereco'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='endereco'
+                value={enderecosData.endereco}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={30}
-            id='bairro'
-            label='Bairro'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='bairro'
-            value={enderecosData.bairro}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={30}
+                id='bairro'
+                label='Bairro'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='bairro'
+                value={enderecosData.bairro}
+                onChange={onChange}
+                />
 
-            <InputCheckbox dataForm={enderecosData} label='Privativo' name='privativo' checked={enderecosData.privativo} onChange={onChange} />
-            <InputCheckbox dataForm={enderecosData} label='AddContato' name='addcontato' checked={enderecosData.addcontato} onChange={onChange} />
+                <InputCheckbox dataForm={enderecosData} label='Privativo' name='privativo' checked={enderecosData.privativo} onChange={onChange} />
+                <InputCheckbox dataForm={enderecosData} label='AddContato' name='addcontato' checked={enderecosData.addcontato} onChange={onChange} />
 
-            <InputCep
-            type='text'
-            id='cep'
-            label='CEP'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='cep'
-            value={enderecosData.cep}
-            onChange={onChange}
-            />
+                <InputCep
+                type='text'
+                id='cep'
+                label='CEP'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='cep'
+                value={enderecosData.cep}
+                onChange={onChange}
+                />
 
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={20}
-            id='oab'
-            label='OAB'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='oab'
-            value={enderecosData.oab}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='obs'
-            label='OBS'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='obs'
-            value={enderecosData.obs}
-            onChange={onChange}
-            />
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={20}
+                id='oab'
+                label='OAB'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='oab'
+                value={enderecosData.oab}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='fone'
-            label='Fone'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='fone'
-            value={enderecosData.fone}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='obs'
+                label='OBS'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='obs'
+                value={enderecosData.obs}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='fax'
-            label='Fax'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='fax'
-            value={enderecosData.fax}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fone'
+                label='Fone'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='fone'
+                value={enderecosData.fone}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={20}
-            id='tratamento'
-            label='Tratamento'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='tratamento'
-            value={enderecosData.tratamento}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fax'
+                label='Fax'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='fax'
+                value={enderecosData.fax}
+                onChange={onChange}
+                />
 
 
-            <CidadeComboBox
-            name={'cidade'}
-            dataForm={enderecosData}
-            value={enderecosData.cidade}
-            setValue={addValorCidade}
-            label={'Cidade'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={200}
-            id='site'
-            label='Site'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='site'
-            value={enderecosData.site}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={20}
+                id='tratamento'
+                label='Tratamento'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='tratamento'
+                value={enderecosData.tratamento}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='email'
-            maxLength={255}
-            id='email'
-            label='EMail'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='email'
-            value={enderecosData.email}
-            onChange={onChange}
-            />
+                <CidadeComboBox
+                name={'cidade'}
+                dataForm={enderecosData}
+                value={enderecosData.cidade}
+                setValue={addValorCidade}
+                label={'Cidade'}
+                />
+
+                <InputInput
+                type='text'
+                maxLength={200}
+                id='site'
+                label='Site'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='site'
+                value={enderecosData.site}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='quem'
-            label='Quem'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='quem'
-            value={enderecosData.quem}
-            onChange={onChange}
-            />
-
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={150}
-            id='quemindicou'
-            label='QuemIndicou'
-            dataForm={enderecosData}
-            className='inputIncNome'
-            name='quemindicou'
-            value={enderecosData.quemindicou}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={enderecosData} label='ReportECBOnly' name='reportecbonly' checked={enderecosData.reportecbonly} onChange={onChange} />
-          </div>
-        </form>
+                <InputInput
+                type='email'
+                maxLength={255}
+                id='email'
+                label='EMail'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='email'
+                value={enderecosData.email}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Enderecos' data={enderecosData} isSubmitting={isSubmitting} onClose={onClose} formId={`EnderecosForm-${enderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/enderecos'} id={enderecosData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='quem'
+                label='Quem'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='quem'
+                value={enderecosData.quem}
+                onChange={onChange}
+                />
+
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={150}
+                id='quemindicou'
+                label='QuemIndicou'
+                dataForm={enderecosData}
+                className='inputIncNome'
+                name='quemindicou'
+                value={enderecosData.quemindicou}
+                onChange={onChange}
+                />
+
+                <InputCheckbox dataForm={enderecosData} label='ReportECBOnly' name='reportecbonly' checked={enderecosData.reportecbonly} onChange={onChange} />
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Enderecos' data={enderecosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`EnderecosForm-${enderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/enderecos'} id={enderecosData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

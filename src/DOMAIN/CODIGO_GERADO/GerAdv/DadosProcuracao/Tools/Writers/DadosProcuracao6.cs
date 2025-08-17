@@ -14,16 +14,17 @@ public partial interface IDadosProcuracaoWriter
 
 public class DadosProcuracaoWriter(IFDadosProcuracaoFactory dadosprocuracaoFactory) : IDadosProcuracaoWriter
 {
-    private readonly IFDadosProcuracaoFactory _dadosprocuracaoFactory = dadosprocuracaoFactory;
-    public async Task Delete(DadosProcuracaoResponse dadosprocuracao, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFDadosProcuracaoFactory _dadosprocuracaoFactory = dadosprocuracaoFactory ?? throw new ArgumentNullException(nameof(dadosprocuracaoFactory));
+    public virtual async Task Delete(DadosProcuracaoResponse dadosprocuracao, int operadorId, MsiSqlConnection oCnn)
     {
         await _dadosprocuracaoFactory.DeleteAsync(operadorId, dadosprocuracao.Id, oCnn);
     }
 
-    public async Task<FDadosProcuracao> WriteAsync(Models.DadosProcuracao dadosprocuracao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FDadosProcuracao> WriteAsync(Models.DadosProcuracao dadosprocuracao, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (dadosprocuracao.Id.IsEmptyIDNumber() ? _dadosprocuracaoFactory.CreateAsync() : _dadosprocuracaoFactory.CreateFromIdAsync(dadosprocuracao.Id, oCnn));
         dbRec.FCliente = dadosprocuracao.Cliente;
+        dbRec.FGUID = dadosprocuracao.GUID;
         dbRec.FEstadoCivil = dadosprocuracao.EstadoCivil;
         dbRec.FNacionalidade = dadosprocuracao.Nacionalidade;
         dbRec.FProfissao = dadosprocuracao.Profissao;
@@ -31,7 +32,6 @@ public class DadosProcuracaoWriter(IFDadosProcuracaoFactory dadosprocuracaoFacto
         dbRec.FPisPasep = dadosprocuracao.PisPasep;
         dbRec.FRemuneracao = dadosprocuracao.Remuneracao;
         dbRec.FObjeto = dadosprocuracao.Objeto;
-        dbRec.FGUID = dadosprocuracao.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -10,46 +10,52 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterDiario2
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("hora")]
-    public string Hora { get; set; } = string.Empty;
+    public string? Hora { get; set; } = string.Empty;
 
     [JsonPropertyName("hora_end")]
-    public string Hora_end { get; set; } = string.Empty;
+    public string? Hora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = int.MinValue;
 
+    [JsonPropertyName("operador_end")]
+    public int Operador_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
+
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ocorrencia")]
-    public string Ocorrencia { get; set; } = string.Empty;
+    public string? Ocorrencia { get; set; } = string.Empty;
 
     [JsonPropertyName("ocorrencia_end")]
-    public string Ocorrencia_end { get; set; } = string.Empty;
+    public string? Ocorrencia_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

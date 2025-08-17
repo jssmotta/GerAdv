@@ -56,6 +56,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Usuario { get; set; } = "";
 
         /// <summary>
+        /// GUID - oepGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// PortaSmtp - oepPortaSmtp  
         /// </summary>
         [JsonPropertyName("portasmtp")]
@@ -72,12 +78,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("assinatura")]
         public string Assinatura { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -132,6 +132,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Usuario { get; set; } = "";
 
         /// <summary>
+        /// GUID - oepGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// PortaSmtp - oepPortaSmtp  
         /// </summary>
         [JsonPropertyName("portasmtp")]
@@ -148,12 +154,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("assinatura")]
         public string Assinatura { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

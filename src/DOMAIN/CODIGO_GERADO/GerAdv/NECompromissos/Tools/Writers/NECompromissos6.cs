@@ -14,13 +14,13 @@ public partial interface INECompromissosWriter
 
 public class NECompromissosWriter(IFNECompromissosFactory necompromissosFactory) : INECompromissosWriter
 {
-    private readonly IFNECompromissosFactory _necompromissosFactory = necompromissosFactory;
-    public async Task Delete(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFNECompromissosFactory _necompromissosFactory = necompromissosFactory ?? throw new ArgumentNullException(nameof(necompromissosFactory));
+    public virtual async Task Delete(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection oCnn)
     {
         await _necompromissosFactory.DeleteAsync(operadorId, necompromissos.Id, oCnn);
     }
 
-    public async Task<FNECompromissos> WriteAsync(Models.NECompromissos necompromissos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FNECompromissos> WriteAsync(Models.NECompromissos necompromissos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (necompromissos.Id.IsEmptyIDNumber() ? _necompromissosFactory.CreateAsync() : _necompromissosFactory.CreateFromIdAsync(necompromissos.Id, oCnn));
         dbRec.FPalavraChave = necompromissos.PalavraChave;

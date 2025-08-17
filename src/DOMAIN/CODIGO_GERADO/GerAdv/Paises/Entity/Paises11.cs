@@ -54,7 +54,7 @@ public partial class FPaisesFactory : IFPaisesFactory, IDisposable
             throw new ObjectDisposedException(nameof(FPaisesFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

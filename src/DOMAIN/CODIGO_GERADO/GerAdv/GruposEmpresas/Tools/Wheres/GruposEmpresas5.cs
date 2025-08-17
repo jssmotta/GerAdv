@@ -13,7 +13,7 @@ public partial interface IGruposEmpresasWhere
 
 public partial class GruposEmpresasWhere(IFGruposEmpresasFactory gruposempresasFactory) : IGruposEmpresasWhere
 {
-    private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory;
+    private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory ?? throw new ArgumentNullException(nameof(gruposempresasFactory));
     public GruposEmpresasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _gruposempresasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -26,9 +26,9 @@ public partial class GruposEmpresasWhere(IFGruposEmpresasFactory gruposempresasF
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return gruposempresas;
     }

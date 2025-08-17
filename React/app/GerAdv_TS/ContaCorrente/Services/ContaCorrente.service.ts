@@ -79,7 +79,8 @@ export class ContaCorrenteService implements IContaCorrenteService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ContaCorrente list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ContaCorrente list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ContaCorrenteService implements IContaCorrenteService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ContaCorrente');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ContaCorrente');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ContaCorrenteService implements IContaCorrenteService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ContaCorrente');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ContaCorrente');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ContaCorrente:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ContaCorrente:');
       return [];
     }
   }

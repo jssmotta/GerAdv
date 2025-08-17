@@ -81,98 +81,99 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar ProcessosObsReport diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar ProcessosObsReport diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = processosobsreportData?.id == 0 ? 'Editar ProcessosObsReport' : 'Adicionar Processos Obs Report';
-  }
-}, [processosobsreportData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-ProcessosObsReport' : 'form-container5 form-container-ProcessosObsReport'}>
-
-    <form className='formInputCadInc' id={`ProcessosObsReportForm-${processosobsreportData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessosObsReport' data={processosobsreportData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosObsReportForm-${processosobsreportData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='data'
-          label='Data'
-          dataForm={processosobsreportData}
-          className='inputIncNome'
-          name='data'
-          value={processosobsreportData.data}
-          placeholder={`Informe Data`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          required
-          type='text'
-          maxLength={2048}
-          id='processo'
-          label='Processo'
-          dataForm={processosobsreportData}
-          className='inputIncNome'
-          name='processo'
-          value={processosobsreportData.processo}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='observacao'
-          label='Observacao'
-          dataForm={processosobsreportData}
-          className='inputIncNome'
-          name='observacao'
-          value={processosobsreportData.observacao}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='historico'
-          label='Historico'
-          dataForm={processosobsreportData}
-          className='inputIncNome'
-          name='historico'
-          value={processosobsreportData.historico}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessosObsReport' data={processosobsreportData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessosObsReportForm-${processosobsreportData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/processosobsreport'} id={processosobsreportData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = processosobsreportData?.id == 0 ? 'Editar ProcessosObsReport' : 'Adicionar Processos Obs Report';
+    }
+  }, [processosobsreportData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-ProcessosObsReport' : 'form-container5 form-container-ProcessosObsReport'}>
+
+      <form className='formInputCadInc' id={`ProcessosObsReportForm-${processosobsreportData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessosObsReport' data={processosobsreportData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProcessosObsReportForm-${processosobsreportData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={processosobsreportData}
+            className='inputIncNome'
+            name='data'
+            value={processosobsreportData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={processosobsreportData}
+            className='inputIncNome'
+            name='processo'
+            value={processosobsreportData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='observacao'
+            label='Observacao'
+            dataForm={processosobsreportData}
+            className='inputIncNome'
+            name='observacao'
+            value={processosobsreportData.observacao}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='historico'
+            label='Historico'
+            dataForm={processosobsreportData}
+            className='inputIncNome'
+            name='historico'
+            value={processosobsreportData.historico}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessosObsReport' data={processosobsreportData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProcessosObsReportForm-${processosobsreportData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/processosobsreport'} id={processosobsreportData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

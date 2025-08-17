@@ -41,7 +41,8 @@ export const useOponentesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Oponentes';
       setError(errorMessage);
-      //console.log('Erro ao carregar Oponentes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Oponentes');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useOponentesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useOponentesList = (dataService: IOponentesService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar oponentes';
       setError(errorMessage);
-      //console.log('Erro ao carregar oponentes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar oponentes');
     } finally {
       setLoading(false);
     }
@@ -255,7 +258,8 @@ if (data.class.length > 1) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

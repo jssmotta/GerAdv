@@ -38,6 +38,12 @@ namespace MenphisSI.GerAdv.Models
         public string Nome { get; set; } = "";
 
         /// <summary>
+        /// GUID - triGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Descricao - triDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
@@ -54,12 +60,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("web")]
         public string Web { get; set; } = "";
-
-        /// <summary>
-        /// GUID - triGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -96,6 +96,12 @@ namespace MenphisSI.GerAdv.Models.All
         public string Nome { get; set; } = "";
 
         /// <summary>
+        /// GUID - triGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Descricao - triDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
@@ -112,12 +118,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("web")]
         public string Web { get; set; } = "";
-
-        /// <summary>
-        /// GUID - triGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("descricaoarea")]
         public string DescricaoArea { get; set; } = string.Empty;

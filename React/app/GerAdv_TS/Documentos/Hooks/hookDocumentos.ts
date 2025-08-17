@@ -41,7 +41,8 @@ export const useDocumentosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Documentos';
       setError(errorMessage);
-      //console.log('Erro ao carregar Documentos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Documentos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useDocumentosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useDocumentosList = (dataService: IDocumentosService, currentFilter
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar documentos';
       setError(errorMessage);
-      //console.log('Erro ao carregar documentos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar documentos');
     } finally {
       setLoading(false);
     }

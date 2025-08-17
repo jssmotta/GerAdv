@@ -94,18 +94,18 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         }
     }
 
-    private async Task<ReuniaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ReuniaoResponse?> AddAndUpdate([FromBody] Models.Reuniao regReuniao, [FromRoute, Required] string uri)
+    private async Task<ReuniaoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ReuniaoResponse?> AddAndUpdate([FromBody] Models.Reuniao? regReuniao, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Reuniao: URI inválida");
-        }
-
         if (regReuniao == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Reuniao: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
             var validade = await validation.ValidateReg(regReuniao, this, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ReuniaoResponse?> Validation([FromBody] Models.Reuniao regReuniao, [FromRoute, Required] string uri)
+    public async Task<ReuniaoResponse?> Validation([FromBody] Models.Reuniao? regReuniao, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Reuniao: URI inválida");
-        }
-
         if (regReuniao == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Reuniao: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
             var validade = await validation.ValidateReg(regReuniao, this, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regReuniao.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         return await reader.Read(regReuniao.Id, oCnn);
     }
 
-    public async Task<ReuniaoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ReuniaoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Reuniao: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var reuniao = await reader.Read(id, oCnn);
+        var reuniao = await reader.Read(id ?? default, oCnn);
         try
         {
             if (reuniao != null)
@@ -237,7 +237,7 @@ public partial class ReuniaoService(IOptions<AppSettings> appSettings, IFReuniao
         return reuniao;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

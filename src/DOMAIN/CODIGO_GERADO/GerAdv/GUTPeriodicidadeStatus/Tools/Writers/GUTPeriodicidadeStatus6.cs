@@ -14,13 +14,13 @@ public partial interface IGUTPeriodicidadeStatusWriter
 
 public class GUTPeriodicidadeStatusWriter(IFGUTPeriodicidadeStatusFactory gutperiodicidadestatusFactory) : IGUTPeriodicidadeStatusWriter
 {
-    private readonly IFGUTPeriodicidadeStatusFactory _gutperiodicidadestatusFactory = gutperiodicidadestatusFactory;
-    public async Task Delete(GUTPeriodicidadeStatusResponse gutperiodicidadestatus, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFGUTPeriodicidadeStatusFactory _gutperiodicidadestatusFactory = gutperiodicidadestatusFactory ?? throw new ArgumentNullException(nameof(gutperiodicidadestatusFactory));
+    public virtual async Task Delete(GUTPeriodicidadeStatusResponse gutperiodicidadestatus, int operadorId, MsiSqlConnection oCnn)
     {
         await _gutperiodicidadestatusFactory.DeleteAsync(operadorId, gutperiodicidadestatus.Id, oCnn);
     }
 
-    public async Task<FGUTPeriodicidadeStatus> WriteAsync(Models.GUTPeriodicidadeStatus gutperiodicidadestatus, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTPeriodicidadeStatus> WriteAsync(Models.GUTPeriodicidadeStatus gutperiodicidadestatus, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (gutperiodicidadestatus.Id.IsEmptyIDNumber() ? _gutperiodicidadestatusFactory.CreateAsync() : _gutperiodicidadestatusFactory.CreateFromIdAsync(gutperiodicidadestatus.Id, oCnn));
         dbRec.FGUTAtividade = gutperiodicidadestatus.GUTAtividade;

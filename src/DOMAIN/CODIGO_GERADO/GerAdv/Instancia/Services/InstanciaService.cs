@@ -99,18 +99,18 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
     }
 
-    private async Task<InstanciaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<InstanciaResponse?> AddAndUpdate([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string uri)
+    private async Task<InstanciaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<InstanciaResponse?> AddAndUpdate([FromBody] Models.Instancia? regInstancia, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Instancia: URI inválida");
-        }
-
         if (regInstancia == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Instancia: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -124,7 +124,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -133,7 +133,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -141,17 +141,17 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<InstanciaResponse?> Validation([FromBody] Models.Instancia regInstancia, [FromRoute, Required] string uri)
+    public async Task<InstanciaResponse?> Validation([FromBody] Models.Instancia? regInstancia, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Instancia: URI inválida");
-        }
-
         if (regInstancia == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Instancia: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -165,7 +165,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             var validade = await validation.ValidateReg(regInstancia, this, acaoReader, foroReader, tiporecursoReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -174,7 +174,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regInstancia.Id.IsEmptyIDNumber())
@@ -185,17 +185,17 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         return await reader.Read(regInstancia.Id, oCnn);
     }
 
-    public async Task<InstanciaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<InstanciaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Instancia: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -210,7 +210,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
             var deleteValidation = await validation.CanDelete(id, this, nenotasService, prosucumbenciaService, tribunalService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -219,10 +219,10 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var instancia = await reader.Read(id, oCnn);
+        var instancia = await reader.Read(id ?? default, oCnn);
         try
         {
             if (instancia != null)
@@ -242,7 +242,7 @@ public partial class InstanciaService(IOptions<AppSettings> appSettings, IFInsta
         return instancia;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

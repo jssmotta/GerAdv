@@ -13,7 +13,7 @@ public partial interface IDiario2Where
 
 public partial class Diario2Where(IFDiario2Factory diario2Factory) : IDiario2Where
 {
-    private readonly IFDiario2Factory _diario2Factory = diario2Factory;
+    private readonly IFDiario2Factory _diario2Factory = diario2Factory ?? throw new ArgumentNullException(nameof(diario2Factory));
     public Diario2Response Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _diario2Factory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,18 +21,13 @@ public partial class Diario2Where(IFDiario2Factory diario2Factory) : IDiario2Whe
         {
             Id = dbRec.ID,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            diario2.Hora = dbRec.FHora;
-            diario2.Hora_date = XHora;
-        }
-
         return diario2;
     }
 }

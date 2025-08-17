@@ -41,7 +41,8 @@ export const useProcessOutputSourcesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Process Output Sources';
       setError(errorMessage);
-      //console.log('Erro ao carregar Process Output Sources');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Process Output Sources');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProcessOutputSourcesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProcessOutputSourcesList = (dataService: IProcessOutputSourcesSe
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar processoutputsources';
       setError(errorMessage);
-      //console.log('Erro ao carregar processoutputsources');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar processoutputsources');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 80) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

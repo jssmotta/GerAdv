@@ -14,13 +14,13 @@ public partial interface IProProcuradoresWriter
 
 public class ProProcuradoresWriter(IFProProcuradoresFactory proprocuradoresFactory) : IProProcuradoresWriter
 {
-    private readonly IFProProcuradoresFactory _proprocuradoresFactory = proprocuradoresFactory;
-    public async Task Delete(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProProcuradoresFactory _proprocuradoresFactory = proprocuradoresFactory ?? throw new ArgumentNullException(nameof(proprocuradoresFactory));
+    public virtual async Task Delete(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection oCnn)
     {
         await _proprocuradoresFactory.DeleteAsync(operadorId, proprocuradores.Id, oCnn);
     }
 
-    public async Task<FProProcuradores> WriteAsync(Models.ProProcuradores proprocuradores, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProProcuradores> WriteAsync(Models.ProProcuradores proprocuradores, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (proprocuradores.Id.IsEmptyIDNumber() ? _proprocuradoresFactory.CreateAsync() : _proprocuradoresFactory.CreateFromIdAsync(proprocuradores.Id, oCnn));
         dbRec.FAdvogado = proprocuradores.Advogado;

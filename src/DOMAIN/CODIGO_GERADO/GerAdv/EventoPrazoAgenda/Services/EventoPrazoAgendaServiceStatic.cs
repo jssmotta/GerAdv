@@ -8,22 +8,23 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class EventoPrazoAgendaService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEventoPrazoAgenda filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterEventoPrazoAgenda? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBEventoPrazoAgendaDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBEventoPrazoAgendaDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBEventoPrazoAgendaDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBEventoPrazoAgendaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBEventoPrazoAgendaDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBEventoPrazoAgendaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -32,28 +33,17 @@ public partial class EventoPrazoAgendaService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEventoPrazoAgendaDicInfo.PTabelaNome}].[{DBEventoPrazoAgendaDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBEventoPrazoAgendaDicInfo.Nome)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEventoPrazoAgendaDicInfo.PTabelaNome}].[{DBEventoPrazoAgendaDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBEventoPrazoAgendaDicInfo.Nome)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEventoPrazoAgendaDicInfo.PTabelaNome}].[{DBEventoPrazoAgendaDicInfo.CampoCodigo}] = @{nameof(DBEventoPrazoAgendaDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEventoPrazoAgendaDicInfo.PTabelaNome}].[{DBEventoPrazoAgendaDicInfo.CampoCodigo}] = @{(DBEventoPrazoAgendaDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEventoPrazoAgendaDicInfo.PTabelaNome}].{DBEventoPrazoAgendaDicInfo.CampoCodigo} BETWEEN @{nameof(DBEventoPrazoAgendaDicInfo.CampoCodigo)} AND @{nameof(DBEventoPrazoAgendaDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBEventoPrazoAgendaDicInfo.PTabelaNome}].{DBEventoPrazoAgendaDicInfo.CampoCodigo} BETWEEN @{(DBEventoPrazoAgendaDicInfo.CampoCodigo)} AND @{(DBEventoPrazoAgendaDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterEventoPrazoAgenda? filtro)

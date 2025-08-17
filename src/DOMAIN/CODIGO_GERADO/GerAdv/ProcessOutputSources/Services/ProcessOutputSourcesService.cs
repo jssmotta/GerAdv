@@ -88,18 +88,18 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
         }
     }
 
-    private async Task<ProcessOutputSourcesResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ProcessOutputSourcesResponse?> AddAndUpdate([FromBody] Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri)
+    private async Task<ProcessOutputSourcesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ProcessOutputSourcesResponse?> AddAndUpdate([FromBody] Models.ProcessOutputSources? regProcessOutputSources, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProcessOutputSources: URI inválida");
-        }
-
         if (regProcessOutputSources == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProcessOutputSources: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -113,7 +113,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regProcessOutputSources, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -122,24 +122,24 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         using var saved = await writer.WriteAsync(regProcessOutputSources, oCnn);
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ProcessOutputSourcesResponse?> Validation([FromBody] Models.ProcessOutputSources regProcessOutputSources, [FromRoute, Required] string uri)
+    public async Task<ProcessOutputSourcesResponse?> Validation([FromBody] Models.ProcessOutputSources? regProcessOutputSources, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProcessOutputSources: URI inválida");
-        }
-
         if (regProcessOutputSources == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProcessOutputSources: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -153,7 +153,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regProcessOutputSources, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -162,7 +162,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regProcessOutputSources.Id.IsEmptyIDNumber())
@@ -173,17 +173,17 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
         return await reader.Read(regProcessOutputSources.Id, oCnn);
     }
 
-    public async Task<ProcessOutputSourcesResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProcessOutputSourcesResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ProcessOutputSources: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -197,7 +197,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -206,10 +206,10 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var processoutputsources = await reader.Read(id, oCnn);
+        var processoutputsources = await reader.Read(id ?? default, oCnn);
         try
         {
             if (processoutputsources != null)
@@ -229,7 +229,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
         return processoutputsources;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

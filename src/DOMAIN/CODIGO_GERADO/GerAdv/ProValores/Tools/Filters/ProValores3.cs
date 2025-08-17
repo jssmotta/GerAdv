@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterProValores
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -24,20 +24,23 @@ public partial record FilterProValores
     [JsonPropertyName("tipovalorprocesso")]
     public int TipoValorProcesso { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tipovalorprocesso_end")]
+    public int TipoValorProcesso_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("indice")]
-    public string Indice { get; set; } = string.Empty;
+    public string? Indice { get; set; } = string.Empty;
 
     [JsonPropertyName("indice_end")]
-    public string Indice_end { get; set; } = string.Empty;
+    public string? Indice_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ignorar")]
     public int Ignorar { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valororiginal")]
     public decimal ValorOriginal { get; set; } = decimal.MinValue;
@@ -88,16 +91,16 @@ public partial record FilterProValores
     public decimal ValorFinal_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("dataultimacorrecao")]
-    public string DataUltimaCorrecao { get; set; } = string.Empty;
+    public string? DataUltimaCorrecao { get; set; } = string.Empty;
 
     [JsonPropertyName("dataultimacorrecao_end")]
-    public string DataUltimaCorrecao_end { get; set; } = string.Empty;
+    public string? DataUltimaCorrecao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? Guid { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? Guid_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

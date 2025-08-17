@@ -54,7 +54,7 @@ public partial class FEMPClassRiscosFactory : IFEMPClassRiscosFactory, IDisposab
             throw new ObjectDisposedException(nameof(FEMPClassRiscosFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

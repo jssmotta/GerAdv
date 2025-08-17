@@ -63,269 +63,272 @@ if (getParamFromUrl('posicaooutraspartes') > 0) {
       setNomePosicaoOutrasPartes(response.data.descricao);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    terceirosData.situacao = getParamFromUrl('posicaooutraspartes');
+      terceirosData.situacao = getParamFromUrl('posicaooutraspartes');
+    }
   }
-}
 
-if (getParamFromUrl('cidade') > 0) {
-  if (terceirosData.id === 0 && terceirosData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('cidade') > 0) {
+    if (terceirosData.id === 0 && terceirosData.cidade == 0) {
+      cidadeApi
+      .getById(getParamFromUrl('cidade'))
+      .then((response) => {
+        setNomeCidade(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    terceirosData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorSituacao = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'situacao', value: e.id } });
-  };
-  const addValorCidade = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cidade', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        terceirosData.cidade = getParamFromUrl('cidade');
+      }
+    }
+    const addValorSituacao = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'situacao', value: e.id } });
+      };
+      const addValorCidade = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cidade', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Terceiros:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de Terceiros:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`TerceirosForm-${terceirosData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`TerceirosForm-${terceirosData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar Terceiros diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = terceirosData?.id == 0 ? 'Editar Terceiros' : 'Adicionar Terceiros';
-      }
-    }, [terceirosData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar Terceiros diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = terceirosData?.id == 0 ? 'Editar Terceiros' : 'Adicionar Terceiros';
+            }
+          }, [terceirosData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-Terceiros' : 'form-container form-container-Terceiros'}>
+            <div className={isMobile ? 'form-container form-container-Terceiros' : 'form-container form-container-Terceiros'}>
 
-        <form className='formInputCadInc' id={`TerceirosForm-${terceirosData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Terceiros' data={terceirosData} isSubmitting={isSubmitting} onClose={onClose} formId={`TerceirosForm-${terceirosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`TerceirosForm-${terceirosData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Terceiros' data={terceirosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TerceirosForm-${terceirosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='nome'
-              value={terceirosData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={terceirosData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='processo'
-              label='Processo'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='processo'
-              value={terceirosData.processo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='processo'
+                    label='Processo'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='processo'
+                    value={terceirosData.processo}
+                    onChange={onChange}
+                    />
 
 
-              <PosicaoOutrasPartesComboBox
-              name={'situacao'}
-              dataForm={terceirosData}
-              value={terceirosData.situacao}
-              setValue={addValorSituacao}
-              label={'Posicao Outras Partes'}
-              />
+                    <PosicaoOutrasPartesComboBox
+                    name={'situacao'}
+                    dataForm={terceirosData}
+                    value={terceirosData.situacao}
+                    setValue={addValorSituacao}
+                    label={'Posicao Outras Partes'}
+                    />
 
-              <CidadeComboBox
-              name={'cidade'}
-              dataForm={terceirosData}
-              value={terceirosData.cidade}
-              setValue={addValorCidade}
-              label={'Cidade'}
-              />
+                    <CidadeComboBox
+                    name={'cidade'}
+                    dataForm={terceirosData}
+                    value={terceirosData.cidade}
+                    setValue={addValorCidade}
+                    label={'Cidade'}
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='endereco'
-              label='Endereco'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='endereco'
-              value={terceirosData.endereco}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='bairro'
-              label='Bairro'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='bairro'
-              value={terceirosData.bairro}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='endereco'
+                    label='Endereco'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='endereco'
+                    value={terceirosData.endereco}
+                    onChange={onChange}
+                    />
 
 
-              <InputCep
-              type='text'
-              id='cep'
-              label='CEP'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='cep'
-              value={terceirosData.cep}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='bairro'
+                    label='Bairro'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='bairro'
+                    value={terceirosData.bairro}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='fone'
-              value={terceirosData.fone}
-              onChange={onChange}
-              />
+                    <InputCep
+                    type='text'
+                    id='cep'
+                    label='CEP'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='cep'
+                    value={terceirosData.cep}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fax'
-              label='Fax'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='fax'
-              value={terceirosData.fax}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='obs'
-              label='OBS'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='obs'
-              value={terceirosData.obs}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={terceirosData.fone}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='email'
-              maxLength={150}
-              id='email'
-              label='EMail'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='email'
-              value={terceirosData.email}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fax'
+                    label='Fax'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='fax'
+                    value={terceirosData.fax}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='obs'
+                    label='OBS'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='obs'
+                    value={terceirosData.obs}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={1}
-              id='class'
-              label='Class'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='class'
-              value={terceirosData.class}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='email'
+                    maxLength={150}
+                    id='email'
+                    label='EMail'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='email'
+                    value={terceirosData.email}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={255}
-              id='varaforocomarca'
-              label='VaraForoComarca'
-              dataForm={terceirosData}
-              className='inputIncNome'
-              name='varaforocomarca'
-              value={terceirosData.varaforocomarca}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={terceirosData} label='Sexo' name='sexo' checked={terceirosData.sexo} onChange={onChange} />
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={1}
+                    id='class'
+                    label='Class'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='class'
+                    value={terceirosData.class}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Terceiros' data={terceirosData} isSubmitting={isSubmitting} onClose={onClose} formId={`TerceirosForm-${terceirosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/terceiros'} id={terceirosData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={255}
+                    id='varaforocomarca'
+                    label='VaraForoComarca'
+                    dataForm={terceirosData}
+                    className='inputIncNome'
+                    name='varaforocomarca'
+                    value={terceirosData.varaforocomarca}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={terceirosData} label='Sexo' name='sexo' checked={terceirosData.sexo} onChange={onChange} />
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Terceiros' data={terceirosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TerceirosForm-${terceirosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/terceiros'} id={terceirosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

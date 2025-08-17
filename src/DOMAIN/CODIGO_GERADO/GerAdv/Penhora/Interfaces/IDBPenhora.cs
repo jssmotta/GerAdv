@@ -10,6 +10,6 @@ public partial interface IDBPenhora
     public string? FDescricao { get; set; }
     public string? FDataPenhora { get; set; }
     public int FPenhoraStatus { get; set; }
-    public int FMaster { get; set; }
     public string? FGUID { get; set; }
+    public int FMaster { get; set; }
 }

@@ -57,127 +57,129 @@ if (getParamFromUrl('guttipo') > 0) {
       setNomeGUTTipo(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    gutmatrizData.guttipo = getParamFromUrl('guttipo');
+      gutmatrizData.guttipo = getParamFromUrl('guttipo');
+    }
   }
-}
-const addValorGUTTipo = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'guttipo', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorGUTTipo = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'guttipo', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de GUTMatriz:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`GUTMatrizForm-${gutmatrizData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de GUTMatriz:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar GUTMatriz diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = gutmatrizData?.id == 0 ? 'Editar GUTMatriz' : 'Adicionar G U T Matriz';
+        }
+      }, [gutmatrizData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-GUTMatriz' : 'form-container5 form-container-GUTMatriz'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`GUTMatrizForm-${gutmatrizData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`GUTMatrizForm-${gutmatrizData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTMatriz' data={gutmatrizData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTMatrizForm-${gutmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar GUTMatriz diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = gutmatrizData?.id == 0 ? 'Editar GUTMatriz' : 'Adicionar G U T Matriz';
-    }
-  }, [gutmatrizData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputDescription
+                type='text'
+                id='descricao'
+                label='g u t matriz'
+                dataForm={gutmatrizData}
+                className='inputIncNome'
+                name='descricao'
+                value={gutmatrizData.descricao}
+                placeholder={`Digite nome g u t matriz`}
+                onChange={onChange}
+                required
+                disabled={gutmatrizData.id > 0}
+                />
 
-    <div className={isMobile ? 'form-container form-container-GUTMatriz' : 'form-container5 form-container-GUTMatriz'}>
+                <GUTTipoComboBox
+                name={'guttipo'}
+                dataForm={gutmatrizData}
+                value={gutmatrizData.guttipo}
+                setValue={addValorGUTTipo}
+                label={'G U T Tipo'}
+                />
 
-      <form className='formInputCadInc' id={`GUTMatrizForm-${gutmatrizData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTMatriz' data={gutmatrizData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTMatrizForm-${gutmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+                <InputInput
+                required
+                type='text'
+                maxLength={2048}
+                id='valor'
+                label='Valor'
+                dataForm={gutmatrizData}
+                className='inputIncNome'
+                name='valor'
+                value={gutmatrizData.valor}
+                onChange={onChange}
+                />
 
-            <InputDescription
-            type='text'
-            id='descricao'
-            label='g u t matriz'
-            dataForm={gutmatrizData}
-            className='inputIncNome'
-            name='descricao'
-            value={gutmatrizData.descricao}
-            placeholder={`Digite nome g u t matriz`}
-            onChange={onChange}
-            required
-            disabled={gutmatrizData.id > 0}
-            />
-
-            <GUTTipoComboBox
-            name={'guttipo'}
-            dataForm={gutmatrizData}
-            value={gutmatrizData.guttipo}
-            setValue={addValorGUTTipo}
-            label={'G U T Tipo'}
-            />
-
-            <InputInput
-            required
-            type='text'
-            maxLength={2048}
-            id='valor'
-            label='Valor'
-            dataForm={gutmatrizData}
-            className='inputIncNome'
-            name='valor'
-            value={gutmatrizData.valor}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+              </div>
+            </form>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTMatriz' data={gutmatrizData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTMatrizForm-${gutmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/gutmatriz'} id={gutmatrizData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTMatriz' data={gutmatrizData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTMatrizForm-${gutmatrizData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/gutmatriz'} id={gutmatrizData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

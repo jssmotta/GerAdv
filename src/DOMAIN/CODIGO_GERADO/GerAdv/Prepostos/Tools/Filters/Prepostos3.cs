@@ -10,34 +10,46 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterPrepostos
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("funcao")]
     public int Funcao { get; set; } = int.MinValue;
 
+    [JsonPropertyName("funcao_end")]
+    public int Funcao_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("setor")]
     public int Setor { get; set; } = int.MinValue;
 
+    [JsonPropertyName("setor_end")]
+    public int Setor_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("dtnasc")]
-    public string DtNasc { get; set; } = string.Empty;
+    public string? DtNasc { get; set; } = string.Empty;
 
     [JsonPropertyName("dtnasc_end")]
-    public string DtNasc_end { get; set; } = string.Empty;
+    public string? DtNasc_end { get; set; } = string.Empty;
 
     [JsonPropertyName("qualificacao")]
-    public string Qualificacao { get; set; } = string.Empty;
+    public string? Qualificacao { get; set; } = string.Empty;
 
     [JsonPropertyName("qualificacao_end")]
-    public string Qualificacao_end { get; set; } = string.Empty;
+    public string? Qualificacao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("sexo")]
     public int Sexo { get; set; } = int.MinValue;
@@ -49,58 +61,58 @@ public partial record FilterPrepostos
     public int Idade_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("cpf")]
-    public string CPF { get; set; } = string.Empty;
+    public string? CPF { get; set; } = string.Empty;
 
     [JsonPropertyName("cpf_end")]
-    public string CPF_end { get; set; } = string.Empty;
+    public string? CPF_end { get; set; } = string.Empty;
 
     [JsonPropertyName("rg")]
-    public string RG { get; set; } = string.Empty;
+    public string? RG { get; set; } = string.Empty;
 
     [JsonPropertyName("rg_end")]
-    public string RG_end { get; set; } = string.Empty;
+    public string? RG_end { get; set; } = string.Empty;
 
     [JsonPropertyName("periodo_ini")]
-    public string Periodo_Ini { get; set; } = string.Empty;
+    public string? Periodo_Ini { get; set; } = string.Empty;
 
     [JsonPropertyName("periodo_ini_end")]
-    public string Periodo_Ini_end { get; set; } = string.Empty;
+    public string? Periodo_Ini_end { get; set; } = string.Empty;
 
     [JsonPropertyName("periodo_fim")]
-    public string Periodo_Fim { get; set; } = string.Empty;
+    public string? Periodo_Fim { get; set; } = string.Empty;
 
     [JsonPropertyName("periodo_fim_end")]
-    public string Periodo_Fim_end { get; set; } = string.Empty;
+    public string? Periodo_Fim_end { get; set; } = string.Empty;
 
     [JsonPropertyName("registro")]
-    public string Registro { get; set; } = string.Empty;
+    public string? Registro { get; set; } = string.Empty;
 
     [JsonPropertyName("registro_end")]
-    public string Registro_end { get; set; } = string.Empty;
+    public string? Registro_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ctpsnumero")]
-    public string CTPSNumero { get; set; } = string.Empty;
+    public string? CTPSNumero { get; set; } = string.Empty;
 
     [JsonPropertyName("ctpsnumero_end")]
-    public string CTPSNumero_end { get; set; } = string.Empty;
+    public string? CTPSNumero_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ctpsserie")]
-    public string CTPSSerie { get; set; } = string.Empty;
+    public string? CTPSSerie { get; set; } = string.Empty;
 
     [JsonPropertyName("ctpsserie_end")]
-    public string CTPSSerie_end { get; set; } = string.Empty;
+    public string? CTPSSerie_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ctpsdtemissao")]
-    public string CTPSDtEmissao { get; set; } = string.Empty;
+    public string? CTPSDtEmissao { get; set; } = string.Empty;
 
     [JsonPropertyName("ctpsdtemissao_end")]
-    public string CTPSDtEmissao_end { get; set; } = string.Empty;
+    public string? CTPSDtEmissao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pis")]
-    public string PIS { get; set; } = string.Empty;
+    public string? PIS { get; set; } = string.Empty;
 
     [JsonPropertyName("pis_end")]
-    public string PIS_end { get; set; } = string.Empty;
+    public string? PIS_end { get; set; } = string.Empty;
 
     [JsonPropertyName("salario")]
     public decimal Salario { get; set; } = decimal.MinValue;
@@ -112,73 +124,70 @@ public partial record FilterPrepostos
     public int LiberaAgenda { get; set; } = int.MinValue;
 
     [JsonPropertyName("observacao")]
-    public string Observacao { get; set; } = string.Empty;
+    public string? Observacao { get; set; } = string.Empty;
 
     [JsonPropertyName("observacao_end")]
-    public string Observacao_end { get; set; } = string.Empty;
+    public string? Observacao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("endereco")]
-    public string Endereco { get; set; } = string.Empty;
+    public string? Endereco { get; set; } = string.Empty;
 
     [JsonPropertyName("endereco_end")]
-    public string Endereco_end { get; set; } = string.Empty;
+    public string? Endereco_end { get; set; } = string.Empty;
 
     [JsonPropertyName("bairro")]
-    public string Bairro { get; set; } = string.Empty;
+    public string? Bairro { get; set; } = string.Empty;
 
     [JsonPropertyName("bairro_end")]
-    public string Bairro_end { get; set; } = string.Empty;
+    public string? Bairro_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cidade")]
     public int Cidade { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cidade_end")]
+    public int Cidade_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("cep")]
-    public string CEP { get; set; } = string.Empty;
+    public string? CEP { get; set; } = string.Empty;
 
     [JsonPropertyName("cep_end")]
-    public string CEP_end { get; set; } = string.Empty;
+    public string? CEP_end { get; set; } = string.Empty;
 
     [JsonPropertyName("fone")]
-    public string Fone { get; set; } = string.Empty;
+    public string? Fone { get; set; } = string.Empty;
 
     [JsonPropertyName("fone_end")]
-    public string Fone_end { get; set; } = string.Empty;
+    public string? Fone_end { get; set; } = string.Empty;
 
     [JsonPropertyName("fax")]
-    public string Fax { get; set; } = string.Empty;
+    public string? Fax { get; set; } = string.Empty;
 
     [JsonPropertyName("fax_end")]
-    public string Fax_end { get; set; } = string.Empty;
+    public string? Fax_end { get; set; } = string.Empty;
 
     [JsonPropertyName("email")]
-    public string EMail { get; set; } = string.Empty;
+    public string? EMail { get; set; } = string.Empty;
 
     [JsonPropertyName("email_end")]
-    public string EMail_end { get; set; } = string.Empty;
+    public string? EMail_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pai")]
-    public string Pai { get; set; } = string.Empty;
+    public string? Pai { get; set; } = string.Empty;
 
     [JsonPropertyName("pai_end")]
-    public string Pai_end { get; set; } = string.Empty;
+    public string? Pai_end { get; set; } = string.Empty;
 
     [JsonPropertyName("mae")]
-    public string Mae { get; set; } = string.Empty;
+    public string? Mae { get; set; } = string.Empty;
 
     [JsonPropertyName("mae_end")]
-    public string Mae_end { get; set; } = string.Empty;
+    public string? Mae_end { get; set; } = string.Empty;
 
     [JsonPropertyName("class")]
-    public string Class { get; set; } = string.Empty;
+    public string? Class { get; set; } = string.Empty;
 
     [JsonPropertyName("class_end")]
-    public string Class_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? Class_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

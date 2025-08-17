@@ -33,7 +33,6 @@ export const useGUTPeriodicidadeStatusGrid = ({
 const [columnsOrder, setColumnsOrder] = useState<string[]>([]);
 // Definir ordem padrão das colunas
 const defaultColumnsOrder = useMemo(() => [
-  'guid',
   'nomegutatividades',
   ], []);
   // Inicializar ordem das colunas se ainda não foi definida
@@ -83,13 +82,12 @@ const defaultColumnsOrder = useMemo(() => [
 }, []);
 // ===== CONFIGURAÇÕES DE FILTROS =====
 const initialFilters = useMemo(() => ({
-  guid: '',
+
 }), []);
 // Lógica de filtro customizada
 const filterLogic = useCallback((data: IGUTPeriodicidadeStatus, filters: Record<string, any>) => {
-  const guidMatches = applyFilter(data, 'guid', filters.guid);
-  return guidMatches
-  ;
+
+  return true;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({

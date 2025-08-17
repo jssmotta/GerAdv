@@ -8,27 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoEnderecoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoEndereco filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoEndereco? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBTipoEnderecoDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBTipoEnderecoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBTipoEnderecoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBTipoEnderecoDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTipoEnderecoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBTipoEnderecoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBTipoEnderecoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTipoEnderecoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -37,29 +38,18 @@ public partial class TipoEnderecoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].[{DBTipoEnderecoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoEnderecoDicInfo.Descricao)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].[{DBTipoEnderecoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoEnderecoDicInfo.GUID)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].[{DBTipoEnderecoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBTipoEnderecoDicInfo.GUID)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].[{DBTipoEnderecoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBTipoEnderecoDicInfo.Descricao)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].[{DBTipoEnderecoDicInfo.CampoCodigo}] = @{nameof(DBTipoEnderecoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].[{DBTipoEnderecoDicInfo.CampoCodigo}] = @{(DBTipoEnderecoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].{DBTipoEnderecoDicInfo.CampoCodigo} BETWEEN @{nameof(DBTipoEnderecoDicInfo.CampoCodigo)} AND @{nameof(DBTipoEnderecoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoEnderecoDicInfo.PTabelaNome}].{DBTipoEnderecoDicInfo.CampoCodigo} BETWEEN @{(DBTipoEnderecoDicInfo.CampoCodigo)} AND @{(DBTipoEnderecoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterTipoEndereco? filtro)

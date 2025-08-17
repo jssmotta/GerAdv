@@ -131,16 +131,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Site { get; set; } = "";
 
         /// <summary>
-        /// Class - opcClass - tamanho máximo: 1 
-        /// </summary>
-        [JsonPropertyName("class")]
-        public string Class { get; set; } = "";
-
-        /// <summary>
         /// GUID - opcGUID - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Class - opcClass - tamanho máximo: 1 
+        /// </summary>
+        [JsonPropertyName("class")]
+        public string Class { get; set; } = "";
     }
 }
 
@@ -270,16 +270,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Site { get; set; } = "";
 
         /// <summary>
-        /// Class - opcClass - tamanho máximo: 1 
-        /// </summary>
-        [JsonPropertyName("class")]
-        public string Class { get; set; } = "";
-
-        /// <summary>
         /// GUID - opcGUID - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Class - opcClass - tamanho máximo: 1 
+        /// </summary>
+        [JsonPropertyName("class")]
+        public string Class { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

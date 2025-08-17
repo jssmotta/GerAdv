@@ -14,6 +14,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
+        /// GUID - amdGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Nome - amdNome - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("nome")]
@@ -42,12 +48,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("unc")]
         public string UNC { get; set; } = "";
-
-        /// <summary>
-        /// GUID - amdGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -60,6 +60,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
+        /// GUID - amdGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Nome - amdNome - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("nome")]
@@ -88,11 +94,5 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("unc")]
         public string UNC { get; set; } = "";
-
-        /// <summary>
-        /// GUID - amdGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }

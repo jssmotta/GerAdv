@@ -3,6 +3,7 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsEscritorios
 {	cidade = `Cidade`,
+	guid = `GUID`,
 	cnpj = `CNPJ`,
 	casa = `Casa`,
 	parceria = `Parceria`,
@@ -21,5 +22,4 @@ export enum FieldsEscritorios
 	inscest = `InscEst`,
 	correspondente = `Correspondente`,
 	top = `Top`,
-	guid = `GUID`,
 }

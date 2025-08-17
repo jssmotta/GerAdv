@@ -13,13 +13,14 @@ public partial interface IInstanciaWhere
 
 public partial class InstanciaWhere(IFInstanciaFactory instanciaFactory) : IInstanciaWhere
 {
-    private readonly IFInstanciaFactory _instanciaFactory = instanciaFactory;
+    private readonly IFInstanciaFactory _instanciaFactory = instanciaFactory ?? throw new ArgumentNullException(nameof(instanciaFactory));
     public InstanciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _instanciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var instancia = new InstanciaResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -46,7 +47,6 @@ public partial class InstanciaWhere(IFInstanciaFactory instanciaFactory) : IInst
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
         {

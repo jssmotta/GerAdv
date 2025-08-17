@@ -64,26 +64,15 @@ export const usePontoVirtualAcessosFilter = ({ handleFetchWithFilter }: UsePonto
   className='inputSearch inputSearchComboboxTab'
   label='Operador'
   />
-  <InputDate
+  <InputInput
   type='text'
   id='datahora'
-  label='DataHora (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
   name='datahora'
   value={handlers.windowFilter?.datahora ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('datahora', value)}
-  />
-  <InputDate
-  type='text'
-  id='datahora_end'
-  label='DataHora (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='datahora_end'
-  value={handlers.windowFilter?.datahora_end ?? ''}
-  disabled={handlers.windowFilter?.datahora ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('datahora_end', value)}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe DataHora'
+  label='DataHora'
+  className='inputIncNome inputSearch'
   />
   <InputComboFilterYesNo
   type='text'

@@ -25,7 +25,7 @@ export class ParceriaProcValidator {
 export interface IParceriaProcService {
   fetchParceriaProcById: (id: number) => Promise<IParceriaProc>;
   saveParceriaProc: (parceriaproc: IParceriaProc) => Promise<IParceriaProc>;  
-  getList: (filtro?: FilterParceriaProc) => Promise<IParceriaProc[]>;
+  
   getAll: (filtro?: FilterParceriaProc) => Promise<IParceriaProc[]>;
   deleteParceriaProc: (id: number) => Promise<void>;
   validateParceriaProc: (parceriaproc: IParceriaProc) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class ParceriaProcService implements IParceriaProcService {
   }
 
   
-    async getList(filtro?: FilterParceriaProc): Promise<IParceriaProc[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching ParceriaProc list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class ParceriaProcService implements IParceriaProcService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ParceriaProc');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ParceriaProc');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class ParceriaProcService implements IParceriaProcService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ParceriaProc');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ParceriaProc');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ParceriaProc:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ParceriaProc:');
       return [];
     }
   }

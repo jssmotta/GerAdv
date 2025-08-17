@@ -54,7 +54,7 @@ public partial class FOutrasPartesClienteFactory : IFOutrasPartesClienteFactory,
             throw new ObjectDisposedException(nameof(FOutrasPartesClienteFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

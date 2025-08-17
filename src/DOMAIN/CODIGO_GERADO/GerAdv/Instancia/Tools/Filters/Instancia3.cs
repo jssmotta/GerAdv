@@ -10,22 +10,28 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterInstancia
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("liminarpedida")]
-    public string LiminarPedida { get; set; } = string.Empty;
+    public string? LiminarPedida { get; set; } = string.Empty;
 
     [JsonPropertyName("liminarpedida_end")]
-    public string LiminarPedida_end { get; set; } = string.Empty;
+    public string? LiminarPedida_end { get; set; } = string.Empty;
 
     [JsonPropertyName("objeto")]
-    public string Objeto { get; set; } = string.Empty;
+    public string? Objeto { get; set; } = string.Empty;
 
     [JsonPropertyName("objeto_end")]
-    public string Objeto_end { get; set; } = string.Empty;
+    public string? Objeto_end { get; set; } = string.Empty;
 
     [JsonPropertyName("statusresultado")]
     public int StatusResultado { get; set; } = int.MinValue;
@@ -52,25 +58,25 @@ public partial record FilterInstancia
     public int Processo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("liminarparcial")]
     public int LiminarParcial { get; set; } = int.MinValue;
 
     [JsonPropertyName("liminarresultado")]
-    public string LiminarResultado { get; set; } = string.Empty;
+    public string? LiminarResultado { get; set; } = string.Empty;
 
     [JsonPropertyName("liminarresultado_end")]
-    public string LiminarResultado_end { get; set; } = string.Empty;
+    public string? LiminarResultado_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nroprocesso")]
-    public string NroProcesso { get; set; } = string.Empty;
+    public string? NroProcesso { get; set; } = string.Empty;
 
     [JsonPropertyName("nroprocesso_end")]
-    public string NroProcesso_end { get; set; } = string.Empty;
+    public string? NroProcesso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("divisao")]
     public int Divisao { get; set; } = int.MinValue;
@@ -99,17 +105,26 @@ public partial record FilterInstancia
     [JsonPropertyName("acao")]
     public int Acao { get; set; } = int.MinValue;
 
+    [JsonPropertyName("acao_end")]
+    public int Acao_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("foro")]
     public int Foro { get; set; } = int.MinValue;
+
+    [JsonPropertyName("foro_end")]
+    public int Foro_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("tiporecurso")]
     public int TipoRecurso { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tiporecurso_end")]
+    public int TipoRecurso_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("zkey")]
-    public string ZKey { get; set; } = string.Empty;
+    public string? ZKey { get; set; } = string.Empty;
 
     [JsonPropertyName("zkey_end")]
-    public string ZKey_end { get; set; } = string.Empty;
+    public string? ZKey_end { get; set; } = string.Empty;
 
     [JsonPropertyName("zkeyquem")]
     public int ZKeyQuem { get; set; } = int.MinValue;
@@ -118,22 +133,22 @@ public partial record FilterInstancia
     public int ZKeyQuem_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("zkeyquando")]
-    public string ZKeyQuando { get; set; } = string.Empty;
+    public string? ZKeyQuando { get; set; } = string.Empty;
 
     [JsonPropertyName("zkeyquando_end")]
-    public string ZKeyQuando_end { get; set; } = string.Empty;
+    public string? ZKeyQuando_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nroantigo")]
-    public string NroAntigo { get; set; } = string.Empty;
+    public string? NroAntigo { get; set; } = string.Empty;
 
     [JsonPropertyName("nroantigo_end")]
-    public string NroAntigo_end { get; set; } = string.Empty;
+    public string? NroAntigo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("accesscode")]
-    public string AccessCode { get; set; } = string.Empty;
+    public string? AccessCode { get; set; } = string.Empty;
 
     [JsonPropertyName("accesscode_end")]
-    public string AccessCode_end { get; set; } = string.Empty;
+    public string? AccessCode_end { get; set; } = string.Empty;
 
     [JsonPropertyName("julgador")]
     public int Julgador { get; set; } = int.MinValue;
@@ -142,16 +157,10 @@ public partial record FilterInstancia
     public int Julgador_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("zkeyia")]
-    public string ZKeyIA { get; set; } = string.Empty;
+    public string? ZKeyIA { get; set; } = string.Empty;
 
     [JsonPropertyName("zkeyia_end")]
-    public string ZKeyIA_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? ZKeyIA_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

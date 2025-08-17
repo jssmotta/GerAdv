@@ -54,7 +54,7 @@ public partial class FViaRecebimentoFactory : IFViaRecebimentoFactory, IDisposab
             throw new ObjectDisposedException(nameof(FViaRecebimentoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

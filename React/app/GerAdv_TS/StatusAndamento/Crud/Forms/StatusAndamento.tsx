@@ -81,71 +81,72 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar StatusAndamento diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar StatusAndamento diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = statusandamentoData?.id == 0 ? 'Editar StatusAndamento' : 'Adicionar Status Andamento';
-  }
-}, [statusandamentoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-StatusAndamento' : 'form-container5 form-container-StatusAndamento'}>
-
-    <form className='formInputCadInc' id={`StatusAndamentoForm-${statusandamentoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='StatusAndamento' data={statusandamentoData} isSubmitting={isSubmitting} onClose={onClose} formId={`StatusAndamentoForm-${statusandamentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={statusandamentoData}
-          className='inputIncNome'
-          name='nome'
-          value={statusandamentoData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='icone'
-          label='Icone'
-          dataForm={statusandamentoData}
-          className='inputIncNome'
-          name='icone'
-          value={statusandamentoData.icone}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='StatusAndamento' data={statusandamentoData} isSubmitting={isSubmitting} onClose={onClose} formId={`StatusAndamentoForm-${statusandamentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/statusandamento'} id={statusandamentoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = statusandamentoData?.id == 0 ? 'Editar StatusAndamento' : 'Adicionar Status Andamento';
+    }
+  }, [statusandamentoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-StatusAndamento' : 'form-container5 form-container-StatusAndamento'}>
+
+      <form className='formInputCadInc' id={`StatusAndamentoForm-${statusandamentoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='StatusAndamento' data={statusandamentoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`StatusAndamentoForm-${statusandamentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={statusandamentoData}
+            className='inputIncNome'
+            name='nome'
+            value={statusandamentoData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='icone'
+            label='Icone'
+            dataForm={statusandamentoData}
+            className='inputIncNome'
+            name='icone'
+            value={statusandamentoData.icone}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='StatusAndamento' data={statusandamentoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`StatusAndamentoForm-${statusandamentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/statusandamento'} id={statusandamentoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

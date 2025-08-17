@@ -25,7 +25,7 @@ export class ProcessOutputRequestValidator {
 export interface IProcessOutputRequestService {
   fetchProcessOutputRequestById: (id: number) => Promise<IProcessOutputRequest>;
   saveProcessOutputRequest: (processoutputrequest: IProcessOutputRequest) => Promise<IProcessOutputRequest>;  
-  getList: (filtro?: FilterProcessOutputRequest) => Promise<IProcessOutputRequest[]>;
+  
   getAll: (filtro?: FilterProcessOutputRequest) => Promise<IProcessOutputRequest[]>;
   deleteProcessOutputRequest: (id: number) => Promise<void>;
   validateProcessOutputRequest: (processoutputrequest: IProcessOutputRequest) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class ProcessOutputRequestService implements IProcessOutputRequestService
   }
 
   
-    async getList(filtro?: FilterProcessOutputRequest): Promise<IProcessOutputRequest[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching ProcessOutputRequest list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class ProcessOutputRequestService implements IProcessOutputRequestService
             }
           })
           .catch(error => {
-            console.log('Error fetching online ProcessOutputRequest');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProcessOutputRequest');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class ProcessOutputRequestService implements IProcessOutputRequestService
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ProcessOutputRequest');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProcessOutputRequest');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ProcessOutputRequest:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ProcessOutputRequest:');
       return [];
     }
   }

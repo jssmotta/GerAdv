@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactory) : IAndamentosMDReader
 {
-    private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory;
+    private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("amdCodigo, amdNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<AndamentosMDResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAndamentosMD.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AndamentosMDResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,12 +54,12 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         var andamentosmd = new Models.AndamentosMD
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return andamentosmd;
     }
@@ -85,12 +85,12 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         var andamentosmd = new AndamentosMDResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return andamentosmd;
     }
@@ -105,12 +105,12 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         var andamentosmd = new AndamentosMDResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return andamentosmd;
     }
@@ -125,12 +125,12 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         var andamentosmd = new AndamentosMDResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return andamentosmd;
     }
@@ -145,12 +145,12 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         var andamentosmd = new AndamentosMDResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return andamentosmd;
     }

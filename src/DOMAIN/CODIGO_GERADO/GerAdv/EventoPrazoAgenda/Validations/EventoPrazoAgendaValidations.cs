@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IEventoPrazoAgendaValidation
 {
     Task<bool> ValidateReg(Models.EventoPrazoAgenda reg, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class EventoPrazoAgendaValidation : IEventoPrazoAgendaValidation
 {
-    public async Task<bool> CanDelete(int id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class EventoPrazoAgendaValidation : IEventoPrazoAgendaValidation
 
     private bool ValidSizes(Models.EventoPrazoAgenda reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBEventoPrazoAgendaDicInfo.EpaNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBEventoPrazoAgendaDicInfo.EpaNome.FTamanho} caracteres.");
         return true;
     }
 

@@ -250,7 +250,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DOMAIN\Domain.csproj" />
-		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\SGMain\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -13,7 +13,7 @@ public partial interface IProValoresWhere
 
 public partial class ProValoresWhere(IFProValoresFactory provaloresFactory) : IProValoresWhere
 {
-    private readonly IFProValoresFactory _provaloresFactory = provaloresFactory;
+    private readonly IFProValoresFactory _provaloresFactory = provaloresFactory ?? throw new ArgumentNullException(nameof(provaloresFactory));
     public ProValoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _provaloresFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -33,7 +33,7 @@ public partial class ProValoresWhere(IFProValoresFactory provaloresFactory) : IP
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
         {

@@ -72,18 +72,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAgendaQuem = (id: number) => {
-  router.push(`/pages/agendaquem/?funcionarios=${id}`);
-};
-const SearchFromCellAgendaQuem = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgendaQuem(props.dataItem.id)}><span title='Pesquisar relacionados em Agenda Quem'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellHorasTrab = (id: number) => {
   router.push(`/pages/horastrab/?funcionarios=${id}`);
 };
@@ -161,7 +149,31 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'nomecargos': (
+  <GridColumn
+  key='nomecargos'
+  field='nomecargos'
+  title='Cargo'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'descricaofuncao': (
+  <GridColumn
+  key='descricaofuncao'
+  field='descricaofuncao'
+  title='Função'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'nomecidade': (
+  <GridColumn
+  key='nomecidade'
+  field='nomecidade'
+  title='Cidade'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_Agenda': (
   <GridColumn
   key='Agenda'
@@ -171,17 +183,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellAgenda }}
-  />
-  ), /* Track G.03 */
-  'id_edit_AgendaQuem': (
-  <GridColumn
-  key='AgendaQuem'
-  field='AgendaQuem'
-  title='Agenda Quem'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellAgendaQuem }}
   />
   ), /* Track G.03 */
   'id_edit_HorasTrab': (
@@ -195,36 +196,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellHorasTrab }}
   />
   ), /* Track G.03 */
-  'nomecargos': (
-  <GridColumn
-  key='nomecargos'
-
-  field='nomecargos'
-  title='Cargo'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'descricaofuncao': (
-  <GridColumn
-  key='descricaofuncao'
-
-  field='descricaofuncao'
-  title='Função'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'nomecidade': (
-  <GridColumn
-  key='nomecidade'
-
-  field='nomecidade'
-  title='Cidade'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
@@ -238,14 +209,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaQuem'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Quem'
-  cells={{ data: SearchFromCellAgendaQuem }}
   />, 
   <GridColumn
   field='id_edit_HorasTrab'
@@ -296,14 +259,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AgendaQuem'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Agenda Quem'
-  cells={{ data: SearchFromCellAgendaQuem }}
   />, 
   <GridColumn
   field='id_edit_HorasTrab'

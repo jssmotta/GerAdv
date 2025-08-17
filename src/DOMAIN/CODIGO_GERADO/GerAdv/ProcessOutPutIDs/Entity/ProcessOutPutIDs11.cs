@@ -54,7 +54,7 @@ public partial class FProcessOutPutIDsFactory : IFProcessOutPutIDsFactory, IDisp
             throw new ObjectDisposedException(nameof(FProcessOutPutIDsFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

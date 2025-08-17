@@ -81,72 +81,73 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar GUTTipo diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar GUTTipo diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = guttipoData?.id == 0 ? 'Editar GUTTipo' : 'Adicionar G U T Tipo';
-  }
-}, [guttipoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-GUTTipo' : 'form-container5 form-container-GUTTipo'}>
-
-    <form className='formInputCadInc' id={`GUTTipoForm-${guttipoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTTipo' data={guttipoData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTTipoForm-${guttipoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={guttipoData}
-          className='inputIncNome'
-          name='nome'
-          value={guttipoData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          required
-          type='text'
-          maxLength={2048}
-          id='ordem'
-          label='Ordem'
-          dataForm={guttipoData}
-          className='inputIncNome'
-          name='ordem'
-          value={guttipoData.ordem}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTTipo' data={guttipoData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTTipoForm-${guttipoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/guttipo'} id={guttipoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = guttipoData?.id == 0 ? 'Editar GUTTipo' : 'Adicionar G U T Tipo';
+    }
+  }, [guttipoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-GUTTipo' : 'form-container5 form-container-GUTTipo'}>
+
+      <form className='formInputCadInc' id={`GUTTipoForm-${guttipoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTTipo' data={guttipoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTTipoForm-${guttipoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={guttipoData}
+            className='inputIncNome'
+            name='nome'
+            value={guttipoData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            required
+            type='text'
+            maxLength={2048}
+            id='ordem'
+            label='Ordem'
+            dataForm={guttipoData}
+            className='inputIncNome'
+            name='ordem'
+            value={guttipoData.ordem}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTTipo' data={guttipoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTTipoForm-${guttipoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/guttipo'} id={guttipoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

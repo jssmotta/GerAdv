@@ -14,15 +14,16 @@ public partial interface IFuncionariosWriter
 
 public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFuncionariosWriter
 {
-    private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory;
-    public async Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory ?? throw new ArgumentNullException(nameof(funcionariosFactory));
+    public virtual async Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection oCnn)
     {
         await _funcionariosFactory.DeleteAsync(operadorId, funcionarios.Id, oCnn);
     }
 
-    public async Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (funcionarios.Id.IsEmptyIDNumber() ? _funcionariosFactory.CreateAsync() : _funcionariosFactory.CreateFromIdAsync(funcionarios.Id, oCnn));
+        dbRec.FGUID = funcionarios.GUID;
         dbRec.FEMailPro = funcionarios.EMailPro;
         dbRec.FCargo = funcionarios.Cargo;
         dbRec.FNome = funcionarios.Nome;
@@ -57,7 +58,6 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
         dbRec.FLiberaAgenda = funcionarios.LiberaAgenda;
         dbRec.FPasta = funcionarios.Pasta;
         dbRec.FClass = funcionarios.Class;
-        dbRec.FGUID = funcionarios.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

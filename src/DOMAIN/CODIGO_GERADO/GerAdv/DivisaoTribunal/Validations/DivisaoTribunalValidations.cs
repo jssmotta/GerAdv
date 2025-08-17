@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IDivisaoTribunalValidation
 {
     Task<bool> ValidateReg(Models.DivisaoTribunal reg, IDivisaoTribunalService service, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IDivisaoTribunalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IDivisaoTribunalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 {
-    public async Task<bool> CanDelete(int id, IDivisaoTribunalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IDivisaoTribunalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,18 +26,18 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 
     private bool ValidSizes(Models.DivisaoTribunal reg)
     {
-        if (reg.NomeEspecial != null && reg.NomeEspecial.Length > 255)
-            throw new SGValidationException($"NomeEspecial deve ter no máximo 255 caracteres.");
-        if (reg.CodigoDiv != null && reg.CodigoDiv.Length > 5)
-            throw new SGValidationException($"CodigoDiv deve ter no máximo 5 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 40)
-            throw new SGValidationException($"Endereco deve ter no máximo 40 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Andar != null && reg.Andar.Length > 12)
-            throw new SGValidationException($"Andar deve ter no máximo 12 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.NomeEspecial != null && reg.NomeEspecial.Length > DBDivisaoTribunalDicInfo.DivNomeEspecial.FTamanho)
+            throw new SGValidationException($"NomeEspecial deve ter no máximo {DBDivisaoTribunalDicInfo.DivNomeEspecial.FTamanho} caracteres.");
+        if (reg.CodigoDiv != null && reg.CodigoDiv.Length > DBDivisaoTribunalDicInfo.DivCodigoDiv.FTamanho)
+            throw new SGValidationException($"CodigoDiv deve ter no máximo {DBDivisaoTribunalDicInfo.DivCodigoDiv.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBDivisaoTribunalDicInfo.DivEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBDivisaoTribunalDicInfo.DivEndereco.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBDivisaoTribunalDicInfo.DivCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBDivisaoTribunalDicInfo.DivCEP.FTamanho} caracteres.");
+        if (reg.Andar != null && reg.Andar.Length > DBDivisaoTribunalDicInfo.DivAndar.FTamanho)
+            throw new SGValidationException($"Andar deve ter no máximo {DBDivisaoTribunalDicInfo.DivAndar.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBDivisaoTribunalDicInfo.DivGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBDivisaoTribunalDicInfo.DivGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -45,8 +45,6 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -58,7 +56,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
             throw new SGValidationException("Tribunal é obrigatório.");
         if (reg.CodigoDiv.IsEmpty())
             throw new SGValidationException("CodigoDiv é obrigatório.");
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())

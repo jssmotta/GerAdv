@@ -33,7 +33,6 @@ export const useParceriaProcGrid = ({
 const [columnsOrder, setColumnsOrder] = useState<string[]>([]);
 // Definir ordem padrão das colunas
 const defaultColumnsOrder = useMemo(() => [
-  'guid',
   'nomeadvogados',
   'nropastaprocessos',
   ], []);
@@ -84,13 +83,12 @@ const defaultColumnsOrder = useMemo(() => [
 }, []);
 // ===== CONFIGURAÇÕES DE FILTROS =====
 const initialFilters = useMemo(() => ({
-  guid: '',
+
 }), []);
 // Lógica de filtro customizada
 const filterLogic = useCallback((data: IParceriaProc, filters: Record<string, any>) => {
-  const guidMatches = applyFilter(data, 'guid', filters.guid);
-  return guidMatches
-  ;
+
+  return true;
 }, []);
 // Hook para filtros
 const { columnFilters, filteredData, handleFilterChange } = useGridFilter({

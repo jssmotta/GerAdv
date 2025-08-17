@@ -93,18 +93,18 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         }
     }
 
-    private async Task<LivroCaixaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<LivroCaixaResponse?> AddAndUpdate([FromBody] Models.LivroCaixa regLivroCaixa, [FromRoute, Required] string uri)
+    private async Task<LivroCaixaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<LivroCaixaResponse?> AddAndUpdate([FromBody] Models.LivroCaixa? regLivroCaixa, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("LivroCaixa: URI inválida");
-        }
-
         if (regLivroCaixa == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("LivroCaixa: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -118,7 +118,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
             var validade = await validation.ValidateReg(regLivroCaixa, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -127,7 +127,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -135,17 +135,17 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<LivroCaixaResponse?> Validation([FromBody] Models.LivroCaixa regLivroCaixa, [FromRoute, Required] string uri)
+    public async Task<LivroCaixaResponse?> Validation([FromBody] Models.LivroCaixa? regLivroCaixa, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("LivroCaixa: URI inválida");
-        }
-
         if (regLivroCaixa == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("LivroCaixa: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -159,7 +159,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
             var validade = await validation.ValidateReg(regLivroCaixa, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -168,7 +168,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regLivroCaixa.Id.IsEmptyIDNumber())
@@ -179,17 +179,17 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         return await reader.Read(regLivroCaixa.Id, oCnn);
     }
 
-    public async Task<LivroCaixaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<LivroCaixaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("LivroCaixa: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,7 +204,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -213,10 +213,10 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var livrocaixa = await reader.Read(id, oCnn);
+        var livrocaixa = await reader.Read(id ?? default, oCnn);
         try
         {
             if (livrocaixa != null)
@@ -236,7 +236,7 @@ public partial class LivroCaixaService(IOptions<AppSettings> appSettings, IFLivr
         return livrocaixa;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

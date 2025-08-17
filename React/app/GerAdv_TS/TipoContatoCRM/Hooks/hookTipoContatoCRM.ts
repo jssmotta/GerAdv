@@ -41,7 +41,8 @@ export const useTipoContatoCRMForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Tipo Contato C R M';
       setError(errorMessage);
-      //console.log('Erro ao carregar Tipo Contato C R M');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Tipo Contato C R M');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useTipoContatoCRMNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useTipoContatoCRMList = (dataService: ITipoContatoCRMService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar tipocontatocrm';
       setError(errorMessage);
-      //console.log('Erro ao carregar tipocontatocrm');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar tipocontatocrm');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 80) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

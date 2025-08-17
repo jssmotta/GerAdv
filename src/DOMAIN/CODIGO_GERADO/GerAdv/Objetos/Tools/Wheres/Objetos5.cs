@@ -13,7 +13,7 @@ public partial interface IObjetosWhere
 
 public partial class ObjetosWhere(IFObjetosFactory objetosFactory) : IObjetosWhere
 {
-    private readonly IFObjetosFactory _objetosFactory = objetosFactory;
+    private readonly IFObjetosFactory _objetosFactory = objetosFactory ?? throw new ArgumentNullException(nameof(objetosFactory));
     public ObjetosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _objetosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

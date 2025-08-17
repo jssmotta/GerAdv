@@ -62,191 +62,194 @@ if (getParamFromUrl('tribunal') > 0) {
       setNomeTribunal(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    tribenderecosData.tribunal = getParamFromUrl('tribunal');
+      tribenderecosData.tribunal = getParamFromUrl('tribunal');
+    }
   }
-}
 
-if (getParamFromUrl('cidade') > 0) {
-  if (tribenderecosData.id === 0 && tribenderecosData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('cidade') > 0) {
+    if (tribenderecosData.id === 0 && tribenderecosData.cidade == 0) {
+      cidadeApi
+      .getById(getParamFromUrl('cidade'))
+      .then((response) => {
+        setNomeCidade(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    tribenderecosData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorTribunal = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'tribunal', value: e.id } });
-  };
-  const addValorCidade = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cidade', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        tribenderecosData.cidade = getParamFromUrl('cidade');
+      }
+    }
+    const addValorTribunal = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'tribunal', value: e.id } });
+      };
+      const addValorCidade = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cidade', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de TribEnderecos:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de TribEnderecos:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`TribEnderecosForm-${tribenderecosData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`TribEnderecosForm-${tribenderecosData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar TribEnderecos diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = tribenderecosData?.id == 0 ? 'Editar TribEnderecos' : 'Adicionar Trib Endereços';
-      }
-    }, [tribenderecosData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar TribEnderecos diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = tribenderecosData?.id == 0 ? 'Editar TribEnderecos' : 'Adicionar Trib Endereços';
+            }
+          }, [tribenderecosData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-TribEnderecos' : 'form-container5 form-container-TribEnderecos'}>
+            <div className={isMobile ? 'form-container form-container-TribEnderecos' : 'form-container5 form-container-TribEnderecos'}>
 
-        <form className='formInputCadInc' id={`TribEnderecosForm-${tribenderecosData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='TribEnderecos' data={tribenderecosData} isSubmitting={isSubmitting} onClose={onClose} formId={`TribEnderecosForm-${tribenderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`TribEnderecosForm-${tribenderecosData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='TribEnderecos' data={tribenderecosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TribEnderecosForm-${tribenderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
 
-              <TribunalComboBox
-              name={'tribunal'}
-              dataForm={tribenderecosData}
-              value={tribenderecosData.tribunal}
-              setValue={addValorTribunal}
-              label={'Tribunal'}
-              />
+                    <TribunalComboBox
+                    name={'tribunal'}
+                    dataForm={tribenderecosData}
+                    value={tribenderecosData.tribunal}
+                    setValue={addValorTribunal}
+                    label={'Tribunal'}
+                    />
 
-              <CidadeComboBox
-              name={'cidade'}
-              dataForm={tribenderecosData}
-              value={tribenderecosData.cidade}
-              setValue={addValorCidade}
-              label={'Cidade'}
-              />
+                    <CidadeComboBox
+                    name={'cidade'}
+                    dataForm={tribenderecosData}
+                    value={tribenderecosData.cidade}
+                    setValue={addValorCidade}
+                    label={'Cidade'}
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='endereco'
-              label='Endereco'
-              dataForm={tribenderecosData}
-              className='inputIncNome'
-              name='endereco'
-              value={tribenderecosData.endereco}
-              onChange={onChange}
-              />
-
-
-              <InputCep
-              type='text'
-              id='cep'
-              label='CEP'
-              dataForm={tribenderecosData}
-              className='inputIncNome'
-              name='cep'
-              value={tribenderecosData.cep}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='endereco'
+                    label='Endereco'
+                    dataForm={tribenderecosData}
+                    className='inputIncNome'
+                    name='endereco'
+                    value={tribenderecosData.endereco}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={tribenderecosData}
-              className='inputIncNome'
-              name='fone'
-              value={tribenderecosData.fone}
-              onChange={onChange}
-              />
+                    <InputCep
+                    type='text'
+                    id='cep'
+                    label='CEP'
+                    dataForm={tribenderecosData}
+                    className='inputIncNome'
+                    name='cep'
+                    value={tribenderecosData.cep}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fax'
-              label='Fax'
-              dataForm={tribenderecosData}
-              className='inputIncNome'
-              name='fax'
-              value={tribenderecosData.fax}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={tribenderecosData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={tribenderecosData.fone}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='obs'
-              label='OBS'
-              dataForm={tribenderecosData}
-              className='inputIncNome'
-              name='obs'
-              value={tribenderecosData.obs}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fax'
+                    label='Fax'
+                    dataForm={tribenderecosData}
+                    className='inputIncNome'
+                    name='fax'
+                    value={tribenderecosData.fax}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='TribEnderecos' data={tribenderecosData} isSubmitting={isSubmitting} onClose={onClose} formId={`TribEnderecosForm-${tribenderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/tribenderecos'} id={tribenderecosData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='obs'
+                    label='OBS'
+                    dataForm={tribenderecosData}
+                    className='inputIncNome'
+                    name='obs'
+                    value={tribenderecosData.obs}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='TribEnderecos' data={tribenderecosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TribEnderecosForm-${tribenderecosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/tribenderecos'} id={tribenderecosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

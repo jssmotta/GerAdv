@@ -13,7 +13,7 @@ public partial interface ITipoContatoCRMWhere
 
 public partial class TipoContatoCRMWhere(IFTipoContatoCRMFactory tipocontatocrmFactory) : ITipoContatoCRMWhere
 {
-    private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory;
+    private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory ?? throw new ArgumentNullException(nameof(tipocontatocrmFactory));
     public TipoContatoCRMResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipocontatocrmFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

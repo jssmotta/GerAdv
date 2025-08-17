@@ -81,60 +81,61 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Rito diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Rito diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = ritoData?.id == 0 ? 'Editar Rito' : 'Adicionar Rito';
-  }
-}, [ritoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Rito' : 'form-container5 form-container-Rito'}>
-
-    <form className='formInputCadInc' id={`RitoForm-${ritoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Rito' data={ritoData} isSubmitting={isSubmitting} onClose={onClose} formId={`RitoForm-${ritoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='rito'
-          dataForm={ritoData}
-          className='inputIncNome'
-          name='descricao'
-          value={ritoData.descricao}
-          placeholder={`Digite nome rito`}
-          onChange={onChange}
-          required
-          disabled={ritoData.id > 0}
-          />
-          <InputCheckbox dataForm={ritoData} label='Top' name='top' checked={ritoData.top} onChange={onChange} />
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Rito' data={ritoData} isSubmitting={isSubmitting} onClose={onClose} formId={`RitoForm-${ritoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/rito'} id={ritoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = ritoData?.id == 0 ? 'Editar Rito' : 'Adicionar Rito';
+    }
+  }, [ritoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Rito' : 'form-container5 form-container-Rito'}>
+
+      <form className='formInputCadInc' id={`RitoForm-${ritoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Rito' data={ritoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`RitoForm-${ritoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='rito'
+            dataForm={ritoData}
+            className='inputIncNome'
+            name='descricao'
+            value={ritoData.descricao}
+            placeholder={`Digite nome rito`}
+            onChange={onChange}
+            required
+            disabled={ritoData.id > 0}
+            />
+            <InputCheckbox dataForm={ritoData} label='Top' name='top' checked={ritoData.top} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Rito' data={ritoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`RitoForm-${ritoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/rito'} id={ritoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

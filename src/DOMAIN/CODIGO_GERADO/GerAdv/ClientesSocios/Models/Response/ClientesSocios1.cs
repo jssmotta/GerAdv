@@ -32,6 +32,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public bool SomenteRepresentante { get; set; }
 
         /// <summary>
+        /// GUID - cscGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Idade - cscIdade  
         /// </summary>
         [JsonPropertyName("idade")]
@@ -231,12 +237,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
-
-        /// <summary>
-        /// GUID - cscGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -267,6 +267,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public bool SomenteRepresentante { get; set; }
 
         /// <summary>
+        /// GUID - cscGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Idade - cscIdade  
         /// </summary>
         [JsonPropertyName("idade")]
@@ -466,12 +472,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
-
-        /// <summary>
-        /// GUID - cscGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

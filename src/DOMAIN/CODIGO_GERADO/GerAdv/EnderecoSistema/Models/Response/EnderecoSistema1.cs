@@ -38,6 +38,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int CadastroExCod { get; set; }
 
         /// <summary>
+        /// GUID - estGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Processo - estProcesso  
         /// </summary>
         [JsonPropertyName("processo")]
@@ -90,12 +96,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
-
-        /// <summary>
-        /// GUID - estGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -132,6 +132,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int CadastroExCod { get; set; }
 
         /// <summary>
+        /// GUID - estGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Processo - estProcesso  
         /// </summary>
         [JsonPropertyName("processo")]
@@ -184,12 +190,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
-
-        /// <summary>
-        /// GUID - estGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nometipoenderecosistema")]
         public string NomeTipoEnderecoSistema { get; set; } = string.Empty;

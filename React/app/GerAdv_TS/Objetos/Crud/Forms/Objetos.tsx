@@ -60,139 +60,142 @@ if (getParamFromUrl('justica') > 0) {
       setNomeJustica(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    objetosData.justica = getParamFromUrl('justica');
+      objetosData.justica = getParamFromUrl('justica');
+    }
   }
-}
 
-if (getParamFromUrl('area') > 0) {
-  if (objetosData.id === 0 && objetosData.area == 0) {
-    areaApi
-    .getById(getParamFromUrl('area'))
-    .then((response) => {
-      setNomeArea(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('area') > 0) {
+    if (objetosData.id === 0 && objetosData.area == 0) {
+      areaApi
+      .getById(getParamFromUrl('area'))
+      .then((response) => {
+        setNomeArea(response.data.descricao);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    objetosData.area = getParamFromUrl('area');
-  }
-}
-const addValorJustica = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'justica', value: e.id } });
-  };
-  const addValorArea = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'area', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        objetosData.area = getParamFromUrl('area');
+      }
+    }
+    const addValorJustica = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'justica', value: e.id } });
+      };
+      const addValorArea = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'area', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de Objetos:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de Objetos:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ObjetosForm-${objetosData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`ObjetosForm-${objetosData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar Objetos diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = objetosData?.id == 0 ? 'Editar Objetos' : 'Adicionar Objetos';
-      }
-    }, [objetosData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar Objetos diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = objetosData?.id == 0 ? 'Editar Objetos' : 'Adicionar Objetos';
+            }
+          }, [objetosData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-Objetos' : 'form-container5 form-container-Objetos'}>
+            <div className={isMobile ? 'form-container form-container-Objetos' : 'form-container5 form-container-Objetos'}>
 
-        <form className='formInputCadInc' id={`ObjetosForm-${objetosData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Objetos' data={objetosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ObjetosForm-${objetosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`ObjetosForm-${objetosData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Objetos' data={objetosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ObjetosForm-${objetosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={objetosData}
-              className='inputIncNome'
-              name='nome'
-              value={objetosData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={objetosData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={objetosData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <JusticaComboBox
-              name={'justica'}
-              dataForm={objetosData}
-              value={objetosData.justica}
-              setValue={addValorJustica}
-              label={'Justiça'}
-              />
+                    <JusticaComboBox
+                    name={'justica'}
+                    dataForm={objetosData}
+                    value={objetosData.justica}
+                    setValue={addValorJustica}
+                    label={'Justiça'}
+                    />
 
-              <AreaComboBox
-              name={'area'}
-              dataForm={objetosData}
-              value={objetosData.area}
-              setValue={addValorArea}
-              label={'Área'}
-              />
-            </div>
-          </form>
+                    <AreaComboBox
+                    name={'area'}
+                    dataForm={objetosData}
+                    value={objetosData.area}
+                    setValue={addValorArea}
+                    label={'Área'}
+                    />
+                  </div>
+                </form>
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Objetos' data={objetosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ObjetosForm-${objetosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/objetos'} id={objetosData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Objetos' data={objetosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ObjetosForm-${objetosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/objetos'} id={objetosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

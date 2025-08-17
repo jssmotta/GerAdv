@@ -13,15 +13,15 @@ public partial interface IJusticaWhere
 
 public partial class JusticaWhere(IFJusticaFactory justicaFactory) : IJusticaWhere
 {
-    private readonly IFJusticaFactory _justicaFactory = justicaFactory;
+    private readonly IFJusticaFactory _justicaFactory = justicaFactory ?? throw new ArgumentNullException(nameof(justicaFactory));
     public JusticaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _justicaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var justica = new JusticaResponse
         {
             Id = dbRec.ID,
-            Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Nome = dbRec.FNome ?? string.Empty,
         };
         return justica;
     }

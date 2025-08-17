@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IColaboradoresValidation
 {
     Task<bool> ValidateReg(Models.Colaboradores reg, IColaboradoresService service, ICargosReader cargosReader, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IColaboradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IColaboradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ColaboradoresValidation : IColaboradoresValidation
 {
-    public async Task<bool> CanDelete(int id, IColaboradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IColaboradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,22 +26,22 @@ public class ColaboradoresValidation : IColaboradoresValidation
 
     private bool ValidSizes(Models.Colaboradores reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.CNH != null && reg.CNH.Length > 100)
-            throw new SGValidationException($"CNH deve ter no máximo 100 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBColaboradoresDicInfo.ColNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBColaboradoresDicInfo.ColNome.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBColaboradoresDicInfo.ColCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBColaboradoresDicInfo.ColCPF.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBColaboradoresDicInfo.ColRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBColaboradoresDicInfo.ColRG.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBColaboradoresDicInfo.ColEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBColaboradoresDicInfo.ColEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBColaboradoresDicInfo.ColBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBColaboradoresDicInfo.ColBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBColaboradoresDicInfo.ColCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBColaboradoresDicInfo.ColCEP.FTamanho} caracteres.");
+        if (reg.CNH != null && reg.CNH.Length > DBColaboradoresDicInfo.ColCNH.FTamanho)
+            throw new SGValidationException($"CNH deve ter no máximo {DBColaboradoresDicInfo.ColCNH.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBColaboradoresDicInfo.ColClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBColaboradoresDicInfo.ColClass.FTamanho} caracteres.");
         return true;
     }
 
@@ -54,8 +54,21 @@ public class ColaboradoresValidation : IColaboradoresValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DtNasc))
+        {
+            if (DateTime.TryParse(reg.DtNasc, out DateTime dataAniversario))
+            {
+                if (dataAniversario < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data Nascimento não pode ser anterior a 01/01/1900.");
+                if (dataAniversario > DateTime.Now)
+                    throw new SGValidationException("DtNasc não pode ser uma data futura.");
+            }
+        }
+
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -75,7 +88,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
             var regCargos = await cargosReader.Read(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
             {
-                throw new SGValidationException($"Cargos não encontrado ({regCargos?.Id}).");
+                throw new SGValidationException($"Cargo não encontrado ({regCargos?.Id}).");
             }
         }
 

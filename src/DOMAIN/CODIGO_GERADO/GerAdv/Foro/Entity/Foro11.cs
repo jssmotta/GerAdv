@@ -54,7 +54,7 @@ public partial class FForoFactory : IFForoFactory, IDisposable
             throw new ObjectDisposedException(nameof(FForoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

@@ -36,10 +36,10 @@ public partial class FHonorariosDadosContratoFactory : IFHonorariosDadosContrato
         return new FHonorariosDadosContrato();
     }
 
-    public FHonorariosDadosContrato CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FHonorariosDadosContrato CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
-        return FHonorariosDadosContrato.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
+        return FHonorariosDadosContrato.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
@@ -54,7 +54,7 @@ public partial class FHonorariosDadosContratoFactory : IFHonorariosDadosContrato
             throw new ObjectDisposedException(nameof(FHonorariosDadosContratoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

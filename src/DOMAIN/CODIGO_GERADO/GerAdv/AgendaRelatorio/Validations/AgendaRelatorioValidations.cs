@@ -25,6 +25,15 @@ public class AgendaRelatorioValidation : IAgendaRelatorioValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.vqaData))
+        {
+            if (DateTime.TryParse(reg.vqaData, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         await Task.Delay(0);
         return true;
     }

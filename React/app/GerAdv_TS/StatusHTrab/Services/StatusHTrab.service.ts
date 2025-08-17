@@ -79,7 +79,8 @@ export class StatusHTrabService implements IStatusHTrabService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching StatusHTrab list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching StatusHTrab list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class StatusHTrabService implements IStatusHTrabService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online StatusHTrab');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online StatusHTrab');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class StatusHTrabService implements IStatusHTrabService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online StatusHTrab');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online StatusHTrab');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all StatusHTrab:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all StatusHTrab:');
       return [];
     }
   }

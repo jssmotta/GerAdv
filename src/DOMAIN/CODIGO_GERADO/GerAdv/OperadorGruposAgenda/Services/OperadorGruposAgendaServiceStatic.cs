@@ -8,37 +8,42 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class OperadorGruposAgendaService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorGruposAgenda filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterOperadorGruposAgenda? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.SQLWhere))
+        if (!string.IsNullOrWhiteSpace(filtro.SQLWhere))
         {
-            parameters.Add(new($"@{nameof(DBOperadorGruposAgendaDicInfo.SQLWhere)}", ApplyWildCard(filtro.WildcardChar, filtro.SQLWhere)));
+            parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.SQLWhere)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.SQLWhere)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBOperadorGruposAgendaDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Operador != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorGruposAgendaDicInfo.Operador)}", filtro.Operador));
+            parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.Operador)}", filtro.Operador));
+            if (filtro.Operador_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.Operador)}_end", filtro.Operador_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBOperadorGruposAgendaDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBOperadorGruposAgendaDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBOperadorGruposAgendaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBOperadorGruposAgendaDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +52,28 @@ public partial class OperadorGruposAgendaService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.SQLWhere.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.SQLWhere}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorGruposAgendaDicInfo.SQLWhere)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorGruposAgendaDicInfo.Nome)}");
-        cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.Operador}] = @{nameof(DBOperadorGruposAgendaDicInfo.Operador)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBOperadorGruposAgendaDicInfo.GUID)}");
+        cWhere.Append(filtro.SQLWhere.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.SQLWhere}]  {DevourerConsts.MsiCollate} like @{(DBOperadorGruposAgendaDicInfo.SQLWhere)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBOperadorGruposAgendaDicInfo.Nome)}");
+        if (!(filtro.Operador.IsEmptyX()) && filtro.Operador_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Operador.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.Operador}] = @{(DBOperadorGruposAgendaDicInfo.Operador)}");
+        }
+        else if (!(filtro.Operador.IsEmptyX()) && !(filtro.Operador_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].{DBOperadorGruposAgendaDicInfo.Operador} BETWEEN @{(DBOperadorGruposAgendaDicInfo.Operador)} AND @{(DBOperadorGruposAgendaDicInfo.Operador)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBOperadorGruposAgendaDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.CampoCodigo}] = @{nameof(DBOperadorGruposAgendaDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].[{DBOperadorGruposAgendaDicInfo.CampoCodigo}] = @{(DBOperadorGruposAgendaDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].{DBOperadorGruposAgendaDicInfo.CampoCodigo} BETWEEN @{nameof(DBOperadorGruposAgendaDicInfo.CampoCodigo)} AND @{nameof(DBOperadorGruposAgendaDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorGruposAgendaDicInfo.PTabelaNome}].{DBOperadorGruposAgendaDicInfo.CampoCodigo} BETWEEN @{(DBOperadorGruposAgendaDicInfo.CampoCodigo)} AND @{(DBOperadorGruposAgendaDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterOperadorGruposAgenda? filtro)

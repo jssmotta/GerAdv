@@ -80,60 +80,61 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar PosicaoOutrasPartes diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar PosicaoOutrasPartes diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = posicaooutraspartesData?.id == 0 ? 'Editar PosicaoOutrasPartes' : 'Adicionar Posicao Outras Partes';
-  }
-}, [posicaooutraspartesData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-PosicaoOutrasPartes' : 'form-container5 form-container-PosicaoOutrasPartes'}>
-
-    <form className='formInputCadInc' id={`PosicaoOutrasPartesForm-${posicaooutraspartesData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PosicaoOutrasPartes' data={posicaooutraspartesData} isSubmitting={isSubmitting} onClose={onClose} formId={`PosicaoOutrasPartesForm-${posicaooutraspartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='posicao outras partes'
-          dataForm={posicaooutraspartesData}
-          className='inputIncNome'
-          name='descricao'
-          value={posicaooutraspartesData.descricao}
-          placeholder={`Digite nome posicao outras partes`}
-          onChange={onChange}
-          required
-          disabled={posicaooutraspartesData.id > 0}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PosicaoOutrasPartes' data={posicaooutraspartesData} isSubmitting={isSubmitting} onClose={onClose} formId={`PosicaoOutrasPartesForm-${posicaooutraspartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/posicaooutraspartes'} id={posicaooutraspartesData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = posicaooutraspartesData?.id == 0 ? 'Editar PosicaoOutrasPartes' : 'Adicionar Posicao Outras Partes';
+    }
+  }, [posicaooutraspartesData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-PosicaoOutrasPartes' : 'form-container5 form-container-PosicaoOutrasPartes'}>
+
+      <form className='formInputCadInc' id={`PosicaoOutrasPartesForm-${posicaooutraspartesData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PosicaoOutrasPartes' data={posicaooutraspartesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PosicaoOutrasPartesForm-${posicaooutraspartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='posicao outras partes'
+            dataForm={posicaooutraspartesData}
+            className='inputIncNome'
+            name='descricao'
+            value={posicaooutraspartesData.descricao}
+            placeholder={`Digite nome posicao outras partes`}
+            onChange={onChange}
+            required
+            disabled={posicaooutraspartesData.id > 0}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PosicaoOutrasPartes' data={posicaooutraspartesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PosicaoOutrasPartesForm-${posicaooutraspartesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/posicaooutraspartes'} id={posicaooutraspartesData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

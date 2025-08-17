@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoOrigemSucumbenciaValidation
 {
     Task<bool> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var prosucumbenciaExists0 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id }, uri);
+        var prosucumbenciaExists0 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id ?? default }, uri);
         if (prosucumbenciaExists0 != null && prosucumbenciaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.");
         return true;
@@ -29,8 +29,8 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
 
     private bool ValidSizes(Models.TipoOrigemSucumbencia reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTipoOrigemSucumbenciaDicInfo.TosNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTipoOrigemSucumbenciaDicInfo.TosNome.FTamanho} caracteres.");
         return true;
     }
 

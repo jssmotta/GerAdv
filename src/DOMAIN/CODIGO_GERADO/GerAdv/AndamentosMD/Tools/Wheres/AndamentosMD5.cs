@@ -13,19 +13,19 @@ public partial interface IAndamentosMDWhere
 
 public partial class AndamentosMDWhere(IFAndamentosMDFactory andamentosmdFactory) : IAndamentosMDWhere
 {
-    private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory;
+    private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory ?? throw new ArgumentNullException(nameof(andamentosmdFactory));
     public AndamentosMDResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _andamentosmdFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var andamentosmd = new AndamentosMDResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return andamentosmd;
     }

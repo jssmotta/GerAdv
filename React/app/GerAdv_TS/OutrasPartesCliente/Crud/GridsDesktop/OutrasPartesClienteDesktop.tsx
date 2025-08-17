@@ -58,18 +58,6 @@ useEffect(() => {
 }
 }, []);
 
-const openSearchCellParteClienteOutras = (id: number) => {
-  router.push(`/pages/parteclienteoutras/?outraspartescliente=${id}`);
-};
-const SearchFromCellParteClienteOutras = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellParteClienteOutras(props.dataItem.id)}><span title='Pesquisar relacionados em Parte Cliente Outras'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -135,26 +123,13 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
-  'id_edit_ParteClienteOutras': (
-  <GridColumn
-  key='ParteClienteOutras'
-  field='ParteClienteOutras'
-  title='Parte Cliente Outras'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellParteClienteOutras }}
-  />
-  ), /* Track G.03 */
+  ), /* Track G.12 */
   'nomecidade': (
   <GridColumn
   key='nomecidade'
-
   field='nomecidade'
   title='Cidade'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui
@@ -163,14 +138,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
 const baseGridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_ParteClienteOutras'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Parte Cliente Outras'
-  cells={{ data: SearchFromCellParteClienteOutras }}
-  />, 
   ], [RowNumberCell, EditRow, DeleteRow]);
   // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
   const {
@@ -205,14 +172,6 @@ const finalGridColumns = useMemo(() => {
   const finalColumns = [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_ParteClienteOutras'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Parte Cliente Outras'
-  cells={{ data: SearchFromCellParteClienteOutras }}
-  />, 
 
   // Colunas reordenáveis na ordem especificada
   ...columnsOrder.map(field => basicColumnMap[field]).filter(Boolean).map(column => {

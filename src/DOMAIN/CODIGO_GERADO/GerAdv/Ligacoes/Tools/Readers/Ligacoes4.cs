@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigacoesReader
 {
-    private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory;
+    private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ligCodigo, ligNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<LigacoesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBLigacoes.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<LigacoesResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -61,6 +61,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -71,12 +72,13 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
         {
@@ -88,18 +90,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.UltimoAviso = dbRec.FUltimoAviso;
             ligacoes.UltimoAviso_date = XUltimoAviso;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            ligacoes.HoraFinal = dbRec.FHoraFinal;
-            ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            ligacoes.Hora = dbRec.FHora;
-            ligacoes.Hora_date = XHora;
         }
 
         return ligacoes;
@@ -133,6 +123,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -143,12 +134,13 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
         {
@@ -160,18 +152,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.UltimoAviso = dbRec.FUltimoAviso;
             ligacoes.UltimoAviso_date = XUltimoAviso;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            ligacoes.HoraFinal = dbRec.FHoraFinal;
-            ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            ligacoes.Hora = dbRec.FHora;
-            ligacoes.Hora_date = XHora;
         }
 
         return ligacoes;
@@ -194,6 +174,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -204,12 +185,13 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
         {
@@ -221,18 +203,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.UltimoAviso = dbRec.FUltimoAviso;
             ligacoes.UltimoAviso_date = XUltimoAviso;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            ligacoes.HoraFinal = dbRec.FHoraFinal;
-            ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            ligacoes.Hora = dbRec.FHora;
-            ligacoes.Hora_date = XHora;
         }
 
         return ligacoes;
@@ -255,6 +225,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -265,12 +236,13 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
         {
@@ -282,18 +254,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.UltimoAviso = dbRec.FUltimoAviso;
             ligacoes.UltimoAviso_date = XUltimoAviso;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            ligacoes.HoraFinal = dbRec.FHoraFinal;
-            ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            ligacoes.Hora = dbRec.FHora;
-            ligacoes.Hora_date = XHora;
         }
 
         try
@@ -332,6 +292,7 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -342,12 +303,13 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
             Data = dbRec.FData ?? string.Empty,
+            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
         {
@@ -359,18 +321,6 @@ public partial class LigacoesReader(IFLigacoesFactory ligacoesFactory) : ILigaco
         {
             ligacoes.UltimoAviso = dbRec.FUltimoAviso;
             ligacoes.UltimoAviso_date = XUltimoAviso;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            ligacoes.HoraFinal = dbRec.FHoraFinal;
-            ligacoes.HoraFinal_date = XHoraFinal;
-        }
-
-        if (DateTime.TryParse(dbRec.FHora, out DateTime XHora))
-        {
-            ligacoes.Hora = dbRec.FHora;
-            ligacoes.Hora_date = XHora;
         }
 
         try

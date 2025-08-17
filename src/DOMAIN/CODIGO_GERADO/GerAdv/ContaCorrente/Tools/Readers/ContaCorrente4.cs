@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteReader
 {
-    private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory;
+    private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ctoCodigo, ctoData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ContaCorrenteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContaCorrente.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ContaCorrenteResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -55,6 +55,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -77,7 +78,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
         {
@@ -116,6 +116,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -138,7 +139,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
         {
@@ -166,6 +166,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -188,7 +189,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
         {
@@ -216,6 +216,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -238,7 +239,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
         {
@@ -274,6 +274,7 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -296,7 +297,6 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
         {

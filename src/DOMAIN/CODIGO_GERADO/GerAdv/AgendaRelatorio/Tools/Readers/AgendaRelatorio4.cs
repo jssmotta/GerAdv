@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelatorioFactory) : IAgendaRelatorioReader
 {
-    private readonly IFAgendaRelatorioFactory _agendarelatorioFactory = agendarelatorioFactory;
+    private readonly IFAgendaRelatorioFactory _agendarelatorioFactory = agendarelatorioFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<AgendaRelatorioResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAgendaRelatorio.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AgendaRelatorioResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {

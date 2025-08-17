@@ -14,13 +14,13 @@ public partial interface ITipoStatusBiuWriter
 
 public class TipoStatusBiuWriter(IFTipoStatusBiuFactory tipostatusbiuFactory) : ITipoStatusBiuWriter
 {
-    private readonly IFTipoStatusBiuFactory _tipostatusbiuFactory = tipostatusbiuFactory;
-    public async Task Delete(TipoStatusBiuResponse tipostatusbiu, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTipoStatusBiuFactory _tipostatusbiuFactory = tipostatusbiuFactory ?? throw new ArgumentNullException(nameof(tipostatusbiuFactory));
+    public virtual async Task Delete(TipoStatusBiuResponse tipostatusbiu, int operadorId, MsiSqlConnection oCnn)
     {
         await _tipostatusbiuFactory.DeleteAsync(operadorId, tipostatusbiu.Id, oCnn);
     }
 
-    public async Task<FTipoStatusBiu> WriteAsync(Models.TipoStatusBiu tipostatusbiu, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoStatusBiu> WriteAsync(Models.TipoStatusBiu tipostatusbiu, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipostatusbiu.Id.IsEmptyIDNumber() ? _tipostatusbiuFactory.CreateAsync() : _tipostatusbiuFactory.CreateFromIdAsync(tipostatusbiu.Id, oCnn));
         dbRec.FNome = tipostatusbiu.Nome;

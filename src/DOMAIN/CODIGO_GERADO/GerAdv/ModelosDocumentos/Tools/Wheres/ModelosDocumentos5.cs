@@ -13,7 +13,7 @@ public partial interface IModelosDocumentosWhere
 
 public partial class ModelosDocumentosWhere(IFModelosDocumentosFactory modelosdocumentosFactory) : IModelosDocumentosWhere
 {
-    private readonly IFModelosDocumentosFactory _modelosdocumentosFactory = modelosdocumentosFactory;
+    private readonly IFModelosDocumentosFactory _modelosdocumentosFactory = modelosdocumentosFactory ?? throw new ArgumentNullException(nameof(modelosdocumentosFactory));
     public ModelosDocumentosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _modelosdocumentosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

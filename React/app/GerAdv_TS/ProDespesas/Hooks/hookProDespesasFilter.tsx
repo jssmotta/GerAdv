@@ -94,16 +94,6 @@ export const useProDespesasFilter = ({ handleFetchWithFilter }: UseProDespesasFi
   label='Corrigido'
   className='inputSearch inputSearchCheckbox'
   />
-  <InputInput
-  type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
-  />
   <InputValor
   type='text'
   id='valororiginal'

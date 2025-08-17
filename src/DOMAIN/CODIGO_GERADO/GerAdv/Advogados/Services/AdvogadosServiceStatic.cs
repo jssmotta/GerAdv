@@ -8,228 +8,236 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AdvogadosService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAdvogados filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAdvogados? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Cargo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Cargo)}", filtro.Cargo));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Cargo)}", filtro.Cargo));
+            if (filtro.Cargo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.Cargo)}_end", filtro.Cargo_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.EMailPro))
+        if (!string.IsNullOrWhiteSpace(filtro.EMailPro))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.EMailPro)}", ApplyWildCard(filtro.WildcardChar, filtro.EMailPro)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.EMailPro)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.EMailPro)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.CPF))
+        if (!string.IsNullOrWhiteSpace(filtro.CPF))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CPF)}", ApplyWildCard(filtro.WildcardChar, filtro.CPF)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.CPF)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CPF)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.RG))
+        if (!string.IsNullOrWhiteSpace(filtro.RG))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.RG)}", ApplyWildCard(filtro.WildcardChar, filtro.RG)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.RG)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.RG)));
         }
 
         if (filtro.Casa != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Casa)}", filtro.Casa));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Casa)}", filtro.Casa));
         }
 
-        if (!string.IsNullOrEmpty(filtro.NomeMae))
+        if (!string.IsNullOrWhiteSpace(filtro.NomeMae))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.NomeMae)}", ApplyWildCard(filtro.WildcardChar, filtro.NomeMae)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.NomeMae)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.NomeMae)));
         }
 
         if (filtro.Escritorio != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Escritorio)}", filtro.Escritorio));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Escritorio)}", filtro.Escritorio));
+            if (filtro.Escritorio_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.Escritorio)}_end", filtro.Escritorio_end));
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Estagiario != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Estagiario)}", filtro.Estagiario));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Estagiario)}", filtro.Estagiario));
         }
 
-        if (!string.IsNullOrEmpty(filtro.OAB))
+        if (!string.IsNullOrWhiteSpace(filtro.OAB))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.OAB)}", ApplyWildCard(filtro.WildcardChar, filtro.OAB)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.OAB)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.OAB)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.NomeCompleto))
+        if (!string.IsNullOrWhiteSpace(filtro.NomeCompleto))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.NomeCompleto)}", ApplyWildCard(filtro.WildcardChar, filtro.NomeCompleto)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.NomeCompleto)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.NomeCompleto)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Endereco))
+        if (!string.IsNullOrWhiteSpace(filtro.Endereco))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Endereco)}", ApplyWildCard(filtro.WildcardChar, filtro.Endereco)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Endereco)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Endereco)));
         }
 
         if (filtro.Cidade != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Cidade)}", filtro.Cidade));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Cidade)}", filtro.Cidade));
+            if (filtro.Cidade_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.Cidade)}_end", filtro.Cidade_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.CEP))
+        if (!string.IsNullOrWhiteSpace(filtro.CEP))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CEP)}", ApplyWildCard(filtro.WildcardChar, filtro.CEP)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.CEP)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CEP)));
         }
 
         if (filtro.Sexo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Sexo)}", filtro.Sexo));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Sexo)}", filtro.Sexo));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Bairro))
+        if (!string.IsNullOrWhiteSpace(filtro.Bairro))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Bairro)}", ApplyWildCard(filtro.WildcardChar, filtro.Bairro)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Bairro)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Bairro)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.CTPSSerie))
+        if (!string.IsNullOrWhiteSpace(filtro.CTPSSerie))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CTPSSerie)}", ApplyWildCard(filtro.WildcardChar, filtro.CTPSSerie)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.CTPSSerie)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CTPSSerie)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.CTPS))
+        if (!string.IsNullOrWhiteSpace(filtro.CTPS))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CTPS)}", ApplyWildCard(filtro.WildcardChar, filtro.CTPS)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.CTPS)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CTPS)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Fone))
+        if (!string.IsNullOrWhiteSpace(filtro.Fone))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Fone)}", ApplyWildCard(filtro.WildcardChar, filtro.Fone)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Fone)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Fone)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Fax))
+        if (!string.IsNullOrWhiteSpace(filtro.Fax))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Fax)}", ApplyWildCard(filtro.WildcardChar, filtro.Fax)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Fax)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Fax)));
         }
 
         if (filtro.Comissao != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Comissao)}", filtro.Comissao));
-        }
-
-        if (filtro.Comissao_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Comissao)}_end", filtro.Comissao_end));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Comissao)}", filtro.Comissao));
+            if (filtro.Comissao_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.Comissao)}_end", filtro.Comissao_end));
+            }
         }
 
         if (!filtro.DtInicio.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DtInicio, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.DtInicio)}", dataParam));
-        }
-
-        if (!filtro.DtInicio_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.DtInicio_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.DtInicio)}_end", dataParam));
+            if (DateTime.TryParse(filtro.DtInicio, out var dataParam1))
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.DtInicio)}", dataParam1));
+            if (!filtro.DtInicio_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DtInicio_end, out var dataParam2))
+                    parameters.Add(new($"@{(DBAdvogadosDicInfo.DtInicio)}_end", dataParam2));
+            }
         }
 
         if (!filtro.DtFim.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DtFim, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.DtFim)}", dataParam));
-        }
-
-        if (!filtro.DtFim_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.DtFim_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.DtFim)}_end", dataParam));
+            if (DateTime.TryParse(filtro.DtFim, out var dataParam3))
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.DtFim)}", dataParam3));
+            if (!filtro.DtFim_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DtFim_end, out var dataParam4))
+                    parameters.Add(new($"@{(DBAdvogadosDicInfo.DtFim)}_end", dataParam4));
+            }
         }
 
         if (!filtro.DtNasc.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DtNasc, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.DtNasc)}", dataParam));
-        }
-
-        if (!filtro.DtNasc_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.DtNasc_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.DtNasc)}_end", dataParam));
+            if (DateTime.TryParse(filtro.DtNasc, out var dataParam5))
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.DtNasc)}", dataParam5));
+            if (!filtro.DtNasc_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DtNasc_end, out var dataParam6))
+                    parameters.Add(new($"@{(DBAdvogadosDicInfo.DtNasc)}_end", dataParam6));
+            }
         }
 
         if (filtro.Salario != decimal.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Salario)}", filtro.Salario));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Salario)}", filtro.Salario));
+            if (filtro.Salario_end != decimal.MinValue)
+            {
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.Salario)}_end", filtro.Salario_end));
+            }
         }
 
-        if (filtro.Salario_end != decimal.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Secretaria))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Salario)}_end", filtro.Salario_end));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Secretaria)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Secretaria)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Secretaria))
+        if (!string.IsNullOrWhiteSpace(filtro.TextoProcuracao))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Secretaria)}", ApplyWildCard(filtro.WildcardChar, filtro.Secretaria)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.TextoProcuracao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.TextoProcuracao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.TextoProcuracao))
+        if (!string.IsNullOrWhiteSpace(filtro.EMail))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.TextoProcuracao)}", ApplyWildCard(filtro.WildcardChar, filtro.TextoProcuracao)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.EMail)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.EMail)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.EMail))
+        if (!string.IsNullOrWhiteSpace(filtro.Especializacao))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.EMail)}", ApplyWildCard(filtro.WildcardChar, filtro.EMail)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Especializacao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Especializacao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Especializacao))
+        if (!string.IsNullOrWhiteSpace(filtro.Pasta))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Especializacao)}", ApplyWildCard(filtro.WildcardChar, filtro.Especializacao)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Pasta)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Pasta)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Pasta))
+        if (!string.IsNullOrWhiteSpace(filtro.Observacao))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Pasta)}", ApplyWildCard(filtro.WildcardChar, filtro.Pasta)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Observacao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Observacao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Observacao))
+        if (!string.IsNullOrWhiteSpace(filtro.ContaBancaria))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Observacao)}", ApplyWildCard(filtro.WildcardChar, filtro.Observacao)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.ContaBancaria))
-        {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.ContaBancaria)}", ApplyWildCard(filtro.WildcardChar, filtro.ContaBancaria)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.ContaBancaria)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.ContaBancaria)));
         }
 
         if (filtro.ParcTop != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.ParcTop)}", filtro.ParcTop));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.ParcTop)}", filtro.ParcTop));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Class))
+        if (!string.IsNullOrWhiteSpace(filtro.Class))
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Class)}", ApplyWildCard(filtro.WildcardChar, filtro.Class)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Class)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Class)));
         }
 
         if (filtro.Top != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.Top)}", filtro.Top));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.Top)}", filtro.Top));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBAdvogadosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBAdvogadosDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAdvogadosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -238,103 +246,116 @@ public partial class AdvogadosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Cargo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cargo}] = @{nameof(DBAdvogadosDicInfo.Cargo)}");
-        cWhere.Append(filtro.EMailPro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.EMailPro}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.EMailPro)}");
-        cWhere.Append(filtro.CPF.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CPF}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.CPF)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Nome)}");
-        cWhere.Append(filtro.RG.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.RG}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.RG)}");
-        cWhere.Append(filtro.Casa == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Casa}] = @{nameof(DBAdvogadosDicInfo.Casa)}");
-        cWhere.Append(filtro.NomeMae.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.NomeMae}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.NomeMae)}");
-        cWhere.Append(filtro.Escritorio.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Escritorio}] = @{nameof(DBAdvogadosDicInfo.Escritorio)}");
-        cWhere.Append(filtro.Estagiario == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Estagiario}] = @{nameof(DBAdvogadosDicInfo.Estagiario)}");
-        cWhere.Append(filtro.OAB.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.OAB}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.OAB)}");
-        cWhere.Append(filtro.NomeCompleto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.NomeCompleto}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.NomeCompleto)}");
-        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Endereco)}");
-        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cidade}] = @{nameof(DBAdvogadosDicInfo.Cidade)}");
-        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.CEP)}");
-        cWhere.Append(filtro.Sexo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Sexo}] = @{nameof(DBAdvogadosDicInfo.Sexo)}");
-        cWhere.Append(filtro.Bairro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Bairro)}");
-        cWhere.Append(filtro.CTPSSerie.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CTPSSerie}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.CTPSSerie)}");
-        cWhere.Append(filtro.CTPS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CTPS}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.CTPS)}");
-        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Fone)}");
-        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Fax)}");
+        if (!(filtro.Cargo.IsEmptyX()) && filtro.Cargo_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Cargo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cargo}] = @{(DBAdvogadosDicInfo.Cargo)}");
+        }
+        else if (!(filtro.Cargo.IsEmptyX()) && !(filtro.Cargo_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Cargo} BETWEEN @{(DBAdvogadosDicInfo.Cargo)} AND @{(DBAdvogadosDicInfo.Cargo)}_end");
+        }
+
+        cWhere.Append(filtro.EMailPro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.EMailPro}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.EMailPro)}");
+        cWhere.Append(filtro.CPF.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CPF}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.CPF)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Nome)}");
+        cWhere.Append(filtro.RG.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.RG}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.RG)}");
+        cWhere.Append(filtro.Casa == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Casa}] = @{(DBAdvogadosDicInfo.Casa)}");
+        cWhere.Append(filtro.NomeMae.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.NomeMae}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.NomeMae)}");
+        if (!(filtro.Escritorio.IsEmptyX()) && filtro.Escritorio_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Escritorio.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Escritorio}] = @{(DBAdvogadosDicInfo.Escritorio)}");
+        }
+        else if (!(filtro.Escritorio.IsEmptyX()) && !(filtro.Escritorio_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Escritorio} BETWEEN @{(DBAdvogadosDicInfo.Escritorio)} AND @{(DBAdvogadosDicInfo.Escritorio)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.GUID)}");
+        cWhere.Append(filtro.Estagiario == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Estagiario}] = @{(DBAdvogadosDicInfo.Estagiario)}");
+        cWhere.Append(filtro.OAB.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.OAB}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.OAB)}");
+        cWhere.Append(filtro.NomeCompleto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.NomeCompleto}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.NomeCompleto)}");
+        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Endereco)}");
+        if (!(filtro.Cidade.IsEmptyX()) && filtro.Cidade_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Cidade}] = @{(DBAdvogadosDicInfo.Cidade)}");
+        }
+        else if (!(filtro.Cidade.IsEmptyX()) && !(filtro.Cidade_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Cidade} BETWEEN @{(DBAdvogadosDicInfo.Cidade)} AND @{(DBAdvogadosDicInfo.Cidade)}_end");
+        }
+
+        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.CEP)}");
+        cWhere.Append(filtro.Sexo == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Sexo}] = @{(DBAdvogadosDicInfo.Sexo)}");
+        cWhere.Append(filtro.Bairro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Bairro)}");
+        cWhere.Append(filtro.CTPSSerie.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CTPSSerie}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.CTPSSerie)}");
+        cWhere.Append(filtro.CTPS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CTPS}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.CTPS)}");
+        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Fone)}");
+        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Fax)}");
         if (!(filtro.Comissao.IsEmptyX()) && filtro.Comissao_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Comissao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Comissao}] = @{nameof(DBAdvogadosDicInfo.Comissao)}");
+            cWhere.Append(filtro.Comissao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Comissao}] = @{(DBAdvogadosDicInfo.Comissao)}");
         }
         else if (!(filtro.Comissao.IsEmptyX()) && !(filtro.Comissao_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Comissao} BETWEEN @{nameof(DBAdvogadosDicInfo.Comissao)} AND @{nameof(DBAdvogadosDicInfo.Comissao)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Comissao} BETWEEN @{(DBAdvogadosDicInfo.Comissao)} AND @{(DBAdvogadosDicInfo.Comissao)}_end");
         }
 
         if (!(filtro.DtInicio.IsEmptyDX()) && filtro.DtInicio_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DtInicio.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.DtInicio}], 103) = CONVERT(DATE, @{nameof(DBAdvogadosDicInfo.DtInicio)}, 103)");
+            cWhere.Append(filtro.DtInicio.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.DtInicio}], 103) = CONVERT(DATE, @{(DBAdvogadosDicInfo.DtInicio)}, 103)");
         }
         else if (!(filtro.DtInicio.IsEmptyDX()) && !(filtro.DtInicio_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.DtInicio} BETWEEN @{nameof(DBAdvogadosDicInfo.DtInicio)} AND @{nameof(DBAdvogadosDicInfo.DtInicio)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.DtInicio} BETWEEN @{(DBAdvogadosDicInfo.DtInicio)} AND @{(DBAdvogadosDicInfo.DtInicio)}_end");
         }
 
         if (!(filtro.DtFim.IsEmptyDX()) && filtro.DtFim_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DtFim.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.DtFim}], 103) = CONVERT(DATE, @{nameof(DBAdvogadosDicInfo.DtFim)}, 103)");
+            cWhere.Append(filtro.DtFim.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.DtFim}], 103) = CONVERT(DATE, @{(DBAdvogadosDicInfo.DtFim)}, 103)");
         }
         else if (!(filtro.DtFim.IsEmptyDX()) && !(filtro.DtFim_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.DtFim} BETWEEN @{nameof(DBAdvogadosDicInfo.DtFim)} AND @{nameof(DBAdvogadosDicInfo.DtFim)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.DtFim} BETWEEN @{(DBAdvogadosDicInfo.DtFim)} AND @{(DBAdvogadosDicInfo.DtFim)}_end");
         }
 
         if (!(filtro.DtNasc.IsEmptyDX()) && filtro.DtNasc_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DtNasc.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.DtNasc}], 103) = CONVERT(DATE, @{nameof(DBAdvogadosDicInfo.DtNasc)}, 103)");
+            cWhere.Append(filtro.DtNasc.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.DtNasc}], 103) = CONVERT(DATE, @{(DBAdvogadosDicInfo.DtNasc)}, 103)");
         }
         else if (!(filtro.DtNasc.IsEmptyDX()) && !(filtro.DtNasc_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.DtNasc} BETWEEN @{nameof(DBAdvogadosDicInfo.DtNasc)} AND @{nameof(DBAdvogadosDicInfo.DtNasc)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.DtNasc} BETWEEN @{(DBAdvogadosDicInfo.DtNasc)} AND @{(DBAdvogadosDicInfo.DtNasc)}_end");
         }
 
         if (!(filtro.Salario == decimal.MinValue) && filtro.Salario_end == decimal.MinValue)
         {
-            cWhere.Append(filtro.Salario == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Salario}] = @{nameof(DBAdvogadosDicInfo.Salario)}");
+            cWhere.Append(filtro.Salario == decimal.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Salario}] = @{(DBAdvogadosDicInfo.Salario)}");
         }
         else if (!(filtro.Salario == decimal.MinValue) && !(filtro.Salario_end == decimal.MinValue))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Salario} BETWEEN @{nameof(DBAdvogadosDicInfo.Salario)} AND @{nameof(DBAdvogadosDicInfo.Salario)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.Salario} BETWEEN @{(DBAdvogadosDicInfo.Salario)} AND @{(DBAdvogadosDicInfo.Salario)}_end");
         }
 
-        cWhere.Append(filtro.Secretaria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Secretaria}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Secretaria)}");
-        cWhere.Append(filtro.TextoProcuracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.TextoProcuracao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.TextoProcuracao)}");
-        cWhere.Append(filtro.EMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.EMail)}");
-        cWhere.Append(filtro.Especializacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Especializacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Especializacao)}");
-        cWhere.Append(filtro.Pasta.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Pasta}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Pasta)}");
-        cWhere.Append(filtro.Observacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Observacao)}");
-        cWhere.Append(filtro.ContaBancaria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.ContaBancaria}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.ContaBancaria)}");
-        cWhere.Append(filtro.ParcTop == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.ParcTop}] = @{nameof(DBAdvogadosDicInfo.ParcTop)}");
-        cWhere.Append(filtro.Class.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Class}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.Class)}");
-        cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Top}] = @{nameof(DBAdvogadosDicInfo.Top)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAdvogadosDicInfo.GUID)}");
+        cWhere.Append(filtro.Secretaria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Secretaria}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Secretaria)}");
+        cWhere.Append(filtro.TextoProcuracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.TextoProcuracao}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.TextoProcuracao)}");
+        cWhere.Append(filtro.EMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.EMail)}");
+        cWhere.Append(filtro.Especializacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Especializacao}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Especializacao)}");
+        cWhere.Append(filtro.Pasta.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Pasta}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Pasta)}");
+        cWhere.Append(filtro.Observacao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Observacao}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Observacao)}");
+        cWhere.Append(filtro.ContaBancaria.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.ContaBancaria}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.ContaBancaria)}");
+        cWhere.Append(filtro.ParcTop == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.ParcTop}] = @{(DBAdvogadosDicInfo.ParcTop)}");
+        cWhere.Append(filtro.Class.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Class}]  {DevourerConsts.MsiCollate} like @{(DBAdvogadosDicInfo.Class)}");
+        cWhere.Append(filtro.Top == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Top}] = @{(DBAdvogadosDicInfo.Top)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}] = @{nameof(DBAdvogadosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}] = @{(DBAdvogadosDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.CampoCodigo} BETWEEN @{nameof(DBAdvogadosDicInfo.CampoCodigo)} AND @{nameof(DBAdvogadosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAdvogadosDicInfo.PTabelaNome}].{DBAdvogadosDicInfo.CampoCodigo} BETWEEN @{(DBAdvogadosDicInfo.CampoCodigo)} AND @{(DBAdvogadosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterAdvogados? filtro)

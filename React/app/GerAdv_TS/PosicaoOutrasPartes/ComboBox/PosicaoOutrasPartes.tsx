@@ -57,8 +57,9 @@ const loadRecordForEdit = async (id: number) => {
     setAction(ActionEditar);
     handleValueChange({ id: record.id, nome: record.descricao });
   } catch (error) {
-  //console.log('Erro ao carregar Posicao Outras Partes:');
-}
+  if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+    console.log('Erro ao carregar Posicao Outras Partes:');
+  }
 };
 
 const handleComboChange = (e: any) => {

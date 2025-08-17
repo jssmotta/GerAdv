@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ISetorValidation
 {
     Task<bool> ValidateReg(Models.Setor reg, ISetorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ISetorService service, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ISetorService service, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class SetorValidation : ISetorValidation
 {
-    public async Task<bool> CanDelete(int id, ISetorService service, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ISetorService service, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var prepostosExists0 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Setor = id }, uri);
+        var prepostosExists0 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Setor = id ?? default }, uri);
         if (prepostosExists0 != null && prepostosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class SetorValidation : ISetorValidation
 
     private bool ValidSizes(Models.Setor reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 40)
-            throw new SGValidationException($"Descricao deve ter no máximo 40 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBSetorDicInfo.SetDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBSetorDicInfo.SetDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBSetorDicInfo.SetGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBSetorDicInfo.SetGUID.FTamanho} caracteres.");
         return true;
     }
 

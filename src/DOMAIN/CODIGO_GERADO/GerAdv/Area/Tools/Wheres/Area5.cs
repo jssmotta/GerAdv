@@ -13,7 +13,7 @@ public partial interface IAreaWhere
 
 public partial class AreaWhere(IFAreaFactory areaFactory) : IAreaWhere
 {
-    private readonly IFAreaFactory _areaFactory = areaFactory;
+    private readonly IFAreaFactory _areaFactory = areaFactory ?? throw new ArgumentNullException(nameof(areaFactory));
     public AreaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _areaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,8 +21,8 @@ public partial class AreaWhere(IFAreaFactory areaFactory) : IAreaWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            Top = dbRec.FTop,
             GUID = dbRec.FGUID ?? string.Empty,
+            Top = dbRec.FTop,
         };
         return area;
     }

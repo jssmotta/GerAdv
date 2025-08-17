@@ -79,7 +79,8 @@ export class GUTAtividadesService implements IGUTAtividadesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching GUTAtividades list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching GUTAtividades list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class GUTAtividadesService implements IGUTAtividadesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online GUTAtividades');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTAtividades');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class GUTAtividadesService implements IGUTAtividadesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online GUTAtividades');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTAtividades');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all GUTAtividades:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all GUTAtividades:');
       return [];
     }
   }

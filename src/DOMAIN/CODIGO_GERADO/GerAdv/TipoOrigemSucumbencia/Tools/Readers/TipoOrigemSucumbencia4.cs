@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TipoOrigemSucumbenciaReader(IFTipoOrigemSucumbenciaFactory tipoorigemsucumbenciaFactory) : ITipoOrigemSucumbenciaReader
 {
-    private readonly IFTipoOrigemSucumbenciaFactory _tipoorigemsucumbenciaFactory = tipoorigemsucumbenciaFactory;
+    private readonly IFTipoOrigemSucumbenciaFactory _tipoorigemsucumbenciaFactory = tipoorigemsucumbenciaFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tosCodigo, tosNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoOrigemSucumbencia.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

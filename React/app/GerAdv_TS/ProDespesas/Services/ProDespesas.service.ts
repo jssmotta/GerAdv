@@ -79,7 +79,8 @@ export class ProDespesasService implements IProDespesasService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ProDespesas list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ProDespesas list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ProDespesasService implements IProDespesasService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ProDespesas');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProDespesas');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ProDespesasService implements IProDespesasService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ProDespesas');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProDespesas');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ProDespesas:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ProDespesas:');
       return [];
     }
   }

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdvogadosReader
 {
-    private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory;
+    private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("advCodigo, advNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<AdvogadosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAdvogados.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AdvogadosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -62,6 +62,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
+            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -86,7 +87,6 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
         {
@@ -138,6 +138,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
+            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -162,7 +163,6 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
         {
@@ -203,6 +203,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
+            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -227,7 +228,6 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
         {
@@ -268,6 +268,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
+            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -292,7 +293,6 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
         {
@@ -357,6 +357,7 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
+            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -381,7 +382,6 @@ public partial class AdvogadosReader(IFAdvogadosFactory advogadosFactory) : IAdv
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
         {

@@ -162,7 +162,39 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'nropastaprocessos': (
+  <GridColumn
+  key='nropastaprocessos'
+  field='nropastaprocessos'
+  title='Processos'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'descricaoacao': (
+  <GridColumn
+  key='descricaoacao'
+  field='descricaoacao'
+  title='Acao'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'nomeforo': (
+  <GridColumn
+  key='nomeforo'
+  field='nomeforo'
+  title='Foro'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
+  'descricaotiporecurso': (
+  <GridColumn
+  key='descricaotiporecurso'
+  field='descricaotiporecurso'
+  title='Tipo Recurso'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_NENotas': (
   <GridColumn
   key='NENotas'
@@ -196,46 +228,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellTribunal }}
   />
   ), /* Track G.03 */
-  'nropastaprocessos': (
-  <GridColumn
-  key='nropastaprocessos'
-
-  field='nropastaprocessos'
-  title='Processos'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'descricaoacao': (
-  <GridColumn
-  key='descricaoacao'
-
-  field='descricaoacao'
-  title='Acao'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'nomeforo': (
-  <GridColumn
-  key='nomeforo'
-
-  field='nomeforo'
-  title='Foro'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
-  'descricaotiporecurso': (
-  <GridColumn
-  key='descricaotiporecurso'
-
-  field='descricaotiporecurso'
-  title='Tipo Recurso'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====

@@ -13,13 +13,14 @@ public partial interface IFuncionariosWhere
 
 public partial class FuncionariosWhere(IFFuncionariosFactory funcionariosFactory) : IFuncionariosWhere
 {
-    private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory;
+    private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory ?? throw new ArgumentNullException(nameof(funcionariosFactory));
     public FuncionariosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _funcionariosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var funcionarios = new FuncionariosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -46,7 +47,6 @@ public partial class FuncionariosWhere(IFFuncionariosFactory funcionariosFactory
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
         {

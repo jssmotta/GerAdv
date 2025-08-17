@@ -36,10 +36,10 @@ public partial class FProcessOutputRequestFactory : IFProcessOutputRequestFactor
         return new FProcessOutputRequest();
     }
 
-    public FProcessOutputRequest CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FProcessOutputRequest CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
-        return FProcessOutputRequest.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
+        return FProcessOutputRequest.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
@@ -54,7 +54,7 @@ public partial class FProcessOutputRequestFactory : IFProcessOutputRequestFactor
             throw new ObjectDisposedException(nameof(FProcessOutputRequestFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

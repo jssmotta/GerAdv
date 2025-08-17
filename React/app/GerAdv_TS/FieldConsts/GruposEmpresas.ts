@@ -8,7 +8,7 @@ export enum FieldsGruposEmpresas
 	inativo = `Inativo`,
 	descricao = `Descricao`,
 	observacoes = `Observacoes`,
+	guid = `GUID`,
 	icone = `Icone`,
 	despesaunificada = `DespesaUnificada`,
-	guid = `GUID`,
 }

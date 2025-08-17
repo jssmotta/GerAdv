@@ -13,7 +13,7 @@ public partial interface IGUTPeriodicidadeWhere
 
 public partial class GUTPeriodicidadeWhere(IFGUTPeriodicidadeFactory gutperiodicidadeFactory) : IGUTPeriodicidadeWhere
 {
-    private readonly IFGUTPeriodicidadeFactory _gutperiodicidadeFactory = gutperiodicidadeFactory;
+    private readonly IFGUTPeriodicidadeFactory _gutperiodicidadeFactory = gutperiodicidadeFactory ?? throw new ArgumentNullException(nameof(gutperiodicidadeFactory));
     public GUTPeriodicidadeResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _gutperiodicidadeFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

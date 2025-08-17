@@ -5,6 +5,7 @@ export enum FieldsInstancia
 {	acao = `Acao`,
 	foro = `Foro`,
 	tiporecurso = `TipoRecurso`,
+	guid = `GUID`,
 	liminarpedida = `LiminarPedida`,
 	objeto = `Objeto`,
 	statusresultado = `StatusResultado`,
@@ -29,5 +30,4 @@ export enum FieldsInstancia
 	accesscode = `AccessCode`,
 	julgador = `Julgador`,
 	zkeyia = `ZKeyIA`,
-	guid = `GUID`,
 }

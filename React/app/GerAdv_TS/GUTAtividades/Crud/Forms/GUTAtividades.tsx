@@ -62,205 +62,208 @@ if (getParamFromUrl('gutperiodicidade') > 0) {
       setNomeGUTPeriodicidade(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    gutatividadesData.gutperiodicidade = getParamFromUrl('gutperiodicidade');
+      gutatividadesData.gutperiodicidade = getParamFromUrl('gutperiodicidade');
+    }
   }
-}
 
-if (getParamFromUrl('operador') > 0) {
-  if (gutatividadesData.id === 0 && gutatividadesData.operador == 0) {
-    operadorApi
-    .getById(getParamFromUrl('operador'))
-    .then((response) => {
-      setNomeOperador(response.data.rnome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('operador') > 0) {
+    if (gutatividadesData.id === 0 && gutatividadesData.operador == 0) {
+      operadorApi
+      .getById(getParamFromUrl('operador'))
+      .then((response) => {
+        setNomeOperador(response.data.rnome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    gutatividadesData.operador = getParamFromUrl('operador');
-  }
-}
-const addValorGUTPeriodicidade = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'gutperiodicidade', value: e.id } });
-  };
-  const addValorOperador = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'operador', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        gutatividadesData.operador = getParamFromUrl('operador');
+      }
+    }
+    const addValorGUTPeriodicidade = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'gutperiodicidade', value: e.id } });
+      };
+      const addValorOperador = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'operador', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de GUTAtividades:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de GUTAtividades:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`GUTAtividadesForm-${gutatividadesData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`GUTAtividadesForm-${gutatividadesData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar GUTAtividades diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = gutatividadesData?.id == 0 ? 'Editar GUTAtividades' : 'Adicionar G U T Atividades';
-      }
-    }, [gutatividadesData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar GUTAtividades diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = gutatividadesData?.id == 0 ? 'Editar GUTAtividades' : 'Adicionar G U T Atividades';
+            }
+          }, [gutatividadesData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-GUTAtividades' : 'form-container5 form-container-GUTAtividades'}>
+            <div className={isMobile ? 'form-container form-container-GUTAtividades' : 'form-container5 form-container-GUTAtividades'}>
 
-        <form className='formInputCadInc' id={`GUTAtividadesForm-${gutatividadesData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTAtividades' data={gutatividadesData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTAtividadesForm-${gutatividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`GUTAtividadesForm-${gutatividadesData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='GUTAtividades' data={gutatividadesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTAtividadesForm-${gutatividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={gutatividadesData}
-              className='inputIncNome'
-              name='nome'
-              value={gutatividadesData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={gutatividadesData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={gutatividadesData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='observacao'
-              label='Observacao'
-              dataForm={gutatividadesData}
-              className='inputIncNome'
-              name='observacao'
-              value={gutatividadesData.observacao}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='observacao'
+                    label='Observacao'
+                    dataForm={gutatividadesData}
+                    className='inputIncNome'
+                    name='observacao'
+                    value={gutatividadesData.observacao}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='gutgrupo'
-              label='GUTGrupo'
-              dataForm={gutatividadesData}
-              className='inputIncNome'
-              name='gutgrupo'
-              value={gutatividadesData.gutgrupo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='gutgrupo'
+                    label='GUTGrupo'
+                    dataForm={gutatividadesData}
+                    className='inputIncNome'
+                    name='gutgrupo'
+                    value={gutatividadesData.gutgrupo}
+                    onChange={onChange}
+                    />
 
 
-              <GUTPeriodicidadeComboBox
-              name={'gutperiodicidade'}
-              dataForm={gutatividadesData}
-              value={gutatividadesData.gutperiodicidade}
-              setValue={addValorGUTPeriodicidade}
-              label={'G U T Periodicidade'}
-              />
+                    <GUTPeriodicidadeComboBox
+                    name={'gutperiodicidade'}
+                    dataForm={gutatividadesData}
+                    value={gutatividadesData.gutperiodicidade}
+                    setValue={addValorGUTPeriodicidade}
+                    label={'G U T Periodicidade'}
+                    />
 
-              <OperadorComboBox
-              name={'operador'}
-              dataForm={gutatividadesData}
-              value={gutatividadesData.operador}
-              setValue={addValorOperador}
-              label={'Operador'}
-              />
-              <InputCheckbox dataForm={gutatividadesData} label='Concluido' name='concluido' checked={gutatividadesData.concluido} onChange={onChange} />
+                    <OperadorComboBox
+                    name={'operador'}
+                    dataForm={gutatividadesData}
+                    value={gutatividadesData.operador}
+                    setValue={addValorOperador}
+                    label={'Operador'}
+                    />
+                    <InputCheckbox dataForm={gutatividadesData} label='Concluido' name='concluido' checked={gutatividadesData.concluido} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dataconcluido'
-              label='DataConcluido'
-              dataForm={gutatividadesData}
-              className='inputIncNome'
-              name='dataconcluido'
-              value={gutatividadesData.dataconcluido}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='diasparainiciar'
-              label='DiasParaIniciar'
-              dataForm={gutatividadesData}
-              className='inputIncNome'
-              name='diasparainiciar'
-              value={gutatividadesData.diasparainiciar}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='dataconcluido'
+                    label='DataConcluido'
+                    dataForm={gutatividadesData}
+                    className='inputIncNome'
+                    name='dataconcluido'
+                    value={gutatividadesData.dataconcluido}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='minutospararealizar'
-              label='MinutosParaRealizar'
-              dataForm={gutatividadesData}
-              className='inputIncNome'
-              name='minutospararealizar'
-              value={gutatividadesData.minutospararealizar}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='diasparainiciar'
+                    label='DiasParaIniciar'
+                    dataForm={gutatividadesData}
+                    className='inputIncNome'
+                    name='diasparainiciar'
+                    value={gutatividadesData.diasparainiciar}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTAtividades' data={gutatividadesData} isSubmitting={isSubmitting} onClose={onClose} formId={`GUTAtividadesForm-${gutatividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/gutatividades'} id={gutatividadesData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='minutospararealizar'
+                    label='MinutosParaRealizar'
+                    dataForm={gutatividadesData}
+                    className='inputIncNome'
+                    name='minutospararealizar'
+                    value={gutatividadesData.minutospararealizar}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='GUTAtividades' data={gutatividadesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`GUTAtividadesForm-${gutatividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/gutatividades'} id={gutatividadesData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

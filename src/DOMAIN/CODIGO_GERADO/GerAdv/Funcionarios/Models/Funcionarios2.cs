@@ -32,6 +32,12 @@ namespace MenphisSI.GerAdv.Models
         public int Cidade { get; set; }
 
         /// <summary>
+        /// GUID - funGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// EMailPro - funEMailPro - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("emailpro")]
@@ -204,12 +210,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
-
-        /// <summary>
-        /// GUID - funGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -240,6 +240,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int Cidade { get; set; }
 
         /// <summary>
+        /// GUID - funGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// EMailPro - funEMailPro - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("emailpro")]
@@ -412,12 +418,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
-
-        /// <summary>
-        /// GUID - funGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomecargos")]
         public string NomeCargos { get; set; } = string.Empty;

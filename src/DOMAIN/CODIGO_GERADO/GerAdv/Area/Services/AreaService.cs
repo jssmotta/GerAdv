@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactory areaFactory, IAreaReader reader, IAreaValidation validation, IAreaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IAreasJusticaService areasjusticaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAreaService, IDisposable
+public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactory areaFactory, IAreaReader reader, IAreaValidation validation, IAreaWriter writer, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAreaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
     private readonly IAreaWriter writer = writer;
     private readonly IAcaoService acaoService = acaoService;
     private readonly IAgendaService agendaService = agendaService;
-    private readonly IAreasJusticaService areasjusticaService = areasjusticaService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly IFaseService faseService = faseService;
     private readonly IObjetosService objetosService = objetosService;
@@ -102,18 +101,18 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
     }
 
-    private async Task<AreaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<AreaResponse?> AddAndUpdate([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
+    private async Task<AreaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<AreaResponse?> AddAndUpdate([FromBody] Models.Area? regArea, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Area: URI inválida");
-        }
-
         if (regArea == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Area: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -127,7 +126,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             var validade = await validation.ValidateReg(regArea, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -136,7 +135,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -144,17 +143,17 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<AreaResponse?> Validation([FromBody] Models.Area regArea, [FromRoute, Required] string uri)
+    public async Task<AreaResponse?> Validation([FromBody] Models.Area? regArea, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Area: URI inválida");
-        }
-
         if (regArea == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Area: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -168,7 +167,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
             var validade = await validation.ValidateReg(regArea, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -177,7 +176,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regArea.Id.IsEmptyIDNumber())
@@ -188,17 +187,17 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         return await reader.Read(regArea.Id, oCnn);
     }
 
-    public async Task<AreaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<AreaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Area: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -210,10 +209,10 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, areasjusticaService, divisaotribunalService, faseService, objetosService, poderjudiciarioassociadoService, tiporecursoService, tribunalService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, acaoService, agendaService, divisaotribunalService, faseService, objetosService, poderjudiciarioassociadoService, tiporecursoService, tribunalService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -222,10 +221,10 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var area = await reader.Read(id, oCnn);
+        var area = await reader.Read(id ?? default, oCnn);
         try
         {
             if (area != null)
@@ -245,7 +244,7 @@ public partial class AreaService(IOptions<AppSettings> appSettings, IFAreaFactor
         return area;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

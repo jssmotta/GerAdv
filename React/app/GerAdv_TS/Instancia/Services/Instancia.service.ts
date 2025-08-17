@@ -79,7 +79,8 @@ export class InstanciaService implements IInstanciaService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Instancia list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Instancia list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class InstanciaService implements IInstanciaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Instancia');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Instancia');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class InstanciaService implements IInstanciaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Instancia');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Instancia');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Instancia:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Instancia:');
       return [];
     }
   }

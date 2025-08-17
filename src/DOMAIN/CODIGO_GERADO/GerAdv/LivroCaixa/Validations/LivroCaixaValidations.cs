@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ILivroCaixaValidation
 {
     Task<bool> ValidateReg(Models.LivroCaixa reg, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class LivroCaixaValidation : ILivroCaixaValidation
 {
-    public async Task<bool> CanDelete(int id, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ILivroCaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class LivroCaixaValidation : ILivroCaixaValidation
 
     private bool ValidSizes(Models.LivroCaixa reg)
     {
-        if (reg.Historico != null && reg.Historico.Length > 255)
-            throw new SGValidationException($"Historico deve ter no máximo 255 caracteres.");
+        if (reg.Historico != null && reg.Historico.Length > DBLivroCaixaDicInfo.LivHistorico.FTamanho)
+            throw new SGValidationException($"Historico deve ter no máximo {DBLivroCaixaDicInfo.LivHistorico.FTamanho} caracteres.");
         return true;
     }
 

@@ -81,84 +81,85 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Documentos diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Documentos diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = documentosData?.id == 0 ? 'Editar Documentos' : 'Adicionar Documentos';
-  }
-}, [documentosData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Documentos' : 'form-container5 form-container-Documentos'}>
-
-    <form className='formInputCadInc' id={`DocumentosForm-${documentosData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Documentos' data={documentosData} isSubmitting={isSubmitting} onClose={onClose} formId={`DocumentosForm-${documentosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='data'
-          label='Data'
-          dataForm={documentosData}
-          className='inputIncNome'
-          name='data'
-          value={documentosData.data}
-          placeholder={`Informe Data`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='processo'
-          label='Processo'
-          dataForm={documentosData}
-          className='inputIncNome'
-          name='processo'
-          value={documentosData.processo}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='observacao'
-          label='Observacao'
-          dataForm={documentosData}
-          className='inputIncNome'
-          name='observacao'
-          value={documentosData.observacao}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Documentos' data={documentosData} isSubmitting={isSubmitting} onClose={onClose} formId={`DocumentosForm-${documentosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/documentos'} id={documentosData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = documentosData?.id == 0 ? 'Editar Documentos' : 'Adicionar Documentos';
+    }
+  }, [documentosData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Documentos' : 'form-container5 form-container-Documentos'}>
+
+      <form className='formInputCadInc' id={`DocumentosForm-${documentosData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Documentos' data={documentosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`DocumentosForm-${documentosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='data'
+            label='Data'
+            dataForm={documentosData}
+            className='inputIncNome'
+            name='data'
+            value={documentosData.data}
+            placeholder={`Informe Data`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={documentosData}
+            className='inputIncNome'
+            name='processo'
+            value={documentosData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='observacao'
+            label='Observacao'
+            dataForm={documentosData}
+            className='inputIncNome'
+            name='observacao'
+            value={documentosData.observacao}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Documentos' data={documentosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`DocumentosForm-${documentosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/documentos'} id={documentosData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

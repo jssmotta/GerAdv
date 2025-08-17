@@ -41,7 +41,8 @@ export const useDivisaoTribunalForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Divisao Tribunal';
       setError(errorMessage);
-      //console.log('Erro ao carregar Divisao Tribunal');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Divisao Tribunal');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useDivisaoTribunalNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useDivisaoTribunalList = (dataService: IDivisaoTribunalService, cur
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar divisaotribunal';
       setError(errorMessage);
-      //console.log('Erro ao carregar divisaotribunal');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar divisaotribunal');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsDivisaoTribunal() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.nomeespecial.length > 255) { 
+        if (data.nomeespecial.length > 255) { 
                                              return { isValid: false, message: 'O campo NomeEspecial não pode ter mais de 255 caracteres.' };
                                          } 
 if (data.codigodiv.length > 5) { 

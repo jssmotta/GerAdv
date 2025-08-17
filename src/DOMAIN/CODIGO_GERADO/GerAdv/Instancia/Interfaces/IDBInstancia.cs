@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBInstancia
 {
     public int ID { get; set; }
+    public string? FGUID { get; set; }
     public string? FLiminarPedida { get; set; }
     public string? FObjeto { get; set; }
     public int FStatusResultado { get; set; }
@@ -32,5 +33,4 @@ public partial interface IDBInstancia
     public string? FAccessCode { get; set; }
     public int FJulgador { get; set; }
     public string? FZKeyIA { get; set; }
-    public string? FGUID { get; set; }
 }

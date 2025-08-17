@@ -14,16 +14,16 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// TipoValorProcesso - prvTipoValorProcesso  
-        /// </summary>
-        [JsonPropertyName("tipovalorprocesso")]
-        public int TipoValorProcesso { get; set; }
-
-        /// <summary>
         /// Processo - prvProcesso  
         /// </summary>
         [JsonPropertyName("processo")]
         public int Processo { get; set; }
+
+        /// <summary>
+        /// TipoValorProcesso - prvTipoValorProcesso  
+        /// </summary>
+        [JsonPropertyName("tipovalorprocesso")]
+        public int TipoValorProcesso { get; set; }
 
         /// <summary>
         /// Indice - prvIndice - tamanho máximo: 20 
@@ -101,10 +101,10 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? DataUltimaCorrecao_date { get; set; }
 
         /// <summary>
-        /// GUID - prvGUID - tamanho máximo: 50 
+        /// GUID - prvGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -117,16 +117,16 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// TipoValorProcesso - prvTipoValorProcesso  
-        /// </summary>
-        [JsonPropertyName("tipovalorprocesso")]
-        public int TipoValorProcesso { get; set; }
-
-        /// <summary>
         /// Processo - prvProcesso  
         /// </summary>
         [JsonPropertyName("processo")]
         public int Processo { get; set; }
+
+        /// <summary>
+        /// TipoValorProcesso - prvTipoValorProcesso  
+        /// </summary>
+        [JsonPropertyName("tipovalorprocesso")]
+        public int TipoValorProcesso { get; set; }
 
         /// <summary>
         /// Indice - prvIndice - tamanho máximo: 20 
@@ -204,12 +204,9 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? DataUltimaCorrecao_date { get; set; }
 
         /// <summary>
-        /// GUID - prvGUID - tamanho máximo: 50 
+        /// GUID - prvGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        [JsonPropertyName("descricaotipovalorprocesso")]
-        public string DescricaoTipoValorProcesso { get; set; } = string.Empty;
+        public string Guid { get; set; } = "";
     }
 }

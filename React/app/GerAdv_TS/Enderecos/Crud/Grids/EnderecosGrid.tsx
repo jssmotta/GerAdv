@@ -122,13 +122,14 @@ const loadFilter = useCallback(() => {
         await enderecosService.deleteEnderecos(deleteId);
         // O hook já escuta as notificações e recarrega automaticamente
       } catch (error) {
-      console.log('Erro ao excluir');
-      setErrorMessage('Erro ao excluir o registro. Verifique se ele não está vinculado a outros registros.');
-    } finally {
-    setDeleteId(null);
-    setIsModalOpen(false);
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao excluir');
+        setErrorMessage('Erro ao excluir o registro. Verifique se ele não está vinculado a outros registros.');
+      } finally {
+      setDeleteId(null);
+      setIsModalOpen(false);
+    }
   }
-}
 };
 const cancelDelete = () => {
   setDeleteId(null);

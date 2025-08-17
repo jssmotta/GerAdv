@@ -13,7 +13,7 @@ public partial interface ICargosWhere
 
 public partial class CargosWhere(IFCargosFactory cargosFactory) : ICargosWhere
 {
-    private readonly IFCargosFactory _cargosFactory = cargosFactory;
+    private readonly IFCargosFactory _cargosFactory = cargosFactory ?? throw new ArgumentNullException(nameof(cargosFactory));
     public CargosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _cargosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

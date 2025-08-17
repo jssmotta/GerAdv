@@ -62,6 +62,12 @@ namespace MenphisSI.GerAdv.Models
         public string Usuario { get; set; } = "";
 
         /// <summary>
+        /// GUID - oepGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// PortaSmtp - oepPortaSmtp  
         /// </summary>
         [JsonPropertyName("portasmtp")]
@@ -84,12 +90,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("senha256")]
         public string Senha256 { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -150,6 +150,12 @@ namespace MenphisSI.GerAdv.Models.All
         public string Usuario { get; set; } = "";
 
         /// <summary>
+        /// GUID - oepGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// PortaSmtp - oepPortaSmtp  
         /// </summary>
         [JsonPropertyName("portasmtp")]
@@ -172,12 +178,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("senha256")]
         public string Senha256 { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

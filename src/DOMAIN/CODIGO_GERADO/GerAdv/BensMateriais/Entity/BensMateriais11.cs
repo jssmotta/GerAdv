@@ -54,7 +54,7 @@ public partial class FBensMateriaisFactory : IFBensMateriaisFactory, IDisposable
             throw new ObjectDisposedException(nameof(FBensMateriaisFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

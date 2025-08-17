@@ -26,6 +26,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int EMPFuncao { get; set; }
 
         /// <summary>
+        /// GUID - opoGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// CTPSNumero - opoCTPSNumero - tamanho máximo: 15 
         /// </summary>
         [JsonPropertyName("ctpsnumero")]
@@ -174,12 +180,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
-
-        /// <summary>
-        /// GUID - opoGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -204,6 +204,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int EMPFuncao { get; set; }
 
         /// <summary>
+        /// GUID - opoGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// CTPSNumero - opoCTPSNumero - tamanho máximo: 15 
         /// </summary>
         [JsonPropertyName("ctpsnumero")]
@@ -352,12 +358,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
-
-        /// <summary>
-        /// GUID - opoGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

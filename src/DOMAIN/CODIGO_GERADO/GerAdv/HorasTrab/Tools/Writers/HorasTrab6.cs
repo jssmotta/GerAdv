@@ -14,15 +14,16 @@ public partial interface IHorasTrabWriter
 
 public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWriter
 {
-    private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory;
-    public async Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException(nameof(horastrabFactory));
+    public virtual async Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection oCnn)
     {
         await _horastrabFactory.DeleteAsync(operadorId, horastrab.Id, oCnn);
     }
 
-    public async Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (horastrab.Id.IsEmptyIDNumber() ? _horastrabFactory.CreateAsync() : _horastrabFactory.CreateFromIdAsync(horastrab.Id, oCnn));
+        dbRec.FGUID = horastrab.GUID;
         dbRec.FIDContatoCRM = horastrab.IDContatoCRM;
         dbRec.FHonorario = horastrab.Honorario;
         dbRec.FIDAgenda = horastrab.IDAgenda;
@@ -41,7 +42,6 @@ public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWr
         dbRec.FAnexoComp = horastrab.AnexoComp;
         dbRec.FAnexoUNC = horastrab.AnexoUNC;
         dbRec.FServico = horastrab.Servico;
-        dbRec.FGUID = horastrab.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

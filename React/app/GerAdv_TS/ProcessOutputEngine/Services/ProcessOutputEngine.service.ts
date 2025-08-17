@@ -79,7 +79,8 @@ export class ProcessOutputEngineService implements IProcessOutputEngineService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ProcessOutputEngine list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ProcessOutputEngine list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ProcessOutputEngineService implements IProcessOutputEngineService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ProcessOutputEngine');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProcessOutputEngine');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ProcessOutputEngineService implements IProcessOutputEngineService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ProcessOutputEngine');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ProcessOutputEngine');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ProcessOutputEngine:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ProcessOutputEngine:');
       return [];
     }
   }

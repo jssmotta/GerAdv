@@ -55,9 +55,6 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
 
-        [JsonPropertyName("hora_date")]
-        public DateTime? Hora_date { get; set; }
-
         /// <summary>
         /// Compromisso - xxxCompromisso  
         /// </summary>
@@ -87,9 +84,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
-
-        [JsonPropertyName("horafinal_date")]
-        public DateTime? HoraFinal_date { get; set; }
 
         /// <summary>
         /// Nome - xxxNome - tamanho máximo: 80 
@@ -161,9 +155,6 @@ namespace MenphisSI.GerAdv.Models.All
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
 
-        [JsonPropertyName("hora_date")]
-        public DateTime? Hora_date { get; set; }
-
         /// <summary>
         /// Compromisso - xxxCompromisso  
         /// </summary>
@@ -193,9 +184,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
-
-        [JsonPropertyName("horafinal_date")]
-        public DateTime? HoraFinal_date { get; set; }
 
         /// <summary>
         /// Nome - xxxNome - tamanho máximo: 80 

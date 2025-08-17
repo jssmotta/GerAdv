@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IHonorariosDadosContratoValidation
 {
     Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidation
 {
-    public async Task<bool> CanDelete(int id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,12 +26,12 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
 
     private bool ValidSizes(Models.HonorariosDadosContrato reg)
     {
-        if (reg.ArquivoContrato != null && reg.ArquivoContrato.Length > 2048)
-            throw new SGValidationException($"ArquivoContrato deve ter no máximo 2048 caracteres.");
-        if (reg.Observacao != null && reg.Observacao.Length > 2048)
-            throw new SGValidationException($"Observacao deve ter no máximo 2048 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Guid != null && reg.Guid.Length > DBHonorariosDadosContratoDicInfo.HdcGuid.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBHonorariosDadosContratoDicInfo.HdcGuid.FTamanho} caracteres.");
+        if (reg.ArquivoContrato != null && reg.ArquivoContrato.Length > DBHonorariosDadosContratoDicInfo.HdcArquivoContrato.FTamanho)
+            throw new SGValidationException($"ArquivoContrato deve ter no máximo {DBHonorariosDadosContratoDicInfo.HdcArquivoContrato.FTamanho} caracteres.");
+        if (reg.Observacao != null && reg.Observacao.Length > DBHonorariosDadosContratoDicInfo.HdcObservacao.FTamanho)
+            throw new SGValidationException($"Observacao deve ter no máximo {DBHonorariosDadosContratoDicInfo.HdcObservacao.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,8 +39,6 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -55,6 +53,15 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
 
         if (reg.DataContrato.IsEmpty())
             throw new SGValidationException("DataContrato é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.DataContrato))
+        {
+            if (DateTime.TryParse(reg.DataContrato, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataContrato não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Clientes
         {
             var regClientes = await clientesReader.Read(reg.Cliente, oCnn);

@@ -54,7 +54,7 @@ public partial class FProObservacoesFactory : IFProObservacoesFactory, IDisposab
             throw new ObjectDisposedException(nameof(FProObservacoesFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

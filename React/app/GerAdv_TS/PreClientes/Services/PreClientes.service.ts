@@ -79,7 +79,8 @@ export class PreClientesService implements IPreClientesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching PreClientes list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching PreClientes list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class PreClientesService implements IPreClientesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online PreClientes');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PreClientes');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class PreClientesService implements IPreClientesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online PreClientes');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online PreClientes');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all PreClientes:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all PreClientes:');
       return [];
     }
   }

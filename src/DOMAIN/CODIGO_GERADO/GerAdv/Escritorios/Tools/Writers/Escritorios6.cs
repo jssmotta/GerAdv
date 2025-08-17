@@ -14,15 +14,16 @@ public partial interface IEscritoriosWriter
 
 public class EscritoriosWriter(IFEscritoriosFactory escritoriosFactory) : IEscritoriosWriter
 {
-    private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory;
-    public async Task Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException(nameof(escritoriosFactory));
+    public virtual async Task Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection oCnn)
     {
         await _escritoriosFactory.DeleteAsync(operadorId, escritorios.Id, oCnn);
     }
 
-    public async Task<FEscritorios> WriteAsync(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEscritorios> WriteAsync(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (escritorios.Id.IsEmptyIDNumber() ? _escritoriosFactory.CreateAsync() : _escritoriosFactory.CreateFromIdAsync(escritorios.Id, oCnn));
+        dbRec.FGUID = escritorios.GUID;
         dbRec.FCNPJ = escritorios.CNPJ.ClearInputCnpj();
         dbRec.FCasa = escritorios.Casa;
         dbRec.FParceria = escritorios.Parceria;
@@ -42,7 +43,6 @@ public class EscritoriosWriter(IFEscritoriosFactory escritoriosFactory) : IEscri
         dbRec.FInscEst = escritorios.InscEst;
         dbRec.FCorrespondente = escritorios.Correspondente;
         dbRec.FTop = escritorios.Top;
-        dbRec.FGUID = escritorios.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

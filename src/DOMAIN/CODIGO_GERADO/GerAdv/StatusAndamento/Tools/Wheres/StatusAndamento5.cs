@@ -13,7 +13,7 @@ public partial interface IStatusAndamentoWhere
 
 public partial class StatusAndamentoWhere(IFStatusAndamentoFactory statusandamentoFactory) : IStatusAndamentoWhere
 {
-    private readonly IFStatusAndamentoFactory _statusandamentoFactory = statusandamentoFactory;
+    private readonly IFStatusAndamentoFactory _statusandamentoFactory = statusandamentoFactory ?? throw new ArgumentNullException(nameof(statusandamentoFactory));
     public StatusAndamentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _statusandamentoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,8 +21,8 @@ public partial class StatusAndamentoWhere(IFStatusAndamentoFactory statusandamen
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            Icone = dbRec.FIcone,
             GUID = dbRec.FGUID ?? string.Empty,
+            Icone = dbRec.FIcone,
         };
         return statusandamento;
     }

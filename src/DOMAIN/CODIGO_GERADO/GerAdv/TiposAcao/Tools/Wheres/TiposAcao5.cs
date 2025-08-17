@@ -13,7 +13,7 @@ public partial interface ITiposAcaoWhere
 
 public partial class TiposAcaoWhere(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWhere
 {
-    private readonly IFTiposAcaoFactory _tiposacaoFactory = tiposacaoFactory;
+    private readonly IFTiposAcaoFactory _tiposacaoFactory = tiposacaoFactory ?? throw new ArgumentNullException(nameof(tiposacaoFactory));
     public TiposAcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tiposacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

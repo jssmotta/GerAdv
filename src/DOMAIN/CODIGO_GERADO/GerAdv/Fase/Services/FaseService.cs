@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactory faseFactory, IFaseReader reader, IFaseValidation validation, IFaseWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IProDepositosService prodepositosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFaseService, IDisposable
+public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactory faseFactory, IFaseReader reader, IFaseValidation validation, IFaseWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IFaseService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -19,7 +19,6 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
     private readonly IFaseWriter writer = writer;
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IAreaReader areaReader = areaReader;
-    private readonly IProDepositosService prodepositosService = prodepositosService;
     public async Task<IEnumerable<FaseResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -96,18 +95,18 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         }
     }
 
-    private async Task<FaseResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<FaseResponse?> AddAndUpdate([FromBody] Models.Fase regFase, [FromRoute, Required] string uri)
+    private async Task<FaseResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<FaseResponse?> AddAndUpdate([FromBody] Models.Fase? regFase, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Fase: URI inválida");
-        }
-
         if (regFase == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Fase: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -121,7 +120,7 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
             var validade = await validation.ValidateReg(regFase, this, justicaReader, areaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -130,7 +129,7 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -138,17 +137,17 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<FaseResponse?> Validation([FromBody] Models.Fase regFase, [FromRoute, Required] string uri)
+    public async Task<FaseResponse?> Validation([FromBody] Models.Fase? regFase, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Fase: URI inválida");
-        }
-
         if (regFase == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Fase: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -162,7 +161,7 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
             var validade = await validation.ValidateReg(regFase, this, justicaReader, areaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -171,7 +170,7 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regFase.Id.IsEmptyIDNumber())
@@ -182,17 +181,17 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         return await reader.Read(regFase.Id, oCnn);
     }
 
-    public async Task<FaseResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<FaseResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Fase: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,10 +203,10 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, prodepositosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -216,10 +215,10 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var fase = await reader.Read(id, oCnn);
+        var fase = await reader.Read(id ?? default, oCnn);
         try
         {
             if (fase != null)
@@ -239,7 +238,7 @@ public partial class FaseService(IOptions<AppSettings> appSettings, IFFaseFactor
         return fase;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

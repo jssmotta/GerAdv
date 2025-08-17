@@ -79,7 +79,8 @@ export class PrepostosService implements IPrepostosService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Prepostos list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Prepostos list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class PrepostosService implements IPrepostosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Prepostos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Prepostos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class PrepostosService implements IPrepostosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Prepostos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Prepostos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Prepostos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Prepostos:');
       return [];
     }
   }

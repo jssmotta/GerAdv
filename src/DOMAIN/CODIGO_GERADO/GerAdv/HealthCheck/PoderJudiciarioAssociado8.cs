@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettings, PoderJudiciarioAssociadoService poderjudiciarioassociadoService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettin
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) pjaJustica,pjaJusticaNome,pjaArea,pjaAreaNome,pjaTribunal,pjaTribunalNome,pjaForo,pjaForoNome,pjaCidade,pjaSubDivisaoNome,pjaCidadeNome,pjaSubDivisao,pjaTipo,pjaGUID FROM {"PoderJudiciarioAssociado".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) pjaJustica,pjaJusticaNome,pjaArea,pjaAreaNome,pjaTribunal,pjaTribunalNome,pjaForo,pjaForoNome,pjaCidade,pjaSubDivisaoNome,pjaCidadeNome,pjaSubDivisao,pjaGUID,pjaTipo FROM {"PoderJudiciarioAssociado".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class PoderJudiciarioAssociadoHealthCheck(IOptions<AppSettings> appSettin
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

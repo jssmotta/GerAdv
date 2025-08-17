@@ -79,7 +79,8 @@ export class ContatoCRMViewService implements IContatoCRMViewService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching ContatoCRMView list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching ContatoCRMView list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ContatoCRMViewService implements IContatoCRMViewService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online ContatoCRMView');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ContatoCRMView');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ContatoCRMViewService implements IContatoCRMViewService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online ContatoCRMView');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online ContatoCRMView');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all ContatoCRMView:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all ContatoCRMView:');
       return [];
     }
   }

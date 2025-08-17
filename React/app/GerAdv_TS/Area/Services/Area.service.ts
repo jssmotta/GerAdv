@@ -79,7 +79,8 @@ export class AreaService implements IAreaService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Area list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Area list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class AreaService implements IAreaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Area');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Area');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class AreaService implements IAreaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Area');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Area');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Area:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Area:');
       return [];
     }
   }

@@ -13,7 +13,7 @@ public partial interface IStatusTarefasWhere
 
 public partial class StatusTarefasWhere(IFStatusTarefasFactory statustarefasFactory) : IStatusTarefasWhere
 {
-    private readonly IFStatusTarefasFactory _statustarefasFactory = statustarefasFactory;
+    private readonly IFStatusTarefasFactory _statustarefasFactory = statustarefasFactory ?? throw new ArgumentNullException(nameof(statustarefasFactory));
     public StatusTarefasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _statustarefasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

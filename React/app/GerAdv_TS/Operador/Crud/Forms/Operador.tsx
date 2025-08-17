@@ -82,162 +82,163 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Operador diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Operador diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = operadorData?.id == 0 ? 'Editar Operador' : 'Adicionar Operador';
-  }
-}, [operadorData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
+  };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = operadorData?.id == 0 ? 'Editar Operador' : 'Adicionar Operador';
     }
-  }
-  `}</style> : null}
+  }, [operadorData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
 
-  <div className={isMobile ? 'form-container form-container-Operador' : 'form-container form-container-Operador'}>
+    <div className={isMobile ? 'form-container form-container-Operador' : 'form-container form-container-Operador'}>
 
-    <form className='formInputCadInc' id={`OperadorForm-${operadorData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Operador' data={operadorData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorForm-${operadorData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+      <form className='formInputCadInc' id={`OperadorForm-${operadorData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Operador' data={operadorData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OperadorForm-${operadorData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='nome'
+            value={operadorData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='email'
+            maxLength={150}
+            id='email'
+            label='EMail'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='email'
+            value={operadorData.email}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='pasta'
+            label='Pasta'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='pasta'
+            value={operadorData.pasta}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={operadorData} label='Telefonista' name='telefonista' checked={operadorData.telefonista} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='Master' name='master' checked={operadorData.master} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={50}
+            id='nick'
+            label='Nick'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='nick'
+            value={operadorData.nick}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={operadorData} label='Excluido' name='excluido' checked={operadorData.excluido} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='Situacao' name='situacao' checked={operadorData.situacao} onChange={onChange} />
+
+            <InputInput
+            type='text'
+            maxLength={255}
+            id='minhadescricao'
+            label='MinhaDescricao'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='minhadescricao'
+            value={operadorData.minhadescricao}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputInput
+            type='email'
+            maxLength={100}
+            id='emailnet'
+            label='EMailNet'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='emailnet'
+            value={operadorData.emailnet}
+            onChange={onChange}
+            />
+
+            <InputCheckbox dataForm={operadorData} label='OnLine' name='online' checked={operadorData.online} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='SysOp' name='sysop' checked={operadorData.sysop} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='IsFinanceiro' name='isfinanceiro' checked={operadorData.isfinanceiro} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='Top' name='top' checked={operadorData.top} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='Sexo' name='sexo' checked={operadorData.sexo} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='Basico' name='basico' checked={operadorData.basico} onChange={onChange} />
+            <InputCheckbox dataForm={operadorData} label='Externo' name='externo' checked={operadorData.externo} onChange={onChange} />
+
+            <InputInput
+            autoComplete='off'
+            type='password'
+            maxLength={4000}
+            id='senha256'
+            label='Senha256'
+            dataForm={operadorData}
+            className='inputIncNome'
+            name='senha256'
+            value={operadorData.senha256}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'><InputCheckbox dataForm={operadorData} label='EMailConfirmado' name='emailconfirmado' checked={operadorData.emailconfirmado} onChange={onChange} />
+
+          <InputInput
+          type='text'
+          maxLength={2048}
+          id='datalimitereset'
+          label='DataLimiteReset'
+          dataForm={operadorData}
+          className='inputIncNome'
+          name='datalimitereset'
+          value={operadorData.datalimitereset}
+          onChange={onChange}
+          />
+
+        </div>
+      </form>
+
+
+      {isMobile && (
+        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Operador' data={operadorData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OperadorForm-${operadorData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
         )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='nome'
-          value={operadorData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='email'
-          maxLength={150}
-          id='email'
-          label='EMail'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='email'
-          value={operadorData.email}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='pasta'
-          label='Pasta'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='pasta'
-          value={operadorData.pasta}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={operadorData} label='Telefonista' name='telefonista' checked={operadorData.telefonista} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='Master' name='master' checked={operadorData.master} onChange={onChange} />
-
-          <InputInput
-          type='text'
-          maxLength={50}
-          id='nick'
-          label='Nick'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='nick'
-          value={operadorData.nick}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={operadorData} label='Excluido' name='excluido' checked={operadorData.excluido} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='Situacao' name='situacao' checked={operadorData.situacao} onChange={onChange} />
-
-          <InputInput
-          type='text'
-          maxLength={255}
-          id='minhadescricao'
-          label='MinhaDescricao'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='minhadescricao'
-          value={operadorData.minhadescricao}
-          onChange={onChange}
-          />
-
-        </div><div className='grid-container'>
-          <InputInput
-          type='email'
-          maxLength={100}
-          id='emailnet'
-          label='EMailNet'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='emailnet'
-          value={operadorData.emailnet}
-          onChange={onChange}
-          />
-
-          <InputCheckbox dataForm={operadorData} label='OnLine' name='online' checked={operadorData.online} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='SysOp' name='sysop' checked={operadorData.sysop} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='IsFinanceiro' name='isfinanceiro' checked={operadorData.isfinanceiro} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='Top' name='top' checked={operadorData.top} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='Sexo' name='sexo' checked={operadorData.sexo} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='Basico' name='basico' checked={operadorData.basico} onChange={onChange} />
-          <InputCheckbox dataForm={operadorData} label='Externo' name='externo' checked={operadorData.externo} onChange={onChange} />
-
-          <InputInput
-          autoComplete='off'
-          type='password'
-          maxLength={4000}
-          id='senha256'
-          label='Senha256'
-          dataForm={operadorData}
-          className='inputIncNome'
-          name='senha256'
-          value={operadorData.senha256}
-          onChange={onChange}
-          />
-
-        </div><div className='grid-container'><InputCheckbox dataForm={operadorData} label='EMailConfirmado' name='emailconfirmado' checked={operadorData.emailconfirmado} onChange={onChange} />
-
-        <InputInput
-        type='text'
-        maxLength={2048}
-        id='datalimitereset'
-        label='DataLimiteReset'
-        dataForm={operadorData}
-        className='inputIncNome'
-        name='datalimitereset'
-        value={operadorData.datalimitereset}
-        onChange={onChange}
-        />
-
+        <DeleteButton page={'/pages/operador'} id={operadorData.id} closeModel={onClose} dadoApi={dadoApi} />
       </div>
-    </form>
-
-
-    {isMobile && (
-      <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Operador' data={operadorData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorForm-${operadorData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-      )}
-      <DeleteButton page={'/pages/operador'} id={operadorData.id} closeModel={onClose} dadoApi={dadoApi} />
-    </div>
-    <div className='form-spacer'></div>
-    </>
-  );
-};
+      <div className='form-spacer'></div>
+      </>
+    );
+  };

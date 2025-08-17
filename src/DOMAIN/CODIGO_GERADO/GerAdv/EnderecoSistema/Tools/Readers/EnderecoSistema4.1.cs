@@ -15,7 +15,7 @@ public partial class EnderecoSistemaReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBEnderecoSistemaDicInfo.CampoNome}";
+        var orderQuery = $"{TSql.OrderBy} {DBEnderecoSistemaDicInfo.CampoCodigo}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

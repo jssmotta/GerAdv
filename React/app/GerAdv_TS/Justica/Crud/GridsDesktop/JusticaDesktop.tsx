@@ -81,18 +81,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAreasJustica = (id: number) => {
-  router.push(`/pages/areasjustica/?justica=${id}`);
-};
-const SearchFromCellAreasJustica = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAreasJustica(props.dataItem.id)}><span title='Pesquisar relacionados em Areas Justica'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellDivisaoTribunal = (id: number) => {
   router.push(`/pages/divisaotribunal/?justica=${id}`);
 };
@@ -230,7 +218,7 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
   'id_edit_Acao': (
   <GridColumn
   key='Acao'
@@ -251,17 +239,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellAgenda }}
-  />
-  ), /* Track G.03 */
-  'id_edit_AreasJustica': (
-  <GridColumn
-  key='AreasJustica'
-  field='AreasJustica'
-  title='Areas Justica'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellAreasJustica }}
   />
   ), /* Track G.03 */
   'id_edit_DivisaoTribunal': (
@@ -351,14 +328,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AreasJustica'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Areas Justica'
-  cells={{ data: SearchFromCellAreasJustica }}
   />, 
   <GridColumn
   field='id_edit_DivisaoTribunal'
@@ -457,14 +426,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_AreasJustica'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Areas Justica'
-  cells={{ data: SearchFromCellAreasJustica }}
   />, 
   <GridColumn
   field='id_edit_DivisaoTribunal'

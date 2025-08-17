@@ -94,18 +94,18 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         }
     }
 
-    private async Task<OperadorGruposAgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<OperadorGruposAgendaResponse?> AddAndUpdate([FromBody] Models.OperadorGruposAgenda regOperadorGruposAgenda, [FromRoute, Required] string uri)
+    private async Task<OperadorGruposAgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<OperadorGruposAgendaResponse?> AddAndUpdate([FromBody] Models.OperadorGruposAgenda? regOperadorGruposAgenda, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("OperadorGruposAgenda: URI inválida");
-        }
-
         if (regOperadorGruposAgenda == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("OperadorGruposAgenda: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regOperadorGruposAgenda, this, operadorReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = _httpContextAccessor.HttpContext == null ? regOperadorGruposAgenda.Operador : UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<OperadorGruposAgendaResponse?> Validation([FromBody] Models.OperadorGruposAgenda regOperadorGruposAgenda, [FromRoute, Required] string uri)
+    public async Task<OperadorGruposAgendaResponse?> Validation([FromBody] Models.OperadorGruposAgenda? regOperadorGruposAgenda, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("OperadorGruposAgenda: URI inválida");
-        }
-
         if (regOperadorGruposAgenda == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("OperadorGruposAgenda: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regOperadorGruposAgenda, this, operadorReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regOperadorGruposAgenda.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         return await reader.Read(regOperadorGruposAgenda.Id, oCnn);
     }
 
-    public async Task<OperadorGruposAgendaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<OperadorGruposAgendaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("OperadorGruposAgenda: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var operadorgruposagenda = await reader.Read(id, oCnn);
+        var operadorgruposagenda = await reader.Read(id ?? default, oCnn);
         try
         {
             if (operadorgruposagenda != null)
@@ -237,7 +237,7 @@ public partial class OperadorGruposAgendaService(IOptions<AppSettings> appSettin
         return operadorgruposagenda;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

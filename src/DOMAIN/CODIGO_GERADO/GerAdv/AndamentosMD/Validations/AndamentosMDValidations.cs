@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAndamentosMDValidation
 {
     Task<bool> ValidateReg(Models.AndamentosMD reg, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AndamentosMDValidation : IAndamentosMDValidation
 {
-    public async Task<bool> CanDelete(int id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class AndamentosMDValidation : IAndamentosMDValidation
 
     private bool ValidSizes(Models.AndamentosMD reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBAndamentosMDDicInfo.AmdNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBAndamentosMDDicInfo.AmdNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBAndamentosMDDicInfo.AmdGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBAndamentosMDDicInfo.AmdGUID.FTamanho} caracteres.");
         return true;
     }
 

@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOponentesRepLegalValidation
 {
     Task<bool> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OponentesRepLegalValidation : IOponentesRepLegalValidation
 {
-    public async Task<bool> CanDelete(int id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,20 +26,20 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
 
     private bool ValidSizes(Models.OponentesRepLegal reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 150)
-            throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBOponentesRepLegalDicInfo.OprNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBOponentesRepLegalDicInfo.OprNome.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBOponentesRepLegalDicInfo.OprCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBOponentesRepLegalDicInfo.OprCPF.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBOponentesRepLegalDicInfo.OprRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBOponentesRepLegalDicInfo.OprRG.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBOponentesRepLegalDicInfo.OprEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBOponentesRepLegalDicInfo.OprEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBOponentesRepLegalDicInfo.OprBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBOponentesRepLegalDicInfo.OprBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBOponentesRepLegalDicInfo.OprCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBOponentesRepLegalDicInfo.OprCEP.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBOponentesRepLegalDicInfo.OprSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBOponentesRepLegalDicInfo.OprSite.FTamanho} caracteres.");
         return true;
     }
 
@@ -52,8 +52,10 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);

@@ -25,7 +25,7 @@ export class DadosProcuracaoValidator {
 export interface IDadosProcuracaoService {
   fetchDadosProcuracaoById: (id: number) => Promise<IDadosProcuracao>;
   saveDadosProcuracao: (dadosprocuracao: IDadosProcuracao) => Promise<IDadosProcuracao>;  
-  getList: (filtro?: FilterDadosProcuracao) => Promise<IDadosProcuracao[]>;
+  
   getAll: (filtro?: FilterDadosProcuracao) => Promise<IDadosProcuracao[]>;
   deleteDadosProcuracao: (id: number) => Promise<void>;
   validateDadosProcuracao: (dadosprocuracao: IDadosProcuracao) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class DadosProcuracaoService implements IDadosProcuracaoService {
   }
 
   
-    async getList(filtro?: FilterDadosProcuracao): Promise<IDadosProcuracao[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching DadosProcuracao list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class DadosProcuracaoService implements IDadosProcuracaoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online DadosProcuracao');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online DadosProcuracao');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class DadosProcuracaoService implements IDadosProcuracaoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online DadosProcuracao');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online DadosProcuracao');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all DadosProcuracao:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all DadosProcuracao:');
       return [];
     }
   }

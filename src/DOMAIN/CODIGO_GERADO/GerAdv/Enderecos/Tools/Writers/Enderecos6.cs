@@ -14,16 +14,17 @@ public partial interface IEnderecosWriter
 
 public class EnderecosWriter(IFEnderecosFactory enderecosFactory) : IEnderecosWriter
 {
-    private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory;
-    public async Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory ?? throw new ArgumentNullException(nameof(enderecosFactory));
+    public virtual async Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection oCnn)
     {
         await _enderecosFactory.DeleteAsync(operadorId, enderecos.Id, oCnn);
     }
 
-    public async Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (enderecos.Id.IsEmptyIDNumber() ? _enderecosFactory.CreateAsync() : _enderecosFactory.CreateFromIdAsync(enderecos.Id, oCnn));
         dbRec.FTopIndex = enderecos.TopIndex;
+        dbRec.FGUID = enderecos.GUID;
         dbRec.FDescricao = enderecos.Descricao;
         dbRec.FContato = enderecos.Contato;
         if (enderecos.DtNasc != null)
@@ -44,7 +45,6 @@ public class EnderecosWriter(IFEnderecosFactory enderecosFactory) : IEnderecosWr
         dbRec.FQuem = enderecos.Quem;
         dbRec.FQuemIndicou = enderecos.QuemIndicou;
         dbRec.FReportECBOnly = enderecos.ReportECBOnly;
-        dbRec.FGUID = enderecos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

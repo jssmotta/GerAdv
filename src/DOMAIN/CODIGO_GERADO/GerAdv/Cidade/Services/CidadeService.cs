@@ -115,18 +115,18 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         }
     }
 
-    private async Task<CidadeResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<CidadeResponse?> AddAndUpdate([FromBody] Models.Cidade regCidade, [FromRoute, Required] string uri)
+    private async Task<CidadeResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<CidadeResponse?> AddAndUpdate([FromBody] Models.Cidade? regCidade, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Cidade: URI inválida");
-        }
-
         if (regCidade == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Cidade: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -140,7 +140,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
             var validade = await validation.ValidateReg(regCidade, this, ufReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -149,7 +149,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -157,17 +157,17 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<CidadeResponse?> Validation([FromBody] Models.Cidade regCidade, [FromRoute, Required] string uri)
+    public async Task<CidadeResponse?> Validation([FromBody] Models.Cidade? regCidade, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Cidade: URI inválida");
-        }
-
         if (regCidade == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Cidade: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -181,7 +181,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
             var validade = await validation.ValidateReg(regCidade, this, ufReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -190,7 +190,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regCidade.Id.IsEmptyIDNumber())
@@ -201,17 +201,17 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         return await reader.Read(regCidade.Id, oCnn);
     }
 
-    public async Task<CidadeResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<CidadeResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Cidade: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -226,7 +226,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
             var deleteValidation = await validation.CanDelete(id, this, advogadosService, agendaService, bensmateriaisService, clientesService, clientessociosService, colaboradoresService, divisaotribunalService, enderecosService, enderecosistemaService, escritoriosService, fornecedoresService, foroService, funcionariosService, oponentesService, oponentesreplegalService, outraspartesclienteService, poderjudiciarioassociadoService, preclientesService, prepostosService, terceirosService, tribenderecosService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -235,10 +235,10 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var cidade = await reader.Read(id, oCnn);
+        var cidade = await reader.Read(id ?? default, oCnn);
         try
         {
             if (cidade != null)
@@ -258,7 +258,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
         return cidade;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

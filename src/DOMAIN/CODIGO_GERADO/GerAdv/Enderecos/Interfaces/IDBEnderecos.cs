@@ -6,6 +6,7 @@ public partial interface IDBEnderecos
 {
     public int ID { get; set; }
     public bool FTopIndex { get; set; }
+    public string? FGUID { get; set; }
     public string? FDescricao { get; set; }
     public string? FContato { get; set; }
     public string? FDtNasc { get; set; }
@@ -25,5 +26,4 @@ public partial interface IDBEnderecos
     public int FQuem { get; set; }
     public string? FQuemIndicou { get; set; }
     public bool FReportECBOnly { get; set; }
-    public string? FGUID { get; set; }
 }

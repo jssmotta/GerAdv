@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TipoCompromissoReader(IFTipoCompromissoFactory tipocompromissoFactory) : ITipoCompromissoReader
 {
-    private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory;
+    private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tipCodigo, tipDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TipoCompromissoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoCompromisso.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TipoCompromissoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,10 +54,10 @@ public partial class TipoCompromissoReader(IFTipoCompromissoFactory tipocompromi
         var tipocompromisso = new Models.TipoCompromisso
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipocompromisso;
     }
@@ -83,10 +83,10 @@ public partial class TipoCompromissoReader(IFTipoCompromissoFactory tipocompromi
         var tipocompromisso = new TipoCompromissoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipocompromisso;
     }
@@ -101,10 +101,10 @@ public partial class TipoCompromissoReader(IFTipoCompromissoFactory tipocompromi
         var tipocompromisso = new TipoCompromissoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipocompromisso;
     }
@@ -119,10 +119,10 @@ public partial class TipoCompromissoReader(IFTipoCompromissoFactory tipocompromi
         var tipocompromisso = new TipoCompromissoResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipocompromisso;
     }
@@ -137,10 +137,10 @@ public partial class TipoCompromissoReader(IFTipoCompromissoFactory tipocompromi
         var tipocompromisso = new TipoCompromissoResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipocompromisso;
     }

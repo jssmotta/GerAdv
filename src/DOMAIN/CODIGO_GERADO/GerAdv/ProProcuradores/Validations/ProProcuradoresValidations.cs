@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProProcuradoresValidation
 {
     Task<bool> ValidateReg(Models.ProProcuradores reg, IProProcuradoresService service, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProProcuradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProProcuradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProProcuradoresValidation : IProProcuradoresValidation
 {
-    public async Task<bool> CanDelete(int id, IProProcuradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProProcuradoresService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class ProProcuradoresValidation : IProProcuradoresValidation
 
     private bool ValidSizes(Models.ProProcuradores reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBProProcuradoresDicInfo.PapNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBProProcuradoresDicInfo.PapNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProProcuradoresDicInfo.PapGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProProcuradoresDicInfo.PapGUID.FTamanho} caracteres.");
         return true;
     }
 

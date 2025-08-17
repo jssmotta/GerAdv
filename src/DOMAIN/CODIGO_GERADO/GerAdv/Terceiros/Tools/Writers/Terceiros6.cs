@@ -14,13 +14,13 @@ public partial interface ITerceirosWriter
 
 public class TerceirosWriter(IFTerceirosFactory terceirosFactory) : ITerceirosWriter
 {
-    private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory;
-    public async Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException(nameof(terceirosFactory));
+    public virtual async Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection oCnn)
     {
         await _terceirosFactory.DeleteAsync(operadorId, terceiros.Id, oCnn);
     }
 
-    public async Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (terceiros.Id.IsEmptyIDNumber() ? _terceirosFactory.CreateAsync() : _terceirosFactory.CreateFromIdAsync(terceiros.Id, oCnn));
         dbRec.FProcesso = terceiros.Processo;
@@ -34,10 +34,10 @@ public class TerceirosWriter(IFTerceirosFactory terceirosFactory) : ITerceirosWr
         dbRec.FFax = terceiros.Fax;
         dbRec.FOBS = terceiros.OBS;
         dbRec.FEMail = terceiros.EMail;
+        dbRec.FGUID = terceiros.GUID;
         dbRec.FClass = terceiros.Class;
         dbRec.FVaraForoComarca = terceiros.VaraForoComarca;
         dbRec.FSexo = terceiros.Sexo;
-        dbRec.FGUID = terceiros.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

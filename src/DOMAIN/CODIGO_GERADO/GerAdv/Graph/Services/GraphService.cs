@@ -93,18 +93,18 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         }
     }
 
-    private async Task<GraphResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<GraphResponse?> AddAndUpdate([FromBody] Models.Graph regGraph, [FromRoute, Required] string uri)
+    private async Task<GraphResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<GraphResponse?> AddAndUpdate([FromBody] Models.Graph? regGraph, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Graph: URI inválida");
-        }
-
         if (regGraph == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Graph: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -118,7 +118,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
             var validade = await validation.ValidateReg(regGraph, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -127,7 +127,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -135,17 +135,17 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<GraphResponse?> Validation([FromBody] Models.Graph regGraph, [FromRoute, Required] string uri)
+    public async Task<GraphResponse?> Validation([FromBody] Models.Graph? regGraph, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Graph: URI inválida");
-        }
-
         if (regGraph == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Graph: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -159,7 +159,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
             var validade = await validation.ValidateReg(regGraph, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -168,7 +168,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regGraph.Id.IsEmptyIDNumber())
@@ -179,17 +179,17 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         return await reader.Read(regGraph.Id, oCnn);
     }
 
-    public async Task<GraphResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<GraphResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Graph: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,7 +204,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -213,10 +213,10 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var graph = await reader.Read(id, oCnn);
+        var graph = await reader.Read(id ?? default, oCnn);
         try
         {
             if (graph != null)
@@ -236,7 +236,7 @@ public partial class GraphService(IOptions<AppSettings> appSettings, IFGraphFact
         return graph;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

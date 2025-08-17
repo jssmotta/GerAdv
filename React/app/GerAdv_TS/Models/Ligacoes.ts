@@ -18,7 +18,6 @@ export interface Ligacoes
 	ultimoaviso : string;
 	ultimoaviso_date? : Date;
 	horafinal : string;
-	horafinal_date? : Date;
 	nome : string;
 	quemcodigo : number;
 	solicitante : number;
@@ -29,7 +28,6 @@ export interface Ligacoes
 	status : string;
 	data : string;
 	hora : string;
-	hora_date? : Date;
 	urgente : boolean;
 	ligarpara : string;
 	processo : number;

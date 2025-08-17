@@ -54,7 +54,7 @@ public partial class FDiario2Factory : IFDiario2Factory, IDisposable
             throw new ObjectDisposedException(nameof(FDiario2Factory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

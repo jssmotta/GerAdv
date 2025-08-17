@@ -13,7 +13,7 @@ public partial interface IProcessOutputSourcesWhere
 
 public partial class ProcessOutputSourcesWhere(IFProcessOutputSourcesFactory processoutputsourcesFactory) : IProcessOutputSourcesWhere
 {
-    private readonly IFProcessOutputSourcesFactory _processoutputsourcesFactory = processoutputsourcesFactory;
+    private readonly IFProcessOutputSourcesFactory _processoutputsourcesFactory = processoutputsourcesFactory ?? throw new ArgumentNullException(nameof(processoutputsourcesFactory));
     public ProcessOutputSourcesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _processoutputsourcesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

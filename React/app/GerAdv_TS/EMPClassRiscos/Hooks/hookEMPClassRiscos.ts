@@ -41,7 +41,8 @@ export const useEMPClassRiscosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar E M P Class Riscos';
       setError(errorMessage);
-      //console.log('Erro ao carregar E M P Class Riscos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar E M P Class Riscos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useEMPClassRiscosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useEMPClassRiscosList = (dataService: IEMPClassRiscosService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar empclassriscos';
       setError(errorMessage);
-      //console.log('Erro ao carregar empclassriscos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar empclassriscos');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 80) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

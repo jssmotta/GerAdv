@@ -15,7 +15,7 @@ public partial class HonorariosDadosContratoReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBHonorariosDadosContratoDicInfo.CampoNome}";
+        var orderQuery = $"{TSql.OrderBy} {DBHonorariosDadosContratoDicInfo.CampoCodigo}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

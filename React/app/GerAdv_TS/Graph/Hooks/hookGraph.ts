@@ -41,7 +41,8 @@ export const useGraphForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Graph';
       setError(errorMessage);
-      //console.log('Erro ao carregar Graph');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Graph');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useGraphNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useGraphList = (dataService: IGraphService, currentFilter?: FilterG
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar graph';
       setError(errorMessage);
-      //console.log('Erro ao carregar graph');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar graph');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsGraph() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.tabela.length > 80) { 
+        if (data.tabela.length > 80) { 
                                              return { isValid: false, message: 'O campo Tabela não pode ter mais de 80 caracteres.' };
                                          } 
 

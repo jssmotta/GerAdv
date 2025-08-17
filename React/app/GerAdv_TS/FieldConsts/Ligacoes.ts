@@ -24,9 +24,9 @@ export enum FieldsLigacoes
 	data = `Data`,
 	hora = `Hora`,
 	urgente = `Urgente`,
+	guid = `GUID`,
 	ligarpara = `LigarPara`,
 	processo = `Processo`,
 	startscreen = `StartScreen`,
 	emotion = `Emotion`,
-	guid = `GUID`,
 }

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaReader
 {
-    private readonly IFJusticaFactory _justicaFactory = justicaFactory;
+    private readonly IFJusticaFactory _justicaFactory = justicaFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("jusCodigo, jusNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<JusticaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBJustica.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<JusticaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,8 +54,8 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         var justica = new Models.Justica
         {
             Id = dbRec.ID,
-            Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Nome = dbRec.FNome ?? string.Empty,
         };
         return justica;
     }
@@ -81,8 +81,8 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         var justica = new JusticaResponse
         {
             Id = dbRec.ID,
-            Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Nome = dbRec.FNome ?? string.Empty,
         };
         return justica;
     }
@@ -97,8 +97,8 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         var justica = new JusticaResponse
         {
             Id = dbRec.ID,
-            Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Nome = dbRec.FNome ?? string.Empty,
         };
         return justica;
     }
@@ -113,8 +113,8 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         var justica = new JusticaResponseAll
         {
             Id = dbRec.ID,
-            Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Nome = dbRec.FNome ?? string.Empty,
         };
         return justica;
     }
@@ -129,8 +129,8 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         var justica = new JusticaResponseAll
         {
             Id = dbRec.ID,
-            Nome = dbRec.FNome ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Nome = dbRec.FNome ?? string.Empty,
         };
         return justica;
     }

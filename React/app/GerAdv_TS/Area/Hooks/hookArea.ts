@@ -41,7 +41,8 @@ export const useAreaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Área';
       setError(errorMessage);
-      //console.log('Erro ao carregar Área');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Área');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useAreaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useAreaList = (dataService: IAreaService, currentFilter?: FilterAre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar area';
       setError(errorMessage);
-      //console.log('Erro ao carregar area');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar area');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 40) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

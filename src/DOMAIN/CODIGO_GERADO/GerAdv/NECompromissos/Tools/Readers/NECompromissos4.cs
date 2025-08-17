@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class NECompromissosReader(IFNECompromissosFactory necompromissosFactory) : INECompromissosReader
 {
-    private readonly IFNECompromissosFactory _necompromissosFactory = necompromissosFactory;
+    private readonly IFNECompromissosFactory _necompromissosFactory = necompromissosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<NECompromissosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBNECompromissos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<NECompromissosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {

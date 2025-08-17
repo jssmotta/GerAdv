@@ -58,129 +58,131 @@ if (getParamFromUrl('operador') > 0) {
       setNomeOperador(response.data.rnome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    pontovirtualacessosData.operador = getParamFromUrl('operador');
+      pontovirtualacessosData.operador = getParamFromUrl('operador');
+    }
   }
-}
-const addValorOperador = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'operador', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorOperador = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'operador', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de PontoVirtualAcessos:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de PontoVirtualAcessos:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar PontoVirtualAcessos diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = pontovirtualacessosData?.id == 0 ? 'Editar PontoVirtualAcessos' : 'Adicionar Ponto Virtual Acessos';
+        }
+      }, [pontovirtualacessosData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-PontoVirtualAcessos' : 'form-container5 form-container-PontoVirtualAcessos'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar PontoVirtualAcessos diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = pontovirtualacessosData?.id == 0 ? 'Editar PontoVirtualAcessos' : 'Adicionar Ponto Virtual Acessos';
-    }
-  }, [pontovirtualacessosData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
-
-    <div className={isMobile ? 'form-container form-container-PontoVirtualAcessos' : 'form-container5 form-container-PontoVirtualAcessos'}>
-
-      <form className='formInputCadInc' id={`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PontoVirtualAcessos' data={pontovirtualacessosData} isSubmitting={isSubmitting} onClose={onClose} formId={`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+          <form className='formInputCadInc' id={`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PontoVirtualAcessos' data={pontovirtualacessosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
 
-            <OperadorComboBox
-            name={'operador'}
-            dataForm={pontovirtualacessosData}
-            value={pontovirtualacessosData.operador}
-            setValue={addValorOperador}
-            label={'Operador'}
-            />
+                <OperadorComboBox
+                name={'operador'}
+                dataForm={pontovirtualacessosData}
+                value={pontovirtualacessosData.operador}
+                setValue={addValorOperador}
+                label={'Operador'}
+                />
 
-            <InputInput
-            required
-            type='text'
-            maxLength={2048}
-            id='datahora'
-            label='DataHora'
-            dataForm={pontovirtualacessosData}
-            className='inputIncNome'
-            name='datahora'
-            value={pontovirtualacessosData.datahora}
-            onChange={onChange}
-            />
+                <InputInput
+                required
+                type='text'
+                maxLength={2048}
+                id='datahora'
+                label='DataHora'
+                dataForm={pontovirtualacessosData}
+                className='inputIncNome'
+                name='datahora'
+                value={pontovirtualacessosData.datahora}
+                onChange={onChange}
+                />
 
-            <InputCheckbox dataForm={pontovirtualacessosData} label='Tipo' name='tipo' checked={pontovirtualacessosData.tipo} onChange={onChange} />
+                <InputCheckbox dataForm={pontovirtualacessosData} label='Tipo' name='tipo' checked={pontovirtualacessosData.tipo} onChange={onChange} />
 
-            <InputInput
-            required
-            type='text'
-            maxLength={150}
-            id='origem'
-            label='Origem'
-            dataForm={pontovirtualacessosData}
-            className='inputIncNome'
-            name='origem'
-            value={pontovirtualacessosData.origem}
-            onChange={onChange}
-            />
+                <InputInput
+                required
+                type='text'
+                maxLength={150}
+                id='origem'
+                label='Origem'
+                dataForm={pontovirtualacessosData}
+                className='inputIncNome'
+                name='origem'
+                value={pontovirtualacessosData.origem}
+                onChange={onChange}
+                />
 
-          </div>
-        </form>
+              </div>
+            </form>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PontoVirtualAcessos' data={pontovirtualacessosData} isSubmitting={isSubmitting} onClose={onClose} formId={`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/pontovirtualacessos'} id={pontovirtualacessosData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PontoVirtualAcessos' data={pontovirtualacessosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PontoVirtualAcessosForm-${pontovirtualacessosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/pontovirtualacessos'} id={pontovirtualacessosData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

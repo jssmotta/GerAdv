@@ -3,6 +3,6 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsParceriaProc
 {	advogado = `Advogado`,
-	processo = `Processo`,
 	guid = `GUID`,
+	processo = `Processo`,
 }

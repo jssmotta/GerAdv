@@ -54,7 +54,7 @@ public partial class FGruposEmpresasFactory : IFGruposEmpresasFactory, IDisposab
             throw new ObjectDisposedException(nameof(FGruposEmpresasFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

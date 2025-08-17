@@ -24,10 +24,7 @@ public class InitializeWarmUp
         await new AcaoWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AdvogadosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AgendaWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new AlertasWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AndamentosMDWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new AnexamentoRegistrosWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new Apenso2WarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AreaWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new AtividadesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new BensClassificacaoWarmUp().WarmReadStringAuditor(uri, oCnn);
@@ -58,7 +55,6 @@ public class InitializeWarmUp
         await new FuncionariosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new GraphWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new GruposEmpresasWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new GruposEmpresasCliWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new GUTAtividadesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new GUTAtividadesMatrizWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new GUTPeriodicidadeWarmUp().WarmReadStringAuditor(uri, oCnn);
@@ -78,7 +74,6 @@ public class InitializeWarmUp
         await new OperadorWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new OperadorEMailPopupWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new OperadoresWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new OperadorGrupoWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new OperadorGruposWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new OperadorGruposAgendaWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new OponentesWarmUp().WarmReadStringAuditor(uri, oCnn);
@@ -86,7 +81,6 @@ public class InitializeWarmUp
         await new OutrasPartesClienteWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PaisesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ParceriaProcWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new ParteClienteOutrasWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PenhoraWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PenhoraStatusWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PoderJudiciarioAssociadoWarmUp().WarmReadStringAuditor(uri, oCnn);
@@ -96,7 +90,6 @@ public class InitializeWarmUp
         await new ProCDAWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProcessosObsReportWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProcessOutputRequestWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new ProDepositosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProDespesasWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProObservacoesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProProcuradoresWarmUp().WarmReadStringAuditor(uri, oCnn);

@@ -57,125 +57,115 @@ if (getParamFromUrl('advogados') > 0) {
       setNomeAdvogados(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    parceriaprocData.advogado = getParamFromUrl('advogados');
+      parceriaprocData.advogado = getParamFromUrl('advogados');
+    }
   }
-}
-const addValorAdvogado = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'advogado', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorAdvogado = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'advogado', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de ParceriaProc:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`ParceriaProcForm-${parceriaprocData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de ParceriaProc:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar ParceriaProc diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = parceriaprocData?.id == 0 ? 'Editar ParceriaProc' : 'Adicionar Parceria Proc';
+        }
+      }, [parceriaprocData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-ParceriaProc' : 'form-container5 form-container-ParceriaProc'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`ParceriaProcForm-${parceriaprocData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar ParceriaProc diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = parceriaprocData?.id == 0 ? 'Editar ParceriaProc' : 'Adicionar Parceria Proc';
-    }
-  }, [parceriaprocData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
-
-    <div className={isMobile ? 'form-container form-container-ParceriaProc' : 'form-container5 form-container-ParceriaProc'}>
-
-      <form className='formInputCadInc' id={`ParceriaProcForm-${parceriaprocData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ParceriaProc' data={parceriaprocData} isSubmitting={isSubmitting} onClose={onClose} formId={`ParceriaProcForm-${parceriaprocData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='guid'
-            label='GUID'
-            dataForm={parceriaprocData}
-            className='inputIncNome'
-            name='guid'
-            value={parceriaprocData.guid}
-            placeholder={`Informe GUID`}
-            onChange={onChange}
-            required
-            />
-
-            <AdvogadosComboBox
-            name={'advogado'}
-            dataForm={parceriaprocData}
-            value={parceriaprocData.advogado}
-            setValue={addValorAdvogado}
-            label={'Advogados'}
-            />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='processo'
-            label='Processo'
-            dataForm={parceriaprocData}
-            className='inputIncNome'
-            name='processo'
-            value={parceriaprocData.processo}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+          <form className='formInputCadInc' id={`ParceriaProcForm-${parceriaprocData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ParceriaProc' data={parceriaprocData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ParceriaProcForm-${parceriaprocData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ParceriaProc' data={parceriaprocData} isSubmitting={isSubmitting} onClose={onClose} formId={`ParceriaProcForm-${parceriaprocData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/parceriaproc'} id={parceriaprocData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <AdvogadosComboBox
+                name={'advogado'}
+                dataForm={parceriaprocData}
+                value={parceriaprocData.advogado}
+                setValue={addValorAdvogado}
+                label={'Advogados'}
+                />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='processo'
+                label='Processo'
+                dataForm={parceriaprocData}
+                className='inputIncNome'
+                name='processo'
+                value={parceriaprocData.processo}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ParceriaProc' data={parceriaprocData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ParceriaProcForm-${parceriaprocData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/parceriaproc'} id={parceriaprocData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

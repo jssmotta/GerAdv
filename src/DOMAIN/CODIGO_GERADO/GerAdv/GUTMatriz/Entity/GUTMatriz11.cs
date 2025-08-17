@@ -54,7 +54,7 @@ public partial class FGUTMatrizFactory : IFGUTMatrizFactory, IDisposable
             throw new ObjectDisposedException(nameof(FGUTMatrizFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

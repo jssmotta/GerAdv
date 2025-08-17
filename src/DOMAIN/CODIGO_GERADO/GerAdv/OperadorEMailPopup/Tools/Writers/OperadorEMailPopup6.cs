@@ -14,13 +14,13 @@ public partial interface IOperadorEMailPopupWriter
 
 public class OperadorEMailPopupWriter(IFOperadorEMailPopupFactory operadoremailpopupFactory) : IOperadorEMailPopupWriter
 {
-    private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory;
-    public async Task Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory ?? throw new ArgumentNullException(nameof(operadoremailpopupFactory));
+    public virtual async Task Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection oCnn)
     {
         await _operadoremailpopupFactory.DeleteAsync(operadorId, operadoremailpopup.Id, oCnn);
     }
 
-    public async Task<FOperadorEMailPopup> WriteAsync(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOperadorEMailPopup> WriteAsync(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (operadoremailpopup.Id.IsEmptyIDNumber() ? _operadoremailpopupFactory.CreateAsync() : _operadoremailpopupFactory.CreateFromIdAsync(operadoremailpopup.Id, oCnn));
         dbRec.FOperador = operadoremailpopup.Operador;
@@ -32,12 +32,12 @@ public class OperadorEMailPopupWriter(IFOperadorEMailPopupFactory operadoremailp
         dbRec.FAutenticacao = operadoremailpopup.Autenticacao;
         dbRec.FDescricao = operadoremailpopup.Descricao;
         dbRec.FUsuario = operadoremailpopup.Usuario;
+        dbRec.FGUID = operadoremailpopup.GUID;
         dbRec.FPortaSmtp = operadoremailpopup.PortaSmtp;
         dbRec.FPortaPop3 = operadoremailpopup.PortaPop3;
         dbRec.FAssinatura = operadoremailpopup.Assinatura;
         if (operadoremailpopup.Senha256.Length > 0)
             dbRec.FSenha256 = operadoremailpopup.Senha256.Encrypt();
-        dbRec.FGUID = operadoremailpopup.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

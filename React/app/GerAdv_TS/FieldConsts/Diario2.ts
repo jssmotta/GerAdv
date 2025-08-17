@@ -6,7 +6,7 @@ export enum FieldsDiario2
 	cliente = `Cliente`,
 	data = `Data`,
 	hora = `Hora`,
+	guid = `GUID`,
 	nome = `Nome`,
 	ocorrencia = `Ocorrencia`,
-	guid = `GUID`,
 }

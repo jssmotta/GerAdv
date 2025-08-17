@@ -13,7 +13,7 @@ public partial interface IProResumosWhere
 
 public partial class ProResumosWhere(IFProResumosFactory proresumosFactory) : IProResumosWhere
 {
-    private readonly IFProResumosFactory _proresumosFactory = proresumosFactory;
+    private readonly IFProResumosFactory _proresumosFactory = proresumosFactory ?? throw new ArgumentNullException(nameof(proresumosFactory));
     public ProResumosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _proresumosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -23,8 +23,8 @@ public partial class ProResumosWhere(IFProResumosFactory proresumosFactory) : IP
             Processo = dbRec.FProcesso,
             Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            TipoResumo = dbRec.FTipoResumo,
             GUID = dbRec.FGUID ?? string.Empty,
+            TipoResumo = dbRec.FTipoResumo,
         };
         return proresumos;
     }

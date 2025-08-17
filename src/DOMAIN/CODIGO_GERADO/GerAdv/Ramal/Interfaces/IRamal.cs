@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IRamalService
 {
     Task<IEnumerable<RamalResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterRamal filter, [FromRoute, Required] string uri = "");
-    Task<RamalResponse?> AddAndUpdate(Models.Ramal regRamal, [FromRoute, Required] string uri = "");
-    Task<RamalResponse?> Validation(Models.Ramal regRamal, [FromRoute, Required] string uri = "");
-    Task<RamalResponse?> Delete(int id, [FromRoute, Required] string uri = "");
+    Task<RamalResponse?> AddAndUpdate(Models.Ramal? regRamal, [FromRoute, Required] string uri = "");
+    Task<RamalResponse?> Validation(Models.Ramal? regRamal, [FromRoute, Required] string uri = "");
+    Task<RamalResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<RamalResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<RamalResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterRamal? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);

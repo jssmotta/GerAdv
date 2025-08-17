@@ -79,7 +79,8 @@ export class SMSAliceService implements ISMSAliceService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching SMSAlice list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching SMSAlice list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class SMSAliceService implements ISMSAliceService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online SMSAlice');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online SMSAlice');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class SMSAliceService implements ISMSAliceService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online SMSAlice');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online SMSAlice');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all SMSAlice:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all SMSAlice:');
       return [];
     }
   }

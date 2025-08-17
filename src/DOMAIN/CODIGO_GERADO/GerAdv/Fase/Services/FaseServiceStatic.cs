@@ -8,37 +8,46 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class FaseService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterFase filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterFase? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBFaseDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBFaseDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBFaseDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Justica != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBFaseDicInfo.Justica)}", filtro.Justica));
+            parameters.Add(new($"@{(DBFaseDicInfo.Justica)}", filtro.Justica));
+            if (filtro.Justica_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBFaseDicInfo.Justica)}_end", filtro.Justica_end));
+            }
         }
 
         if (filtro.Area != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBFaseDicInfo.Area)}", filtro.Area));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBFaseDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBFaseDicInfo.Area)}", filtro.Area));
+            if (filtro.Area_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBFaseDicInfo.Area)}_end", filtro.Area_end));
+            }
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBFaseDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBFaseDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBFaseDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBFaseDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +56,36 @@ public partial class FaseService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBFaseDicInfo.Descricao)}");
-        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Justica}] = @{nameof(DBFaseDicInfo.Justica)}");
-        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Area}] = @{nameof(DBFaseDicInfo.Area)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBFaseDicInfo.GUID)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBFaseDicInfo.Descricao)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBFaseDicInfo.GUID)}");
+        if (!(filtro.Justica.IsEmptyX()) && filtro.Justica_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Justica}] = @{(DBFaseDicInfo.Justica)}");
+        }
+        else if (!(filtro.Justica.IsEmptyX()) && !(filtro.Justica_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].{DBFaseDicInfo.Justica} BETWEEN @{(DBFaseDicInfo.Justica)} AND @{(DBFaseDicInfo.Justica)}_end");
+        }
+
+        if (!(filtro.Area.IsEmptyX()) && filtro.Area_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.Area}] = @{(DBFaseDicInfo.Area)}");
+        }
+        else if (!(filtro.Area.IsEmptyX()) && !(filtro.Area_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].{DBFaseDicInfo.Area} BETWEEN @{(DBFaseDicInfo.Area)} AND @{(DBFaseDicInfo.Area)}_end");
+        }
+
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.CampoCodigo}] = @{nameof(DBFaseDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].[{DBFaseDicInfo.CampoCodigo}] = @{(DBFaseDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].{DBFaseDicInfo.CampoCodigo} BETWEEN @{nameof(DBFaseDicInfo.CampoCodigo)} AND @{nameof(DBFaseDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFaseDicInfo.PTabelaNome}].{DBFaseDicInfo.CampoCodigo} BETWEEN @{(DBFaseDicInfo.CampoCodigo)} AND @{(DBFaseDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterFase? filtro)

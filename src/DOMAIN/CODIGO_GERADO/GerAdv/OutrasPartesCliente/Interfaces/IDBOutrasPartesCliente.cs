@@ -24,6 +24,6 @@ public partial interface IDBOutrasPartesCliente
     public string? FFax { get; set; }
     public string? FEMail { get; set; }
     public string? FSite { get; set; }
-    public string? FClass { get; set; }
     public string? FGUID { get; set; }
+    public string? FClass { get; set; }
 }

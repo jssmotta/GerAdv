@@ -54,7 +54,7 @@ public partial class FSetorFactory : IFSetorFactory, IDisposable
             throw new ObjectDisposedException(nameof(FSetorFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

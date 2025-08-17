@@ -21,6 +21,6 @@ export enum FieldsOutrasPartesCliente
 	fax = `Fax`,
 	email = `EMail`,
 	site = `Site`,
-	class = `Class`,
 	guid = `GUID`,
+	class = `Class`,
 }

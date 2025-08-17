@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGUTPeriodicidadeValidation
 {
     Task<bool> ValidateReg(Models.GUTPeriodicidade reg, IGUTPeriodicidadeService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
 {
-    public async Task<bool> CanDelete(int id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutatividadesExists0 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { GUTPeriodicidade = id }, uri);
+        var gutatividadesExists0 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { GUTPeriodicidade = id ?? default }, uri);
         if (gutatividadesExists0 != null && gutatividadesExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
 
     private bool ValidSizes(Models.GUTPeriodicidade reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 20)
-            throw new SGValidationException($"Nome deve ter no máximo 20 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBGUTPeriodicidadeDicInfo.PcgNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBGUTPeriodicidadeDicInfo.PcgNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGUTPeriodicidadeDicInfo.PcgGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGUTPeriodicidadeDicInfo.PcgGUID.FTamanho} caracteres.");
         return true;
     }
 

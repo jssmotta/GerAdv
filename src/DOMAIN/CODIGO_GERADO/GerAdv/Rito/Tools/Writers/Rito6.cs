@@ -14,18 +14,18 @@ public partial interface IRitoWriter
 
 public class RitoWriter(IFRitoFactory ritoFactory) : IRitoWriter
 {
-    private readonly IFRitoFactory _ritoFactory = ritoFactory;
-    public async Task Delete(RitoResponse rito, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFRitoFactory _ritoFactory = ritoFactory ?? throw new ArgumentNullException(nameof(ritoFactory));
+    public virtual async Task Delete(RitoResponse rito, int operadorId, MsiSqlConnection oCnn)
     {
         await _ritoFactory.DeleteAsync(operadorId, rito.Id, oCnn);
     }
 
-    public async Task<FRito> WriteAsync(Models.Rito rito, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FRito> WriteAsync(Models.Rito rito, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (rito.Id.IsEmptyIDNumber() ? _ritoFactory.CreateAsync() : _ritoFactory.CreateFromIdAsync(rito.Id, oCnn));
         dbRec.FDescricao = rito.Descricao;
-        dbRec.FTop = rito.Top;
         dbRec.FGUID = rito.GUID;
+        dbRec.FTop = rito.Top;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

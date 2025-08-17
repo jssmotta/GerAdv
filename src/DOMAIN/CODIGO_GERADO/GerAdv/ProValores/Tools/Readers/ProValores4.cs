@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : IProValoresReader
 {
-    private readonly IFProValoresFactory _provaloresFactory = provaloresFactory;
+    private readonly IFProValoresFactory _provaloresFactory = provaloresFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prvCodigo, prvData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ProValoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProValores.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ProValoresResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -67,7 +67,7 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
         {
@@ -112,7 +112,7 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
         {
@@ -146,7 +146,7 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
         {
@@ -180,20 +180,12 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
         {
             provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
             provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
-        }
-
-        try
-        {
-            provalores.DescricaoTipoValorProcesso = dr[DBTipoValorProcessoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         return provalores;
@@ -222,20 +214,12 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorMultaCorrigido = dbRec.FValorMultaCorrigido,
             ValorJurosCorrigido = dbRec.FValorJurosCorrigido,
             ValorFinal = dbRec.FValorFinal,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
         {
             provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
             provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
-        }
-
-        try
-        {
-            provalores.DescricaoTipoValorProcesso = dr[DBTipoValorProcessoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
         }
 
         return provalores;

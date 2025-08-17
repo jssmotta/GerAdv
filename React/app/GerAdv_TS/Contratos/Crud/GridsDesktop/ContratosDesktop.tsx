@@ -41,8 +41,7 @@ const router = useRouter();
 const { systemContext } = useSystemContext();
 const defaultHiddenColumns = [''];
 // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['guid',
-'nropastaprocessos',
+const [columnsOrder, setColumnsOrder] = useState<string[]>(['nropastaprocessos',
 'nomeclientes',
 'nomeadvogados']);
 // Carregar ordem salva do localStorage na inicialização
@@ -121,44 +120,28 @@ const EditRow = useCallback((e: any) => {
 }, [hookHandleRowClick]);
 // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
 const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
-
-  'guid': (
-  <GridColumn
-  key='guid'
-  field='guid'
-  title='GUID'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.02 */
   'nropastaprocessos': (
   <GridColumn
   key='nropastaprocessos'
-
   field='nropastaprocessos'
   title='Processos'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeclientes': (
   <GridColumn
   key='nomeclientes'
-
   field='nomeclientes'
   title='Clientes'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeadvogados': (
   <GridColumn
   key='nomeadvogados'
-
   field='nomeadvogados'
   title='Advogados'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

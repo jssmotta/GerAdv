@@ -70,287 +70,292 @@ if (getParamFromUrl('funcionarios') > 0) {
       setNomeFuncionarios(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    agendasemanaData.funcionario = getParamFromUrl('funcionarios');
+      agendasemanaData.funcionario = getParamFromUrl('funcionarios');
+    }
   }
-}
 
-if (getParamFromUrl('advogados') > 0) {
-  if (agendasemanaData.id === 0 && agendasemanaData.advogado == 0) {
-    advogadosApi
-    .getById(getParamFromUrl('advogados'))
-    .then((response) => {
-      setNomeAdvogados(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('advogados') > 0) {
+    if (agendasemanaData.id === 0 && agendasemanaData.advogado == 0) {
+      advogadosApi
+      .getById(getParamFromUrl('advogados'))
+      .then((response) => {
+        setNomeAdvogados(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    agendasemanaData.advogado = getParamFromUrl('advogados');
-  }
-}
+        agendasemanaData.advogado = getParamFromUrl('advogados');
+      }
+    }
 
-if (getParamFromUrl('tipocompromisso') > 0) {
-  if (agendasemanaData.id === 0 && agendasemanaData.tipocompromisso == 0) {
-    tipocompromissoApi
-    .getById(getParamFromUrl('tipocompromisso'))
-    .then((response) => {
-      setNomeTipoCompromisso(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('tipocompromisso') > 0) {
+      if (agendasemanaData.id === 0 && agendasemanaData.tipocompromisso == 0) {
+        tipocompromissoApi
+        .getById(getParamFromUrl('tipocompromisso'))
+        .then((response) => {
+          setNomeTipoCompromisso(response.data.descricao);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    agendasemanaData.tipocompromisso = getParamFromUrl('tipocompromisso');
-  }
-}
+          agendasemanaData.tipocompromisso = getParamFromUrl('tipocompromisso');
+        }
+      }
 
-if (getParamFromUrl('clientes') > 0) {
-  if (agendasemanaData.id === 0 && agendasemanaData.cliente == 0) {
-    clientesApi
-    .getById(getParamFromUrl('clientes'))
-    .then((response) => {
-      setNomeClientes(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (getParamFromUrl('clientes') > 0) {
+        if (agendasemanaData.id === 0 && agendasemanaData.cliente == 0) {
+          clientesApi
+          .getById(getParamFromUrl('clientes'))
+          .then((response) => {
+            setNomeClientes(response.data.nome);
+          })
+          .catch((error) => {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Error unexpected');
+            });
 
-    agendasemanaData.cliente = getParamFromUrl('clientes');
-  }
-}
-const addValorFuncionario = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'funcionario', value: e.id } });
-  };
-  const addValorAdvogado = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'advogado', value: e.id } });
-    };
-    const addValorTipoCompromisso = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'tipocompromisso', value: e.id } });
-      };
-      const addValorCliente = (e: any) => {
-        if (e?.id>0)
-          onChange({ target: { name: 'cliente', value: e.id } });
-        };
-        const onConfirm = (e: React.FormEvent) => {
-          e.preventDefault();
-          if (e.stopPropagation) e.stopPropagation();
-
-            if (!isSubmitting) {
-              setIsSubmitting(true);
-
-              try {
-                onSubmit(e);
-              } catch (error) {
-              console.log('Erro ao submeter formulário de AgendaSemana:');
-              setIsSubmitting(false);
-              if (onError) onError();
-              }
-            }
+            agendasemanaData.cliente = getParamFromUrl('clientes');
+          }
+        }
+        const addValorFuncionario = (e: any) => {
+          if (e?.id>0)
+            onChange({ target: { name: 'funcionario', value: e.id } });
           };
-          const handleCancel = () => {
-            if (onReload) {
-              onReload(); // Recarrega os dados originais
-            } else {
-            onClose(); // Comportamento padrão se não há callback de recarga
-          }
-        };
+          const addValorAdvogado = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'advogado', value: e.id } });
+            };
+            const addValorTipoCompromisso = (e: any) => {
+              if (e?.id>0)
+                onChange({ target: { name: 'tipocompromisso', value: e.id } });
+              };
+              const addValorCliente = (e: any) => {
+                if (e?.id>0)
+                  onChange({ target: { name: 'cliente', value: e.id } });
+                };
+                const onConfirm = (e: React.FormEvent) => {
+                  e.preventDefault();
+                  if (e.stopPropagation) e.stopPropagation();
 
-        const handleDirectSave = () => {
-          if (!isSubmitting) {
-            setIsSubmitting(true);
+                    if (!isSubmitting) {
+                      setIsSubmitting(true);
 
-            try {
-              const syntheticEvent = {
-                preventDefault: () => { }, 
-                target: document.getElementById(`AgendaSemanaForm-${agendasemanaData.id}`)
-              } as unknown as React.FormEvent;
+                      try {
+                        onSubmit(e);
+                      } catch (error) {
+                      console.log('Erro ao submeter formulário de AgendaSemana:');
+                      setIsSubmitting(false);
+                      if (onError) onError();
+                      }
+                    }
+                  };
+                  const handleCancel = () => {
+                    if (onReload) {
+                      onReload(); // Recarrega os dados originais
+                    } else {
+                    onClose(); // Comportamento padrão se não há callback de recarga
+                  }
+                };
 
-              onSubmit(syntheticEvent);
-            } catch (error) {
-            console.log('Erro ao salvar AgendaSemana diretamente');
-            setIsSubmitting(false);
-            if (onError) onError();
-            }
-          }
-        };
-        useEffect(() => {
-          const el = document.querySelector('.nameFormMobile');
-          if (el) {
-            el.textContent = agendasemanaData?.id == 0 ? 'Editar AgendaSemana' : 'Adicionar Agenda Semana';
-          }
-        }, [agendasemanaData.id]);
-        return (
-        <>
-        {!isMobile ? <style jsx global>{`
-          @media (max-width: 1366px) {
-            html {
-              zoom: 0.8 !important;
-            }
-          }
-          `}</style> : null}
+                const handleDirectSave = () => {
+                  if (!isSubmitting) {
+                    setIsSubmitting(true);
 
-          <div className={isMobile ? 'form-container form-container-AgendaSemana' : 'form-container form-container-AgendaSemana'}>
+                    try {
+                      const syntheticEvent = {
+                        preventDefault: () => { }, 
+                        target: document.getElementById(`AgendaSemanaForm-${agendasemanaData.id}`)
+                      } as unknown as React.FormEvent;
 
-            <form className='formInputCadInc' id={`AgendaSemanaForm-${agendasemanaData.id}`} onSubmit={onConfirm}>
-              {!isMobile && (
-                <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AgendaSemana' data={agendasemanaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaSemanaForm-${agendasemanaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                )}
-                <div className='grid-container'>
+                      onSubmit(syntheticEvent);
+                    } catch (error) {
+                    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                      console.log('Erro ao salvar AgendaSemana diretamente');
+                      setIsSubmitting(false);
+                      if (onError) onError();
+                      }
+                    }
+                  };
+                  useEffect(() => {
+                    const el = document.querySelector('.nameFormMobile');
+                    if (el) {
+                      el.textContent = agendasemanaData?.id == 0 ? 'Editar AgendaSemana' : 'Adicionar Agenda Semana';
+                    }
+                  }, [agendasemanaData.id]);
+                  return (
+                  <>
+                  {!isMobile ? <style jsx global>{`
+                    @media (max-width: 1366px) {
+                      html {
+                        zoom: 0.8 !important;
+                      }
+                    }
+                    `}</style> : null}
 
-                  <InputName
-                  type='text'
-                  id='paranome'
-                  label='ParaNome'
-                  dataForm={agendasemanaData}
-                  className='inputIncNome'
-                  name='paranome'
-                  value={agendasemanaData.paranome}
-                  placeholder={`Informe ParaNome`}
-                  onChange={onChange}
-                  required
-                  />
+                    <div className={isMobile ? 'form-container form-container-AgendaSemana' : 'form-container form-container-AgendaSemana'}>
 
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='data'
-                  label='Data'
-                  dataForm={agendasemanaData}
-                  className='inputIncNome'
-                  name='data'
-                  value={agendasemanaData.data}
-                  onChange={onChange}
-                  />
+                      <form className='formInputCadInc' id={`AgendaSemanaForm-${agendasemanaData.id}`} onSubmit={onConfirm}>
+                        {!isMobile && (
+                          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AgendaSemana' data={agendasemanaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AgendaSemanaForm-${agendasemanaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                          )}
+                          <div className='grid-container'>
 
+                            <InputName
+                            type='text'
+                            id='paranome'
+                            label='ParaNome'
+                            dataForm={agendasemanaData}
+                            className='inputIncNome'
+                            name='paranome'
+                            value={agendasemanaData.paranome}
+                            placeholder={`Informe ParaNome`}
+                            onChange={onChange}
+                            required
+                            />
 
-                  <FuncionariosComboBox
-                  name={'funcionario'}
-                  dataForm={agendasemanaData}
-                  value={agendasemanaData.funcionario}
-                  setValue={addValorFuncionario}
-                  label={'Colaborador'}
-                  />
-
-                  <AdvogadosComboBox
-                  name={'advogado'}
-                  dataForm={agendasemanaData}
-                  value={agendasemanaData.advogado}
-                  setValue={addValorAdvogado}
-                  label={'Advogados'}
-                  />
-
-                  <InputInput
-                  type='text'
-                  maxLength={2048}
-                  id='hora'
-                  label='Hora'
-                  dataForm={agendasemanaData}
-                  className='inputIncNome'
-                  name='hora'
-                  value={agendasemanaData.hora}
-                  onChange={onChange}
-                  />
-
-
-                  <TipoCompromissoComboBox
-                  name={'tipocompromisso'}
-                  dataForm={agendasemanaData}
-                  value={agendasemanaData.tipocompromisso}
-                  setValue={addValorTipoCompromisso}
-                  label={'Tipo Compromisso'}
-                  />
-
-                  <InputInput
-                  type='text'
-                  maxLength={2147483647}
-                  id='compromisso'
-                  label='Compromisso'
-                  dataForm={agendasemanaData}
-                  className='inputIncNome'
-                  name='compromisso'
-                  value={agendasemanaData.compromisso}
-                  onChange={onChange}
-                  />
-
-                  <InputCheckbox dataForm={agendasemanaData} label='Concluido' name='concluido' checked={agendasemanaData.concluido} onChange={onChange} />
-                  <InputCheckbox dataForm={agendasemanaData} label='Liberado' name='liberado' checked={agendasemanaData.liberado} onChange={onChange} />
-                </div><div className='grid-container'><InputCheckbox dataForm={agendasemanaData} label='Importante' name='importante' checked={agendasemanaData.importante} onChange={onChange} />
-
-                <InputInput
-                type='text'
-                maxLength={2048}
-                id='horafinal'
-                label='HoraFinal'
-                dataForm={agendasemanaData}
-                className='inputIncNome'
-                name='horafinal'
-                value={agendasemanaData.horafinal}
-                onChange={onChange}
-                />
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='data'
+                            label='Data'
+                            dataForm={agendasemanaData}
+                            className='inputIncNome'
+                            name='data'
+                            value={agendasemanaData.data}
+                            onChange={onChange}
+                            />
 
 
-                <InputInput
-                type='text'
-                maxLength={80}
-                id='nome'
-                label='Nome'
-                dataForm={agendasemanaData}
-                className='inputIncNome'
-                name='nome'
-                value={agendasemanaData.nome}
-                onChange={onChange}
-                />
+                            <FuncionariosComboBox
+                            name={'funcionario'}
+                            dataForm={agendasemanaData}
+                            value={agendasemanaData.funcionario}
+                            setValue={addValorFuncionario}
+                            label={'Colaborador'}
+                            />
+
+                            <AdvogadosComboBox
+                            name={'advogado'}
+                            dataForm={agendasemanaData}
+                            value={agendasemanaData.advogado}
+                            setValue={addValorAdvogado}
+                            label={'Advogados'}
+                            />
+
+                            <InputInput
+                            type='text'
+                            maxLength={2048}
+                            id='hora'
+                            label='Hora'
+                            dataForm={agendasemanaData}
+                            className='inputIncNome'
+                            name='hora'
+                            value={agendasemanaData.hora}
+                            onChange={onChange}
+                            />
 
 
-                <ClientesComboBox
-                name={'cliente'}
-                dataForm={agendasemanaData}
-                value={agendasemanaData.cliente}
-                setValue={addValorCliente}
-                label={'Clientes'}
-                />
+                            <TipoCompromissoComboBox
+                            name={'tipocompromisso'}
+                            dataForm={agendasemanaData}
+                            value={agendasemanaData.tipocompromisso}
+                            setValue={addValorTipoCompromisso}
+                            label={'Tipo Compromisso'}
+                            />
 
-                <InputInput
-                type='text'
-                maxLength={80}
-                id='nomecliente'
-                label='NomeCliente'
-                dataForm={agendasemanaData}
-                className='inputIncNome'
-                name='nomecliente'
-                value={agendasemanaData.nomecliente}
-                onChange={onChange}
-                />
+                            <InputInput
+                            type='text'
+                            maxLength={2147483647}
+                            id='compromisso'
+                            label='Compromisso'
+                            dataForm={agendasemanaData}
+                            className='inputIncNome'
+                            name='compromisso'
+                            value={agendasemanaData.compromisso}
+                            onChange={onChange}
+                            />
+
+                            <InputCheckbox dataForm={agendasemanaData} label='Concluido' name='concluido' checked={agendasemanaData.concluido} onChange={onChange} />
+                            <InputCheckbox dataForm={agendasemanaData} label='Liberado' name='liberado' checked={agendasemanaData.liberado} onChange={onChange} />
+                          </div><div className='grid-container'><InputCheckbox dataForm={agendasemanaData} label='Importante' name='importante' checked={agendasemanaData.importante} onChange={onChange} />
+
+                          <InputInput
+                          type='text'
+                          maxLength={2048}
+                          id='horafinal'
+                          label='HoraFinal'
+                          dataForm={agendasemanaData}
+                          className='inputIncNome'
+                          name='horafinal'
+                          value={agendasemanaData.horafinal}
+                          onChange={onChange}
+                          />
 
 
-                <InputInput
-                type='text'
-                maxLength={100}
-                id='tipo'
-                label='Tipo'
-                dataForm={agendasemanaData}
-                className='inputIncNome'
-                name='tipo'
-                value={agendasemanaData.tipo}
-                onChange={onChange}
-                />
-
-              </div>
-            </form>
+                          <InputInput
+                          type='text'
+                          maxLength={80}
+                          id='nome'
+                          label='Nome'
+                          dataForm={agendasemanaData}
+                          className='inputIncNome'
+                          name='nome'
+                          value={agendasemanaData.nome}
+                          onChange={onChange}
+                          />
 
 
-            {isMobile && (
-              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaSemana' data={agendasemanaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaSemanaForm-${agendasemanaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-              )}
-              <DeleteButton page={'/pages/agendasemana'} id={agendasemanaData.id} closeModel={onClose} dadoApi={dadoApi} />
-            </div>
-            <div className='form-spacer'></div>
-            </>
-          );
-        };
+                          <ClientesComboBox
+                          name={'cliente'}
+                          dataForm={agendasemanaData}
+                          value={agendasemanaData.cliente}
+                          setValue={addValorCliente}
+                          label={'Clientes'}
+                          />
+
+                          <InputInput
+                          type='text'
+                          maxLength={80}
+                          id='nomecliente'
+                          label='NomeCliente'
+                          dataForm={agendasemanaData}
+                          className='inputIncNome'
+                          name='nomecliente'
+                          value={agendasemanaData.nomecliente}
+                          onChange={onChange}
+                          />
+
+
+                          <InputInput
+                          type='text'
+                          maxLength={100}
+                          id='tipo'
+                          label='Tipo'
+                          dataForm={agendasemanaData}
+                          className='inputIncNome'
+                          name='tipo'
+                          value={agendasemanaData.tipo}
+                          onChange={onChange}
+                          />
+
+                        </div>
+                      </form>
+
+
+                      {isMobile && (
+                        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaSemana' data={agendasemanaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AgendaSemanaForm-${agendasemanaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                        )}
+                        <DeleteButton page={'/pages/agendasemana'} id={agendasemanaData.id} closeModel={onClose} dadoApi={dadoApi} />
+                      </div>
+                      <div className='form-spacer'></div>
+                      </>
+                    );
+                  };

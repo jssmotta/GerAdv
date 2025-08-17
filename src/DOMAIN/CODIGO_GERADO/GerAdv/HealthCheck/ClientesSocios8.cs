@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, ClientesSociosService clientessociosService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, Client
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) cscSomenteRepresentante,cscIdade,cscIsRepresentanteLegal,cscQualificacao,cscSexo,cscDtNasc,cscNome,cscSite,cscRepresentanteLegal,cscCliente,cscEndereco,cscBairro,cscCEP,cscCidade,cscRG,cscCPF,cscFone,cscParticipacao,cscCargo,cscEMail,cscObs,cscCNH,cscDataContrato,cscCNPJ,cscInscEst,cscSocioEmpresaAdminNome,cscEnderecoSocio,cscBairroSocio,cscCEPSocio,cscCidadeSocio,cscRGDataExp,cscSocioEmpresaAdminSomente,cscTipo,cscFax,cscClass,cscGUID FROM {"ClientesSocios".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) cscSomenteRepresentante,cscGUID,cscIdade,cscIsRepresentanteLegal,cscQualificacao,cscSexo,cscDtNasc,cscNome,cscSite,cscRepresentanteLegal,cscCliente,cscEndereco,cscBairro,cscCEP,cscCidade,cscRG,cscCPF,cscFone,cscParticipacao,cscCargo,cscEMail,cscObs,cscCNH,cscDataContrato,cscCNPJ,cscInscEst,cscSocioEmpresaAdminNome,cscEnderecoSocio,cscBairroSocio,cscCEPSocio,cscCidadeSocio,cscRGDataExp,cscSocioEmpresaAdminSomente,cscTipo,cscFax,cscClass FROM {"ClientesSocios".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class ClientesSociosHealthCheck(IOptions<AppSettings> appSettings, Client
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

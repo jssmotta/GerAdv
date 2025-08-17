@@ -5,6 +5,7 @@ export enum FieldsClientesSocios
 {	cliente = `Cliente`,
 	cidade = `Cidade`,
 	somenterepresentante = `SomenteRepresentante`,
+	guid = `GUID`,
 	idade = `Idade`,
 	isrepresentantelegal = `IsRepresentanteLegal`,
 	qualificacao = `Qualificacao`,
@@ -37,5 +38,4 @@ export enum FieldsClientesSocios
 	tipo = `Tipo`,
 	fax = `Fax`,
 	class = `Class`,
-	guid = `GUID`,
 }

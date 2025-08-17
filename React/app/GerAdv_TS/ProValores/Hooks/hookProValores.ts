@@ -41,7 +41,8 @@ export const useProValoresForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Valores';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro Valores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro Valores');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProValoresNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProValoresList = (dataService: IProValoresService, currentFilter
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar provalores';
       setError(errorMessage);
-      //console.log('Erro ao carregar provalores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar provalores');
     } finally {
       setLoading(false);
     }

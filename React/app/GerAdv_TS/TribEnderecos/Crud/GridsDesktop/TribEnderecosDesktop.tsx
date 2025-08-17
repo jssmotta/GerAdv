@@ -117,21 +117,17 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   'nometribunal': (
   <GridColumn
   key='nometribunal'
-
   field='nometribunal'
   title='Tribunal'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomecidade': (
   <GridColumn
   key='nomecidade'
-
   field='nomecidade'
   title='Cidade'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

@@ -79,7 +79,8 @@ export class ColaboradoresService implements IColaboradoresService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Colaboradores list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Colaboradores list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ColaboradoresService implements IColaboradoresService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Colaboradores');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Colaboradores');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ColaboradoresService implements IColaboradoresService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Colaboradores');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Colaboradores');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Colaboradores:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Colaboradores:');
       return [];
     }
   }

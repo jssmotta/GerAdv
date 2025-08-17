@@ -54,7 +54,7 @@ public partial class FOperadorEMailPopupFactory : IFOperadorEMailPopupFactory, I
             throw new ObjectDisposedException(nameof(FOperadorEMailPopupFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

@@ -14,13 +14,13 @@ public partial interface IObjetosWriter
 
 public class ObjetosWriter(IFObjetosFactory objetosFactory) : IObjetosWriter
 {
-    private readonly IFObjetosFactory _objetosFactory = objetosFactory;
-    public async Task Delete(ObjetosResponse objetos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFObjetosFactory _objetosFactory = objetosFactory ?? throw new ArgumentNullException(nameof(objetosFactory));
+    public virtual async Task Delete(ObjetosResponse objetos, int operadorId, MsiSqlConnection oCnn)
     {
         await _objetosFactory.DeleteAsync(operadorId, objetos.Id, oCnn);
     }
 
-    public async Task<FObjetos> WriteAsync(Models.Objetos objetos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FObjetos> WriteAsync(Models.Objetos objetos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (objetos.Id.IsEmptyIDNumber() ? _objetosFactory.CreateAsync() : _objetosFactory.CreateFromIdAsync(objetos.Id, oCnn));
         dbRec.FJustica = objetos.Justica;

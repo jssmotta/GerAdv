@@ -88,18 +88,18 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
         }
     }
 
-    private async Task<ViaRecebimentoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ViaRecebimentoResponse?> AddAndUpdate([FromBody] Models.ViaRecebimento regViaRecebimento, [FromRoute, Required] string uri)
+    private async Task<ViaRecebimentoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ViaRecebimentoResponse?> AddAndUpdate([FromBody] Models.ViaRecebimento? regViaRecebimento, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ViaRecebimento: URI inválida");
-        }
-
         if (regViaRecebimento == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ViaRecebimento: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -113,7 +113,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regViaRecebimento, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -122,24 +122,24 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         using var saved = await writer.WriteAsync(regViaRecebimento, oCnn);
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ViaRecebimentoResponse?> Validation([FromBody] Models.ViaRecebimento regViaRecebimento, [FromRoute, Required] string uri)
+    public async Task<ViaRecebimentoResponse?> Validation([FromBody] Models.ViaRecebimento? regViaRecebimento, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ViaRecebimento: URI inválida");
-        }
-
         if (regViaRecebimento == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ViaRecebimento: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -153,7 +153,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regViaRecebimento, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -162,7 +162,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regViaRecebimento.Id.IsEmptyIDNumber())
@@ -173,17 +173,17 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
         return await reader.Read(regViaRecebimento.Id, oCnn);
     }
 
-    public async Task<ViaRecebimentoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ViaRecebimentoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ViaRecebimento: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -197,7 +197,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -206,10 +206,10 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var viarecebimento = await reader.Read(id, oCnn);
+        var viarecebimento = await reader.Read(id ?? default, oCnn);
         try
         {
             if (viarecebimento != null)
@@ -229,7 +229,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
         return viarecebimento;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

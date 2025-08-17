@@ -41,7 +41,8 @@ export const useNEPalavrasChavesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar N E Palavras Chaves';
       setError(errorMessage);
-      //console.log('Erro ao carregar N E Palavras Chaves');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar N E Palavras Chaves');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useNEPalavrasChavesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useNEPalavrasChavesList = (dataService: INEPalavrasChavesService, c
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar nepalavraschaves';
       setError(errorMessage);
-      //console.log('Erro ao carregar nepalavraschaves');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar nepalavraschaves');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 80) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

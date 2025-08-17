@@ -25,7 +25,7 @@ export class ContratosValidator {
 export interface IContratosService {
   fetchContratosById: (id: number) => Promise<IContratos>;
   saveContratos: (contratos: IContratos) => Promise<IContratos>;  
-  getList: (filtro?: FilterContratos) => Promise<IContratos[]>;
+  
   getAll: (filtro?: FilterContratos) => Promise<IContratos[]>;
   deleteContratos: (id: number) => Promise<void>;
   validateContratos: (contratos: IContratos) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class ContratosService implements IContratosService {
   }
 
   
-    async getList(filtro?: FilterContratos): Promise<IContratos[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching Contratos list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class ContratosService implements IContratosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Contratos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Contratos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class ContratosService implements IContratosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Contratos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Contratos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Contratos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Contratos:');
       return [];
     }
   }

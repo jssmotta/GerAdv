@@ -13,6 +13,5 @@ public partial interface IContratosReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ContratosResponseAll? ReadAll(FContratos dbRec, IDataRecord dr);
     ContratosResponseAll? ReadAll(SG.GerAdv.DBContratos dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<ContratosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

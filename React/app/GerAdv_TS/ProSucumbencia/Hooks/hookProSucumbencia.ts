@@ -41,7 +41,8 @@ export const useProSucumbenciaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Sucumbencia';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro Sucumbencia');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro Sucumbencia');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProSucumbenciaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProSucumbenciaList = (dataService: IProSucumbenciaService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar prosucumbencia';
       setError(errorMessage);
-      //console.log('Erro ao carregar prosucumbencia');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar prosucumbencia');
     } finally {
       setLoading(false);
     }

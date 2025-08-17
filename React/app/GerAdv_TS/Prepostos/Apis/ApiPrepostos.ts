@@ -118,8 +118,9 @@ export class PrepostosApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -152,8 +153,9 @@ export class PrepostosApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -188,8 +190,9 @@ export class PrepostosApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -236,8 +239,9 @@ export class PrepostosApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -351,7 +355,8 @@ export class PrepostosApi {
           revalidateOnFocus: false,
           revalidateOnReconnect: false,
           onError: (error) => {            
-            console.log('Erro no SWR para filtro de Prepostos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Erro no SWR para filtro de Prepostos');
             this.notificationService.notify({
               entity: 'Prepostos',
               id: 0,

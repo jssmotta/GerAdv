@@ -10,61 +10,64 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterDadosProcuracao
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
-    [JsonPropertyName("estadocivil")]
-    public string EstadoCivil { get; set; } = string.Empty;
-
-    [JsonPropertyName("estadocivil_end")]
-    public string EstadoCivil_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("nacionalidade")]
-    public string Nacionalidade { get; set; } = string.Empty;
-
-    [JsonPropertyName("nacionalidade_end")]
-    public string Nacionalidade_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("profissao")]
-    public string Profissao { get; set; } = string.Empty;
-
-    [JsonPropertyName("profissao_end")]
-    public string Profissao_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("ctps")]
-    public string CTPS { get; set; } = string.Empty;
-
-    [JsonPropertyName("ctps_end")]
-    public string CTPS_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("pispasep")]
-    public string PisPasep { get; set; } = string.Empty;
-
-    [JsonPropertyName("pispasep_end")]
-    public string PisPasep_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("remuneracao")]
-    public string Remuneracao { get; set; } = string.Empty;
-
-    [JsonPropertyName("remuneracao_end")]
-    public string Remuneracao_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("objeto")]
-    public string Objeto { get; set; } = string.Empty;
-
-    [JsonPropertyName("objeto_end")]
-    public string Objeto_end { get; set; } = string.Empty;
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? GUID { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? GUID_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("estadocivil")]
+    public string? EstadoCivil { get; set; } = string.Empty;
+
+    [JsonPropertyName("estadocivil_end")]
+    public string? EstadoCivil_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("nacionalidade")]
+    public string? Nacionalidade { get; set; } = string.Empty;
+
+    [JsonPropertyName("nacionalidade_end")]
+    public string? Nacionalidade_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("profissao")]
+    public string? Profissao { get; set; } = string.Empty;
+
+    [JsonPropertyName("profissao_end")]
+    public string? Profissao_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("ctps")]
+    public string? CTPS { get; set; } = string.Empty;
+
+    [JsonPropertyName("ctps_end")]
+    public string? CTPS_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("pispasep")]
+    public string? PisPasep { get; set; } = string.Empty;
+
+    [JsonPropertyName("pispasep_end")]
+    public string? PisPasep_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("remuneracao")]
+    public string? Remuneracao { get; set; } = string.Empty;
+
+    [JsonPropertyName("remuneracao_end")]
+    public string? Remuneracao_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("objeto")]
+    public string? Objeto { get; set; } = string.Empty;
+
+    [JsonPropertyName("objeto_end")]
+    public string? Objeto_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

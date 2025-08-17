@@ -13,7 +13,7 @@ public partial interface ISMSAliceWhere
 
 public partial class SMSAliceWhere(IFSMSAliceFactory smsaliceFactory) : ISMSAliceWhere
 {
-    private readonly IFSMSAliceFactory _smsaliceFactory = smsaliceFactory;
+    private readonly IFSMSAliceFactory _smsaliceFactory = smsaliceFactory ?? throw new ArgumentNullException(nameof(smsaliceFactory));
     public SMSAliceResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _smsaliceFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

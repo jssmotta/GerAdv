@@ -13,7 +13,7 @@ public partial interface IGUTTipoWhere
 
 public partial class GUTTipoWhere(IFGUTTipoFactory guttipoFactory) : IGUTTipoWhere
 {
-    private readonly IFGUTTipoFactory _guttipoFactory = guttipoFactory;
+    private readonly IFGUTTipoFactory _guttipoFactory = guttipoFactory ?? throw new ArgumentNullException(nameof(guttipoFactory));
     public GUTTipoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _guttipoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

@@ -3,6 +3,6 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsRito
 {	descricao = `Descricao`,
-	top = `Top`,
 	guid = `GUID`,
+	top = `Top`,
 }

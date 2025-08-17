@@ -132,8 +132,9 @@ export class AgendaRelatorioApi {
                     try {
                         const encoded = encodeDataForStorage(response.data);
                         localStorage.setItem(storageKey, encoded);
-                    } catch (error) {                        
-                        console.log('Erro ao salvar dados filtrados no localStorage');
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
                     }
                 });
         
@@ -247,7 +248,8 @@ export class AgendaRelatorioApi {
           revalidateOnFocus: false,
           revalidateOnReconnect: false,
           onError: (error) => {            
-            console.log('Erro no SWR para filtro de AgendaRelatorio');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Erro no SWR para filtro de AgendaRelatorio');
             this.notificationService.notify({
               entity: 'AgendaRelatorio',
               id: 0,

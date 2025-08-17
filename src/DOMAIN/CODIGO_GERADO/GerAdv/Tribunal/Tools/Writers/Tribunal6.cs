@@ -14,23 +14,23 @@ public partial interface ITribunalWriter
 
 public class TribunalWriter(IFTribunalFactory tribunalFactory) : ITribunalWriter
 {
-    private readonly IFTribunalFactory _tribunalFactory = tribunalFactory;
-    public async Task Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTribunalFactory _tribunalFactory = tribunalFactory ?? throw new ArgumentNullException(nameof(tribunalFactory));
+    public virtual async Task Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection oCnn)
     {
         await _tribunalFactory.DeleteAsync(operadorId, tribunal.Id, oCnn);
     }
 
-    public async Task<FTribunal> WriteAsync(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTribunal> WriteAsync(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tribunal.Id.IsEmptyIDNumber() ? _tribunalFactory.CreateAsync() : _tribunalFactory.CreateFromIdAsync(tribunal.Id, oCnn));
         dbRec.FNome = tribunal.Nome;
         dbRec.FArea = tribunal.Area;
+        dbRec.FGUID = tribunal.GUID;
         dbRec.FJustica = tribunal.Justica;
         dbRec.FDescricao = tribunal.Descricao;
         dbRec.FInstancia = tribunal.Instancia;
         dbRec.FSigla = tribunal.Sigla;
         dbRec.FWeb = tribunal.Web;
-        dbRec.FGUID = tribunal.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

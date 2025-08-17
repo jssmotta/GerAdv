@@ -13,7 +13,7 @@ public partial interface IGUTAtividadesWhere
 
 public partial class GUTAtividadesWhere(IFGUTAtividadesFactory gutatividadesFactory) : IGUTAtividadesWhere
 {
-    private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory;
+    private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory ?? throw new ArgumentNullException(nameof(gutatividadesFactory));
     public GUTAtividadesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _gutatividadesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -25,10 +25,10 @@ public partial class GUTAtividadesWhere(IFGUTAtividadesFactory gutatividadesFact
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
+            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
         {

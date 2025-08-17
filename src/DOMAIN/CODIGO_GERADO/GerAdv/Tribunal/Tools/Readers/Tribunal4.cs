@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribunalReader
 {
-    private readonly IFTribunalFactory _tribunalFactory = tribunalFactory;
+    private readonly IFTribunalFactory _tribunalFactory = tribunalFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("triCodigo, triNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TribunalResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -56,12 +56,12 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tribunal;
     }
@@ -89,12 +89,12 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tribunal;
     }
@@ -111,12 +111,12 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tribunal;
     }
@@ -133,12 +133,12 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -179,12 +179,12 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

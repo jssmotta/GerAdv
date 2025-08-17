@@ -54,7 +54,7 @@ public partial class FContatoCRMViewFactory : IFContatoCRMViewFactory, IDisposab
             throw new ObjectDisposedException(nameof(FContatoCRMViewFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

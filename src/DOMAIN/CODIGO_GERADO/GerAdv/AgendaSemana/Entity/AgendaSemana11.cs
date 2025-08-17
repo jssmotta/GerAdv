@@ -54,7 +54,7 @@ public partial class FAgendaSemanaFactory : IFAgendaSemanaFactory, IDisposable
             throw new ObjectDisposedException(nameof(FAgendaSemanaFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

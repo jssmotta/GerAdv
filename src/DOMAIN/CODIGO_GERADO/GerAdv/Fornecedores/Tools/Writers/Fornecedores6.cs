@@ -14,13 +14,13 @@ public partial interface IFornecedoresWriter
 
 public class FornecedoresWriter(IFFornecedoresFactory fornecedoresFactory) : IFornecedoresWriter
 {
-    private readonly IFFornecedoresFactory _fornecedoresFactory = fornecedoresFactory;
-    public async Task Delete(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFFornecedoresFactory _fornecedoresFactory = fornecedoresFactory ?? throw new ArgumentNullException(nameof(fornecedoresFactory));
+    public virtual async Task Delete(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection oCnn)
     {
         await _fornecedoresFactory.DeleteAsync(operadorId, fornecedores.Id, oCnn);
     }
 
-    public async Task<FFornecedores> WriteAsync(Models.Fornecedores fornecedores, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FFornecedores> WriteAsync(Models.Fornecedores fornecedores, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (fornecedores.Id.IsEmptyIDNumber() ? _fornecedoresFactory.CreateAsync() : _fornecedoresFactory.CreateFromIdAsync(fornecedores.Id, oCnn));
         dbRec.FGrupo = fornecedores.Grupo;

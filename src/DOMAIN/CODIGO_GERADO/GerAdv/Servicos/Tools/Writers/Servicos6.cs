@@ -14,13 +14,13 @@ public partial interface IServicosWriter
 
 public class ServicosWriter(IFServicosFactory servicosFactory) : IServicosWriter
 {
-    private readonly IFServicosFactory _servicosFactory = servicosFactory;
-    public async Task Delete(ServicosResponse servicos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFServicosFactory _servicosFactory = servicosFactory ?? throw new ArgumentNullException(nameof(servicosFactory));
+    public virtual async Task Delete(ServicosResponse servicos, int operadorId, MsiSqlConnection oCnn)
     {
         await _servicosFactory.DeleteAsync(operadorId, servicos.Id, oCnn);
     }
 
-    public async Task<FServicos> WriteAsync(Models.Servicos servicos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FServicos> WriteAsync(Models.Servicos servicos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (servicos.Id.IsEmptyIDNumber() ? _servicosFactory.CreateAsync() : _servicosFactory.CreateFromIdAsync(servicos.Id, oCnn));
         dbRec.FCobrar = servicos.Cobrar;

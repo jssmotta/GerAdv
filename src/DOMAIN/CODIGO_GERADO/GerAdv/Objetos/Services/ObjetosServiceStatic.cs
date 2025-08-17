@@ -8,37 +8,46 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ObjetosService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterObjetos filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterObjetos? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Justica != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBObjetosDicInfo.Justica)}", filtro.Justica));
+            parameters.Add(new($"@{(DBObjetosDicInfo.Justica)}", filtro.Justica));
+            if (filtro.Justica_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBObjetosDicInfo.Justica)}_end", filtro.Justica_end));
+            }
         }
 
         if (filtro.Area != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBObjetosDicInfo.Area)}", filtro.Area));
+            parameters.Add(new($"@{(DBObjetosDicInfo.Area)}", filtro.Area));
+            if (filtro.Area_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBObjetosDicInfo.Area)}_end", filtro.Area_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBObjetosDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBObjetosDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBObjetosDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBObjetosDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBObjetosDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBObjetosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBObjetosDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBObjetosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +56,36 @@ public partial class ObjetosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.Justica}] = @{nameof(DBObjetosDicInfo.Justica)}");
-        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.Area}] = @{nameof(DBObjetosDicInfo.Area)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBObjetosDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBObjetosDicInfo.GUID)}");
+        if (!(filtro.Justica.IsEmptyX()) && filtro.Justica_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.Justica}] = @{(DBObjetosDicInfo.Justica)}");
+        }
+        else if (!(filtro.Justica.IsEmptyX()) && !(filtro.Justica_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].{DBObjetosDicInfo.Justica} BETWEEN @{(DBObjetosDicInfo.Justica)} AND @{(DBObjetosDicInfo.Justica)}_end");
+        }
+
+        if (!(filtro.Area.IsEmptyX()) && filtro.Area_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.Area}] = @{(DBObjetosDicInfo.Area)}");
+        }
+        else if (!(filtro.Area.IsEmptyX()) && !(filtro.Area_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].{DBObjetosDicInfo.Area} BETWEEN @{(DBObjetosDicInfo.Area)} AND @{(DBObjetosDicInfo.Area)}_end");
+        }
+
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBObjetosDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBObjetosDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.CampoCodigo}] = @{nameof(DBObjetosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].[{DBObjetosDicInfo.CampoCodigo}] = @{(DBObjetosDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].{DBObjetosDicInfo.CampoCodigo} BETWEEN @{nameof(DBObjetosDicInfo.CampoCodigo)} AND @{nameof(DBObjetosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBObjetosDicInfo.PTabelaNome}].{DBObjetosDicInfo.CampoCodigo} BETWEEN @{(DBObjetosDicInfo.CampoCodigo)} AND @{(DBObjetosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterObjetos? filtro)

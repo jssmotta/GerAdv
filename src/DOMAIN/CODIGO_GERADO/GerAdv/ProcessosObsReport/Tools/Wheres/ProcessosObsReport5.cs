@@ -13,7 +13,7 @@ public partial interface IProcessosObsReportWhere
 
 public partial class ProcessosObsReportWhere(IFProcessosObsReportFactory processosobsreportFactory) : IProcessosObsReportWhere
 {
-    private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory;
+    private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory ?? throw new ArgumentNullException(nameof(processosobsreportFactory));
     public ProcessosObsReportResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _processosobsreportFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

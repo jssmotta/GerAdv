@@ -62,283 +62,274 @@ if (getParamFromUrl('tipoenderecosistema') > 0) {
       setNomeTipoEnderecoSistema(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    enderecosistemaData.tipoenderecosistema = getParamFromUrl('tipoenderecosistema');
+      enderecosistemaData.tipoenderecosistema = getParamFromUrl('tipoenderecosistema');
+    }
   }
-}
 
-if (getParamFromUrl('cidade') > 0) {
-  if (enderecosistemaData.id === 0 && enderecosistemaData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('cidade') > 0) {
+    if (enderecosistemaData.id === 0 && enderecosistemaData.cidade == 0) {
+      cidadeApi
+      .getById(getParamFromUrl('cidade'))
+      .then((response) => {
+        setNomeCidade(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    enderecosistemaData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorTipoEnderecoSistema = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'tipoenderecosistema', value: e.id } });
-  };
-  const addValorCidade = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cidade', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        enderecosistemaData.cidade = getParamFromUrl('cidade');
+      }
+    }
+    const addValorTipoEnderecoSistema = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'tipoenderecosistema', value: e.id } });
+      };
+      const addValorCidade = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cidade', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de EnderecoSistema:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de EnderecoSistema:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`EnderecoSistemaForm-${enderecosistemaData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`EnderecoSistemaForm-${enderecosistemaData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar EnderecoSistema diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = enderecosistemaData?.id == 0 ? 'Editar EnderecoSistema' : 'Adicionar Endereco Sistema';
-      }
-    }, [enderecosistemaData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar EnderecoSistema diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = enderecosistemaData?.id == 0 ? 'Editar EnderecoSistema' : 'Adicionar Endereco Sistema';
+            }
+          }, [enderecosistemaData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-EnderecoSistema' : 'form-container form-container-EnderecoSistema'}>
+            <div className={isMobile ? 'form-container form-container-EnderecoSistema' : 'form-container form-container-EnderecoSistema'}>
 
-        <form className='formInputCadInc' id={`EnderecoSistemaForm-${enderecosistemaData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='EnderecoSistema' data={enderecosistemaData} isSubmitting={isSubmitting} onClose={onClose} formId={`EnderecoSistemaForm-${enderecosistemaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
-
-              <InputName
-              type='text'
-              id='guid'
-              label='GUID'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='guid'
-              value={enderecosistemaData.guid}
-              placeholder={`Informe GUID`}
-              onChange={onChange}
-              required
-              />
-
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='cadastro'
-              label='Cadastro'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='cadastro'
-              value={enderecosistemaData.cadastro}
-              onChange={onChange}
-              />
+              <form className='formInputCadInc' id={`EnderecoSistemaForm-${enderecosistemaData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='EnderecoSistema' data={enderecosistemaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`EnderecoSistemaForm-${enderecosistemaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
 
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='cadastroexcod'
-              label='CadastroExCod'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='cadastroexcod'
-              value={enderecosistemaData.cadastroexcod}
-              onChange={onChange}
-              />
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='cadastro'
+                    label='Cadastro'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='cadastro'
+                    value={enderecosistemaData.cadastro}
+                    onChange={onChange}
+                    />
 
 
-              <TipoEnderecoSistemaComboBox
-              name={'tipoenderecosistema'}
-              dataForm={enderecosistemaData}
-              value={enderecosistemaData.tipoenderecosistema}
-              setValue={addValorTipoEnderecoSistema}
-              label={'Tipo Endereco Sistema'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='processo'
-              label='Processo'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='processo'
-              value={enderecosistemaData.processo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='cadastroexcod'
+                    label='CadastroExCod'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='cadastroexcod'
+                    value={enderecosistemaData.cadastroexcod}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={200}
-              id='motivo'
-              label='Motivo'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='motivo'
-              value={enderecosistemaData.motivo}
-              onChange={onChange}
-              />
+                    <TipoEnderecoSistemaComboBox
+                    name={'tipoenderecosistema'}
+                    dataForm={enderecosistemaData}
+                    value={enderecosistemaData.tipoenderecosistema}
+                    setValue={addValorTipoEnderecoSistema}
+                    label={'Tipo Endereco Sistema'}
+                    />
+
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='processo'
+                    label='Processo'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='processo'
+                    value={enderecosistemaData.processo}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='contatonolocal'
-              label='ContatoNoLocal'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='contatonolocal'
-              value={enderecosistemaData.contatonolocal}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={200}
+                    id='motivo'
+                    label='Motivo'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='motivo'
+                    value={enderecosistemaData.motivo}
+                    onChange={onChange}
+                    />
 
 
-              <CidadeComboBox
-              name={'cidade'}
-              dataForm={enderecosistemaData}
-              value={enderecosistemaData.cidade}
-              setValue={addValorCidade}
-              label={'Cidade'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={150}
-              id='endereco'
-              label='Endereco'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='endereco'
-              value={enderecosistemaData.endereco}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='bairro'
-              label='Bairro'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='bairro'
-              value={enderecosistemaData.bairro}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='contatonolocal'
+                    label='ContatoNoLocal'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='contatonolocal'
+                    value={enderecosistemaData.contatonolocal}
+                    onChange={onChange}
+                    />
 
 
-              <InputCep
-              type='text'
-              id='cep'
-              label='CEP'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='cep'
-              value={enderecosistemaData.cep}
-              onChange={onChange}
-              />
+                    <CidadeComboBox
+                    name={'cidade'}
+                    dataForm={enderecosistemaData}
+                    value={enderecosistemaData.cidade}
+                    setValue={addValorCidade}
+                    label={'Cidade'}
+                    />
+
+                    <InputInput
+                    type='text'
+                    maxLength={150}
+                    id='endereco'
+                    label='Endereco'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='endereco'
+                    value={enderecosistemaData.endereco}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='bairro'
+                    label='Bairro'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='bairro'
+                    value={enderecosistemaData.bairro}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='fone'
-              value={enderecosistemaData.fone}
-              onChange={onChange}
-              />
+                    <InputCep
+                    type='text'
+                    id='cep'
+                    label='CEP'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='cep'
+                    value={enderecosistemaData.cep}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fax'
-              label='Fax'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='fax'
-              value={enderecosistemaData.fax}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={enderecosistemaData.fone}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='observacao'
-              label='Observacao'
-              dataForm={enderecosistemaData}
-              className='inputIncNome'
-              name='observacao'
-              value={enderecosistemaData.observacao}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fax'
+                    label='Fax'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='fax'
+                    value={enderecosistemaData.fax}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='EnderecoSistema' data={enderecosistemaData} isSubmitting={isSubmitting} onClose={onClose} formId={`EnderecoSistemaForm-${enderecosistemaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/enderecosistema'} id={enderecosistemaData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='observacao'
+                    label='Observacao'
+                    dataForm={enderecosistemaData}
+                    className='inputIncNome'
+                    name='observacao'
+                    value={enderecosistemaData.observacao}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='EnderecoSistema' data={enderecosistemaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`EnderecoSistemaForm-${enderecosistemaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/enderecosistema'} id={enderecosistemaData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

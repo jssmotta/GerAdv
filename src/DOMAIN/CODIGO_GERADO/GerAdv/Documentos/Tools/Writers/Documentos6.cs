@@ -14,19 +14,19 @@ public partial interface IDocumentosWriter
 
 public class DocumentosWriter(IFDocumentosFactory documentosFactory) : IDocumentosWriter
 {
-    private readonly IFDocumentosFactory _documentosFactory = documentosFactory;
-    public async Task Delete(DocumentosResponse documentos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFDocumentosFactory _documentosFactory = documentosFactory ?? throw new ArgumentNullException(nameof(documentosFactory));
+    public virtual async Task Delete(DocumentosResponse documentos, int operadorId, MsiSqlConnection oCnn)
     {
         await _documentosFactory.DeleteAsync(operadorId, documentos.Id, oCnn);
     }
 
-    public async Task<FDocumentos> WriteAsync(Models.Documentos documentos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FDocumentos> WriteAsync(Models.Documentos documentos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (documentos.Id.IsEmptyIDNumber() ? _documentosFactory.CreateAsync() : _documentosFactory.CreateFromIdAsync(documentos.Id, oCnn));
+        dbRec.FGUID = documentos.GUID;
         dbRec.FProcesso = documentos.Processo;
         dbRec.FData = documentos.Data;
         dbRec.FObservacao = documentos.Observacao;
-        dbRec.FGUID = documentos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

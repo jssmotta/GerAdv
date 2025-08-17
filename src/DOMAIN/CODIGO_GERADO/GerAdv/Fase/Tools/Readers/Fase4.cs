@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
 {
-    private readonly IFFaseFactory _faseFactory = faseFactory;
+    private readonly IFFaseFactory _faseFactory = faseFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("fasCodigo, fasDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<FaseResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBFase.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<FaseResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -55,9 +55,9 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return fase;
     }
@@ -84,9 +84,9 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return fase;
     }
@@ -102,9 +102,9 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return fase;
     }
@@ -120,9 +120,9 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -154,9 +154,9 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IEscritoriosValidation
 {
     Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class EscritoriosValidation : IEscritoriosValidation
 {
-    public async Task<bool> CanDelete(int id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Escritorio = id }, uri);
+        var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Escritorio = id ?? default }, uri);
         if (advogadosExists0 != null && advogadosExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.");
         return true;
@@ -29,28 +29,28 @@ public class EscritoriosValidation : IEscritoriosValidation
 
     private bool ValidSizes(Models.Escritorios reg)
     {
-        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
-            throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.OAB != null && reg.OAB.Length > 15)
-            throw new SGValidationException($"OAB deve ter no máximo 15 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 50)
-            throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 30)
-            throw new SGValidationException($"Bairro deve ter no máximo 30 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 200)
-            throw new SGValidationException($"Site deve ter no máximo 200 caracteres.");
-        if (reg.AdvResponsavel != null && reg.AdvResponsavel.Length > 80)
-            throw new SGValidationException($"AdvResponsavel deve ter no máximo 80 caracteres.");
-        if (reg.Secretaria != null && reg.Secretaria.Length > 80)
-            throw new SGValidationException($"Secretaria deve ter no máximo 80 caracteres.");
-        if (reg.InscEst != null && reg.InscEst.Length > 15)
-            throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > DBEscritoriosDicInfo.EscCNPJ.FTamanho)
+            throw new SGValidationException($"CNPJ deve ter no máximo {DBEscritoriosDicInfo.EscCNPJ.FTamanho} caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBEscritoriosDicInfo.EscNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBEscritoriosDicInfo.EscNome.FTamanho} caracteres.");
+        if (reg.OAB != null && reg.OAB.Length > DBEscritoriosDicInfo.EscOAB.FTamanho)
+            throw new SGValidationException($"OAB deve ter no máximo {DBEscritoriosDicInfo.EscOAB.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBEscritoriosDicInfo.EscEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBEscritoriosDicInfo.EscEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBEscritoriosDicInfo.EscBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBEscritoriosDicInfo.EscBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBEscritoriosDicInfo.EscCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBEscritoriosDicInfo.EscCEP.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBEscritoriosDicInfo.EscSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBEscritoriosDicInfo.EscSite.FTamanho} caracteres.");
+        if (reg.AdvResponsavel != null && reg.AdvResponsavel.Length > DBEscritoriosDicInfo.EscAdvResponsavel.FTamanho)
+            throw new SGValidationException($"AdvResponsavel deve ter no máximo {DBEscritoriosDicInfo.EscAdvResponsavel.FTamanho} caracteres.");
+        if (reg.Secretaria != null && reg.Secretaria.Length > DBEscritoriosDicInfo.EscSecretaria.FTamanho)
+            throw new SGValidationException($"Secretaria deve ter no máximo {DBEscritoriosDicInfo.EscSecretaria.FTamanho} caracteres.");
+        if (reg.InscEst != null && reg.InscEst.Length > DBEscritoriosDicInfo.EscInscEst.FTamanho)
+            throw new SGValidationException($"InscEst deve ter no máximo {DBEscritoriosDicInfo.EscInscEst.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBEscritoriosDicInfo.EscGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBEscritoriosDicInfo.EscGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -63,8 +63,10 @@ public class EscritoriosValidation : IEscritoriosValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+            throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Escritorios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade

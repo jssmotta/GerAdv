@@ -8,57 +8,56 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AndamentosMDService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAndamentosMD filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAndamentosMD? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
+        {
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Processo)}", filtro.Processo));
-        }
-
-        if (filtro.Processo_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAndamentosMDDicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
         if (filtro.Andamento != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Andamento)}", filtro.Andamento));
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.Andamento)}", filtro.Andamento));
+            if (filtro.Andamento_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAndamentosMDDicInfo.Andamento)}_end", filtro.Andamento_end));
+            }
         }
 
-        if (filtro.Andamento_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.PathFull))
         {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.Andamento)}_end", filtro.Andamento_end));
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.PathFull)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.PathFull)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.PathFull))
+        if (!string.IsNullOrWhiteSpace(filtro.UNC))
         {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.PathFull)}", ApplyWildCard(filtro.WildcardChar, filtro.PathFull)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.UNC))
-        {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.UNC)}", ApplyWildCard(filtro.WildcardChar, filtro.UNC)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.UNC)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.UNC)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBAndamentosMDDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBAndamentosMDDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAndamentosMDDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -67,49 +66,38 @@ public partial class AndamentosMDService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBAndamentosMDDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBAndamentosMDDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBAndamentosMDDicInfo.Nome)}");
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Processo}] = @{nameof(DBAndamentosMDDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Processo}] = @{(DBAndamentosMDDicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].{DBAndamentosMDDicInfo.Processo} BETWEEN @{nameof(DBAndamentosMDDicInfo.Processo)} AND @{nameof(DBAndamentosMDDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].{DBAndamentosMDDicInfo.Processo} BETWEEN @{(DBAndamentosMDDicInfo.Processo)} AND @{(DBAndamentosMDDicInfo.Processo)}_end");
         }
 
         if (!(filtro.Andamento.IsEmptyX()) && filtro.Andamento_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Andamento.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Andamento}] = @{nameof(DBAndamentosMDDicInfo.Andamento)}");
+            cWhere.Append(filtro.Andamento.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.Andamento}] = @{(DBAndamentosMDDicInfo.Andamento)}");
         }
         else if (!(filtro.Andamento.IsEmptyX()) && !(filtro.Andamento_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].{DBAndamentosMDDicInfo.Andamento} BETWEEN @{nameof(DBAndamentosMDDicInfo.Andamento)} AND @{nameof(DBAndamentosMDDicInfo.Andamento)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].{DBAndamentosMDDicInfo.Andamento} BETWEEN @{(DBAndamentosMDDicInfo.Andamento)} AND @{(DBAndamentosMDDicInfo.Andamento)}_end");
         }
 
-        cWhere.Append(filtro.PathFull.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.PathFull}]  {DevourerConsts.MsiCollate} like @{nameof(DBAndamentosMDDicInfo.PathFull)}");
-        cWhere.Append(filtro.UNC.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.UNC}]  {DevourerConsts.MsiCollate} like @{nameof(DBAndamentosMDDicInfo.UNC)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAndamentosMDDicInfo.GUID)}");
+        cWhere.Append(filtro.PathFull.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.PathFull}]  {DevourerConsts.MsiCollate} like @{(DBAndamentosMDDicInfo.PathFull)}");
+        cWhere.Append(filtro.UNC.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.UNC}]  {DevourerConsts.MsiCollate} like @{(DBAndamentosMDDicInfo.UNC)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.CampoCodigo}] = @{nameof(DBAndamentosMDDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].[{DBAndamentosMDDicInfo.CampoCodigo}] = @{(DBAndamentosMDDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].{DBAndamentosMDDicInfo.CampoCodigo} BETWEEN @{nameof(DBAndamentosMDDicInfo.CampoCodigo)} AND @{nameof(DBAndamentosMDDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAndamentosMDDicInfo.PTabelaNome}].{DBAndamentosMDDicInfo.CampoCodigo} BETWEEN @{(DBAndamentosMDDicInfo.CampoCodigo)} AND @{(DBAndamentosMDDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterAndamentosMD? filtro)

@@ -25,7 +25,7 @@ export class GUTAtividadesMatrizValidator {
 export interface IGUTAtividadesMatrizService {
   fetchGUTAtividadesMatrizById: (id: number) => Promise<IGUTAtividadesMatriz>;
   saveGUTAtividadesMatriz: (gutatividadesmatriz: IGUTAtividadesMatriz) => Promise<IGUTAtividadesMatriz>;  
-  getList: (filtro?: FilterGUTAtividadesMatriz) => Promise<IGUTAtividadesMatriz[]>;
+  
   getAll: (filtro?: FilterGUTAtividadesMatriz) => Promise<IGUTAtividadesMatriz[]>;
   deleteGUTAtividadesMatriz: (id: number) => Promise<void>;
   validateGUTAtividadesMatriz: (gutatividadesmatriz: IGUTAtividadesMatriz) => { isValid: boolean; errors: string[] };
@@ -74,17 +74,6 @@ export class GUTAtividadesMatrizService implements IGUTAtividadesMatrizService {
   }
 
   
-    async getList(filtro?: FilterGUTAtividadesMatriz): Promise<IGUTAtividadesMatriz[]> {
-    try {
-      const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
-      return response.data || [];
-    } catch (error) {
-      console.log('Error fetching GUTAtividadesMatriz list');
-      return [];
-    }
-  }
-
- 
   
 
    async getAll(
@@ -105,7 +94,8 @@ export class GUTAtividadesMatrizService implements IGUTAtividadesMatrizService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online GUTAtividadesMatriz');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTAtividadesMatriz');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +105,14 @@ export class GUTAtividadesMatrizService implements IGUTAtividadesMatrizService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online GUTAtividadesMatriz');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTAtividadesMatriz');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all GUTAtividadesMatriz:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all GUTAtividadesMatriz:');
       return [];
     }
   }

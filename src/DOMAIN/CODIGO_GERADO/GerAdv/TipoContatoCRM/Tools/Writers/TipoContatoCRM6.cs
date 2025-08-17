@@ -14,13 +14,13 @@ public partial interface ITipoContatoCRMWriter
 
 public class TipoContatoCRMWriter(IFTipoContatoCRMFactory tipocontatocrmFactory) : ITipoContatoCRMWriter
 {
-    private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory;
-    public async Task Delete(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory ?? throw new ArgumentNullException(nameof(tipocontatocrmFactory));
+    public virtual async Task Delete(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection oCnn)
     {
         await _tipocontatocrmFactory.DeleteAsync(operadorId, tipocontatocrm.Id, oCnn);
     }
 
-    public async Task<FTipoContatoCRM> WriteAsync(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoContatoCRM> WriteAsync(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipocontatocrm.Id.IsEmptyIDNumber() ? _tipocontatocrmFactory.CreateAsync() : _tipocontatocrmFactory.CreateFromIdAsync(tipocontatocrm.Id, oCnn));
         dbRec.FNome = tipocontatocrm.Nome;

@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class EscritoriosHealthCheck(IOptions<AppSettings> appSettings, EscritoriosService escritoriosService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class EscritoriosHealthCheck(IOptions<AppSettings> appSettings, Escritori
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) escCNPJ,escCasa,escParceria,escNome,escOAB,escEndereco,escCidade,escBairro,escCEP,escFone,escFax,escSite,escEMail,escOBS,escAdvResponsavel,escSecretaria,escInscEst,escCorrespondente,escTop,escGUID FROM {"Escritorios".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) escGUID,escCNPJ,escCasa,escParceria,escNome,escOAB,escEndereco,escCidade,escBairro,escCEP,escFone,escFax,escSite,escEMail,escOBS,escAdvResponsavel,escSecretaria,escInscEst,escCorrespondente,escTop FROM {"Escritorios".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class EscritoriosHealthCheck(IOptions<AppSettings> appSettings, Escritori
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

@@ -14,13 +14,13 @@ public partial interface IProValoresWriter
 
 public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValoresWriter
 {
-    private readonly IFProValoresFactory _provaloresFactory = provaloresFactory;
-    public async Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProValoresFactory _provaloresFactory = provaloresFactory ?? throw new ArgumentNullException(nameof(provaloresFactory));
+    public virtual async Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection oCnn)
     {
         await _provaloresFactory.DeleteAsync(operadorId, provalores.Id, oCnn);
     }
 
-    public async Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (provalores.Id.IsEmptyIDNumber() ? _provaloresFactory.CreateAsync() : _provaloresFactory.CreateFromIdAsync(provalores.Id, oCnn));
         dbRec.FProcesso = provalores.Processo;
@@ -38,7 +38,7 @@ public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValor
         dbRec.FValorFinal = provalores.ValorFinal;
         if (provalores.DataUltimaCorrecao != null)
             dbRec.FDataUltimaCorrecao = provalores.DataUltimaCorrecao.ToString();
-        dbRec.FGUID = provalores.GUID;
+        dbRec.FGuid = provalores.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

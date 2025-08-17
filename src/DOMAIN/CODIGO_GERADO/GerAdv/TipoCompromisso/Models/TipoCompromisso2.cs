@@ -14,6 +14,12 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
+        /// GUID - tipGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Icone - tipIcone  
         /// </summary>
         [JsonPropertyName("icone")]
@@ -30,12 +36,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("financeiro")]
         public bool Financeiro { get; set; }
-
-        /// <summary>
-        /// GUID - tipGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -48,6 +48,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
+        /// GUID - tipGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Icone - tipIcone  
         /// </summary>
         [JsonPropertyName("icone")]
@@ -64,11 +70,5 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("financeiro")]
         public bool Financeiro { get; set; }
-
-        /// <summary>
-        /// GUID - tipGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }

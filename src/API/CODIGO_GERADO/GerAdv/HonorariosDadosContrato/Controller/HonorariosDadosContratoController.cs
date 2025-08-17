@@ -51,20 +51,6 @@ public partial class HonorariosDadosContratoController(IHonorariosDadosContratoS
         return Ok(result);
     }
 
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterHonorariosDadosContrato? filtro, [FromRoute, Required] string uri)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        //_logger.Info($"HonorariosDadosContrato: GetListN called, max {max}, {filtro} uri");
-        var result = await _honorariosdadoscontratoService.GetListN(max, filtro, uri);
-        return Ok(result);
-    }
-
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]

@@ -58,139 +58,141 @@ if (getParamFromUrl('paises') > 0) {
       setNomePaises(response.data.inome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    ufData.pais = getParamFromUrl('paises');
+      ufData.pais = getParamFromUrl('paises');
+    }
   }
-}
-const addValorPais = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'pais', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorPais = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'pais', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de UF:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`UFForm-${ufData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de UF:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar UF diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = ufData?.id == 0 ? 'Editar UF' : 'Adicionar UF';
+        }
+      }, [ufData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-UF' : 'form-container5 form-container-UF'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`UFForm-${ufData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`UFForm-${ufData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='UF' data={ufData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`UFForm-${ufData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar UF diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = ufData?.id == 0 ? 'Editar UF' : 'Adicionar UF';
-    }
-  }, [ufData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='iduf'
+                label='ID'
+                dataForm={ufData}
+                className='inputIncNome'
+                name='iduf'
+                value={ufData.iduf}
+                placeholder={`Informe ID`}
+                onChange={onChange}
+                required
+                />
 
-    <div className={isMobile ? 'form-container form-container-UF' : 'form-container5 form-container-UF'}>
-
-      <form className='formInputCadInc' id={`UFForm-${ufData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='UF' data={ufData} isSubmitting={isSubmitting} onClose={onClose} formId={`UFForm-${ufData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='iduf'
-            label='ID'
-            dataForm={ufData}
-            className='inputIncNome'
-            name='iduf'
-            value={ufData.iduf}
-            placeholder={`Informe ID`}
-            onChange={onChange}
-            required
-            />
-
-            <InputInput
-            type='text'
-            maxLength={10}
-            id='ddd'
-            label='DDD'
-            dataForm={ufData}
-            className='inputIncNome'
-            name='ddd'
-            value={ufData.ddd}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={10}
+                id='ddd'
+                label='DDD'
+                dataForm={ufData}
+                className='inputIncNome'
+                name='ddd'
+                value={ufData.ddd}
+                onChange={onChange}
+                />
 
 
-            <PaisesComboBox
-            name={'pais'}
-            dataForm={ufData}
-            value={ufData.pais}
-            setValue={addValorPais}
-            label={'Paises'}
-            />
-            <InputCheckbox dataForm={ufData} label='Top' name='top' checked={ufData.top} onChange={onChange} />
+                <PaisesComboBox
+                name={'pais'}
+                dataForm={ufData}
+                value={ufData.pais}
+                setValue={addValorPais}
+                label={'Paises'}
+                />
+                <InputCheckbox dataForm={ufData} label='Top' name='top' checked={ufData.top} onChange={onChange} />
 
-            <InputInput
-            type='text'
-            maxLength={40}
-            id='descricao'
-            label='Descricao'
-            dataForm={ufData}
-            className='inputIncNome'
-            name='descricao'
-            value={ufData.descricao}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={40}
+                id='descricao'
+                label='Descricao'
+                dataForm={ufData}
+                className='inputIncNome'
+                name='descricao'
+                value={ufData.descricao}
+                onChange={onChange}
+                />
 
-          </div>
-        </form>
+              </div>
+            </form>
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='UF' data={ufData} isSubmitting={isSubmitting} onClose={onClose} formId={`UFForm-${ufData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/uf'} id={ufData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='UF' data={ufData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`UFForm-${ufData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/uf'} id={ufData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

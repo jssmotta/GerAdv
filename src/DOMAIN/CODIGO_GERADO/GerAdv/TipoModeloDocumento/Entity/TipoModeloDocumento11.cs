@@ -54,7 +54,7 @@ public partial class FTipoModeloDocumentoFactory : IFTipoModeloDocumentoFactory,
             throw new ObjectDisposedException(nameof(FTipoModeloDocumentoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

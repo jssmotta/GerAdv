@@ -13,7 +13,7 @@ public partial interface IProTipoBaixaWhere
 
 public partial class ProTipoBaixaWhere(IFProTipoBaixaFactory protipobaixaFactory) : IProTipoBaixaWhere
 {
-    private readonly IFProTipoBaixaFactory _protipobaixaFactory = protipobaixaFactory;
+    private readonly IFProTipoBaixaFactory _protipobaixaFactory = protipobaixaFactory ?? throw new ArgumentNullException(nameof(protipobaixaFactory));
     public ProTipoBaixaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _protipobaixaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

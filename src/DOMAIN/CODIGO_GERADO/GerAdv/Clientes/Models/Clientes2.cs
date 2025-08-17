@@ -59,6 +59,12 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? RGDataExp_date { get; set; }
 
         /// <summary>
+        /// GUID - cliGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Inativo - cliInativo  
         /// </summary>
         [JsonPropertyName("inativo")]
@@ -270,12 +276,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("pessoacontato")]
         public string PessoaContato { get; set; } = "";
-
-        /// <summary>
-        /// GUID - cliGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -333,6 +333,12 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? RGDataExp_date { get; set; }
 
         /// <summary>
+        /// GUID - cliGUID - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Inativo - cliInativo  
         /// </summary>
         [JsonPropertyName("inativo")]
@@ -544,12 +550,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("pessoacontato")]
         public string PessoaContato { get; set; } = "";
-
-        /// <summary>
-        /// GUID - cliGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

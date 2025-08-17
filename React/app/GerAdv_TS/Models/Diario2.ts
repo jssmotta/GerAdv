@@ -9,7 +9,6 @@ export interface Diario2
 	cliente : number;
 	data : string;
 	hora : string;
-	hora_date? : Date;
 	nome : string;
 	ocorrencia : string;
 	nomeoperador?: string;

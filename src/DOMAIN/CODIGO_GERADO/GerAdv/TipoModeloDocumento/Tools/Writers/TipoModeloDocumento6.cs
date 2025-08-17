@@ -14,13 +14,13 @@ public partial interface ITipoModeloDocumentoWriter
 
 public class TipoModeloDocumentoWriter(IFTipoModeloDocumentoFactory tipomodelodocumentoFactory) : ITipoModeloDocumentoWriter
 {
-    private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory;
-    public async Task Delete(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory ?? throw new ArgumentNullException(nameof(tipomodelodocumentoFactory));
+    public virtual async Task Delete(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection oCnn)
     {
         await _tipomodelodocumentoFactory.DeleteAsync(operadorId, tipomodelodocumento.Id, oCnn);
     }
 
-    public async Task<FTipoModeloDocumento> WriteAsync(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoModeloDocumento> WriteAsync(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipomodelodocumento.Id.IsEmptyIDNumber() ? _tipomodelodocumentoFactory.CreateAsync() : _tipomodelodocumentoFactory.CreateFromIdAsync(tipomodelodocumento.Id, oCnn));
         dbRec.FNome = tipomodelodocumento.Nome;

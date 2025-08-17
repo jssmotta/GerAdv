@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IEnderecoSistemaValidation
 {
     Task<bool> ValidateReg(Models.EnderecoSistema reg, IEnderecoSistemaService service, ITipoEnderecoSistemaReader tipoenderecosistemaReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class EnderecoSistemaValidation : IEnderecoSistemaValidation
 {
-    public async Task<bool> CanDelete(int id, IEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,18 +26,18 @@ public class EnderecoSistemaValidation : IEnderecoSistemaValidation
 
     private bool ValidSizes(Models.EnderecoSistema reg)
     {
-        if (reg.Motivo != null && reg.Motivo.Length > 200)
-            throw new SGValidationException($"Motivo deve ter no máximo 200 caracteres.");
-        if (reg.ContatoNoLocal != null && reg.ContatoNoLocal.Length > 50)
-            throw new SGValidationException($"ContatoNoLocal deve ter no máximo 50 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 150)
-            throw new SGValidationException($"Endereco deve ter no máximo 150 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Motivo != null && reg.Motivo.Length > DBEnderecoSistemaDicInfo.EstMotivo.FTamanho)
+            throw new SGValidationException($"Motivo deve ter no máximo {DBEnderecoSistemaDicInfo.EstMotivo.FTamanho} caracteres.");
+        if (reg.ContatoNoLocal != null && reg.ContatoNoLocal.Length > DBEnderecoSistemaDicInfo.EstContatoNoLocal.FTamanho)
+            throw new SGValidationException($"ContatoNoLocal deve ter no máximo {DBEnderecoSistemaDicInfo.EstContatoNoLocal.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBEnderecoSistemaDicInfo.EstEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBEnderecoSistemaDicInfo.EstEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBEnderecoSistemaDicInfo.EstBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBEnderecoSistemaDicInfo.EstBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBEnderecoSistemaDicInfo.EstCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBEnderecoSistemaDicInfo.EstCEP.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBEnderecoSistemaDicInfo.EstGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBEnderecoSistemaDicInfo.EstGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -45,8 +45,6 @@ public class EnderecoSistemaValidation : IEnderecoSistemaValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

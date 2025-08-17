@@ -204,16 +204,6 @@ export const useOperadoresFilter = ({ handleFetchWithFilter }: UseOperadoresFilt
   />
   <InputInput
   type='text'
-  id='senha256'
-  name='senha256'
-  value={handlers.windowFilter?.senha256 ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Senha256'
-  label='Senha256'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
   id='codigo_filtro'
   name='codigo_filtro'
   value={handlers.windowFilter?.codigo_filtro ?? ''}

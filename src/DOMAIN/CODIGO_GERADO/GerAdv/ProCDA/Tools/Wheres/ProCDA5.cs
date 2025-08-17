@@ -13,7 +13,7 @@ public partial interface IProCDAWhere
 
 public partial class ProCDAWhere(IFProCDAFactory procdaFactory) : IProCDAWhere
 {
-    private readonly IFProCDAFactory _procdaFactory = procdaFactory;
+    private readonly IFProCDAFactory _procdaFactory = procdaFactory ?? throw new ArgumentNullException(nameof(procdaFactory));
     public ProCDAResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _procdaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

@@ -41,7 +41,8 @@ export const useFornecedoresForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Fornecedor';
       setError(errorMessage);
-      //console.log('Erro ao carregar Fornecedor');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Fornecedor');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useFornecedoresNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useFornecedoresList = (dataService: IFornecedoresService, currentFi
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar fornecedores';
       setError(errorMessage);
-      //console.log('Erro ao carregar fornecedores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar fornecedores');
     } finally {
       setLoading(false);
     }
@@ -246,7 +249,8 @@ if (data.contatos.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

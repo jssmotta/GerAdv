@@ -92,7 +92,8 @@ export class AgendaSemanaService implements IAgendaSemanaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online AgendaSemana');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online AgendaSemana');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -102,12 +103,14 @@ export class AgendaSemanaService implements IAgendaSemanaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online AgendaSemana');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online AgendaSemana');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all AgendaSemana:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all AgendaSemana:');
       return [];
     }
   }

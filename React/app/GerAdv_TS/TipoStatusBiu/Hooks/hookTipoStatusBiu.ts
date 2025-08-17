@@ -41,7 +41,8 @@ export const useTipoStatusBiuForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Staus  Usuários';
       setError(errorMessage);
-      //console.log('Erro ao carregar Staus  Usuários');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Staus  Usuários');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useTipoStatusBiuNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useTipoStatusBiuList = (dataService: ITipoStatusBiuService, current
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar tipostatusbiu';
       setError(errorMessage);
-      //console.log('Erro ao carregar tipostatusbiu');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar tipostatusbiu');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 150) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

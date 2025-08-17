@@ -9,7 +9,6 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterProValores } from '@/app/GerAdv_TS/ProValores/Filters/ProValores';
-import TipoValorProcessoComboBox from '@/app/GerAdv_TS/TipoValorProcesso/ComboBox/TipoValorProcesso';
 interface UseProValoresFilterProps {
   handleFetchWithFilter: (filtro?: FilterProValores | undefined | null) => Promise<void>;
 }
@@ -77,13 +76,26 @@ export const useProValoresFilter = ({ handleFetchWithFilter }: UseProValoresFilt
   disabled={handlers.windowFilter?.processo ? false: true}
   className='inputIncNome inputSearch'
   />
-  <TipoValorProcessoComboBox
+  <InputInput
+  type='text'
+  id='tipovalorprocesso'
   name='tipovalorprocesso'
-  dataForm={null}
-  value={handlers.windowFilter?.tipovalorprocesso}
-  setValue={(e:any) => handlers.handleComboChange(e, 'tipovalorprocesso')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Tipo Valor Processo'
+  value={handlers.windowFilter?.tipovalorprocesso ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe TipoValorProcesso'
+  label='TipoValorProcesso (igual ou inicial)'
+  className='inputIncNome inputSearch'
+  />
+  <InputInput
+  type='text'
+  id='tipovalorprocesso_end'
+  name='tipovalorprocesso_end'
+  value={handlers.windowFilter?.tipovalorprocesso_end ?? ''}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe TipoValorProcesso final'
+  label='TipoValorProcesso final'
+  disabled={handlers.windowFilter?.tipovalorprocesso ? false: true}
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'
@@ -103,16 +115,6 @@ export const useProValoresFilter = ({ handleFetchWithFilter }: UseProValoresFilt
   onChange={handlers.handleInputChange}
   label='Ignorar'
   className='inputSearch inputSearchCheckbox'
-  />
-  <InputInput
-  type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
   />
   <InputValor
   type='text'

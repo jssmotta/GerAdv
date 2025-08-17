@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IBensMateriaisValidation
 {
     Task<bool> ValidateReg(Models.BensMateriais reg, IBensMateriaisService service, IBensClassificacaoReader bensclassificacaoReader, IFornecedoresReader fornecedoresReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IBensMateriaisService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IBensMateriaisService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class BensMateriaisValidation : IBensMateriaisValidation
 {
-    public async Task<bool> CanDelete(int id, IBensMateriaisService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IBensMateriaisService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,18 +26,18 @@ public class BensMateriaisValidation : IBensMateriaisValidation
 
     private bool ValidSizes(Models.BensMateriais reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.NFNRO != null && reg.NFNRO.Length > 255)
-            throw new SGValidationException($"NFNRO deve ter no máximo 255 caracteres.");
-        if (reg.NroSerieProduto != null && reg.NroSerieProduto.Length > 100)
-            throw new SGValidationException($"NroSerieProduto deve ter no máximo 100 caracteres.");
-        if (reg.Comprador != null && reg.Comprador.Length > 100)
-            throw new SGValidationException($"Comprador deve ter no máximo 100 caracteres.");
-        if (reg.NomeVendedor != null && reg.NomeVendedor.Length > 255)
-            throw new SGValidationException($"NomeVendedor deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBBensMateriaisDicInfo.BmtNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBBensMateriaisDicInfo.BmtNome.FTamanho} caracteres.");
+        if (reg.NFNRO != null && reg.NFNRO.Length > DBBensMateriaisDicInfo.BmtNFNRO.FTamanho)
+            throw new SGValidationException($"NFNRO deve ter no máximo {DBBensMateriaisDicInfo.BmtNFNRO.FTamanho} caracteres.");
+        if (reg.NroSerieProduto != null && reg.NroSerieProduto.Length > DBBensMateriaisDicInfo.BmtNroSerieProduto.FTamanho)
+            throw new SGValidationException($"NroSerieProduto deve ter no máximo {DBBensMateriaisDicInfo.BmtNroSerieProduto.FTamanho} caracteres.");
+        if (reg.Comprador != null && reg.Comprador.Length > DBBensMateriaisDicInfo.BmtComprador.FTamanho)
+            throw new SGValidationException($"Comprador deve ter no máximo {DBBensMateriaisDicInfo.BmtComprador.FTamanho} caracteres.");
+        if (reg.NomeVendedor != null && reg.NomeVendedor.Length > DBBensMateriaisDicInfo.BmtNomeVendedor.FTamanho)
+            throw new SGValidationException($"NomeVendedor deve ter no máximo {DBBensMateriaisDicInfo.BmtNomeVendedor.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBBensMateriaisDicInfo.BmtGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBBensMateriaisDicInfo.BmtGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -50,6 +50,33 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.DataCompra))
+        {
+            if (DateTime.TryParse(reg.DataCompra, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataCompra não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DataFimDaGarantia))
+        {
+            if (DateTime.TryParse(reg.DataFimDaGarantia, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataFimDaGarantia não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DataTerminoDaGarantiaDaLoja))
+        {
+            if (DateTime.TryParse(reg.DataTerminoDaGarantiaDaLoja, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataTerminoDaGarantiaDaLoja não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // BensClassificacao
         if (!reg.BensClassificacao.IsEmptyIDNumber())
         {
@@ -66,7 +93,7 @@ public class BensMateriaisValidation : IBensMateriaisValidation
             var regFornecedores = await fornecedoresReader.Read(reg.Fornecedor, oCnn);
             if (regFornecedores == null || regFornecedores.Id != reg.Fornecedor)
             {
-                throw new SGValidationException($"Fornecedores não encontrado ({regFornecedores?.Id}).");
+                throw new SGValidationException($"Fornecedor não encontrado ({regFornecedores?.Id}).");
             }
         }
 

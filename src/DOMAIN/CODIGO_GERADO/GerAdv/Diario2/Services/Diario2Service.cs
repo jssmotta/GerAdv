@@ -95,18 +95,18 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         }
     }
 
-    private async Task<Diario2Response?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<Diario2Response?> AddAndUpdate([FromBody] Models.Diario2 regDiario2, [FromRoute, Required] string uri)
+    private async Task<Diario2Response?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<Diario2Response?> AddAndUpdate([FromBody] Models.Diario2? regDiario2, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Diario2: URI inválida");
-        }
-
         if (regDiario2 == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Diario2: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
             var validade = await validation.ValidateReg(regDiario2, this, operadorReader, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = _httpContextAccessor.HttpContext == null ? regDiario2.Operador : UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<Diario2Response?> Validation([FromBody] Models.Diario2 regDiario2, [FromRoute, Required] string uri)
+    public async Task<Diario2Response?> Validation([FromBody] Models.Diario2? regDiario2, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Diario2: URI inválida");
-        }
-
         if (regDiario2 == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Diario2: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
             var validade = await validation.ValidateReg(regDiario2, this, operadorReader, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regDiario2.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         return await reader.Read(regDiario2.Id, oCnn);
     }
 
-    public async Task<Diario2Response?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<Diario2Response?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Diario2: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var diario2 = await reader.Read(id, oCnn);
+        var diario2 = await reader.Read(id ?? default, oCnn);
         try
         {
             if (diario2 != null)
@@ -238,7 +238,7 @@ public partial class Diario2Service(IOptions<AppSettings> appSettings, IFDiario2
         return diario2;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

@@ -7,8 +7,8 @@ export interface IProValores {
 // 202501251
     id: number;
  
-	tipovalorprocesso: number,
 	processo: number,
+	tipovalorprocesso: number,
 	indice: string,
 	ignorar: boolean,
 	data: string,

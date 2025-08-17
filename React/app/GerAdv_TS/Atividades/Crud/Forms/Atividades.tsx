@@ -80,60 +80,61 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Atividades diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Atividades diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = atividadesData?.id == 0 ? 'Editar Atividades' : 'Adicionar Atividades';
-  }
-}, [atividadesData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Atividades' : 'form-container5 form-container-Atividades'}>
-
-    <form className='formInputCadInc' id={`AtividadesForm-${atividadesData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Atividades' data={atividadesData} isSubmitting={isSubmitting} onClose={onClose} formId={`AtividadesForm-${atividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='atividades'
-          dataForm={atividadesData}
-          className='inputIncNome'
-          name='descricao'
-          value={atividadesData.descricao}
-          placeholder={`Digite nome atividades`}
-          onChange={onChange}
-          required
-          disabled={atividadesData.id > 0}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Atividades' data={atividadesData} isSubmitting={isSubmitting} onClose={onClose} formId={`AtividadesForm-${atividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/atividades'} id={atividadesData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = atividadesData?.id == 0 ? 'Editar Atividades' : 'Adicionar Atividades';
+    }
+  }, [atividadesData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Atividades' : 'form-container5 form-container-Atividades'}>
+
+      <form className='formInputCadInc' id={`AtividadesForm-${atividadesData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Atividades' data={atividadesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AtividadesForm-${atividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='atividades'
+            dataForm={atividadesData}
+            className='inputIncNome'
+            name='descricao'
+            value={atividadesData.descricao}
+            placeholder={`Digite nome atividades`}
+            onChange={onChange}
+            required
+            disabled={atividadesData.id > 0}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Atividades' data={atividadesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AtividadesForm-${atividadesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/atividades'} id={atividadesData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

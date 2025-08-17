@@ -14,13 +14,13 @@ public partial interface IContatoCRMViewWriter
 
 public class ContatoCRMViewWriter(IFContatoCRMViewFactory contatocrmviewFactory) : IContatoCRMViewWriter
 {
-    private readonly IFContatoCRMViewFactory _contatocrmviewFactory = contatocrmviewFactory;
-    public async Task Delete(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFContatoCRMViewFactory _contatocrmviewFactory = contatocrmviewFactory ?? throw new ArgumentNullException(nameof(contatocrmviewFactory));
+    public virtual async Task Delete(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection oCnn)
     {
         await _contatocrmviewFactory.DeleteAsync(operadorId, contatocrmview.Id, oCnn);
     }
 
-    public async Task<FContatoCRMView> WriteAsync(Models.ContatoCRMView contatocrmview, MsiSqlConnection oCnn)
+    public virtual async Task<FContatoCRMView> WriteAsync(Models.ContatoCRMView contatocrmview, MsiSqlConnection oCnn)
     {
         using var dbRec = await (contatocrmview.Id.IsEmptyIDNumber() ? _contatocrmviewFactory.CreateAsync() : _contatocrmviewFactory.CreateFromIdAsync(contatocrmview.Id, oCnn));
         dbRec.FCGUID = contatocrmview.CGUID;

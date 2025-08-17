@@ -14,13 +14,13 @@ public partial interface IPreClientesWriter
 
 public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreClientesWriter
 {
-    private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory;
-    public async Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory ?? throw new ArgumentNullException(nameof(preclientesFactory));
+    public virtual async Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection oCnn)
     {
         await _preclientesFactory.DeleteAsync(operadorId, preclientes.Id, oCnn);
     }
 
-    public async Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (preclientes.Id.IsEmptyIDNumber() ? _preclientesFactory.CreateAsync() : _preclientesFactory.CreateFromIdAsync(preclientes.Id, oCnn));
         dbRec.FInativo = preclientes.Inativo;

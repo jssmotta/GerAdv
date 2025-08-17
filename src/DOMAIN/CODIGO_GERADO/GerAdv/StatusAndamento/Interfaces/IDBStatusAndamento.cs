@@ -6,6 +6,6 @@ public partial interface IDBStatusAndamento
 {
     public int ID { get; set; }
     public string? FNome { get; set; }
-    public int FIcone { get; set; }
     public string? FGUID { get; set; }
+    public int FIcone { get; set; }
 }

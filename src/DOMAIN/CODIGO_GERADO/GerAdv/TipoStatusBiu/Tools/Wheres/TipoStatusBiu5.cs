@@ -13,7 +13,7 @@ public partial interface ITipoStatusBiuWhere
 
 public partial class TipoStatusBiuWhere(IFTipoStatusBiuFactory tipostatusbiuFactory) : ITipoStatusBiuWhere
 {
-    private readonly IFTipoStatusBiuFactory _tipostatusbiuFactory = tipostatusbiuFactory;
+    private readonly IFTipoStatusBiuFactory _tipostatusbiuFactory = tipostatusbiuFactory ?? throw new ArgumentNullException(nameof(tipostatusbiuFactory));
     public TipoStatusBiuResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipostatusbiuFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

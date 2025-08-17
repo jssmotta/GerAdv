@@ -93,18 +93,18 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         }
     }
 
-    private async Task<ProResumosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ProResumosResponse?> AddAndUpdate([FromBody] Models.ProResumos regProResumos, [FromRoute, Required] string uri)
+    private async Task<ProResumosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ProResumosResponse?> AddAndUpdate([FromBody] Models.ProResumos? regProResumos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProResumos: URI inválida");
-        }
-
         if (regProResumos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProResumos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -118,7 +118,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
             var validade = await validation.ValidateReg(regProResumos, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -127,7 +127,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -135,17 +135,17 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ProResumosResponse?> Validation([FromBody] Models.ProResumos regProResumos, [FromRoute, Required] string uri)
+    public async Task<ProResumosResponse?> Validation([FromBody] Models.ProResumos? regProResumos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProResumos: URI inválida");
-        }
-
         if (regProResumos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProResumos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -159,7 +159,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
             var validade = await validation.ValidateReg(regProResumos, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -168,7 +168,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regProResumos.Id.IsEmptyIDNumber())
@@ -179,17 +179,17 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         return await reader.Read(regProResumos.Id, oCnn);
     }
 
-    public async Task<ProResumosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProResumosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ProResumos: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -204,7 +204,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -213,10 +213,10 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var proresumos = await reader.Read(id, oCnn);
+        var proresumos = await reader.Read(id ?? default, oCnn);
         try
         {
             if (proresumos != null)
@@ -236,7 +236,7 @@ public partial class ProResumosService(IOptions<AppSettings> appSettings, IFProR
         return proresumos;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProValoresFactory provaloresFactory, IProValoresReader reader, IProValoresValidation validation, IProValoresWriter writer, ITipoValorProcessoReader tipovalorprocessoReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProValoresService, IDisposable
+public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProValoresFactory provaloresFactory, IProValoresReader reader, IProValoresValidation validation, IProValoresWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProValoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
     private readonly IProValoresReader reader = reader;
     private readonly IProValoresValidation validation = validation;
     private readonly IProValoresWriter writer = writer;
-    private readonly ITipoValorProcessoReader tipovalorprocessoReader = tipovalorprocessoReader;
     public async Task<IEnumerable<ProValoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -94,18 +93,18 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         }
     }
 
-    private async Task<ProValoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ProValoresResponse?> AddAndUpdate([FromBody] Models.ProValores regProValores, [FromRoute, Required] string uri)
+    private async Task<ProValoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ProValoresResponse?> AddAndUpdate([FromBody] Models.ProValores? regProValores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProValores: URI inválida");
-        }
-
         if (regProValores == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProValores: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -116,10 +115,10 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
 
         try
         {
-            var validade = await validation.ValidateReg(regProValores, this, tipovalorprocessoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProValores, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +127,7 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +135,17 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ProValoresResponse?> Validation([FromBody] Models.ProValores regProValores, [FromRoute, Required] string uri)
+    public async Task<ProValoresResponse?> Validation([FromBody] Models.ProValores? regProValores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProValores: URI inválida");
-        }
-
         if (regProValores == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProValores: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -157,10 +156,10 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
 
         try
         {
-            var validade = await validation.ValidateReg(regProValores, this, tipovalorprocessoReader, uri, oCnn);
+            var validade = await validation.ValidateReg(regProValores, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +168,7 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regProValores.Id.IsEmptyIDNumber())
@@ -180,17 +179,17 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         return await reader.Read(regProValores.Id, oCnn);
     }
 
-    public async Task<ProValoresResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProValoresResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ProValores: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +204,7 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +213,10 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var provalores = await reader.Read(id, oCnn);
+        var provalores = await reader.Read(id ?? default, oCnn);
         try
         {
             if (provalores != null)
@@ -237,7 +236,7 @@ public partial class ProValoresService(IOptions<AppSettings> appSettings, IFProV
         return provalores;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

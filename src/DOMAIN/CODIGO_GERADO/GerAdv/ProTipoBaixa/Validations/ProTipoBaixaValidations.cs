@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProTipoBaixaValidation
 {
     Task<bool> ValidateReg(Models.ProTipoBaixa reg, IProTipoBaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProTipoBaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProTipoBaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProTipoBaixaValidation : IProTipoBaixaValidation
 {
-    public async Task<bool> CanDelete(int id, IProTipoBaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProTipoBaixaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class ProTipoBaixaValidation : IProTipoBaixaValidation
 
     private bool ValidSizes(Models.ProTipoBaixa reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBProTipoBaixaDicInfo.PtxNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBProTipoBaixaDicInfo.PtxNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProTipoBaixaDicInfo.PtxGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProTipoBaixaDicInfo.PtxGUID.FTamanho} caracteres.");
         return true;
     }
 

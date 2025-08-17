@@ -8,62 +8,67 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class DadosProcuracaoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterDadosProcuracao filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterDadosProcuracao? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
         if (filtro.Cliente != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.Cliente)}", filtro.Cliente));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.Cliente)}", filtro.Cliente));
+            if (filtro.Cliente_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.Cliente)}_end", filtro.Cliente_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.EstadoCivil))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.EstadoCivil)}", ApplyWildCard(filtro.WildcardChar, filtro.EstadoCivil)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nacionalidade))
+        if (!string.IsNullOrWhiteSpace(filtro.EstadoCivil))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.Nacionalidade)}", ApplyWildCard(filtro.WildcardChar, filtro.Nacionalidade)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.EstadoCivil)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.EstadoCivil)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Profissao))
+        if (!string.IsNullOrWhiteSpace(filtro.Nacionalidade))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.Profissao)}", ApplyWildCard(filtro.WildcardChar, filtro.Profissao)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.Nacionalidade)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nacionalidade)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.CTPS))
+        if (!string.IsNullOrWhiteSpace(filtro.Profissao))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.CTPS)}", ApplyWildCard(filtro.WildcardChar, filtro.CTPS)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.Profissao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Profissao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.PisPasep))
+        if (!string.IsNullOrWhiteSpace(filtro.CTPS))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.PisPasep)}", ApplyWildCard(filtro.WildcardChar, filtro.PisPasep)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.CTPS)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CTPS)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Remuneracao))
+        if (!string.IsNullOrWhiteSpace(filtro.PisPasep))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.Remuneracao)}", ApplyWildCard(filtro.WildcardChar, filtro.Remuneracao)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.PisPasep)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.PisPasep)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Objeto))
+        if (!string.IsNullOrWhiteSpace(filtro.Remuneracao))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.Objeto)}", ApplyWildCard(filtro.WildcardChar, filtro.Objeto)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.Remuneracao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Remuneracao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.Objeto))
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.Objeto)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Objeto)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBDadosProcuracaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBDadosProcuracaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -72,36 +77,33 @@ public partial class DadosProcuracaoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Cliente}] = @{nameof(DBDadosProcuracaoDicInfo.Cliente)}");
-        cWhere.Append(filtro.EstadoCivil.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.EstadoCivil}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.EstadoCivil)}");
-        cWhere.Append(filtro.Nacionalidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Nacionalidade}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.Nacionalidade)}");
-        cWhere.Append(filtro.Profissao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Profissao}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.Profissao)}");
-        cWhere.Append(filtro.CTPS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.CTPS}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.CTPS)}");
-        cWhere.Append(filtro.PisPasep.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.PisPasep}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.PisPasep)}");
-        cWhere.Append(filtro.Remuneracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Remuneracao}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.Remuneracao)}");
-        cWhere.Append(filtro.Objeto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Objeto}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.Objeto)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBDadosProcuracaoDicInfo.GUID)}");
+        if (!(filtro.Cliente.IsEmptyX()) && filtro.Cliente_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Cliente}] = @{(DBDadosProcuracaoDicInfo.Cliente)}");
+        }
+        else if (!(filtro.Cliente.IsEmptyX()) && !(filtro.Cliente_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].{DBDadosProcuracaoDicInfo.Cliente} BETWEEN @{(DBDadosProcuracaoDicInfo.Cliente)} AND @{(DBDadosProcuracaoDicInfo.Cliente)}_end");
+        }
+
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.GUID)}");
+        cWhere.Append(filtro.EstadoCivil.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.EstadoCivil}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.EstadoCivil)}");
+        cWhere.Append(filtro.Nacionalidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Nacionalidade}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.Nacionalidade)}");
+        cWhere.Append(filtro.Profissao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Profissao}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.Profissao)}");
+        cWhere.Append(filtro.CTPS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.CTPS}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.CTPS)}");
+        cWhere.Append(filtro.PisPasep.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.PisPasep}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.PisPasep)}");
+        cWhere.Append(filtro.Remuneracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Remuneracao}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.Remuneracao)}");
+        cWhere.Append(filtro.Objeto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.Objeto}]  {DevourerConsts.MsiCollate} like @{(DBDadosProcuracaoDicInfo.Objeto)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.CampoCodigo}] = @{nameof(DBDadosProcuracaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].[{DBDadosProcuracaoDicInfo.CampoCodigo}] = @{(DBDadosProcuracaoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].{DBDadosProcuracaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBDadosProcuracaoDicInfo.CampoCodigo)} AND @{nameof(DBDadosProcuracaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBDadosProcuracaoDicInfo.PTabelaNome}].{DBDadosProcuracaoDicInfo.CampoCodigo} BETWEEN @{(DBDadosProcuracaoDicInfo.CampoCodigo)} AND @{(DBDadosProcuracaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterDadosProcuracao? filtro)
@@ -112,46 +114,6 @@ public partial class DadosProcuracaoService
         using var sha256 = SHA256.Create();
         var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(json));
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-    }
-
-    public async Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterDadosProcuracao? filtro, [FromRoute, Required] string uri, CancellationToken token)
-    {
-        // Tracking: 20250606-0
-        ThrowIfDisposed();
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new Exception($"Coneão nula.");
-        }
-
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-DadosProcuracao-{max}-{where.GetHashCode()}-GetListN-{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
-        };
-        return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
-    }
-
-    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
-    {
-        var result = new List<NomeID>(max);
-        var lista = await reader.ListarN(max, uri, where, parameters, DBDadosProcuracaoDicInfo.CampoNome);
-        foreach (var item in lista)
-        {
-            if (token.IsCancellationRequested)
-                break;
-            if (item?.FNome != null)
-            {
-                result.Add(new NomeID { Nome = item.FNome, ID = item.ID });
-            }
-        }
-
-        return result;
     }
 
     private async Task<IEnumerable<DadosProcuracaoResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)

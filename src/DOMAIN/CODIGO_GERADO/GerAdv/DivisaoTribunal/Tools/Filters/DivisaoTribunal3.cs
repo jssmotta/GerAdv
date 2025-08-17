@@ -10,10 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterDivisaoTribunal
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("numcodigo")]
     public int NumCodigo { get; set; } = int.MinValue;
@@ -24,77 +30,86 @@ public partial record FilterDivisaoTribunal
     [JsonPropertyName("justica")]
     public int Justica { get; set; } = int.MinValue;
 
+    [JsonPropertyName("justica_end")]
+    public int Justica_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("nomeespecial")]
-    public string NomeEspecial { get; set; } = string.Empty;
+    public string? NomeEspecial { get; set; } = string.Empty;
 
     [JsonPropertyName("nomeespecial_end")]
-    public string NomeEspecial_end { get; set; } = string.Empty;
+    public string? NomeEspecial_end { get; set; } = string.Empty;
 
     [JsonPropertyName("area")]
     public int Area { get; set; } = int.MinValue;
 
+    [JsonPropertyName("area_end")]
+    public int Area_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("cidade")]
     public int Cidade { get; set; } = int.MinValue;
+
+    [JsonPropertyName("cidade_end")]
+    public int Cidade_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("foro")]
     public int Foro { get; set; } = int.MinValue;
 
+    [JsonPropertyName("foro_end")]
+    public int Foro_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("tribunal")]
     public int Tribunal { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tribunal_end")]
+    public int Tribunal_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("codigodiv")]
-    public string CodigoDiv { get; set; } = string.Empty;
+    public string? CodigoDiv { get; set; } = string.Empty;
 
     [JsonPropertyName("codigodiv_end")]
-    public string CodigoDiv_end { get; set; } = string.Empty;
+    public string? CodigoDiv_end { get; set; } = string.Empty;
 
     [JsonPropertyName("endereco")]
-    public string Endereco { get; set; } = string.Empty;
+    public string? Endereco { get; set; } = string.Empty;
 
     [JsonPropertyName("endereco_end")]
-    public string Endereco_end { get; set; } = string.Empty;
+    public string? Endereco_end { get; set; } = string.Empty;
 
     [JsonPropertyName("fone")]
-    public string Fone { get; set; } = string.Empty;
+    public string? Fone { get; set; } = string.Empty;
 
     [JsonPropertyName("fone_end")]
-    public string Fone_end { get; set; } = string.Empty;
+    public string? Fone_end { get; set; } = string.Empty;
 
     [JsonPropertyName("fax")]
-    public string Fax { get; set; } = string.Empty;
+    public string? Fax { get; set; } = string.Empty;
 
     [JsonPropertyName("fax_end")]
-    public string Fax_end { get; set; } = string.Empty;
+    public string? Fax_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cep")]
-    public string CEP { get; set; } = string.Empty;
+    public string? CEP { get; set; } = string.Empty;
 
     [JsonPropertyName("cep_end")]
-    public string CEP_end { get; set; } = string.Empty;
+    public string? CEP_end { get; set; } = string.Empty;
 
     [JsonPropertyName("obs")]
-    public string Obs { get; set; } = string.Empty;
+    public string? Obs { get; set; } = string.Empty;
 
     [JsonPropertyName("obs_end")]
-    public string Obs_end { get; set; } = string.Empty;
+    public string? Obs_end { get; set; } = string.Empty;
 
     [JsonPropertyName("email")]
-    public string EMail { get; set; } = string.Empty;
+    public string? EMail { get; set; } = string.Empty;
 
     [JsonPropertyName("email_end")]
-    public string EMail_end { get; set; } = string.Empty;
+    public string? EMail_end { get; set; } = string.Empty;
 
     [JsonPropertyName("andar")]
-    public string Andar { get; set; } = string.Empty;
+    public string? Andar { get; set; } = string.Empty;
 
     [JsonPropertyName("andar_end")]
-    public string Andar_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? Andar_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

@@ -81,97 +81,98 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar ProObservacoes diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar ProObservacoes diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = proobservacoesData?.id == 0 ? 'Editar ProObservacoes' : 'Adicionar Pro Observacoes';
-  }
-}, [proobservacoesData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-ProObservacoes' : 'form-container5 form-container-ProObservacoes'}>
-
-    <form className='formInputCadInc' id={`ProObservacoesForm-${proobservacoesData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProObservacoes' data={proobservacoesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProObservacoesForm-${proobservacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={proobservacoesData}
-          className='inputIncNome'
-          name='nome'
-          value={proobservacoesData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='processo'
-          label='Processo'
-          dataForm={proobservacoesData}
-          className='inputIncNome'
-          name='processo'
-          value={proobservacoesData.processo}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='observacoes'
-          label='Observacoes'
-          dataForm={proobservacoesData}
-          className='inputIncNome'
-          name='observacoes'
-          value={proobservacoesData.observacoes}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='data'
-          label='Data'
-          dataForm={proobservacoesData}
-          className='inputIncNome'
-          name='data'
-          value={proobservacoesData.data}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProObservacoes' data={proobservacoesData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProObservacoesForm-${proobservacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/proobservacoes'} id={proobservacoesData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = proobservacoesData?.id == 0 ? 'Editar ProObservacoes' : 'Adicionar Pro Observacoes';
+    }
+  }, [proobservacoesData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-ProObservacoes' : 'form-container5 form-container-ProObservacoes'}>
+
+      <form className='formInputCadInc' id={`ProObservacoesForm-${proobservacoesData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProObservacoes' data={proobservacoesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProObservacoesForm-${proobservacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={proobservacoesData}
+            className='inputIncNome'
+            name='nome'
+            value={proobservacoesData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={proobservacoesData}
+            className='inputIncNome'
+            name='processo'
+            value={proobservacoesData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='observacoes'
+            label='Observacoes'
+            dataForm={proobservacoesData}
+            className='inputIncNome'
+            name='observacoes'
+            value={proobservacoesData.observacoes}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='data'
+            label='Data'
+            dataForm={proobservacoesData}
+            className='inputIncNome'
+            name='data'
+            value={proobservacoesData.data}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProObservacoes' data={proobservacoesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProObservacoesForm-${proobservacoesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/proobservacoes'} id={proobservacoesData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

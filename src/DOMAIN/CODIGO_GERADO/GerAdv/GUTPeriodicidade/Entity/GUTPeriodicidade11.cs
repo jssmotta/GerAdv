@@ -54,7 +54,7 @@ public partial class FGUTPeriodicidadeFactory : IFGUTPeriodicidadeFactory, IDisp
             throw new ObjectDisposedException(nameof(FGUTPeriodicidadeFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

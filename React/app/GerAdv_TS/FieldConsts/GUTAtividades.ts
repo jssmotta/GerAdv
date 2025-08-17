@@ -7,9 +7,9 @@ export enum FieldsGUTAtividades
 	nome = `Nome`,
 	observacao = `Observacao`,
 	gutgrupo = `GUTGrupo`,
+	guid = `GUID`,
 	concluido = `Concluido`,
 	dataconcluido = `DataConcluido`,
 	diasparainiciar = `DiasParaIniciar`,
 	minutospararealizar = `MinutosParaRealizar`,
-	guid = `GUID`,
 }

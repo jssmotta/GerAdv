@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace GerMDS.Helpers
+namespace GerAdv.Helpers
 {
     public class JwtMiddleware
     {

@@ -4,6 +4,7 @@
 export enum FieldsContaCorrente
 {	cliente = `Cliente`,
 	ciacordo = `CIAcordo`,
+	guid = `GUID`,
 	quitado = `Quitado`,
 	idcontrato = `IDContrato`,
 	quitadoid = `QuitadoID`,
@@ -27,5 +28,4 @@ export enum FieldsContaCorrente
 	parcelaprincipalid = `ParcelaPrincipalID`,
 	hide = `Hide`,
 	datapgto = `DataPgto`,
-	guid = `GUID`,
 }

@@ -4,8 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribunalFactory) : IDivisaoTribunalReader
 {
-    private readonly IFDivisaoTribunalFactory _divisaotribunalFactory = divisaotribunalFactory;
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("divCodigo, divGUID", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
+    private readonly IFDivisaoTribunalFactory _divisaotribunalFactory = divisaotribunalFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DivisaoTribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDivisaoTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<DivisaoTribunalResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
     {
@@ -54,6 +53,7 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var divisaotribunal = new Models.DivisaoTribunal
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             NumCodigo = dbRec.FNumCodigo,
             Justica = dbRec.FJustica,
             NomeEspecial = dbRec.FNomeEspecial ?? string.Empty,
@@ -69,7 +69,6 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return divisaotribunal;
     }
@@ -95,6 +94,7 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var divisaotribunal = new DivisaoTribunalResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             NumCodigo = dbRec.FNumCodigo,
             Justica = dbRec.FJustica,
             NomeEspecial = dbRec.FNomeEspecial ?? string.Empty,
@@ -110,7 +110,6 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return divisaotribunal;
     }
@@ -125,6 +124,7 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var divisaotribunal = new DivisaoTribunalResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             NumCodigo = dbRec.FNumCodigo,
             Justica = dbRec.FJustica,
             NomeEspecial = dbRec.FNomeEspecial ?? string.Empty,
@@ -140,7 +140,6 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return divisaotribunal;
     }
@@ -155,6 +154,7 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var divisaotribunal = new DivisaoTribunalResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             NumCodigo = dbRec.FNumCodigo,
             Justica = dbRec.FJustica,
             NomeEspecial = dbRec.FNomeEspecial ?? string.Empty,
@@ -170,7 +170,6 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -225,6 +224,7 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         var divisaotribunal = new DivisaoTribunalResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             NumCodigo = dbRec.FNumCodigo,
             Justica = dbRec.FJustica,
             NomeEspecial = dbRec.FNomeEspecial ?? string.Empty,
@@ -240,7 +240,6 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
             Obs = dbRec.FObs ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Andar = dbRec.FAndar ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

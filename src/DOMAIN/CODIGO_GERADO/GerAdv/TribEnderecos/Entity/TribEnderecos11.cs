@@ -54,7 +54,7 @@ public partial class FTribEnderecosFactory : IFTribEnderecosFactory, IDisposable
             throw new ObjectDisposedException(nameof(FTribEnderecosFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

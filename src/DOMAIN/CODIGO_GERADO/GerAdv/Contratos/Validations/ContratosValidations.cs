@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IContratosValidation
 {
     Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ContratosValidation : IContratosValidation
 {
-    public async Task<bool> CanDelete(int id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,24 +26,24 @@ public class ContratosValidation : IContratosValidation
 
     private bool ValidSizes(Models.Contratos reg)
     {
-        if (reg.Protestar != null && reg.Protestar.Length > 50)
-            throw new SGValidationException($"Protestar deve ter no máximo 50 caracteres.");
-        if (reg.Juros != null && reg.Juros.Length > 5)
-            throw new SGValidationException($"Juros deve ter no máximo 5 caracteres.");
-        if (reg.DOCUMENTO != null && reg.DOCUMENTO.Length > 15)
-            throw new SGValidationException($"DOCUMENTO deve ter no máximo 15 caracteres.");
-        if (reg.Pessoa1 != null && reg.Pessoa1.Length > 100)
-            throw new SGValidationException($"Pessoa1 deve ter no máximo 100 caracteres.");
-        if (reg.Pessoa2 != null && reg.Pessoa2.Length > 100)
-            throw new SGValidationException($"Pessoa2 deve ter no máximo 100 caracteres.");
-        if (reg.Pessoa3 != null && reg.Pessoa3.Length > 100)
-            throw new SGValidationException($"Pessoa3 deve ter no máximo 100 caracteres.");
-        if (reg.ChaveContrato != null && reg.ChaveContrato.Length > 50)
-            throw new SGValidationException($"ChaveContrato deve ter no máximo 50 caracteres.");
-        if (reg.Multa != null && reg.Multa.Length > 10)
-            throw new SGValidationException($"Multa deve ter no máximo 10 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Protestar != null && reg.Protestar.Length > DBContratosDicInfo.CttProtestar.FTamanho)
+            throw new SGValidationException($"Protestar deve ter no máximo {DBContratosDicInfo.CttProtestar.FTamanho} caracteres.");
+        if (reg.Juros != null && reg.Juros.Length > DBContratosDicInfo.CttJuros.FTamanho)
+            throw new SGValidationException($"Juros deve ter no máximo {DBContratosDicInfo.CttJuros.FTamanho} caracteres.");
+        if (reg.DOCUMENTO != null && reg.DOCUMENTO.Length > DBContratosDicInfo.CttDOCUMENTO.FTamanho)
+            throw new SGValidationException($"DOCUMENTO deve ter no máximo {DBContratosDicInfo.CttDOCUMENTO.FTamanho} caracteres.");
+        if (reg.Pessoa1 != null && reg.Pessoa1.Length > DBContratosDicInfo.CttPessoa1.FTamanho)
+            throw new SGValidationException($"Pessoa1 deve ter no máximo {DBContratosDicInfo.CttPessoa1.FTamanho} caracteres.");
+        if (reg.Pessoa2 != null && reg.Pessoa2.Length > DBContratosDicInfo.CttPessoa2.FTamanho)
+            throw new SGValidationException($"Pessoa2 deve ter no máximo {DBContratosDicInfo.CttPessoa2.FTamanho} caracteres.");
+        if (reg.Pessoa3 != null && reg.Pessoa3.Length > DBContratosDicInfo.CttPessoa3.FTamanho)
+            throw new SGValidationException($"Pessoa3 deve ter no máximo {DBContratosDicInfo.CttPessoa3.FTamanho} caracteres.");
+        if (reg.ChaveContrato != null && reg.ChaveContrato.Length > DBContratosDicInfo.CttChaveContrato.FTamanho)
+            throw new SGValidationException($"ChaveContrato deve ter no máximo {DBContratosDicInfo.CttChaveContrato.FTamanho} caracteres.");
+        if (reg.Multa != null && reg.Multa.Length > DBContratosDicInfo.CttMulta.FTamanho)
+            throw new SGValidationException($"Multa deve ter no máximo {DBContratosDicInfo.CttMulta.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBContratosDicInfo.CttGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBContratosDicInfo.CttGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -51,17 +51,42 @@ public class ContratosValidation : IContratosValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail1.Length > 0 && !reg.EMail1.IsValidEmail())
+        if (reg.EMail1 != null && reg.EMail1.Length > 0 && !reg.EMail1.IsValidEmail())
             throw new SGValidationException($"EMail1 em formato inválido.");
-        if (reg.EMail2.Length > 0 && !reg.EMail2.IsValidEmail())
+        if (reg.EMail2 != null && reg.EMail2.Length > 0 && !reg.EMail2.IsValidEmail())
             throw new SGValidationException($"EMail2 em formato inválido.");
-        if (reg.EMail3.Length > 0 && !reg.EMail3.IsValidEmail())
+        if (reg.EMail3 != null && reg.EMail3.Length > 0 && !reg.EMail3.IsValidEmail())
             throw new SGValidationException($"EMail3 em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DataInicio))
+        {
+            if (DateTime.TryParse(reg.DataInicio, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataInicio não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DataTermino))
+        {
+            if (DateTime.TryParse(reg.DataTermino, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataTermino não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DataInicio) && !string.IsNullOrWhiteSpace(reg.DataTermino))
+        {
+            if (DateTime.TryParse(reg.DataInicio, out DateTime dataInicio) && DateTime.TryParse(reg.DataTermino, out DateTime dataTermino))
+            {
+                if (dataInicio > dataTermino)
+                    throw new SGValidationException("DataInicio não pode ser maior que DataTermino.");
+            }
+        }
+
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {

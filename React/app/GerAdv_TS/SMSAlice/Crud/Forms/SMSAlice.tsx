@@ -60,139 +60,142 @@ if (getParamFromUrl('operador') > 0) {
       setNomeOperador(response.data.rnome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    smsaliceData.operador = getParamFromUrl('operador');
+      smsaliceData.operador = getParamFromUrl('operador');
+    }
   }
-}
 
-if (getParamFromUrl('tipoemail') > 0) {
-  if (smsaliceData.id === 0 && smsaliceData.tipoemail == 0) {
-    tipoemailApi
-    .getById(getParamFromUrl('tipoemail'))
-    .then((response) => {
-      setNomeTipoEMail(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('tipoemail') > 0) {
+    if (smsaliceData.id === 0 && smsaliceData.tipoemail == 0) {
+      tipoemailApi
+      .getById(getParamFromUrl('tipoemail'))
+      .then((response) => {
+        setNomeTipoEMail(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    smsaliceData.tipoemail = getParamFromUrl('tipoemail');
-  }
-}
-const addValorOperador = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'operador', value: e.id } });
-  };
-  const addValorTipoEMail = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'tipoemail', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        smsaliceData.tipoemail = getParamFromUrl('tipoemail');
+      }
+    }
+    const addValorOperador = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'operador', value: e.id } });
+      };
+      const addValorTipoEMail = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'tipoemail', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de SMSAlice:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de SMSAlice:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`SMSAliceForm-${smsaliceData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`SMSAliceForm-${smsaliceData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar SMSAlice diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = smsaliceData?.id == 0 ? 'Editar SMSAlice' : 'Adicionar S M S Alice';
-      }
-    }, [smsaliceData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar SMSAlice diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = smsaliceData?.id == 0 ? 'Editar SMSAlice' : 'Adicionar S M S Alice';
+            }
+          }, [smsaliceData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-SMSAlice' : 'form-container5 form-container-SMSAlice'}>
+            <div className={isMobile ? 'form-container form-container-SMSAlice' : 'form-container5 form-container-SMSAlice'}>
 
-        <form className='formInputCadInc' id={`SMSAliceForm-${smsaliceData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='SMSAlice' data={smsaliceData} isSubmitting={isSubmitting} onClose={onClose} formId={`SMSAliceForm-${smsaliceData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`SMSAliceForm-${smsaliceData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='SMSAlice' data={smsaliceData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`SMSAliceForm-${smsaliceData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={smsaliceData}
-              className='inputIncNome'
-              name='nome'
-              value={smsaliceData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={smsaliceData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={smsaliceData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <OperadorComboBox
-              name={'operador'}
-              dataForm={smsaliceData}
-              value={smsaliceData.operador}
-              setValue={addValorOperador}
-              label={'Operador'}
-              />
+                    <OperadorComboBox
+                    name={'operador'}
+                    dataForm={smsaliceData}
+                    value={smsaliceData.operador}
+                    setValue={addValorOperador}
+                    label={'Operador'}
+                    />
 
-              <TipoEMailComboBox
-              name={'tipoemail'}
-              dataForm={smsaliceData}
-              value={smsaliceData.tipoemail}
-              setValue={addValorTipoEMail}
-              label={'Tipo E Mail'}
-              />
-            </div>
-          </form>
+                    <TipoEMailComboBox
+                    name={'tipoemail'}
+                    dataForm={smsaliceData}
+                    value={smsaliceData.tipoemail}
+                    setValue={addValorTipoEMail}
+                    label={'Tipo E Mail'}
+                    />
+                  </div>
+                </form>
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='SMSAlice' data={smsaliceData} isSubmitting={isSubmitting} onClose={onClose} formId={`SMSAliceForm-${smsaliceData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/smsalice'} id={smsaliceData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='SMSAlice' data={smsaliceData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`SMSAliceForm-${smsaliceData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/smsalice'} id={smsaliceData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

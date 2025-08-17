@@ -41,7 +41,8 @@ export const useOutrasPartesClienteForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Outras Partes Cliente';
       setError(errorMessage);
-      //console.log('Erro ao carregar Outras Partes Cliente');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Outras Partes Cliente');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useOutrasPartesClienteNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useOutrasPartesClienteList = (dataService: IOutrasPartesClienteServ
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar outraspartescliente';
       setError(errorMessage);
-      //console.log('Erro ao carregar outraspartescliente');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar outraspartescliente');
     } finally {
       setLoading(false);
     }
@@ -243,7 +246,8 @@ if (data.class.length > 1) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

@@ -41,7 +41,8 @@ export const useAgendaSemanaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Agenda Semana';
       setError(errorMessage);
-      //console.log('Erro ao carregar Agenda Semana');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Agenda Semana');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useAgendaSemanaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useAgendaSemanaList = (dataService: IAgendaSemanaService, currentFi
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar agendasemana';
       setError(errorMessage);
-      //console.log('Erro ao carregar agendasemana');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar agendasemana');
     } finally {
       setLoading(false);
     }

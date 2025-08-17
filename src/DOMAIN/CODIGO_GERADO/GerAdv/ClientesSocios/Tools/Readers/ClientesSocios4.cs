@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ClientesSociosReader(IFClientesSociosFactory clientessociosFactory) : IClientesSociosReader
 {
-    private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory;
+    private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cscCodigo, cscNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ClientesSociosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBClientesSocios.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ClientesSociosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -55,6 +55,7 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
+            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -86,7 +87,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -131,6 +131,7 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
+            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -162,7 +163,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -196,6 +196,7 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
+            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -227,7 +228,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -261,6 +261,7 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
+            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -292,7 +293,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -342,6 +342,7 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
+            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -373,7 +374,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

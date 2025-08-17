@@ -8,27 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ProcessOutputSourcesService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessOutputSources filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterProcessOutputSources? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBProcessOutputSourcesDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBProcessOutputSourcesDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBProcessOutputSourcesDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBProcessOutputSourcesDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBProcessOutputSourcesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBProcessOutputSourcesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBProcessOutputSourcesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBProcessOutputSourcesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -37,29 +38,18 @@ public partial class ProcessOutputSourcesService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].[{DBProcessOutputSourcesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessOutputSourcesDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].[{DBProcessOutputSourcesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBProcessOutputSourcesDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].[{DBProcessOutputSourcesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBProcessOutputSourcesDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].[{DBProcessOutputSourcesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBProcessOutputSourcesDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].[{DBProcessOutputSourcesDicInfo.CampoCodigo}] = @{nameof(DBProcessOutputSourcesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].[{DBProcessOutputSourcesDicInfo.CampoCodigo}] = @{(DBProcessOutputSourcesDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].{DBProcessOutputSourcesDicInfo.CampoCodigo} BETWEEN @{nameof(DBProcessOutputSourcesDicInfo.CampoCodigo)} AND @{nameof(DBProcessOutputSourcesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBProcessOutputSourcesDicInfo.PTabelaNome}].{DBProcessOutputSourcesDicInfo.CampoCodigo} BETWEEN @{(DBProcessOutputSourcesDicInfo.CampoCodigo)} AND @{(DBProcessOutputSourcesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterProcessOutputSources? filtro)

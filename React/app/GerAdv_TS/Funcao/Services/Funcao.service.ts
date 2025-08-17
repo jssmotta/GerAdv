@@ -79,7 +79,8 @@ export class FuncaoService implements IFuncaoService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Funcao list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Funcao list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class FuncaoService implements IFuncaoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Funcao');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Funcao');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class FuncaoService implements IFuncaoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Funcao');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Funcao');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Funcao:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Funcao:');
       return [];
     }
   }

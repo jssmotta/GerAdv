@@ -41,7 +41,8 @@ export const useNENotasForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar N E Notas';
       setError(errorMessage);
-      //console.log('Erro ao carregar N E Notas');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar N E Notas');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useNENotasNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useNENotasList = (dataService: INENotasService, currentFilter?: Fil
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar nenotas';
       setError(errorMessage);
-      //console.log('Erro ao carregar nenotas');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar nenotas');
     } finally {
       setLoading(false);
     }
@@ -213,7 +216,8 @@ if (data.notapublicada.length > 2147483647) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

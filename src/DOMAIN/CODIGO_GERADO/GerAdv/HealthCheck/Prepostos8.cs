@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosService prepostosService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosSe
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) preNome,preFuncao,preSetor,preDtNasc,preQualificacao,preSexo,preIdade,preCPF,preRG,prePeriodo_Ini,prePeriodo_Fim,preRegistro,preCTPSNumero,preCTPSSerie,preCTPSDtEmissao,prePIS,preSalario,preLiberaAgenda,preObservacao,preEndereco,preBairro,preCidade,preCEP,preFone,preFax,preEMail,prePai,preMae,preClass,preGUID FROM {"Prepostos".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) preGUID,preNome,preFuncao,preSetor,preDtNasc,preQualificacao,preSexo,preIdade,preCPF,preRG,prePeriodo_Ini,prePeriodo_Fim,preRegistro,preCTPSNumero,preCTPSSerie,preCTPSDtEmissao,prePIS,preSalario,preLiberaAgenda,preObservacao,preEndereco,preBairro,preCidade,preCEP,preFone,preFax,preEMail,prePai,preMae,preClass FROM {"Prepostos".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class PrepostosHealthCheck(IOptions<AppSettings> appSettings, PrepostosSe
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

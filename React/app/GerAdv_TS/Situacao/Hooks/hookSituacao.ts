@@ -41,7 +41,8 @@ export const useSituacaoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Situação';
       setError(errorMessage);
-      //console.log('Erro ao carregar Situação');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Situação');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useSituacaoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useSituacaoList = (dataService: ISituacaoService, currentFilter?: F
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar situacao';
       setError(errorMessage);
-      //console.log('Erro ao carregar situacao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar situacao');
     } finally {
       setLoading(false);
     }

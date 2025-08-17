@@ -14,13 +14,13 @@ public partial interface ITiposAcaoWriter
 
 public class TiposAcaoWriter(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWriter
 {
-    private readonly IFTiposAcaoFactory _tiposacaoFactory = tiposacaoFactory;
-    public async Task Delete(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTiposAcaoFactory _tiposacaoFactory = tiposacaoFactory ?? throw new ArgumentNullException(nameof(tiposacaoFactory));
+    public virtual async Task Delete(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection oCnn)
     {
         await _tiposacaoFactory.DeleteAsync(operadorId, tiposacao.Id, oCnn);
     }
 
-    public async Task<FTiposAcao> WriteAsync(Models.TiposAcao tiposacao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTiposAcao> WriteAsync(Models.TiposAcao tiposacao, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tiposacao.Id.IsEmptyIDNumber() ? _tiposacaoFactory.CreateAsync() : _tiposacaoFactory.CreateFromIdAsync(tiposacao.Id, oCnn));
         dbRec.FNome = tiposacao.Nome;

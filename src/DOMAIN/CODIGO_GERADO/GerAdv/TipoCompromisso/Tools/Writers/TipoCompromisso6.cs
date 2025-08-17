@@ -14,19 +14,19 @@ public partial interface ITipoCompromissoWriter
 
 public class TipoCompromissoWriter(IFTipoCompromissoFactory tipocompromissoFactory) : ITipoCompromissoWriter
 {
-    private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory;
-    public async Task Delete(TipoCompromissoResponse tipocompromisso, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory ?? throw new ArgumentNullException(nameof(tipocompromissoFactory));
+    public virtual async Task Delete(TipoCompromissoResponse tipocompromisso, int operadorId, MsiSqlConnection oCnn)
     {
         await _tipocompromissoFactory.DeleteAsync(operadorId, tipocompromisso.Id, oCnn);
     }
 
-    public async Task<FTipoCompromisso> WriteAsync(Models.TipoCompromisso tipocompromisso, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoCompromisso> WriteAsync(Models.TipoCompromisso tipocompromisso, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipocompromisso.Id.IsEmptyIDNumber() ? _tipocompromissoFactory.CreateAsync() : _tipocompromissoFactory.CreateFromIdAsync(tipocompromisso.Id, oCnn));
+        dbRec.FGUID = tipocompromisso.GUID;
         dbRec.FIcone = tipocompromisso.Icone;
         dbRec.FDescricao = tipocompromisso.Descricao;
         dbRec.FFinanceiro = tipocompromisso.Financeiro;
-        dbRec.FGUID = tipocompromisso.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

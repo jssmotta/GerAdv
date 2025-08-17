@@ -15,16 +15,8 @@ public static class AddServices
         builder.Services.AddScoped<IAcaoValidation, AcaoValidation>();
         builder.Services.AddScoped<IAdvogadosValidation, AdvogadosValidation>();
         builder.Services.AddScoped<IAgendaValidation, AgendaValidation>();
-        builder.Services.AddScoped<IAgendaQuemValidation, AgendaQuemValidation>();
-        builder.Services.AddScoped<IAgendaRepetirDiasValidation, AgendaRepetirDiasValidation>();
-        builder.Services.AddScoped<IAlertasValidation, AlertasValidation>();
-        builder.Services.AddScoped<IAlertasEnviadosValidation, AlertasEnviadosValidation>();
         builder.Services.AddScoped<IAndamentosMDValidation, AndamentosMDValidation>();
-        builder.Services.AddScoped<IAndCompValidation, AndCompValidation>();
-        builder.Services.AddScoped<IAnexamentoRegistrosValidation, AnexamentoRegistrosValidation>();
-        builder.Services.AddScoped<IApenso2Validation, Apenso2Validation>();
         builder.Services.AddScoped<IAreaValidation, AreaValidation>();
-        builder.Services.AddScoped<IAreasJusticaValidation, AreasJusticaValidation>();
         builder.Services.AddScoped<IAtividadesValidation, AtividadesValidation>();
         builder.Services.AddScoped<IBensClassificacaoValidation, BensClassificacaoValidation>();
         builder.Services.AddScoped<IBensMateriaisValidation, BensMateriaisValidation>();
@@ -45,7 +37,6 @@ public static class AddServices
         builder.Services.AddScoped<IEMPClassRiscosValidation, EMPClassRiscosValidation>();
         builder.Services.AddScoped<IEnderecosValidation, EnderecosValidation>();
         builder.Services.AddScoped<IEnderecoSistemaValidation, EnderecoSistemaValidation>();
-        builder.Services.AddScoped<IEndTitValidation, EndTitValidation>();
         builder.Services.AddScoped<IEnquadramentoEmpresaValidation, EnquadramentoEmpresaValidation>();
         builder.Services.AddScoped<IEscritoriosValidation, EscritoriosValidation>();
         builder.Services.AddScoped<IEventoPrazoAgendaValidation, EventoPrazoAgendaValidation>();
@@ -56,7 +47,6 @@ public static class AddServices
         builder.Services.AddScoped<IFuncionariosValidation, FuncionariosValidation>();
         builder.Services.AddScoped<IGraphValidation, GraphValidation>();
         builder.Services.AddScoped<IGruposEmpresasValidation, GruposEmpresasValidation>();
-        builder.Services.AddScoped<IGruposEmpresasCliValidation, GruposEmpresasCliValidation>();
         builder.Services.AddScoped<IGUTAtividadesValidation, GUTAtividadesValidation>();
         builder.Services.AddScoped<IGUTAtividadesMatrizValidation, GUTAtividadesMatrizValidation>();
         builder.Services.AddScoped<IGUTMatrizValidation, GUTMatrizValidation>();
@@ -77,7 +67,6 @@ public static class AddServices
         builder.Services.AddScoped<IOperadorValidation, OperadorValidation>();
         builder.Services.AddScoped<IOperadorEMailPopupValidation, OperadorEMailPopupValidation>();
         builder.Services.AddScoped<IOperadoresValidation, OperadoresValidation>();
-        builder.Services.AddScoped<IOperadorGrupoValidation, OperadorGrupoValidation>();
         builder.Services.AddScoped<IOperadorGruposValidation, OperadorGruposValidation>();
         builder.Services.AddScoped<IOperadorGruposAgendaValidation, OperadorGruposAgendaValidation>();
         builder.Services.AddScoped<IOponentesValidation, OponentesValidation>();
@@ -85,7 +74,6 @@ public static class AddServices
         builder.Services.AddScoped<IOutrasPartesClienteValidation, OutrasPartesClienteValidation>();
         builder.Services.AddScoped<IPaisesValidation, PaisesValidation>();
         builder.Services.AddScoped<IParceriaProcValidation, ParceriaProcValidation>();
-        builder.Services.AddScoped<IParteClienteOutrasValidation, ParteClienteOutrasValidation>();
         builder.Services.AddScoped<IPenhoraValidation, PenhoraValidation>();
         builder.Services.AddScoped<IPenhoraStatusValidation, PenhoraStatusValidation>();
         builder.Services.AddScoped<IPoderJudiciarioAssociadoValidation, PoderJudiciarioAssociadoValidation>();
@@ -96,15 +84,12 @@ public static class AddServices
         builder.Services.AddScoped<IPrepostosValidation, PrepostosValidation>();
         builder.Services.AddScoped<IProCDAValidation, ProCDAValidation>();
         builder.Services.AddScoped<IProcessosObsReportValidation, ProcessosObsReportValidation>();
-        builder.Services.AddScoped<IProcessosParadosValidation, ProcessosParadosValidation>();
         builder.Services.AddScoped<IProcessOutputEngineValidation, ProcessOutputEngineValidation>();
         builder.Services.AddScoped<IProcessOutPutIDsValidation, ProcessOutPutIDsValidation>();
         builder.Services.AddScoped<IProcessOutputRequestValidation, ProcessOutputRequestValidation>();
         builder.Services.AddScoped<IProcessOutputSourcesValidation, ProcessOutputSourcesValidation>();
-        builder.Services.AddScoped<IProDepositosValidation, ProDepositosValidation>();
         builder.Services.AddScoped<IProDespesasValidation, ProDespesasValidation>();
         builder.Services.AddScoped<IProObservacoesValidation, ProObservacoesValidation>();
-        builder.Services.AddScoped<IProPartesValidation, ProPartesValidation>();
         builder.Services.AddScoped<IProProcuradoresValidation, ProProcuradoresValidation>();
         builder.Services.AddScoped<IProResumosValidation, ProResumosValidation>();
         builder.Services.AddScoped<IProSucumbenciaValidation, ProSucumbenciaValidation>();
@@ -134,11 +119,9 @@ public static class AddServices
         builder.Services.AddScoped<ITipoRecursoValidation, TipoRecursoValidation>();
         builder.Services.AddScoped<ITiposAcaoValidation, TiposAcaoValidation>();
         builder.Services.AddScoped<ITipoStatusBiuValidation, TipoStatusBiuValidation>();
-        builder.Services.AddScoped<ITipoValorProcessoValidation, TipoValorProcessoValidation>();
         builder.Services.AddScoped<ITribEnderecosValidation, TribEnderecosValidation>();
         builder.Services.AddScoped<ITribunalValidation, TribunalValidation>();
         builder.Services.AddScoped<IUFValidation, UFValidation>();
-        builder.Services.AddScoped<IUltimosProcessosValidation, UltimosProcessosValidation>();
         builder.Services.AddScoped<IViaRecebimentoValidation, ViaRecebimentoValidation>();
         builder.Services.AddScoped<IAgendaRelatorioValidation, AgendaRelatorioValidation>();
         builder.Services.AddScoped<IAgendaSemanaValidation, AgendaSemanaValidation>();

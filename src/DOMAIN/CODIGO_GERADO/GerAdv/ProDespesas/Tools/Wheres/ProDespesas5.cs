@@ -13,13 +13,14 @@ public partial interface IProDespesasWhere
 
 public partial class ProDespesasWhere(IFProDespesasFactory prodespesasFactory) : IProDespesasWhere
 {
-    private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory;
+    private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory ?? throw new ArgumentNullException(nameof(prodespesasFactory));
     public ProDespesasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _prodespesasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var prodespesas = new ProDespesasResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
@@ -31,7 +32,6 @@ public partial class ProDespesasWhere(IFProDespesasFactory prodespesasFactory) :
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
         {

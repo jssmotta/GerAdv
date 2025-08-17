@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProCDAValidation
 {
     Task<bool> ValidateReg(Models.ProCDA reg, IProCDAService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProCDAService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProCDAService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProCDAValidation : IProCDAValidation
 {
-    public async Task<bool> CanDelete(int id, IProCDAService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProCDAService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,12 +26,12 @@ public class ProCDAValidation : IProCDAValidation
 
     private bool ValidSizes(Models.ProCDA reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.NroInterno != null && reg.NroInterno.Length > 255)
-            throw new SGValidationException($"NroInterno deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBProCDADicInfo.PcdNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBProCDADicInfo.PcdNome.FTamanho} caracteres.");
+        if (reg.NroInterno != null && reg.NroInterno.Length > DBProCDADicInfo.PcdNroInterno.FTamanho)
+            throw new SGValidationException($"NroInterno deve ter no máximo {DBProCDADicInfo.PcdNroInterno.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProCDADicInfo.PcdGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProCDADicInfo.PcdGUID.FTamanho} caracteres.");
         return true;
     }
 

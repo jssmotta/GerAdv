@@ -41,7 +41,8 @@ export const useProDespesasForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pro Despesas';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pro Despesas');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pro Despesas');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProDespesasNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProDespesasList = (dataService: IProDespesasService, currentFilt
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar prodespesas';
       setError(errorMessage);
-      //console.log('Erro ao carregar prodespesas');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar prodespesas');
     } finally {
       setLoading(false);
     }

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
 {
-    private readonly IFAcaoFactory _acaoFactory = acaoFactory;
+    private readonly IFAcaoFactory _acaoFactory = acaoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("acaCodigo, acaDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<AcaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAcao.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<AcaoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,10 +54,10 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         var acao = new Models.Acao
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return acao;
     }
@@ -83,10 +83,10 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         var acao = new AcaoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return acao;
     }
@@ -101,10 +101,10 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         var acao = new AcaoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return acao;
     }
@@ -119,10 +119,10 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         var acao = new AcaoResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -153,10 +153,10 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         var acao = new AcaoResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

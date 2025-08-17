@@ -14,13 +14,13 @@ public partial interface ICidadeWriter
 
 public class CidadeWriter(IFCidadeFactory cidadeFactory) : ICidadeWriter
 {
-    private readonly IFCidadeFactory _cidadeFactory = cidadeFactory;
-    public async Task Delete(CidadeResponse cidade, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFCidadeFactory _cidadeFactory = cidadeFactory ?? throw new ArgumentNullException(nameof(cidadeFactory));
+    public virtual async Task Delete(CidadeResponse cidade, int operadorId, MsiSqlConnection oCnn)
     {
         await _cidadeFactory.DeleteAsync(operadorId, cidade.Id, oCnn);
     }
 
-    public async Task<FCidade> WriteAsync(Models.Cidade cidade, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FCidade> WriteAsync(Models.Cidade cidade, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (cidade.Id.IsEmptyIDNumber() ? _cidadeFactory.CreateAsync() : _cidadeFactory.CreateFromIdAsync(cidade.Id, oCnn));
         dbRec.FDDD = cidade.DDD;

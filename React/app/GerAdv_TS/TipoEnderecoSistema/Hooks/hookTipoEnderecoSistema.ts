@@ -41,7 +41,8 @@ export const useTipoEnderecoSistemaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Tipo Endereco Sistema';
       setError(errorMessage);
-      //console.log('Erro ao carregar Tipo Endereco Sistema');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Tipo Endereco Sistema');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useTipoEnderecoSistemaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useTipoEnderecoSistemaList = (dataService: ITipoEnderecoSistemaServ
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar tipoenderecosistema';
       setError(errorMessage);
-      //console.log('Erro ao carregar tipoenderecosistema');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar tipoenderecosistema');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 150) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

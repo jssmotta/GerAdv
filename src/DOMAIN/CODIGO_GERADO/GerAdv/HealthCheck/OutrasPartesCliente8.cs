@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, OutrasPartesClienteService outraspartesclienteService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, O
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) opcNome,opcTerceirizado,opcClientePrincipal,opcTipo,opcSexo,opcDtNasc,opcCPF,opcRG,opcCNPJ,opcInscEst,opcNomeFantasia,opcEndereco,opcCidade,opcCEP,opcBairro,opcFone,opcFax,opcEMail,opcSite,opcClass,opcGUID FROM {"OutrasPartesCliente".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) opcNome,opcTerceirizado,opcClientePrincipal,opcTipo,opcSexo,opcDtNasc,opcCPF,opcRG,opcCNPJ,opcInscEst,opcNomeFantasia,opcEndereco,opcCidade,opcCEP,opcBairro,opcFone,opcFax,opcEMail,opcSite,opcGUID,opcClass FROM {"OutrasPartesCliente".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class OutrasPartesClienteHealthCheck(IOptions<AppSettings> appSettings, O
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

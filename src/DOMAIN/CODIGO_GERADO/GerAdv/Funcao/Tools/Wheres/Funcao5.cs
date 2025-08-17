@@ -13,7 +13,7 @@ public partial interface IFuncaoWhere
 
 public partial class FuncaoWhere(IFFuncaoFactory funcaoFactory) : IFuncaoWhere
 {
-    private readonly IFFuncaoFactory _funcaoFactory = funcaoFactory;
+    private readonly IFFuncaoFactory _funcaoFactory = funcaoFactory ?? throw new ArgumentNullException(nameof(funcaoFactory));
     public FuncaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _funcaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

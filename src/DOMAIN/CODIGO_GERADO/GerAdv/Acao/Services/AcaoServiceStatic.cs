@@ -8,37 +8,46 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class AcaoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAcao filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterAcao? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBAcaoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+        }
+
         if (filtro.Justica != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAcaoDicInfo.Justica)}", filtro.Justica));
+            parameters.Add(new($"@{(DBAcaoDicInfo.Justica)}", filtro.Justica));
+            if (filtro.Justica_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAcaoDicInfo.Justica)}_end", filtro.Justica_end));
+            }
         }
 
         if (filtro.Area != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAcaoDicInfo.Area)}", filtro.Area));
+            parameters.Add(new($"@{(DBAcaoDicInfo.Area)}", filtro.Area));
+            if (filtro.Area_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAcaoDicInfo.Area)}_end", filtro.Area_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBAcaoDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBAcaoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBAcaoDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBAcaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBAcaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBAcaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBAcaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +56,36 @@ public partial class AcaoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Justica}] = @{nameof(DBAcaoDicInfo.Justica)}");
-        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Area}] = @{nameof(DBAcaoDicInfo.Area)}");
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBAcaoDicInfo.Descricao)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBAcaoDicInfo.GUID)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBAcaoDicInfo.GUID)}");
+        if (!(filtro.Justica.IsEmptyX()) && filtro.Justica_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Justica}] = @{(DBAcaoDicInfo.Justica)}");
+        }
+        else if (!(filtro.Justica.IsEmptyX()) && !(filtro.Justica_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].{DBAcaoDicInfo.Justica} BETWEEN @{(DBAcaoDicInfo.Justica)} AND @{(DBAcaoDicInfo.Justica)}_end");
+        }
+
+        if (!(filtro.Area.IsEmptyX()) && filtro.Area_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Area}] = @{(DBAcaoDicInfo.Area)}");
+        }
+        else if (!(filtro.Area.IsEmptyX()) && !(filtro.Area_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].{DBAcaoDicInfo.Area} BETWEEN @{(DBAcaoDicInfo.Area)} AND @{(DBAcaoDicInfo.Area)}_end");
+        }
+
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBAcaoDicInfo.Descricao)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.CampoCodigo}] = @{nameof(DBAcaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].[{DBAcaoDicInfo.CampoCodigo}] = @{(DBAcaoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].{DBAcaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBAcaoDicInfo.CampoCodigo)} AND @{nameof(DBAcaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBAcaoDicInfo.PTabelaNome}].{DBAcaoDicInfo.CampoCodigo} BETWEEN @{(DBAcaoDicInfo.CampoCodigo)} AND @{(DBAcaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterAcao? filtro)

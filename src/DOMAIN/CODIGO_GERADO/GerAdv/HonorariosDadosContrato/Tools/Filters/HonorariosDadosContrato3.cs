@@ -10,13 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterHonorariosDadosContrato
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
+
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("fixo")]
     public int Fixo { get; set; } = int.MinValue;
@@ -37,16 +40,16 @@ public partial record FilterHonorariosDadosContrato
     public int Processo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("arquivocontrato")]
-    public string ArquivoContrato { get; set; } = string.Empty;
+    public string? ArquivoContrato { get; set; } = string.Empty;
 
     [JsonPropertyName("arquivocontrato_end")]
-    public string ArquivoContrato_end { get; set; } = string.Empty;
+    public string? ArquivoContrato_end { get; set; } = string.Empty;
 
     [JsonPropertyName("textocontrato")]
-    public string TextoContrato { get; set; } = string.Empty;
+    public string? TextoContrato { get; set; } = string.Empty;
 
     [JsonPropertyName("textocontrato_end")]
-    public string TextoContrato_end { get; set; } = string.Empty;
+    public string? TextoContrato_end { get; set; } = string.Empty;
 
     [JsonPropertyName("valorfixo")]
     public decimal ValorFixo { get; set; } = decimal.MinValue;
@@ -55,22 +58,22 @@ public partial record FilterHonorariosDadosContrato
     public decimal ValorFixo_end { get; set; } = decimal.MinValue;
 
     [JsonPropertyName("observacao")]
-    public string Observacao { get; set; } = string.Empty;
+    public string? Observacao { get; set; } = string.Empty;
 
     [JsonPropertyName("observacao_end")]
-    public string Observacao_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("datacontrato")]
-    public string DataContrato { get; set; } = string.Empty;
-
-    [JsonPropertyName("datacontrato_end")]
-    public string DataContrato_end { get; set; } = string.Empty;
+    public string? Observacao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? Guid { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? Guid_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("datacontrato")]
+    public string? DataContrato { get; set; } = string.Empty;
+
+    [JsonPropertyName("datacontrato_end")]
+    public string? DataContrato_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

@@ -14,16 +14,17 @@ public partial interface IContaCorrenteWriter
 
 public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteWriter
 {
-    private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory;
-    public async Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException(nameof(contacorrenteFactory));
+    public virtual async Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection oCnn)
     {
         await _contacorrenteFactory.DeleteAsync(operadorId, contacorrente.Id, oCnn);
     }
 
-    public async Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (contacorrente.Id.IsEmptyIDNumber() ? _contacorrenteFactory.CreateAsync() : _contacorrenteFactory.CreateFromIdAsync(contacorrente.Id, oCnn));
         dbRec.FCIAcordo = contacorrente.CIAcordo;
+        dbRec.FGUID = contacorrente.GUID;
         dbRec.FQuitado = contacorrente.Quitado;
         dbRec.FIDContrato = contacorrente.IDContrato;
         dbRec.FQuitadoID = contacorrente.QuitadoID;
@@ -50,7 +51,6 @@ public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : 
         dbRec.FHide = contacorrente.Hide;
         if (contacorrente.DataPgto != null)
             dbRec.FDataPgto = contacorrente.DataPgto.ToString();
-        dbRec.FGUID = contacorrente.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

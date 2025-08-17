@@ -14,16 +14,17 @@ public partial interface IOponentesWriter
 
 public class OponentesWriter(IFOponentesFactory oponentesFactory) : IOponentesWriter
 {
-    private readonly IFOponentesFactory _oponentesFactory = oponentesFactory;
-    public async Task Delete(OponentesResponse oponentes, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFOponentesFactory _oponentesFactory = oponentesFactory ?? throw new ArgumentNullException(nameof(oponentesFactory));
+    public virtual async Task Delete(OponentesResponse oponentes, int operadorId, MsiSqlConnection oCnn)
     {
         await _oponentesFactory.DeleteAsync(operadorId, oponentes.Id, oCnn);
     }
 
-    public async Task<FOponentes> WriteAsync(Models.Oponentes oponentes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOponentes> WriteAsync(Models.Oponentes oponentes, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (oponentes.Id.IsEmptyIDNumber() ? _oponentesFactory.CreateAsync() : _oponentesFactory.CreateFromIdAsync(oponentes.Id, oCnn));
         dbRec.FEMPFuncao = oponentes.EMPFuncao;
+        dbRec.FGUID = oponentes.GUID;
         dbRec.FCTPSNumero = oponentes.CTPSNumero;
         dbRec.FSite = oponentes.Site;
         dbRec.FCTPSSerie = oponentes.CTPSSerie;
@@ -50,7 +51,6 @@ public class OponentesWriter(IFOponentesFactory oponentesFactory) : IOponentesWr
         dbRec.FEMail = oponentes.EMail;
         dbRec.FClass = oponentes.Class;
         dbRec.FTop = oponentes.Top;
-        dbRec.FGUID = oponentes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

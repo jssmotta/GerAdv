@@ -54,7 +54,7 @@ public partial class FNENotasFactory : IFNENotasFactory, IDisposable
             throw new ObjectDisposedException(nameof(FNENotasFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

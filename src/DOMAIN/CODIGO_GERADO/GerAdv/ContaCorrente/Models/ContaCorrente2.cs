@@ -26,6 +26,12 @@ namespace MenphisSI.GerAdv.Models
         public int CIAcordo { get; set; }
 
         /// <summary>
+        /// GUID - ctoGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Quitado - ctoQuitado  
         /// </summary>
         [JsonPropertyName("quitado")]
@@ -168,12 +174,6 @@ namespace MenphisSI.GerAdv.Models
 
         [JsonPropertyName("datapgto_date")]
         public DateTime? DataPgto_date { get; set; }
-
-        /// <summary>
-        /// GUID - ctoGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -198,6 +198,12 @@ namespace MenphisSI.GerAdv.Models.All
         public int CIAcordo { get; set; }
 
         /// <summary>
+        /// GUID - ctoGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// Quitado - ctoQuitado  
         /// </summary>
         [JsonPropertyName("quitado")]
@@ -340,12 +346,6 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("datapgto_date")]
         public DateTime? DataPgto_date { get; set; }
-
-        /// <summary>
-        /// GUID - ctoGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

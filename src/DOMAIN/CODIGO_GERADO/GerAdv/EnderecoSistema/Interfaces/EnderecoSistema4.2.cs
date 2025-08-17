@@ -13,6 +13,5 @@ public partial interface IEnderecoSistemaReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     EnderecoSistemaResponseAll? ReadAll(FEnderecoSistema dbRec, IDataRecord dr);
     EnderecoSistemaResponseAll? ReadAll(SG.GerAdv.DBEnderecoSistema dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<EnderecoSistemaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

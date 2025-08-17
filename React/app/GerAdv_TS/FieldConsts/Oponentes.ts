@@ -4,6 +4,7 @@
 export enum FieldsOponentes
 {	cidade = `Cidade`,
 	empfuncao = `EMPFuncao`,
+	guid = `GUID`,
 	ctpsnumero = `CTPSNumero`,
 	site = `Site`,
 	ctpsserie = `CTPSSerie`,
@@ -29,5 +30,4 @@ export enum FieldsOponentes
 	email = `EMail`,
 	class = `Class`,
 	top = `Top`,
-	guid = `GUID`,
 }

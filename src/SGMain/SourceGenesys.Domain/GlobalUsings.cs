@@ -1,0 +1,12 @@
+﻿global using MenphisSI.DB;
+global using System.Data;
+global using System.Globalization;
+global using System.Text;
+global using System.Xml.Serialization;
+global using Microsoft.Data.SqlClient;
+global using NLog;
+global using System.Collections.Immutable;
+global using System.Runtime.CompilerServices;
+global using System.Collections.Frozen;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;

@@ -74,350 +74,344 @@ if (getParamFromUrl('justica') > 0) {
       setNomeJustica(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    divisaotribunalData.justica = getParamFromUrl('justica');
+      divisaotribunalData.justica = getParamFromUrl('justica');
+    }
   }
-}
 
-if (getParamFromUrl('area') > 0) {
-  if (divisaotribunalData.id === 0 && divisaotribunalData.area == 0) {
-    areaApi
-    .getById(getParamFromUrl('area'))
-    .then((response) => {
-      setNomeArea(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('area') > 0) {
+    if (divisaotribunalData.id === 0 && divisaotribunalData.area == 0) {
+      areaApi
+      .getById(getParamFromUrl('area'))
+      .then((response) => {
+        setNomeArea(response.data.descricao);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    divisaotribunalData.area = getParamFromUrl('area');
-  }
-}
+        divisaotribunalData.area = getParamFromUrl('area');
+      }
+    }
 
-if (getParamFromUrl('cidade') > 0) {
-  if (divisaotribunalData.id === 0 && divisaotribunalData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('cidade') > 0) {
+      if (divisaotribunalData.id === 0 && divisaotribunalData.cidade == 0) {
+        cidadeApi
+        .getById(getParamFromUrl('cidade'))
+        .then((response) => {
+          setNomeCidade(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    divisaotribunalData.cidade = getParamFromUrl('cidade');
-  }
-}
+          divisaotribunalData.cidade = getParamFromUrl('cidade');
+        }
+      }
 
-if (getParamFromUrl('foro') > 0) {
-  if (divisaotribunalData.id === 0 && divisaotribunalData.foro == 0) {
-    foroApi
-    .getById(getParamFromUrl('foro'))
-    .then((response) => {
-      setNomeForo(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (getParamFromUrl('foro') > 0) {
+        if (divisaotribunalData.id === 0 && divisaotribunalData.foro == 0) {
+          foroApi
+          .getById(getParamFromUrl('foro'))
+          .then((response) => {
+            setNomeForo(response.data.nome);
+          })
+          .catch((error) => {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Error unexpected');
+            });
 
-    divisaotribunalData.foro = getParamFromUrl('foro');
-  }
-}
+            divisaotribunalData.foro = getParamFromUrl('foro');
+          }
+        }
 
-if (getParamFromUrl('tribunal') > 0) {
-  if (divisaotribunalData.id === 0 && divisaotribunalData.tribunal == 0) {
-    tribunalApi
-    .getById(getParamFromUrl('tribunal'))
-    .then((response) => {
-      setNomeTribunal(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+        if (getParamFromUrl('tribunal') > 0) {
+          if (divisaotribunalData.id === 0 && divisaotribunalData.tribunal == 0) {
+            tribunalApi
+            .getById(getParamFromUrl('tribunal'))
+            .then((response) => {
+              setNomeTribunal(response.data.nome);
+            })
+            .catch((error) => {
+              if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error unexpected');
+              });
 
-    divisaotribunalData.tribunal = getParamFromUrl('tribunal');
-  }
-}
-const addValorJustica = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'justica', value: e.id } });
-  };
-  const addValorArea = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'area', value: e.id } });
-    };
-    const addValorCidade = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'cidade', value: e.id } });
-      };
-      const addValorForo = (e: any) => {
-        if (e?.id>0)
-          onChange({ target: { name: 'foro', value: e.id } });
-        };
-        const addValorTribunal = (e: any) => {
-          if (e?.id>0)
-            onChange({ target: { name: 'tribunal', value: e.id } });
-          };
-          const onConfirm = (e: React.FormEvent) => {
-            e.preventDefault();
-            if (e.stopPropagation) e.stopPropagation();
-
-              if (!isSubmitting) {
-                setIsSubmitting(true);
-
-                try {
-                  onSubmit(e);
-                } catch (error) {
-                console.log('Erro ao submeter formulário de DivisaoTribunal:');
-                setIsSubmitting(false);
-                if (onError) onError();
-                }
-              }
+              divisaotribunalData.tribunal = getParamFromUrl('tribunal');
+            }
+          }
+          const addValorJustica = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'justica', value: e.id } });
             };
-            const handleCancel = () => {
-              if (onReload) {
-                onReload(); // Recarrega os dados originais
-              } else {
-              onClose(); // Comportamento padrão se não há callback de recarga
-            }
-          };
+            const addValorArea = (e: any) => {
+              if (e?.id>0)
+                onChange({ target: { name: 'area', value: e.id } });
+              };
+              const addValorCidade = (e: any) => {
+                if (e?.id>0)
+                  onChange({ target: { name: 'cidade', value: e.id } });
+                };
+                const addValorForo = (e: any) => {
+                  if (e?.id>0)
+                    onChange({ target: { name: 'foro', value: e.id } });
+                  };
+                  const addValorTribunal = (e: any) => {
+                    if (e?.id>0)
+                      onChange({ target: { name: 'tribunal', value: e.id } });
+                    };
+                    const onConfirm = (e: React.FormEvent) => {
+                      e.preventDefault();
+                      if (e.stopPropagation) e.stopPropagation();
 
-          const handleDirectSave = () => {
-            if (!isSubmitting) {
-              setIsSubmitting(true);
+                        if (!isSubmitting) {
+                          setIsSubmitting(true);
 
-              try {
-                const syntheticEvent = {
-                  preventDefault: () => { }, 
-                  target: document.getElementById(`DivisaoTribunalForm-${divisaotribunalData.id}`)
-                } as unknown as React.FormEvent;
+                          try {
+                            onSubmit(e);
+                          } catch (error) {
+                          console.log('Erro ao submeter formulário de DivisaoTribunal:');
+                          setIsSubmitting(false);
+                          if (onError) onError();
+                          }
+                        }
+                      };
+                      const handleCancel = () => {
+                        if (onReload) {
+                          onReload(); // Recarrega os dados originais
+                        } else {
+                        onClose(); // Comportamento padrão se não há callback de recarga
+                      }
+                    };
 
-                onSubmit(syntheticEvent);
-              } catch (error) {
-              console.log('Erro ao salvar DivisaoTribunal diretamente');
-              setIsSubmitting(false);
-              if (onError) onError();
-              }
-            }
-          };
-          useEffect(() => {
-            const el = document.querySelector('.nameFormMobile');
-            if (el) {
-              el.textContent = divisaotribunalData?.id == 0 ? 'Editar DivisaoTribunal' : 'Adicionar Divisao Tribunal';
-            }
-          }, [divisaotribunalData.id]);
-          return (
-          <>
-          {!isMobile ? <style jsx global>{`
-            @media (max-width: 1366px) {
-              html {
-                zoom: 0.8 !important;
-              }
-            }
-            `}</style> : null}
+                    const handleDirectSave = () => {
+                      if (!isSubmitting) {
+                        setIsSubmitting(true);
 
-            <div className={isMobile ? 'form-container form-container-DivisaoTribunal' : 'form-container form-container-DivisaoTribunal'}>
+                        try {
+                          const syntheticEvent = {
+                            preventDefault: () => { }, 
+                            target: document.getElementById(`DivisaoTribunalForm-${divisaotribunalData.id}`)
+                          } as unknown as React.FormEvent;
 
-              <form className='formInputCadInc' id={`DivisaoTribunalForm-${divisaotribunalData.id}`} onSubmit={onConfirm}>
-                {!isMobile && (
-                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='DivisaoTribunal' data={divisaotribunalData} isSubmitting={isSubmitting} onClose={onClose} formId={`DivisaoTribunalForm-${divisaotribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                  )}
-                  <div className='grid-container'>
+                          onSubmit(syntheticEvent);
+                        } catch (error) {
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                          console.log('Erro ao salvar DivisaoTribunal diretamente');
+                          setIsSubmitting(false);
+                          if (onError) onError();
+                          }
+                        }
+                      };
+                      useEffect(() => {
+                        const el = document.querySelector('.nameFormMobile');
+                        if (el) {
+                          el.textContent = divisaotribunalData?.id == 0 ? 'Editar DivisaoTribunal' : 'Adicionar Divisao Tribunal';
+                        }
+                      }, [divisaotribunalData.id]);
+                      return (
+                      <>
+                      {!isMobile ? <style jsx global>{`
+                        @media (max-width: 1366px) {
+                          html {
+                            zoom: 0.8 !important;
+                          }
+                        }
+                        `}</style> : null}
 
-                    <InputName
-                    type='text'
-                    id='guid'
-                    label='GUID'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='guid'
-                    value={divisaotribunalData.guid}
-                    placeholder={`Informe GUID`}
-                    onChange={onChange}
-                    required
-                    />
+                        <div className={isMobile ? 'form-container form-container-DivisaoTribunal' : 'form-container form-container-DivisaoTribunal'}>
 
-                    <InputInput
-                    type='text'
-                    maxLength={2048}
-                    id='numcodigo'
-                    label='NumCodigo'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='numcodigo'
-                    value={divisaotribunalData.numcodigo}
-                    onChange={onChange}
-                    />
-
-
-                    <JusticaComboBox
-                    name={'justica'}
-                    dataForm={divisaotribunalData}
-                    value={divisaotribunalData.justica}
-                    setValue={addValorJustica}
-                    label={'Justiça'}
-                    />
-
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='nomeespecial'
-                    label='NomeEspecial'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='nomeespecial'
-                    value={divisaotribunalData.nomeespecial}
-                    onChange={onChange}
-                    />
+                          <form className='formInputCadInc' id={`DivisaoTribunalForm-${divisaotribunalData.id}`} onSubmit={onConfirm}>
+                            {!isMobile && (
+                              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='DivisaoTribunal' data={divisaotribunalData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`DivisaoTribunalForm-${divisaotribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                              )}
+                              <div className='grid-container'>
 
 
-                    <AreaComboBox
-                    name={'area'}
-                    dataForm={divisaotribunalData}
-                    value={divisaotribunalData.area}
-                    setValue={addValorArea}
-                    label={'Área'}
-                    />
-
-                    <CidadeComboBox
-                    name={'cidade'}
-                    dataForm={divisaotribunalData}
-                    value={divisaotribunalData.cidade}
-                    setValue={addValorCidade}
-                    label={'Cidade'}
-                    />
-
-                    <ForoComboBox
-                    name={'foro'}
-                    dataForm={divisaotribunalData}
-                    value={divisaotribunalData.foro}
-                    setValue={addValorForo}
-                    label={'Foro'}
-                    />
-
-                    <TribunalComboBox
-                    name={'tribunal'}
-                    dataForm={divisaotribunalData}
-                    value={divisaotribunalData.tribunal}
-                    setValue={addValorTribunal}
-                    label={'Tribunal'}
-                    />
-
-                    <InputInput
-                    required
-                    type='text'
-                    maxLength={5}
-                    id='codigodiv'
-                    label='CodigoDiv'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='codigodiv'
-                    value={divisaotribunalData.codigodiv}
-                    onChange={onChange}
-                    />
-
-                  </div><div className='grid-container'>
-                    <InputInput
-                    type='text'
-                    maxLength={40}
-                    id='endereco'
-                    label='Endereco'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='endereco'
-                    value={divisaotribunalData.endereco}
-                    onChange={onChange}
-                    />
+                                <InputInput
+                                type='text'
+                                maxLength={2048}
+                                id='numcodigo'
+                                label='NumCodigo'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='numcodigo'
+                                value={divisaotribunalData.numcodigo}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={2147483647}
-                    id='fone'
-                    label='Fone'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='fone'
-                    value={divisaotribunalData.fone}
-                    onChange={onChange}
-                    />
+                                <JusticaComboBox
+                                name={'justica'}
+                                dataForm={divisaotribunalData}
+                                value={divisaotribunalData.justica}
+                                setValue={addValorJustica}
+                                label={'Justiça'}
+                                />
+
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='nomeespecial'
+                                label='NomeEspecial'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='nomeespecial'
+                                value={divisaotribunalData.nomeespecial}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={2147483647}
-                    id='fax'
-                    label='Fax'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='fax'
-                    value={divisaotribunalData.fax}
-                    onChange={onChange}
-                    />
+                                <AreaComboBox
+                                name={'area'}
+                                dataForm={divisaotribunalData}
+                                value={divisaotribunalData.area}
+                                setValue={addValorArea}
+                                label={'Área'}
+                                />
+
+                                <CidadeComboBox
+                                name={'cidade'}
+                                dataForm={divisaotribunalData}
+                                value={divisaotribunalData.cidade}
+                                setValue={addValorCidade}
+                                label={'Cidade'}
+                                />
+
+                                <ForoComboBox
+                                name={'foro'}
+                                dataForm={divisaotribunalData}
+                                value={divisaotribunalData.foro}
+                                setValue={addValorForo}
+                                label={'Foro'}
+                                />
+
+                                <TribunalComboBox
+                                name={'tribunal'}
+                                dataForm={divisaotribunalData}
+                                value={divisaotribunalData.tribunal}
+                                setValue={addValorTribunal}
+                                label={'Tribunal'}
+                                />
+
+                                <InputInput
+                                required
+                                type='text'
+                                maxLength={5}
+                                id='codigodiv'
+                                label='CodigoDiv'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='codigodiv'
+                                value={divisaotribunalData.codigodiv}
+                                onChange={onChange}
+                                />
+
+                              </div><div className='grid-container'>
+                                <InputInput
+                                type='text'
+                                maxLength={40}
+                                id='endereco'
+                                label='Endereco'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='endereco'
+                                value={divisaotribunalData.endereco}
+                                onChange={onChange}
+                                />
 
 
-                    <InputCep
-                    type='text'
-                    id='cep'
-                    label='CEP'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='cep'
-                    value={divisaotribunalData.cep}
-                    onChange={onChange}
-                    />
+                                <InputInput
+                                type='text'
+                                maxLength={2147483647}
+                                id='fone'
+                                label='Fone'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='fone'
+                                value={divisaotribunalData.fone}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={2147483647}
-                    id='obs'
-                    label='Obs'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='obs'
-                    value={divisaotribunalData.obs}
-                    onChange={onChange}
-                    />
+                                <InputInput
+                                type='text'
+                                maxLength={2147483647}
+                                id='fax'
+                                label='Fax'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='fax'
+                                value={divisaotribunalData.fax}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='email'
-                    maxLength={150}
-                    id='email'
-                    label='EMail'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='email'
-                    value={divisaotribunalData.email}
-                    onChange={onChange}
-                    />
+                                <InputCep
+                                type='text'
+                                id='cep'
+                                label='CEP'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='cep'
+                                value={divisaotribunalData.cep}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={12}
-                    id='andar'
-                    label='Andar'
-                    dataForm={divisaotribunalData}
-                    className='inputIncNome'
-                    name='andar'
-                    value={divisaotribunalData.andar}
-                    onChange={onChange}
-                    />
-
-                  </div>
-                </form>
+                                <InputInput
+                                type='text'
+                                maxLength={2147483647}
+                                id='obs'
+                                label='Obs'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='obs'
+                                value={divisaotribunalData.obs}
+                                onChange={onChange}
+                                />
 
 
-                {isMobile && (
-                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='DivisaoTribunal' data={divisaotribunalData} isSubmitting={isSubmitting} onClose={onClose} formId={`DivisaoTribunalForm-${divisaotribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                  )}
-                  <DeleteButton page={'/pages/divisaotribunal'} id={divisaotribunalData.id} closeModel={onClose} dadoApi={dadoApi} />
-                </div>
-                <div className='form-spacer'></div>
-                </>
-              );
-            };
+                                <InputInput
+                                type='email'
+                                maxLength={150}
+                                id='email'
+                                label='EMail'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='email'
+                                value={divisaotribunalData.email}
+                                onChange={onChange}
+                                />
+
+
+                                <InputInput
+                                type='text'
+                                maxLength={12}
+                                id='andar'
+                                label='Andar'
+                                dataForm={divisaotribunalData}
+                                className='inputIncNome'
+                                name='andar'
+                                value={divisaotribunalData.andar}
+                                onChange={onChange}
+                                />
+
+                              </div>
+                            </form>
+
+
+                            {isMobile && (
+                              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='DivisaoTribunal' data={divisaotribunalData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`DivisaoTribunalForm-${divisaotribunalData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                              )}
+                              <DeleteButton page={'/pages/divisaotribunal'} id={divisaotribunalData.id} closeModel={onClose} dadoApi={dadoApi} />
+                            </div>
+                            <div className='form-spacer'></div>
+                            </>
+                          );
+                        };

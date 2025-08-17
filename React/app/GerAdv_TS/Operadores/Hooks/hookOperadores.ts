@@ -41,7 +41,8 @@ export const useOperadoresForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Operador';
       setError(errorMessage);
-      //console.log('Erro ao carregar Operador');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Operador');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useOperadoresNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useOperadoresList = (dataService: IOperadoresService, currentFilter
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar operadores';
       setError(errorMessage);
-      //console.log('Erro ao carregar operadores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar operadores');
     } finally {
       setLoading(false);
     }
@@ -219,7 +222,8 @@ if (data.senha256.length > 4000) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

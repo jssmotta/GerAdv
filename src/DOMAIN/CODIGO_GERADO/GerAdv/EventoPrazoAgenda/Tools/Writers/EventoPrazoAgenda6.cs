@@ -14,13 +14,13 @@ public partial interface IEventoPrazoAgendaWriter
 
 public class EventoPrazoAgendaWriter(IFEventoPrazoAgendaFactory eventoprazoagendaFactory) : IEventoPrazoAgendaWriter
 {
-    private readonly IFEventoPrazoAgendaFactory _eventoprazoagendaFactory = eventoprazoagendaFactory;
-    public async Task Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFEventoPrazoAgendaFactory _eventoprazoagendaFactory = eventoprazoagendaFactory ?? throw new ArgumentNullException(nameof(eventoprazoagendaFactory));
+    public virtual async Task Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection oCnn)
     {
         await _eventoprazoagendaFactory.DeleteAsync(operadorId, eventoprazoagenda.Id, oCnn);
     }
 
-    public async Task<FEventoPrazoAgenda> WriteAsync(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEventoPrazoAgenda> WriteAsync(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (eventoprazoagenda.Id.IsEmptyIDNumber() ? _eventoprazoagendaFactory.CreateAsync() : _eventoprazoagendaFactory.CreateFromIdAsync(eventoprazoagenda.Id, oCnn));
         dbRec.FNome = eventoprazoagenda.Nome;

@@ -54,7 +54,7 @@ public partial class FProcessosObsReportFactory : IFProcessosObsReportFactory, I
             throw new ObjectDisposedException(nameof(FProcessosObsReportFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

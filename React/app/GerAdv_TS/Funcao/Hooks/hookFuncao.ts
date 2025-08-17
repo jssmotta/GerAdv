@@ -41,7 +41,8 @@ export const useFuncaoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Função';
       setError(errorMessage);
-      //console.log('Erro ao carregar Função');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Função');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useFuncaoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useFuncaoList = (dataService: IFuncaoService, currentFilter?: Filte
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar funcao';
       setError(errorMessage);
-      //console.log('Erro ao carregar funcao');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar funcao');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 40) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

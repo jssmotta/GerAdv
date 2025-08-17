@@ -96,18 +96,18 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
     }
 
-    private async Task<TipoRecursoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<TipoRecursoResponse?> AddAndUpdate([FromBody] Models.TipoRecurso regTipoRecurso, [FromRoute, Required] string uri)
+    private async Task<TipoRecursoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<TipoRecursoResponse?> AddAndUpdate([FromBody] Models.TipoRecurso? regTipoRecurso, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("TipoRecurso: URI inválida");
-        }
-
         if (regTipoRecurso == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("TipoRecurso: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -121,7 +121,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -130,7 +130,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -138,17 +138,17 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<TipoRecursoResponse?> Validation([FromBody] Models.TipoRecurso regTipoRecurso, [FromRoute, Required] string uri)
+    public async Task<TipoRecursoResponse?> Validation([FromBody] Models.TipoRecurso? regTipoRecurso, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("TipoRecurso: URI inválida");
-        }
-
         if (regTipoRecurso == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("TipoRecurso: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -162,7 +162,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             var validade = await validation.ValidateReg(regTipoRecurso, this, justicaReader, areaReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -171,7 +171,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regTipoRecurso.Id.IsEmptyIDNumber())
@@ -182,17 +182,17 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         return await reader.Read(regTipoRecurso.Id, oCnn);
     }
 
-    public async Task<TipoRecursoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<TipoRecursoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("TipoRecurso: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -207,7 +207,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
             var deleteValidation = await validation.CanDelete(id, this, instanciaService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -216,10 +216,10 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var tiporecurso = await reader.Read(id, oCnn);
+        var tiporecurso = await reader.Read(id ?? default, oCnn);
         try
         {
             if (tiporecurso != null)
@@ -239,7 +239,7 @@ public partial class TipoRecursoService(IOptions<AppSettings> appSettings, IFTip
         return tiporecurso;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

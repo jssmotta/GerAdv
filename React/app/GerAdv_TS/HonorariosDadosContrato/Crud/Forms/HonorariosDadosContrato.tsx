@@ -58,206 +58,196 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    honorariosdadoscontratoData.cliente = getParamFromUrl('clientes');
+      honorariosdadoscontratoData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorCliente = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'cliente', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de HonorariosDadosContrato:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de HonorariosDadosContrato:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar HonorariosDadosContrato diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = honorariosdadoscontratoData?.id == 0 ? 'Editar HonorariosDadosContrato' : 'Adicionar Honorarios Dados Contrato';
+        }
+      }, [honorariosdadoscontratoData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-HonorariosDadosContrato' : 'form-container form-container-HonorariosDadosContrato'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`)
-        } as unknown as React.FormEvent;
-
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar HonorariosDadosContrato diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = honorariosdadoscontratoData?.id == 0 ? 'Editar HonorariosDadosContrato' : 'Adicionar Honorarios Dados Contrato';
-    }
-  }, [honorariosdadoscontratoData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
-
-    <div className={isMobile ? 'form-container form-container-HonorariosDadosContrato' : 'form-container form-container-HonorariosDadosContrato'}>
-
-      <form className='formInputCadInc' id={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='HonorariosDadosContrato' data={honorariosdadoscontratoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='guid'
-            label='GUID'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='guid'
-            value={honorariosdadoscontratoData.guid}
-            placeholder={`Informe GUID`}
-            onChange={onChange}
-            required
-            />
-
-            <ClientesComboBox
-            name={'cliente'}
-            dataForm={honorariosdadoscontratoData}
-            value={honorariosdadoscontratoData.cliente}
-            setValue={addValorCliente}
-            label={'Clientes'}
-            />
-            <InputCheckbox dataForm={honorariosdadoscontratoData} label='Fixo' name='fixo' checked={honorariosdadoscontratoData.fixo} onChange={onChange} />
-            <InputCheckbox dataForm={honorariosdadoscontratoData} label='Variavel' name='variavel' checked={honorariosdadoscontratoData.variavel} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='percsucesso'
-            label='PercSucesso'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='percsucesso'
-            value={honorariosdadoscontratoData.percsucesso}
-            onChange={onChange}
-            />
+          <form className='formInputCadInc' id={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='HonorariosDadosContrato' data={honorariosdadoscontratoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='processo'
-            label='Processo'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='processo'
-            value={honorariosdadoscontratoData.processo}
-            onChange={onChange}
-            />
+                <ClientesComboBox
+                name={'cliente'}
+                dataForm={honorariosdadoscontratoData}
+                value={honorariosdadoscontratoData.cliente}
+                setValue={addValorCliente}
+                label={'Clientes'}
+                />
+                <InputCheckbox dataForm={honorariosdadoscontratoData} label='Fixo' name='fixo' checked={honorariosdadoscontratoData.fixo} onChange={onChange} />
+                <InputCheckbox dataForm={honorariosdadoscontratoData} label='Variavel' name='variavel' checked={honorariosdadoscontratoData.variavel} onChange={onChange} />
+
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='percsucesso'
+                label='PercSucesso'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='percsucesso'
+                value={honorariosdadoscontratoData.percsucesso}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='arquivocontrato'
-            label='ArquivoContrato'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='arquivocontrato'
-            value={honorariosdadoscontratoData.arquivocontrato}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='processo'
+                label='Processo'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='processo'
+                value={honorariosdadoscontratoData.processo}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='textocontrato'
-            label='TextoContrato'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='textocontrato'
-            value={honorariosdadoscontratoData.textocontrato}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='arquivocontrato'
+                label='ArquivoContrato'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='arquivocontrato'
+                value={honorariosdadoscontratoData.arquivocontrato}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='valorfixo'
-            label='ValorFixo'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='valorfixo'
-            value={honorariosdadoscontratoData.valorfixo}
-            onChange={onChange}
-            />
-
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='observacao'
-            label='Observacao'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='observacao'
-            value={honorariosdadoscontratoData.observacao}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='textocontrato'
+                label='TextoContrato'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='textocontrato'
+                value={honorariosdadoscontratoData.textocontrato}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            required
-            type='text'
-            maxLength={2048}
-            id='datacontrato'
-            label='DataContrato'
-            dataForm={honorariosdadoscontratoData}
-            className='inputIncNome'
-            name='datacontrato'
-            value={honorariosdadoscontratoData.datacontrato}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='valorfixo'
+                label='ValorFixo'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='valorfixo'
+                value={honorariosdadoscontratoData.valorfixo}
+                onChange={onChange}
+                />
 
-          </div>
-        </form>
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='observacao'
+                label='Observacao'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='observacao'
+                value={honorariosdadoscontratoData.observacao}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='HonorariosDadosContrato' data={honorariosdadoscontratoData} isSubmitting={isSubmitting} onClose={onClose} formId={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/honorariosdadoscontrato'} id={honorariosdadoscontratoData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                required
+                type='text'
+                maxLength={2048}
+                id='datacontrato'
+                label='DataContrato'
+                dataForm={honorariosdadoscontratoData}
+                className='inputIncNome'
+                name='datacontrato'
+                value={honorariosdadoscontratoData.datacontrato}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='HonorariosDadosContrato' data={honorariosdadoscontratoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`HonorariosDadosContratoForm-${honorariosdadoscontratoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/honorariosdadoscontrato'} id={honorariosdadoscontratoData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

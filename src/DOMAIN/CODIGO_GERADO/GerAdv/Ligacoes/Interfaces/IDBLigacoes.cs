@@ -27,9 +27,9 @@ public partial interface IDBLigacoes
     public string? FData { get; set; }
     public string? FHora { get; set; }
     public bool FUrgente { get; set; }
+    public string? FGUID { get; set; }
     public string? FLigarPara { get; set; }
     public int FProcesso { get; set; }
     public bool FStartScreen { get; set; }
     public int FEmotion { get; set; }
-    public string? FGUID { get; set; }
 }

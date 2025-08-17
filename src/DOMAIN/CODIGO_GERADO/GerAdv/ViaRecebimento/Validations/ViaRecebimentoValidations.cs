@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IViaRecebimentoValidation
 {
     Task<bool> ValidateReg(Models.ViaRecebimento reg, IViaRecebimentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IViaRecebimentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IViaRecebimentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ViaRecebimentoValidation : IViaRecebimentoValidation
 {
-    public async Task<bool> CanDelete(int id, IViaRecebimentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IViaRecebimentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class ViaRecebimentoValidation : IViaRecebimentoValidation
 
     private bool ValidSizes(Models.ViaRecebimento reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBViaRecebimentoDicInfo.VrbNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBViaRecebimentoDicInfo.VrbNome.FTamanho} caracteres.");
         return true;
     }
 

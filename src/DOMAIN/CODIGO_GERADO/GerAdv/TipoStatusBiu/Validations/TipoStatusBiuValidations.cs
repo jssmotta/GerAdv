@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoStatusBiuValidation
 {
     Task<bool> ValidateReg(Models.TipoStatusBiu reg, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoStatusBiuValidation : ITipoStatusBiuValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoStatusBiuService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class TipoStatusBiuValidation : ITipoStatusBiuValidation
 
     private bool ValidSizes(Models.TipoStatusBiu reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 150)
-            throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTipoStatusBiuDicInfo.TsbNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTipoStatusBiuDicInfo.TsbNome.FTamanho} caracteres.");
         return true;
     }
 

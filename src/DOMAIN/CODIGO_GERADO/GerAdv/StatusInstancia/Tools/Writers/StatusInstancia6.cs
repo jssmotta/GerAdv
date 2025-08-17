@@ -14,13 +14,13 @@ public partial interface IStatusInstanciaWriter
 
 public class StatusInstanciaWriter(IFStatusInstanciaFactory statusinstanciaFactory) : IStatusInstanciaWriter
 {
-    private readonly IFStatusInstanciaFactory _statusinstanciaFactory = statusinstanciaFactory;
-    public async Task Delete(StatusInstanciaResponse statusinstancia, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFStatusInstanciaFactory _statusinstanciaFactory = statusinstanciaFactory ?? throw new ArgumentNullException(nameof(statusinstanciaFactory));
+    public virtual async Task Delete(StatusInstanciaResponse statusinstancia, int operadorId, MsiSqlConnection oCnn)
     {
         await _statusinstanciaFactory.DeleteAsync(operadorId, statusinstancia.Id, oCnn);
     }
 
-    public async Task<FStatusInstancia> WriteAsync(Models.StatusInstancia statusinstancia, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FStatusInstancia> WriteAsync(Models.StatusInstancia statusinstancia, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (statusinstancia.Id.IsEmptyIDNumber() ? _statusinstanciaFactory.CreateAsync() : _statusinstanciaFactory.CreateFromIdAsync(statusinstancia.Id, oCnn));
         dbRec.FNome = statusinstancia.Nome;

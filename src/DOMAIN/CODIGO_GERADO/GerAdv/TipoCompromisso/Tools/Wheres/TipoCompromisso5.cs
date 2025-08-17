@@ -13,17 +13,17 @@ public partial interface ITipoCompromissoWhere
 
 public partial class TipoCompromissoWhere(IFTipoCompromissoFactory tipocompromissoFactory) : ITipoCompromissoWhere
 {
-    private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory;
+    private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory ?? throw new ArgumentNullException(nameof(tipocompromissoFactory));
     public TipoCompromissoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipocompromissoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipocompromisso = new TipoCompromissoResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tipocompromisso;
     }

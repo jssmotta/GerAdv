@@ -81,60 +81,61 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Area diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Area diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = areaData?.id == 0 ? 'Editar Area' : 'Adicionar Área';
-  }
-}, [areaData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Area' : 'form-container5 form-container-Area'}>
-
-    <form className='formInputCadInc' id={`AreaForm-${areaData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Area' data={areaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AreaForm-${areaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='área'
-          dataForm={areaData}
-          className='inputIncNome'
-          name='descricao'
-          value={areaData.descricao}
-          placeholder={`Digite nome área`}
-          onChange={onChange}
-          required
-          disabled={areaData.id > 0}
-          />
-          <InputCheckbox dataForm={areaData} label='Top' name='top' checked={areaData.top} onChange={onChange} />
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Area' data={areaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AreaForm-${areaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/area'} id={areaData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = areaData?.id == 0 ? 'Editar Area' : 'Adicionar Área';
+    }
+  }, [areaData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Area' : 'form-container5 form-container-Area'}>
+
+      <form className='formInputCadInc' id={`AreaForm-${areaData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Area' data={areaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AreaForm-${areaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='área'
+            dataForm={areaData}
+            className='inputIncNome'
+            name='descricao'
+            value={areaData.descricao}
+            placeholder={`Digite nome área`}
+            onChange={onChange}
+            required
+            disabled={areaData.id > 0}
+            />
+            <InputCheckbox dataForm={areaData} label='Top' name='top' checked={areaData.top} onChange={onChange} />
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Area' data={areaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AreaForm-${areaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/area'} id={areaData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

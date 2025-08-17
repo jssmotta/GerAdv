@@ -13,7 +13,7 @@ public partial interface IRamalWhere
 
 public partial class RamalWhere(IFRamalFactory ramalFactory) : IRamalWhere
 {
-    private readonly IFRamalFactory _ramalFactory = ramalFactory;
+    private readonly IFRamalFactory _ramalFactory = ramalFactory ?? throw new ArgumentNullException(nameof(ramalFactory));
     public RamalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _ramalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

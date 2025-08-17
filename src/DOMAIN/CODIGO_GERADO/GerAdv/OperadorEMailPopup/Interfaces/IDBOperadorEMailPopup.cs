@@ -13,9 +13,9 @@ public partial interface IDBOperadorEMailPopup
     public bool FAutenticacao { get; set; }
     public string? FDescricao { get; set; }
     public string? FUsuario { get; set; }
+    public string? FGUID { get; set; }
     public int FPortaSmtp { get; set; }
     public int FPortaPop3 { get; set; }
     public string? FAssinatura { get; set; }
     public string? FSenha256 { get; set; }
-    public string? FGUID { get; set; }
 }

@@ -13,7 +13,7 @@ public partial interface ISituacaoWhere
 
 public partial class SituacaoWhere(IFSituacaoFactory situacaoFactory) : ISituacaoWhere
 {
-    private readonly IFSituacaoFactory _situacaoFactory = situacaoFactory;
+    private readonly IFSituacaoFactory _situacaoFactory = situacaoFactory ?? throw new ArgumentNullException(nameof(situacaoFactory));
     public SituacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _situacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,9 +21,9 @@ public partial class SituacaoWhere(IFSituacaoFactory situacaoFactory) : ISituaca
         {
             Id = dbRec.ID,
             Parte_Int = dbRec.FParte_Int ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return situacao;
     }

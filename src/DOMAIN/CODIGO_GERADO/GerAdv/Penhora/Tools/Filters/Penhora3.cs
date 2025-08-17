@@ -10,10 +10,10 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterPenhora
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -22,37 +22,40 @@ public partial record FilterPenhora
     public int Processo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("descricao")]
-    public string Descricao { get; set; } = string.Empty;
+    public string? Descricao { get; set; } = string.Empty;
 
     [JsonPropertyName("descricao_end")]
-    public string Descricao_end { get; set; } = string.Empty;
+    public string? Descricao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("datapenhora")]
-    public string DataPenhora { get; set; } = string.Empty;
+    public string? DataPenhora { get; set; } = string.Empty;
 
     [JsonPropertyName("datapenhora_end")]
-    public string DataPenhora_end { get; set; } = string.Empty;
+    public string? DataPenhora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("penhorastatus")]
     public int PenhoraStatus { get; set; } = int.MinValue;
+
+    [JsonPropertyName("penhorastatus_end")]
+    public int PenhoraStatus_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("master")]
     public int Master { get; set; } = int.MinValue;
 
     [JsonPropertyName("master_end")]
     public int Master_end { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

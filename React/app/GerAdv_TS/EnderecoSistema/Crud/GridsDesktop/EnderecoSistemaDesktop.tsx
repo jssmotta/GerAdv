@@ -41,8 +41,7 @@ const router = useRouter();
 const { systemContext } = useSystemContext();
 const defaultHiddenColumns = [''];
 // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['guid',
-'nometipoenderecosistema',
+const [columnsOrder, setColumnsOrder] = useState<string[]>(['nometipoenderecosistema',
 'nropastaprocessos',
 'nomecidade']);
 // Carregar ordem salva do localStorage na inicialização
@@ -116,44 +115,28 @@ const EditRow = useCallback((e: any) => {
 }, [hookHandleRowClick]);
 // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
 const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
-
-  'guid': (
-  <GridColumn
-  key='guid'
-  field='guid'
-  title='GUID'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.02 */
   'nometipoenderecosistema': (
   <GridColumn
   key='nometipoenderecosistema'
-
   field='nometipoenderecosistema'
   title='Tipo Endereco Sistema'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nropastaprocessos': (
   <GridColumn
   key='nropastaprocessos'
-
   field='nropastaprocessos'
   title='Processos'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomecidade': (
   <GridColumn
   key='nomecidade'
-
   field='nomecidade'
   title='Cidade'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

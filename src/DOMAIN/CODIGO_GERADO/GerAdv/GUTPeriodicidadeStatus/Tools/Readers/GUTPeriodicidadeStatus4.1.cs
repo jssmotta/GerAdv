@@ -15,7 +15,7 @@ public partial class GUTPeriodicidadeStatusReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBGUTPeriodicidadeStatusDicInfo.CampoNome}";
+        var orderQuery = $"{TSql.OrderBy} {DBGUTPeriodicidadeStatusDicInfo.CampoCodigo}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

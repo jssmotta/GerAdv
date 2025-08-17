@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAtividadesValidation
 {
     Task<bool> ValidateReg(Models.Atividades reg, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AtividadesValidation : IAtividadesValidation
 {
-    public async Task<bool> CanDelete(int id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class AtividadesValidation : IAtividadesValidation
 
     private bool ValidSizes(Models.Atividades reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 50)
-            throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBAtividadesDicInfo.AtvDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBAtividadesDicInfo.AtvDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBAtividadesDicInfo.AtvGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBAtividadesDicInfo.AtvGUID.FTamanho} caracteres.");
         return true;
     }
 

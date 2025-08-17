@@ -94,18 +94,18 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
     }
 
-    private async Task<ProDespesasResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ProDespesasResponse?> AddAndUpdate([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
+    private async Task<ProDespesasResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ProDespesasResponse?> AddAndUpdate([FromBody] Models.ProDespesas? regProDespesas, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProDespesas: URI inválida");
-        }
-
         if (regProDespesas == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProDespesas: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ProDespesasResponse?> Validation([FromBody] Models.ProDespesas regProDespesas, [FromRoute, Required] string uri)
+    public async Task<ProDespesasResponse?> Validation([FromBody] Models.ProDespesas? regProDespesas, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProDespesas: URI inválida");
-        }
-
         if (regProDespesas == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProDespesas: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             var validade = await validation.ValidateReg(regProDespesas, this, clientesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regProDespesas.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         return await reader.Read(regProDespesas.Id, oCnn);
     }
 
-    public async Task<ProDespesasResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProDespesasResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ProDespesas: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var prodespesas = await reader.Read(id, oCnn);
+        var prodespesas = await reader.Read(id ?? default, oCnn);
         try
         {
             if (prodespesas != null)
@@ -237,7 +237,7 @@ public partial class ProDespesasService(IOptions<AppSettings> appSettings, IFPro
         return prodespesas;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

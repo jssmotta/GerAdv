@@ -6,6 +6,7 @@ public partial interface IDBOponentes
 {
     public int ID { get; set; }
     public int FEMPFuncao { get; set; }
+    public string? FGUID { get; set; }
     public string? FCTPSNumero { get; set; }
     public string? FSite { get; set; }
     public string? FCTPSSerie { get; set; }
@@ -32,5 +33,4 @@ public partial interface IDBOponentes
     public string? FEMail { get; set; }
     public string? FClass { get; set; }
     public bool FTop { get; set; }
-    public string? FGUID { get; set; }
 }

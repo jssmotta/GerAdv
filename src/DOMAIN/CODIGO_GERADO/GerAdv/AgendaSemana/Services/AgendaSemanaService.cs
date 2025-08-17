@@ -47,7 +47,7 @@ public partial class AgendaSemanaService(IOptions<AppSettings> appSettings, IFAg
         return result;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

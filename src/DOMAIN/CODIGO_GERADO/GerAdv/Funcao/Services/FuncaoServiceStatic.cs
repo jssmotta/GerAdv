@@ -8,22 +8,23 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class FuncaoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterFuncao filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterFuncao? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBFuncaoDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
+            parameters.Add(new($"@{(DBFuncaoDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBFuncaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBFuncaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBFuncaoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBFuncaoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -32,28 +33,17 @@ public partial class FuncaoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFuncaoDicInfo.PTabelaNome}].[{DBFuncaoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBFuncaoDicInfo.Descricao)}");
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFuncaoDicInfo.PTabelaNome}].[{DBFuncaoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBFuncaoDicInfo.Descricao)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFuncaoDicInfo.PTabelaNome}].[{DBFuncaoDicInfo.CampoCodigo}] = @{nameof(DBFuncaoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFuncaoDicInfo.PTabelaNome}].[{DBFuncaoDicInfo.CampoCodigo}] = @{(DBFuncaoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFuncaoDicInfo.PTabelaNome}].{DBFuncaoDicInfo.CampoCodigo} BETWEEN @{nameof(DBFuncaoDicInfo.CampoCodigo)} AND @{nameof(DBFuncaoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBFuncaoDicInfo.PTabelaNome}].{DBFuncaoDicInfo.CampoCodigo} BETWEEN @{(DBFuncaoDicInfo.CampoCodigo)} AND @{(DBFuncaoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterFuncao? filtro)

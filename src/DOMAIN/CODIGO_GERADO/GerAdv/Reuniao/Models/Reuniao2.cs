@@ -58,9 +58,6 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
 
-        [JsonPropertyName("horafinal_date")]
-        public DateTime? HoraFinal_date { get; set; }
-
         /// <summary>
         /// Externa - renExterna  
         /// </summary>
@@ -151,9 +148,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
-
-        [JsonPropertyName("horafinal_date")]
-        public DateTime? HoraFinal_date { get; set; }
 
         /// <summary>
         /// Externa - renExterna  

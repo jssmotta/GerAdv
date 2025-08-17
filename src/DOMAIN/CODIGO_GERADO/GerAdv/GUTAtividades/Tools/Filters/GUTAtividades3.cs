@@ -10,22 +10,22 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterGUTAtividades
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("observacao")]
-    public string Observacao { get; set; } = string.Empty;
+    public string? Observacao { get; set; } = string.Empty;
 
     [JsonPropertyName("observacao_end")]
-    public string Observacao_end { get; set; } = string.Empty;
+    public string? Observacao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("gutgrupo")]
     public int GUTGrupo { get; set; } = int.MinValue;
@@ -36,17 +36,29 @@ public partial record FilterGUTAtividades
     [JsonPropertyName("gutperiodicidade")]
     public int GUTPeriodicidade { get; set; } = int.MinValue;
 
+    [JsonPropertyName("gutperiodicidade_end")]
+    public int GUTPeriodicidade_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("operador")]
     public int Operador { get; set; } = int.MinValue;
+
+    [JsonPropertyName("operador_end")]
+    public int Operador_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("concluido")]
     public int Concluido { get; set; } = int.MinValue;
 
     [JsonPropertyName("dataconcluido")]
-    public string DataConcluido { get; set; } = string.Empty;
+    public string? DataConcluido { get; set; } = string.Empty;
 
     [JsonPropertyName("dataconcluido_end")]
-    public string DataConcluido_end { get; set; } = string.Empty;
+    public string? DataConcluido_end { get; set; } = string.Empty;
 
     [JsonPropertyName("diasparainiciar")]
     public int DiasParaIniciar { get; set; } = int.MinValue;
@@ -59,12 +71,6 @@ public partial record FilterGUTAtividades
 
     [JsonPropertyName("minutospararealizar_end")]
     public int MinutosParaRealizar_end { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

@@ -14,13 +14,13 @@ public partial interface IPosicaoOutrasPartesWriter
 
 public class PosicaoOutrasPartesWriter(IFPosicaoOutrasPartesFactory posicaooutraspartesFactory) : IPosicaoOutrasPartesWriter
 {
-    private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory;
-    public async Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory ?? throw new ArgumentNullException(nameof(posicaooutraspartesFactory));
+    public virtual async Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection oCnn)
     {
         await _posicaooutraspartesFactory.DeleteAsync(operadorId, posicaooutraspartes.Id, oCnn);
     }
 
-    public async Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (posicaooutraspartes.Id.IsEmptyIDNumber() ? _posicaooutraspartesFactory.CreateAsync() : _posicaooutraspartesFactory.CreateFromIdAsync(posicaooutraspartes.Id, oCnn));
         dbRec.FDescricao = posicaooutraspartes.Descricao;

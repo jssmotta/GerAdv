@@ -13,6 +13,5 @@ public partial interface IHonorariosDadosContratoReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     HonorariosDadosContratoResponseAll? ReadAll(FHonorariosDadosContrato dbRec, IDataRecord dr);
     HonorariosDadosContratoResponseAll? ReadAll(SG.GerAdv.DBHonorariosDadosContrato dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<HonorariosDadosContratoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

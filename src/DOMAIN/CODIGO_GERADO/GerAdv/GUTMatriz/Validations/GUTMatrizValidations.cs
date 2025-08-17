@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGUTMatrizValidation
 {
     Task<bool> ValidateReg(Models.GUTMatriz reg, IGUTMatrizService service, IGUTTipoReader guttipoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGUTMatrizService service, IGUTAtividadesMatrizService gutatividadesmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGUTMatrizService service, IGUTAtividadesMatrizService gutatividadesmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTMatrizValidation : IGUTMatrizValidation
 {
-    public async Task<bool> CanDelete(int id, IGUTMatrizService service, IGUTAtividadesMatrizService gutatividadesmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTMatrizService service, IGUTAtividadesMatrizService gutatividadesmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTMatriz = id }, uri);
+        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTMatriz = id ?? default }, uri);
         if (gutatividadesmatrizExists0 != null && gutatividadesmatrizExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.");
         return true;
@@ -29,8 +29,8 @@ public class GUTMatrizValidation : IGUTMatrizValidation
 
     private bool ValidSizes(Models.GUTMatriz reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 150)
-            throw new SGValidationException($"Descricao deve ter no máximo 150 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBGUTMatrizDicInfo.GutDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBGUTMatrizDicInfo.GutDescricao.FTamanho} caracteres.");
         return true;
     }
 

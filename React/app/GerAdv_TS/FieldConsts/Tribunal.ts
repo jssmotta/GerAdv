@@ -6,8 +6,8 @@ export enum FieldsTribunal
 	justica = `Justica`,
 	instancia = `Instancia`,
 	nome = `Nome`,
+	guid = `GUID`,
 	descricao = `Descricao`,
 	sigla = `Sigla`,
 	web = `Web`,
-	guid = `GUID`,
 }

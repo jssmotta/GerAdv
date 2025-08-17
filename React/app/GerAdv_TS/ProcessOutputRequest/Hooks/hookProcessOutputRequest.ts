@@ -41,7 +41,8 @@ export const useProcessOutputRequestForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Process Output Request';
       setError(errorMessage);
-      //console.log('Erro ao carregar Process Output Request');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Process Output Request');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProcessOutputRequestNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProcessOutputRequestList = (dataService: IProcessOutputRequestSe
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar processoutputrequest';
       setError(errorMessage);
-      //console.log('Erro ao carregar processoutputrequest');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar processoutputrequest');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsProcessOutputRequest() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-
+        
 
 
         return { isValid: true, message: '' };

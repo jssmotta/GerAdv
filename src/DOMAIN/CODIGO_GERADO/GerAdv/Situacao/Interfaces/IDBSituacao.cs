@@ -6,7 +6,7 @@ public partial interface IDBSituacao
 {
     public int ID { get; set; }
     public string? FParte_Int { get; set; }
+    public string? FGUID { get; set; }
     public string? FParte_Opo { get; set; }
     public bool FTop { get; set; }
-    public string? FGUID { get; set; }
 }

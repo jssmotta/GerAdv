@@ -14,13 +14,13 @@ public partial interface IGUTAtividadesMatrizWriter
 
 public class GUTAtividadesMatrizWriter(IFGUTAtividadesMatrizFactory gutatividadesmatrizFactory) : IGUTAtividadesMatrizWriter
 {
-    private readonly IFGUTAtividadesMatrizFactory _gutatividadesmatrizFactory = gutatividadesmatrizFactory;
-    public async Task Delete(GUTAtividadesMatrizResponse gutatividadesmatriz, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFGUTAtividadesMatrizFactory _gutatividadesmatrizFactory = gutatividadesmatrizFactory ?? throw new ArgumentNullException(nameof(gutatividadesmatrizFactory));
+    public virtual async Task Delete(GUTAtividadesMatrizResponse gutatividadesmatriz, int operadorId, MsiSqlConnection oCnn)
     {
         await _gutatividadesmatrizFactory.DeleteAsync(operadorId, gutatividadesmatriz.Id, oCnn);
     }
 
-    public async Task<FGUTAtividadesMatriz> WriteAsync(Models.GUTAtividadesMatriz gutatividadesmatriz, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTAtividadesMatriz> WriteAsync(Models.GUTAtividadesMatriz gutatividadesmatriz, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (gutatividadesmatriz.Id.IsEmptyIDNumber() ? _gutatividadesmatrizFactory.CreateAsync() : _gutatividadesmatrizFactory.CreateFromIdAsync(gutatividadesmatriz.Id, oCnn));
         dbRec.FGUTMatriz = gutatividadesmatriz.GUTMatriz;

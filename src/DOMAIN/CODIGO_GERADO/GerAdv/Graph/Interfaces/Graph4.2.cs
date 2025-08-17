@@ -13,6 +13,5 @@ public partial interface IGraphReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     GraphResponseAll? ReadAll(FGraph dbRec, IDataRecord dr);
     GraphResponseAll? ReadAll(SG.GerAdv.DBGraph dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<GraphResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

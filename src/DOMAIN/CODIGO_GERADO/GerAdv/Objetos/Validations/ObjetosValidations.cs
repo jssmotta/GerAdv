@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IObjetosValidation
 {
     Task<bool> ValidateReg(Models.Objetos reg, IObjetosService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ObjetosValidation : IObjetosValidation
 {
-    public async Task<bool> CanDelete(int id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class ObjetosValidation : IObjetosValidation
 
     private bool ValidSizes(Models.Objetos reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBObjetosDicInfo.OjtNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBObjetosDicInfo.OjtNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBObjetosDicInfo.OjtGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBObjetosDicInfo.OjtGUID.FTamanho} caracteres.");
         return true;
     }
 

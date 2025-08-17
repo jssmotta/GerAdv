@@ -79,7 +79,8 @@ export class StatusTarefasService implements IStatusTarefasService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching StatusTarefas list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching StatusTarefas list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class StatusTarefasService implements IStatusTarefasService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online StatusTarefas');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online StatusTarefas');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class StatusTarefasService implements IStatusTarefasService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online StatusTarefas');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online StatusTarefas');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all StatusTarefas:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all StatusTarefas:');
       return [];
     }
   }

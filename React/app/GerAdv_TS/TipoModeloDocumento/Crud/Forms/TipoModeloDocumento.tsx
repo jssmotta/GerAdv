@@ -80,59 +80,60 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar TipoModeloDocumento diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar TipoModeloDocumento diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = tipomodelodocumentoData?.id == 0 ? 'Editar TipoModeloDocumento' : 'Adicionar Tipo Modelo Documento';
-  }
-}, [tipomodelodocumentoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-TipoModeloDocumento' : 'form-container5 form-container-TipoModeloDocumento'}>
-
-    <form className='formInputCadInc' id={`TipoModeloDocumentoForm-${tipomodelodocumentoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='TipoModeloDocumento' data={tipomodelodocumentoData} isSubmitting={isSubmitting} onClose={onClose} formId={`TipoModeloDocumentoForm-${tipomodelodocumentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={tipomodelodocumentoData}
-          className='inputIncNome'
-          name='nome'
-          value={tipomodelodocumentoData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='TipoModeloDocumento' data={tipomodelodocumentoData} isSubmitting={isSubmitting} onClose={onClose} formId={`TipoModeloDocumentoForm-${tipomodelodocumentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/tipomodelodocumento'} id={tipomodelodocumentoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = tipomodelodocumentoData?.id == 0 ? 'Editar TipoModeloDocumento' : 'Adicionar Tipo Modelo Documento';
+    }
+  }, [tipomodelodocumentoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-TipoModeloDocumento' : 'form-container5 form-container-TipoModeloDocumento'}>
+
+      <form className='formInputCadInc' id={`TipoModeloDocumentoForm-${tipomodelodocumentoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='TipoModeloDocumento' data={tipomodelodocumentoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TipoModeloDocumentoForm-${tipomodelodocumentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={tipomodelodocumentoData}
+            className='inputIncNome'
+            name='nome'
+            value={tipomodelodocumentoData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='TipoModeloDocumento' data={tipomodelodocumentoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`TipoModeloDocumentoForm-${tipomodelodocumentoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/tipomodelodocumento'} id={tipomodelodocumentoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

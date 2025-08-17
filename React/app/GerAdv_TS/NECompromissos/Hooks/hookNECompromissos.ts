@@ -41,7 +41,8 @@ export const useNECompromissosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar N E Compromissos';
       setError(errorMessage);
-      //console.log('Erro ao carregar N E Compromissos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar N E Compromissos');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useNECompromissosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useNECompromissosList = (dataService: INECompromissosService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar necompromissos';
       setError(errorMessage);
-      //console.log('Erro ao carregar necompromissos');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar necompromissos');
     } finally {
       setLoading(false);
     }

@@ -41,7 +41,8 @@ export const useHonorariosDadosContratoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Honorarios Dados Contrato';
       setError(errorMessage);
-      //console.log('Erro ao carregar Honorarios Dados Contrato');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Honorarios Dados Contrato');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useHonorariosDadosContratoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useHonorariosDadosContratoList = (dataService: IHonorariosDadosCont
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar honorariosdadoscontrato';
       setError(errorMessage);
-      //console.log('Erro ao carregar honorariosdadoscontrato');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar honorariosdadoscontrato');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsHonorariosDadosContrato() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.arquivocontrato.length > 2048) { 
+        if (data.arquivocontrato.length > 2048) { 
                                              return { isValid: false, message: 'O campo ArquivoContrato não pode ter mais de 2048 caracteres.' };
                                          } 
 if (data.textocontrato.length > 2147483647) { 

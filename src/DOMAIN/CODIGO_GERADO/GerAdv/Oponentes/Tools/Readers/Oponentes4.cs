@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOponentesReader
 {
-    private readonly IFOponentesFactory _oponentesFactory = oponentesFactory;
+    private readonly IFOponentesFactory _oponentesFactory = oponentesFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opoCodigo, opoNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<OponentesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOponentes.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<OponentesResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -55,6 +55,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
+            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -81,7 +82,6 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return oponentes;
     }
@@ -108,6 +108,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
+            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -134,7 +135,6 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return oponentes;
     }
@@ -150,6 +150,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
+            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -176,7 +177,6 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return oponentes;
     }
@@ -192,6 +192,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
+            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -218,7 +219,6 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -242,6 +242,7 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
+            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -268,7 +269,6 @@ public partial class OponentesReader(IFOponentesFactory oponentesFactory) : IOpo
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

@@ -9,6 +9,7 @@ public partial interface IDBClientes
     public string? FIcone { get; set; }
     public string? FNomeMae { get; set; }
     public string? FRGDataExp { get; set; }
+    public string? FGUID { get; set; }
     public bool FInativo { get; set; }
     public string? FQuemIndicou { get; set; }
     public bool FSendEMail { get; set; }
@@ -47,5 +48,4 @@ public partial interface IDBClientes
     public bool FProBono { get; set; }
     public string? FCNH { get; set; }
     public string? FPessoaContato { get; set; }
-    public string? FGUID { get; set; }
 }

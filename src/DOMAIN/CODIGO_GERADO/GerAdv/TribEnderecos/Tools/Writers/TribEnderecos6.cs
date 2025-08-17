@@ -14,13 +14,13 @@ public partial interface ITribEnderecosWriter
 
 public class TribEnderecosWriter(IFTribEnderecosFactory tribenderecosFactory) : ITribEnderecosWriter
 {
-    private readonly IFTribEnderecosFactory _tribenderecosFactory = tribenderecosFactory;
-    public async Task Delete(TribEnderecosResponse tribenderecos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFTribEnderecosFactory _tribenderecosFactory = tribenderecosFactory ?? throw new ArgumentNullException(nameof(tribenderecosFactory));
+    public virtual async Task Delete(TribEnderecosResponse tribenderecos, int operadorId, MsiSqlConnection oCnn)
     {
         await _tribenderecosFactory.DeleteAsync(operadorId, tribenderecos.Id, oCnn);
     }
 
-    public async Task<FTribEnderecos> WriteAsync(Models.TribEnderecos tribenderecos, MsiSqlConnection oCnn)
+    public virtual async Task<FTribEnderecos> WriteAsync(Models.TribEnderecos tribenderecos, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tribenderecos.Id.IsEmptyIDNumber() ? _tribenderecosFactory.CreateAsync() : _tribenderecosFactory.CreateFromIdAsync(tribenderecos.Id, oCnn));
         dbRec.FTribunal = tribenderecos.Tribunal;

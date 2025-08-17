@@ -41,7 +41,8 @@ export const useLigacoesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Ligacoes';
       setError(errorMessage);
-      //console.log('Erro ao carregar Ligacoes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Ligacoes');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useLigacoesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useLigacoesList = (dataService: ILigacoesService, currentFilter?: F
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar ligacoes';
       setError(errorMessage);
-      //console.log('Erro ao carregar ligacoes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar ligacoes');
     } finally {
       setLoading(false);
     }
@@ -228,7 +231,8 @@ if (data.ligarpara.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

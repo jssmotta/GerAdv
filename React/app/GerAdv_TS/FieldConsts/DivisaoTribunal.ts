@@ -7,6 +7,7 @@ export enum FieldsDivisaoTribunal
 	cidade = `Cidade`,
 	foro = `Foro`,
 	tribunal = `Tribunal`,
+	guid = `GUID`,
 	numcodigo = `NumCodigo`,
 	nomeespecial = `NomeEspecial`,
 	codigodiv = `CodigoDiv`,
@@ -17,5 +18,4 @@ export enum FieldsDivisaoTribunal
 	obs = `Obs`,
 	email = `EMail`,
 	andar = `Andar`,
-	guid = `GUID`,
 }

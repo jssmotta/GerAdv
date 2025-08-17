@@ -79,7 +79,8 @@ export class AtividadesService implements IAtividadesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Atividades list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Atividades list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class AtividadesService implements IAtividadesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Atividades');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Atividades');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class AtividadesService implements IAtividadesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Atividades');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Atividades');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Atividades:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Atividades:');
       return [];
     }
   }

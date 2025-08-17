@@ -41,7 +41,8 @@ export const useContatoCRMViewForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Contato C R M View';
       setError(errorMessage);
-      //console.log('Erro ao carregar Contato C R M View');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Contato C R M View');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useContatoCRMViewNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useContatoCRMViewList = (dataService: IContatoCRMViewService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar contatocrmview';
       setError(errorMessage);
-      //console.log('Erro ao carregar contatocrmview');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar contatocrmview');
     } finally {
       setLoading(false);
     }

@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoEnderecoSistemaValidation
 {
     Task<bool> ValidateReg(Models.TipoEnderecoSistema reg, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var enderecosistemaExists0 = await enderecosistemaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id }, uri);
+        var enderecosistemaExists0 = await enderecosistemaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id ?? default }, uri);
         if (enderecosistemaExists0 != null && enderecosistemaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
 
     private bool ValidSizes(Models.TipoEnderecoSistema reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 150)
-            throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTipoEnderecoSistemaDicInfo.TesNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTipoEnderecoSistemaDicInfo.TesNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTipoEnderecoSistemaDicInfo.TesGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTipoEnderecoSistemaDicInfo.TesGUID.FTamanho} caracteres.");
         return true;
     }
 

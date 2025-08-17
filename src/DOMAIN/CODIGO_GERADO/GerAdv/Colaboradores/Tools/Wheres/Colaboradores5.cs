@@ -13,7 +13,7 @@ public partial interface IColaboradoresWhere
 
 public partial class ColaboradoresWhere(IFColaboradoresFactory colaboradoresFactory) : IColaboradoresWhere
 {
-    private readonly IFColaboradoresFactory _colaboradoresFactory = colaboradoresFactory;
+    private readonly IFColaboradoresFactory _colaboradoresFactory = colaboradoresFactory ?? throw new ArgumentNullException(nameof(colaboradoresFactory));
     public ColaboradoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _colaboradoresFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

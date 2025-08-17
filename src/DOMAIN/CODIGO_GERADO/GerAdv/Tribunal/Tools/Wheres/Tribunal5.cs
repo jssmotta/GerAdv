@@ -13,7 +13,7 @@ public partial interface ITribunalWhere
 
 public partial class TribunalWhere(IFTribunalFactory tribunalFactory) : ITribunalWhere
 {
-    private readonly IFTribunalFactory _tribunalFactory = tribunalFactory;
+    private readonly IFTribunalFactory _tribunalFactory = tribunalFactory ?? throw new ArgumentNullException(nameof(tribunalFactory));
     public TribunalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tribunalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -22,12 +22,12 @@ public partial class TribunalWhere(IFTribunalFactory tribunalFactory) : ITribuna
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return tribunal;
     }

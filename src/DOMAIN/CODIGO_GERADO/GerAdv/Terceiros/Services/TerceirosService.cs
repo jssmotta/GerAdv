@@ -95,18 +95,18 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         }
     }
 
-    private async Task<TerceirosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<TerceirosResponse?> AddAndUpdate([FromBody] Models.Terceiros regTerceiros, [FromRoute, Required] string uri)
+    private async Task<TerceirosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<TerceirosResponse?> AddAndUpdate([FromBody] Models.Terceiros? regTerceiros, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Terceiros: URI inválida");
-        }
-
         if (regTerceiros == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Terceiros: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
             var validade = await validation.ValidateReg(regTerceiros, this, posicaooutraspartesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<TerceirosResponse?> Validation([FromBody] Models.Terceiros regTerceiros, [FromRoute, Required] string uri)
+    public async Task<TerceirosResponse?> Validation([FromBody] Models.Terceiros? regTerceiros, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Terceiros: URI inválida");
-        }
-
         if (regTerceiros == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Terceiros: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
             var validade = await validation.ValidateReg(regTerceiros, this, posicaooutraspartesReader, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regTerceiros.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         return await reader.Read(regTerceiros.Id, oCnn);
     }
 
-    public async Task<TerceirosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<TerceirosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Terceiros: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var terceiros = await reader.Read(id, oCnn);
+        var terceiros = await reader.Read(id ?? default, oCnn);
         try
         {
             if (terceiros != null)
@@ -238,7 +238,7 @@ public partial class TerceirosService(IOptions<AppSettings> appSettings, IFTerce
         return terceiros;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

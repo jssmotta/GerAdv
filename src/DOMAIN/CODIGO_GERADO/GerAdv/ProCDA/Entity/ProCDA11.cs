@@ -54,7 +54,7 @@ public partial class FProCDAFactory : IFProCDAFactory, IDisposable
             throw new ObjectDisposedException(nameof(FProCDAFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

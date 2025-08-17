@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class ClientesHealthCheck(IOptions<AppSettings> appSettings, ClientesService clientesService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class ClientesHealthCheck(IOptions<AppSettings> appSettings, ClientesServ
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) cliEmpresa,cliIcone,cliNomeMae,cliRGDataExp,cliInativo,cliQuemIndicou,cliSendEMail,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliObito,cliNomePai,cliRGOExpeditor,cliRegimeTributacao,cliEnquadramentoEmpresa,cliReportECBOnly,cliProBono,cliCNH,cliPessoaContato,cliGUID FROM {"Clientes".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) cliEmpresa,cliIcone,cliNomeMae,cliRGDataExp,cliGUID,cliInativo,cliQuemIndicou,cliSendEMail,cliNome,cliAdv,cliIDRep,cliJuridica,cliNomeFantasia,cliClass,cliTipo,cliDtNasc,cliInscEst,cliQualificacao,cliSexo,cliIdade,cliCNPJ,cliCPF,cliRG,cliTipoCaptacao,cliObservacao,cliEndereco,cliBairro,cliCidade,cliCEP,cliFax,cliFone,cliData,cliHomePage,cliEMail,cliObito,cliNomePai,cliRGOExpeditor,cliRegimeTributacao,cliEnquadramentoEmpresa,cliReportECBOnly,cliProBono,cliCNH,cliPessoaContato FROM {"Clientes".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class ClientesHealthCheck(IOptions<AppSettings> appSettings, ClientesServ
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

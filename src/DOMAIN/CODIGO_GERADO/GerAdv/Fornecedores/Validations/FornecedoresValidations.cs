@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IFornecedoresValidation
 {
     Task<bool> ValidateReg(Models.Fornecedores reg, IFornecedoresService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FornecedoresValidation : IFornecedoresValidation
 {
-    public async Task<bool> CanDelete(int id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { Fornecedor = id }, uri);
+        var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { Fornecedor = id ?? default }, uri);
         if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.");
         return true;
@@ -29,26 +29,26 @@ public class FornecedoresValidation : IFornecedoresValidation
 
     private bool ValidSizes(Models.Fornecedores reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
-            throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.InscEst != null && reg.InscEst.Length > 15)
-            throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 150)
-            throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBFornecedoresDicInfo.ForNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBFornecedoresDicInfo.ForNome.FTamanho} caracteres.");
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > DBFornecedoresDicInfo.ForCNPJ.FTamanho)
+            throw new SGValidationException($"CNPJ deve ter no máximo {DBFornecedoresDicInfo.ForCNPJ.FTamanho} caracteres.");
+        if (reg.InscEst != null && reg.InscEst.Length > DBFornecedoresDicInfo.ForInscEst.FTamanho)
+            throw new SGValidationException($"InscEst deve ter no máximo {DBFornecedoresDicInfo.ForInscEst.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBFornecedoresDicInfo.ForCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBFornecedoresDicInfo.ForCPF.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBFornecedoresDicInfo.ForRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBFornecedoresDicInfo.ForRG.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBFornecedoresDicInfo.ForEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBFornecedoresDicInfo.ForEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBFornecedoresDicInfo.ForBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBFornecedoresDicInfo.ForBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBFornecedoresDicInfo.ForCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBFornecedoresDicInfo.ForCEP.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBFornecedoresDicInfo.ForSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBFornecedoresDicInfo.ForSite.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBFornecedoresDicInfo.ForGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBFornecedoresDicInfo.ForGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -61,8 +61,10 @@ public class FornecedoresValidation : IFornecedoresValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.Email.Length > 0 && !reg.Email.IsValidEmail())
+        if (reg.Email != null && reg.Email.Length > 0 && !reg.Email.IsValidEmail())
             throw new SGValidationException($"Email em formato inválido.");
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -76,6 +78,8 @@ public class FornecedoresValidation : IFornecedoresValidation
             }
         }
 
+        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+            throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Fornecedor com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade

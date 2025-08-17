@@ -81,188 +81,189 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar AgendaRelatorio diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar AgendaRelatorio diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = agendarelatorioData?.id == 0 ? 'Editar AgendaRelatorio' : 'Adicionar Agenda Relatorio';
-  }
-}, [agendarelatorioData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-AgendaRelatorio' : 'form-container form-container-AgendaRelatorio'}>
-
-    <form className='formInputCadInc' id={`AgendaRelatorioForm-${agendarelatorioData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AgendaRelatorio' data={agendarelatorioData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRelatorioForm-${agendarelatorioData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='campo'
-          label='advNome'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='campo'
-          value={agendarelatorioData.campo}
-          placeholder={`Informe advNome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='vqadata'
-          label='Data'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='vqadata'
-          value={agendarelatorioData.vqadata}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='vqaprocesso'
-          label='Processo'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='vqaprocesso'
-          value={agendarelatorioData.vqaprocesso}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={60}
-          id='xxxparanome'
-          label='ParaNome'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxparanome'
-          value={agendarelatorioData.xxxparanome}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='xxxparapessoas'
-          label='ParaPessoas'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxparapessoas'
-          value={agendarelatorioData.xxxparapessoas}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='xxxboxaudiencia'
-          label='BoxAudiencia'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxboxaudiencia'
-          value={agendarelatorioData.xxxboxaudiencia}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={2147483647}
-          id='xxxboxaudienciamobile'
-          label='BoxAudienciaMobile'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxboxaudienciamobile'
-          value={agendarelatorioData.xxxboxaudienciamobile}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={50}
-          id='xxxnomeadvogado'
-          label='NomeAdvogado'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxnomeadvogado'
-          value={agendarelatorioData.xxxnomeadvogado}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={40}
-          id='xxxnomeforo'
-          label='NomeForo'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxnomeforo'
-          value={agendarelatorioData.xxxnomeforo}
-          onChange={onChange}
-          />
-
-        </div><div className='grid-container'>
-          <InputInput
-          type='text'
-          maxLength={50}
-          id='xxxnomejustica'
-          label='NomeJustica'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxnomejustica'
-          value={agendarelatorioData.xxxnomejustica}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={40}
-          id='xxxnomearea'
-          label='NomeArea'
-          dataForm={agendarelatorioData}
-          className='inputIncNome'
-          name='xxxnomearea'
-          value={agendarelatorioData.xxxnomearea}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRelatorio' data={agendarelatorioData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaRelatorioForm-${agendarelatorioData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/agendarelatorio'} id={agendarelatorioData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = agendarelatorioData?.id == 0 ? 'Editar AgendaRelatorio' : 'Adicionar Agenda Relatorio';
+    }
+  }, [agendarelatorioData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-AgendaRelatorio' : 'form-container form-container-AgendaRelatorio'}>
+
+      <form className='formInputCadInc' id={`AgendaRelatorioForm-${agendarelatorioData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='AgendaRelatorio' data={agendarelatorioData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AgendaRelatorioForm-${agendarelatorioData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='campo'
+            label='advNome'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='campo'
+            value={agendarelatorioData.campo}
+            placeholder={`Informe advNome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='vqadata'
+            label='Data'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='vqadata'
+            value={agendarelatorioData.vqadata}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='vqaprocesso'
+            label='Processo'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='vqaprocesso'
+            value={agendarelatorioData.vqaprocesso}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={60}
+            id='xxxparanome'
+            label='ParaNome'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxparanome'
+            value={agendarelatorioData.xxxparanome}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='xxxparapessoas'
+            label='ParaPessoas'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxparapessoas'
+            value={agendarelatorioData.xxxparapessoas}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='xxxboxaudiencia'
+            label='BoxAudiencia'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxboxaudiencia'
+            value={agendarelatorioData.xxxboxaudiencia}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={2147483647}
+            id='xxxboxaudienciamobile'
+            label='BoxAudienciaMobile'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxboxaudienciamobile'
+            value={agendarelatorioData.xxxboxaudienciamobile}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={50}
+            id='xxxnomeadvogado'
+            label='NomeAdvogado'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxnomeadvogado'
+            value={agendarelatorioData.xxxnomeadvogado}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={40}
+            id='xxxnomeforo'
+            label='NomeForo'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxnomeforo'
+            value={agendarelatorioData.xxxnomeforo}
+            onChange={onChange}
+            />
+
+          </div><div className='grid-container'>
+            <InputInput
+            type='text'
+            maxLength={50}
+            id='xxxnomejustica'
+            label='NomeJustica'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxnomejustica'
+            value={agendarelatorioData.xxxnomejustica}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={40}
+            id='xxxnomearea'
+            label='NomeArea'
+            dataForm={agendarelatorioData}
+            className='inputIncNome'
+            name='xxxnomearea'
+            value={agendarelatorioData.xxxnomearea}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='AgendaRelatorio' data={agendarelatorioData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AgendaRelatorioForm-${agendarelatorioData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/agendarelatorio'} id={agendarelatorioData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

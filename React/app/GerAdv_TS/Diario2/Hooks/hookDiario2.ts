@@ -41,7 +41,8 @@ export const useDiario2Form = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Diário';
       setError(errorMessage);
-      //console.log('Erro ao carregar Diário');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Diário');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useDiario2Notifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useDiario2List = (dataService: IDiario2Service, currentFilter?: Fil
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar diario2';
       setError(errorMessage);
-      //console.log('Erro ao carregar diario2');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar diario2');
     } finally {
       setLoading(false);
     }

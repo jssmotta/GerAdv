@@ -79,7 +79,8 @@ export class ForoService implements IForoService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Foro list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Foro list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class ForoService implements IForoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Foro');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Foro');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class ForoService implements IForoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Foro');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Foro');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Foro:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Foro:');
       return [];
     }
   }

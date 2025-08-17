@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ICargosEscClassValidation
 {
     Task<bool> ValidateReg(Models.CargosEscClass reg, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class CargosEscClassValidation : ICargosEscClassValidation
 {
-    public async Task<bool> CanDelete(int id, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ICargosEscClassService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class CargosEscClassValidation : ICargosEscClassValidation
 
     private bool ValidSizes(Models.CargosEscClass reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBCargosEscClassDicInfo.CecNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBCargosEscClassDicInfo.CecNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBCargosEscClassDicInfo.CecGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBCargosEscClassDicInfo.CecGUID.FTamanho} caracteres.");
         return true;
     }
 

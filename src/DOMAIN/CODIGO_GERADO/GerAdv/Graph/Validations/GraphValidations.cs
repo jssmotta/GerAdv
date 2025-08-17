@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGraphValidation
 {
     Task<bool> ValidateReg(Models.Graph reg, IGraphService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGraphService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGraphService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GraphValidation : IGraphValidation
 {
-    public async Task<bool> CanDelete(int id, IGraphService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGraphService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class GraphValidation : IGraphValidation
 
     private bool ValidSizes(Models.Graph reg)
     {
-        if (reg.Tabela != null && reg.Tabela.Length > 80)
-            throw new SGValidationException($"Tabela deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Tabela != null && reg.Tabela.Length > DBGraphDicInfo.GphTabela.FTamanho)
+            throw new SGValidationException($"Tabela deve ter no máximo {DBGraphDicInfo.GphTabela.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGraphDicInfo.GphGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGraphDicInfo.GphGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -37,10 +37,6 @@ public class GraphValidation : IGraphValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
-        if (await IsDuplicado(reg, service, uri))
-            throw new SGValidationException($"Graph '{reg.GUID}' Tabela e/ou TabelaId");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -48,16 +44,9 @@ public class GraphValidation : IGraphValidation
             throw new SGValidationException("Tabela é obrigatório.");
         if (reg.TabelaId == 0)
             throw new SGValidationException("TabelaId é obrigatório.");
-        if (reg.Imagem.Length == 0)
-            throw new SGValidationException("Imagem é obrigatório.");
         if (reg.GUID.IsEmpty())
             throw new SGValidationException("GUID é obrigatório.");
+        await Task.Delay(0);
         return true;
-    }
-
-    private async Task<bool> IsDuplicado(Models.Graph reg, IGraphService service, string uri)
-    {
-        var existingGraph = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGraph { Tabela = reg.Tabela, TabelaId = reg.TabelaId }, uri)).FirstOrDefault(); // TRACK 10042025
-        return existingGraph != null && existingGraph.Id > 0 && existingGraph.Id != reg.Id;
     }
 }

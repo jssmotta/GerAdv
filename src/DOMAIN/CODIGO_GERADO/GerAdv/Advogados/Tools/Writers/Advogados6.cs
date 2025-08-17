@@ -14,13 +14,13 @@ public partial interface IAdvogadosWriter
 
 public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWriter
 {
-    private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory;
-    public async Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException(nameof(advogadosFactory));
+    public virtual async Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection oCnn)
     {
         await _advogadosFactory.DeleteAsync(operadorId, advogados.Id, oCnn);
     }
 
-    public async Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (advogados.Id.IsEmptyIDNumber() ? _advogadosFactory.CreateAsync() : _advogadosFactory.CreateFromIdAsync(advogados.Id, oCnn));
         dbRec.FCargo = advogados.Cargo;
@@ -31,6 +31,7 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         dbRec.FCasa = advogados.Casa;
         dbRec.FNomeMae = advogados.NomeMae;
         dbRec.FEscritorio = advogados.Escritorio;
+        dbRec.FGUID = advogados.GUID;
         dbRec.FEstagiario = advogados.Estagiario;
         dbRec.FOAB = advogados.OAB;
         dbRec.FNomeCompleto = advogados.NomeCompleto;
@@ -61,7 +62,6 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         dbRec.FParcTop = advogados.ParcTop;
         dbRec.FClass = advogados.Class;
         dbRec.FTop = advogados.Top;
-        dbRec.FGUID = advogados.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

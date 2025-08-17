@@ -54,7 +54,7 @@ public partial class FCargosEscClassFactory : IFCargosEscClassFactory, IDisposab
             throw new ObjectDisposedException(nameof(FCargosEscClassFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

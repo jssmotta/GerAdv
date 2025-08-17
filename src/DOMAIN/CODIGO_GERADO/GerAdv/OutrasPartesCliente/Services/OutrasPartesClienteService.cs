@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class OutrasPartesClienteService(IOptions<AppSettings> appSettings, IFOutrasPartesClienteFactory outraspartesclienteFactory, IOutrasPartesClienteReader reader, IOutrasPartesClienteValidation validation, IOutrasPartesClienteWriter writer, ICidadeReader cidadeReader, IParteClienteOutrasService parteclienteoutrasService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOutrasPartesClienteService, IDisposable
+public partial class OutrasPartesClienteService(IOptions<AppSettings> appSettings, IFOutrasPartesClienteFactory outraspartesclienteFactory, IOutrasPartesClienteReader reader, IOutrasPartesClienteValidation validation, IOutrasPartesClienteWriter writer, ICidadeReader cidadeReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOutrasPartesClienteService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -18,7 +18,6 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
     private readonly IOutrasPartesClienteValidation validation = validation;
     private readonly IOutrasPartesClienteWriter writer = writer;
     private readonly ICidadeReader cidadeReader = cidadeReader;
-    private readonly IParteClienteOutrasService parteclienteoutrasService = parteclienteoutrasService;
     public async Task<IEnumerable<OutrasPartesClienteResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -95,18 +94,18 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         }
     }
 
-    private async Task<OutrasPartesClienteResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<OutrasPartesClienteResponse?> AddAndUpdate([FromBody] Models.OutrasPartesCliente regOutrasPartesCliente, [FromRoute, Required] string uri)
+    private async Task<OutrasPartesClienteResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<OutrasPartesClienteResponse?> AddAndUpdate([FromBody] Models.OutrasPartesCliente? regOutrasPartesCliente, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("OutrasPartesCliente: URI inválida");
-        }
-
         if (regOutrasPartesCliente == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("OutrasPartesCliente: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +119,7 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regOutrasPartesCliente, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +128,7 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +136,17 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<OutrasPartesClienteResponse?> Validation([FromBody] Models.OutrasPartesCliente regOutrasPartesCliente, [FromRoute, Required] string uri)
+    public async Task<OutrasPartesClienteResponse?> Validation([FromBody] Models.OutrasPartesCliente? regOutrasPartesCliente, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("OutrasPartesCliente: URI inválida");
-        }
-
         if (regOutrasPartesCliente == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("OutrasPartesCliente: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +160,7 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
             var validade = await validation.ValidateReg(regOutrasPartesCliente, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +169,7 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regOutrasPartesCliente.Id.IsEmptyIDNumber())
@@ -181,17 +180,17 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         return await reader.Read(regOutrasPartesCliente.Id, oCnn);
     }
 
-    public async Task<OutrasPartesClienteResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<OutrasPartesClienteResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("OutrasPartesCliente: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -203,10 +202,10 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, parteclienteoutrasService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +214,10 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var outraspartescliente = await reader.Read(id, oCnn);
+        var outraspartescliente = await reader.Read(id ?? default, oCnn);
         try
         {
             if (outraspartescliente != null)
@@ -238,7 +237,7 @@ public partial class OutrasPartesClienteService(IOptions<AppSettings> appSetting
         return outraspartescliente;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

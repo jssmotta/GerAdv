@@ -9,22 +9,22 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoCompromissoValidation
 {
     Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoCompromissoValidation : ITipoCompromissoValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { TipoCompromisso = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { TipoCompromisso = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var necompromissosExists1 = await necompromissosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNECompromissos { TipoCompromisso = id }, uri);
+        var necompromissosExists1 = await necompromissosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNECompromissos { TipoCompromisso = id ?? default }, uri);
         if (necompromissosExists1 != null && necompromissosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Compromissos associados a ele.");
         return true;
@@ -32,10 +32,10 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
 
     private bool ValidSizes(Models.TipoCompromisso reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 100)
-            throw new SGValidationException($"Descricao deve ter no máximo 100 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBTipoCompromissoDicInfo.TipDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBTipoCompromissoDicInfo.TipDescricao.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTipoCompromissoDicInfo.TipGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTipoCompromissoDicInfo.TipGUID.FTamanho} caracteres.");
         return true;
     }
 

@@ -14,13 +14,13 @@ public partial interface IOutrasPartesClienteWriter
 
 public class OutrasPartesClienteWriter(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteWriter
 {
-    private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory;
-    public async Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException(nameof(outraspartesclienteFactory));
+    public virtual async Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection oCnn)
     {
         await _outraspartesclienteFactory.DeleteAsync(operadorId, outraspartescliente.Id, oCnn);
     }
 
-    public async Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (outraspartescliente.Id.IsEmptyIDNumber() ? _outraspartesclienteFactory.CreateAsync() : _outraspartesclienteFactory.CreateFromIdAsync(outraspartescliente.Id, oCnn));
         dbRec.FNome = outraspartescliente.Nome;
@@ -43,8 +43,8 @@ public class OutrasPartesClienteWriter(IFOutrasPartesClienteFactory outraspartes
         dbRec.FFax = outraspartescliente.Fax;
         dbRec.FEMail = outraspartescliente.EMail;
         dbRec.FSite = outraspartescliente.Site;
-        dbRec.FClass = outraspartescliente.Class;
         dbRec.FGUID = outraspartescliente.GUID;
+        dbRec.FClass = outraspartescliente.Class;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

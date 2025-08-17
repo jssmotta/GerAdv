@@ -92,7 +92,8 @@ export class AgendaRelatorioService implements IAgendaRelatorioService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online AgendaRelatorio');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online AgendaRelatorio');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -102,12 +103,14 @@ export class AgendaRelatorioService implements IAgendaRelatorioService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online AgendaRelatorio');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online AgendaRelatorio');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all AgendaRelatorio:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all AgendaRelatorio:');
       return [];
     }
   }

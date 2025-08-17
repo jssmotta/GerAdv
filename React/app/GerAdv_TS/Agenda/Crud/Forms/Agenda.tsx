@@ -90,621 +90,631 @@ if (getParamFromUrl('cidade') > 0) {
       setNomeCidade(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    agendaData.cidade = getParamFromUrl('cidade');
+      agendaData.cidade = getParamFromUrl('cidade');
+    }
   }
-}
 
-if (getParamFromUrl('advogados') > 0) {
-  if (agendaData.id === 0 && agendaData.advogado == 0) {
-    advogadosApi
-    .getById(getParamFromUrl('advogados'))
-    .then((response) => {
-      setNomeAdvogados(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('advogados') > 0) {
+    if (agendaData.id === 0 && agendaData.advogado == 0) {
+      advogadosApi
+      .getById(getParamFromUrl('advogados'))
+      .then((response) => {
+        setNomeAdvogados(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    agendaData.advogado = getParamFromUrl('advogados');
-  }
-}
+        agendaData.advogado = getParamFromUrl('advogados');
+      }
+    }
 
-if (getParamFromUrl('funcionarios') > 0) {
-  if (agendaData.id === 0 && agendaData.funcionario == 0) {
-    funcionariosApi
-    .getById(getParamFromUrl('funcionarios'))
-    .then((response) => {
-      setNomeFuncionarios(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('funcionarios') > 0) {
+      if (agendaData.id === 0 && agendaData.funcionario == 0) {
+        funcionariosApi
+        .getById(getParamFromUrl('funcionarios'))
+        .then((response) => {
+          setNomeFuncionarios(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    agendaData.funcionario = getParamFromUrl('funcionarios');
-  }
-}
+          agendaData.funcionario = getParamFromUrl('funcionarios');
+        }
+      }
 
-if (getParamFromUrl('tipocompromisso') > 0) {
-  if (agendaData.id === 0 && agendaData.tipocompromisso == 0) {
-    tipocompromissoApi
-    .getById(getParamFromUrl('tipocompromisso'))
-    .then((response) => {
-      setNomeTipoCompromisso(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (getParamFromUrl('tipocompromisso') > 0) {
+        if (agendaData.id === 0 && agendaData.tipocompromisso == 0) {
+          tipocompromissoApi
+          .getById(getParamFromUrl('tipocompromisso'))
+          .then((response) => {
+            setNomeTipoCompromisso(response.data.descricao);
+          })
+          .catch((error) => {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Error unexpected');
+            });
 
-    agendaData.tipocompromisso = getParamFromUrl('tipocompromisso');
-  }
-}
+            agendaData.tipocompromisso = getParamFromUrl('tipocompromisso');
+          }
+        }
 
-if (getParamFromUrl('clientes') > 0) {
-  if (agendaData.id === 0 && agendaData.cliente == 0) {
-    clientesApi
-    .getById(getParamFromUrl('clientes'))
-    .then((response) => {
-      setNomeClientes(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+        if (getParamFromUrl('clientes') > 0) {
+          if (agendaData.id === 0 && agendaData.cliente == 0) {
+            clientesApi
+            .getById(getParamFromUrl('clientes'))
+            .then((response) => {
+              setNomeClientes(response.data.nome);
+            })
+            .catch((error) => {
+              if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error unexpected');
+              });
 
-    agendaData.cliente = getParamFromUrl('clientes');
-  }
-}
+              agendaData.cliente = getParamFromUrl('clientes');
+            }
+          }
 
-if (getParamFromUrl('area') > 0) {
-  if (agendaData.id === 0 && agendaData.area == 0) {
-    areaApi
-    .getById(getParamFromUrl('area'))
-    .then((response) => {
-      setNomeArea(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+          if (getParamFromUrl('area') > 0) {
+            if (agendaData.id === 0 && agendaData.area == 0) {
+              areaApi
+              .getById(getParamFromUrl('area'))
+              .then((response) => {
+                setNomeArea(response.data.descricao);
+              })
+              .catch((error) => {
+                if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                  console.log('Error unexpected');
+                });
 
-    agendaData.area = getParamFromUrl('area');
-  }
-}
+                agendaData.area = getParamFromUrl('area');
+              }
+            }
 
-if (getParamFromUrl('justica') > 0) {
-  if (agendaData.id === 0 && agendaData.justica == 0) {
-    justicaApi
-    .getById(getParamFromUrl('justica'))
-    .then((response) => {
-      setNomeJustica(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+            if (getParamFromUrl('justica') > 0) {
+              if (agendaData.id === 0 && agendaData.justica == 0) {
+                justicaApi
+                .getById(getParamFromUrl('justica'))
+                .then((response) => {
+                  setNomeJustica(response.data.nome);
+                })
+                .catch((error) => {
+                  if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                    console.log('Error unexpected');
+                  });
 
-    agendaData.justica = getParamFromUrl('justica');
-  }
-}
+                  agendaData.justica = getParamFromUrl('justica');
+                }
+              }
 
-if (getParamFromUrl('operador') > 0) {
-  if (agendaData.id === 0 && agendaData.usuario == 0) {
-    operadorApi
-    .getById(getParamFromUrl('operador'))
-    .then((response) => {
-      setNomeOperador(response.data.rnome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+              if (getParamFromUrl('operador') > 0) {
+                if (agendaData.id === 0 && agendaData.usuario == 0) {
+                  operadorApi
+                  .getById(getParamFromUrl('operador'))
+                  .then((response) => {
+                    setNomeOperador(response.data.rnome);
+                  })
+                  .catch((error) => {
+                    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                      console.log('Error unexpected');
+                    });
 
-    agendaData.usuario = getParamFromUrl('operador');
-  }
-}
+                    agendaData.usuario = getParamFromUrl('operador');
+                  }
+                }
 
-if (getParamFromUrl('prepostos') > 0) {
-  if (agendaData.id === 0 && agendaData.preposto == 0) {
-    prepostosApi
-    .getById(getParamFromUrl('prepostos'))
-    .then((response) => {
-      setNomePrepostos(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+                if (getParamFromUrl('prepostos') > 0) {
+                  if (agendaData.id === 0 && agendaData.preposto == 0) {
+                    prepostosApi
+                    .getById(getParamFromUrl('prepostos'))
+                    .then((response) => {
+                      setNomePrepostos(response.data.nome);
+                    })
+                    .catch((error) => {
+                      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                        console.log('Error unexpected');
+                      });
 
-    agendaData.preposto = getParamFromUrl('prepostos');
-  }
-}
-const addValorCidade = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cidade', value: e.id } });
-  };
-  const addValorAdvogado = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'advogado', value: e.id } });
-    };
-    const addValorFuncionario = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'funcionario', value: e.id } });
-      };
-      const addValorTipoCompromisso = (e: any) => {
-        if (e?.id>0)
-          onChange({ target: { name: 'tipocompromisso', value: e.id } });
-        };
-        const addValorCliente = (e: any) => {
-          if (e?.id>0)
-            onChange({ target: { name: 'cliente', value: e.id } });
-          };
-          const addValorArea = (e: any) => {
-            if (e?.id>0)
-              onChange({ target: { name: 'area', value: e.id } });
-            };
-            const addValorJustica = (e: any) => {
-              if (e?.id>0)
-                onChange({ target: { name: 'justica', value: e.id } });
-              };
-              const addValorUsuario = (e: any) => {
-                if (e?.id>0)
-                  onChange({ target: { name: 'usuario', value: e.id } });
-                };
-                const addValorPreposto = (e: any) => {
-                  if (e?.id>0)
-                    onChange({ target: { name: 'preposto', value: e.id } });
-                  };
-                  const onConfirm = (e: React.FormEvent) => {
-                    e.preventDefault();
-                    if (e.stopPropagation) e.stopPropagation();
-
-                      if (!isSubmitting) {
-                        setIsSubmitting(true);
-
-                        try {
-                          onSubmit(e);
-                        } catch (error) {
-                        console.log('Erro ao submeter formulário de Agenda:');
-                        setIsSubmitting(false);
-                        if (onError) onError();
-                        }
-                      }
+                      agendaData.preposto = getParamFromUrl('prepostos');
+                    }
+                  }
+                  const addValorCidade = (e: any) => {
+                    if (e?.id>0)
+                      onChange({ target: { name: 'cidade', value: e.id } });
                     };
-                    const handleCancel = () => {
-                      if (onReload) {
-                        onReload(); // Recarrega os dados originais
-                      } else {
-                      onClose(); // Comportamento padrão se não há callback de recarga
-                    }
-                  };
+                    const addValorAdvogado = (e: any) => {
+                      if (e?.id>0)
+                        onChange({ target: { name: 'advogado', value: e.id } });
+                      };
+                      const addValorFuncionario = (e: any) => {
+                        if (e?.id>0)
+                          onChange({ target: { name: 'funcionario', value: e.id } });
+                        };
+                        const addValorTipoCompromisso = (e: any) => {
+                          if (e?.id>0)
+                            onChange({ target: { name: 'tipocompromisso', value: e.id } });
+                          };
+                          const addValorCliente = (e: any) => {
+                            if (e?.id>0)
+                              onChange({ target: { name: 'cliente', value: e.id } });
+                            };
+                            const addValorArea = (e: any) => {
+                              if (e?.id>0)
+                                onChange({ target: { name: 'area', value: e.id } });
+                              };
+                              const addValorJustica = (e: any) => {
+                                if (e?.id>0)
+                                  onChange({ target: { name: 'justica', value: e.id } });
+                                };
+                                const addValorUsuario = (e: any) => {
+                                  if (e?.id>0)
+                                    onChange({ target: { name: 'usuario', value: e.id } });
+                                  };
+                                  const addValorPreposto = (e: any) => {
+                                    if (e?.id>0)
+                                      onChange({ target: { name: 'preposto', value: e.id } });
+                                    };
+                                    const onConfirm = (e: React.FormEvent) => {
+                                      e.preventDefault();
+                                      if (e.stopPropagation) e.stopPropagation();
 
-                  const handleDirectSave = () => {
-                    if (!isSubmitting) {
-                      setIsSubmitting(true);
+                                        if (!isSubmitting) {
+                                          setIsSubmitting(true);
 
-                      try {
-                        const syntheticEvent = {
-                          preventDefault: () => { }, 
-                          target: document.getElementById(`AgendaForm-${agendaData.id}`)
-                        } as unknown as React.FormEvent;
+                                          try {
+                                            onSubmit(e);
+                                          } catch (error) {
+                                          console.log('Erro ao submeter formulário de Agenda:');
+                                          setIsSubmitting(false);
+                                          if (onError) onError();
+                                          }
+                                        }
+                                      };
+                                      const handleCancel = () => {
+                                        if (onReload) {
+                                          onReload(); // Recarrega os dados originais
+                                        } else {
+                                        onClose(); // Comportamento padrão se não há callback de recarga
+                                      }
+                                    };
 
-                        onSubmit(syntheticEvent);
-                      } catch (error) {
-                      console.log('Erro ao salvar Agenda diretamente');
-                      setIsSubmitting(false);
-                      if (onError) onError();
-                      }
-                    }
-                  };
-                  useEffect(() => {
-                    const el = document.querySelector('.nameFormMobile');
-                    if (el) {
-                      el.textContent = agendaData?.id == 0 ? 'Editar Agenda' : 'Adicionar Compromisso';
-                    }
-                  }, [agendaData.id]);
-                  return (
-                  <>
-                  {!isMobile ? <style jsx global>{`
-                    @media (max-width: 1366px) {
-                      html {
-                        zoom: 0.8 !important;
-                      }
-                    }
-                    `}</style> : null}
+                                    const handleDirectSave = () => {
+                                      if (!isSubmitting) {
+                                        setIsSubmitting(true);
 
-                    <div className={isMobile ? 'form-container form-container-Agenda' : 'form-container form-container-Agenda'}>
+                                        try {
+                                          const syntheticEvent = {
+                                            preventDefault: () => { }, 
+                                            target: document.getElementById(`AgendaForm-${agendaData.id}`)
+                                          } as unknown as React.FormEvent;
 
-                      <form className='formInputCadInc' id={`AgendaForm-${agendaData.id}`} onSubmit={onConfirm}>
-                        {!isMobile && (
-                          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Agenda' data={agendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                          )}
-                          <div className='grid-container'>
+                                          onSubmit(syntheticEvent);
+                                        } catch (error) {
+                                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                                          console.log('Erro ao salvar Agenda diretamente');
+                                          setIsSubmitting(false);
+                                          if (onError) onError();
+                                          }
+                                        }
+                                      };
+                                      useEffect(() => {
+                                        const el = document.querySelector('.nameFormMobile');
+                                        if (el) {
+                                          el.textContent = agendaData?.id == 0 ? 'Editar Agenda' : 'Adicionar Compromisso';
+                                        }
+                                      }, [agendaData.id]);
+                                      return (
+                                      <>
+                                      {!isMobile ? <style jsx global>{`
+                                        @media (max-width: 1366px) {
+                                          html {
+                                            zoom: 0.8 !important;
+                                          }
+                                        }
+                                        `}</style> : null}
 
-                            <InputName
-                            type='text'
-                            id='data'
-                            label='Data'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='data'
-                            value={agendaData.data}
-                            placeholder={`Informe Data`}
-                            onChange={onChange}
-                            required
-                            />
+                                        <div className={isMobile ? 'form-container form-container-Agenda' : 'form-container form-container-Agenda'}>
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='idcob'
-                            label='IDCOB'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='idcob'
-                            value={agendaData.idcob}
-                            onChange={onChange}
-                            />
+                                          <form className='formInputCadInc' id={`AgendaForm-${agendaData.id}`} onSubmit={onConfirm}>
+                                            {!isMobile && (
+                                              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Agenda' data={agendaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                                              )}
+                                              <div className='grid-container'>
 
-                            <InputCheckbox dataForm={agendaData} label='ClienteAvisado' name='clienteavisado' checked={agendaData.clienteavisado} onChange={onChange} />
-                            <InputCheckbox dataForm={agendaData} label='RevisarP2' name='revisarp2' checked={agendaData.revisarp2} onChange={onChange} />
+                                                <InputName
+                                                type='text'
+                                                id='data'
+                                                label='Data'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='data'
+                                                value={agendaData.data}
+                                                placeholder={`Informe Data`}
+                                                onChange={onChange}
+                                                required
+                                                />
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='idne'
-                            label='IDNE'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='idne'
-                            value={agendaData.idne}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='idcob'
+                                                label='IDCOB'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='idcob'
+                                                value={agendaData.idcob}
+                                                onChange={onChange}
+                                                />
 
+                                                <InputCheckbox dataForm={agendaData} label='ClienteAvisado' name='clienteavisado' checked={agendaData.clienteavisado} onChange={onChange} />
+                                                <InputCheckbox dataForm={agendaData} label='RevisarP2' name='revisarp2' checked={agendaData.revisarp2} onChange={onChange} />
 
-                            <CidadeComboBox
-                            name={'cidade'}
-                            dataForm={agendaData}
-                            value={agendaData.cidade}
-                            setValue={addValorCidade}
-                            label={'Cidade'}
-                            />
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='oculto'
-                            label='Oculto'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='oculto'
-                            value={agendaData.oculto}
-                            onChange={onChange}
-                            />
-
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='cartaprecatoria'
-                            label='CartaPrecatoria'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='cartaprecatoria'
-                            value={agendaData.cartaprecatoria}
-                            onChange={onChange}
-                            />
-
-                            <InputCheckbox dataForm={agendaData} label='Revisar' name='revisar' checked={agendaData.revisar} onChange={onChange} />
-                          </div><div className='grid-container'>
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='hrfinal'
-                            label='HrFinal'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='hrfinal'
-                            value={agendaData.hrfinal}
-                            onChange={onChange}
-                            />
-
-
-                            <AdvogadosComboBox
-                            name={'advogado'}
-                            dataForm={agendaData}
-                            value={agendaData.advogado}
-                            setValue={addValorAdvogado}
-                            label={'Advogados'}
-                            />
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='eventogerador'
-                            label='EventoGerador'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='eventogerador'
-                            value={agendaData.eventogerador}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='idne'
+                                                label='IDNE'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='idne'
+                                                value={agendaData.idne}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='eventodata'
-                            label='EventoData'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='eventodata'
-                            value={agendaData.eventodata}
-                            onChange={onChange}
-                            />
+                                                <CidadeComboBox
+                                                name={'cidade'}
+                                                dataForm={agendaData}
+                                                value={agendaData.cidade}
+                                                setValue={addValorCidade}
+                                                label={'Cidade'}
+                                                />
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='oculto'
+                                                label='Oculto'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='oculto'
+                                                value={agendaData.oculto}
+                                                onChange={onChange}
+                                                />
 
 
-                            <FuncionariosComboBox
-                            name={'funcionario'}
-                            dataForm={agendaData}
-                            value={agendaData.funcionario}
-                            setValue={addValorFuncionario}
-                            label={'Colaborador'}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='cartaprecatoria'
+                                                label='CartaPrecatoria'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='cartaprecatoria'
+                                                value={agendaData.cartaprecatoria}
+                                                onChange={onChange}
+                                                />
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='eventoprazo'
-                            label='EventoPrazo'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='eventoprazo'
-                            value={agendaData.eventoprazo}
-                            onChange={onChange}
-                            />
-
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='hora'
-                            label='Hora'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='hora'
-                            value={agendaData.hora}
-                            onChange={onChange}
-                            />
+                                                <InputCheckbox dataForm={agendaData} label='Revisar' name='revisar' checked={agendaData.revisar} onChange={onChange} />
+                                              </div><div className='grid-container'>
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='hrfinal'
+                                                label='HrFinal'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='hrfinal'
+                                                value={agendaData.hrfinal}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2147483647}
-                            id='compromisso'
-                            label='Compromisso'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='compromisso'
-                            value={agendaData.compromisso}
-                            onChange={onChange}
-                            />
+                                                <AdvogadosComboBox
+                                                name={'advogado'}
+                                                dataForm={agendaData}
+                                                value={agendaData.advogado}
+                                                setValue={addValorAdvogado}
+                                                label={'Advogados'}
+                                                />
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='eventogerador'
+                                                label='EventoGerador'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='eventogerador'
+                                                value={agendaData.eventogerador}
+                                                onChange={onChange}
+                                                />
 
 
-                            <TipoCompromissoComboBox
-                            name={'tipocompromisso'}
-                            dataForm={agendaData}
-                            value={agendaData.tipocompromisso}
-                            setValue={addValorTipoCompromisso}
-                            label={'Tipo Compromisso'}
-                            />
-                          </div><div className='grid-container'>
-                            <ClientesComboBox
-                            name={'cliente'}
-                            dataForm={agendaData}
-                            value={agendaData.cliente}
-                            setValue={addValorCliente}
-                            label={'Clientes'}
-                            />
-                            <InputCheckbox dataForm={agendaData} label='Liberado' name='liberado' checked={agendaData.liberado} onChange={onChange} />
-                            <InputCheckbox dataForm={agendaData} label='Importante' name='importante' checked={agendaData.importante} onChange={onChange} />
-                            <InputCheckbox dataForm={agendaData} label='Concluido' name='concluido' checked={agendaData.concluido} onChange={onChange} />
-
-                            <AreaComboBox
-                            name={'area'}
-                            dataForm={agendaData}
-                            value={agendaData.area}
-                            setValue={addValorArea}
-                            label={'Área'}
-                            />
-
-                            <JusticaComboBox
-                            name={'justica'}
-                            dataForm={agendaData}
-                            value={agendaData.justica}
-                            setValue={addValorJustica}
-                            label={'Justiça'}
-                            />
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='processo'
-                            label='Processo'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='processo'
-                            value={agendaData.processo}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='eventodata'
+                                                label='EventoData'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='eventodata'
+                                                value={agendaData.eventodata}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='idhistorico'
-                            label='IDHistorico'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='idhistorico'
-                            value={agendaData.idhistorico}
-                            onChange={onChange}
-                            />
+                                                <FuncionariosComboBox
+                                                name={'funcionario'}
+                                                dataForm={agendaData}
+                                                value={agendaData.funcionario}
+                                                setValue={addValorFuncionario}
+                                                label={'Colaborador'}
+                                                />
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='eventoprazo'
+                                                label='EventoPrazo'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='eventoprazo'
+                                                value={agendaData.eventoprazo}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='idinsprocesso'
-                            label='IDInsProcesso'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='idinsprocesso'
-                            value={agendaData.idinsprocesso}
-                            onChange={onChange}
-                            />
-
-                          </div><div className='grid-container'>
-                            <OperadorComboBox
-                            name={'usuario'}
-                            dataForm={agendaData}
-                            value={agendaData.usuario}
-                            setValue={addValorUsuario}
-                            label={'Operador'}
-                            />
-
-                            <PrepostosComboBox
-                            name={'preposto'}
-                            dataForm={agendaData}
-                            value={agendaData.preposto}
-                            setValue={addValorPreposto}
-                            label={'Prepostos'}
-                            />
-
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='quemid'
-                            label='QuemID'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='quemid'
-                            value={agendaData.quemid}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='hora'
+                                                label='Hora'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='hora'
+                                                value={agendaData.hora}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='quemcodigo'
-                            label='QuemCodigo'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='quemcodigo'
-                            value={agendaData.quemcodigo}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2147483647}
+                                                id='compromisso'
+                                                label='Compromisso'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='compromisso'
+                                                value={agendaData.compromisso}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2147483647}
-                            id='status'
-                            label='Status'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='status'
-                            value={agendaData.status}
-                            onChange={onChange}
-                            />
+                                                <TipoCompromissoComboBox
+                                                name={'tipocompromisso'}
+                                                dataForm={agendaData}
+                                                value={agendaData.tipocompromisso}
+                                                setValue={addValorTipoCompromisso}
+                                                label={'Tipo Compromisso'}
+                                                />
+                                              </div><div className='grid-container'>
+                                                <ClientesComboBox
+                                                name={'cliente'}
+                                                dataForm={agendaData}
+                                                value={agendaData.cliente}
+                                                setValue={addValorCliente}
+                                                label={'Clientes'}
+                                                />
+                                                <InputCheckbox dataForm={agendaData} label='Liberado' name='liberado' checked={agendaData.liberado} onChange={onChange} />
+                                                <InputCheckbox dataForm={agendaData} label='Importante' name='importante' checked={agendaData.importante} onChange={onChange} />
+                                                <InputCheckbox dataForm={agendaData} label='Concluido' name='concluido' checked={agendaData.concluido} onChange={onChange} />
+
+                                                <AreaComboBox
+                                                name={'area'}
+                                                dataForm={agendaData}
+                                                value={agendaData.area}
+                                                setValue={addValorArea}
+                                                label={'Área'}
+                                                />
+
+                                                <JusticaComboBox
+                                                name={'justica'}
+                                                dataForm={agendaData}
+                                                value={agendaData.justica}
+                                                setValue={addValorJustica}
+                                                label={'Justiça'}
+                                                />
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='processo'
+                                                label='Processo'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='processo'
+                                                value={agendaData.processo}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='valor'
-                            label='Valor'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='valor'
-                            value={agendaData.valor}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='idhistorico'
+                                                label='IDHistorico'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='idhistorico'
+                                                value={agendaData.idhistorico}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='decisao'
-                            label='Decisao'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='decisao'
-                            value={agendaData.decisao}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='idinsprocesso'
+                                                label='IDInsProcesso'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='idinsprocesso'
+                                                value={agendaData.idinsprocesso}
+                                                onChange={onChange}
+                                                />
+
+                                              </div><div className='grid-container'>
+                                                <OperadorComboBox
+                                                name={'usuario'}
+                                                dataForm={agendaData}
+                                                value={agendaData.usuario}
+                                                setValue={addValorUsuario}
+                                                label={'Operador'}
+                                                />
+
+                                                <PrepostosComboBox
+                                                name={'preposto'}
+                                                dataForm={agendaData}
+                                                value={agendaData.preposto}
+                                                setValue={addValorPreposto}
+                                                label={'Prepostos'}
+                                                />
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='quemid'
+                                                label='QuemID'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='quemid'
+                                                value={agendaData.quemid}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='sempre'
-                            label='Sempre'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='sempre'
-                            value={agendaData.sempre}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='quemcodigo'
+                                                label='QuemCodigo'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='quemcodigo'
+                                                value={agendaData.quemcodigo}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='prazodias'
-                            label='PrazoDias'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='prazodias'
-                            value={agendaData.prazodias}
-                            onChange={onChange}
-                            />
-
-                          </div><div className='grid-container'>
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='protocolointegrado'
-                            label='ProtocoloIntegrado'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='protocolointegrado'
-                            value={agendaData.protocolointegrado}
-                            onChange={onChange}
-                            />
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2147483647}
+                                                id='status'
+                                                label='Status'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='status'
+                                                value={agendaData.status}
+                                                onChange={onChange}
+                                                />
 
 
-                            <InputInput
-                            type='text'
-                            maxLength={2048}
-                            id='datainicioprazo'
-                            label='DataInicioPrazo'
-                            dataForm={agendaData}
-                            className='inputIncNome'
-                            name='datainicioprazo'
-                            value={agendaData.datainicioprazo}
-                            onChange={onChange}
-                            />
-
-                            <InputCheckbox dataForm={agendaData} label='UsuarioCiente' name='usuariociente' checked={agendaData.usuariociente} onChange={onChange} />
-                          </div>
-                        </form>
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='valor'
+                                                label='Valor'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='valor'
+                                                value={agendaData.valor}
+                                                onChange={onChange}
+                                                />
 
 
-                        {isMobile && (
-                          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Agenda' data={agendaData} isSubmitting={isSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                          )}
-                          <DeleteButton page={'/pages/agenda'} id={agendaData.id} closeModel={onClose} dadoApi={dadoApi} />
-                        </div>
-                        <div className='form-spacer'></div>
-                        </>
-                      );
-                    };
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='decisao'
+                                                label='Decisao'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='decisao'
+                                                value={agendaData.decisao}
+                                                onChange={onChange}
+                                                />
+
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='sempre'
+                                                label='Sempre'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='sempre'
+                                                value={agendaData.sempre}
+                                                onChange={onChange}
+                                                />
+
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='prazodias'
+                                                label='PrazoDias'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='prazodias'
+                                                value={agendaData.prazodias}
+                                                onChange={onChange}
+                                                />
+
+                                              </div><div className='grid-container'>
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='protocolointegrado'
+                                                label='ProtocoloIntegrado'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='protocolointegrado'
+                                                value={agendaData.protocolointegrado}
+                                                onChange={onChange}
+                                                />
+
+
+                                                <InputInput
+                                                type='text'
+                                                maxLength={2048}
+                                                id='datainicioprazo'
+                                                label='DataInicioPrazo'
+                                                dataForm={agendaData}
+                                                className='inputIncNome'
+                                                name='datainicioprazo'
+                                                value={agendaData.datainicioprazo}
+                                                onChange={onChange}
+                                                />
+
+                                                <InputCheckbox dataForm={agendaData} label='UsuarioCiente' name='usuariociente' checked={agendaData.usuariociente} onChange={onChange} />
+                                              </div>
+                                            </form>
+
+
+                                            {isMobile && (
+                                              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Agenda' data={agendaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`AgendaForm-${agendaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                                              )}
+                                              <DeleteButton page={'/pages/agenda'} id={agendaData.id} closeModel={onClose} dadoApi={dadoApi} />
+                                            </div>
+                                            <div className='form-spacer'></div>
+                                            </>
+                                          );
+                                        };

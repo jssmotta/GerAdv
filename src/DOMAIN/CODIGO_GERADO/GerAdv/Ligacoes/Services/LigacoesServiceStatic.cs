@@ -8,215 +8,201 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class LigacoesService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterLigacoes filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterLigacoes? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Assunto))
+        if (!string.IsNullOrWhiteSpace(filtro.Assunto))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Assunto)}", ApplyWildCard(filtro.WildcardChar, filtro.Assunto)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Assunto)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Assunto)));
         }
 
         if (filtro.AgeClienteAvisado != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.AgeClienteAvisado)}", filtro.AgeClienteAvisado));
-        }
-
-        if (filtro.AgeClienteAvisado_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.AgeClienteAvisado)}_end", filtro.AgeClienteAvisado_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.AgeClienteAvisado)}", filtro.AgeClienteAvisado));
+            if (filtro.AgeClienteAvisado_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.AgeClienteAvisado)}_end", filtro.AgeClienteAvisado_end));
+            }
         }
 
         if (filtro.Celular != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Celular)}", filtro.Celular));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Celular)}", filtro.Celular));
         }
 
         if (filtro.Cliente != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Cliente)}", filtro.Cliente));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Cliente)}", filtro.Cliente));
+            if (filtro.Cliente_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.Cliente)}_end", filtro.Cliente_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Contato))
+        if (!string.IsNullOrWhiteSpace(filtro.Contato))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Contato)}", ApplyWildCard(filtro.WildcardChar, filtro.Contato)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Contato)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Contato)));
         }
 
         if (!filtro.DataRealizada.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.DataRealizada, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.DataRealizada)}", dataParam));
-        }
-
-        if (!filtro.DataRealizada_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.DataRealizada_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.DataRealizada)}_end", dataParam));
+            if (DateTime.TryParse(filtro.DataRealizada, out var dataParam1))
+                parameters.Add(new($"@{(DBLigacoesDicInfo.DataRealizada)}", dataParam1));
+            if (!filtro.DataRealizada_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.DataRealizada_end, out var dataParam2))
+                    parameters.Add(new($"@{(DBLigacoesDicInfo.DataRealizada)}_end", dataParam2));
+            }
         }
 
         if (filtro.QuemID != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.QuemID)}", filtro.QuemID));
-        }
-
-        if (filtro.QuemID_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.QuemID)}_end", filtro.QuemID_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.QuemID)}", filtro.QuemID));
+            if (filtro.QuemID_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.QuemID)}_end", filtro.QuemID_end));
+            }
         }
 
         if (filtro.Telefonista != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Telefonista)}", filtro.Telefonista));
-        }
-
-        if (filtro.Telefonista_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Telefonista)}_end", filtro.Telefonista_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Telefonista)}", filtro.Telefonista));
+            if (filtro.Telefonista_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.Telefonista)}_end", filtro.Telefonista_end));
+            }
         }
 
         if (!filtro.UltimoAviso.IsEmptyDX())
         {
-            if (DateTime.TryParse(filtro.UltimoAviso, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.UltimoAviso)}", dataParam));
+            if (DateTime.TryParse(filtro.UltimoAviso, out var dataParam3))
+                parameters.Add(new($"@{(DBLigacoesDicInfo.UltimoAviso)}", dataParam3));
+            if (!filtro.UltimoAviso_end.IsEmptyDX())
+            {
+                if (DateTime.TryParse(filtro.UltimoAviso_end, out var dataParam4))
+                    parameters.Add(new($"@{(DBLigacoesDicInfo.UltimoAviso)}_end", dataParam4));
+            }
         }
 
-        if (!filtro.UltimoAviso_end.IsEmptyDX())
+        if (!string.IsNullOrWhiteSpace(filtro.HoraFinal))
         {
-            if (DateTime.TryParse(filtro.UltimoAviso_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.UltimoAviso)}_end", dataParam));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.HoraFinal)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.HoraFinal)));
         }
 
-        if (!filtro.HoraFinal.IsEmptyDX())
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            if (DateTime.TryParse(filtro.HoraFinal, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.HoraFinal)}", dataParam));
-        }
-
-        if (!filtro.HoraFinal_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.HoraFinal_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.HoraFinal)}_end", dataParam));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.Nome))
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.QuemCodigo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.QuemCodigo)}", filtro.QuemCodigo));
-        }
-
-        if (filtro.QuemCodigo_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.QuemCodigo)}_end", filtro.QuemCodigo_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.QuemCodigo)}", filtro.QuemCodigo));
+            if (filtro.QuemCodigo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.QuemCodigo)}_end", filtro.QuemCodigo_end));
+            }
         }
 
         if (filtro.Solicitante != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Solicitante)}", filtro.Solicitante));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Solicitante)}", filtro.Solicitante));
+            if (filtro.Solicitante_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.Solicitante)}_end", filtro.Solicitante_end));
+            }
         }
 
-        if (filtro.Solicitante_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.Para))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Solicitante)}_end", filtro.Solicitante_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Para)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Para)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Para))
+        if (!string.IsNullOrWhiteSpace(filtro.Fone))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Para)}", ApplyWildCard(filtro.WildcardChar, filtro.Para)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.Fone))
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Fone)}", ApplyWildCard(filtro.WildcardChar, filtro.Fone)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Fone)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Fone)));
         }
 
         if (filtro.Ramal != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Ramal)}", filtro.Ramal));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Ramal)}", filtro.Ramal));
+            if (filtro.Ramal_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.Ramal)}_end", filtro.Ramal_end));
+            }
         }
 
         if (filtro.Particular != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Particular)}", filtro.Particular));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Particular)}", filtro.Particular));
         }
 
         if (filtro.Realizada != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Realizada)}", filtro.Realizada));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Realizada)}", filtro.Realizada));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Status))
+        if (!string.IsNullOrWhiteSpace(filtro.Status))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Status)}", ApplyWildCard(filtro.WildcardChar, filtro.Status)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Status)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Status)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Data))
+        if (!string.IsNullOrWhiteSpace(filtro.Data))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Data)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
-        if (!filtro.Hora.IsEmptyDX())
+        if (!string.IsNullOrWhiteSpace(filtro.Hora))
         {
-            if (DateTime.TryParse(filtro.Hora, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Hora)}", dataParam));
-        }
-
-        if (!filtro.Hora_end.IsEmptyDX())
-        {
-            if (DateTime.TryParse(filtro.Hora_end, out var dataParam))
-                parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Hora)}_end", dataParam));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Hora)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Hora)));
         }
 
         if (filtro.Urgente != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Urgente)}", filtro.Urgente));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Urgente)}", filtro.Urgente));
         }
 
-        if (!string.IsNullOrEmpty(filtro.LigarPara))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.LigarPara)}", ApplyWildCard(filtro.WildcardChar, filtro.LigarPara)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filtro.LigarPara))
+        {
+            parameters.Add(new($"@{(DBLigacoesDicInfo.LigarPara)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.LigarPara)));
         }
 
         if (filtro.Processo != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Processo)}", filtro.Processo));
-        }
-
-        if (filtro.Processo_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Processo)}_end", filtro.Processo_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Processo)}", filtro.Processo));
+            if (filtro.Processo_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.Processo)}_end", filtro.Processo_end));
+            }
         }
 
         if (filtro.StartScreen != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.StartScreen)}", filtro.StartScreen));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.StartScreen)}", filtro.StartScreen));
         }
 
         if (filtro.Emotion != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Emotion)}", filtro.Emotion));
-        }
-
-        if (filtro.Emotion_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.Emotion)}_end", filtro.Emotion_end));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.Emotion)}", filtro.Emotion));
+            if (filtro.Emotion_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.Emotion)}_end", filtro.Emotion_end));
+            }
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBLigacoesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBLigacoesDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBLigacoesDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -225,142 +211,131 @@ public partial class LigacoesService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Assunto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Assunto}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Assunto)}");
+        cWhere.Append(filtro.Assunto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Assunto}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Assunto)}");
         if (!(filtro.AgeClienteAvisado.IsEmptyX()) && filtro.AgeClienteAvisado_end.IsEmptyX())
         {
-            cWhere.Append(filtro.AgeClienteAvisado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.AgeClienteAvisado}] = @{nameof(DBLigacoesDicInfo.AgeClienteAvisado)}");
+            cWhere.Append(filtro.AgeClienteAvisado.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.AgeClienteAvisado}] = @{(DBLigacoesDicInfo.AgeClienteAvisado)}");
         }
         else if (!(filtro.AgeClienteAvisado.IsEmptyX()) && !(filtro.AgeClienteAvisado_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.AgeClienteAvisado} BETWEEN @{nameof(DBLigacoesDicInfo.AgeClienteAvisado)} AND @{nameof(DBLigacoesDicInfo.AgeClienteAvisado)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.AgeClienteAvisado} BETWEEN @{(DBLigacoesDicInfo.AgeClienteAvisado)} AND @{(DBLigacoesDicInfo.AgeClienteAvisado)}_end");
         }
 
-        cWhere.Append(filtro.Celular == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Celular}] = @{nameof(DBLigacoesDicInfo.Celular)}");
-        cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Cliente}] = @{nameof(DBLigacoesDicInfo.Cliente)}");
-        cWhere.Append(filtro.Contato.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Contato}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Contato)}");
+        cWhere.Append(filtro.Celular == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Celular}] = @{(DBLigacoesDicInfo.Celular)}");
+        if (!(filtro.Cliente.IsEmptyX()) && filtro.Cliente_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Cliente.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Cliente}] = @{(DBLigacoesDicInfo.Cliente)}");
+        }
+        else if (!(filtro.Cliente.IsEmptyX()) && !(filtro.Cliente_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Cliente} BETWEEN @{(DBLigacoesDicInfo.Cliente)} AND @{(DBLigacoesDicInfo.Cliente)}_end");
+        }
+
+        cWhere.Append(filtro.Contato.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Contato}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Contato)}");
         if (!(filtro.DataRealizada.IsEmptyDX()) && filtro.DataRealizada_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.DataRealizada.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.DataRealizada}], 103) = CONVERT(DATE, @{nameof(DBLigacoesDicInfo.DataRealizada)}, 103)");
+            cWhere.Append(filtro.DataRealizada.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.DataRealizada}], 103) = CONVERT(DATE, @{(DBLigacoesDicInfo.DataRealizada)}, 103)");
         }
         else if (!(filtro.DataRealizada.IsEmptyDX()) && !(filtro.DataRealizada_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.DataRealizada} BETWEEN @{nameof(DBLigacoesDicInfo.DataRealizada)} AND @{nameof(DBLigacoesDicInfo.DataRealizada)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.DataRealizada} BETWEEN @{(DBLigacoesDicInfo.DataRealizada)} AND @{(DBLigacoesDicInfo.DataRealizada)}_end");
         }
 
         if (!(filtro.QuemID.IsEmptyX()) && filtro.QuemID_end.IsEmptyX())
         {
-            cWhere.Append(filtro.QuemID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.QuemID}] = @{nameof(DBLigacoesDicInfo.QuemID)}");
+            cWhere.Append(filtro.QuemID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.QuemID}] = @{(DBLigacoesDicInfo.QuemID)}");
         }
         else if (!(filtro.QuemID.IsEmptyX()) && !(filtro.QuemID_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.QuemID} BETWEEN @{nameof(DBLigacoesDicInfo.QuemID)} AND @{nameof(DBLigacoesDicInfo.QuemID)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.QuemID} BETWEEN @{(DBLigacoesDicInfo.QuemID)} AND @{(DBLigacoesDicInfo.QuemID)}_end");
         }
 
         if (!(filtro.Telefonista.IsEmptyX()) && filtro.Telefonista_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Telefonista.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Telefonista}] = @{nameof(DBLigacoesDicInfo.Telefonista)}");
+            cWhere.Append(filtro.Telefonista.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Telefonista}] = @{(DBLigacoesDicInfo.Telefonista)}");
         }
         else if (!(filtro.Telefonista.IsEmptyX()) && !(filtro.Telefonista_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Telefonista} BETWEEN @{nameof(DBLigacoesDicInfo.Telefonista)} AND @{nameof(DBLigacoesDicInfo.Telefonista)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Telefonista} BETWEEN @{(DBLigacoesDicInfo.Telefonista)} AND @{(DBLigacoesDicInfo.Telefonista)}_end");
         }
 
         if (!(filtro.UltimoAviso.IsEmptyDX()) && filtro.UltimoAviso_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.UltimoAviso.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.UltimoAviso}], 103) = CONVERT(DATE, @{nameof(DBLigacoesDicInfo.UltimoAviso)}, 103)");
+            cWhere.Append(filtro.UltimoAviso.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.UltimoAviso}], 103) = CONVERT(DATE, @{(DBLigacoesDicInfo.UltimoAviso)}, 103)");
         }
         else if (!(filtro.UltimoAviso.IsEmptyDX()) && !(filtro.UltimoAviso_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.UltimoAviso} BETWEEN @{nameof(DBLigacoesDicInfo.UltimoAviso)} AND @{nameof(DBLigacoesDicInfo.UltimoAviso)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.UltimoAviso} BETWEEN @{(DBLigacoesDicInfo.UltimoAviso)} AND @{(DBLigacoesDicInfo.UltimoAviso)}_end");
         }
 
-        if (!(filtro.HoraFinal.IsEmptyDX()) && filtro.HoraFinal_end.IsEmptyDX())
-        {
-            cWhere.Append(filtro.HoraFinal.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.HoraFinal}], 'HH:mm') = FORMAT(@{nameof(DBLigacoesDicInfo.HoraFinal)}, 'HH:mm')");
-        }
-        else if (!(filtro.HoraFinal.IsEmptyDX()) && !(filtro.HoraFinal_end.IsEmptyDX()))
-        {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.HoraFinal}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBLigacoesDicInfo.HoraFinal)}, 'HH:mm') AND FORMAT(@{nameof(DBLigacoesDicInfo.HoraFinal)}_end, 'HH:mm')");
-        }
-
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Nome)}");
+        cWhere.Append(filtro.HoraFinal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.HoraFinal}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.HoraFinal)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Nome)}");
         if (!(filtro.QuemCodigo.IsEmptyX()) && filtro.QuemCodigo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.QuemCodigo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.QuemCodigo}] = @{nameof(DBLigacoesDicInfo.QuemCodigo)}");
+            cWhere.Append(filtro.QuemCodigo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.QuemCodigo}] = @{(DBLigacoesDicInfo.QuemCodigo)}");
         }
         else if (!(filtro.QuemCodigo.IsEmptyX()) && !(filtro.QuemCodigo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.QuemCodigo} BETWEEN @{nameof(DBLigacoesDicInfo.QuemCodigo)} AND @{nameof(DBLigacoesDicInfo.QuemCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.QuemCodigo} BETWEEN @{(DBLigacoesDicInfo.QuemCodigo)} AND @{(DBLigacoesDicInfo.QuemCodigo)}_end");
         }
 
         if (!(filtro.Solicitante.IsEmptyX()) && filtro.Solicitante_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Solicitante.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Solicitante}] = @{nameof(DBLigacoesDicInfo.Solicitante)}");
+            cWhere.Append(filtro.Solicitante.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Solicitante}] = @{(DBLigacoesDicInfo.Solicitante)}");
         }
         else if (!(filtro.Solicitante.IsEmptyX()) && !(filtro.Solicitante_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Solicitante} BETWEEN @{nameof(DBLigacoesDicInfo.Solicitante)} AND @{nameof(DBLigacoesDicInfo.Solicitante)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Solicitante} BETWEEN @{(DBLigacoesDicInfo.Solicitante)} AND @{(DBLigacoesDicInfo.Solicitante)}_end");
         }
 
-        cWhere.Append(filtro.Para.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Para}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Para)}");
-        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Fone)}");
-        cWhere.Append(filtro.Ramal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Ramal}] = @{nameof(DBLigacoesDicInfo.Ramal)}");
-        cWhere.Append(filtro.Particular == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Particular}] = @{nameof(DBLigacoesDicInfo.Particular)}");
-        cWhere.Append(filtro.Realizada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Realizada}] = @{nameof(DBLigacoesDicInfo.Realizada)}");
-        cWhere.Append(filtro.Status.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Status}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Status)}");
-        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.Data)}");
-        if (!(filtro.Hora.IsEmptyDX()) && filtro.Hora_end.IsEmptyDX())
+        cWhere.Append(filtro.Para.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Para}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Para)}");
+        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Fone)}");
+        if (!(filtro.Ramal.IsEmptyX()) && filtro.Ramal_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Hora.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Hora}], 'HH:mm') = FORMAT(@{nameof(DBLigacoesDicInfo.Hora)}, 'HH:mm')");
+            cWhere.Append(filtro.Ramal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Ramal}] = @{(DBLigacoesDicInfo.Ramal)}");
         }
-        else if (!(filtro.Hora.IsEmptyDX()) && !(filtro.Hora_end.IsEmptyDX()))
+        else if (!(filtro.Ramal.IsEmptyX()) && !(filtro.Ramal_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Hora}], 'HH:mm') BETWEEN FORMAT(@{nameof(DBLigacoesDicInfo.Hora)}, 'HH:mm') AND FORMAT(@{nameof(DBLigacoesDicInfo.Hora)}_end, 'HH:mm')");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Ramal} BETWEEN @{(DBLigacoesDicInfo.Ramal)} AND @{(DBLigacoesDicInfo.Ramal)}_end");
         }
 
-        cWhere.Append(filtro.Urgente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Urgente}] = @{nameof(DBLigacoesDicInfo.Urgente)}");
-        cWhere.Append(filtro.LigarPara.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.LigarPara}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.LigarPara)}");
+        cWhere.Append(filtro.Particular == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Particular}] = @{(DBLigacoesDicInfo.Particular)}");
+        cWhere.Append(filtro.Realizada == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Realizada}] = @{(DBLigacoesDicInfo.Realizada)}");
+        cWhere.Append(filtro.Status.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Status}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Status)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Data)}");
+        cWhere.Append(filtro.Hora.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Hora}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.Hora)}");
+        cWhere.Append(filtro.Urgente == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Urgente}] = @{(DBLigacoesDicInfo.Urgente)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.GUID)}");
+        cWhere.Append(filtro.LigarPara.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.LigarPara}]  {DevourerConsts.MsiCollate} like @{(DBLigacoesDicInfo.LigarPara)}");
         if (!(filtro.Processo.IsEmptyX()) && filtro.Processo_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Processo}] = @{nameof(DBLigacoesDicInfo.Processo)}");
+            cWhere.Append(filtro.Processo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Processo}] = @{(DBLigacoesDicInfo.Processo)}");
         }
         else if (!(filtro.Processo.IsEmptyX()) && !(filtro.Processo_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Processo} BETWEEN @{nameof(DBLigacoesDicInfo.Processo)} AND @{nameof(DBLigacoesDicInfo.Processo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Processo} BETWEEN @{(DBLigacoesDicInfo.Processo)} AND @{(DBLigacoesDicInfo.Processo)}_end");
         }
 
-        cWhere.Append(filtro.StartScreen == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.StartScreen}] = @{nameof(DBLigacoesDicInfo.StartScreen)}");
+        cWhere.Append(filtro.StartScreen == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.StartScreen}] = @{(DBLigacoesDicInfo.StartScreen)}");
         if (!(filtro.Emotion.IsEmptyX()) && filtro.Emotion_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Emotion.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Emotion}] = @{nameof(DBLigacoesDicInfo.Emotion)}");
+            cWhere.Append(filtro.Emotion.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.Emotion}] = @{(DBLigacoesDicInfo.Emotion)}");
         }
         else if (!(filtro.Emotion.IsEmptyX()) && !(filtro.Emotion_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Emotion} BETWEEN @{nameof(DBLigacoesDicInfo.Emotion)} AND @{nameof(DBLigacoesDicInfo.Emotion)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.Emotion} BETWEEN @{(DBLigacoesDicInfo.Emotion)} AND @{(DBLigacoesDicInfo.Emotion)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBLigacoesDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.CampoCodigo}] = @{nameof(DBLigacoesDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].[{DBLigacoesDicInfo.CampoCodigo}] = @{(DBLigacoesDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.CampoCodigo} BETWEEN @{nameof(DBLigacoesDicInfo.CampoCodigo)} AND @{nameof(DBLigacoesDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBLigacoesDicInfo.PTabelaNome}].{DBLigacoesDicInfo.CampoCodigo} BETWEEN @{(DBLigacoesDicInfo.CampoCodigo)} AND @{(DBLigacoesDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterLigacoes? filtro)

@@ -79,7 +79,8 @@ export class CargosService implements ICargosService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Cargos list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Cargos list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class CargosService implements ICargosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Cargos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Cargos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class CargosService implements ICargosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Cargos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Cargos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Cargos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Cargos:');
       return [];
     }
   }

@@ -13,7 +13,7 @@ public partial interface IOperadorWhere
 
 public partial class OperadorWhere(IFOperadorFactory operadorFactory) : IOperadorWhere
 {
-    private readonly IFOperadorFactory _operadorFactory = operadorFactory;
+    private readonly IFOperadorFactory _operadorFactory = operadorFactory ?? throw new ArgumentNullException(nameof(operadorFactory));
     public OperadorResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _operadorFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -40,6 +40,7 @@ public partial class OperadorWhere(IFOperadorFactory operadorFactory) : IOperado
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
+            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -47,7 +48,6 @@ public partial class OperadorWhere(IFOperadorFactory operadorFactory) : IOperado
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
         {

@@ -8,32 +8,33 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ContatoCRMViewService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterContatoCRMView filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterContatoCRMView? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.CGUID))
+        if (!string.IsNullOrWhiteSpace(filtro.CGUID))
         {
-            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.CGUID)}", ApplyWildCard(filtro.WildcardChar, filtro.CGUID)));
+            parameters.Add(new($"@{(DBContatoCRMViewDicInfo.CGUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CGUID)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Data))
+        if (!string.IsNullOrWhiteSpace(filtro.Data))
         {
-            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.Data)}", ApplyWildCard(filtro.WildcardChar, filtro.Data)));
+            parameters.Add(new($"@{(DBContatoCRMViewDicInfo.Data)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Data)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.IP))
+        if (!string.IsNullOrWhiteSpace(filtro.IP))
         {
-            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.IP)}", ApplyWildCard(filtro.WildcardChar, filtro.IP)));
+            parameters.Add(new($"@{(DBContatoCRMViewDicInfo.IP)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.IP)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBContatoCRMViewDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBContatoCRMViewDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBContatoCRMViewDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -42,30 +43,19 @@ public partial class ContatoCRMViewService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.CGUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.CGUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBContatoCRMViewDicInfo.CGUID)}");
-        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{nameof(DBContatoCRMViewDicInfo.Data)}");
-        cWhere.Append(filtro.IP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.IP}]  {DevourerConsts.MsiCollate} like @{nameof(DBContatoCRMViewDicInfo.IP)}");
+        cWhere.Append(filtro.CGUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.CGUID}]  {DevourerConsts.MsiCollate} like @{(DBContatoCRMViewDicInfo.CGUID)}");
+        cWhere.Append(filtro.Data.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.Data}]  {DevourerConsts.MsiCollate} like @{(DBContatoCRMViewDicInfo.Data)}");
+        cWhere.Append(filtro.IP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.IP}]  {DevourerConsts.MsiCollate} like @{(DBContatoCRMViewDicInfo.IP)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.CampoCodigo}] = @{nameof(DBContatoCRMViewDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].[{DBContatoCRMViewDicInfo.CampoCodigo}] = @{(DBContatoCRMViewDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].{DBContatoCRMViewDicInfo.CampoCodigo} BETWEEN @{nameof(DBContatoCRMViewDicInfo.CampoCodigo)} AND @{nameof(DBContatoCRMViewDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBContatoCRMViewDicInfo.PTabelaNome}].{DBContatoCRMViewDicInfo.CampoCodigo} BETWEEN @{(DBContatoCRMViewDicInfo.CampoCodigo)} AND @{(DBContatoCRMViewDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterContatoCRMView? filtro)

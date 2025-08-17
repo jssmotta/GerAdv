@@ -88,18 +88,18 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         }
     }
 
-    private async Task<ContatoCRMViewResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ContatoCRMViewResponse?> AddAndUpdate([FromBody] Models.ContatoCRMView regContatoCRMView, [FromRoute, Required] string uri)
+    private async Task<ContatoCRMViewResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ContatoCRMViewResponse?> AddAndUpdate([FromBody] Models.ContatoCRMView? regContatoCRMView, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ContatoCRMView: URI inválida");
-        }
-
         if (regContatoCRMView == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ContatoCRMView: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -113,7 +113,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regContatoCRMView, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -122,24 +122,24 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         using var saved = await writer.WriteAsync(regContatoCRMView, oCnn);
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ContatoCRMViewResponse?> Validation([FromBody] Models.ContatoCRMView regContatoCRMView, [FromRoute, Required] string uri)
+    public async Task<ContatoCRMViewResponse?> Validation([FromBody] Models.ContatoCRMView? regContatoCRMView, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ContatoCRMView: URI inválida");
-        }
-
         if (regContatoCRMView == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ContatoCRMView: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -153,7 +153,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regContatoCRMView, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -162,7 +162,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regContatoCRMView.Id.IsEmptyIDNumber())
@@ -173,17 +173,17 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         return await reader.Read(regContatoCRMView.Id, oCnn);
     }
 
-    public async Task<ContatoCRMViewResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ContatoCRMViewResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ContatoCRMView: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -197,7 +197,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -206,10 +206,10 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var contatocrmview = await reader.Read(id, oCnn);
+        var contatocrmview = await reader.Read(id ?? default, oCnn);
         try
         {
             if (contatocrmview != null)
@@ -229,7 +229,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         return contatocrmview;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

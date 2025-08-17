@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITerceirosValidation
 {
     Task<bool> ValidateReg(Models.Terceiros reg, ITerceirosService service, IPosicaoOutrasPartesReader posicaooutraspartesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITerceirosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITerceirosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TerceirosValidation : ITerceirosValidation
 {
-    public async Task<bool> CanDelete(int id, ITerceirosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITerceirosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,20 +26,20 @@ public class TerceirosValidation : ITerceirosValidation
 
     private bool ValidSizes(Models.Terceiros reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.VaraForoComarca != null && reg.VaraForoComarca.Length > 255)
-            throw new SGValidationException($"VaraForoComarca deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTerceirosDicInfo.TerNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTerceirosDicInfo.TerNome.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBTerceirosDicInfo.TerEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBTerceirosDicInfo.TerEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBTerceirosDicInfo.TerBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBTerceirosDicInfo.TerBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBTerceirosDicInfo.TerCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBTerceirosDicInfo.TerCEP.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBTerceirosDicInfo.TerClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBTerceirosDicInfo.TerClass.FTamanho} caracteres.");
+        if (reg.VaraForoComarca != null && reg.VaraForoComarca.Length > DBTerceirosDicInfo.TerVaraForoComarca.FTamanho)
+            throw new SGValidationException($"VaraForoComarca deve ter no máximo {DBTerceirosDicInfo.TerVaraForoComarca.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBTerceirosDicInfo.TerGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBTerceirosDicInfo.TerGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -52,7 +52,7 @@ public class TerceirosValidation : ITerceirosValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
         // PosicaoOutrasPartes
         if (!reg.Situacao.IsEmptyIDNumber())

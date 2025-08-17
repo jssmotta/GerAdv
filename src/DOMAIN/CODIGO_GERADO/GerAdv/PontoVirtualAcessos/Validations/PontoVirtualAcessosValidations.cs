@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IPontoVirtualAcessosValidation
 {
     Task<bool> ValidateReg(Models.PontoVirtualAcessos reg, IPontoVirtualAcessosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
 {
-    public async Task<bool> CanDelete(int id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
 
     private bool ValidSizes(Models.PontoVirtualAcessos reg)
     {
-        if (reg.Origem != null && reg.Origem.Length > 150)
-            throw new SGValidationException($"Origem deve ter no máximo 150 caracteres.");
+        if (reg.Origem != null && reg.Origem.Length > DBPontoVirtualAcessosDicInfo.PvaOrigem.FTamanho)
+            throw new SGValidationException($"Origem deve ter no máximo {DBPontoVirtualAcessosDicInfo.PvaOrigem.FTamanho} caracteres.");
         return true;
     }
 
@@ -40,13 +40,6 @@ public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
             return false;
         if (reg.Operador == 0)
             throw new SGValidationException("Operador é obrigatório.");
-        if (reg.DataHora.IsEmpty())
-            throw new SGValidationException("DataHora é obrigatório.");
-        if (!DateTime.TryParse(reg.DataHora, out _))
-        {
-            throw new SGValidationException($"DataHora inválida: {reg.DataHora}");
-        }
-
         if (reg.DataHora.IsEmpty())
             throw new SGValidationException("DataHora é obrigatório.");
         if (reg.Origem.IsEmpty())

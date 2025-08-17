@@ -14,13 +14,13 @@ public partial interface IPontoVirtualWriter
 
 public class PontoVirtualWriter(IFPontoVirtualFactory pontovirtualFactory) : IPontoVirtualWriter
 {
-    private readonly IFPontoVirtualFactory _pontovirtualFactory = pontovirtualFactory;
-    public async Task Delete(PontoVirtualResponse pontovirtual, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPontoVirtualFactory _pontovirtualFactory = pontovirtualFactory ?? throw new ArgumentNullException(nameof(pontovirtualFactory));
+    public virtual async Task Delete(PontoVirtualResponse pontovirtual, int operadorId, MsiSqlConnection oCnn)
     {
         await _pontovirtualFactory.DeleteAsync(operadorId, pontovirtual.Id, oCnn);
     }
 
-    public async Task<FPontoVirtual> WriteAsync(Models.PontoVirtual pontovirtual, MsiSqlConnection oCnn)
+    public virtual async Task<FPontoVirtual> WriteAsync(Models.PontoVirtual pontovirtual, MsiSqlConnection oCnn)
     {
         using var dbRec = await (pontovirtual.Id.IsEmptyIDNumber() ? _pontovirtualFactory.CreateAsync() : _pontovirtualFactory.CreateFromIdAsync(pontovirtual.Id, oCnn));
         if (pontovirtual.HoraEntrada != null)

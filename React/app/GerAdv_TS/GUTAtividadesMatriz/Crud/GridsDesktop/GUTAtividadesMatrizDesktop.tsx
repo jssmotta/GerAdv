@@ -41,8 +41,7 @@ const router = useRouter();
 const { systemContext } = useSystemContext();
 const defaultHiddenColumns = [''];
 // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['guid',
-'descricaogutmatriz',
+const [columnsOrder, setColumnsOrder] = useState<string[]>(['descricaogutmatriz',
 'nomegutatividades']);
 // Carregar ordem salva do localStorage na inicialização
 useEffect(() => {
@@ -115,34 +114,20 @@ const EditRow = useCallback((e: any) => {
 }, [hookHandleRowClick]);
 // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
 const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
-
-  'guid': (
-  <GridColumn
-  key='guid'
-  field='guid'
-  title='GUID'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.02 */
   'descricaogutmatriz': (
   <GridColumn
   key='descricaogutmatriz'
-
   field='descricaogutmatriz'
   title='G U T Matriz'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomegutatividades': (
   <GridColumn
   key='nomegutatividades'
-
   field='nomegutatividades'
   title='G U T Atividades'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

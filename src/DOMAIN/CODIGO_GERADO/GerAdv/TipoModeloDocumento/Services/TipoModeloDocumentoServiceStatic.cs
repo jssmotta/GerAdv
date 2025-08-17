@@ -8,27 +8,28 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoModeloDocumentoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoModeloDocumento filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoModeloDocumento? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBTipoModeloDocumentoDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBTipoModeloDocumentoDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBTipoModeloDocumentoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBTipoModeloDocumentoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTipoModeloDocumentoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBTipoModeloDocumentoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBTipoModeloDocumentoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTipoModeloDocumentoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -37,29 +38,18 @@ public partial class TipoModeloDocumentoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoModeloDocumentoDicInfo.Nome)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoModeloDocumentoDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBTipoModeloDocumentoDicInfo.Nome)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBTipoModeloDocumentoDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.CampoCodigo}] = @{nameof(DBTipoModeloDocumentoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].[{DBTipoModeloDocumentoDicInfo.CampoCodigo}] = @{(DBTipoModeloDocumentoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].{DBTipoModeloDocumentoDicInfo.CampoCodigo} BETWEEN @{nameof(DBTipoModeloDocumentoDicInfo.CampoCodigo)} AND @{nameof(DBTipoModeloDocumentoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoModeloDocumentoDicInfo.PTabelaNome}].{DBTipoModeloDocumentoDicInfo.CampoCodigo} BETWEEN @{(DBTipoModeloDocumentoDicInfo.CampoCodigo)} AND @{(DBTipoModeloDocumentoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterTipoModeloDocumento? filtro)

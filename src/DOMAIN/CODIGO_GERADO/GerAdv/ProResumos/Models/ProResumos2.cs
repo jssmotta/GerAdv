@@ -32,16 +32,16 @@ namespace MenphisSI.GerAdv.Models
         public string Resumo { get; set; } = "";
 
         /// <summary>
-        /// TipoResumo - prsTipoResumo  
-        /// </summary>
-        [JsonPropertyName("tiporesumo")]
-        public int TipoResumo { get; set; }
-
-        /// <summary>
         /// GUID - prsGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// TipoResumo - prsTipoResumo  
+        /// </summary>
+        [JsonPropertyName("tiporesumo")]
+        public int TipoResumo { get; set; }
     }
 }
 
@@ -72,15 +72,15 @@ namespace MenphisSI.GerAdv.Models.All
         public string Resumo { get; set; } = "";
 
         /// <summary>
-        /// TipoResumo - prsTipoResumo  
-        /// </summary>
-        [JsonPropertyName("tiporesumo")]
-        public int TipoResumo { get; set; }
-
-        /// <summary>
         /// GUID - prsGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// TipoResumo - prsTipoResumo  
+        /// </summary>
+        [JsonPropertyName("tiporesumo")]
+        public int TipoResumo { get; set; }
     }
 }

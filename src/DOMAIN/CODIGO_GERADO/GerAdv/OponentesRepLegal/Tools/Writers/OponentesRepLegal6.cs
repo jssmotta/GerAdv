@@ -14,13 +14,13 @@ public partial interface IOponentesRepLegalWriter
 
 public class OponentesRepLegalWriter(IFOponentesRepLegalFactory oponentesreplegalFactory) : IOponentesRepLegalWriter
 {
-    private readonly IFOponentesRepLegalFactory _oponentesreplegalFactory = oponentesreplegalFactory;
-    public async Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFOponentesRepLegalFactory _oponentesreplegalFactory = oponentesreplegalFactory ?? throw new ArgumentNullException(nameof(oponentesreplegalFactory));
+    public virtual async Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection oCnn)
     {
         await _oponentesreplegalFactory.DeleteAsync(operadorId, oponentesreplegal.Id, oCnn);
     }
 
-    public async Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (oponentesreplegal.Id.IsEmptyIDNumber() ? _oponentesreplegalFactory.CreateAsync() : _oponentesreplegalFactory.CreateFromIdAsync(oponentesreplegal.Id, oCnn));
         dbRec.FNome = oponentesreplegal.Nome;

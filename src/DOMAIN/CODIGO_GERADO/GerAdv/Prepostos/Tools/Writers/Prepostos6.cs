@@ -14,15 +14,16 @@ public partial interface IPrepostosWriter
 
 public class PrepostosWriter(IFPrepostosFactory prepostosFactory) : IPrepostosWriter
 {
-    private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory;
-    public async Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory ?? throw new ArgumentNullException(nameof(prepostosFactory));
+    public virtual async Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection oCnn)
     {
         await _prepostosFactory.DeleteAsync(operadorId, prepostos.Id, oCnn);
     }
 
-    public async Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (prepostos.Id.IsEmptyIDNumber() ? _prepostosFactory.CreateAsync() : _prepostosFactory.CreateFromIdAsync(prepostos.Id, oCnn));
+        dbRec.FGUID = prepostos.GUID;
         dbRec.FNome = prepostos.Nome;
         dbRec.FFuncao = prepostos.Funcao;
         dbRec.FSetor = prepostos.Setor;
@@ -56,7 +57,6 @@ public class PrepostosWriter(IFPrepostosFactory prepostosFactory) : IPrepostosWr
         dbRec.FPai = prepostos.Pai;
         dbRec.FMae = prepostos.Mae;
         dbRec.FClass = prepostos.Class;
-        dbRec.FGUID = prepostos.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -94,18 +94,18 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         }
     }
 
-    private async Task<GUTPeriodicidadeStatusResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<GUTPeriodicidadeStatusResponse?> AddAndUpdate([FromBody] Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
+    private async Task<GUTPeriodicidadeStatusResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<GUTPeriodicidadeStatusResponse?> AddAndUpdate([FromBody] Models.GUTPeriodicidadeStatus? regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("GUTPeriodicidadeStatus: URI inválida");
-        }
-
         if (regGUTPeriodicidadeStatus == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("GUTPeriodicidadeStatus: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
             var validade = await validation.ValidateReg(regGUTPeriodicidadeStatus, this, gutatividadesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<GUTPeriodicidadeStatusResponse?> Validation([FromBody] Models.GUTPeriodicidadeStatus regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
+    public async Task<GUTPeriodicidadeStatusResponse?> Validation([FromBody] Models.GUTPeriodicidadeStatus? regGUTPeriodicidadeStatus, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("GUTPeriodicidadeStatus: URI inválida");
-        }
-
         if (regGUTPeriodicidadeStatus == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("GUTPeriodicidadeStatus: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
             var validade = await validation.ValidateReg(regGUTPeriodicidadeStatus, this, gutatividadesReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regGUTPeriodicidadeStatus.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         return await reader.Read(regGUTPeriodicidadeStatus.Id, oCnn);
     }
 
-    public async Task<GUTPeriodicidadeStatusResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<GUTPeriodicidadeStatusResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("GUTPeriodicidadeStatus: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var gutperiodicidadestatus = await reader.Read(id, oCnn);
+        var gutperiodicidadestatus = await reader.Read(id ?? default, oCnn);
         try
         {
             if (gutperiodicidadestatus != null)
@@ -237,7 +237,7 @@ public partial class GUTPeriodicidadeStatusService(IOptions<AppSettings> appSett
         return gutperiodicidadestatus;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

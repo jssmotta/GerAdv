@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IBensClassificacaoValidation
 {
     Task<bool> ValidateReg(Models.BensClassificacao reg, IBensClassificacaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IBensClassificacaoService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IBensClassificacaoService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class BensClassificacaoValidation : IBensClassificacaoValidation
 {
-    public async Task<bool> CanDelete(int id, IBensClassificacaoService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IBensClassificacaoService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { BensClassificacao = id }, uri);
+        var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { BensClassificacao = id ?? default }, uri);
         if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
 
     private bool ValidSizes(Models.BensClassificacao reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBBensClassificacaoDicInfo.BcsNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBBensClassificacaoDicInfo.BcsNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBBensClassificacaoDicInfo.BcsGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBBensClassificacaoDicInfo.BcsGUID.FTamanho} caracteres.");
         return true;
     }
 

@@ -14,13 +14,13 @@ public partial interface IGUTMatrizWriter
 
 public class GUTMatrizWriter(IFGUTMatrizFactory gutmatrizFactory) : IGUTMatrizWriter
 {
-    private readonly IFGUTMatrizFactory _gutmatrizFactory = gutmatrizFactory;
-    public async Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFGUTMatrizFactory _gutmatrizFactory = gutmatrizFactory ?? throw new ArgumentNullException(nameof(gutmatrizFactory));
+    public virtual async Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection oCnn)
     {
         await _gutmatrizFactory.DeleteAsync(operadorId, gutmatriz.Id, oCnn);
     }
 
-    public async Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, MsiSqlConnection oCnn)
     {
         using var dbRec = await (gutmatriz.Id.IsEmptyIDNumber() ? _gutmatrizFactory.CreateAsync() : _gutmatrizFactory.CreateFromIdAsync(gutmatriz.Id, oCnn));
         dbRec.FDescricao = gutmatriz.Descricao;

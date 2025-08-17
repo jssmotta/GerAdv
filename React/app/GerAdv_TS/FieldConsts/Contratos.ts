@@ -12,6 +12,7 @@ export enum FieldsContratos
 	ocultarrelatorio = `OcultarRelatorio`,
 	percescritorio = `PercEscritorio`,
 	valorconsultoria = `ValorConsultoria`,
+	guid = `GUID`,
 	tipocobranca = `TipoCobranca`,
 	protestar = `Protestar`,
 	juros = `Juros`,
@@ -30,5 +31,4 @@ export enum FieldsContratos
 	avulso = `Avulso`,
 	suspenso = `Suspenso`,
 	multa = `Multa`,
-	guid = `GUID`,
 }

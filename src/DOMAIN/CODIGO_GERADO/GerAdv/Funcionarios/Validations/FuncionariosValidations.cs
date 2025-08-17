@@ -9,60 +9,57 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IFuncionariosValidation
 {
     Task<bool> ValidateReg(Models.Funcionarios reg, IFuncionariosService service, ICargosReader cargosReader, IFuncaoReader funcaoReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IFuncionariosService service, IAgendaService agendaService, IAgendaQuemService agendaquemService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class FuncionariosValidation : IFuncionariosValidation
 {
-    public async Task<bool> CanDelete(int id, IFuncionariosService service, IAgendaService agendaService, IAgendaQuemService agendaquemService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IFuncionariosService service, IAgendaService agendaService, IHorasTrabService horastrabService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendaquemExists1 = await agendaquemService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgendaQuem { Funcionario = id }, uri);
-        if (agendaquemExists1 != null && agendaquemExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.");
-        var horastrabExists2 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Funcionario = id }, uri);
-        if (horastrabExists2 != null && horastrabExists2.Any())
+        var horastrabExists1 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Funcionario = id ?? default }, uri);
+        if (horastrabExists1 != null && horastrabExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Funcionarios reg)
     {
-        if (reg.EMailPro != null && reg.EMailPro.Length > 255)
-            throw new SGValidationException($"EMailPro deve ter no máximo 255 caracteres.");
-        if (reg.Nome != null && reg.Nome.Length > 60)
-            throw new SGValidationException($"Nome deve ter no máximo 60 caracteres.");
-        if (reg.Registro != null && reg.Registro.Length > 20)
-            throw new SGValidationException($"Registro deve ter no máximo 20 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.CTPSNumero != null && reg.CTPSNumero.Length > 15)
-            throw new SGValidationException($"CTPSNumero deve ter no máximo 15 caracteres.");
-        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > 10)
-            throw new SGValidationException($"CTPSSerie deve ter no máximo 10 caracteres.");
-        if (reg.PIS != null && reg.PIS.Length > 20)
-            throw new SGValidationException($"PIS deve ter no máximo 20 caracteres.");
-        if (reg.Pasta != null && reg.Pasta.Length > 200)
-            throw new SGValidationException($"Pasta deve ter no máximo 200 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.EMailPro != null && reg.EMailPro.Length > DBFuncionariosDicInfo.FunEMailPro.FTamanho)
+            throw new SGValidationException($"EMailPro deve ter no máximo {DBFuncionariosDicInfo.FunEMailPro.FTamanho} caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBFuncionariosDicInfo.FunNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBFuncionariosDicInfo.FunNome.FTamanho} caracteres.");
+        if (reg.Registro != null && reg.Registro.Length > DBFuncionariosDicInfo.FunRegistro.FTamanho)
+            throw new SGValidationException($"Registro deve ter no máximo {DBFuncionariosDicInfo.FunRegistro.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBFuncionariosDicInfo.FunCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBFuncionariosDicInfo.FunCPF.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBFuncionariosDicInfo.FunRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBFuncionariosDicInfo.FunRG.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBFuncionariosDicInfo.FunEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBFuncionariosDicInfo.FunEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBFuncionariosDicInfo.FunBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBFuncionariosDicInfo.FunBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBFuncionariosDicInfo.FunCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBFuncionariosDicInfo.FunCEP.FTamanho} caracteres.");
+        if (reg.CTPSNumero != null && reg.CTPSNumero.Length > DBFuncionariosDicInfo.FunCTPSNumero.FTamanho)
+            throw new SGValidationException($"CTPSNumero deve ter no máximo {DBFuncionariosDicInfo.FunCTPSNumero.FTamanho} caracteres.");
+        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > DBFuncionariosDicInfo.FunCTPSSerie.FTamanho)
+            throw new SGValidationException($"CTPSSerie deve ter no máximo {DBFuncionariosDicInfo.FunCTPSSerie.FTamanho} caracteres.");
+        if (reg.PIS != null && reg.PIS.Length > DBFuncionariosDicInfo.FunPIS.FTamanho)
+            throw new SGValidationException($"PIS deve ter no máximo {DBFuncionariosDicInfo.FunPIS.FTamanho} caracteres.");
+        if (reg.Pasta != null && reg.Pasta.Length > DBFuncionariosDicInfo.FunPasta.FTamanho)
+            throw new SGValidationException($"Pasta deve ter no máximo {DBFuncionariosDicInfo.FunPasta.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBFuncionariosDicInfo.FunClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBFuncionariosDicInfo.FunClass.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBFuncionariosDicInfo.FunGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBFuncionariosDicInfo.FunGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -75,8 +72,59 @@ public class FuncionariosValidation : IFuncionariosValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMailPro != null && reg.EMailPro.Length > 0 && !reg.EMailPro.IsValidEmail())
+            throw new SGValidationException($"EMailPro em formato inválido.");
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DtNasc))
+        {
+            if (DateTime.TryParse(reg.DtNasc, out DateTime dataAniversario))
+            {
+                if (dataAniversario < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data Nascimento não pode ser anterior a 01/01/1900.");
+                if (dataAniversario > DateTime.Now)
+                    throw new SGValidationException("DtNasc não pode ser uma data futura.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Periodo_Ini))
+        {
+            if (DateTime.TryParse(reg.Periodo_Ini, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Periodo_Ini não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Periodo_Fim))
+        {
+            if (DateTime.TryParse(reg.Periodo_Fim, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Periodo_Fim não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.CTPSDtEmissao))
+        {
+            if (DateTime.TryParse(reg.CTPSDtEmissao, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("CTPSDtEmissao não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (reg.Id == 0)
+        {
+            if (DateTime.TryParse(reg.CTPSDtEmissao, out DateTime dataAntiga))
+            {
+                if (dataAntiga > DateTime.Now.AddDays(1))
+                    throw new SGValidationException("CTPSDtEmissao não pode ser superior a data de hoje");
+            }
+        }
+
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -96,7 +144,7 @@ public class FuncionariosValidation : IFuncionariosValidation
             var regCargos = await cargosReader.Read(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
             {
-                throw new SGValidationException($"Cargos não encontrado ({regCargos?.Id}).");
+                throw new SGValidationException($"Cargo não encontrado ({regCargos?.Id}).");
             }
         }
 

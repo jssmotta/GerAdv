@@ -14,21 +14,21 @@ public partial interface IAndamentosMDWriter
 
 public class AndamentosMDWriter(IFAndamentosMDFactory andamentosmdFactory) : IAndamentosMDWriter
 {
-    private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory;
-    public async Task Delete(AndamentosMDResponse andamentosmd, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory ?? throw new ArgumentNullException(nameof(andamentosmdFactory));
+    public virtual async Task Delete(AndamentosMDResponse andamentosmd, int operadorId, MsiSqlConnection oCnn)
     {
         await _andamentosmdFactory.DeleteAsync(operadorId, andamentosmd.Id, oCnn);
     }
 
-    public async Task<FAndamentosMD> WriteAsync(Models.AndamentosMD andamentosmd, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAndamentosMD> WriteAsync(Models.AndamentosMD andamentosmd, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (andamentosmd.Id.IsEmptyIDNumber() ? _andamentosmdFactory.CreateAsync() : _andamentosmdFactory.CreateFromIdAsync(andamentosmd.Id, oCnn));
+        dbRec.FGUID = andamentosmd.GUID;
         dbRec.FNome = andamentosmd.Nome;
         dbRec.FProcesso = andamentosmd.Processo;
         dbRec.FAndamento = andamentosmd.Andamento;
         dbRec.FPathFull = andamentosmd.PathFull;
         dbRec.FUNC = andamentosmd.UNC;
-        dbRec.FGUID = andamentosmd.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

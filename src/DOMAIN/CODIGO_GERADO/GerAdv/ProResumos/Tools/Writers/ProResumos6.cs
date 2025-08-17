@@ -14,20 +14,20 @@ public partial interface IProResumosWriter
 
 public class ProResumosWriter(IFProResumosFactory proresumosFactory) : IProResumosWriter
 {
-    private readonly IFProResumosFactory _proresumosFactory = proresumosFactory;
-    public async Task Delete(ProResumosResponse proresumos, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProResumosFactory _proresumosFactory = proresumosFactory ?? throw new ArgumentNullException(nameof(proresumosFactory));
+    public virtual async Task Delete(ProResumosResponse proresumos, int operadorId, MsiSqlConnection oCnn)
     {
         await _proresumosFactory.DeleteAsync(operadorId, proresumos.Id, oCnn);
     }
 
-    public async Task<FProResumos> WriteAsync(Models.ProResumos proresumos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProResumos> WriteAsync(Models.ProResumos proresumos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (proresumos.Id.IsEmptyIDNumber() ? _proresumosFactory.CreateAsync() : _proresumosFactory.CreateFromIdAsync(proresumos.Id, oCnn));
         dbRec.FProcesso = proresumos.Processo;
         dbRec.FData = proresumos.Data;
         dbRec.FResumo = proresumos.Resumo;
-        dbRec.FTipoResumo = proresumos.TipoResumo;
         dbRec.FGUID = proresumos.GUID;
+        dbRec.FTipoResumo = proresumos.TipoResumo;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

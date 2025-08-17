@@ -20,6 +20,12 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Cliente { get; set; }
 
         /// <summary>
+        /// GUID - desGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// LigacaoID - desLigacaoID  
         /// </summary>
         [JsonPropertyName("ligacaoid")]
@@ -87,12 +93,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("livrocaixa")]
         public bool LivroCaixa { get; set; }
-
-        /// <summary>
-        /// GUID - desGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
     }
 }
 
@@ -111,6 +111,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Cliente { get; set; }
 
         /// <summary>
+        /// GUID - desGUID - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string GUID { get; set; } = "";
+
+        /// <summary>
         /// LigacaoID - desLigacaoID  
         /// </summary>
         [JsonPropertyName("ligacaoid")]
@@ -178,12 +184,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("livrocaixa")]
         public bool LivroCaixa { get; set; }
-
-        /// <summary>
-        /// GUID - desGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

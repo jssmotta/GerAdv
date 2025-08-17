@@ -41,7 +41,8 @@ export const useGruposEmpresasForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Grupos Empresas';
       setError(errorMessage);
-      //console.log('Erro ao carregar Grupos Empresas');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Grupos Empresas');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useGruposEmpresasNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useGruposEmpresasList = (dataService: IGruposEmpresasService, curre
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar gruposempresas';
       setError(errorMessage);
-      //console.log('Erro ao carregar gruposempresas');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar gruposempresas');
     } finally {
       setLoading(false);
     }
@@ -219,7 +222,8 @@ if (data.icone.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

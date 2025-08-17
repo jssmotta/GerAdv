@@ -41,7 +41,8 @@ export const useColaboradoresForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Colaborador';
       setError(errorMessage);
-      //console.log('Erro ao carregar Colaborador');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Colaborador');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useColaboradoresNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useColaboradoresList = (dataService: IColaboradoresService, current
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar colaboradores';
       setError(errorMessage);
-      //console.log('Erro ao carregar colaboradores');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar colaboradores');
     } finally {
       setLoading(false);
     }
@@ -237,7 +240,8 @@ if (data.class.length > 1) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

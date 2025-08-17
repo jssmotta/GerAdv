@@ -65,466 +65,469 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    preclientesData.idrep = getParamFromUrl('clientes');
+      preclientesData.idrep = getParamFromUrl('clientes');
+    }
   }
-}
 
-if (getParamFromUrl('cidade') > 0) {
-  if (preclientesData.id === 0 && preclientesData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('cidade') > 0) {
+    if (preclientesData.id === 0 && preclientesData.cidade == 0) {
+      cidadeApi
+      .getById(getParamFromUrl('cidade'))
+      .then((response) => {
+        setNomeCidade(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    preclientesData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorIDRep = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'idrep', value: e.id } });
-  };
-  const addValorCidade = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cidade', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        preclientesData.cidade = getParamFromUrl('cidade');
+      }
+    }
+    const addValorIDRep = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'idrep', value: e.id } });
+      };
+      const addValorCidade = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cidade', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de PreClientes:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de PreClientes:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`PreClientesForm-${preclientesData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`PreClientesForm-${preclientesData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar PreClientes diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = preclientesData?.id == 0 ? 'Editar PreClientes' : 'Adicionar Pre Clientes';
-      }
-    }, [preclientesData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar PreClientes diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = preclientesData?.id == 0 ? 'Editar PreClientes' : 'Adicionar Pre Clientes';
+            }
+          }, [preclientesData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-PreClientes' : 'form-container form-container-PreClientes'}>
+            <div className={isMobile ? 'form-container form-container-PreClientes' : 'form-container form-container-PreClientes'}>
 
-        <form className='formInputCadInc' id={`PreClientesForm-${preclientesData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PreClientes' data={preclientesData} isSubmitting={isSubmitting} onClose={onClose} formId={`PreClientesForm-${preclientesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`PreClientesForm-${preclientesData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PreClientes' data={preclientesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PreClientesForm-${preclientesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='nome'
-              value={preclientesData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
-              <InputCheckbox dataForm={preclientesData} label='Inativo' name='inativo' checked={preclientesData.inativo} onChange={onChange} />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={preclientesData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
+                    <InputCheckbox dataForm={preclientesData} label='Inativo' name='inativo' checked={preclientesData.inativo} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='quemindicou'
-              label='QuemIndicou'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='quemindicou'
-              value={preclientesData.quemindicou}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='quemindicou'
+                    label='QuemIndicou'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='quemindicou'
+                    value={preclientesData.quemindicou}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='adv'
-              label='Adv'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='adv'
-              value={preclientesData.adv}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='adv'
+                    label='Adv'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='adv'
+                    value={preclientesData.adv}
+                    onChange={onChange}
+                    />
 
 
-              <ClientesComboBox
-              name={'idrep'}
-              dataForm={preclientesData}
-              value={preclientesData.idrep}
-              setValue={addValorIDRep}
-              label={'Clientes'}
-              />
-              <InputCheckbox dataForm={preclientesData} label='Juridica' name='juridica' checked={preclientesData.juridica} onChange={onChange} />
+                    <ClientesComboBox
+                    name={'idrep'}
+                    dataForm={preclientesData}
+                    value={preclientesData.idrep}
+                    setValue={addValorIDRep}
+                    label={'Clientes'}
+                    />
+                    <InputCheckbox dataForm={preclientesData} label='Juridica' name='juridica' checked={preclientesData.juridica} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='nomefantasia'
-              label='NomeFantasia'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='nomefantasia'
-              value={preclientesData.nomefantasia}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={1}
-              id='class'
-              label='Class'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='class'
-              value={preclientesData.class}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={preclientesData} label='Tipo' name='tipo' checked={preclientesData.tipo} onChange={onChange} />
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dtnasc'
-              label='DtNasc'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='dtnasc'
-              value={preclientesData.dtnasc}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='nomefantasia'
+                    label='NomeFantasia'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='nomefantasia'
+                    value={preclientesData.nomefantasia}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={15}
-              id='inscest'
-              label='InscEst'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='inscest'
-              value={preclientesData.inscest}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={1}
+                    id='class'
+                    label='Class'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='class'
+                    value={preclientesData.class}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={preclientesData} label='Tipo' name='tipo' checked={preclientesData.tipo} onChange={onChange} />
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='dtnasc'
+                    label='DtNasc'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='dtnasc'
+                    value={preclientesData.dtnasc}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='qualificacao'
-              label='Qualificacao'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='qualificacao'
-              value={preclientesData.qualificacao}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={preclientesData} label='Sexo' name='sexo' checked={preclientesData.sexo} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='idade'
-              label='Idade'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='idade'
-              value={preclientesData.idade}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={15}
+                    id='inscest'
+                    label='InscEst'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='inscest'
+                    value={preclientesData.inscest}
+                    onChange={onChange}
+                    />
 
 
-              <InputCnpj
-              type='text'
-              id='cnpj'
-              label='CNPJ'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='cnpj'
-              value={preclientesData.cnpj}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='qualificacao'
+                    label='Qualificacao'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='qualificacao'
+                    value={preclientesData.qualificacao}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={preclientesData} label='Sexo' name='sexo' checked={preclientesData.sexo} onChange={onChange} />
+
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='idade'
+                    label='Idade'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='idade'
+                    value={preclientesData.idade}
+                    onChange={onChange}
+                    />
 
 
-              <InputCpf
-              type='text'
-              id='cpf'
-              label='CPF'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='cpf'
-              value={preclientesData.cpf}
-              onChange={onChange}
-              />
+                    <InputCnpj
+                    type='text'
+                    id='cnpj'
+                    label='CNPJ'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='cnpj'
+                    value={preclientesData.cnpj}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={30}
-              id='rg'
-              label='RG'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='rg'
-              value={preclientesData.rg}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={preclientesData} label='TipoCaptacao' name='tipocaptacao' checked={preclientesData.tipocaptacao} onChange={onChange} />
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='observacao'
-              label='Observacao'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='observacao'
-              value={preclientesData.observacao}
-              onChange={onChange}
-              />
+                    <InputCpf
+                    type='text'
+                    id='cpf'
+                    label='CPF'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='cpf'
+                    value={preclientesData.cpf}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='endereco'
-              label='Endereco'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='endereco'
-              value={preclientesData.endereco}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={30}
+                    id='rg'
+                    label='RG'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='rg'
+                    value={preclientesData.rg}
+                    onChange={onChange}
+                    />
+
+                    <InputCheckbox dataForm={preclientesData} label='TipoCaptacao' name='tipocaptacao' checked={preclientesData.tipocaptacao} onChange={onChange} />
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='observacao'
+                    label='Observacao'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='observacao'
+                    value={preclientesData.observacao}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='bairro'
-              label='Bairro'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='bairro'
-              value={preclientesData.bairro}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='endereco'
+                    label='Endereco'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='endereco'
+                    value={preclientesData.endereco}
+                    onChange={onChange}
+                    />
 
 
-              <CidadeComboBox
-              name={'cidade'}
-              dataForm={preclientesData}
-              value={preclientesData.cidade}
-              setValue={addValorCidade}
-              label={'Cidade'}
-              />
-
-              <InputCep
-              type='text'
-              id='cep'
-              label='CEP'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='cep'
-              value={preclientesData.cep}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='bairro'
+                    label='Bairro'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='bairro'
+                    value={preclientesData.bairro}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fax'
-              label='Fax'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='fax'
-              value={preclientesData.fax}
-              onChange={onChange}
-              />
+                    <CidadeComboBox
+                    name={'cidade'}
+                    dataForm={preclientesData}
+                    value={preclientesData.cidade}
+                    setValue={addValorCidade}
+                    label={'Cidade'}
+                    />
+
+                    <InputCep
+                    type='text'
+                    id='cep'
+                    label='CEP'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='cep'
+                    value={preclientesData.cep}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='fone'
-              value={preclientesData.fone}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fax'
+                    label='Fax'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='fax'
+                    value={preclientesData.fax}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='data'
-              label='Data'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='data'
-              value={preclientesData.data}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={preclientesData.fone}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={60}
-              id='homepage'
-              label='HomePage'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='homepage'
-              value={preclientesData.homepage}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='email'
-              maxLength={60}
-              id='email'
-              label='EMail'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='email'
-              value={preclientesData.email}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='data'
+                    label='Data'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='data'
+                    value={preclientesData.data}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='assistido'
-              label='Assistido'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='assistido'
-              value={preclientesData.assistido}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={60}
+                    id='homepage'
+                    label='HomePage'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='homepage'
+                    value={preclientesData.homepage}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='email'
+                    maxLength={60}
+                    id='email'
+                    label='EMail'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='email'
+                    value={preclientesData.email}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={30}
-              id='assrg'
-              label='AssRG'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='assrg'
-              value={preclientesData.assrg}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='assistido'
+                    label='Assistido'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='assistido'
+                    value={preclientesData.assistido}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={12}
-              id='asscpf'
-              label='AssCPF'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='asscpf'
-              value={preclientesData.asscpf}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={30}
+                    id='assrg'
+                    label='AssRG'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='assrg'
+                    value={preclientesData.assrg}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={70}
-              id='assendereco'
-              label='AssEndereco'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='assendereco'
-              value={preclientesData.assendereco}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={12}
+                    id='asscpf'
+                    label='AssCPF'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='asscpf'
+                    value={preclientesData.asscpf}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='cnh'
-              label='CNH'
-              dataForm={preclientesData}
-              className='inputIncNome'
-              name='cnh'
-              value={preclientesData.cnh}
-              onChange={onChange}
-              />
-
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={70}
+                    id='assendereco'
+                    label='AssEndereco'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='assendereco'
+                    value={preclientesData.assendereco}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PreClientes' data={preclientesData} isSubmitting={isSubmitting} onClose={onClose} formId={`PreClientesForm-${preclientesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/preclientes'} id={preclientesData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='cnh'
+                    label='CNH'
+                    dataForm={preclientesData}
+                    className='inputIncNome'
+                    name='cnh'
+                    value={preclientesData.cnh}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PreClientes' data={preclientesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PreClientesForm-${preclientesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/preclientes'} id={preclientesData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

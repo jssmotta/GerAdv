@@ -13,6 +13,5 @@ public partial interface IGUTAtividadesMatrizReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     GUTAtividadesMatrizResponseAll? ReadAll(FGUTAtividadesMatriz dbRec, IDataRecord dr);
     GUTAtividadesMatrizResponseAll? ReadAll(SG.GerAdv.DBGUTAtividadesMatriz dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

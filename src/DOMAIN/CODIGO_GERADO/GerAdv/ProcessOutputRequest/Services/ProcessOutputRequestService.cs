@@ -95,18 +95,18 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         }
     }
 
-    private async Task<ProcessOutputRequestResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ProcessOutputRequestResponse?> AddAndUpdate([FromBody] Models.ProcessOutputRequest regProcessOutputRequest, [FromRoute, Required] string uri)
+    private async Task<ProcessOutputRequestResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ProcessOutputRequestResponse?> AddAndUpdate([FromBody] Models.ProcessOutputRequest? regProcessOutputRequest, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProcessOutputRequest: URI inválida");
-        }
-
         if (regProcessOutputRequest == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProcessOutputRequest: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = _httpContextAccessor.HttpContext == null ? regProcessOutputRequest.Operador : UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ProcessOutputRequestResponse?> Validation([FromBody] Models.ProcessOutputRequest regProcessOutputRequest, [FromRoute, Required] string uri)
+    public async Task<ProcessOutputRequestResponse?> Validation([FromBody] Models.ProcessOutputRequest? regProcessOutputRequest, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("ProcessOutputRequest: URI inválida");
-        }
-
         if (regProcessOutputRequest == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("ProcessOutputRequest: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
             var validade = await validation.ValidateReg(regProcessOutputRequest, this, processoutputengineReader, operadorReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regProcessOutputRequest.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         return await reader.Read(regProcessOutputRequest.Id, oCnn);
     }
 
-    public async Task<ProcessOutputRequestResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ProcessOutputRequestResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("ProcessOutputRequest: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var processoutputrequest = await reader.Read(id, oCnn);
+        var processoutputrequest = await reader.Read(id ?? default, oCnn);
         try
         {
             if (processoutputrequest != null)
@@ -238,7 +238,7 @@ public partial class ProcessOutputRequestService(IOptions<AppSettings> appSettin
         return processoutputrequest;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

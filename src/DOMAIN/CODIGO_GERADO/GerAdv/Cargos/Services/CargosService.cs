@@ -96,18 +96,18 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
     }
 
-    private async Task<CargosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<CargosResponse?> AddAndUpdate([FromBody] Models.Cargos regCargos, [FromRoute, Required] string uri)
+    private async Task<CargosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<CargosResponse?> AddAndUpdate([FromBody] Models.Cargos? regCargos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Cargos: URI inválida");
-        }
-
         if (regCargos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Cargos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -121,7 +121,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             var validade = await validation.ValidateReg(regCargos, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -130,7 +130,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -138,17 +138,17 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<CargosResponse?> Validation([FromBody] Models.Cargos regCargos, [FromRoute, Required] string uri)
+    public async Task<CargosResponse?> Validation([FromBody] Models.Cargos? regCargos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Cargos: URI inválida");
-        }
-
         if (regCargos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Cargos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -162,7 +162,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             var validade = await validation.ValidateReg(regCargos, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -171,7 +171,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regCargos.Id.IsEmptyIDNumber())
@@ -182,17 +182,17 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         return await reader.Read(regCargos.Id, oCnn);
     }
 
-    public async Task<CargosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<CargosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Cargos: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -207,7 +207,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
             var deleteValidation = await validation.CanDelete(id, this, advogadosService, colaboradoresService, funcionariosService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -216,10 +216,10 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var cargos = await reader.Read(id, oCnn);
+        var cargos = await reader.Read(id ?? default, oCnn);
         try
         {
             if (cargos != null)
@@ -239,7 +239,7 @@ public partial class CargosService(IOptions<AppSettings> appSettings, IFCargosFa
         return cargos;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

@@ -11,6 +11,7 @@ export enum FieldsAdvogados
 	rg = `RG`,
 	casa = `Casa`,
 	nomemae = `NomeMae`,
+	guid = `GUID`,
 	estagiario = `Estagiario`,
 	oab = `OAB`,
 	nomecompleto = `NomeCompleto`,
@@ -37,5 +38,4 @@ export enum FieldsAdvogados
 	parctop = `ParcTop`,
 	class = `Class`,
 	top = `Top`,
-	guid = `GUID`,
 }

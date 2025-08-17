@@ -13,13 +13,14 @@ public partial interface IHorasTrabWhere
 
 public partial class HorasTrabWhere(IFHorasTrabFactory horastrabFactory) : IHorasTrabWhere
 {
-    private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory;
+    private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException(nameof(horastrabFactory));
     public HorasTrabResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _horastrabFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var horastrab = new HorasTrabResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
@@ -38,7 +39,6 @@ public partial class HorasTrabWhere(IFHorasTrabFactory horastrabFactory) : IHora
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return horastrab;
     }

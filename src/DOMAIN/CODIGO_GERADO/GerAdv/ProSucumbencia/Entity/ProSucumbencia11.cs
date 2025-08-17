@@ -54,7 +54,7 @@ public partial class FProSucumbenciaFactory : IFProSucumbenciaFactory, IDisposab
             throw new ObjectDisposedException(nameof(FProSucumbenciaFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

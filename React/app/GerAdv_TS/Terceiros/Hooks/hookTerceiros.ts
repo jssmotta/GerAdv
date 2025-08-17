@@ -41,7 +41,8 @@ export const useTerceirosForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Terceiros';
       setError(errorMessage);
-      //console.log('Erro ao carregar Terceiros');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Terceiros');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useTerceirosNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useTerceirosList = (dataService: ITerceirosService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar terceiros';
       setError(errorMessage);
-      //console.log('Erro ao carregar terceiros');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar terceiros');
     } finally {
       setLoading(false);
     }
@@ -237,7 +240,8 @@ if (data.varaforocomarca.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

@@ -61,193 +61,196 @@ if (getParamFromUrl('instancia') > 0) {
       setNomeInstancia(response.data.nroprocesso);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    prosucumbenciaData.instancia = getParamFromUrl('instancia');
+      prosucumbenciaData.instancia = getParamFromUrl('instancia');
+    }
   }
-}
 
-if (getParamFromUrl('tipoorigemsucumbencia') > 0) {
-  if (prosucumbenciaData.id === 0 && prosucumbenciaData.tipoorigemsucumbencia == 0) {
-    tipoorigemsucumbenciaApi
-    .getById(getParamFromUrl('tipoorigemsucumbencia'))
-    .then((response) => {
-      setNomeTipoOrigemSucumbencia(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('tipoorigemsucumbencia') > 0) {
+    if (prosucumbenciaData.id === 0 && prosucumbenciaData.tipoorigemsucumbencia == 0) {
+      tipoorigemsucumbenciaApi
+      .getById(getParamFromUrl('tipoorigemsucumbencia'))
+      .then((response) => {
+        setNomeTipoOrigemSucumbencia(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    prosucumbenciaData.tipoorigemsucumbencia = getParamFromUrl('tipoorigemsucumbencia');
-  }
-}
-const addValorInstancia = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'instancia', value: e.id } });
-  };
-  const addValorTipoOrigemSucumbencia = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'tipoorigemsucumbencia', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        prosucumbenciaData.tipoorigemsucumbencia = getParamFromUrl('tipoorigemsucumbencia');
+      }
+    }
+    const addValorInstancia = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'instancia', value: e.id } });
+      };
+      const addValorTipoOrigemSucumbencia = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'tipoorigemsucumbencia', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ProSucumbencia:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de ProSucumbencia:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ProSucumbenciaForm-${prosucumbenciaData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`ProSucumbenciaForm-${prosucumbenciaData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar ProSucumbencia diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = prosucumbenciaData?.id == 0 ? 'Editar ProSucumbencia' : 'Adicionar Pro Sucumbencia';
-      }
-    }, [prosucumbenciaData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar ProSucumbencia diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = prosucumbenciaData?.id == 0 ? 'Editar ProSucumbencia' : 'Adicionar Pro Sucumbencia';
+            }
+          }, [prosucumbenciaData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ProSucumbencia' : 'form-container5 form-container-ProSucumbencia'}>
+            <div className={isMobile ? 'form-container form-container-ProSucumbencia' : 'form-container5 form-container-ProSucumbencia'}>
 
-        <form className='formInputCadInc' id={`ProSucumbenciaForm-${prosucumbenciaData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProSucumbencia' data={prosucumbenciaData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProSucumbenciaForm-${prosucumbenciaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`ProSucumbenciaForm-${prosucumbenciaData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProSucumbencia' data={prosucumbenciaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProSucumbenciaForm-${prosucumbenciaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='data'
-              label='Data'
-              dataForm={prosucumbenciaData}
-              className='inputIncNome'
-              name='data'
-              value={prosucumbenciaData.data}
-              placeholder={`Informe Data`}
-              onChange={onChange}
-              required
-              />
+                    <InputName
+                    type='text'
+                    id='data'
+                    label='Data'
+                    dataForm={prosucumbenciaData}
+                    className='inputIncNome'
+                    name='data'
+                    value={prosucumbenciaData.data}
+                    placeholder={`Informe Data`}
+                    onChange={onChange}
+                    required
+                    />
 
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='processo'
-              label='Processo'
-              dataForm={prosucumbenciaData}
-              className='inputIncNome'
-              name='processo'
-              value={prosucumbenciaData.processo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='processo'
+                    label='Processo'
+                    dataForm={prosucumbenciaData}
+                    className='inputIncNome'
+                    name='processo'
+                    value={prosucumbenciaData.processo}
+                    onChange={onChange}
+                    />
 
 
-              <InstanciaComboBox
-              name={'instancia'}
-              dataForm={prosucumbenciaData}
-              value={prosucumbenciaData.instancia}
-              setValue={addValorInstancia}
-              label={'Instancia'}
-              />
+                    <InstanciaComboBox
+                    name={'instancia'}
+                    dataForm={prosucumbenciaData}
+                    value={prosucumbenciaData.instancia}
+                    setValue={addValorInstancia}
+                    label={'Instancia'}
+                    />
 
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='nome'
-              label='Nome'
-              dataForm={prosucumbenciaData}
-              className='inputIncNome'
-              name='nome'
-              value={prosucumbenciaData.nome}
-              onChange={onChange}
-              />
-
-
-              <TipoOrigemSucumbenciaComboBox
-              name={'tipoorigemsucumbencia'}
-              dataForm={prosucumbenciaData}
-              value={prosucumbenciaData.tipoorigemsucumbencia}
-              setValue={addValorTipoOrigemSucumbencia}
-              label={'Tipo Origem Sucumbencia'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='valor'
-              label='Valor'
-              dataForm={prosucumbenciaData}
-              className='inputIncNome'
-              name='valor'
-              value={prosucumbenciaData.valor}
-              onChange={onChange}
-              />
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='nome'
+                    label='Nome'
+                    dataForm={prosucumbenciaData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={prosucumbenciaData.nome}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={5}
-              id='percentual'
-              label='Percentual'
-              dataForm={prosucumbenciaData}
-              className='inputIncNome'
-              name='percentual'
-              value={prosucumbenciaData.percentual}
-              onChange={onChange}
-              />
+                    <TipoOrigemSucumbenciaComboBox
+                    name={'tipoorigemsucumbencia'}
+                    dataForm={prosucumbenciaData}
+                    value={prosucumbenciaData.tipoorigemsucumbencia}
+                    setValue={addValorTipoOrigemSucumbencia}
+                    label={'Tipo Origem Sucumbencia'}
+                    />
 
-            </div>
-          </form>
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='valor'
+                    label='Valor'
+                    dataForm={prosucumbenciaData}
+                    className='inputIncNome'
+                    name='valor'
+                    value={prosucumbenciaData.valor}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProSucumbencia' data={prosucumbenciaData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProSucumbenciaForm-${prosucumbenciaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/prosucumbencia'} id={prosucumbenciaData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={5}
+                    id='percentual'
+                    label='Percentual'
+                    dataForm={prosucumbenciaData}
+                    className='inputIncNome'
+                    name='percentual'
+                    value={prosucumbenciaData.percentual}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProSucumbencia' data={prosucumbenciaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProSucumbenciaForm-${prosucumbenciaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/prosucumbencia'} id={prosucumbenciaData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

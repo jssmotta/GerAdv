@@ -5,6 +5,7 @@ export enum FieldsFuncionarios
 {	cargo = `Cargo`,
 	funcao = `Funcao`,
 	cidade = `Cidade`,
+	guid = `GUID`,
 	emailpro = `EMailPro`,
 	nome = `Nome`,
 	sexo = `Sexo`,
@@ -32,5 +33,4 @@ export enum FieldsFuncionarios
 	liberaagenda = `LiberaAgenda`,
 	pasta = `Pasta`,
 	class = `Class`,
-	guid = `GUID`,
 }

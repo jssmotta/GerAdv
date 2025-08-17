@@ -13,6 +13,5 @@ public partial interface IParceriaProcReader
     Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
     ParceriaProcResponseAll? ReadAll(FParceriaProc dbRec, IDataRecord dr);
     ParceriaProcResponseAll? ReadAll(SG.GerAdv.DBParceriaProc dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
     Task<IEnumerable<ParceriaProcResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
 }

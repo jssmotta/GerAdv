@@ -54,7 +54,7 @@ public partial class FLigacoesFactory : IFLigacoesFactory, IDisposable
             throw new ObjectDisposedException(nameof(FLigacoesFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

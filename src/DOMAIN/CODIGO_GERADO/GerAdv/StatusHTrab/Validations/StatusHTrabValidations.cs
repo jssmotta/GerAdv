@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IStatusHTrabValidation
 {
     Task<bool> ValidateReg(Models.StatusHTrab reg, IStatusHTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IStatusHTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IStatusHTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class StatusHTrabValidation : IStatusHTrabValidation
 {
-    public async Task<bool> CanDelete(int id, IStatusHTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IStatusHTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class StatusHTrabValidation : IStatusHTrabValidation
 
     private bool ValidSizes(Models.StatusHTrab reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 50)
-            throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBStatusHTrabDicInfo.ShtDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBStatusHTrabDicInfo.ShtDescricao.FTamanho} caracteres.");
         return true;
     }
 

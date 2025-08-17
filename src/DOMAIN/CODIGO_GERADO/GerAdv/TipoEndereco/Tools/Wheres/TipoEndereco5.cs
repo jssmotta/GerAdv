@@ -13,15 +13,15 @@ public partial interface ITipoEnderecoWhere
 
 public partial class TipoEnderecoWhere(IFTipoEnderecoFactory tipoenderecoFactory) : ITipoEnderecoWhere
 {
-    private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory;
+    private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory ?? throw new ArgumentNullException(nameof(tipoenderecoFactory));
     public TipoEnderecoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipoenderecoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipoendereco = new TipoEnderecoResponse
         {
             Id = dbRec.ID,
-            Descricao = dbRec.FDescricao ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Descricao = dbRec.FDescricao ?? string.Empty,
         };
         return tipoendereco;
     }

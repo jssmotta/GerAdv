@@ -14,13 +14,13 @@ public partial interface IProCDAWriter
 
 public class ProCDAWriter(IFProCDAFactory procdaFactory) : IProCDAWriter
 {
-    private readonly IFProCDAFactory _procdaFactory = procdaFactory;
-    public async Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProCDAFactory _procdaFactory = procdaFactory ?? throw new ArgumentNullException(nameof(procdaFactory));
+    public virtual async Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection oCnn)
     {
         await _procdaFactory.DeleteAsync(operadorId, procda.Id, oCnn);
     }
 
-    public async Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (procda.Id.IsEmptyIDNumber() ? _procdaFactory.CreateAsync() : _procdaFactory.CreateFromIdAsync(procda.Id, oCnn));
         dbRec.FProcesso = procda.Processo;

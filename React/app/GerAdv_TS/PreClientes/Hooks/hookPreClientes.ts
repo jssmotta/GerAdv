@@ -41,7 +41,8 @@ export const usePreClientesForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Pre Clientes';
       setError(errorMessage);
-      //console.log('Erro ao carregar Pre Clientes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Pre Clientes');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const usePreClientesNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const usePreClientesList = (dataService: IPreClientesService, currentFilt
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar preclientes';
       setError(errorMessage);
-      //console.log('Erro ao carregar preclientes');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar preclientes');
     } finally {
       setLoading(false);
     }
@@ -267,7 +270,8 @@ if (data.cnh.length > 100) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

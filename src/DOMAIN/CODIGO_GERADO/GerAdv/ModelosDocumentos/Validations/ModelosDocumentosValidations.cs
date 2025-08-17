@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IModelosDocumentosValidation
 {
     Task<bool> ValidateReg(Models.ModelosDocumentos reg, IModelosDocumentosService service, ITipoModeloDocumentoReader tipomodelodocumentoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IModelosDocumentosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IModelosDocumentosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ModelosDocumentosValidation : IModelosDocumentosValidation
 {
-    public async Task<bool> CanDelete(int id, IModelosDocumentosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IModelosDocumentosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,12 +26,12 @@ public class ModelosDocumentosValidation : IModelosDocumentosValidation
 
     private bool ValidSizes(Models.ModelosDocumentos reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Titulo != null && reg.Titulo.Length > 2000)
-            throw new SGValidationException($"Titulo deve ter no máximo 2000 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBModelosDocumentosDicInfo.MdcNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBModelosDocumentosDicInfo.MdcNome.FTamanho} caracteres.");
+        if (reg.Titulo != null && reg.Titulo.Length > DBModelosDocumentosDicInfo.MdcTitulo.FTamanho)
+            throw new SGValidationException($"Titulo deve ter no máximo {DBModelosDocumentosDicInfo.MdcTitulo.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBModelosDocumentosDicInfo.MdcGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBModelosDocumentosDicInfo.MdcGUID.FTamanho} caracteres.");
         return true;
     }
 

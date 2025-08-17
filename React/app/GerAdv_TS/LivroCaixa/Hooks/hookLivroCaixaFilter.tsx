@@ -168,16 +168,6 @@ export const useLivroCaixaFilter = ({ handleFetchWithFilter }: UseLivroCaixaFilt
   />
   <InputInput
   type='text'
-  id='data'
-  name='data'
-  value={handlers.windowFilter?.data ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Data'
-  label='Data'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
   id='processo'
   name='processo'
   value={handlers.windowFilter?.processo ?? ''}

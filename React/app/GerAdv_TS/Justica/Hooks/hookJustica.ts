@@ -41,7 +41,8 @@ export const useJusticaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Justiça';
       setError(errorMessage);
-      //console.log('Erro ao carregar Justiça');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Justiça');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useJusticaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useJusticaList = (dataService: IJusticaService, currentFilter?: Fil
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar justica';
       setError(errorMessage);
-      //console.log('Erro ao carregar justica');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar justica');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 50) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

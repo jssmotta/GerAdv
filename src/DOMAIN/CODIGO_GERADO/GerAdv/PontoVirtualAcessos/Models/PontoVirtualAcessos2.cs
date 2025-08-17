@@ -25,9 +25,6 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("datahora")]
         public string DataHora { get; set; } = "";
 
-        [JsonPropertyName("datahora_date")]
-        public DateTime? DataHora_date { get; set; }
-
         /// <summary>
         /// Tipo - pvaTipo  
         /// </summary>
@@ -61,9 +58,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("datahora")]
         public string DataHora { get; set; } = "";
-
-        [JsonPropertyName("datahora_date")]
-        public DateTime? DataHora_date { get; set; }
 
         /// <summary>
         /// Tipo - pvaTipo  

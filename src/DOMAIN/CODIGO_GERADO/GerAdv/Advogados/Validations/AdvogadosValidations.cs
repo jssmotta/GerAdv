@@ -9,75 +9,72 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAdvogadosValidation
 {
     Task<bool> ValidateReg(Models.Advogados reg, IAdvogadosService service, ICargosReader cargosReader, IEscritoriosReader escritoriosReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IAdvogadosService service, IAgendaService agendaService, IAgendaQuemService agendaquemService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AdvogadosValidation : IAdvogadosValidation
 {
-    public async Task<bool> CanDelete(int id, IAdvogadosService service, IAgendaService agendaService, IAgendaQuemService agendaquemService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAdvogadosService service, IAgendaService agendaService, IContratosService contratosService, IHorasTrabService horastrabService, IParceriaProcService parceriaprocService, IProProcuradoresService proprocuradoresService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id }, uri);
+        var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
-        var agendaquemExists1 = await agendaquemService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgendaQuem { Advogado = id }, uri);
-        if (agendaquemExists1 != null && agendaquemExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Agenda Quem associados a ele.");
-        var contratosExists2 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Advogado = id }, uri);
-        if (contratosExists2 != null && contratosExists2.Any())
+        var contratosExists1 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Advogado = id ?? default }, uri);
+        if (contratosExists1 != null && contratosExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.");
-        var horastrabExists3 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Advogado = id }, uri);
-        if (horastrabExists3 != null && horastrabExists3.Any())
+        var horastrabExists2 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Advogado = id ?? default }, uri);
+        if (horastrabExists2 != null && horastrabExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
-        var parceriaprocExists4 = await parceriaprocService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParceriaProc { Advogado = id }, uri);
-        if (parceriaprocExists4 != null && parceriaprocExists4.Any())
+        var parceriaprocExists3 = await parceriaprocService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParceriaProc { Advogado = id ?? default }, uri);
+        if (parceriaprocExists3 != null && parceriaprocExists3.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Parceria Proc associados a ele.");
-        var proprocuradoresExists5 = await proprocuradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProProcuradores { Advogado = id }, uri);
-        if (proprocuradoresExists5 != null && proprocuradoresExists5.Any())
+        var proprocuradoresExists4 = await proprocuradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProProcuradores { Advogado = id ?? default }, uri);
+        if (proprocuradoresExists4 != null && proprocuradoresExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Procuradores associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Advogados reg)
     {
-        if (reg.EMailPro != null && reg.EMailPro.Length > 255)
-            throw new SGValidationException($"EMailPro deve ter no máximo 255 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.NomeMae != null && reg.NomeMae.Length > 80)
-            throw new SGValidationException($"NomeMae deve ter no máximo 80 caracteres.");
-        if (reg.OAB != null && reg.OAB.Length > 12)
-            throw new SGValidationException($"OAB deve ter no máximo 12 caracteres.");
-        if (reg.NomeCompleto != null && reg.NomeCompleto.Length > 50)
-            throw new SGValidationException($"NomeCompleto deve ter no máximo 50 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > 10)
-            throw new SGValidationException($"CTPSSerie deve ter no máximo 10 caracteres.");
-        if (reg.CTPS != null && reg.CTPS.Length > 15)
-            throw new SGValidationException($"CTPS deve ter no máximo 15 caracteres.");
-        if (reg.Secretaria != null && reg.Secretaria.Length > 20)
-            throw new SGValidationException($"Secretaria deve ter no máximo 20 caracteres.");
-        if (reg.TextoProcuracao != null && reg.TextoProcuracao.Length > 200)
-            throw new SGValidationException($"TextoProcuracao deve ter no máximo 200 caracteres.");
-        if (reg.Pasta != null && reg.Pasta.Length > 200)
-            throw new SGValidationException($"Pasta deve ter no máximo 200 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.EMailPro != null && reg.EMailPro.Length > DBAdvogadosDicInfo.AdvEMailPro.FTamanho)
+            throw new SGValidationException($"EMailPro deve ter no máximo {DBAdvogadosDicInfo.AdvEMailPro.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBAdvogadosDicInfo.AdvCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBAdvogadosDicInfo.AdvCPF.FTamanho} caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBAdvogadosDicInfo.AdvNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBAdvogadosDicInfo.AdvNome.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBAdvogadosDicInfo.AdvRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBAdvogadosDicInfo.AdvRG.FTamanho} caracteres.");
+        if (reg.NomeMae != null && reg.NomeMae.Length > DBAdvogadosDicInfo.AdvNomeMae.FTamanho)
+            throw new SGValidationException($"NomeMae deve ter no máximo {DBAdvogadosDicInfo.AdvNomeMae.FTamanho} caracteres.");
+        if (reg.OAB != null && reg.OAB.Length > DBAdvogadosDicInfo.AdvOAB.FTamanho)
+            throw new SGValidationException($"OAB deve ter no máximo {DBAdvogadosDicInfo.AdvOAB.FTamanho} caracteres.");
+        if (reg.NomeCompleto != null && reg.NomeCompleto.Length > DBAdvogadosDicInfo.AdvNomeCompleto.FTamanho)
+            throw new SGValidationException($"NomeCompleto deve ter no máximo {DBAdvogadosDicInfo.AdvNomeCompleto.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBAdvogadosDicInfo.AdvEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBAdvogadosDicInfo.AdvEndereco.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBAdvogadosDicInfo.AdvCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBAdvogadosDicInfo.AdvCEP.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBAdvogadosDicInfo.AdvBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBAdvogadosDicInfo.AdvBairro.FTamanho} caracteres.");
+        if (reg.CTPSSerie != null && reg.CTPSSerie.Length > DBAdvogadosDicInfo.AdvCTPSSerie.FTamanho)
+            throw new SGValidationException($"CTPSSerie deve ter no máximo {DBAdvogadosDicInfo.AdvCTPSSerie.FTamanho} caracteres.");
+        if (reg.CTPS != null && reg.CTPS.Length > DBAdvogadosDicInfo.AdvCTPS.FTamanho)
+            throw new SGValidationException($"CTPS deve ter no máximo {DBAdvogadosDicInfo.AdvCTPS.FTamanho} caracteres.");
+        if (reg.Secretaria != null && reg.Secretaria.Length > DBAdvogadosDicInfo.AdvSecretaria.FTamanho)
+            throw new SGValidationException($"Secretaria deve ter no máximo {DBAdvogadosDicInfo.AdvSecretaria.FTamanho} caracteres.");
+        if (reg.TextoProcuracao != null && reg.TextoProcuracao.Length > DBAdvogadosDicInfo.AdvTextoProcuracao.FTamanho)
+            throw new SGValidationException($"TextoProcuracao deve ter no máximo {DBAdvogadosDicInfo.AdvTextoProcuracao.FTamanho} caracteres.");
+        if (reg.Pasta != null && reg.Pasta.Length > DBAdvogadosDicInfo.AdvPasta.FTamanho)
+            throw new SGValidationException($"Pasta deve ter no máximo {DBAdvogadosDicInfo.AdvPasta.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBAdvogadosDicInfo.AdvClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBAdvogadosDicInfo.AdvClass.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBAdvogadosDicInfo.AdvGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBAdvogadosDicInfo.AdvGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -90,8 +87,41 @@ public class AdvogadosValidation : IAdvogadosValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMailPro != null && reg.EMailPro.Length > 0 && !reg.EMailPro.IsValidEmail())
+            throw new SGValidationException($"EMailPro em formato inválido.");
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DtNasc))
+        {
+            if (DateTime.TryParse(reg.DtNasc, out DateTime dataAniversario))
+            {
+                if (dataAniversario < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data Nascimento não pode ser anterior a 01/01/1900.");
+                if (dataAniversario > DateTime.Now)
+                    throw new SGValidationException("DtNasc não pode ser uma data futura.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DtInicio))
+        {
+            if (DateTime.TryParse(reg.DtInicio, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DtInicio não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DtFim))
+        {
+            if (DateTime.TryParse(reg.DtFim, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DtFim não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -111,7 +141,7 @@ public class AdvogadosValidation : IAdvogadosValidation
             var regCargos = await cargosReader.Read(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
             {
-                throw new SGValidationException($"Cargos não encontrado ({regCargos?.Id}).");
+                throw new SGValidationException($"Cargo não encontrado ({regCargos?.Id}).");
             }
         }
 

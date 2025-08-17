@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteReader
 {
-    private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory;
+    private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opcCodigo, opcNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<OutrasPartesClienteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOutrasPartesCliente.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<OutrasPartesClienteResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -72,8 +72,8 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            Class = dbRec.FClass ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Class = dbRec.FClass ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -123,8 +123,8 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            Class = dbRec.FClass ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Class = dbRec.FClass ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -163,8 +163,8 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            Class = dbRec.FClass ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Class = dbRec.FClass ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -203,8 +203,8 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            Class = dbRec.FClass ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Class = dbRec.FClass ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -251,8 +251,8 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            Class = dbRec.FClass ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
+            Class = dbRec.FClass ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

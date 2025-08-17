@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class EnderecoSistemaHealthCheck(IOptions<AppSettings> appSettings, EnderecoSistemaService enderecosistemaService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class EnderecoSistemaHealthCheck(IOptions<AppSettings> appSettings, Ender
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) estCadastro,estCadastroExCod,estTipoEnderecoSistema,estProcesso,estMotivo,estContatoNoLocal,estCidade,estEndereco,estBairro,estCEP,estFone,estFax,estObservacao,estGUID FROM {"EnderecoSistema".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) estCadastro,estCadastroExCod,estTipoEnderecoSistema,estGUID,estProcesso,estMotivo,estContatoNoLocal,estCidade,estEndereco,estBairro,estCEP,estFone,estFax,estObservacao FROM {"EnderecoSistema".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class EnderecoSistemaHealthCheck(IOptions<AppSettings> appSettings, Ender
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

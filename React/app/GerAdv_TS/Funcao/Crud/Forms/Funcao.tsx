@@ -80,60 +80,61 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar Funcao diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar Funcao diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = funcaoData?.id == 0 ? 'Editar Funcao' : 'Adicionar Função';
-  }
-}, [funcaoData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-Funcao' : 'form-container5 form-container-Funcao'}>
-
-    <form className='formInputCadInc' id={`FuncaoForm-${funcaoData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Funcao' data={funcaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`FuncaoForm-${funcaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputDescription
-          type='text'
-          id='descricao'
-          label='função'
-          dataForm={funcaoData}
-          className='inputIncNome'
-          name='descricao'
-          value={funcaoData.descricao}
-          placeholder={`Digite nome função`}
-          onChange={onChange}
-          required
-          disabled={funcaoData.id > 0}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Funcao' data={funcaoData} isSubmitting={isSubmitting} onClose={onClose} formId={`FuncaoForm-${funcaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/funcao'} id={funcaoData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = funcaoData?.id == 0 ? 'Editar Funcao' : 'Adicionar Função';
+    }
+  }, [funcaoData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-Funcao' : 'form-container5 form-container-Funcao'}>
+
+      <form className='formInputCadInc' id={`FuncaoForm-${funcaoData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='Funcao' data={funcaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`FuncaoForm-${funcaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputDescription
+            type='text'
+            id='descricao'
+            label='função'
+            dataForm={funcaoData}
+            className='inputIncNome'
+            name='descricao'
+            value={funcaoData.descricao}
+            placeholder={`Digite nome função`}
+            onChange={onChange}
+            required
+            disabled={funcaoData.id > 0}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='Funcao' data={funcaoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`FuncaoForm-${funcaoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/funcao'} id={funcaoData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

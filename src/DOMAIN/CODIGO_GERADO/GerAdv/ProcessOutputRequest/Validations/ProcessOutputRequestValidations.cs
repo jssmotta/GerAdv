@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProcessOutputRequestValidation
 {
     Task<bool> ValidateReg(Models.ProcessOutputRequest reg, IProcessOutputRequestService service, IProcessOutputEngineReader processoutputengineReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProcessOutputRequestService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProcessOutputRequestService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
 {
-    public async Task<bool> CanDelete(int id, IProcessOutputRequestService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProcessOutputRequestService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,8 +26,8 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
 
     private bool ValidSizes(Models.ProcessOutputRequest reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProcessOutputRequestDicInfo.PorGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProcessOutputRequestDicInfo.PorGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -35,10 +35,6 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");
-        if (string.IsNullOrWhiteSpace(reg.GUID))
-            throw new SGValidationException("GUID é obrigatório");
-        if (await IsDuplicado(reg, service, uri))
-            throw new SGValidationException($"Process Output Request '{reg.GUID}' Operador e/ou Processo e/ou ProcessOutputEngine");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -69,11 +65,5 @@ public class ProcessOutputRequestValidation : IProcessOutputRequestValidation
         }
 
         return true;
-    }
-
-    private async Task<bool> IsDuplicado(Models.ProcessOutputRequest reg, IProcessOutputRequestService service, string uri)
-    {
-        var existingProcessOutputRequest = (await service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { Operador = reg.Operador, Processo = reg.Processo, ProcessOutputEngine = reg.ProcessOutputEngine }, uri)).FirstOrDefault(); // TRACK 10042025
-        return existingProcessOutputRequest != null && existingProcessOutputRequest.Id > 0 && existingProcessOutputRequest.Id != reg.Id;
     }
 }

@@ -8,37 +8,46 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class TipoRecursoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoRecurso filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterTipoRecurso? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
+        {
+            parameters.Add(new($"@{(DBTipoRecursoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+        }
+
         if (filtro.Justica != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTipoRecursoDicInfo.Justica)}", filtro.Justica));
+            parameters.Add(new($"@{(DBTipoRecursoDicInfo.Justica)}", filtro.Justica));
+            if (filtro.Justica_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTipoRecursoDicInfo.Justica)}_end", filtro.Justica_end));
+            }
         }
 
         if (filtro.Area != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTipoRecursoDicInfo.Area)}", filtro.Area));
+            parameters.Add(new($"@{(DBTipoRecursoDicInfo.Area)}", filtro.Area));
+            if (filtro.Area_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTipoRecursoDicInfo.Area)}_end", filtro.Area_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Descricao))
+        if (!string.IsNullOrWhiteSpace(filtro.Descricao))
         {
-            parameters.Add(new($"@{nameof(DBTipoRecursoDicInfo.Descricao)}", ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBTipoRecursoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBTipoRecursoDicInfo.Descricao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Descricao)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBTipoRecursoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBTipoRecursoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBTipoRecursoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBTipoRecursoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,31 +56,36 @@ public partial class TipoRecursoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Justica}] = @{nameof(DBTipoRecursoDicInfo.Justica)}");
-        cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Area}] = @{nameof(DBTipoRecursoDicInfo.Area)}");
-        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoRecursoDicInfo.Descricao)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBTipoRecursoDicInfo.GUID)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBTipoRecursoDicInfo.GUID)}");
+        if (!(filtro.Justica.IsEmptyX()) && filtro.Justica_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Justica.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Justica}] = @{(DBTipoRecursoDicInfo.Justica)}");
+        }
+        else if (!(filtro.Justica.IsEmptyX()) && !(filtro.Justica_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].{DBTipoRecursoDicInfo.Justica} BETWEEN @{(DBTipoRecursoDicInfo.Justica)} AND @{(DBTipoRecursoDicInfo.Justica)}_end");
+        }
+
+        if (!(filtro.Area.IsEmptyX()) && filtro.Area_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Area.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Area}] = @{(DBTipoRecursoDicInfo.Area)}");
+        }
+        else if (!(filtro.Area.IsEmptyX()) && !(filtro.Area_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].{DBTipoRecursoDicInfo.Area} BETWEEN @{(DBTipoRecursoDicInfo.Area)} AND @{(DBTipoRecursoDicInfo.Area)}_end");
+        }
+
+        cWhere.Append(filtro.Descricao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.Descricao}]  {DevourerConsts.MsiCollate} like @{(DBTipoRecursoDicInfo.Descricao)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.CampoCodigo}] = @{nameof(DBTipoRecursoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].[{DBTipoRecursoDicInfo.CampoCodigo}] = @{(DBTipoRecursoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].{DBTipoRecursoDicInfo.CampoCodigo} BETWEEN @{nameof(DBTipoRecursoDicInfo.CampoCodigo)} AND @{nameof(DBTipoRecursoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBTipoRecursoDicInfo.PTabelaNome}].{DBTipoRecursoDicInfo.CampoCodigo} BETWEEN @{(DBTipoRecursoDicInfo.CampoCodigo)} AND @{(DBTipoRecursoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterTipoRecurso? filtro)

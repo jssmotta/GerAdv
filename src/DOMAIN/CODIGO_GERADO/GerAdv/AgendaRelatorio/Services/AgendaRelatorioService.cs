@@ -43,7 +43,7 @@ public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, I
         return result;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

@@ -47,16 +47,16 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? DataPenhora_date { get; set; }
 
         /// <summary>
-        /// Master - phrMaster  
-        /// </summary>
-        [JsonPropertyName("master")]
-        public int Master { get; set; }
-
-        /// <summary>
         /// GUID - phrGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Master - phrMaster  
+        /// </summary>
+        [JsonPropertyName("master")]
+        public int Master { get; set; }
     }
 }
 
@@ -102,16 +102,16 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? DataPenhora_date { get; set; }
 
         /// <summary>
-        /// Master - phrMaster  
-        /// </summary>
-        [JsonPropertyName("master")]
-        public int Master { get; set; }
-
-        /// <summary>
         /// GUID - phrGUID - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
         public string GUID { get; set; } = "";
+
+        /// <summary>
+        /// Master - phrMaster  
+        /// </summary>
+        [JsonPropertyName("master")]
+        public int Master { get; set; }
 
         [JsonPropertyName("nomepenhorastatus")]
         public string NomePenhoraStatus { get; set; } = string.Empty;

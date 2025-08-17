@@ -9,25 +9,25 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IInstanciaValidation
 {
     Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class InstanciaValidation : IInstanciaValidation
 {
-    public async Task<bool> CanDelete(int id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var nenotasExists0 = await nenotasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNENotas { Instancia = id }, uri);
+        var nenotasExists0 = await nenotasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNENotas { Instancia = id ?? default }, uri);
         if (nenotasExists0 != null && nenotasExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.");
-        var prosucumbenciaExists1 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { Instancia = id }, uri);
+        var prosucumbenciaExists1 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { Instancia = id ?? default }, uri);
         if (prosucumbenciaExists1 != null && prosucumbenciaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.");
-        var tribunalExists2 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Instancia = id }, uri);
+        var tribunalExists2 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Instancia = id ?? default }, uri);
         if (tribunalExists2 != null && tribunalExists2.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
         return true;
@@ -35,20 +35,20 @@ public class InstanciaValidation : IInstanciaValidation
 
     private bool ValidSizes(Models.Instancia reg)
     {
-        if (reg.Objeto != null && reg.Objeto.Length > 255)
-            throw new SGValidationException($"Objeto deve ter no máximo 255 caracteres.");
-        if (reg.NroProcesso != null && reg.NroProcesso.Length > 25)
-            throw new SGValidationException($"NroProcesso deve ter no máximo 25 caracteres.");
-        if (reg.ZKey != null && reg.ZKey.Length > 25)
-            throw new SGValidationException($"ZKey deve ter no máximo 25 caracteres.");
-        if (reg.NroAntigo != null && reg.NroAntigo.Length > 25)
-            throw new SGValidationException($"NroAntigo deve ter no máximo 25 caracteres.");
-        if (reg.AccessCode != null && reg.AccessCode.Length > 100)
-            throw new SGValidationException($"AccessCode deve ter no máximo 100 caracteres.");
-        if (reg.ZKeyIA != null && reg.ZKeyIA.Length > 25)
-            throw new SGValidationException($"ZKeyIA deve ter no máximo 25 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Objeto != null && reg.Objeto.Length > DBInstanciaDicInfo.InsObjeto.FTamanho)
+            throw new SGValidationException($"Objeto deve ter no máximo {DBInstanciaDicInfo.InsObjeto.FTamanho} caracteres.");
+        if (reg.NroProcesso != null && reg.NroProcesso.Length > DBInstanciaDicInfo.InsNroProcesso.FTamanho)
+            throw new SGValidationException($"NroProcesso deve ter no máximo {DBInstanciaDicInfo.InsNroProcesso.FTamanho} caracteres.");
+        if (reg.ZKey != null && reg.ZKey.Length > DBInstanciaDicInfo.InsZKey.FTamanho)
+            throw new SGValidationException($"ZKey deve ter no máximo {DBInstanciaDicInfo.InsZKey.FTamanho} caracteres.");
+        if (reg.NroAntigo != null && reg.NroAntigo.Length > DBInstanciaDicInfo.InsNroAntigo.FTamanho)
+            throw new SGValidationException($"NroAntigo deve ter no máximo {DBInstanciaDicInfo.InsNroAntigo.FTamanho} caracteres.");
+        if (reg.AccessCode != null && reg.AccessCode.Length > DBInstanciaDicInfo.InsAccessCode.FTamanho)
+            throw new SGValidationException($"AccessCode deve ter no máximo {DBInstanciaDicInfo.InsAccessCode.FTamanho} caracteres.");
+        if (reg.ZKeyIA != null && reg.ZKeyIA.Length > DBInstanciaDicInfo.InsZKeyIA.FTamanho)
+            throw new SGValidationException($"ZKeyIA deve ter no máximo {DBInstanciaDicInfo.InsZKeyIA.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBInstanciaDicInfo.InsGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBInstanciaDicInfo.InsGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -61,6 +61,15 @@ public class InstanciaValidation : IInstanciaValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.ZKeyQuando))
+        {
+            if (DateTime.TryParse(reg.ZKeyQuando, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("ZKeyQuando não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Acao
         if (!reg.Acao.IsEmptyIDNumber())
         {

@@ -13,7 +13,7 @@ public partial interface ISetorWhere
 
 public partial class SetorWhere(IFSetorFactory setorFactory) : ISetorWhere
 {
-    private readonly IFSetorFactory _setorFactory = setorFactory;
+    private readonly IFSetorFactory _setorFactory = setorFactory ?? throw new ArgumentNullException(nameof(setorFactory));
     public SetorResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _setorFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

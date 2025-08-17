@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHorasTrabReader
 {
-    private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory;
+    private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("htbCodigo, htbData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<HorasTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBHorasTrab.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<HorasTrabResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,6 +54,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new Models.HorasTrab
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
@@ -72,7 +73,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return horastrab;
     }
@@ -98,6 +98,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
@@ -116,7 +117,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return horastrab;
     }
@@ -131,6 +131,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
@@ -149,7 +150,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return horastrab;
     }
@@ -164,6 +164,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
@@ -182,7 +183,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -229,6 +229,7 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
@@ -247,7 +248,6 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

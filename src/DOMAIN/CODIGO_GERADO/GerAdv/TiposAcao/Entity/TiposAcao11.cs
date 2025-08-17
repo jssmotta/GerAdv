@@ -54,7 +54,7 @@ public partial class FTiposAcaoFactory : IFTiposAcaoFactory, IDisposable
             throw new ObjectDisposedException(nameof(FTiposAcaoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

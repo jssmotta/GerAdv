@@ -10,109 +10,112 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterModelosDocumentos
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("remuneracao")]
-    public string Remuneracao { get; set; } = string.Empty;
+    public string? Remuneracao { get; set; } = string.Empty;
 
     [JsonPropertyName("remuneracao_end")]
-    public string Remuneracao_end { get; set; } = string.Empty;
+    public string? Remuneracao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("assinatura")]
-    public string Assinatura { get; set; } = string.Empty;
+    public string? Assinatura { get; set; } = string.Empty;
 
     [JsonPropertyName("assinatura_end")]
-    public string Assinatura_end { get; set; } = string.Empty;
+    public string? Assinatura_end { get; set; } = string.Empty;
 
     [JsonPropertyName("header")]
-    public string Header { get; set; } = string.Empty;
+    public string? Header { get; set; } = string.Empty;
 
     [JsonPropertyName("header_end")]
-    public string Header_end { get; set; } = string.Empty;
+    public string? Header_end { get; set; } = string.Empty;
 
     [JsonPropertyName("footer")]
-    public string Footer { get; set; } = string.Empty;
+    public string? Footer { get; set; } = string.Empty;
 
     [JsonPropertyName("footer_end")]
-    public string Footer_end { get; set; } = string.Empty;
+    public string? Footer_end { get; set; } = string.Empty;
 
     [JsonPropertyName("extra1")]
-    public string Extra1 { get; set; } = string.Empty;
+    public string? Extra1 { get; set; } = string.Empty;
 
     [JsonPropertyName("extra1_end")]
-    public string Extra1_end { get; set; } = string.Empty;
+    public string? Extra1_end { get; set; } = string.Empty;
 
     [JsonPropertyName("extra2")]
-    public string Extra2 { get; set; } = string.Empty;
+    public string? Extra2 { get; set; } = string.Empty;
 
     [JsonPropertyName("extra2_end")]
-    public string Extra2_end { get; set; } = string.Empty;
+    public string? Extra2_end { get; set; } = string.Empty;
 
     [JsonPropertyName("extra3")]
-    public string Extra3 { get; set; } = string.Empty;
+    public string? Extra3 { get; set; } = string.Empty;
 
     [JsonPropertyName("extra3_end")]
-    public string Extra3_end { get; set; } = string.Empty;
+    public string? Extra3_end { get; set; } = string.Empty;
 
     [JsonPropertyName("outorgante")]
-    public string Outorgante { get; set; } = string.Empty;
+    public string? Outorgante { get; set; } = string.Empty;
 
     [JsonPropertyName("outorgante_end")]
-    public string Outorgante_end { get; set; } = string.Empty;
+    public string? Outorgante_end { get; set; } = string.Empty;
 
     [JsonPropertyName("outorgados")]
-    public string Outorgados { get; set; } = string.Empty;
+    public string? Outorgados { get; set; } = string.Empty;
 
     [JsonPropertyName("outorgados_end")]
-    public string Outorgados_end { get; set; } = string.Empty;
+    public string? Outorgados_end { get; set; } = string.Empty;
 
     [JsonPropertyName("poderes")]
-    public string Poderes { get; set; } = string.Empty;
+    public string? Poderes { get; set; } = string.Empty;
 
     [JsonPropertyName("poderes_end")]
-    public string Poderes_end { get; set; } = string.Empty;
+    public string? Poderes_end { get; set; } = string.Empty;
 
     [JsonPropertyName("objeto")]
-    public string Objeto { get; set; } = string.Empty;
+    public string? Objeto { get; set; } = string.Empty;
 
     [JsonPropertyName("objeto_end")]
-    public string Objeto_end { get; set; } = string.Empty;
+    public string? Objeto_end { get; set; } = string.Empty;
 
     [JsonPropertyName("titulo")]
-    public string Titulo { get; set; } = string.Empty;
+    public string? Titulo { get; set; } = string.Empty;
 
     [JsonPropertyName("titulo_end")]
-    public string Titulo_end { get; set; } = string.Empty;
+    public string? Titulo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("testemunhas")]
-    public string Testemunhas { get; set; } = string.Empty;
+    public string? Testemunhas { get; set; } = string.Empty;
 
     [JsonPropertyName("testemunhas_end")]
-    public string Testemunhas_end { get; set; } = string.Empty;
+    public string? Testemunhas_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipomodelodocumento")]
     public int TipoModeloDocumento { get; set; } = int.MinValue;
 
+    [JsonPropertyName("tipomodelodocumento_end")]
+    public int TipoModeloDocumento_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("css")]
-    public string CSS { get; set; } = string.Empty;
+    public string? CSS { get; set; } = string.Empty;
 
     [JsonPropertyName("css_end")]
-    public string CSS_end { get; set; } = string.Empty;
+    public string? CSS_end { get; set; } = string.Empty;
 
     [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
+    public string? GUID { get; set; } = string.Empty;
 
     [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

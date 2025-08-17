@@ -80,59 +80,60 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar NEPalavrasChaves diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar NEPalavrasChaves diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = nepalavraschavesData?.id == 0 ? 'Editar NEPalavrasChaves' : 'Adicionar N E Palavras Chaves';
-  }
-}, [nepalavraschavesData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-NEPalavrasChaves' : 'form-container5 form-container-NEPalavrasChaves'}>
-
-    <form className='formInputCadInc' id={`NEPalavrasChavesForm-${nepalavraschavesData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='NEPalavrasChaves' data={nepalavraschavesData} isSubmitting={isSubmitting} onClose={onClose} formId={`NEPalavrasChavesForm-${nepalavraschavesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={nepalavraschavesData}
-          className='inputIncNome'
-          name='nome'
-          value={nepalavraschavesData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='NEPalavrasChaves' data={nepalavraschavesData} isSubmitting={isSubmitting} onClose={onClose} formId={`NEPalavrasChavesForm-${nepalavraschavesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/nepalavraschaves'} id={nepalavraschavesData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = nepalavraschavesData?.id == 0 ? 'Editar NEPalavrasChaves' : 'Adicionar N E Palavras Chaves';
+    }
+  }, [nepalavraschavesData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-NEPalavrasChaves' : 'form-container5 form-container-NEPalavrasChaves'}>
+
+      <form className='formInputCadInc' id={`NEPalavrasChavesForm-${nepalavraschavesData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='NEPalavrasChaves' data={nepalavraschavesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`NEPalavrasChavesForm-${nepalavraschavesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={nepalavraschavesData}
+            className='inputIncNome'
+            name='nome'
+            value={nepalavraschavesData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='NEPalavrasChaves' data={nepalavraschavesData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`NEPalavrasChavesForm-${nepalavraschavesData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/nepalavraschaves'} id={nepalavraschavesData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

@@ -41,7 +41,8 @@ export const useTipoOrigemSucumbenciaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Tipo Origem Sucumbencia';
       setError(errorMessage);
-      //console.log('Erro ao carregar Tipo Origem Sucumbencia');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Tipo Origem Sucumbencia');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useTipoOrigemSucumbenciaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useTipoOrigemSucumbenciaList = (dataService: ITipoOrigemSucumbencia
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar tipoorigemsucumbencia';
       setError(errorMessage);
-      //console.log('Erro ao carregar tipoorigemsucumbencia');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar tipoorigemsucumbencia');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.nome.length > 50) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

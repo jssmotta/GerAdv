@@ -13,7 +13,7 @@ public partial interface IReuniaoWhere
 
 public partial class ReuniaoWhere(IFReuniaoFactory reuniaoFactory) : IReuniaoWhere
 {
-    private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory;
+    private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory ?? throw new ArgumentNullException(nameof(reuniaoFactory));
     public ReuniaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _reuniaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -25,6 +25,7 @@ public partial class ReuniaoWhere(IFReuniaoFactory reuniaoFactory) : IReuniaoWhe
             Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
+            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
             GUID = dbRec.FGUID ?? string.Empty,
@@ -33,12 +34,6 @@ public partial class ReuniaoWhere(IFReuniaoFactory reuniaoFactory) : IReuniaoWhe
         {
             reuniao.HoraInicial = dbRec.FHoraInicial;
             reuniao.HoraInicial_date = XHoraInicial;
-        }
-
-        if (DateTime.TryParse(dbRec.FHoraFinal, out DateTime XHoraFinal))
-        {
-            reuniao.HoraFinal = dbRec.FHoraFinal;
-            reuniao.HoraFinal_date = XHoraFinal;
         }
 
         if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))

@@ -14,13 +14,13 @@ public partial interface ILivroCaixaWriter
 
 public class LivroCaixaWriter(IFLivroCaixaFactory livrocaixaFactory) : ILivroCaixaWriter
 {
-    private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory;
-    public async Task Delete(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory ?? throw new ArgumentNullException(nameof(livrocaixaFactory));
+    public virtual async Task Delete(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection oCnn)
     {
         await _livrocaixaFactory.DeleteAsync(operadorId, livrocaixa.Id, oCnn);
     }
 
-    public async Task<FLivroCaixa> WriteAsync(Models.LivroCaixa livrocaixa, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FLivroCaixa> WriteAsync(Models.LivroCaixa livrocaixa, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (livrocaixa.Id.IsEmptyIDNumber() ? _livrocaixaFactory.CreateAsync() : _livrocaixaFactory.CreateFromIdAsync(livrocaixa.Id, oCnn));
         dbRec.FIDDes = livrocaixa.IDDes;

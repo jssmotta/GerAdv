@@ -54,7 +54,7 @@ public partial class FNEPalavrasChavesFactory : IFNEPalavrasChavesFactory, IDisp
             throw new ObjectDisposedException(nameof(FNEPalavrasChavesFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

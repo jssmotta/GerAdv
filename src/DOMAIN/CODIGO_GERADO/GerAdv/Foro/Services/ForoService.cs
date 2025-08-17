@@ -97,18 +97,18 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
     }
 
-    private async Task<ForoResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ForoResponse?> AddAndUpdate([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
+    private async Task<ForoResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ForoResponse?> AddAndUpdate([FromBody] Models.Foro? regForo, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Foro: URI inválida");
-        }
-
         if (regForo == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Foro: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -122,7 +122,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             var validade = await validation.ValidateReg(regForo, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -131,7 +131,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -139,17 +139,17 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ForoResponse?> Validation([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
+    public async Task<ForoResponse?> Validation([FromBody] Models.Foro? regForo, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Foro: URI inválida");
-        }
-
         if (regForo == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Foro: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -163,7 +163,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             var validade = await validation.ValidateReg(regForo, this, cidadeReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -172,7 +172,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regForo.Id.IsEmptyIDNumber())
@@ -183,17 +183,17 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         return await reader.Read(regForo.Id, oCnn);
     }
 
-    public async Task<ForoResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ForoResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Foro: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -208,7 +208,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
             var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, instanciaService, poderjudiciarioassociadoService, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -217,10 +217,10 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var foro = await reader.Read(id, oCnn);
+        var foro = await reader.Read(id ?? default, oCnn);
         try
         {
             if (foro != null)
@@ -240,7 +240,7 @@ public partial class ForoService(IOptions<AppSettings> appSettings, IFForoFactor
         return foro;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

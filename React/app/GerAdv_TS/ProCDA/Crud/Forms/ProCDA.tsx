@@ -81,84 +81,85 @@ const handleDirectSave = () => {
 
       onSubmit(syntheticEvent);
     } catch (error) {
-    console.log('Erro ao salvar ProCDA diretamente');
-    setIsSubmitting(false);
-    if (onError) onError();
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao salvar ProCDA diretamente');
+      setIsSubmitting(false);
+      if (onError) onError();
+      }
     }
-  }
-};
-useEffect(() => {
-  const el = document.querySelector('.nameFormMobile');
-  if (el) {
-    el.textContent = procdaData?.id == 0 ? 'Editar ProCDA' : 'Adicionar Pro C D A';
-  }
-}, [procdaData.id]);
-return (
-<>
-{!isMobile ? <style jsx global>{`
-  @media (max-width: 1366px) {
-    html {
-      zoom: 0.8 !important;
-    }
-  }
-  `}</style> : null}
-
-  <div className={isMobile ? 'form-container form-container-ProCDA' : 'form-container5 form-container-ProCDA'}>
-
-    <form className='formInputCadInc' id={`ProCDAForm-${procdaData.id}`} onSubmit={onConfirm}>
-      {!isMobile && (
-        <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProCDA' data={procdaData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProCDAForm-${procdaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <div className='grid-container'>
-
-          <InputName
-          type='text'
-          id='nome'
-          label='Nome'
-          dataForm={procdaData}
-          className='inputIncNome'
-          name='nome'
-          value={procdaData.nome}
-          placeholder={`Informe Nome`}
-          onChange={onChange}
-          required
-          />
-
-          <InputInput
-          type='text'
-          maxLength={2048}
-          id='processo'
-          label='Processo'
-          dataForm={procdaData}
-          className='inputIncNome'
-          name='processo'
-          value={procdaData.processo}
-          onChange={onChange}
-          />
-
-
-          <InputInput
-          type='text'
-          maxLength={255}
-          id='nrointerno'
-          label='NroInterno'
-          dataForm={procdaData}
-          className='inputIncNome'
-          name='nrointerno'
-          value={procdaData.nrointerno}
-          onChange={onChange}
-          />
-
-        </div>
-      </form>
-
-
-      {isMobile && (
-        <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProCDA' data={procdaData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProCDAForm-${procdaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-        )}
-        <DeleteButton page={'/pages/procda'} id={procdaData.id} closeModel={onClose} dadoApi={dadoApi} />
-      </div>
-      <div className='form-spacer'></div>
-      </>
-    );
   };
+  useEffect(() => {
+    const el = document.querySelector('.nameFormMobile');
+    if (el) {
+      el.textContent = procdaData?.id == 0 ? 'Editar ProCDA' : 'Adicionar Pro C D A';
+    }
+  }, [procdaData.id]);
+  return (
+  <>
+  {!isMobile ? <style jsx global>{`
+    @media (max-width: 1366px) {
+      html {
+        zoom: 0.8 !important;
+      }
+    }
+    `}</style> : null}
+
+    <div className={isMobile ? 'form-container form-container-ProCDA' : 'form-container5 form-container-ProCDA'}>
+
+      <form className='formInputCadInc' id={`ProCDAForm-${procdaData.id}`} onSubmit={onConfirm}>
+        {!isMobile && (
+          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProCDA' data={procdaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProCDAForm-${procdaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <div className='grid-container'>
+
+            <InputName
+            type='text'
+            id='nome'
+            label='Nome'
+            dataForm={procdaData}
+            className='inputIncNome'
+            name='nome'
+            value={procdaData.nome}
+            placeholder={`Informe Nome`}
+            onChange={onChange}
+            required
+            />
+
+            <InputInput
+            type='text'
+            maxLength={2048}
+            id='processo'
+            label='Processo'
+            dataForm={procdaData}
+            className='inputIncNome'
+            name='processo'
+            value={procdaData.processo}
+            onChange={onChange}
+            />
+
+
+            <InputInput
+            type='text'
+            maxLength={255}
+            id='nrointerno'
+            label='NroInterno'
+            dataForm={procdaData}
+            className='inputIncNome'
+            name='nrointerno'
+            value={procdaData.nrointerno}
+            onChange={onChange}
+            />
+
+          </div>
+        </form>
+
+
+        {isMobile && (
+          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProCDA' data={procdaData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProCDAForm-${procdaData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+          )}
+          <DeleteButton page={'/pages/procda'} id={procdaData.id} closeModel={onClose} dadoApi={dadoApi} />
+        </div>
+        <div className='form-spacer'></div>
+        </>
+      );
+    };

@@ -13,7 +13,7 @@ public partial interface IOperadorEMailPopupWhere
 
 public partial class OperadorEMailPopupWhere(IFOperadorEMailPopupFactory operadoremailpopupFactory) : IOperadorEMailPopupWhere
 {
-    private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory;
+    private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory ?? throw new ArgumentNullException(nameof(operadoremailpopupFactory));
     public OperadorEMailPopupResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _operadoremailpopupFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -27,10 +27,10 @@ public partial class OperadorEMailPopupWhere(IFOperadorEMailPopupFactory operado
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return operadoremailpopup;
     }

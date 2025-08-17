@@ -14,13 +14,13 @@ public partial interface ICargosEscClassWriter
 
 public class CargosEscClassWriter(IFCargosEscClassFactory cargosescclassFactory) : ICargosEscClassWriter
 {
-    private readonly IFCargosEscClassFactory _cargosescclassFactory = cargosescclassFactory;
-    public async Task Delete(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFCargosEscClassFactory _cargosescclassFactory = cargosescclassFactory ?? throw new ArgumentNullException(nameof(cargosescclassFactory));
+    public virtual async Task Delete(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection oCnn)
     {
         await _cargosescclassFactory.DeleteAsync(operadorId, cargosescclass.Id, oCnn);
     }
 
-    public async Task<FCargosEscClass> WriteAsync(Models.CargosEscClass cargosescclass, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FCargosEscClass> WriteAsync(Models.CargosEscClass cargosescclass, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (cargosescclass.Id.IsEmptyIDNumber() ? _cargosescclassFactory.CreateAsync() : _cargosescclassFactory.CreateFromIdAsync(cargosescclass.Id, oCnn));
         dbRec.FNome = cargosescclass.Nome;

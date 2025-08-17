@@ -9,32 +9,29 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGruposEmpresasValidation
 {
     Task<bool> ValidateReg(Models.GruposEmpresas reg, IGruposEmpresasService service, IOponentesReader oponentesReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGruposEmpresasService service, IGruposEmpresasCliService gruposempresascliService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGruposEmpresasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GruposEmpresasValidation : IGruposEmpresasValidation
 {
-    public async Task<bool> CanDelete(int id, IGruposEmpresasService service, IGruposEmpresasCliService gruposempresascliService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGruposEmpresasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gruposempresascliExists0 = await gruposempresascliService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresasCli { Grupo = id }, uri);
-        if (gruposempresascliExists0 != null && gruposempresascliExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas Cli associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.GruposEmpresas reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 50)
-            throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.Icone != null && reg.Icone.Length > 255)
-            throw new SGValidationException($"Icone deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBGruposEmpresasDicInfo.GrpDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBGruposEmpresasDicInfo.GrpDescricao.FTamanho} caracteres.");
+        if (reg.Icone != null && reg.Icone.Length > DBGruposEmpresasDicInfo.GrpIcone.FTamanho)
+            throw new SGValidationException($"Icone deve ter no máximo {DBGruposEmpresasDicInfo.GrpIcone.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGruposEmpresasDicInfo.GrpGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGruposEmpresasDicInfo.GrpGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,7 +44,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
         // Oponentes
         if (!reg.Oponente.IsEmptyIDNumber())

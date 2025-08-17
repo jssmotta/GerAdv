@@ -79,7 +79,8 @@ export class EnderecosService implements IEnderecosService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Enderecos list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Enderecos list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class EnderecosService implements IEnderecosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Enderecos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Enderecos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class EnderecosService implements IEnderecosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Enderecos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Enderecos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Enderecos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Enderecos:');
       return [];
     }
   }

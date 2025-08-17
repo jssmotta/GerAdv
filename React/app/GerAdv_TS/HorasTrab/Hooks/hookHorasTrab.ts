@@ -41,7 +41,8 @@ export const useHorasTrabForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Horas Trab';
       setError(errorMessage);
-      //console.log('Erro ao carregar Horas Trab');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Horas Trab');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useHorasTrabNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useHorasTrabList = (dataService: IHorasTrabService, currentFilter?:
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar horastrab';
       setError(errorMessage);
-      //console.log('Erro ao carregar horastrab');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar horastrab');
     } finally {
       setLoading(false);
     }

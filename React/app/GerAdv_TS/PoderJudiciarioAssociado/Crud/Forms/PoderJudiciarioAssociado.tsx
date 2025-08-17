@@ -73,324 +73,318 @@ if (getParamFromUrl('justica') > 0) {
       setNomeJustica(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    poderjudiciarioassociadoData.justica = getParamFromUrl('justica');
+      poderjudiciarioassociadoData.justica = getParamFromUrl('justica');
+    }
   }
-}
 
-if (getParamFromUrl('area') > 0) {
-  if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.area == 0) {
-    areaApi
-    .getById(getParamFromUrl('area'))
-    .then((response) => {
-      setNomeArea(response.data.descricao);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('area') > 0) {
+    if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.area == 0) {
+      areaApi
+      .getById(getParamFromUrl('area'))
+      .then((response) => {
+        setNomeArea(response.data.descricao);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    poderjudiciarioassociadoData.area = getParamFromUrl('area');
-  }
-}
+        poderjudiciarioassociadoData.area = getParamFromUrl('area');
+      }
+    }
 
-if (getParamFromUrl('tribunal') > 0) {
-  if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.tribunal == 0) {
-    tribunalApi
-    .getById(getParamFromUrl('tribunal'))
-    .then((response) => {
-      setNomeTribunal(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+    if (getParamFromUrl('tribunal') > 0) {
+      if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.tribunal == 0) {
+        tribunalApi
+        .getById(getParamFromUrl('tribunal'))
+        .then((response) => {
+          setNomeTribunal(response.data.nome);
+        })
+        .catch((error) => {
+          if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Error unexpected');
+          });
 
-    poderjudiciarioassociadoData.tribunal = getParamFromUrl('tribunal');
-  }
-}
+          poderjudiciarioassociadoData.tribunal = getParamFromUrl('tribunal');
+        }
+      }
 
-if (getParamFromUrl('foro') > 0) {
-  if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.foro == 0) {
-    foroApi
-    .getById(getParamFromUrl('foro'))
-    .then((response) => {
-      setNomeForo(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (getParamFromUrl('foro') > 0) {
+        if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.foro == 0) {
+          foroApi
+          .getById(getParamFromUrl('foro'))
+          .then((response) => {
+            setNomeForo(response.data.nome);
+          })
+          .catch((error) => {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Error unexpected');
+            });
 
-    poderjudiciarioassociadoData.foro = getParamFromUrl('foro');
-  }
-}
+            poderjudiciarioassociadoData.foro = getParamFromUrl('foro');
+          }
+        }
 
-if (getParamFromUrl('cidade') > 0) {
-  if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+        if (getParamFromUrl('cidade') > 0) {
+          if (poderjudiciarioassociadoData.id === 0 && poderjudiciarioassociadoData.cidade == 0) {
+            cidadeApi
+            .getById(getParamFromUrl('cidade'))
+            .then((response) => {
+              setNomeCidade(response.data.nome);
+            })
+            .catch((error) => {
+              if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error unexpected');
+              });
 
-    poderjudiciarioassociadoData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorJustica = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'justica', value: e.id } });
-  };
-  const addValorArea = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'area', value: e.id } });
-    };
-    const addValorTribunal = (e: any) => {
-      if (e?.id>0)
-        onChange({ target: { name: 'tribunal', value: e.id } });
-      };
-      const addValorForo = (e: any) => {
-        if (e?.id>0)
-          onChange({ target: { name: 'foro', value: e.id } });
-        };
-        const addValorCidade = (e: any) => {
-          if (e?.id>0)
-            onChange({ target: { name: 'cidade', value: e.id } });
-          };
-          const onConfirm = (e: React.FormEvent) => {
-            e.preventDefault();
-            if (e.stopPropagation) e.stopPropagation();
-
-              if (!isSubmitting) {
-                setIsSubmitting(true);
-
-                try {
-                  onSubmit(e);
-                } catch (error) {
-                console.log('Erro ao submeter formulário de PoderJudiciarioAssociado:');
-                setIsSubmitting(false);
-                if (onError) onError();
-                }
-              }
+              poderjudiciarioassociadoData.cidade = getParamFromUrl('cidade');
+            }
+          }
+          const addValorJustica = (e: any) => {
+            if (e?.id>0)
+              onChange({ target: { name: 'justica', value: e.id } });
             };
-            const handleCancel = () => {
-              if (onReload) {
-                onReload(); // Recarrega os dados originais
-              } else {
-              onClose(); // Comportamento padrão se não há callback de recarga
-            }
-          };
+            const addValorArea = (e: any) => {
+              if (e?.id>0)
+                onChange({ target: { name: 'area', value: e.id } });
+              };
+              const addValorTribunal = (e: any) => {
+                if (e?.id>0)
+                  onChange({ target: { name: 'tribunal', value: e.id } });
+                };
+                const addValorForo = (e: any) => {
+                  if (e?.id>0)
+                    onChange({ target: { name: 'foro', value: e.id } });
+                  };
+                  const addValorCidade = (e: any) => {
+                    if (e?.id>0)
+                      onChange({ target: { name: 'cidade', value: e.id } });
+                    };
+                    const onConfirm = (e: React.FormEvent) => {
+                      e.preventDefault();
+                      if (e.stopPropagation) e.stopPropagation();
 
-          const handleDirectSave = () => {
-            if (!isSubmitting) {
-              setIsSubmitting(true);
+                        if (!isSubmitting) {
+                          setIsSubmitting(true);
 
-              try {
-                const syntheticEvent = {
-                  preventDefault: () => { }, 
-                  target: document.getElementById(`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`)
-                } as unknown as React.FormEvent;
+                          try {
+                            onSubmit(e);
+                          } catch (error) {
+                          console.log('Erro ao submeter formulário de PoderJudiciarioAssociado:');
+                          setIsSubmitting(false);
+                          if (onError) onError();
+                          }
+                        }
+                      };
+                      const handleCancel = () => {
+                        if (onReload) {
+                          onReload(); // Recarrega os dados originais
+                        } else {
+                        onClose(); // Comportamento padrão se não há callback de recarga
+                      }
+                    };
 
-                onSubmit(syntheticEvent);
-              } catch (error) {
-              console.log('Erro ao salvar PoderJudiciarioAssociado diretamente');
-              setIsSubmitting(false);
-              if (onError) onError();
-              }
-            }
-          };
-          useEffect(() => {
-            const el = document.querySelector('.nameFormMobile');
-            if (el) {
-              el.textContent = poderjudiciarioassociadoData?.id == 0 ? 'Editar PoderJudiciarioAssociado' : 'Adicionar Poder Judiciario Associado';
-            }
-          }, [poderjudiciarioassociadoData.id]);
-          return (
-          <>
-          {!isMobile ? <style jsx global>{`
-            @media (max-width: 1366px) {
-              html {
-                zoom: 0.8 !important;
-              }
-            }
-            `}</style> : null}
+                    const handleDirectSave = () => {
+                      if (!isSubmitting) {
+                        setIsSubmitting(true);
 
-            <div className={isMobile ? 'form-container form-container-PoderJudiciarioAssociado' : 'form-container form-container-PoderJudiciarioAssociado'}>
+                        try {
+                          const syntheticEvent = {
+                            preventDefault: () => { }, 
+                            target: document.getElementById(`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`)
+                          } as unknown as React.FormEvent;
 
-              <form className='formInputCadInc' id={`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`} onSubmit={onConfirm}>
-                {!isMobile && (
-                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PoderJudiciarioAssociado' data={poderjudiciarioassociadoData} isSubmitting={isSubmitting} onClose={onClose} formId={`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                  )}
-                  <div className='grid-container'>
+                          onSubmit(syntheticEvent);
+                        } catch (error) {
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                          console.log('Erro ao salvar PoderJudiciarioAssociado diretamente');
+                          setIsSubmitting(false);
+                          if (onError) onError();
+                          }
+                        }
+                      };
+                      useEffect(() => {
+                        const el = document.querySelector('.nameFormMobile');
+                        if (el) {
+                          el.textContent = poderjudiciarioassociadoData?.id == 0 ? 'Editar PoderJudiciarioAssociado' : 'Adicionar Poder Judiciario Associado';
+                        }
+                      }, [poderjudiciarioassociadoData.id]);
+                      return (
+                      <>
+                      {!isMobile ? <style jsx global>{`
+                        @media (max-width: 1366px) {
+                          html {
+                            zoom: 0.8 !important;
+                          }
+                        }
+                        `}</style> : null}
 
-                    <InputName
-                    type='text'
-                    id='guid'
-                    label='GUID'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='guid'
-                    value={poderjudiciarioassociadoData.guid}
-                    placeholder={`Informe GUID`}
-                    onChange={onChange}
-                    required
-                    />
+                        <div className={isMobile ? 'form-container form-container-PoderJudiciarioAssociado' : 'form-container form-container-PoderJudiciarioAssociado'}>
 
-                    <JusticaComboBox
-                    name={'justica'}
-                    dataForm={poderjudiciarioassociadoData}
-                    value={poderjudiciarioassociadoData.justica}
-                    setValue={addValorJustica}
-                    label={'Justiça'}
-                    />
-
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='justicanome'
-                    label='JusticaNome'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='justicanome'
-                    value={poderjudiciarioassociadoData.justicanome}
-                    onChange={onChange}
-                    />
-
-
-                    <AreaComboBox
-                    name={'area'}
-                    dataForm={poderjudiciarioassociadoData}
-                    value={poderjudiciarioassociadoData.area}
-                    setValue={addValorArea}
-                    label={'Área'}
-                    />
-
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='areanome'
-                    label='AreaNome'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='areanome'
-                    value={poderjudiciarioassociadoData.areanome}
-                    onChange={onChange}
-                    />
+                          <form className='formInputCadInc' id={`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`} onSubmit={onConfirm}>
+                            {!isMobile && (
+                              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='PoderJudiciarioAssociado' data={poderjudiciarioassociadoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                              )}
+                              <div className='grid-container'>
 
 
-                    <TribunalComboBox
-                    name={'tribunal'}
-                    dataForm={poderjudiciarioassociadoData}
-                    value={poderjudiciarioassociadoData.tribunal}
-                    setValue={addValorTribunal}
-                    label={'Tribunal'}
-                    />
+                                <JusticaComboBox
+                                name={'justica'}
+                                dataForm={poderjudiciarioassociadoData}
+                                value={poderjudiciarioassociadoData.justica}
+                                setValue={addValorJustica}
+                                label={'Justiça'}
+                                />
 
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='tribunalnome'
-                    label='TribunalNome'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='tribunalnome'
-                    value={poderjudiciarioassociadoData.tribunalnome}
-                    onChange={onChange}
-                    />
-
-
-                    <ForoComboBox
-                    name={'foro'}
-                    dataForm={poderjudiciarioassociadoData}
-                    value={poderjudiciarioassociadoData.foro}
-                    setValue={addValorForo}
-                    label={'Foro'}
-                    />
-
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='foronome'
-                    label='ForoNome'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='foronome'
-                    value={poderjudiciarioassociadoData.foronome}
-                    onChange={onChange}
-                    />
-
-                  </div><div className='grid-container'>
-                    <CidadeComboBox
-                    name={'cidade'}
-                    dataForm={poderjudiciarioassociadoData}
-                    value={poderjudiciarioassociadoData.cidade}
-                    setValue={addValorCidade}
-                    label={'Cidade'}
-                    />
-
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='subdivisaonome'
-                    label='SubDivisaoNome'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='subdivisaonome'
-                    value={poderjudiciarioassociadoData.subdivisaonome}
-                    onChange={onChange}
-                    />
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='justicanome'
+                                label='JusticaNome'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='justicanome'
+                                value={poderjudiciarioassociadoData.justicanome}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={255}
-                    id='cidadenome'
-                    label='CidadeNome'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='cidadenome'
-                    value={poderjudiciarioassociadoData.cidadenome}
-                    onChange={onChange}
-                    />
+                                <AreaComboBox
+                                name={'area'}
+                                dataForm={poderjudiciarioassociadoData}
+                                value={poderjudiciarioassociadoData.area}
+                                setValue={addValorArea}
+                                label={'Área'}
+                                />
+
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='areanome'
+                                label='AreaNome'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='areanome'
+                                value={poderjudiciarioassociadoData.areanome}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={2048}
-                    id='subdivisao'
-                    label='SubDivisao'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='subdivisao'
-                    value={poderjudiciarioassociadoData.subdivisao}
-                    onChange={onChange}
-                    />
+                                <TribunalComboBox
+                                name={'tribunal'}
+                                dataForm={poderjudiciarioassociadoData}
+                                value={poderjudiciarioassociadoData.tribunal}
+                                setValue={addValorTribunal}
+                                label={'Tribunal'}
+                                />
+
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='tribunalnome'
+                                label='TribunalNome'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='tribunalnome'
+                                value={poderjudiciarioassociadoData.tribunalnome}
+                                onChange={onChange}
+                                />
 
 
-                    <InputInput
-                    type='text'
-                    maxLength={2048}
-                    id='tipo'
-                    label='Tipo'
-                    dataForm={poderjudiciarioassociadoData}
-                    className='inputIncNome'
-                    name='tipo'
-                    value={poderjudiciarioassociadoData.tipo}
-                    onChange={onChange}
-                    />
+                                <ForoComboBox
+                                name={'foro'}
+                                dataForm={poderjudiciarioassociadoData}
+                                value={poderjudiciarioassociadoData.foro}
+                                setValue={addValorForo}
+                                label={'Foro'}
+                                />
 
-                  </div>
-                </form>
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='foronome'
+                                label='ForoNome'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='foronome'
+                                value={poderjudiciarioassociadoData.foronome}
+                                onChange={onChange}
+                                />
+
+                              </div><div className='grid-container'>
+                                <CidadeComboBox
+                                name={'cidade'}
+                                dataForm={poderjudiciarioassociadoData}
+                                value={poderjudiciarioassociadoData.cidade}
+                                setValue={addValorCidade}
+                                label={'Cidade'}
+                                />
+
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='subdivisaonome'
+                                label='SubDivisaoNome'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='subdivisaonome'
+                                value={poderjudiciarioassociadoData.subdivisaonome}
+                                onChange={onChange}
+                                />
 
 
-                {isMobile && (
-                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PoderJudiciarioAssociado' data={poderjudiciarioassociadoData} isSubmitting={isSubmitting} onClose={onClose} formId={`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-                  )}
-                  <DeleteButton page={'/pages/poderjudiciarioassociado'} id={poderjudiciarioassociadoData.id} closeModel={onClose} dadoApi={dadoApi} />
-                </div>
-                <div className='form-spacer'></div>
-                </>
-              );
-            };
+                                <InputInput
+                                type='text'
+                                maxLength={255}
+                                id='cidadenome'
+                                label='CidadeNome'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='cidadenome'
+                                value={poderjudiciarioassociadoData.cidadenome}
+                                onChange={onChange}
+                                />
+
+
+                                <InputInput
+                                type='text'
+                                maxLength={2048}
+                                id='subdivisao'
+                                label='SubDivisao'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='subdivisao'
+                                value={poderjudiciarioassociadoData.subdivisao}
+                                onChange={onChange}
+                                />
+
+
+                                <InputInput
+                                type='text'
+                                maxLength={2048}
+                                id='tipo'
+                                label='Tipo'
+                                dataForm={poderjudiciarioassociadoData}
+                                className='inputIncNome'
+                                name='tipo'
+                                value={poderjudiciarioassociadoData.tipo}
+                                onChange={onChange}
+                                />
+
+                              </div>
+                            </form>
+
+
+                            {isMobile && (
+                              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='PoderJudiciarioAssociado' data={poderjudiciarioassociadoData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`PoderJudiciarioAssociadoForm-${poderjudiciarioassociadoData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                              )}
+                              <DeleteButton page={'/pages/poderjudiciarioassociado'} id={poderjudiciarioassociadoData.id} closeModel={onClose} dadoApi={dadoApi} />
+                            </div>
+                            <div className='form-spacer'></div>
+                            </>
+                          );
+                        };

@@ -65,492 +65,495 @@ if (getParamFromUrl('clientes') > 0) {
       setNomeClientes(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    clientessociosData.cliente = getParamFromUrl('clientes');
+      clientessociosData.cliente = getParamFromUrl('clientes');
+    }
   }
-}
 
-if (getParamFromUrl('cidade') > 0) {
-  if (clientessociosData.id === 0 && clientessociosData.cidade == 0) {
-    cidadeApi
-    .getById(getParamFromUrl('cidade'))
-    .then((response) => {
-      setNomeCidade(response.data.nome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('cidade') > 0) {
+    if (clientessociosData.id === 0 && clientessociosData.cidade == 0) {
+      cidadeApi
+      .getById(getParamFromUrl('cidade'))
+      .then((response) => {
+        setNomeCidade(response.data.nome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    clientessociosData.cidade = getParamFromUrl('cidade');
-  }
-}
-const addValorCliente = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cliente', value: e.id } });
-  };
-  const addValorCidade = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'cidade', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        clientessociosData.cidade = getParamFromUrl('cidade');
+      }
+    }
+    const addValorCliente = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'cliente', value: e.id } });
+      };
+      const addValorCidade = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'cidade', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ClientesSocios:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de ClientesSocios:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ClientesSociosForm-${clientessociosData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`ClientesSociosForm-${clientessociosData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar ClientesSocios diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = clientessociosData?.id == 0 ? 'Editar ClientesSocios' : 'Adicionar Clientes Socios';
-      }
-    }, [clientessociosData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar ClientesSocios diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = clientessociosData?.id == 0 ? 'Editar ClientesSocios' : 'Adicionar Clientes Socios';
+            }
+          }, [clientessociosData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ClientesSocios' : 'form-container form-container-ClientesSocios'}>
+            <div className={isMobile ? 'form-container form-container-ClientesSocios' : 'form-container form-container-ClientesSocios'}>
 
-        <form className='formInputCadInc' id={`ClientesSociosForm-${clientessociosData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ClientesSocios' data={clientessociosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ClientesSociosForm-${clientessociosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
+              <form className='formInputCadInc' id={`ClientesSociosForm-${clientessociosData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ClientesSocios' data={clientessociosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ClientesSociosForm-${clientessociosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
-              <InputName
-              type='text'
-              id='nome'
-              label='Nome'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='nome'
-              value={clientessociosData.nome}
-              placeholder={`Informe Nome`}
-              onChange={onChange}
-              required
-              />
-              <InputCheckbox dataForm={clientessociosData} label='SomenteRepresentante' name='somenterepresentante' checked={clientessociosData.somenterepresentante} onChange={onChange} />
+                    <InputName
+                    type='text'
+                    id='nome'
+                    label='Nome'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='nome'
+                    value={clientessociosData.nome}
+                    placeholder={`Informe Nome`}
+                    onChange={onChange}
+                    required
+                    />
+                    <InputCheckbox dataForm={clientessociosData} label='SomenteRepresentante' name='somenterepresentante' checked={clientessociosData.somenterepresentante} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='idade'
-              label='Idade'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='idade'
-              value={clientessociosData.idade}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='idade'
+                    label='Idade'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='idade'
+                    value={clientessociosData.idade}
+                    onChange={onChange}
+                    />
 
-              <InputCheckbox dataForm={clientessociosData} label='IsRepresentanteLegal' name='isrepresentantelegal' checked={clientessociosData.isrepresentantelegal} onChange={onChange} />
+                    <InputCheckbox dataForm={clientessociosData} label='IsRepresentanteLegal' name='isrepresentantelegal' checked={clientessociosData.isrepresentantelegal} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='qualificacao'
-              label='Qualificacao'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='qualificacao'
-              value={clientessociosData.qualificacao}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='qualificacao'
+                    label='Qualificacao'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='qualificacao'
+                    value={clientessociosData.qualificacao}
+                    onChange={onChange}
+                    />
 
-              <InputCheckbox dataForm={clientessociosData} label='Sexo' name='sexo' checked={clientessociosData.sexo} onChange={onChange} />
+                    <InputCheckbox dataForm={clientessociosData} label='Sexo' name='sexo' checked={clientessociosData.sexo} onChange={onChange} />
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='dtnasc'
-              label='DtNasc'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='dtnasc'
-              value={clientessociosData.dtnasc}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='dtnasc'
+                    label='DtNasc'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='dtnasc'
+                    value={clientessociosData.dtnasc}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={150}
-              id='site'
-              label='Site'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='site'
-              value={clientessociosData.site}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={150}
+                    id='site'
+                    label='Site'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='site'
+                    value={clientessociosData.site}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='representantelegal'
-              label='RepresentanteLegal'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='representantelegal'
-              value={clientessociosData.representantelegal}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='representantelegal'
+                    label='RepresentanteLegal'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='representantelegal'
+                    value={clientessociosData.representantelegal}
+                    onChange={onChange}
+                    />
 
-            </div><div className='grid-container'>
-              <ClientesComboBox
-              name={'cliente'}
-              dataForm={clientessociosData}
-              value={clientessociosData.cliente}
-              setValue={addValorCliente}
-              label={'Clientes'}
-              />
+                  </div><div className='grid-container'>
+                    <ClientesComboBox
+                    name={'cliente'}
+                    dataForm={clientessociosData}
+                    value={clientessociosData.cliente}
+                    setValue={addValorCliente}
+                    label={'Clientes'}
+                    />
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='endereco'
-              label='Endereco'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='endereco'
-              value={clientessociosData.endereco}
-              onChange={onChange}
-              />
-
-
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='bairro'
-              label='Bairro'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='bairro'
-              value={clientessociosData.bairro}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='endereco'
+                    label='Endereco'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='endereco'
+                    value={clientessociosData.endereco}
+                    onChange={onChange}
+                    />
 
 
-              <InputCep
-              type='text'
-              id='cep'
-              label='CEP'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cep'
-              value={clientessociosData.cep}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='bairro'
+                    label='Bairro'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='bairro'
+                    value={clientessociosData.bairro}
+                    onChange={onChange}
+                    />
 
 
-              <CidadeComboBox
-              name={'cidade'}
-              dataForm={clientessociosData}
-              value={clientessociosData.cidade}
-              setValue={addValorCidade}
-              label={'Cidade'}
-              />
-
-              <InputInput
-              type='text'
-              maxLength={30}
-              id='rg'
-              label='RG'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='rg'
-              value={clientessociosData.rg}
-              onChange={onChange}
-              />
+                    <InputCep
+                    type='text'
+                    id='cep'
+                    label='CEP'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cep'
+                    value={clientessociosData.cep}
+                    onChange={onChange}
+                    />
 
 
-              <InputCpf
-              type='text'
-              id='cpf'
-              label='CPF'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cpf'
-              value={clientessociosData.cpf}
-              onChange={onChange}
-              />
+                    <CidadeComboBox
+                    name={'cidade'}
+                    dataForm={clientessociosData}
+                    value={clientessociosData.cidade}
+                    setValue={addValorCidade}
+                    label={'Cidade'}
+                    />
+
+                    <InputInput
+                    type='text'
+                    maxLength={30}
+                    id='rg'
+                    label='RG'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='rg'
+                    value={clientessociosData.rg}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='fone'
-              label='Fone'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='fone'
-              value={clientessociosData.fone}
-              onChange={onChange}
-              />
+                    <InputCpf
+                    type='text'
+                    id='cpf'
+                    label='CPF'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cpf'
+                    value={clientessociosData.cpf}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={10}
-              id='participacao'
-              label='Participacao'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='participacao'
-              value={clientessociosData.participacao}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='cargo'
-              label='Cargo'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cargo'
-              value={clientessociosData.cargo}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='fone'
+                    label='Fone'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='fone'
+                    value={clientessociosData.fone}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='email'
-              maxLength={60}
-              id='email'
-              label='EMail'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='email'
-              value={clientessociosData.email}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={10}
+                    id='participacao'
+                    label='Participacao'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='participacao'
+                    value={clientessociosData.participacao}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='cargo'
+                    label='Cargo'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cargo'
+                    value={clientessociosData.cargo}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2147483647}
-              id='obs'
-              label='Obs'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='obs'
-              value={clientessociosData.obs}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='email'
+                    maxLength={60}
+                    id='email'
+                    label='EMail'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='email'
+                    value={clientessociosData.email}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={100}
-              id='cnh'
-              label='CNH'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cnh'
-              value={clientessociosData.cnh}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2147483647}
+                    id='obs'
+                    label='Obs'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='obs'
+                    value={clientessociosData.obs}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='datacontrato'
-              label='DataContrato'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='datacontrato'
-              value={clientessociosData.datacontrato}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={100}
+                    id='cnh'
+                    label='CNH'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cnh'
+                    value={clientessociosData.cnh}
+                    onChange={onChange}
+                    />
 
 
-              <InputCnpj
-              type='text'
-              id='cnpj'
-              label='CNPJ'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cnpj'
-              value={clientessociosData.cnpj}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='datacontrato'
+                    label='DataContrato'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='datacontrato'
+                    value={clientessociosData.datacontrato}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={15}
-              id='inscest'
-              label='InscEst'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='inscest'
-              value={clientessociosData.inscest}
-              onChange={onChange}
-              />
+                    <InputCnpj
+                    type='text'
+                    id='cnpj'
+                    label='CNPJ'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cnpj'
+                    value={clientessociosData.cnpj}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='socioempresaadminnome'
-              label='SocioEmpresaAdminNome'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='socioempresaadminnome'
-              value={clientessociosData.socioempresaadminnome}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={15}
+                    id='inscest'
+                    label='InscEst'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='inscest'
+                    value={clientessociosData.inscest}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={80}
-              id='enderecosocio'
-              label='EnderecoSocio'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='enderecosocio'
-              value={clientessociosData.enderecosocio}
-              onChange={onChange}
-              />
-
-            </div><div className='grid-container'>
-              <InputInput
-              type='text'
-              maxLength={50}
-              id='bairrosocio'
-              label='BairroSocio'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='bairrosocio'
-              value={clientessociosData.bairrosocio}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='socioempresaadminnome'
+                    label='SocioEmpresaAdminNome'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='socioempresaadminnome'
+                    value={clientessociosData.socioempresaadminnome}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={10}
-              id='cepsocio'
-              label='CEPSocio'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cepsocio'
-              value={clientessociosData.cepsocio}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={80}
+                    id='enderecosocio'
+                    label='EnderecoSocio'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='enderecosocio'
+                    value={clientessociosData.enderecosocio}
+                    onChange={onChange}
+                    />
+
+                  </div><div className='grid-container'>
+                    <InputInput
+                    type='text'
+                    maxLength={50}
+                    id='bairrosocio'
+                    label='BairroSocio'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='bairrosocio'
+                    value={clientessociosData.bairrosocio}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='cidadesocio'
-              label='CidadeSocio'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='cidadesocio'
-              value={clientessociosData.cidadesocio}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={10}
+                    id='cepsocio'
+                    label='CEPSocio'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cepsocio'
+                    value={clientessociosData.cepsocio}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='rgdataexp'
-              label='RGDataExp'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='rgdataexp'
-              value={clientessociosData.rgdataexp}
-              onChange={onChange}
-              />
-
-              <InputCheckbox dataForm={clientessociosData} label='SocioEmpresaAdminSomente' name='socioempresaadminsomente' checked={clientessociosData.socioempresaadminsomente} onChange={onChange} />
-              <InputCheckbox dataForm={clientessociosData} label='Tipo' name='tipo' checked={clientessociosData.tipo} onChange={onChange} />
-
-              <InputInput
-              type='text'
-              maxLength={2048}
-              id='fax'
-              label='Fax'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='fax'
-              value={clientessociosData.fax}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='cidadesocio'
+                    label='CidadeSocio'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='cidadesocio'
+                    value={clientessociosData.cidadesocio}
+                    onChange={onChange}
+                    />
 
 
-              <InputInput
-              type='text'
-              maxLength={1}
-              id='class'
-              label='Class'
-              dataForm={clientessociosData}
-              className='inputIncNome'
-              name='class'
-              value={clientessociosData.class}
-              onChange={onChange}
-              />
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='rgdataexp'
+                    label='RGDataExp'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='rgdataexp'
+                    value={clientessociosData.rgdataexp}
+                    onChange={onChange}
+                    />
 
-            </div>
-          </form>
+                    <InputCheckbox dataForm={clientessociosData} label='SocioEmpresaAdminSomente' name='socioempresaadminsomente' checked={clientessociosData.socioempresaadminsomente} onChange={onChange} />
+                    <InputCheckbox dataForm={clientessociosData} label='Tipo' name='tipo' checked={clientessociosData.tipo} onChange={onChange} />
+
+                    <InputInput
+                    type='text'
+                    maxLength={2048}
+                    id='fax'
+                    label='Fax'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='fax'
+                    value={clientessociosData.fax}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ClientesSocios' data={clientessociosData} isSubmitting={isSubmitting} onClose={onClose} formId={`ClientesSociosForm-${clientessociosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/clientessocios'} id={clientessociosData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    type='text'
+                    maxLength={1}
+                    id='class'
+                    label='Class'
+                    dataForm={clientessociosData}
+                    className='inputIncNome'
+                    name='class'
+                    value={clientessociosData.class}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ClientesSocios' data={clientessociosData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ClientesSociosForm-${clientessociosData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/clientessocios'} id={clientessociosData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

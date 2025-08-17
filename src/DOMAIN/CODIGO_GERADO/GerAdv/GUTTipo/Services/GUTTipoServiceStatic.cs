@@ -8,37 +8,37 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class GUTTipoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTTipo filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterGUTTipo? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBGUTTipoDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Ordem != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.Ordem)}", filtro.Ordem));
+            parameters.Add(new($"@{(DBGUTTipoDicInfo.Ordem)}", filtro.Ordem));
+            if (filtro.Ordem_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTTipoDicInfo.Ordem)}_end", filtro.Ordem_end));
+            }
         }
 
-        if (filtro.Ordem_end != int.MinValue)
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.Ordem)}_end", filtro.Ordem_end));
-        }
-
-        if (!string.IsNullOrEmpty(filtro.GUID))
-        {
-            parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBGUTTipoDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBGUTTipoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBGUTTipoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBGUTTipoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -47,38 +47,27 @@ public partial class GUTTipoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTTipoDicInfo.Nome)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBGUTTipoDicInfo.Nome)}");
         if (!(filtro.Ordem.IsEmptyX()) && filtro.Ordem_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Ordem.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Ordem}] = @{nameof(DBGUTTipoDicInfo.Ordem)}");
+            cWhere.Append(filtro.Ordem.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.Ordem}] = @{(DBGUTTipoDicInfo.Ordem)}");
         }
         else if (!(filtro.Ordem.IsEmptyX()) && !(filtro.Ordem_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].{DBGUTTipoDicInfo.Ordem} BETWEEN @{nameof(DBGUTTipoDicInfo.Ordem)} AND @{nameof(DBGUTTipoDicInfo.Ordem)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].{DBGUTTipoDicInfo.Ordem} BETWEEN @{(DBGUTTipoDicInfo.Ordem)} AND @{(DBGUTTipoDicInfo.Ordem)}_end");
         }
 
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBGUTTipoDicInfo.GUID)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBGUTTipoDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.CampoCodigo}] = @{nameof(DBGUTTipoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].[{DBGUTTipoDicInfo.CampoCodigo}] = @{(DBGUTTipoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].{DBGUTTipoDicInfo.CampoCodigo} BETWEEN @{nameof(DBGUTTipoDicInfo.CampoCodigo)} AND @{nameof(DBGUTTipoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBGUTTipoDicInfo.PTabelaNome}].{DBGUTTipoDicInfo.CampoCodigo} BETWEEN @{(DBGUTTipoDicInfo.CampoCodigo)} AND @{(DBGUTTipoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterGUTTipo? filtro)

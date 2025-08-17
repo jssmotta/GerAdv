@@ -41,7 +41,8 @@ export const useProcessosObsReportForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Processos Obs Report';
       setError(errorMessage);
-      //console.log('Erro ao carregar Processos Obs Report');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Processos Obs Report');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useProcessosObsReportNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useProcessosObsReportList = (dataService: IProcessosObsReportServic
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar processosobsreport';
       setError(errorMessage);
-      //console.log('Erro ao carregar processosobsreport');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar processosobsreport');
     } finally {
       setLoading(false);
     }

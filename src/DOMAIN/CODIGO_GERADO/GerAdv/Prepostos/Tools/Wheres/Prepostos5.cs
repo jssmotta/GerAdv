@@ -13,13 +13,14 @@ public partial interface IPrepostosWhere
 
 public partial class PrepostosWhere(IFPrepostosFactory prepostosFactory) : IPrepostosWhere
 {
-    private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory;
+    private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory ?? throw new ArgumentNullException(nameof(prepostosFactory));
     public PrepostosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _prepostosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -45,7 +46,6 @@ public partial class PrepostosWhere(IFPrepostosFactory prepostosFactory) : IPrep
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

@@ -79,7 +79,8 @@ export class PaisesService implements IPaisesService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Paises list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Paises list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class PaisesService implements IPaisesService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Paises');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Paises');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class PaisesService implements IPaisesService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Paises');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Paises');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Paises:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Paises:');
       return [];
     }
   }

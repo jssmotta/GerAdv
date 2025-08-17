@@ -79,7 +79,8 @@ export class AdvogadosService implements IAdvogadosService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Advogados list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Advogados list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class AdvogadosService implements IAdvogadosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Advogados');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Advogados');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class AdvogadosService implements IAdvogadosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Advogados');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Advogados');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Advogados:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Advogados:');
       return [];
     }
   }

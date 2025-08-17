@@ -41,7 +41,8 @@ export const useSetorForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Setor';
       setError(errorMessage);
-      //console.log('Erro ao carregar Setor');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Setor');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useSetorNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useSetorList = (dataService: ISetorService, currentFilter?: FilterS
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar setor';
       setError(errorMessage);
-      //console.log('Erro ao carregar setor');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar setor');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 40) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

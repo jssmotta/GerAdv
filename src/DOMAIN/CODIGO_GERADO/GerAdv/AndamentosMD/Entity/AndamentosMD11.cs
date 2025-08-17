@@ -54,7 +54,7 @@ public partial class FAndamentosMDFactory : IFAndamentosMDFactory, IDisposable
             throw new ObjectDisposedException(nameof(FAndamentosMDFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

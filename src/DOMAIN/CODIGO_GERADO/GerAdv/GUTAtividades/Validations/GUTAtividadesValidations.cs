@@ -9,22 +9,22 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGUTAtividadesValidation
 {
     Task<bool> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTAtividadesValidation : IGUTAtividadesValidation
 {
-    public async Task<bool> CanDelete(int id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTAtividade = id }, uri);
+        var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTAtividade = id ?? default }, uri);
         if (gutatividadesmatrizExists0 != null && gutatividadesmatrizExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.");
-        var gutperiodicidadestatusExists1 = await gutperiodicidadestatusService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTPeriodicidadeStatus { GUTAtividade = id }, uri);
+        var gutperiodicidadestatusExists1 = await gutperiodicidadestatusService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTPeriodicidadeStatus { GUTAtividade = id ?? default }, uri);
         if (gutperiodicidadestatusExists1 != null && gutperiodicidadestatusExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Periodicidade Status associados a ele.");
         return true;
@@ -32,10 +32,10 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
 
     private bool ValidSizes(Models.GUTAtividades reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 255)
-            throw new SGValidationException($"Nome deve ter no máximo 255 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBGUTAtividadesDicInfo.AgtNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBGUTAtividadesDicInfo.AgtNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGUTAtividadesDicInfo.AgtGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGUTAtividadesDicInfo.AgtGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -52,6 +52,15 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
             throw new SGValidationException("GUTPeriodicidade é obrigatório.");
         if (reg.GUID.IsEmpty())
             throw new SGValidationException("GUID é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.DataConcluido))
+        {
+            if (DateTime.TryParse(reg.DataConcluido, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataConcluido não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // GUTPeriodicidade
         {
             var regGUTPeriodicidade = await gutperiodicidadeReader.Read(reg.GUTPeriodicidade, oCnn);

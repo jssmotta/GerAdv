@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITerceirosReader
 {
-    private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory;
+    private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("terCodigo, terNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TerceirosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTerceiros.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TerceirosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -65,10 +65,10 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return terceiros;
     }
@@ -105,10 +105,10 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return terceiros;
     }
@@ -134,10 +134,10 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return terceiros;
     }
@@ -163,10 +163,10 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {
@@ -208,10 +208,10 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         try
         {

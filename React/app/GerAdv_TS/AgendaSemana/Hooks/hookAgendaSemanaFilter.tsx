@@ -95,26 +95,15 @@ export const useAgendaSemanaFilter = ({ handleFetchWithFilter }: UseAgendaSemana
   className='inputSearch inputSearchComboboxTab'
   label='Advogados'
   />
-  <InputDate
+  <InputInput
   type='text'
   id='hora'
-  label='Hora (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
   name='hora'
   value={handlers.windowFilter?.hora ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('hora', value)}
-  />
-  <InputDate
-  type='text'
-  id='hora_end'
-  label='Hora (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='hora_end'
-  value={handlers.windowFilter?.hora_end ?? ''}
-  disabled={handlers.windowFilter?.hora ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('hora_end', value)}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe Hora'
+  label='Hora'
+  className='inputIncNome inputSearch'
   />
   <TipoCompromissoComboBox
   name='tipocompromisso'
@@ -161,26 +150,15 @@ export const useAgendaSemanaFilter = ({ handleFetchWithFilter }: UseAgendaSemana
   label='Importante'
   className='inputSearch inputSearchCheckbox'
   />
-  <InputDate
+  <InputInput
   type='text'
   id='horafinal'
-  label='HoraFinal (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
   name='horafinal'
   value={handlers.windowFilter?.horafinal ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('horafinal', value)}
-  />
-  <InputDate
-  type='text'
-  id='horafinal_end'
-  label='HoraFinal (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='horafinal_end'
-  value={handlers.windowFilter?.horafinal_end ?? ''}
-  disabled={handlers.windowFilter?.horafinal ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('horafinal_end', value)}
+  onChange={handlers.handleInputChange}
+  placeholder='Informe HoraFinal'
+  label='HoraFinal'
+  className='inputIncNome inputSearch'
   />
   <InputInput
   type='text'

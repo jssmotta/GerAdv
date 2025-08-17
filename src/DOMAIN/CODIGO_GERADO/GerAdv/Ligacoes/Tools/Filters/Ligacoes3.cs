@@ -10,16 +10,16 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterLigacoes
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("assunto")]
-    public string Assunto { get; set; } = string.Empty;
+    public string? Assunto { get; set; } = string.Empty;
 
     [JsonPropertyName("assunto_end")]
-    public string Assunto_end { get; set; } = string.Empty;
+    public string? Assunto_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ageclienteavisado")]
     public int AgeClienteAvisado { get; set; } = int.MinValue;
@@ -33,17 +33,20 @@ public partial record FilterLigacoes
     [JsonPropertyName("cliente")]
     public int Cliente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("cliente_end")]
+    public int Cliente_end { get; set; } = int.MinValue;
+
     [JsonPropertyName("contato")]
-    public string Contato { get; set; } = string.Empty;
+    public string? Contato { get; set; } = string.Empty;
 
     [JsonPropertyName("contato_end")]
-    public string Contato_end { get; set; } = string.Empty;
+    public string? Contato_end { get; set; } = string.Empty;
 
     [JsonPropertyName("datarealizada")]
-    public string DataRealizada { get; set; } = string.Empty;
+    public string? DataRealizada { get; set; } = string.Empty;
 
     [JsonPropertyName("datarealizada_end")]
-    public string DataRealizada_end { get; set; } = string.Empty;
+    public string? DataRealizada_end { get; set; } = string.Empty;
 
     [JsonPropertyName("quemid")]
     public int QuemID { get; set; } = int.MinValue;
@@ -58,22 +61,22 @@ public partial record FilterLigacoes
     public int Telefonista_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("ultimoaviso")]
-    public string UltimoAviso { get; set; } = string.Empty;
+    public string? UltimoAviso { get; set; } = string.Empty;
 
     [JsonPropertyName("ultimoaviso_end")]
-    public string UltimoAviso_end { get; set; } = string.Empty;
+    public string? UltimoAviso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("horafinal")]
-    public string HoraFinal { get; set; } = string.Empty;
+    public string? HoraFinal { get; set; } = string.Empty;
 
     [JsonPropertyName("horafinal_end")]
-    public string HoraFinal_end { get; set; } = string.Empty;
+    public string? HoraFinal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("quemcodigo")]
     public int QuemCodigo { get; set; } = int.MinValue;
@@ -88,19 +91,22 @@ public partial record FilterLigacoes
     public int Solicitante_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("para")]
-    public string Para { get; set; } = string.Empty;
+    public string? Para { get; set; } = string.Empty;
 
     [JsonPropertyName("para_end")]
-    public string Para_end { get; set; } = string.Empty;
+    public string? Para_end { get; set; } = string.Empty;
 
     [JsonPropertyName("fone")]
-    public string Fone { get; set; } = string.Empty;
+    public string? Fone { get; set; } = string.Empty;
 
     [JsonPropertyName("fone_end")]
-    public string Fone_end { get; set; } = string.Empty;
+    public string? Fone_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ramal")]
     public int Ramal { get; set; } = int.MinValue;
+
+    [JsonPropertyName("ramal_end")]
+    public int Ramal_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("particular")]
     public int Particular { get; set; } = int.MinValue;
@@ -109,31 +115,37 @@ public partial record FilterLigacoes
     public int Realizada { get; set; } = int.MinValue;
 
     [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
+    public string? Status { get; set; } = string.Empty;
 
     [JsonPropertyName("status_end")]
-    public string Status_end { get; set; } = string.Empty;
+    public string? Status_end { get; set; } = string.Empty;
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = string.Empty;
+    public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
-    public string Data_end { get; set; } = string.Empty;
+    public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("hora")]
-    public string Hora { get; set; } = string.Empty;
+    public string? Hora { get; set; } = string.Empty;
 
     [JsonPropertyName("hora_end")]
-    public string Hora_end { get; set; } = string.Empty;
+    public string? Hora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("urgente")]
     public int Urgente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
+
     [JsonPropertyName("ligarpara")]
-    public string LigarPara { get; set; } = string.Empty;
+    public string? LigarPara { get; set; } = string.Empty;
 
     [JsonPropertyName("ligarpara_end")]
-    public string LigarPara_end { get; set; } = string.Empty;
+    public string? LigarPara_end { get; set; } = string.Empty;
 
     [JsonPropertyName("processo")]
     public int Processo { get; set; } = int.MinValue;
@@ -149,12 +161,6 @@ public partial record FilterLigacoes
 
     [JsonPropertyName("emotion_end")]
     public int Emotion_end { get; set; } = int.MinValue;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

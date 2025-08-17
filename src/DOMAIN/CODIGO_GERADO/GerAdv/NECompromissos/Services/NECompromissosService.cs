@@ -94,18 +94,18 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         }
     }
 
-    private async Task<NECompromissosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<NECompromissosResponse?> AddAndUpdate([FromBody] Models.NECompromissos regNECompromissos, [FromRoute, Required] string uri)
+    private async Task<NECompromissosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<NECompromissosResponse?> AddAndUpdate([FromBody] Models.NECompromissos? regNECompromissos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("NECompromissos: URI inválida");
-        }
-
         if (regNECompromissos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("NECompromissos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -119,7 +119,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regNECompromissos, this, tipocompromissoReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -128,7 +128,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -136,17 +136,17 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<NECompromissosResponse?> Validation([FromBody] Models.NECompromissos regNECompromissos, [FromRoute, Required] string uri)
+    public async Task<NECompromissosResponse?> Validation([FromBody] Models.NECompromissos? regNECompromissos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("NECompromissos: URI inválida");
-        }
-
         if (regNECompromissos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("NECompromissos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -160,7 +160,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
             var validade = await validation.ValidateReg(regNECompromissos, this, tipocompromissoReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -169,7 +169,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regNECompromissos.Id.IsEmptyIDNumber())
@@ -180,17 +180,17 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         return await reader.Read(regNECompromissos.Id, oCnn);
     }
 
-    public async Task<NECompromissosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<NECompromissosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("NECompromissos: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -205,7 +205,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -214,10 +214,10 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var necompromissos = await reader.Read(id, oCnn);
+        var necompromissos = await reader.Read(id ?? default, oCnn);
         try
         {
             if (necompromissos != null)
@@ -237,7 +237,7 @@ public partial class NECompromissosService(IOptions<AppSettings> appSettings, IF
         return necompromissos;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

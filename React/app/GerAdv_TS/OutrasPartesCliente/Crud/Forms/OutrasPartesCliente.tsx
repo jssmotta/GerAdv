@@ -61,307 +61,309 @@ if (getParamFromUrl('cidade') > 0) {
       setNomeCidade(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    outraspartesclienteData.cidade = getParamFromUrl('cidade');
+      outraspartesclienteData.cidade = getParamFromUrl('cidade');
+    }
   }
-}
-const addValorCidade = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'cidade', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorCidade = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'cidade', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de OutrasPartesCliente:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`OutrasPartesClienteForm-${outraspartesclienteData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de OutrasPartesCliente:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar OutrasPartesCliente diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = outraspartesclienteData?.id == 0 ? 'Editar OutrasPartesCliente' : 'Adicionar Outras Partes Cliente';
+        }
+      }, [outraspartesclienteData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-OutrasPartesCliente' : 'form-container form-container-OutrasPartesCliente'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`OutrasPartesClienteForm-${outraspartesclienteData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='OutrasPartesCliente' data={outraspartesclienteData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar OutrasPartesCliente diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = outraspartesclienteData?.id == 0 ? 'Editar OutrasPartesCliente' : 'Adicionar Outras Partes Cliente';
-    }
-  }, [outraspartesclienteData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='nome'
+                label='Nome'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='nome'
+                value={outraspartesclienteData.nome}
+                placeholder={`Informe Nome`}
+                onChange={onChange}
+                required
+                />
+                <InputCheckbox dataForm={outraspartesclienteData} label='Terceirizado' name='terceirizado' checked={outraspartesclienteData.terceirizado} onChange={onChange} />
 
-    <div className={isMobile ? 'form-container form-container-OutrasPartesCliente' : 'form-container form-container-OutrasPartesCliente'}>
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='clienteprincipal'
+                label='ClientePrincipal'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='clienteprincipal'
+                value={outraspartesclienteData.clienteprincipal}
+                onChange={onChange}
+                />
 
-      <form className='formInputCadInc' id={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='OutrasPartesCliente' data={outraspartesclienteData} isSubmitting={isSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
+                <InputCheckbox dataForm={outraspartesclienteData} label='Tipo' name='tipo' checked={outraspartesclienteData.tipo} onChange={onChange} />
+                <InputCheckbox dataForm={outraspartesclienteData} label='Sexo' name='sexo' checked={outraspartesclienteData.sexo} onChange={onChange} />
 
-            <InputName
-            type='text'
-            id='nome'
-            label='Nome'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='nome'
-            value={outraspartesclienteData.nome}
-            placeholder={`Informe Nome`}
-            onChange={onChange}
-            required
-            />
-            <InputCheckbox dataForm={outraspartesclienteData} label='Terceirizado' name='terceirizado' checked={outraspartesclienteData.terceirizado} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='clienteprincipal'
-            label='ClientePrincipal'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='clienteprincipal'
-            value={outraspartesclienteData.clienteprincipal}
-            onChange={onChange}
-            />
-
-            <InputCheckbox dataForm={outraspartesclienteData} label='Tipo' name='tipo' checked={outraspartesclienteData.tipo} onChange={onChange} />
-            <InputCheckbox dataForm={outraspartesclienteData} label='Sexo' name='sexo' checked={outraspartesclienteData.sexo} onChange={onChange} />
-
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='dtnasc'
-            label='DtNasc'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='dtnasc'
-            value={outraspartesclienteData.dtnasc}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='dtnasc'
+                label='DtNasc'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='dtnasc'
+                value={outraspartesclienteData.dtnasc}
+                onChange={onChange}
+                />
 
 
-            <InputCpf
-            type='text'
-            id='cpf'
-            label='CPF'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='cpf'
-            value={outraspartesclienteData.cpf}
-            onChange={onChange}
-            />
+                <InputCpf
+                type='text'
+                id='cpf'
+                label='CPF'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='cpf'
+                value={outraspartesclienteData.cpf}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={30}
-            id='rg'
-            label='RG'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='rg'
-            value={outraspartesclienteData.rg}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={30}
+                id='rg'
+                label='RG'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='rg'
+                value={outraspartesclienteData.rg}
+                onChange={onChange}
+                />
 
 
-            <InputCnpj
-            type='text'
-            id='cnpj'
-            label='CNPJ'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='cnpj'
-            value={outraspartesclienteData.cnpj}
-            onChange={onChange}
-            />
+                <InputCnpj
+                type='text'
+                id='cnpj'
+                label='CNPJ'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='cnpj'
+                value={outraspartesclienteData.cnpj}
+                onChange={onChange}
+                />
 
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={15}
-            id='inscest'
-            label='InscEst'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='inscest'
-            value={outraspartesclienteData.inscest}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={255}
-            id='nomefantasia'
-            label='NomeFantasia'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='nomefantasia'
-            value={outraspartesclienteData.nomefantasia}
-            onChange={onChange}
-            />
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={15}
+                id='inscest'
+                label='InscEst'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='inscest'
+                value={outraspartesclienteData.inscest}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={80}
-            id='endereco'
-            label='Endereco'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='endereco'
-            value={outraspartesclienteData.endereco}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={255}
+                id='nomefantasia'
+                label='NomeFantasia'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='nomefantasia'
+                value={outraspartesclienteData.nomefantasia}
+                onChange={onChange}
+                />
 
 
-            <CidadeComboBox
-            name={'cidade'}
-            dataForm={outraspartesclienteData}
-            value={outraspartesclienteData.cidade}
-            setValue={addValorCidade}
-            label={'Cidade'}
-            />
-
-            <InputCep
-            type='text'
-            id='cep'
-            label='CEP'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='cep'
-            value={outraspartesclienteData.cep}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={80}
+                id='endereco'
+                label='Endereco'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='endereco'
+                value={outraspartesclienteData.endereco}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={50}
-            id='bairro'
-            label='Bairro'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='bairro'
-            value={outraspartesclienteData.bairro}
-            onChange={onChange}
-            />
+                <CidadeComboBox
+                name={'cidade'}
+                dataForm={outraspartesclienteData}
+                value={outraspartesclienteData.cidade}
+                setValue={addValorCidade}
+                label={'Cidade'}
+                />
+
+                <InputCep
+                type='text'
+                id='cep'
+                label='CEP'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='cep'
+                value={outraspartesclienteData.cep}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='fone'
-            label='Fone'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='fone'
-            value={outraspartesclienteData.fone}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='bairro'
+                label='Bairro'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='bairro'
+                value={outraspartesclienteData.bairro}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='fax'
-            label='Fax'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='fax'
-            value={outraspartesclienteData.fax}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fone'
+                label='Fone'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='fone'
+                value={outraspartesclienteData.fone}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='email'
-            maxLength={150}
-            id='email'
-            label='EMail'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='email'
-            value={outraspartesclienteData.email}
-            onChange={onChange}
-            />
-
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={150}
-            id='site'
-            label='Site'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='site'
-            value={outraspartesclienteData.site}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='fax'
+                label='Fax'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='fax'
+                value={outraspartesclienteData.fax}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={1}
-            id='class'
-            label='Class'
-            dataForm={outraspartesclienteData}
-            className='inputIncNome'
-            name='class'
-            value={outraspartesclienteData.class}
-            onChange={onChange}
-            />
+                <InputInput
+                type='email'
+                maxLength={150}
+                id='email'
+                label='EMail'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='email'
+                value={outraspartesclienteData.email}
+                onChange={onChange}
+                />
 
-          </div>
-        </form>
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={150}
+                id='site'
+                label='Site'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='site'
+                value={outraspartesclienteData.site}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OutrasPartesCliente' data={outraspartesclienteData} isSubmitting={isSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/outraspartescliente'} id={outraspartesclienteData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                type='text'
+                maxLength={1}
+                id='class'
+                label='Class'
+                dataForm={outraspartesclienteData}
+                className='inputIncNome'
+                name='class'
+                value={outraspartesclienteData.class}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OutrasPartesCliente' data={outraspartesclienteData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OutrasPartesClienteForm-${outraspartesclienteData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/outraspartescliente'} id={outraspartesclienteData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

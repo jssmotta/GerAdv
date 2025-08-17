@@ -13,7 +13,7 @@ public partial interface IContaCorrenteWhere
 
 public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteWhere
 {
-    private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory;
+    private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException(nameof(contacorrenteFactory));
     public ContaCorrenteResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _contacorrenteFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,6 +21,7 @@ public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFact
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
+            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -43,7 +44,6 @@ public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFact
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
         {

@@ -41,7 +41,8 @@ export const useRitoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Rito';
       setError(errorMessage);
-      //console.log('Erro ao carregar Rito');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Rito');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useRitoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useRitoList = (dataService: IRitoService, currentFilter?: FilterRit
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar rito';
       setError(errorMessage);
-      //console.log('Erro ao carregar rito');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar rito');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 20) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

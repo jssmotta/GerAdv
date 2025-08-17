@@ -13,7 +13,7 @@ public partial interface ITipoOrigemSucumbenciaWhere
 
 public partial class TipoOrigemSucumbenciaWhere(IFTipoOrigemSucumbenciaFactory tipoorigemsucumbenciaFactory) : ITipoOrigemSucumbenciaWhere
 {
-    private readonly IFTipoOrigemSucumbenciaFactory _tipoorigemsucumbenciaFactory = tipoorigemsucumbenciaFactory;
+    private readonly IFTipoOrigemSucumbenciaFactory _tipoorigemsucumbenciaFactory = tipoorigemsucumbenciaFactory ?? throw new ArgumentNullException(nameof(tipoorigemsucumbenciaFactory));
     public TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipoorigemsucumbenciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

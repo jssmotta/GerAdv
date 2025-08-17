@@ -70,30 +70,6 @@ const SearchFromCellAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellAlertas = (id: number) => {
-  router.push(`/pages/alertas/?operador=${id}`);
-};
-const SearchFromCellAlertas = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAlertas(props.dataItem.id)}><span title='Pesquisar relacionados em Alertas'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellAlertasEnviados = (id: number) => {
-  router.push(`/pages/alertasenviados/?operador=${id}`);
-};
-const SearchFromCellAlertasEnviados = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAlertasEnviados(props.dataItem.id)}><span title='Pesquisar relacionados em Alertas Enviados'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellDiario2 = (id: number) => {
   router.push(`/pages/diario2/?operador=${id}`);
 };
@@ -130,18 +106,6 @@ const SearchFromCellOperadorEMailPopup = (props: any) => {
 </>
 );
 };
-const openSearchCellOperadorGrupo = (id: number) => {
-  router.push(`/pages/operadorgrupo/?operador=${id}`);
-};
-const SearchFromCellOperadorGrupo = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellOperadorGrupo(props.dataItem.id)}><span title='Pesquisar relacionados em Operador Grupo'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellOperadorGruposAgenda = (id: number) => {
   router.push(`/pages/operadorgruposagenda/?operador=${id}`);
 };
@@ -174,18 +138,6 @@ const SearchFromCellPontoVirtualAcessos = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellPontoVirtualAcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Ponto Virtual Acessos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellProcessosParados = (id: number) => {
-  router.push(`/pages/processosparados/?operador=${id}`);
-};
-const SearchFromCellProcessosParados = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessosParados(props.dataItem.id)}><span title='Pesquisar relacionados em Processos Parados'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -279,7 +231,15 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={true}
   filterable={true}
   />
-  ), /* Track G.02 */
+  ), /* Track G.12 */
+  'omestatusbiu': (
+  <GridColumn
+  key='omestatusbiu'
+  field='omestatusbiu'
+  title='StatusBiu'
+  sortable={false} filterable={false}
+  />
+  ), /* Track G.04 */
   'id_edit_Agenda': (
   <GridColumn
   key='Agenda'
@@ -289,28 +249,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellAgenda }}
-  />
-  ), /* Track G.03 */
-  'id_edit_Alertas': (
-  <GridColumn
-  key='Alertas'
-  field='Alertas'
-  title='Alertas'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellAlertas }}
-  />
-  ), /* Track G.03 */
-  'id_edit_AlertasEnviados': (
-  <GridColumn
-  key='AlertasEnviados'
-  field='AlertasEnviados'
-  title='Alertas Enviados'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellAlertasEnviados }}
   />
   ), /* Track G.03 */
   'id_edit_Diario2': (
@@ -346,17 +284,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellOperadorEMailPopup }}
   />
   ), /* Track G.03 */
-  'id_edit_OperadorGrupo': (
-  <GridColumn
-  key='OperadorGrupo'
-  field='OperadorGrupo'
-  title='Operador Grupo'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellOperadorGrupo }}
-  />
-  ), /* Track G.03 */
   'id_edit_OperadorGruposAgenda': (
   <GridColumn
   key='OperadorGruposAgenda'
@@ -390,17 +317,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellPontoVirtualAcessos }}
   />
   ), /* Track G.03 */
-  'id_edit_ProcessosParados': (
-  <GridColumn
-  key='ProcessosParados'
-  field='ProcessosParados'
-  title='Processos Parados'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellProcessosParados }}
-  />
-  ), /* Track G.03 */
   'id_edit_ProcessOutputRequest': (
   <GridColumn
   key='ProcessOutputRequest'
@@ -423,16 +339,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellSMSAlice }}
   />
   ), /* Track G.03 */
-  'omestatusbiu': (
-  <GridColumn
-  key='omestatusbiu'
-
-  field='omestatusbiu'
-  title='StatusBiu'
-  sortable={false} filterable={false}
-
-  />
-  ), /* Track G.04 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
@@ -446,22 +352,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Compromisso'
   cells={{ data: SearchFromCellAgenda }}
-  />, 
-  <GridColumn
-  field='id_edit_Alertas'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Alertas'
-  cells={{ data: SearchFromCellAlertas }}
-  />, 
-  <GridColumn
-  field='id_edit_AlertasEnviados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Alertas Enviados'
-  cells={{ data: SearchFromCellAlertasEnviados }}
   />, 
   <GridColumn
   field='id_edit_Diario2'
@@ -488,14 +378,6 @@ const baseGridColumns = useMemo(() => [
   cells={{ data: SearchFromCellOperadorEMailPopup }}
   />, 
   <GridColumn
-  field='id_edit_OperadorGrupo'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Operador Grupo'
-  cells={{ data: SearchFromCellOperadorGrupo }}
-  />, 
-  <GridColumn
   field='id_edit_OperadorGruposAgenda'
   filterable={false}
   sortable={false}
@@ -518,14 +400,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Ponto Virtual Acessos'
   cells={{ data: SearchFromCellPontoVirtualAcessos }}
-  />, 
-  <GridColumn
-  field='id_edit_ProcessosParados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos Parados'
-  cells={{ data: SearchFromCellProcessosParados }}
   />, 
   <GridColumn
   field='id_edit_ProcessOutputRequest'
@@ -586,22 +460,6 @@ const finalGridColumns = useMemo(() => {
   cells={{ data: SearchFromCellAgenda }}
   />, 
   <GridColumn
-  field='id_edit_Alertas'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Alertas'
-  cells={{ data: SearchFromCellAlertas }}
-  />, 
-  <GridColumn
-  field='id_edit_AlertasEnviados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Alertas Enviados'
-  cells={{ data: SearchFromCellAlertasEnviados }}
-  />, 
-  <GridColumn
   field='id_edit_Diario2'
   filterable={false}
   sortable={false}
@@ -626,14 +484,6 @@ const finalGridColumns = useMemo(() => {
   cells={{ data: SearchFromCellOperadorEMailPopup }}
   />, 
   <GridColumn
-  field='id_edit_OperadorGrupo'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Operador Grupo'
-  cells={{ data: SearchFromCellOperadorGrupo }}
-  />, 
-  <GridColumn
   field='id_edit_OperadorGruposAgenda'
   filterable={false}
   sortable={false}
@@ -656,14 +506,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Ponto Virtual Acessos'
   cells={{ data: SearchFromCellPontoVirtualAcessos }}
-  />, 
-  <GridColumn
-  field='id_edit_ProcessosParados'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Processos Parados'
-  cells={{ data: SearchFromCellProcessosParados }}
   />, 
   <GridColumn
   field='id_edit_ProcessOutputRequest'

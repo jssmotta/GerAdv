@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IEnderecosValidation
 {
     Task<bool> ValidateReg(Models.Enderecos reg, IEnderecosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class EnderecosValidation : IEnderecosValidation
 {
-    public async Task<bool> CanDelete(int id, IEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEnderecosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,24 +26,24 @@ public class EnderecosValidation : IEnderecosValidation
 
     private bool ValidSizes(Models.Enderecos reg)
     {
-        if (reg.Descricao != null && reg.Descricao.Length > 50)
-            throw new SGValidationException($"Descricao deve ter no máximo 50 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 50)
-            throw new SGValidationException($"Endereco deve ter no máximo 50 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 30)
-            throw new SGValidationException($"Bairro deve ter no máximo 30 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.OAB != null && reg.OAB.Length > 20)
-            throw new SGValidationException($"OAB deve ter no máximo 20 caracteres.");
-        if (reg.Tratamento != null && reg.Tratamento.Length > 20)
-            throw new SGValidationException($"Tratamento deve ter no máximo 20 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 200)
-            throw new SGValidationException($"Site deve ter no máximo 200 caracteres.");
-        if (reg.QuemIndicou != null && reg.QuemIndicou.Length > 150)
-            throw new SGValidationException($"QuemIndicou deve ter no máximo 150 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Descricao != null && reg.Descricao.Length > DBEnderecosDicInfo.EndDescricao.FTamanho)
+            throw new SGValidationException($"Descricao deve ter no máximo {DBEnderecosDicInfo.EndDescricao.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBEnderecosDicInfo.EndEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBEnderecosDicInfo.EndEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBEnderecosDicInfo.EndBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBEnderecosDicInfo.EndBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBEnderecosDicInfo.EndCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBEnderecosDicInfo.EndCEP.FTamanho} caracteres.");
+        if (reg.OAB != null && reg.OAB.Length > DBEnderecosDicInfo.EndOAB.FTamanho)
+            throw new SGValidationException($"OAB deve ter no máximo {DBEnderecosDicInfo.EndOAB.FTamanho} caracteres.");
+        if (reg.Tratamento != null && reg.Tratamento.Length > DBEnderecosDicInfo.EndTratamento.FTamanho)
+            throw new SGValidationException($"Tratamento deve ter no máximo {DBEnderecosDicInfo.EndTratamento.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBEnderecosDicInfo.EndSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBEnderecosDicInfo.EndSite.FTamanho} caracteres.");
+        if (reg.QuemIndicou != null && reg.QuemIndicou.Length > DBEnderecosDicInfo.EndQuemIndicou.FTamanho)
+            throw new SGValidationException($"QuemIndicou deve ter no máximo {DBEnderecosDicInfo.EndQuemIndicou.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBEnderecosDicInfo.EndGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBEnderecosDicInfo.EndGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -56,8 +56,19 @@ public class EnderecosValidation : IEnderecosValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DtNasc))
+        {
+            if (DateTime.TryParse(reg.DtNasc, out DateTime dataAniversario))
+            {
+                if (dataAniversario < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data Nascimento não pode ser anterior a 01/01/1900.");
+                if (dataAniversario > DateTime.Now)
+                    throw new SGValidationException("DtNasc não pode ser uma data futura.");
+            }
+        }
+
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {

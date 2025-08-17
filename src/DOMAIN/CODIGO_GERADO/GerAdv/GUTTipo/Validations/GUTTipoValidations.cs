@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IGUTTipoValidation
 {
     Task<bool> ValidateReg(Models.GUTTipo reg, IGUTTipoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IGUTTipoService service, IGUTMatrizService gutmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IGUTTipoService service, IGUTMatrizService gutmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class GUTTipoValidation : IGUTTipoValidation
 {
-    public async Task<bool> CanDelete(int id, IGUTTipoService service, IGUTMatrizService gutmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTTipoService service, IGUTMatrizService gutmatrizService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var gutmatrizExists0 = await gutmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTMatriz { GUTTipo = id }, uri);
+        var gutmatrizExists0 = await gutmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTMatriz { GUTTipo = id ?? default }, uri);
         if (gutmatrizExists0 != null && gutmatrizExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Matriz associados a ele.");
         return true;
@@ -29,10 +29,10 @@ public class GUTTipoValidation : IGUTTipoValidation
 
     private bool ValidSizes(Models.GUTTipo reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 150)
-            throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 50)
-            throw new SGValidationException($"GUID deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBGUTTipoDicInfo.GttNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBGUTTipoDicInfo.GttNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBGUTTipoDicInfo.GttGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBGUTTipoDicInfo.GttGUID.FTamanho} caracteres.");
         return true;
     }
 

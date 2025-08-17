@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProcessOutputSourcesValidation
 {
     Task<bool> ValidateReg(Models.ProcessOutputSources reg, IProcessOutputSourcesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IProcessOutputSourcesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProcessOutputSourcesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessOutputSourcesValidation : IProcessOutputSourcesValidation
 {
-    public async Task<bool> CanDelete(int id, IProcessOutputSourcesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProcessOutputSourcesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,10 +26,10 @@ public class ProcessOutputSourcesValidation : IProcessOutputSourcesValidation
 
     private bool ValidSizes(Models.ProcessOutputSources reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 80)
-            throw new SGValidationException($"Nome deve ter no máximo 80 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 100)
-            throw new SGValidationException($"GUID deve ter no máximo 100 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBProcessOutputSourcesDicInfo.PosNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBProcessOutputSourcesDicInfo.PosNome.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBProcessOutputSourcesDicInfo.PosGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBProcessOutputSourcesDicInfo.PosGUID.FTamanho} caracteres.");
         return true;
     }
 

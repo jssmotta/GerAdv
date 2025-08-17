@@ -54,7 +54,7 @@ public partial class FStatusAndamentoFactory : IFStatusAndamentoFactory, IDispos
             throw new ObjectDisposedException(nameof(FStatusAndamentoFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

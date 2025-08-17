@@ -13,7 +13,7 @@ public partial interface ITipoProDespositoWhere
 
 public partial class TipoProDespositoWhere(IFTipoProDespositoFactory tipoprodespositoFactory) : ITipoProDespositoWhere
 {
-    private readonly IFTipoProDespositoFactory _tipoprodespositoFactory = tipoprodespositoFactory;
+    private readonly IFTipoProDespositoFactory _tipoprodespositoFactory = tipoprodespositoFactory ?? throw new ArgumentNullException(nameof(tipoprodespositoFactory));
     public TipoProDespositoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipoprodespositoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

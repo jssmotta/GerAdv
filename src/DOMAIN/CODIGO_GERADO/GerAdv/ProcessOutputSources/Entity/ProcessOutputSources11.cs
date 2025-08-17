@@ -54,7 +54,7 @@ public partial class FProcessOutputSourcesFactory : IFProcessOutputSourcesFactor
             throw new ObjectDisposedException(nameof(FProcessOutputSourcesFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

@@ -15,7 +15,7 @@ public partial class ParceriaProcReader
             max = 200;
         }
 
-        var orderQuery = $"{TSql.OrderBy} {DBParceriaProcDicInfo.CampoNome}";
+        var orderQuery = $"{TSql.OrderBy} {DBParceriaProcDicInfo.CampoCodigo}";
         if (!string.IsNullOrEmpty(orderClause))
         {
             orderQuery = (!orderClause.ToUpperInvariant().Contains(TSql.OrderBy, StringComparison.OrdinalIgnoreCase) ? TSql.OrderBy : string.Empty) + orderClause;

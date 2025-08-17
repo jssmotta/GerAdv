@@ -13,7 +13,7 @@ public partial interface ITipoEMailWhere
 
 public partial class TipoEMailWhere(IFTipoEMailFactory tipoemailFactory) : ITipoEMailWhere
 {
-    private readonly IFTipoEMailFactory _tipoemailFactory = tipoemailFactory;
+    private readonly IFTipoEMailFactory _tipoemailFactory = tipoemailFactory ?? throw new ArgumentNullException(nameof(tipoemailFactory));
     public TipoEMailResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _tipoemailFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

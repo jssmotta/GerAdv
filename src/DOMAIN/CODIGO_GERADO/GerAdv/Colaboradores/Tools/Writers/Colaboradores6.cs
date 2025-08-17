@@ -14,13 +14,13 @@ public partial interface IColaboradoresWriter
 
 public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : IColaboradoresWriter
 {
-    private readonly IFColaboradoresFactory _colaboradoresFactory = colaboradoresFactory;
-    public async Task Delete(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFColaboradoresFactory _colaboradoresFactory = colaboradoresFactory ?? throw new ArgumentNullException(nameof(colaboradoresFactory));
+    public virtual async Task Delete(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection oCnn)
     {
         await _colaboradoresFactory.DeleteAsync(operadorId, colaboradores.Id, oCnn);
     }
 
-    public async Task<FColaboradores> WriteAsync(Models.Colaboradores colaboradores, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FColaboradores> WriteAsync(Models.Colaboradores colaboradores, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (colaboradores.Id.IsEmptyIDNumber() ? _colaboradoresFactory.CreateAsync() : _colaboradoresFactory.CreateFromIdAsync(colaboradores.Id, oCnn));
         dbRec.FCargo = colaboradores.Cargo;

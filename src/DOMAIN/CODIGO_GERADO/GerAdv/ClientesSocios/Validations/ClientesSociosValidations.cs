@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IClientesSociosValidation
 {
     Task<bool> ValidateReg(Models.ClientesSocios reg, IClientesSociosService service, IClientesReader clientesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ClientesSociosValidation : IClientesSociosValidation
 {
-    public async Task<bool> CanDelete(int id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IClientesSociosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,48 +26,48 @@ public class ClientesSociosValidation : IClientesSociosValidation
 
     private bool ValidSizes(Models.ClientesSocios reg)
     {
-        if (reg.Qualificacao != null && reg.Qualificacao.Length > 100)
-            throw new SGValidationException($"Qualificacao deve ter no máximo 100 caracteres.");
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
-        if (reg.Site != null && reg.Site.Length > 150)
-            throw new SGValidationException($"Site deve ter no máximo 150 caracteres.");
-        if (reg.RepresentanteLegal != null && reg.RepresentanteLegal.Length > 50)
-            throw new SGValidationException($"RepresentanteLegal deve ter no máximo 50 caracteres.");
-        if (reg.Endereco != null && reg.Endereco.Length > 80)
-            throw new SGValidationException($"Endereco deve ter no máximo 80 caracteres.");
-        if (reg.Bairro != null && reg.Bairro.Length > 50)
-            throw new SGValidationException($"Bairro deve ter no máximo 50 caracteres.");
-        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > 10)
-            throw new SGValidationException($"CEP deve ter no máximo 10 caracteres.");
-        if (reg.RG != null && reg.RG.Length > 30)
-            throw new SGValidationException($"RG deve ter no máximo 30 caracteres.");
-        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > 11)
-            throw new SGValidationException($"CPF deve ter no máximo 11 caracteres.");
-        if (reg.Participacao != null && reg.Participacao.Length > 10)
-            throw new SGValidationException($"Participacao deve ter no máximo 10 caracteres.");
-        if (reg.Cargo != null && reg.Cargo.Length > 50)
-            throw new SGValidationException($"Cargo deve ter no máximo 50 caracteres.");
-        if (reg.CNH != null && reg.CNH.Length > 100)
-            throw new SGValidationException($"CNH deve ter no máximo 100 caracteres.");
-        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > 14)
-            throw new SGValidationException($"CNPJ deve ter no máximo 14 caracteres.");
-        if (reg.InscEst != null && reg.InscEst.Length > 15)
-            throw new SGValidationException($"InscEst deve ter no máximo 15 caracteres.");
-        if (reg.SocioEmpresaAdminNome != null && reg.SocioEmpresaAdminNome.Length > 80)
-            throw new SGValidationException($"SocioEmpresaAdminNome deve ter no máximo 80 caracteres.");
-        if (reg.EnderecoSocio != null && reg.EnderecoSocio.Length > 80)
-            throw new SGValidationException($"EnderecoSocio deve ter no máximo 80 caracteres.");
-        if (reg.BairroSocio != null && reg.BairroSocio.Length > 50)
-            throw new SGValidationException($"BairroSocio deve ter no máximo 50 caracteres.");
-        if (reg.CEPSocio != null && reg.CEPSocio.Length > 10)
-            throw new SGValidationException($"CEPSocio deve ter no máximo 10 caracteres.");
-        if (reg.Fax != null && reg.Fax.Length > 2048)
-            throw new SGValidationException($"Fax deve ter no máximo 2048 caracteres.");
-        if (reg.Class != null && reg.Class.Length > 1)
-            throw new SGValidationException($"Class deve ter no máximo 1 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Qualificacao != null && reg.Qualificacao.Length > DBClientesSociosDicInfo.CscQualificacao.FTamanho)
+            throw new SGValidationException($"Qualificacao deve ter no máximo {DBClientesSociosDicInfo.CscQualificacao.FTamanho} caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBClientesSociosDicInfo.CscNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBClientesSociosDicInfo.CscNome.FTamanho} caracteres.");
+        if (reg.Site != null && reg.Site.Length > DBClientesSociosDicInfo.CscSite.FTamanho)
+            throw new SGValidationException($"Site deve ter no máximo {DBClientesSociosDicInfo.CscSite.FTamanho} caracteres.");
+        if (reg.RepresentanteLegal != null && reg.RepresentanteLegal.Length > DBClientesSociosDicInfo.CscRepresentanteLegal.FTamanho)
+            throw new SGValidationException($"RepresentanteLegal deve ter no máximo {DBClientesSociosDicInfo.CscRepresentanteLegal.FTamanho} caracteres.");
+        if (reg.Endereco != null && reg.Endereco.Length > DBClientesSociosDicInfo.CscEndereco.FTamanho)
+            throw new SGValidationException($"Endereco deve ter no máximo {DBClientesSociosDicInfo.CscEndereco.FTamanho} caracteres.");
+        if (reg.Bairro != null && reg.Bairro.Length > DBClientesSociosDicInfo.CscBairro.FTamanho)
+            throw new SGValidationException($"Bairro deve ter no máximo {DBClientesSociosDicInfo.CscBairro.FTamanho} caracteres.");
+        if (reg.CEP != null && reg.CEP.ClearInputCepCpfCnpj().Length > DBClientesSociosDicInfo.CscCEP.FTamanho)
+            throw new SGValidationException($"CEP deve ter no máximo {DBClientesSociosDicInfo.CscCEP.FTamanho} caracteres.");
+        if (reg.RG != null && reg.RG.Length > DBClientesSociosDicInfo.CscRG.FTamanho)
+            throw new SGValidationException($"RG deve ter no máximo {DBClientesSociosDicInfo.CscRG.FTamanho} caracteres.");
+        if (reg.CPF != null && reg.CPF.ClearInputCepCpfCnpj().Length > DBClientesSociosDicInfo.CscCPF.FTamanho)
+            throw new SGValidationException($"CPF deve ter no máximo {DBClientesSociosDicInfo.CscCPF.FTamanho} caracteres.");
+        if (reg.Participacao != null && reg.Participacao.Length > DBClientesSociosDicInfo.CscParticipacao.FTamanho)
+            throw new SGValidationException($"Participacao deve ter no máximo {DBClientesSociosDicInfo.CscParticipacao.FTamanho} caracteres.");
+        if (reg.Cargo != null && reg.Cargo.Length > DBClientesSociosDicInfo.CscCargo.FTamanho)
+            throw new SGValidationException($"Cargo deve ter no máximo {DBClientesSociosDicInfo.CscCargo.FTamanho} caracteres.");
+        if (reg.CNH != null && reg.CNH.Length > DBClientesSociosDicInfo.CscCNH.FTamanho)
+            throw new SGValidationException($"CNH deve ter no máximo {DBClientesSociosDicInfo.CscCNH.FTamanho} caracteres.");
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCepCpfCnpj().Length > DBClientesSociosDicInfo.CscCNPJ.FTamanho)
+            throw new SGValidationException($"CNPJ deve ter no máximo {DBClientesSociosDicInfo.CscCNPJ.FTamanho} caracteres.");
+        if (reg.InscEst != null && reg.InscEst.Length > DBClientesSociosDicInfo.CscInscEst.FTamanho)
+            throw new SGValidationException($"InscEst deve ter no máximo {DBClientesSociosDicInfo.CscInscEst.FTamanho} caracteres.");
+        if (reg.SocioEmpresaAdminNome != null && reg.SocioEmpresaAdminNome.Length > DBClientesSociosDicInfo.CscSocioEmpresaAdminNome.FTamanho)
+            throw new SGValidationException($"SocioEmpresaAdminNome deve ter no máximo {DBClientesSociosDicInfo.CscSocioEmpresaAdminNome.FTamanho} caracteres.");
+        if (reg.EnderecoSocio != null && reg.EnderecoSocio.Length > DBClientesSociosDicInfo.CscEnderecoSocio.FTamanho)
+            throw new SGValidationException($"EnderecoSocio deve ter no máximo {DBClientesSociosDicInfo.CscEnderecoSocio.FTamanho} caracteres.");
+        if (reg.BairroSocio != null && reg.BairroSocio.Length > DBClientesSociosDicInfo.CscBairroSocio.FTamanho)
+            throw new SGValidationException($"BairroSocio deve ter no máximo {DBClientesSociosDicInfo.CscBairroSocio.FTamanho} caracteres.");
+        if (reg.CEPSocio != null && reg.CEPSocio.Length > DBClientesSociosDicInfo.CscCEPSocio.FTamanho)
+            throw new SGValidationException($"CEPSocio deve ter no máximo {DBClientesSociosDicInfo.CscCEPSocio.FTamanho} caracteres.");
+        if (reg.Fax != null && reg.Fax.Length > DBClientesSociosDicInfo.CscFax.FTamanho)
+            throw new SGValidationException($"Fax deve ter no máximo {DBClientesSociosDicInfo.CscFax.FTamanho} caracteres.");
+        if (reg.Class != null && reg.Class.Length > DBClientesSociosDicInfo.CscClass.FTamanho)
+            throw new SGValidationException($"Class deve ter no máximo {DBClientesSociosDicInfo.CscClass.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBClientesSociosDicInfo.CscGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBClientesSociosDicInfo.CscGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -80,8 +80,39 @@ public class ClientesSociosValidation : IClientesSociosValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
+        if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.DtNasc))
+        {
+            if (DateTime.TryParse(reg.DtNasc, out DateTime dataAniversario))
+            {
+                if (dataAniversario < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data Nascimento não pode ser anterior a 01/01/1900.");
+                if (dataAniversario > DateTime.Now)
+                    throw new SGValidationException("DtNasc não pode ser uma data futura.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.DataContrato))
+        {
+            if (DateTime.TryParse(reg.DataContrato, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataContrato não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.RGDataExp))
+        {
+            if (DateTime.TryParse(reg.RGDataExp, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("RGDataExp não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+            throw new SGValidationException("CPF inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CPF))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
@@ -95,6 +126,8 @@ public class ClientesSociosValidation : IClientesSociosValidation
             }
         }
 
+        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+            throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Clientes Socios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Clientes

@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class ClientesReader(IFClientesFactory clientesFactory) : IClientesReader
 {
-    private readonly IFClientesFactory _clientesFactory = clientesFactory;
+    private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cliCodigo, cliNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<ClientesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBClientes.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<ClientesResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -57,6 +57,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -94,7 +95,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
         {
@@ -135,6 +135,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -172,7 +173,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
         {
@@ -202,6 +202,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -239,7 +240,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
         {
@@ -269,6 +269,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -306,7 +307,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
         {
@@ -360,6 +360,7 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -397,7 +398,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
         {

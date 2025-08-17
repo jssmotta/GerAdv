@@ -41,7 +41,8 @@ export const useBensMateriaisForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Bens Materiais';
       setError(errorMessage);
-      //console.log('Erro ao carregar Bens Materiais');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Bens Materiais');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useBensMateriaisNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useBensMateriaisList = (dataService: IBensMateriaisService, current
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar bensmateriais';
       setError(errorMessage);
-      //console.log('Erro ao carregar bensmateriais');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar bensmateriais');
     } finally {
       setLoading(false);
     }
@@ -225,7 +228,8 @@ if (data.nomevendedor.length > 255) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

@@ -2,10 +2,10 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 export enum FieldsAndamentosMD
-{	nome = `Nome`,
+{	guid = `GUID`,
+	nome = `Nome`,
 	processo = `Processo`,
 	andamento = `Andamento`,
 	pathfull = `PathFull`,
 	unc = `UNC`,
-	guid = `GUID`,
 }

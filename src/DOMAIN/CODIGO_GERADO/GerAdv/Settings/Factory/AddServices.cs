@@ -13,16 +13,8 @@ public static class AddServices
         builder.Services.AddScoped<IFAcaoFactory, FAcaoFactory>();
         builder.Services.AddScoped<IFAdvogadosFactory, FAdvogadosFactory>();
         builder.Services.AddScoped<IFAgendaFactory, FAgendaFactory>();
-        builder.Services.AddScoped<IFAgendaQuemFactory, FAgendaQuemFactory>();
-        builder.Services.AddScoped<IFAgendaRepetirDiasFactory, FAgendaRepetirDiasFactory>();
-        builder.Services.AddScoped<IFAlertasFactory, FAlertasFactory>();
-        builder.Services.AddScoped<IFAlertasEnviadosFactory, FAlertasEnviadosFactory>();
         builder.Services.AddScoped<IFAndamentosMDFactory, FAndamentosMDFactory>();
-        builder.Services.AddScoped<IFAndCompFactory, FAndCompFactory>();
-        builder.Services.AddScoped<IFAnexamentoRegistrosFactory, FAnexamentoRegistrosFactory>();
-        builder.Services.AddScoped<IFApenso2Factory, FApenso2Factory>();
         builder.Services.AddScoped<IFAreaFactory, FAreaFactory>();
-        builder.Services.AddScoped<IFAreasJusticaFactory, FAreasJusticaFactory>();
         builder.Services.AddScoped<IFAtividadesFactory, FAtividadesFactory>();
         builder.Services.AddScoped<IFBensClassificacaoFactory, FBensClassificacaoFactory>();
         builder.Services.AddScoped<IFBensMateriaisFactory, FBensMateriaisFactory>();
@@ -43,7 +35,6 @@ public static class AddServices
         builder.Services.AddScoped<IFEMPClassRiscosFactory, FEMPClassRiscosFactory>();
         builder.Services.AddScoped<IFEnderecosFactory, FEnderecosFactory>();
         builder.Services.AddScoped<IFEnderecoSistemaFactory, FEnderecoSistemaFactory>();
-        builder.Services.AddScoped<IFEndTitFactory, FEndTitFactory>();
         builder.Services.AddScoped<IFEnquadramentoEmpresaFactory, FEnquadramentoEmpresaFactory>();
         builder.Services.AddScoped<IFEscritoriosFactory, FEscritoriosFactory>();
         builder.Services.AddScoped<IFEventoPrazoAgendaFactory, FEventoPrazoAgendaFactory>();
@@ -54,7 +45,6 @@ public static class AddServices
         builder.Services.AddScoped<IFFuncionariosFactory, FFuncionariosFactory>();
         builder.Services.AddScoped<IFGraphFactory, FGraphFactory>();
         builder.Services.AddScoped<IFGruposEmpresasFactory, FGruposEmpresasFactory>();
-        builder.Services.AddScoped<IFGruposEmpresasCliFactory, FGruposEmpresasCliFactory>();
         builder.Services.AddScoped<IFGUTAtividadesFactory, FGUTAtividadesFactory>();
         builder.Services.AddScoped<IFGUTAtividadesMatrizFactory, FGUTAtividadesMatrizFactory>();
         builder.Services.AddScoped<IFGUTMatrizFactory, FGUTMatrizFactory>();
@@ -75,7 +65,6 @@ public static class AddServices
         builder.Services.AddScoped<IFOperadorFactory, FOperadorFactory>();
         builder.Services.AddScoped<IFOperadorEMailPopupFactory, FOperadorEMailPopupFactory>();
         builder.Services.AddScoped<IFOperadoresFactory, FOperadoresFactory>();
-        builder.Services.AddScoped<IFOperadorGrupoFactory, FOperadorGrupoFactory>();
         builder.Services.AddScoped<IFOperadorGruposFactory, FOperadorGruposFactory>();
         builder.Services.AddScoped<IFOperadorGruposAgendaFactory, FOperadorGruposAgendaFactory>();
         builder.Services.AddScoped<IFOponentesFactory, FOponentesFactory>();
@@ -83,7 +72,6 @@ public static class AddServices
         builder.Services.AddScoped<IFOutrasPartesClienteFactory, FOutrasPartesClienteFactory>();
         builder.Services.AddScoped<IFPaisesFactory, FPaisesFactory>();
         builder.Services.AddScoped<IFParceriaProcFactory, FParceriaProcFactory>();
-        builder.Services.AddScoped<IFParteClienteOutrasFactory, FParteClienteOutrasFactory>();
         builder.Services.AddScoped<IFPenhoraFactory, FPenhoraFactory>();
         builder.Services.AddScoped<IFPenhoraStatusFactory, FPenhoraStatusFactory>();
         builder.Services.AddScoped<IFPoderJudiciarioAssociadoFactory, FPoderJudiciarioAssociadoFactory>();
@@ -94,15 +82,12 @@ public static class AddServices
         builder.Services.AddScoped<IFPrepostosFactory, FPrepostosFactory>();
         builder.Services.AddScoped<IFProCDAFactory, FProCDAFactory>();
         builder.Services.AddScoped<IFProcessosObsReportFactory, FProcessosObsReportFactory>();
-        builder.Services.AddScoped<IFProcessosParadosFactory, FProcessosParadosFactory>();
         builder.Services.AddScoped<IFProcessOutputEngineFactory, FProcessOutputEngineFactory>();
         builder.Services.AddScoped<IFProcessOutPutIDsFactory, FProcessOutPutIDsFactory>();
         builder.Services.AddScoped<IFProcessOutputRequestFactory, FProcessOutputRequestFactory>();
         builder.Services.AddScoped<IFProcessOutputSourcesFactory, FProcessOutputSourcesFactory>();
-        builder.Services.AddScoped<IFProDepositosFactory, FProDepositosFactory>();
         builder.Services.AddScoped<IFProDespesasFactory, FProDespesasFactory>();
         builder.Services.AddScoped<IFProObservacoesFactory, FProObservacoesFactory>();
-        builder.Services.AddScoped<IFProPartesFactory, FProPartesFactory>();
         builder.Services.AddScoped<IFProProcuradoresFactory, FProProcuradoresFactory>();
         builder.Services.AddScoped<IFProResumosFactory, FProResumosFactory>();
         builder.Services.AddScoped<IFProSucumbenciaFactory, FProSucumbenciaFactory>();
@@ -132,11 +117,9 @@ public static class AddServices
         builder.Services.AddScoped<IFTipoRecursoFactory, FTipoRecursoFactory>();
         builder.Services.AddScoped<IFTiposAcaoFactory, FTiposAcaoFactory>();
         builder.Services.AddScoped<IFTipoStatusBiuFactory, FTipoStatusBiuFactory>();
-        builder.Services.AddScoped<IFTipoValorProcessoFactory, FTipoValorProcessoFactory>();
         builder.Services.AddScoped<IFTribEnderecosFactory, FTribEnderecosFactory>();
         builder.Services.AddScoped<IFTribunalFactory, FTribunalFactory>();
         builder.Services.AddScoped<IFUFFactory, FUFFactory>();
-        builder.Services.AddScoped<IFUltimosProcessosFactory, FUltimosProcessosFactory>();
         builder.Services.AddScoped<IFViaRecebimentoFactory, FViaRecebimentoFactory>();
         builder.Services.AddScoped<IFAgendaRelatorioFactory, FAgendaRelatorioFactory>();
         builder.Services.AddScoped<IFAgendaSemanaFactory, FAgendaSemanaFactory>();

@@ -41,7 +41,8 @@ export const useTipoEnderecoForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Tipo Endereco';
       setError(errorMessage);
-      //console.log('Erro ao carregar Tipo Endereco');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Tipo Endereco');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useTipoEnderecoNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useTipoEnderecoList = (dataService: ITipoEnderecoService, currentFi
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar tipoendereco';
       setError(errorMessage);
-      //console.log('Erro ao carregar tipoendereco');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar tipoendereco');
     } finally {
       setLoading(false);
     }
@@ -210,7 +213,8 @@ if (data.descricao.length > 40) {
       setFilteredOptions(mappedOptions);
       setHasLoaded(true);
     } catch (err) {
-      //console.log('Erro ao buscar opções do ComboBox');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao buscar opções do ComboBox');
     } finally {
       setLoading(false);
     }

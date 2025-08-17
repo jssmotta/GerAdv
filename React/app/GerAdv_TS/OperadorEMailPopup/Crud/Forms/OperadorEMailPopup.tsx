@@ -58,232 +58,234 @@ if (getParamFromUrl('operador') > 0) {
       setNomeOperador(response.data.rnome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    operadoremailpopupData.operador = getParamFromUrl('operador');
+      operadoremailpopupData.operador = getParamFromUrl('operador');
+    }
   }
-}
-const addValorOperador = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'operador', value: e.id } });
-  };
-  const onConfirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
+  const addValorOperador = (e: any) => {
+    if (e?.id>0)
+      onChange({ target: { name: 'operador', value: e.id } });
+    };
+    const onConfirm = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
 
+        if (!isSubmitting) {
+          setIsSubmitting(true);
+
+          try {
+            onSubmit(e);
+          } catch (error) {
+          console.log('Erro ao submeter formulário de OperadorEMailPopup:');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
+        }
+      };
+      const handleCancel = () => {
+        if (onReload) {
+          onReload(); // Recarrega os dados originais
+        } else {
+        onClose(); // Comportamento padrão se não há callback de recarga
+      }
+    };
+
+    const handleDirectSave = () => {
       if (!isSubmitting) {
         setIsSubmitting(true);
 
         try {
-          onSubmit(e);
+          const syntheticEvent = {
+            preventDefault: () => { }, 
+            target: document.getElementById(`OperadorEMailPopupForm-${operadoremailpopupData.id}`)
+          } as unknown as React.FormEvent;
+
+          onSubmit(syntheticEvent);
         } catch (error) {
-        console.log('Erro ao submeter formulário de OperadorEMailPopup:');
-        setIsSubmitting(false);
-        if (onError) onError();
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Erro ao salvar OperadorEMailPopup diretamente');
+          setIsSubmitting(false);
+          if (onError) onError();
+          }
         }
-      }
-    };
-    const handleCancel = () => {
-      if (onReload) {
-        onReload(); // Recarrega os dados originais
-      } else {
-      onClose(); // Comportamento padrão se não há callback de recarga
-    }
-  };
+      };
+      useEffect(() => {
+        const el = document.querySelector('.nameFormMobile');
+        if (el) {
+          el.textContent = operadoremailpopupData?.id == 0 ? 'Editar OperadorEMailPopup' : 'Adicionar Operador E Mail Popup';
+        }
+      }, [operadoremailpopupData.id]);
+      return (
+      <>
+      {!isMobile ? <style jsx global>{`
+        @media (max-width: 1366px) {
+          html {
+            zoom: 0.8 !important;
+          }
+        }
+        `}</style> : null}
 
-  const handleDirectSave = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
+        <div className={isMobile ? 'form-container form-container-OperadorEMailPopup' : 'form-container form-container-OperadorEMailPopup'}>
 
-      try {
-        const syntheticEvent = {
-          preventDefault: () => { }, 
-          target: document.getElementById(`OperadorEMailPopupForm-${operadoremailpopupData.id}`)
-        } as unknown as React.FormEvent;
+          <form className='formInputCadInc' id={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} onSubmit={onConfirm}>
+            {!isMobile && (
+              <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='OperadorEMailPopup' data={operadoremailpopupData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <div className='grid-container'>
 
-        onSubmit(syntheticEvent);
-      } catch (error) {
-      console.log('Erro ao salvar OperadorEMailPopup diretamente');
-      setIsSubmitting(false);
-      if (onError) onError();
-      }
-    }
-  };
-  useEffect(() => {
-    const el = document.querySelector('.nameFormMobile');
-    if (el) {
-      el.textContent = operadoremailpopupData?.id == 0 ? 'Editar OperadorEMailPopup' : 'Adicionar Operador E Mail Popup';
-    }
-  }, [operadoremailpopupData.id]);
-  return (
-  <>
-  {!isMobile ? <style jsx global>{`
-    @media (max-width: 1366px) {
-      html {
-        zoom: 0.8 !important;
-      }
-    }
-    `}</style> : null}
+                <InputName
+                type='text'
+                id='nome'
+                label='Nome'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='nome'
+                value={operadoremailpopupData.nome}
+                placeholder={`Informe Nome`}
+                onChange={onChange}
+                required
+                />
 
-    <div className={isMobile ? 'form-container form-container-OperadorEMailPopup' : 'form-container form-container-OperadorEMailPopup'}>
+                <OperadorComboBox
+                name={'operador'}
+                dataForm={operadoremailpopupData}
+                value={operadoremailpopupData.operador}
+                setValue={addValorOperador}
+                label={'Operador'}
+                />
 
-      <form className='formInputCadInc' id={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} onSubmit={onConfirm}>
-        {!isMobile && (
-          <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='OperadorEMailPopup' data={operadoremailpopupData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <div className='grid-container'>
-
-            <InputName
-            type='text'
-            id='nome'
-            label='Nome'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='nome'
-            value={operadoremailpopupData.nome}
-            placeholder={`Informe Nome`}
-            onChange={onChange}
-            required
-            />
-
-            <OperadorComboBox
-            name={'operador'}
-            dataForm={operadoremailpopupData}
-            value={operadoremailpopupData.operador}
-            setValue={addValorOperador}
-            label={'Operador'}
-            />
-
-            <InputInput
-            autoComplete='off'
-            type='password'
-            maxLength={50}
-            id='senha'
-            label='Senha'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='senha'
-            value={operadoremailpopupData.senha}
-            onChange={onChange}
-            />
+                <InputInput
+                autoComplete='off'
+                type='password'
+                maxLength={50}
+                id='senha'
+                label='Senha'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='senha'
+                value={operadoremailpopupData.senha}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={255}
-            id='smtp'
-            label='SMTP'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='smtp'
-            value={operadoremailpopupData.smtp}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={255}
+                id='smtp'
+                label='SMTP'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='smtp'
+                value={operadoremailpopupData.smtp}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={255}
-            id='pop3'
-            label='POP3'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='pop3'
-            value={operadoremailpopupData.pop3}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={255}
+                id='pop3'
+                label='POP3'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='pop3'
+                value={operadoremailpopupData.pop3}
+                onChange={onChange}
+                />
 
-            <InputCheckbox dataForm={operadoremailpopupData} label='Autenticacao' name='autenticacao' checked={operadoremailpopupData.autenticacao} onChange={onChange} />
+                <InputCheckbox dataForm={operadoremailpopupData} label='Autenticacao' name='autenticacao' checked={operadoremailpopupData.autenticacao} onChange={onChange} />
 
-            <InputInput
-            type='text'
-            maxLength={100}
-            id='descricao'
-            label='Descricao'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='descricao'
-            value={operadoremailpopupData.descricao}
-            onChange={onChange}
-            />
-
-
-            <InputInput
-            type='text'
-            maxLength={50}
-            id='usuario'
-            label='Usuario'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='usuario'
-            value={operadoremailpopupData.usuario}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={100}
+                id='descricao'
+                label='Descricao'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='descricao'
+                value={operadoremailpopupData.descricao}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='portasmtp'
-            label='PortaSmtp'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='portasmtp'
-            value={operadoremailpopupData.portasmtp}
-            onChange={onChange}
-            />
-
-          </div><div className='grid-container'>
-            <InputInput
-            type='text'
-            maxLength={2048}
-            id='portapop3'
-            label='PortaPop3'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='portapop3'
-            value={operadoremailpopupData.portapop3}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={50}
+                id='usuario'
+                label='Usuario'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='usuario'
+                value={operadoremailpopupData.usuario}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            type='text'
-            maxLength={2147483647}
-            id='assinatura'
-            label='Assinatura'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='assinatura'
-            value={operadoremailpopupData.assinatura}
-            onChange={onChange}
-            />
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='portasmtp'
+                label='PortaSmtp'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='portasmtp'
+                value={operadoremailpopupData.portasmtp}
+                onChange={onChange}
+                />
+
+              </div><div className='grid-container'>
+                <InputInput
+                type='text'
+                maxLength={2048}
+                id='portapop3'
+                label='PortaPop3'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='portapop3'
+                value={operadoremailpopupData.portapop3}
+                onChange={onChange}
+                />
 
 
-            <InputInput
-            autoComplete='off'
-            type='password'
-            maxLength={4000}
-            id='senha256'
-            label='Senha256'
-            dataForm={operadoremailpopupData}
-            className='inputIncNome'
-            name='senha256'
-            value={operadoremailpopupData.senha256}
-            onChange={onChange}
-            />
-
-          </div>
-        </form>
+                <InputInput
+                type='text'
+                maxLength={2147483647}
+                id='assinatura'
+                label='Assinatura'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='assinatura'
+                value={operadoremailpopupData.assinatura}
+                onChange={onChange}
+                />
 
 
-        {isMobile && (
-          <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OperadorEMailPopup' data={operadoremailpopupData} isSubmitting={isSubmitting} onClose={onClose} formId={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-          )}
-          <DeleteButton page={'/pages/operadoremailpopup'} id={operadoremailpopupData.id} closeModel={onClose} dadoApi={dadoApi} />
-        </div>
-        <div className='form-spacer'></div>
-        </>
-      );
-    };
+                <InputInput
+                autoComplete='off'
+                type='password'
+                maxLength={4000}
+                id='senha256'
+                label='Senha256'
+                dataForm={operadoremailpopupData}
+                className='inputIncNome'
+                name='senha256'
+                value={operadoremailpopupData.senha256}
+                onChange={onChange}
+                />
+
+              </div>
+            </form>
+
+
+            {isMobile && (
+              <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='OperadorEMailPopup' data={operadoremailpopupData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`OperadorEMailPopupForm-${operadoremailpopupData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+              )}
+              <DeleteButton page={'/pages/operadoremailpopup'} id={operadoremailpopupData.id} closeModel={onClose} dadoApi={dadoApi} />
+            </div>
+            <div className='form-spacer'></div>
+            </>
+          );
+        };

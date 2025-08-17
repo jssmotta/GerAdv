@@ -14,13 +14,13 @@ public partial interface ILigacoesWriter
 
 public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
 {
-    private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory;
-    public async Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory ?? throw new ArgumentNullException(nameof(ligacoesFactory));
+    public virtual async Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection oCnn)
     {
         await _ligacoesFactory.DeleteAsync(operadorId, ligacoes.Id, oCnn);
     }
 
-    public async Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (ligacoes.Id.IsEmptyIDNumber() ? _ligacoesFactory.CreateAsync() : _ligacoesFactory.CreateFromIdAsync(ligacoes.Id, oCnn));
         dbRec.FAssunto = ligacoes.Assunto;
@@ -34,8 +34,7 @@ public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
         dbRec.FTelefonista = ligacoes.Telefonista;
         if (ligacoes.UltimoAviso != null)
             dbRec.FUltimoAviso = ligacoes.UltimoAviso.ToString();
-        if (ligacoes.HoraFinal != null)
-            dbRec.FHoraFinal = ligacoes.HoraFinal.ToString();
+        dbRec.FHoraFinal = ligacoes.HoraFinal;
         dbRec.FNome = ligacoes.Nome;
         dbRec.FQuemCodigo = ligacoes.QuemCodigo;
         dbRec.FSolicitante = ligacoes.Solicitante;
@@ -46,14 +45,13 @@ public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
         dbRec.FRealizada = ligacoes.Realizada;
         dbRec.FStatus = ligacoes.Status;
         dbRec.FData = ligacoes.Data;
-        if (ligacoes.Hora != null)
-            dbRec.FHora = ligacoes.Hora.ToString();
+        dbRec.FHora = ligacoes.Hora;
         dbRec.FUrgente = ligacoes.Urgente;
+        dbRec.FGUID = ligacoes.GUID;
         dbRec.FLigarPara = ligacoes.LigarPara;
         dbRec.FProcesso = ligacoes.Processo;
         dbRec.FStartScreen = ligacoes.StartScreen;
         dbRec.FEmotion = ligacoes.Emotion;
-        dbRec.FGUID = ligacoes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

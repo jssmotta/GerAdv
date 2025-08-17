@@ -9,16 +9,16 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IDiario2Validation
 {
     Task<bool> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class Diario2Validation : IDiario2Validation
 {
-    public async Task<bool> CanDelete(int id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         return true;
@@ -26,12 +26,12 @@ public class Diario2Validation : IDiario2Validation
 
     private bool ValidSizes(Models.Diario2 reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 150)
-            throw new SGValidationException($"Nome deve ter no máximo 150 caracteres.");
-        if (reg.Ocorrencia != null && reg.Ocorrencia.Length > 2048)
-            throw new SGValidationException($"Ocorrencia deve ter no máximo 2048 caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > 150)
-            throw new SGValidationException($"GUID deve ter no máximo 150 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBDiario2DicInfo.DiaNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBDiario2DicInfo.DiaNome.FTamanho} caracteres.");
+        if (reg.Ocorrencia != null && reg.Ocorrencia.Length > DBDiario2DicInfo.DiaOcorrencia.FTamanho)
+            throw new SGValidationException($"Ocorrencia deve ter no máximo {DBDiario2DicInfo.DiaOcorrencia.FTamanho} caracteres.");
+        if (reg.GUID != null && reg.GUID.Length > DBDiario2DicInfo.DiaGUID.FTamanho)
+            throw new SGValidationException($"GUID deve ter no máximo {DBDiario2DicInfo.DiaGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -46,13 +46,6 @@ public class Diario2Validation : IDiario2Validation
             return false;
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
-        if (reg.Hora.IsEmpty())
-            throw new SGValidationException("Hora é obrigatório.");
-        if (!DateTime.TryParse(reg.Hora, out _))
-        {
-            throw new SGValidationException($"Hora inválida: {reg.Hora}");
-        }
-
         if (reg.Hora.IsEmpty())
             throw new SGValidationException("Hora é obrigatório.");
         if (reg.Operador == 0)

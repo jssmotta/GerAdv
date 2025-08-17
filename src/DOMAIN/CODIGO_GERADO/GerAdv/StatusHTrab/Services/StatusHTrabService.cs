@@ -88,18 +88,18 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
         }
     }
 
-    private async Task<StatusHTrabResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<StatusHTrabResponse?> AddAndUpdate([FromBody] Models.StatusHTrab regStatusHTrab, [FromRoute, Required] string uri)
+    private async Task<StatusHTrabResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<StatusHTrabResponse?> AddAndUpdate([FromBody] Models.StatusHTrab? regStatusHTrab, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("StatusHTrab: URI inválida");
-        }
-
         if (regStatusHTrab == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("StatusHTrab: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -113,7 +113,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
             var validade = await validation.ValidateReg(regStatusHTrab, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -122,24 +122,24 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         using var saved = await writer.WriteAsync(regStatusHTrab, oCnn);
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<StatusHTrabResponse?> Validation([FromBody] Models.StatusHTrab regStatusHTrab, [FromRoute, Required] string uri)
+    public async Task<StatusHTrabResponse?> Validation([FromBody] Models.StatusHTrab? regStatusHTrab, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("StatusHTrab: URI inválida");
-        }
-
         if (regStatusHTrab == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("StatusHTrab: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -153,7 +153,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
             var validade = await validation.ValidateReg(regStatusHTrab, this, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -162,7 +162,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regStatusHTrab.Id.IsEmptyIDNumber())
@@ -173,17 +173,17 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
         return await reader.Read(regStatusHTrab.Id, oCnn);
     }
 
-    public async Task<StatusHTrabResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<StatusHTrabResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("StatusHTrab: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -197,7 +197,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -206,10 +206,10 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var statushtrab = await reader.Read(id, oCnn);
+        var statushtrab = await reader.Read(id ?? default, oCnn);
         try
         {
             if (statushtrab != null)
@@ -229,7 +229,7 @@ public partial class StatusHTrabService(IOptions<AppSettings> appSettings, IFSta
         return statushtrab;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

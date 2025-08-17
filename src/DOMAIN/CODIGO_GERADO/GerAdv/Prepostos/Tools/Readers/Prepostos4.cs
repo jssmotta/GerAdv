@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPrepostosReader
 {
-    private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory;
+    private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("preCodigo, preNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<PrepostosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBPrepostos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<PrepostosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
@@ -54,6 +54,7 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new Models.Prepostos
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -79,7 +80,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -129,6 +129,7 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -154,7 +155,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -193,6 +193,7 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -218,7 +219,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -257,6 +257,7 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -282,7 +283,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {
@@ -345,6 +345,7 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponseAll
         {
             Id = dbRec.ID,
+            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -370,7 +371,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

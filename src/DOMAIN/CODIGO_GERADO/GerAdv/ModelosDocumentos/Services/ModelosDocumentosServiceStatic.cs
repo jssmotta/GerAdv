@@ -8,102 +8,107 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ModelosDocumentosService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterModelosDocumentos filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterModelosDocumentos? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Remuneracao))
+        if (!string.IsNullOrWhiteSpace(filtro.Remuneracao))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Remuneracao)}", ApplyWildCard(filtro.WildcardChar, filtro.Remuneracao)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Remuneracao)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Remuneracao)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Assinatura))
+        if (!string.IsNullOrWhiteSpace(filtro.Assinatura))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Assinatura)}", ApplyWildCard(filtro.WildcardChar, filtro.Assinatura)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Assinatura)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Assinatura)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Header))
+        if (!string.IsNullOrWhiteSpace(filtro.Header))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Header)}", ApplyWildCard(filtro.WildcardChar, filtro.Header)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Header)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Header)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Footer))
+        if (!string.IsNullOrWhiteSpace(filtro.Footer))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Footer)}", ApplyWildCard(filtro.WildcardChar, filtro.Footer)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Footer)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Footer)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Extra1))
+        if (!string.IsNullOrWhiteSpace(filtro.Extra1))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Extra1)}", ApplyWildCard(filtro.WildcardChar, filtro.Extra1)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Extra1)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Extra1)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Extra2))
+        if (!string.IsNullOrWhiteSpace(filtro.Extra2))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Extra2)}", ApplyWildCard(filtro.WildcardChar, filtro.Extra2)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Extra2)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Extra2)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Extra3))
+        if (!string.IsNullOrWhiteSpace(filtro.Extra3))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Extra3)}", ApplyWildCard(filtro.WildcardChar, filtro.Extra3)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Extra3)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Extra3)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Outorgante))
+        if (!string.IsNullOrWhiteSpace(filtro.Outorgante))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Outorgante)}", ApplyWildCard(filtro.WildcardChar, filtro.Outorgante)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Outorgante)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Outorgante)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Outorgados))
+        if (!string.IsNullOrWhiteSpace(filtro.Outorgados))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Outorgados)}", ApplyWildCard(filtro.WildcardChar, filtro.Outorgados)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Outorgados)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Outorgados)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Poderes))
+        if (!string.IsNullOrWhiteSpace(filtro.Poderes))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Poderes)}", ApplyWildCard(filtro.WildcardChar, filtro.Poderes)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Poderes)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Poderes)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Objeto))
+        if (!string.IsNullOrWhiteSpace(filtro.Objeto))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Objeto)}", ApplyWildCard(filtro.WildcardChar, filtro.Objeto)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Objeto)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Objeto)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Titulo))
+        if (!string.IsNullOrWhiteSpace(filtro.Titulo))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Titulo)}", ApplyWildCard(filtro.WildcardChar, filtro.Titulo)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Titulo)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Titulo)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Testemunhas))
+        if (!string.IsNullOrWhiteSpace(filtro.Testemunhas))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.Testemunhas)}", ApplyWildCard(filtro.WildcardChar, filtro.Testemunhas)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.Testemunhas)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Testemunhas)));
         }
 
         if (filtro.TipoModeloDocumento != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.TipoModeloDocumento)}", filtro.TipoModeloDocumento));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.TipoModeloDocumento)}", filtro.TipoModeloDocumento));
+            if (filtro.TipoModeloDocumento_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBModelosDocumentosDicInfo.TipoModeloDocumento)}_end", filtro.TipoModeloDocumento_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.CSS))
+        if (!string.IsNullOrWhiteSpace(filtro.CSS))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.CSS)}", ApplyWildCard(filtro.WildcardChar, filtro.CSS)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.CSS)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CSS)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.GUID))
+        if (!string.IsNullOrWhiteSpace(filtro.GUID))
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.GUID)}", ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.GUID)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.GUID)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBModelosDocumentosDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBModelosDocumentosDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -112,44 +117,41 @@ public partial class ModelosDocumentosService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Nome)}");
-        cWhere.Append(filtro.Remuneracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Remuneracao}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Remuneracao)}");
-        cWhere.Append(filtro.Assinatura.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Assinatura)}");
-        cWhere.Append(filtro.Header.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Header}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Header)}");
-        cWhere.Append(filtro.Footer.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Footer}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Footer)}");
-        cWhere.Append(filtro.Extra1.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra1}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra1)}");
-        cWhere.Append(filtro.Extra2.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra2}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra2)}");
-        cWhere.Append(filtro.Extra3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra3}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Extra3)}");
-        cWhere.Append(filtro.Outorgante.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgante}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Outorgante)}");
-        cWhere.Append(filtro.Outorgados.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgados}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Outorgados)}");
-        cWhere.Append(filtro.Poderes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Poderes}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Poderes)}");
-        cWhere.Append(filtro.Objeto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Objeto}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Objeto)}");
-        cWhere.Append(filtro.Titulo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Titulo}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Titulo)}");
-        cWhere.Append(filtro.Testemunhas.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Testemunhas}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.Testemunhas)}");
-        cWhere.Append(filtro.TipoModeloDocumento.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.TipoModeloDocumento}] = @{nameof(DBModelosDocumentosDicInfo.TipoModeloDocumento)}");
-        cWhere.Append(filtro.CSS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CSS}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.CSS)}");
-        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{nameof(DBModelosDocumentosDicInfo.GUID)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Nome)}");
+        cWhere.Append(filtro.Remuneracao.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Remuneracao}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Remuneracao)}");
+        cWhere.Append(filtro.Assinatura.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Assinatura}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Assinatura)}");
+        cWhere.Append(filtro.Header.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Header}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Header)}");
+        cWhere.Append(filtro.Footer.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Footer}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Footer)}");
+        cWhere.Append(filtro.Extra1.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra1}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Extra1)}");
+        cWhere.Append(filtro.Extra2.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra2}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Extra2)}");
+        cWhere.Append(filtro.Extra3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Extra3}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Extra3)}");
+        cWhere.Append(filtro.Outorgante.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgante}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Outorgante)}");
+        cWhere.Append(filtro.Outorgados.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Outorgados}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Outorgados)}");
+        cWhere.Append(filtro.Poderes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Poderes}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Poderes)}");
+        cWhere.Append(filtro.Objeto.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Objeto}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Objeto)}");
+        cWhere.Append(filtro.Titulo.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Titulo}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Titulo)}");
+        cWhere.Append(filtro.Testemunhas.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.Testemunhas}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.Testemunhas)}");
+        if (!(filtro.TipoModeloDocumento.IsEmptyX()) && filtro.TipoModeloDocumento_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.TipoModeloDocumento.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.TipoModeloDocumento}] = @{(DBModelosDocumentosDicInfo.TipoModeloDocumento)}");
+        }
+        else if (!(filtro.TipoModeloDocumento.IsEmptyX()) && !(filtro.TipoModeloDocumento_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].{DBModelosDocumentosDicInfo.TipoModeloDocumento} BETWEEN @{(DBModelosDocumentosDicInfo.TipoModeloDocumento)} AND @{(DBModelosDocumentosDicInfo.TipoModeloDocumento)}_end");
+        }
+
+        cWhere.Append(filtro.CSS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CSS}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.CSS)}");
+        cWhere.Append(filtro.GUID.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.GUID}]  {DevourerConsts.MsiCollate} like @{(DBModelosDocumentosDicInfo.GUID)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CampoCodigo}] = @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].[{DBModelosDocumentosDicInfo.CampoCodigo}] = @{(DBModelosDocumentosDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].{DBModelosDocumentosDicInfo.CampoCodigo} BETWEEN @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)} AND @{nameof(DBModelosDocumentosDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBModelosDocumentosDicInfo.PTabelaNome}].{DBModelosDocumentosDicInfo.CampoCodigo} BETWEEN @{(DBModelosDocumentosDicInfo.CampoCodigo)} AND @{(DBModelosDocumentosDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterModelosDocumentos? filtro)

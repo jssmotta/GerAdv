@@ -54,7 +54,7 @@ public partial class FTipoEMailFactory : IFTipoEMailFactory, IDisposable
             throw new ObjectDisposedException(nameof(FTipoEMailFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

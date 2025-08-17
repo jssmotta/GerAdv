@@ -102,18 +102,18 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
     }
 
-    private async Task<AgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<AgendaResponse?> AddAndUpdate([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string uri)
+    private async Task<AgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<AgendaResponse?> AddAndUpdate([FromBody] Models.Agenda? regAgenda, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Agenda: URI inválida");
-        }
-
         if (regAgenda == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Agenda: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -127,7 +127,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, prepostosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -136,7 +136,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -144,17 +144,17 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<AgendaResponse?> Validation([FromBody] Models.Agenda regAgenda, [FromRoute, Required] string uri)
+    public async Task<AgendaResponse?> Validation([FromBody] Models.Agenda? regAgenda, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Agenda: URI inválida");
-        }
-
         if (regAgenda == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Agenda: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -168,7 +168,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             var validade = await validation.ValidateReg(regAgenda, this, cidadeReader, advogadosReader, funcionariosReader, tipocompromissoReader, clientesReader, areaReader, justicaReader, operadorReader, prepostosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -177,7 +177,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regAgenda.Id.IsEmptyIDNumber())
@@ -188,17 +188,17 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         return await reader.Read(regAgenda.Id, oCnn);
     }
 
-    public async Task<AgendaResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<AgendaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Agenda: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -213,7 +213,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -222,10 +222,10 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var agenda = await reader.Read(id, oCnn);
+        var agenda = await reader.Read(id ?? default, oCnn);
         try
         {
             if (agenda != null)
@@ -245,7 +245,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         return agenda;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

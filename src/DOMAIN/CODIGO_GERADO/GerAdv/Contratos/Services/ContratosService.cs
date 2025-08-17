@@ -95,18 +95,18 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         }
     }
 
-    private async Task<ContratosResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<ContratosResponse?> AddAndUpdate([FromBody] Models.Contratos regContratos, [FromRoute, Required] string uri)
+    private async Task<ContratosResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<ContratosResponse?> AddAndUpdate([FromBody] Models.Contratos? regContratos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Contratos: URI inválida");
-        }
-
         if (regContratos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Contratos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
             var validade = await validation.ValidateReg(regContratos, this, clientesReader, advogadosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<ContratosResponse?> Validation([FromBody] Models.Contratos regContratos, [FromRoute, Required] string uri)
+    public async Task<ContratosResponse?> Validation([FromBody] Models.Contratos? regContratos, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("Contratos: URI inválida");
-        }
-
         if (regContratos == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("Contratos: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
             var validade = await validation.ValidateReg(regContratos, this, clientesReader, advogadosReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regContratos.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         return await reader.Read(regContratos.Id, oCnn);
     }
 
-    public async Task<ContratosResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<ContratosResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("Contratos: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var contratos = await reader.Read(id, oCnn);
+        var contratos = await reader.Read(id ?? default, oCnn);
         try
         {
             if (contratos != null)
@@ -238,7 +238,7 @@ public partial class ContratosService(IOptions<AppSettings> appSettings, IFContr
         return contratos;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

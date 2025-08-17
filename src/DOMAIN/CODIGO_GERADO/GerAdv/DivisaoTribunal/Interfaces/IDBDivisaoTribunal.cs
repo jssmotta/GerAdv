@@ -5,6 +5,7 @@ namespace MenphisSI.GerAdv.Interface;
 public partial interface IDBDivisaoTribunal
 {
     public int ID { get; set; }
+    public string? FGUID { get; set; }
     public int FNumCodigo { get; set; }
     public int FJustica { get; set; }
     public string? FNomeEspecial { get; set; }
@@ -20,5 +21,4 @@ public partial interface IDBDivisaoTribunal
     public string? FObs { get; set; }
     public string? FEMail { get; set; }
     public string? FAndar { get; set; }
-    public string? FGUID { get; set; }
 }

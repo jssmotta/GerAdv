@@ -5,6 +5,7 @@ export enum FieldsPrepostos
 {	funcao = `Funcao`,
 	setor = `Setor`,
 	cidade = `Cidade`,
+	guid = `GUID`,
 	nome = `Nome`,
 	dtnasc = `DtNasc`,
 	qualificacao = `Qualificacao`,
@@ -31,5 +32,4 @@ export enum FieldsPrepostos
 	pai = `Pai`,
 	mae = `Mae`,
 	class = `Class`,
-	guid = `GUID`,
 }

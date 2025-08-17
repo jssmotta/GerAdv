@@ -9,19 +9,19 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoEMailValidation
 {
     Task<bool> ValidateReg(Models.TipoEMail reg, ITipoEMailService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int id, ITipoEMailService service, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoEMailService service, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoEMailValidation : ITipoEMailValidation
 {
-    public async Task<bool> CanDelete(int id, ITipoEMailService service, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoEMailService service, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
-        if (id <= 0)
+        if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
-        var reg = await service.GetById(id, uri, default);
+        var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var smsaliceExists0 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { TipoEMail = id }, uri);
+        var smsaliceExists0 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { TipoEMail = id ?? default }, uri);
         if (smsaliceExists0 != null && smsaliceExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
         return true;
@@ -29,8 +29,8 @@ public class TipoEMailValidation : ITipoEMailValidation
 
     private bool ValidSizes(Models.TipoEMail reg)
     {
-        if (reg.Nome != null && reg.Nome.Length > 50)
-            throw new SGValidationException($"Nome deve ter no máximo 50 caracteres.");
+        if (reg.Nome != null && reg.Nome.Length > DBTipoEMailDicInfo.TmlNome.FTamanho)
+            throw new SGValidationException($"Nome deve ter no máximo {DBTipoEMailDicInfo.TmlNome.FTamanho} caracteres.");
         return true;
     }
 

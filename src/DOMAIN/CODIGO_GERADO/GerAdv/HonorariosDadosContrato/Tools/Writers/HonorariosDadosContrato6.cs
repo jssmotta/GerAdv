@@ -14,13 +14,13 @@ public partial interface IHonorariosDadosContratoWriter
 
 public class HonorariosDadosContratoWriter(IFHonorariosDadosContratoFactory honorariosdadoscontratoFactory) : IHonorariosDadosContratoWriter
 {
-    private readonly IFHonorariosDadosContratoFactory _honorariosdadoscontratoFactory = honorariosdadoscontratoFactory;
-    public async Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFHonorariosDadosContratoFactory _honorariosdadoscontratoFactory = honorariosdadoscontratoFactory ?? throw new ArgumentNullException(nameof(honorariosdadoscontratoFactory));
+    public virtual async Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection oCnn)
     {
         await _honorariosdadoscontratoFactory.DeleteAsync(operadorId, honorariosdadoscontrato.Id, oCnn);
     }
 
-    public async Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (honorariosdadoscontrato.Id.IsEmptyIDNumber() ? _honorariosdadoscontratoFactory.CreateAsync() : _honorariosdadoscontratoFactory.CreateFromIdAsync(honorariosdadoscontrato.Id, oCnn));
         dbRec.FCliente = honorariosdadoscontrato.Cliente;
@@ -32,9 +32,9 @@ public class HonorariosDadosContratoWriter(IFHonorariosDadosContratoFactory hono
         dbRec.FTextoContrato = honorariosdadoscontrato.TextoContrato;
         dbRec.FValorFixo = honorariosdadoscontrato.ValorFixo;
         dbRec.FObservacao = honorariosdadoscontrato.Observacao;
+        dbRec.FGuid = honorariosdadoscontrato.Guid;
         if (honorariosdadoscontrato.DataContrato != null)
             dbRec.FDataContrato = honorariosdadoscontrato.DataContrato.ToString();
-        dbRec.FGUID = honorariosdadoscontrato.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

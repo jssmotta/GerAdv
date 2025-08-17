@@ -4,7 +4,7 @@
 namespace MenphisSI.GerAdv.Readers;
 public partial class TipoModeloDocumentoReader(IFTipoModeloDocumentoFactory tipomodelodocumentoFactory) : ITipoModeloDocumentoReader
 {
-    private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory;
+    private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory ?? throw new ArgumentNullException();
     public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tpdCodigo, tpdNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
     public async Task<IEnumerable<TipoModeloDocumentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoModeloDocumento.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
     private async Task<IEnumerable<TipoModeloDocumentoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)

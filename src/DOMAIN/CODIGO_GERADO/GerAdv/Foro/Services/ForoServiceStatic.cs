@@ -8,82 +8,87 @@ namespace MenphisSI.GerAdv.Services;
 
 public partial class ForoService
 {
-    private (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterForo filtro)
+    public (string where, List<SqlParameter> parametros)? WFiltro(Filters.FilterForo? filtro)
     {
+        if (filtro == null)
+            return null;
         var parameters = new List<SqlParameter>();
-        if (!string.IsNullOrEmpty(filtro.EMail))
+        if (!string.IsNullOrWhiteSpace(filtro.EMail))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.EMail)}", ApplyWildCard(filtro.WildcardChar, filtro.EMail)));
+            parameters.Add(new($"@{(DBForoDicInfo.EMail)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.EMail)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Nome))
+        if (!string.IsNullOrWhiteSpace(filtro.Nome))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Nome)}", ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
+            parameters.Add(new($"@{(DBForoDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
         if (filtro.Unico != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Unico)}", filtro.Unico));
+            parameters.Add(new($"@{(DBForoDicInfo.Unico)}", filtro.Unico));
         }
 
         if (filtro.Cidade != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Cidade)}", filtro.Cidade));
+            parameters.Add(new($"@{(DBForoDicInfo.Cidade)}", filtro.Cidade));
+            if (filtro.Cidade_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBForoDicInfo.Cidade)}_end", filtro.Cidade_end));
+            }
         }
 
-        if (!string.IsNullOrEmpty(filtro.Site))
+        if (!string.IsNullOrWhiteSpace(filtro.Site))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Site)}", ApplyWildCard(filtro.WildcardChar, filtro.Site)));
+            parameters.Add(new($"@{(DBForoDicInfo.Site)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Site)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Endereco))
+        if (!string.IsNullOrWhiteSpace(filtro.Endereco))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Endereco)}", ApplyWildCard(filtro.WildcardChar, filtro.Endereco)));
+            parameters.Add(new($"@{(DBForoDicInfo.Endereco)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Endereco)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Bairro))
+        if (!string.IsNullOrWhiteSpace(filtro.Bairro))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Bairro)}", ApplyWildCard(filtro.WildcardChar, filtro.Bairro)));
+            parameters.Add(new($"@{(DBForoDicInfo.Bairro)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Bairro)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Fone))
+        if (!string.IsNullOrWhiteSpace(filtro.Fone))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Fone)}", ApplyWildCard(filtro.WildcardChar, filtro.Fone)));
+            parameters.Add(new($"@{(DBForoDicInfo.Fone)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Fone)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Fax))
+        if (!string.IsNullOrWhiteSpace(filtro.Fax))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Fax)}", ApplyWildCard(filtro.WildcardChar, filtro.Fax)));
+            parameters.Add(new($"@{(DBForoDicInfo.Fax)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Fax)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.CEP))
+        if (!string.IsNullOrWhiteSpace(filtro.CEP))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.CEP)}", ApplyWildCard(filtro.WildcardChar, filtro.CEP)));
+            parameters.Add(new($"@{(DBForoDicInfo.CEP)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.CEP)));
         }
 
-        if (!string.IsNullOrEmpty(filtro.OBS))
+        if (!string.IsNullOrWhiteSpace(filtro.OBS))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.OBS)}", ApplyWildCard(filtro.WildcardChar, filtro.OBS)));
+            parameters.Add(new($"@{(DBForoDicInfo.OBS)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.OBS)));
         }
 
         if (filtro.UnicoConfirmado != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.UnicoConfirmado)}", filtro.UnicoConfirmado));
+            parameters.Add(new($"@{(DBForoDicInfo.UnicoConfirmado)}", filtro.UnicoConfirmado));
         }
 
-        if (!string.IsNullOrEmpty(filtro.Web))
+        if (!string.IsNullOrWhiteSpace(filtro.Web))
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.Web)}", ApplyWildCard(filtro.WildcardChar, filtro.Web)));
+            parameters.Add(new($"@{(DBForoDicInfo.Web)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Web)));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
         {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
-        }
-
-        if (filtro.Codigo_filtro_end != int.MinValue)
-        {
-            parameters.Add(new($"@{nameof(DBForoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            parameters.Add(new($"@{(DBForoDicInfo.CampoCodigo)}", filtro.Codigo_filtro));
+            if (filtro.Codigo_filtro_end != int.MinValue)
+            {
+                parameters.Add(new($"@{(DBForoDicInfo.CampoCodigo)}_end", filtro.Codigo_filtro_end));
+            }
         }
 
         if (filtro.LogicalOperator.IsEmptyX() || (filtro.LogicalOperator.NotEquals(TSql.And) && filtro.LogicalOperator.NotEquals(TSql.OR)))
@@ -92,40 +97,37 @@ public partial class ForoService
         }
 
         var cWhere = new StringBuilder();
-        cWhere.Append(filtro.EMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.EMail)}");
-        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Nome)}");
-        cWhere.Append(filtro.Unico == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Unico}] = @{nameof(DBForoDicInfo.Unico)}");
-        cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Cidade}] = @{nameof(DBForoDicInfo.Cidade)}");
-        cWhere.Append(filtro.Site.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Site}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Site)}");
-        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Endereco)}");
-        cWhere.Append(filtro.Bairro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Bairro)}");
-        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Fone)}");
-        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Fax)}");
-        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.CEP)}");
-        cWhere.Append(filtro.OBS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.OBS}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.OBS)}");
-        cWhere.Append(filtro.UnicoConfirmado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.UnicoConfirmado}] = @{nameof(DBForoDicInfo.UnicoConfirmado)}");
-        cWhere.Append(filtro.Web.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Web}]  {DevourerConsts.MsiCollate} like @{nameof(DBForoDicInfo.Web)}");
+        cWhere.Append(filtro.EMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.EMail)}");
+        cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Nome)}");
+        cWhere.Append(filtro.Unico == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Unico}] = @{(DBForoDicInfo.Unico)}");
+        if (!(filtro.Cidade.IsEmptyX()) && filtro.Cidade_end.IsEmptyX())
+        {
+            cWhere.Append(filtro.Cidade.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Cidade}] = @{(DBForoDicInfo.Cidade)}");
+        }
+        else if (!(filtro.Cidade.IsEmptyX()) && !(filtro.Cidade_end.IsEmptyX()))
+        {
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].{DBForoDicInfo.Cidade} BETWEEN @{(DBForoDicInfo.Cidade)} AND @{(DBForoDicInfo.Cidade)}_end");
+        }
+
+        cWhere.Append(filtro.Site.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Site}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Site)}");
+        cWhere.Append(filtro.Endereco.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Endereco}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Endereco)}");
+        cWhere.Append(filtro.Bairro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Bairro}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Bairro)}");
+        cWhere.Append(filtro.Fone.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Fone}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Fone)}");
+        cWhere.Append(filtro.Fax.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Fax}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Fax)}");
+        cWhere.Append(filtro.CEP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.CEP}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.CEP)}");
+        cWhere.Append(filtro.OBS.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.OBS}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.OBS)}");
+        cWhere.Append(filtro.UnicoConfirmado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.UnicoConfirmado}] = @{(DBForoDicInfo.UnicoConfirmado)}");
+        cWhere.Append(filtro.Web.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.Web}]  {DevourerConsts.MsiCollate} like @{(DBForoDicInfo.Web)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
-            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.CampoCodigo}] = @{nameof(DBForoDicInfo.CampoCodigo)}");
+            cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].[{DBForoDicInfo.CampoCodigo}] = @{(DBForoDicInfo.CampoCodigo)}");
         }
         else if (!(filtro.Codigo_filtro.IsEmptyX()) && !(filtro.Codigo_filtro_end.IsEmptyX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].{DBForoDicInfo.CampoCodigo} BETWEEN @{nameof(DBForoDicInfo.CampoCodigo)} AND @{nameof(DBForoDicInfo.CampoCodigo)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBForoDicInfo.PTabelaNome}].{DBForoDicInfo.CampoCodigo} BETWEEN @{(DBForoDicInfo.CampoCodigo)} AND @{(DBForoDicInfo.CampoCodigo)}_end");
         }
 
         return (cWhere.ToString().Trim(), parameters);
-    }
-
-    private string ApplyWildCard(char wildcardChar, string value)
-    {
-        if (wildcardChar == '\0' || wildcardChar == ' ')
-        {
-            return value;
-        }
-
-        var result = $"{wildcardChar}{value.Replace(" ", wildcardChar.ToString())}{wildcardChar}";
-        return result;
     }
 
     private string GetFilterHash(Filters.FilterForo? filtro)

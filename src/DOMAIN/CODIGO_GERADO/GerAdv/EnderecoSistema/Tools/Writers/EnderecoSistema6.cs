@@ -14,18 +14,19 @@ public partial interface IEnderecoSistemaWriter
 
 public class EnderecoSistemaWriter(IFEnderecoSistemaFactory enderecosistemaFactory) : IEnderecoSistemaWriter
 {
-    private readonly IFEnderecoSistemaFactory _enderecosistemaFactory = enderecosistemaFactory;
-    public async Task Delete(EnderecoSistemaResponse enderecosistema, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFEnderecoSistemaFactory _enderecosistemaFactory = enderecosistemaFactory ?? throw new ArgumentNullException(nameof(enderecosistemaFactory));
+    public virtual async Task Delete(EnderecoSistemaResponse enderecosistema, int operadorId, MsiSqlConnection oCnn)
     {
         await _enderecosistemaFactory.DeleteAsync(operadorId, enderecosistema.Id, oCnn);
     }
 
-    public async Task<FEnderecoSistema> WriteAsync(Models.EnderecoSistema enderecosistema, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEnderecoSistema> WriteAsync(Models.EnderecoSistema enderecosistema, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (enderecosistema.Id.IsEmptyIDNumber() ? _enderecosistemaFactory.CreateAsync() : _enderecosistemaFactory.CreateFromIdAsync(enderecosistema.Id, oCnn));
         dbRec.FCadastro = enderecosistema.Cadastro;
         dbRec.FCadastroExCod = enderecosistema.CadastroExCod;
         dbRec.FTipoEnderecoSistema = enderecosistema.TipoEnderecoSistema;
+        dbRec.FGUID = enderecosistema.GUID;
         dbRec.FProcesso = enderecosistema.Processo;
         dbRec.FMotivo = enderecosistema.Motivo;
         dbRec.FContatoNoLocal = enderecosistema.ContatoNoLocal;
@@ -36,7 +37,6 @@ public class EnderecoSistemaWriter(IFEnderecoSistemaFactory enderecosistemaFacto
         dbRec.FFone = enderecosistema.Fone;
         dbRec.FFax = enderecosistema.Fax;
         dbRec.FObservacao = enderecosistema.Observacao;
-        dbRec.FGUID = enderecosistema.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

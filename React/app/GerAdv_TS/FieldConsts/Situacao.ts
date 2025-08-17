@@ -3,7 +3,7 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsSituacao
 {	parte_int = `Parte_Int`,
+	guid = `GUID`,
 	parte_opo = `Parte_Opo`,
 	top = `Top`,
-	guid = `GUID`,
 }

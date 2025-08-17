@@ -13,7 +13,7 @@ public partial interface IFaseWhere
 
 public partial class FaseWhere(IFFaseFactory faseFactory) : IFaseWhere
 {
-    private readonly IFFaseFactory _faseFactory = faseFactory;
+    private readonly IFFaseFactory _faseFactory = faseFactory ?? throw new ArgumentNullException(nameof(faseFactory));
     public FaseResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _faseFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
@@ -21,9 +21,9 @@ public partial class FaseWhere(IFFaseFactory faseFactory) : IFaseWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
         };
         return fase;
     }

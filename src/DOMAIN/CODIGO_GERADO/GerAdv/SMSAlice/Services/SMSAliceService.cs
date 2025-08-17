@@ -95,18 +95,18 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         }
     }
 
-    private async Task<SMSAliceResponse?> GetDataByIdAsync(int id, MsiSqlConnection oCnn, CancellationToken token) => await reader.Read(id, oCnn);
-    public async Task<SMSAliceResponse?> AddAndUpdate([FromBody] Models.SMSAlice regSMSAlice, [FromRoute, Required] string uri)
+    private async Task<SMSAliceResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    public async Task<SMSAliceResponse?> AddAndUpdate([FromBody] Models.SMSAlice? regSMSAlice, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("SMSAlice: URI inválida");
-        }
-
         if (regSMSAlice == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("SMSAlice: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -120,7 +120,7 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
             var validade = await validation.ValidateReg(regSMSAlice, this, operadorReader, tipoemailReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -129,7 +129,7 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         int operadorId = _httpContextAccessor.HttpContext == null ? regSMSAlice.Operador : UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -137,17 +137,17 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         return reader.Read(saved, oCnn);
     }
 
-    public async Task<SMSAliceResponse?> Validation([FromBody] Models.SMSAlice regSMSAlice, [FromRoute, Required] string uri)
+    public async Task<SMSAliceResponse?> Validation([FromBody] Models.SMSAlice? regSMSAlice, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
-        {
-            throw new Exception("SMSAlice: URI inválida");
-        }
-
         if (regSMSAlice == null)
         {
             return null;
+        }
+
+        if (!Uris.ValidaUri(uri, _appSettings))
+        {
+            throw new Exception("SMSAlice: URI inválida");
         }
 
         using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
@@ -161,7 +161,7 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
             var validade = await validation.ValidateReg(regSMSAlice, this, operadorReader, tipoemailReader, uri, oCnn);
             if (!validade)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -170,7 +170,7 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
         if (regSMSAlice.Id.IsEmptyIDNumber())
@@ -181,17 +181,17 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         return await reader.Read(regSMSAlice.Id, oCnn);
     }
 
-    public async Task<SMSAliceResponse?> Delete([FromQuery] int id, [FromRoute, Required] string uri)
+    public async Task<SMSAliceResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
     {
+        if (id == null || id.IsEmptyIDNumber())
+        {
+            return null;
+        }
+
         ThrowIfDisposed();
         if (!Uris.ValidaUri(uri, _appSettings))
         {
             throw new Exception("SMSAlice: URI inválida");
-        }
-
-        if (id.IsEmptyIDNumber())
-        {
-            return null;
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
@@ -206,7 +206,7 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
             var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
-                throw new Exception("Erro inesperado ao vaidadar 0x0!");
+                throw new Exception("Erro inesperado ao validar 0x0!");
             }
         }
         catch (SGValidationException ex)
@@ -215,10 +215,10 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         }
         catch (Exception)
         {
-            throw new Exception("Erro inesperado ao vaidadar 0x1!");
+            throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var smsalice = await reader.Read(id, oCnn);
+        var smsalice = await reader.Read(id ?? default, oCnn);
         try
         {
             if (smsalice != null)
@@ -238,7 +238,7 @@ public partial class SMSAliceService(IOptions<AppSettings> appSettings, IFSMSAli
         return smsalice;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

@@ -54,7 +54,7 @@ public partial class FContaCorrenteFactory : IFContaCorrenteFactory, IDisposable
             throw new ObjectDisposedException(nameof(FContaCorrenteFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

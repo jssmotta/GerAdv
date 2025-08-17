@@ -41,7 +41,8 @@ export const useAgendaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Compromisso';
       setError(errorMessage);
-      //console.log('Erro ao carregar Compromisso');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Compromisso');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useAgendaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useAgendaList = (dataService: IAgendaService, currentFilter?: Filte
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar agenda';
       setError(errorMessage);
-      //console.log('Erro ao carregar agenda');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar agenda');
     } finally {
       setLoading(false);
     }

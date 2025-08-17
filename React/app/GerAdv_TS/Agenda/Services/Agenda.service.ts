@@ -79,7 +79,8 @@ export class AgendaService implements IAgendaService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching Agenda list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching Agenda list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class AgendaService implements IAgendaService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online Agenda');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Agenda');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class AgendaService implements IAgendaService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online Agenda');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online Agenda');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all Agenda:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all Agenda:');
       return [];
     }
   }

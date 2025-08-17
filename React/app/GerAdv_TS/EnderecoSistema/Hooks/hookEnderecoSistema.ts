@@ -41,7 +41,8 @@ export const useEnderecoSistemaForm = (
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar Endereco Sistema';
       setError(errorMessage);
-      //console.log('Erro ao carregar Endereco Sistema');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar Endereco Sistema');
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,8 @@ export const useEnderecoSistemaNotifications = (
             break;
         }
       } catch (err) {
-        //console.log("Erro no listener de notificações.");
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+            console.log('Erro no listener de notificações.');
       }
     });
 
@@ -125,7 +127,8 @@ export const useEnderecoSistemaList = (dataService: IEnderecoSistemaService, cur
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar enderecosistema';
       setError(errorMessage);
-      //console.log('Erro ao carregar enderecosistema');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Erro ao carregar enderecosistema');
     } finally {
       setLoading(false);
     }
@@ -168,10 +171,7 @@ export function useValidationsEnderecoSistema() {
     
       try {
    
-        if (data.guid.length <= 0) { 
-                                             return { isValid: false, message: 'O campo GUID não pode ficar vazio.' };
-                                         } 
-if (data.motivo.length > 200) { 
+        if (data.motivo.length > 200) { 
                                              return { isValid: false, message: 'O campo Motivo não pode ter mais de 200 caracteres.' };
                                          } 
 if (data.contatonolocal.length > 50) { 

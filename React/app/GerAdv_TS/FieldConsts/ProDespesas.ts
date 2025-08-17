@@ -3,6 +3,7 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsProDespesas
 {	cliente = `Cliente`,
+	guid = `GUID`,
 	ligacaoid = `LigacaoID`,
 	corrigido = `Corrigido`,
 	data = `Data`,
@@ -14,5 +15,4 @@ export enum FieldsProDespesas
 	tipo = `Tipo`,
 	historico = `Historico`,
 	livrocaixa = `LivroCaixa`,
-	guid = `GUID`,
 }

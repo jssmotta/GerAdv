@@ -25,10 +25,10 @@ public partial class UsersController(IUserService userService) : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public IActionResult Reset([FromRoute] string uri)
+    public async Task<IActionResult> Reset([FromRoute] string uri)
     {
         _logger.Info("User: Reset {0}", uri);
-        var response = _userService.Reset(uri);
+        var response = await _userService.Reset(uri);
         return Ok(response);
     }
 

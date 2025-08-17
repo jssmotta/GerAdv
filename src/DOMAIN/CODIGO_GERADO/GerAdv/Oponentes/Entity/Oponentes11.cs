@@ -54,7 +54,7 @@ public partial class FOponentesFactory : IFOponentesFactory, IDisposable
             throw new ObjectDisposedException(nameof(FOponentesFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

@@ -79,7 +79,8 @@ export class EMPClassRiscosService implements IEMPClassRiscosService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching EMPClassRiscos list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching EMPClassRiscos list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class EMPClassRiscosService implements IEMPClassRiscosService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online EMPClassRiscos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online EMPClassRiscos');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class EMPClassRiscosService implements IEMPClassRiscosService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online EMPClassRiscos');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online EMPClassRiscos');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all EMPClassRiscos:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all EMPClassRiscos:');
       return [];
     }
   }

@@ -79,7 +79,8 @@ export class CargosEscClassService implements ICargosEscClassService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching CargosEscClass list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching CargosEscClass list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class CargosEscClassService implements ICargosEscClassService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online CargosEscClass');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online CargosEscClass');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class CargosEscClassService implements ICargosEscClassService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online CargosEscClass');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online CargosEscClass');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all CargosEscClass:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all CargosEscClass:');
       return [];
     }
   }

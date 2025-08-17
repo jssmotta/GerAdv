@@ -8,6 +8,6 @@ public partial interface IDBProResumos
     public int FProcesso { get; set; }
     public string? FData { get; set; }
     public string? FResumo { get; set; }
-    public int FTipoResumo { get; set; }
     public string? FGUID { get; set; }
+    public int FTipoResumo { get; set; }
 }

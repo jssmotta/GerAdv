@@ -54,7 +54,7 @@ public partial class FUFFactory : IFUFFactory, IDisposable
             throw new ObjectDisposedException(nameof(FUFFactory));
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposed = true;
         GC.SuppressFinalize(this);

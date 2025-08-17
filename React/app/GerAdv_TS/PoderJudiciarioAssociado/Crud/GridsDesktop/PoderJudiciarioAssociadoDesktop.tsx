@@ -41,8 +41,7 @@ const router = useRouter();
 const { systemContext } = useSystemContext();
 const defaultHiddenColumns = [''];
 // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['guid',
-'nomejustica',
+const [columnsOrder, setColumnsOrder] = useState<string[]>(['nomejustica',
 'descricaoarea',
 'nometribunal',
 'nomeforo',
@@ -118,64 +117,44 @@ const EditRow = useCallback((e: any) => {
 }, [hookHandleRowClick]);
 // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
 const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
-
-  'guid': (
-  <GridColumn
-  key='guid'
-  field='guid'
-  title='GUID'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.02 */
   'nomejustica': (
   <GridColumn
   key='nomejustica'
-
   field='nomejustica'
   title='Justiça'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'descricaoarea': (
   <GridColumn
   key='descricaoarea'
-
   field='descricaoarea'
   title='Área'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nometribunal': (
   <GridColumn
   key='nometribunal'
-
   field='nometribunal'
   title='Tribunal'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomeforo': (
   <GridColumn
   key='nomeforo'
-
   field='nomeforo'
   title='Foro'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   'nomecidade': (
   <GridColumn
   key='nomecidade'
-
   field='nomecidade'
   title='Cidade'
   sortable={false} filterable={false}
-
   />
   ), /* Track G.04 */
   // ← Colunas aqui

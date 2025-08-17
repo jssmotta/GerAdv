@@ -6,6 +6,8 @@
 namespace MenphisSI.GerAdv.HealthCheck;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+[GeneratedCode("Source Genesys WebApi Front & Back Creator", "1.0")]
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService agendaService, HybridCache cache) : IHealthCheck, IDisposable
 {
     private readonly string _uris = appSettings.Value.ValidUris;
@@ -72,7 +74,7 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
 
                             {
                                 await using var tableCheck = connection.CreateCommand();
-                                tableCheck.CommandText = $"SELECT TOP (1) ageIDCOB,ageClienteAvisado,ageRevisarP2,ageIDNE,ageCidade,ageOculto,ageCartaPrecatoria,ageRevisar,ageHrFinal,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageStatus,ageValor,ageDecisao,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente,ageGUID FROM {"Agenda".dbo(connection)};";
+                                tableCheck.CommandText = $"SELECT TOP (1) ageIDCOB,ageClienteAvisado,ageRevisarP2,ageIDNE,ageCidade,ageOculto,ageCartaPrecatoria,ageRevisar,ageHrFinal,ageAdvogado,ageEventoGerador,ageEventoData,ageFuncionario,ageData,ageEventoPrazo,ageHora,ageCompromisso,ageTipoCompromisso,ageCliente,ageLiberado,ageImportante,ageConcluido,ageArea,ageJustica,ageProcesso,ageIDHistorico,ageIDInsProcesso,ageUsuario,agePreposto,ageQuemID,ageQuemCodigo,ageGUID,ageStatus,ageValor,ageDecisao,ageSempre,agePrazoDias,ageProtocoloIntegrado,ageDataInicioPrazo,ageUsuarioCiente FROM {"Agenda".dbo(connection)};";
                                 tableCheck.CommandTimeout = 5;
                                 _ = await tableCheck.ExecuteScalarAsync(cancellationToken);
                             }
@@ -206,7 +208,7 @@ public class AgendaHealthCheck(IOptions<AppSettings> appSettings, AgendaService 
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

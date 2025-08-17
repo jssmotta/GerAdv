@@ -14,15 +14,16 @@ public partial interface IProDespesasWriter
 
 public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDespesasWriter
 {
-    private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory;
-    public async Task Delete(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory ?? throw new ArgumentNullException(nameof(prodespesasFactory));
+    public virtual async Task Delete(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection oCnn)
     {
         await _prodespesasFactory.DeleteAsync(operadorId, prodespesas.Id, oCnn);
     }
 
-    public async Task<FProDespesas> WriteAsync(Models.ProDespesas prodespesas, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProDespesas> WriteAsync(Models.ProDespesas prodespesas, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (prodespesas.Id.IsEmptyIDNumber() ? _prodespesasFactory.CreateAsync() : _prodespesasFactory.CreateFromIdAsync(prodespesas.Id, oCnn));
+        dbRec.FGUID = prodespesas.GUID;
         dbRec.FLigacaoID = prodespesas.LigacaoID;
         dbRec.FCliente = prodespesas.Cliente;
         dbRec.FCorrigido = prodespesas.Corrigido;
@@ -36,7 +37,6 @@ public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDe
         dbRec.FTipo = prodespesas.Tipo;
         dbRec.FHistorico = prodespesas.Historico;
         dbRec.FLivroCaixa = prodespesas.LivroCaixa;
-        dbRec.FGUID = prodespesas.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

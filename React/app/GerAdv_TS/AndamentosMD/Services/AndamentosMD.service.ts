@@ -79,7 +79,8 @@ export class AndamentosMDService implements IAndamentosMDService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching AndamentosMD list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching AndamentosMD list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class AndamentosMDService implements IAndamentosMDService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online AndamentosMD');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online AndamentosMD');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class AndamentosMDService implements IAndamentosMDService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online AndamentosMD');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online AndamentosMD');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all AndamentosMD:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all AndamentosMD:');
       return [];
     }
   }

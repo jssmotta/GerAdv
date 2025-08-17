@@ -3,6 +3,6 @@
 // This file is part of the Source Genesys project                     
 export enum FieldsStatusAndamento
 {	nome = `Nome`,
-	icone = `Icone`,
 	guid = `GUID`,
+	icone = `Icone`,
 }

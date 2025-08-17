@@ -61,167 +61,158 @@ if (getParamFromUrl('processoutputengine') > 0) {
       setNomeProcessOutputEngine(response.data.nome);
     })
     .catch((error) => {
-      console.log('Error unexpected');
-    });
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error unexpected');
+      });
 
-    processoutputrequestData.processoutputengine = getParamFromUrl('processoutputengine');
+      processoutputrequestData.processoutputengine = getParamFromUrl('processoutputengine');
+    }
   }
-}
 
-if (getParamFromUrl('operador') > 0) {
-  if (processoutputrequestData.id === 0 && processoutputrequestData.operador == 0) {
-    operadorApi
-    .getById(getParamFromUrl('operador'))
-    .then((response) => {
-      setNomeOperador(response.data.rnome);
-    })
-    .catch((error) => {
-      console.log('Error unexpected');
-    });
+  if (getParamFromUrl('operador') > 0) {
+    if (processoutputrequestData.id === 0 && processoutputrequestData.operador == 0) {
+      operadorApi
+      .getById(getParamFromUrl('operador'))
+      .then((response) => {
+        setNomeOperador(response.data.rnome);
+      })
+      .catch((error) => {
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+          console.log('Error unexpected');
+        });
 
-    processoutputrequestData.operador = getParamFromUrl('operador');
-  }
-}
-const addValorProcessOutputEngine = (e: any) => {
-  if (e?.id>0)
-    onChange({ target: { name: 'processoutputengine', value: e.id } });
-  };
-  const addValorOperador = (e: any) => {
-    if (e?.id>0)
-      onChange({ target: { name: 'operador', value: e.id } });
-    };
-    const onConfirm = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
+        processoutputrequestData.operador = getParamFromUrl('operador');
+      }
+    }
+    const addValorProcessOutputEngine = (e: any) => {
+      if (e?.id>0)
+        onChange({ target: { name: 'processoutputengine', value: e.id } });
+      };
+      const addValorOperador = (e: any) => {
+        if (e?.id>0)
+          onChange({ target: { name: 'operador', value: e.id } });
+        };
+        const onConfirm = (e: React.FormEvent) => {
+          e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
 
-        if (!isSubmitting) {
-          setIsSubmitting(true);
+            if (!isSubmitting) {
+              setIsSubmitting(true);
 
-          try {
-            onSubmit(e);
-          } catch (error) {
-          console.log('Erro ao submeter formulário de ProcessOutputRequest:');
-          setIsSubmitting(false);
-          if (onError) onError();
+              try {
+                onSubmit(e);
+              } catch (error) {
+              console.log('Erro ao submeter formulário de ProcessOutputRequest:');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          const handleCancel = () => {
+            if (onReload) {
+              onReload(); // Recarrega os dados originais
+            } else {
+            onClose(); // Comportamento padrão se não há callback de recarga
           }
-        }
-      };
-      const handleCancel = () => {
-        if (onReload) {
-          onReload(); // Recarrega os dados originais
-        } else {
-        onClose(); // Comportamento padrão se não há callback de recarga
-      }
-    };
+        };
 
-    const handleDirectSave = () => {
-      if (!isSubmitting) {
-        setIsSubmitting(true);
+        const handleDirectSave = () => {
+          if (!isSubmitting) {
+            setIsSubmitting(true);
 
-        try {
-          const syntheticEvent = {
-            preventDefault: () => { }, 
-            target: document.getElementById(`ProcessOutputRequestForm-${processoutputrequestData.id}`)
-          } as unknown as React.FormEvent;
+            try {
+              const syntheticEvent = {
+                preventDefault: () => { }, 
+                target: document.getElementById(`ProcessOutputRequestForm-${processoutputrequestData.id}`)
+              } as unknown as React.FormEvent;
 
-          onSubmit(syntheticEvent);
-        } catch (error) {
-        console.log('Erro ao salvar ProcessOutputRequest diretamente');
-        setIsSubmitting(false);
-        if (onError) onError();
-        }
-      }
-    };
-    useEffect(() => {
-      const el = document.querySelector('.nameFormMobile');
-      if (el) {
-        el.textContent = processoutputrequestData?.id == 0 ? 'Editar ProcessOutputRequest' : 'Adicionar Process Output Request';
-      }
-    }, [processoutputrequestData.id]);
-    return (
-    <>
-    {!isMobile ? <style jsx global>{`
-      @media (max-width: 1366px) {
-        html {
-          zoom: 0.8 !important;
-        }
-      }
-      `}</style> : null}
+              onSubmit(syntheticEvent);
+            } catch (error) {
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+              console.log('Erro ao salvar ProcessOutputRequest diretamente');
+              setIsSubmitting(false);
+              if (onError) onError();
+              }
+            }
+          };
+          useEffect(() => {
+            const el = document.querySelector('.nameFormMobile');
+            if (el) {
+              el.textContent = processoutputrequestData?.id == 0 ? 'Editar ProcessOutputRequest' : 'Adicionar Process Output Request';
+            }
+          }, [processoutputrequestData.id]);
+          return (
+          <>
+          {!isMobile ? <style jsx global>{`
+            @media (max-width: 1366px) {
+              html {
+                zoom: 0.8 !important;
+              }
+            }
+            `}</style> : null}
 
-      <div className={isMobile ? 'form-container form-container-ProcessOutputRequest' : 'form-container5 form-container-ProcessOutputRequest'}>
+            <div className={isMobile ? 'form-container form-container-ProcessOutputRequest' : 'form-container5 form-container-ProcessOutputRequest'}>
 
-        <form className='formInputCadInc' id={`ProcessOutputRequestForm-${processoutputrequestData.id}`} onSubmit={onConfirm}>
-          {!isMobile && (
-            <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessOutputRequest' data={processoutputrequestData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessOutputRequestForm-${processoutputrequestData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <div className='grid-container'>
-
-              <InputName
-              type='text'
-              id='guid'
-              label='GUID'
-              dataForm={processoutputrequestData}
-              className='inputIncNome'
-              name='guid'
-              value={processoutputrequestData.guid}
-              placeholder={`Informe GUID`}
-              onChange={onChange}
-              required
-              />
-
-              <ProcessOutputEngineComboBox
-              name={'processoutputengine'}
-              dataForm={processoutputrequestData}
-              value={processoutputrequestData.processoutputengine}
-              setValue={addValorProcessOutputEngine}
-              label={'Process Output Engine'}
-              />
-
-              <OperadorComboBox
-              name={'operador'}
-              dataForm={processoutputrequestData}
-              value={processoutputrequestData.operador}
-              setValue={addValorOperador}
-              label={'Operador'}
-              />
-
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='processo'
-              label='Processo'
-              dataForm={processoutputrequestData}
-              className='inputIncNome'
-              name='processo'
-              value={processoutputrequestData.processo}
-              onChange={onChange}
-              />
+              <form className='formInputCadInc' id={`ProcessOutputRequestForm-${processoutputrequestData.id}`} onSubmit={onConfirm}>
+                {!isMobile && (
+                  <ButtonSalvarCrud isMobile={false} validationForm={validationForm} entity='ProcessOutputRequest' data={processoutputrequestData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProcessOutputRequestForm-${processoutputrequestData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <div className='grid-container'>
 
 
-              <InputInput
-              required
-              type='text'
-              maxLength={2048}
-              id='ultimoidtabelaexo'
-              label='UltimoIdTabelaExo'
-              dataForm={processoutputrequestData}
-              className='inputIncNome'
-              name='ultimoidtabelaexo'
-              value={processoutputrequestData.ultimoidtabelaexo}
-              onChange={onChange}
-              />
+                    <ProcessOutputEngineComboBox
+                    name={'processoutputengine'}
+                    dataForm={processoutputrequestData}
+                    value={processoutputrequestData.processoutputengine}
+                    setValue={addValorProcessOutputEngine}
+                    label={'Process Output Engine'}
+                    />
 
-            </div>
-          </form>
+                    <OperadorComboBox
+                    name={'operador'}
+                    dataForm={processoutputrequestData}
+                    value={processoutputrequestData.operador}
+                    setValue={addValorOperador}
+                    label={'Operador'}
+                    />
+
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='processo'
+                    label='Processo'
+                    dataForm={processoutputrequestData}
+                    className='inputIncNome'
+                    name='processo'
+                    value={processoutputrequestData.processo}
+                    onChange={onChange}
+                    />
 
 
-          {isMobile && (
-            <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessOutputRequest' data={processoutputrequestData} isSubmitting={isSubmitting} onClose={onClose} formId={`ProcessOutputRequestForm-${processoutputrequestData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
-            )}
-            <DeleteButton page={'/pages/processoutputrequest'} id={processoutputrequestData.id} closeModel={onClose} dadoApi={dadoApi} />
-          </div>
-          <div className='form-spacer'></div>
-          </>
-        );
-      };
+                    <InputInput
+                    required
+                    type='text'
+                    maxLength={2048}
+                    id='ultimoidtabelaexo'
+                    label='UltimoIdTabelaExo'
+                    dataForm={processoutputrequestData}
+                    className='inputIncNome'
+                    name='ultimoidtabelaexo'
+                    value={processoutputrequestData.ultimoidtabelaexo}
+                    onChange={onChange}
+                    />
+
+                  </div>
+                </form>
+
+
+                {isMobile && (
+                  <ButtonSalvarCrud isMobile={true} validationForm={validationForm} entity='ProcessOutputRequest' data={processoutputrequestData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} onClose={onClose} formId={`ProcessOutputRequestForm-${processoutputrequestData.id}`} preventPropagation={true} onSave={handleDirectSave} onCancel={handleCancel} />
+                  )}
+                  <DeleteButton page={'/pages/processoutputrequest'} id={processoutputrequestData.id} closeModel={onClose} dadoApi={dadoApi} />
+                </div>
+                <div className='form-spacer'></div>
+                </>
+              );
+            };

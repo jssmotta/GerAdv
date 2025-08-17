@@ -10,22 +10,22 @@ namespace MenphisSI.GerAdv.Filters;
 public partial record FilterOperador
 {
     [JsonPropertyName("logicalOperator")]
-    public string LogicalOperator { get; set; } = TSql.And;
+    public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char WildcardChar { get; set; } = '\0';
+    public char? WildcardChar { get; set; } = '\0';
 
     [JsonPropertyName("email")]
-    public string EMail { get; set; } = string.Empty;
+    public string? EMail { get; set; } = string.Empty;
 
     [JsonPropertyName("email_end")]
-    public string EMail_end { get; set; } = string.Empty;
+    public string? EMail_end { get; set; } = string.Empty;
 
     [JsonPropertyName("pasta")]
-    public string Pasta { get; set; } = string.Empty;
+    public string? Pasta { get; set; } = string.Empty;
 
     [JsonPropertyName("pasta_end")]
-    public string Pasta_end { get; set; } = string.Empty;
+    public string? Pasta_end { get; set; } = string.Empty;
 
     [JsonPropertyName("telefonista")]
     public int Telefonista { get; set; } = int.MinValue;
@@ -34,22 +34,22 @@ public partial record FilterOperador
     public int Master { get; set; } = int.MinValue;
 
     [JsonPropertyName("nome")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
     [JsonPropertyName("nome_end")]
-    public string Nome_end { get; set; } = string.Empty;
+    public string? Nome_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nick")]
-    public string Nick { get; set; } = string.Empty;
+    public string? Nick { get; set; } = string.Empty;
 
     [JsonPropertyName("nick_end")]
-    public string Nick_end { get; set; } = string.Empty;
+    public string? Nick_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ramal")]
-    public string Ramal { get; set; } = string.Empty;
+    public string? Ramal { get; set; } = string.Empty;
 
     [JsonPropertyName("ramal_end")]
-    public string Ramal_end { get; set; } = string.Empty;
+    public string? Ramal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("cadid")]
     public int CadID { get; set; } = int.MinValue;
@@ -76,28 +76,28 @@ public partial record FilterOperador
     public int Computador_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("minhadescricao")]
-    public string MinhaDescricao { get; set; } = string.Empty;
+    public string? MinhaDescricao { get; set; } = string.Empty;
 
     [JsonPropertyName("minhadescricao_end")]
-    public string MinhaDescricao_end { get; set; } = string.Empty;
+    public string? MinhaDescricao_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ultimologoff")]
-    public string UltimoLogoff { get; set; } = string.Empty;
+    public string? UltimoLogoff { get; set; } = string.Empty;
 
     [JsonPropertyName("ultimologoff_end")]
-    public string UltimoLogoff_end { get; set; } = string.Empty;
+    public string? UltimoLogoff_end { get; set; } = string.Empty;
 
     [JsonPropertyName("emailnet")]
-    public string EMailNet { get; set; } = string.Empty;
+    public string? EMailNet { get; set; } = string.Empty;
 
     [JsonPropertyName("emailnet_end")]
-    public string EMailNet_end { get; set; } = string.Empty;
+    public string? EMailNet_end { get; set; } = string.Empty;
 
     [JsonPropertyName("onlineip")]
-    public string OnlineIP { get; set; } = string.Empty;
+    public string? OnlineIP { get; set; } = string.Empty;
 
     [JsonPropertyName("onlineip_end")]
-    public string OnlineIP_end { get; set; } = string.Empty;
+    public string? OnlineIP_end { get; set; } = string.Empty;
 
     [JsonPropertyName("online")]
     public int OnLine { get; set; } = int.MinValue;
@@ -112,13 +112,19 @@ public partial record FilterOperador
     public int StatusId_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("statusmessage")]
-    public string StatusMessage { get; set; } = string.Empty;
+    public string? StatusMessage { get; set; } = string.Empty;
 
     [JsonPropertyName("statusmessage_end")]
-    public string StatusMessage_end { get; set; } = string.Empty;
+    public string? StatusMessage_end { get; set; } = string.Empty;
 
     [JsonPropertyName("isfinanceiro")]
     public int IsFinanceiro { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    public string? GUID { get; set; } = string.Empty;
+
+    [JsonPropertyName("guid_end")]
+    public string? GUID_end { get; set; } = string.Empty;
 
     [JsonPropertyName("top")]
     public int Top { get; set; } = int.MinValue;
@@ -133,55 +139,49 @@ public partial record FilterOperador
     public int Externo { get; set; } = int.MinValue;
 
     [JsonPropertyName("senha256")]
-    public string Senha256 { get; set; } = string.Empty;
+    public string? Senha256 { get; set; } = string.Empty;
 
     [JsonPropertyName("senha256_end")]
-    public string Senha256_end { get; set; } = string.Empty;
+    public string? Senha256_end { get; set; } = string.Empty;
 
     [JsonPropertyName("emailconfirmado")]
     public int EMailConfirmado { get; set; } = int.MinValue;
 
     [JsonPropertyName("datalimitereset")]
-    public string DataLimiteReset { get; set; } = string.Empty;
+    public string? DataLimiteReset { get; set; } = string.Empty;
 
     [JsonPropertyName("datalimitereset_end")]
-    public string DataLimiteReset_end { get; set; } = string.Empty;
+    public string? DataLimiteReset_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suportesenha256")]
-    public string SuporteSenha256 { get; set; } = string.Empty;
+    public string? SuporteSenha256 { get; set; } = string.Empty;
 
     [JsonPropertyName("suportesenha256_end")]
-    public string SuporteSenha256_end { get; set; } = string.Empty;
+    public string? SuporteSenha256_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suportemaxage")]
-    public string SuporteMaxAge { get; set; } = string.Empty;
+    public string? SuporteMaxAge { get; set; } = string.Empty;
 
     [JsonPropertyName("suportemaxage_end")]
-    public string SuporteMaxAge_end { get; set; } = string.Empty;
+    public string? SuporteMaxAge_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suportenomesolicitante")]
-    public string SuporteNomeSolicitante { get; set; } = string.Empty;
+    public string? SuporteNomeSolicitante { get; set; } = string.Empty;
 
     [JsonPropertyName("suportenomesolicitante_end")]
-    public string SuporteNomeSolicitante_end { get; set; } = string.Empty;
+    public string? SuporteNomeSolicitante_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suporteultimoacesso")]
-    public string SuporteUltimoAcesso { get; set; } = string.Empty;
+    public string? SuporteUltimoAcesso { get; set; } = string.Empty;
 
     [JsonPropertyName("suporteultimoacesso_end")]
-    public string SuporteUltimoAcesso_end { get; set; } = string.Empty;
+    public string? SuporteUltimoAcesso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suporteipultimoacesso")]
-    public string SuporteIpUltimoAcesso { get; set; } = string.Empty;
+    public string? SuporteIpUltimoAcesso { get; set; } = string.Empty;
 
     [JsonPropertyName("suporteipultimoacesso_end")]
-    public string SuporteIpUltimoAcesso_end { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid")]
-    public string GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string GUID_end { get; set; } = string.Empty;
+    public string? SuporteIpUltimoAcesso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

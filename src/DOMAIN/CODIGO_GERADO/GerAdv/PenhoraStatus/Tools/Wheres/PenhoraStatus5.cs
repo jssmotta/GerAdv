@@ -13,7 +13,7 @@ public partial interface IPenhoraStatusWhere
 
 public partial class PenhoraStatusWhere(IFPenhoraStatusFactory penhorastatusFactory) : IPenhoraStatusWhere
 {
-    private readonly IFPenhoraStatusFactory _penhorastatusFactory = penhorastatusFactory;
+    private readonly IFPenhoraStatusFactory _penhorastatusFactory = penhorastatusFactory ?? throw new ArgumentNullException(nameof(penhorastatusFactory));
     public PenhoraStatusResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
     {
         using var dbRec = _penhorastatusFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);

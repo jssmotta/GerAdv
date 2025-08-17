@@ -79,7 +79,8 @@ export class GUTTipoService implements IGUTTipoService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching GUTTipo list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching GUTTipo list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class GUTTipoService implements IGUTTipoService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online GUTTipo');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTTipo');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class GUTTipoService implements IGUTTipoService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online GUTTipo');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online GUTTipo');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all GUTTipo:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all GUTTipo:');
       return [];
     }
   }

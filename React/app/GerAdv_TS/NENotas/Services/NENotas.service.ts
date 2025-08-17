@@ -79,7 +79,8 @@ export class NENotasService implements INENotasService {
       const response = await this.api.getListN(CRUD_CONSTANTS.MAX_RECORDS_COMBO, filtro);
       return response.data || [];
     } catch (error) {
-      console.log('Error fetching NENotas list');
+        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching NENotas list');
       return [];
     }
   }
@@ -105,7 +106,8 @@ export class NENotasService implements INENotasService {
             }
           })
           .catch(error => {
-            console.log('Error fetching online NENotas');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online NENotas');
           });
         // Retorna offline imediatamente
         return offlineData;
@@ -115,12 +117,14 @@ export class NENotasService implements INENotasService {
           const onlineResponse = await this.api.filter(0, filtro ?? {});
           return onlineResponse?.data || offlineData;
         } catch (error) {
-          console.log('Error fetching online NENotas');
+            if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                console.log('Error fetching online NENotas');
           return offlineData;
         }
       }
     } catch (error) {
-      console.log('Error fetching all NENotas:');
+      if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+        console.log('Error fetching all NENotas:');
       return [];
     }
   }

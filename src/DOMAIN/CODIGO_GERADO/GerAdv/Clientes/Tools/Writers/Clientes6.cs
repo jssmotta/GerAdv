@@ -14,13 +14,13 @@ public partial interface IClientesWriter
 
 public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
 {
-    private readonly IFClientesFactory _clientesFactory = clientesFactory;
-    public async Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection oCnn)
+    private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException(nameof(clientesFactory));
+    public virtual async Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection oCnn)
     {
         await _clientesFactory.DeleteAsync(operadorId, clientes.Id, oCnn);
     }
 
-    public async Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (clientes.Id.IsEmptyIDNumber() ? _clientesFactory.CreateAsync() : _clientesFactory.CreateFromIdAsync(clientes.Id, oCnn));
         dbRec.FEmpresa = clientes.Empresa;
@@ -28,6 +28,7 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FNomeMae = clientes.NomeMae;
         if (clientes.RGDataExp != null)
             dbRec.FRGDataExp = clientes.RGDataExp.ToString();
+        dbRec.FGUID = clientes.GUID;
         dbRec.FInativo = clientes.Inativo;
         dbRec.FQuemIndicou = clientes.QuemIndicou;
         dbRec.FSendEMail = clientes.SendEMail;
@@ -67,7 +68,6 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FProBono = clientes.ProBono;
         dbRec.FCNH = clientes.CNH;
         dbRec.FPessoaContato = clientes.PessoaContato;
-        dbRec.FGUID = clientes.GUID;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
