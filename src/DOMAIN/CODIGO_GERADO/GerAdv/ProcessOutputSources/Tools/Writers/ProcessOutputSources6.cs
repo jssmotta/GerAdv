@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProcessOutputSourcesWriter
 {
-    Task<FProcessOutputSources> WriteAsync(Models.ProcessOutputSources processoutputsources, MsiSqlConnection oCnn);
+    Task<FProcessOutputSources> WriteAsync(Models.ProcessOutputSources processoutputsources, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(ProcessOutputSourcesResponse processoutputsources, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,11 +20,12 @@ public class ProcessOutputSourcesWriter(IFProcessOutputSourcesFactory processout
         await _processoutputsourcesFactory.DeleteAsync(operadorId, processoutputsources.Id, oCnn);
     }
 
-    public virtual async Task<FProcessOutputSources> WriteAsync(Models.ProcessOutputSources processoutputsources, MsiSqlConnection oCnn)
+    public virtual async Task<FProcessOutputSources> WriteAsync(Models.ProcessOutputSources processoutputsources, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (processoutputsources.Id.IsEmptyIDNumber() ? _processoutputsourcesFactory.CreateAsync() : _processoutputsourcesFactory.CreateFromIdAsync(processoutputsources.Id, oCnn));
         dbRec.FNome = processoutputsources.Nome;
         dbRec.FGUID = processoutputsources.GUID;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

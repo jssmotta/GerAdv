@@ -43,36 +43,6 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
     }
 
 #endregion
-#region ListarN Tests
-    [Fact]
-    public async Task ListarN_WithValidParameters_ShouldCallDevourerSqlData()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "pgsCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        // Act & Assert
-        // Since this calls static methods and external dependencies,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _gutperiodicidadestatusReader.ListarN(max, uri, cWhere, parameters, order));
-    }
-
-    [Fact]
-    public async Task ListarN_WithEmptyParameters_ShouldThrowException()
-    {
-        // Arrange
-        var max = 0;
-        var uri = string.Empty; // Empty URI should cause an exception
-        var cWhere = string.Empty;
-        var parameters = new List<SqlParameter>();
-        var order = string.Empty;
-        // Act & Assert
-        await Assert.ThrowsAsync<Exception>(() => _gutperiodicidadestatusReader.ListarN(max, uri, cWhere, parameters, order));
-    }
-
-#endregion
 #region Listar Tests
     [Fact]
     public async Task Listar_WithValidParameters_ShouldCallListarTabela()
@@ -96,7 +66,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Arrange
         var max = 10;
         var uri = "test-uri";
-        var cWhere = "carCodigo > 0";
+        var cWhere = "pgsCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "carNome";
         var cancellationToken = new CancellationToken(true); // Already cancelled
@@ -234,7 +204,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
     public void Read_WithWhereAndParameters_ShouldReturnGUTPeriodicidadeStatusResponse()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "pgsCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)
@@ -244,7 +214,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
             ID = 123,
             FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
-        _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(expectedFGUTPeriodicidadeStatus);
+        _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(expectedFGUTPeriodicidadeStatus);
         // Act
         var result = _gutperiodicidadestatusReader.Read(where, parameters, _mockConnection.Object);
         // Assert
@@ -257,7 +227,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
     public void Read_WithWhereAndParameters_WhenRecordNotFound_ShouldReturnNull()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "pgsCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 999)
@@ -266,7 +236,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         {
             ID = 0
         };
-        _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(emptyFGUTPeriodicidadeStatus);
+        _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(emptyFGUTPeriodicidadeStatus);
         // Act
         var result = _gutperiodicidadestatusReader.Read(where, parameters, _mockConnection.Object);
         // Assert
@@ -491,13 +461,13 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
     public void Read_WithWhereParameters_WhenFactoryThrowsException_ShouldPropagateException()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "pgsCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)
         };
         var expectedException = new InvalidOperationException("Factory error");
-        _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Throws(expectedException);
+        _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Throws(expectedException);
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() => _gutperiodicidadestatusReader.Read(where, parameters, _mockConnection.Object));
         exception.Should().Be(expectedException);

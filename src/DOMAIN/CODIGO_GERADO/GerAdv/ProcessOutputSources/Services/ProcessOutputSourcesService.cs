@@ -125,7 +125,7 @@ public partial class ProcessOutputSourcesService(IOptions<AppSettings> appSettin
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regProcessOutputSources, oCnn);
+        using var saved = await writer.WriteAsync(regProcessOutputSources, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

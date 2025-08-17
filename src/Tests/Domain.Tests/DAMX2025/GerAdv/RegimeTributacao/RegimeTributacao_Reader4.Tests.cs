@@ -96,7 +96,7 @@ public class RegimeTributacaoReaderTests : IDisposable
         // Arrange
         var max = 10;
         var uri = "test-uri";
-        var cWhere = "carCodigo > 0";
+        var cWhere = "rdtCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "carNome";
         var cancellationToken = new CancellationToken(true); // Already cancelled
@@ -234,7 +234,7 @@ public class RegimeTributacaoReaderTests : IDisposable
     public void Read_WithWhereAndParameters_ShouldReturnRegimeTributacaoResponse()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "rdtCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)
@@ -257,7 +257,7 @@ public class RegimeTributacaoReaderTests : IDisposable
     public void Read_WithWhereAndParameters_WhenRecordNotFound_ShouldReturnNull()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "rdtCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 999)
@@ -491,7 +491,7 @@ public class RegimeTributacaoReaderTests : IDisposable
     public void Read_WithWhereParameters_WhenFactoryThrowsException_ShouldPropagateException()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "rdtCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)

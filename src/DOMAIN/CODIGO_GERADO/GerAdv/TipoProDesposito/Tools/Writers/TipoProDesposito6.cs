@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoProDespositoWriter
 {
-    Task<FTipoProDesposito> WriteAsync(Models.TipoProDesposito tipoprodesposito, MsiSqlConnection oCnn);
+    Task<FTipoProDesposito> WriteAsync(Models.TipoProDesposito tipoprodesposito, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(TipoProDespositoResponse tipoprodesposito, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,10 +20,11 @@ public class TipoProDespositoWriter(IFTipoProDespositoFactory tipoprodespositoFa
         await _tipoprodespositoFactory.DeleteAsync(operadorId, tipoprodesposito.Id, oCnn);
     }
 
-    public virtual async Task<FTipoProDesposito> WriteAsync(Models.TipoProDesposito tipoprodesposito, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoProDesposito> WriteAsync(Models.TipoProDesposito tipoprodesposito, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipoprodesposito.Id.IsEmptyIDNumber() ? _tipoprodespositoFactory.CreateAsync() : _tipoprodespositoFactory.CreateFromIdAsync(tipoprodesposito.Id, oCnn));
         dbRec.FNome = tipoprodesposito.Nome;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

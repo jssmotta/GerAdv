@@ -127,7 +127,7 @@ public partial class GUTMatrizService(IOptions<AppSettings> appSettings, IFGUTMa
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regGUTMatriz, oCnn);
+        using var saved = await writer.WriteAsync(regGUTMatriz, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

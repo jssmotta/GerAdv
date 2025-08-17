@@ -126,7 +126,7 @@ public partial class TipoOrigemSucumbenciaService(IOptions<AppSettings> appSetti
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regTipoOrigemSucumbencia, oCnn);
+        using var saved = await writer.WriteAsync(regTipoOrigemSucumbencia, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

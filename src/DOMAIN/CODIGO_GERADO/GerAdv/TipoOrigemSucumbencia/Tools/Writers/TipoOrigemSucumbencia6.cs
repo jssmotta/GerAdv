@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoOrigemSucumbenciaWriter
 {
-    Task<FTipoOrigemSucumbencia> WriteAsync(Models.TipoOrigemSucumbencia tipoorigemsucumbencia, MsiSqlConnection oCnn);
+    Task<FTipoOrigemSucumbencia> WriteAsync(Models.TipoOrigemSucumbencia tipoorigemsucumbencia, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(TipoOrigemSucumbenciaResponse tipoorigemsucumbencia, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,10 +20,11 @@ public class TipoOrigemSucumbenciaWriter(IFTipoOrigemSucumbenciaFactory tipoorig
         await _tipoorigemsucumbenciaFactory.DeleteAsync(operadorId, tipoorigemsucumbencia.Id, oCnn);
     }
 
-    public virtual async Task<FTipoOrigemSucumbencia> WriteAsync(Models.TipoOrigemSucumbencia tipoorigemsucumbencia, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoOrigemSucumbencia> WriteAsync(Models.TipoOrigemSucumbencia tipoorigemsucumbencia, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipoorigemsucumbencia.Id.IsEmptyIDNumber() ? _tipoorigemsucumbenciaFactory.CreateAsync() : _tipoorigemsucumbenciaFactory.CreateFromIdAsync(tipoorigemsucumbencia.Id, oCnn));
         dbRec.FNome = tipoorigemsucumbencia.Nome;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

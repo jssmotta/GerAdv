@@ -96,7 +96,7 @@ public class TipoEMailReaderTests : IDisposable
         // Arrange
         var max = 10;
         var uri = "test-uri";
-        var cWhere = "carCodigo > 0";
+        var cWhere = "tmlCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "carNome";
         var cancellationToken = new CancellationToken(true); // Already cancelled
@@ -234,7 +234,7 @@ public class TipoEMailReaderTests : IDisposable
     public void Read_WithWhereAndParameters_ShouldReturnTipoEMailResponse()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "tmlCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)
@@ -257,7 +257,7 @@ public class TipoEMailReaderTests : IDisposable
     public void Read_WithWhereAndParameters_WhenRecordNotFound_ShouldReturnNull()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "tmlCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 999)
@@ -491,7 +491,7 @@ public class TipoEMailReaderTests : IDisposable
     public void Read_WithWhereParameters_WhenFactoryThrowsException_ShouldPropagateException()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "tmlCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)

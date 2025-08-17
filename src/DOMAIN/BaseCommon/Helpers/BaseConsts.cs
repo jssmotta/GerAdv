@@ -7,4 +7,5 @@ public static class BaseConsts
     public const int PMaxMinutesCache = 60;
     public const int PMaxGetListSecondsCacheId = 120;
     public const int PMaxSecondsCacheId = 14_400;
+    public const int DefaultAuditor = 1;
 }

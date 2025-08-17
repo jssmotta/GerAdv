@@ -43,36 +43,6 @@ public class ProcessOutputRequestReaderTests : IDisposable
     }
 
 #endregion
-#region ListarN Tests
-    [Fact]
-    public async Task ListarN_WithValidParameters_ShouldCallDevourerSqlData()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "porCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        // Act & Assert
-        // Since this calls static methods and external dependencies,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _processoutputrequestReader.ListarN(max, uri, cWhere, parameters, order));
-    }
-
-    [Fact]
-    public async Task ListarN_WithEmptyParameters_ShouldThrowException()
-    {
-        // Arrange
-        var max = 0;
-        var uri = string.Empty; // Empty URI should cause an exception
-        var cWhere = string.Empty;
-        var parameters = new List<SqlParameter>();
-        var order = string.Empty;
-        // Act & Assert
-        await Assert.ThrowsAsync<Exception>(() => _processoutputrequestReader.ListarN(max, uri, cWhere, parameters, order));
-    }
-
-#endregion
 #region Listar Tests
     [Fact]
     public async Task Listar_WithValidParameters_ShouldCallListarTabela()
@@ -96,7 +66,7 @@ public class ProcessOutputRequestReaderTests : IDisposable
         // Arrange
         var max = 10;
         var uri = "test-uri";
-        var cWhere = "carCodigo > 0";
+        var cWhere = "porCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "carNome";
         var cancellationToken = new CancellationToken(true); // Already cancelled
@@ -234,7 +204,7 @@ public class ProcessOutputRequestReaderTests : IDisposable
     public void Read_WithWhereAndParameters_ShouldReturnProcessOutputRequestResponse()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "porCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)
@@ -244,7 +214,7 @@ public class ProcessOutputRequestReaderTests : IDisposable
             ID = 123,
             FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
-        _mockProcessOutputRequestFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(expectedFProcessOutputRequest);
+        _mockProcessOutputRequestFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(expectedFProcessOutputRequest);
         // Act
         var result = _processoutputrequestReader.Read(where, parameters, _mockConnection.Object);
         // Assert
@@ -257,7 +227,7 @@ public class ProcessOutputRequestReaderTests : IDisposable
     public void Read_WithWhereAndParameters_WhenRecordNotFound_ShouldReturnNull()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "porCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 999)
@@ -266,7 +236,7 @@ public class ProcessOutputRequestReaderTests : IDisposable
         {
             ID = 0
         };
-        _mockProcessOutputRequestFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(emptyFProcessOutputRequest);
+        _mockProcessOutputRequestFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(emptyFProcessOutputRequest);
         // Act
         var result = _processoutputrequestReader.Read(where, parameters, _mockConnection.Object);
         // Assert
@@ -491,13 +461,13 @@ public class ProcessOutputRequestReaderTests : IDisposable
     public void Read_WithWhereParameters_WhenFactoryThrowsException_ShouldPropagateException()
     {
         // Arrange
-        var where = "carCodigo = @id";
+        var where = "porCodigo = @id";
         var parameters = new List<SqlParameter>
         {
             new("@id", 123)
         };
         var expectedException = new InvalidOperationException("Factory error");
-        _mockProcessOutputRequestFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Throws(expectedException);
+        _mockProcessOutputRequestFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Throws(expectedException);
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() => _processoutputrequestReader.Read(where, parameters, _mockConnection.Object));
         exception.Should().Be(expectedException);

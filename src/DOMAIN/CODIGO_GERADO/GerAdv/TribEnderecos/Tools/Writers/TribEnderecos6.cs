@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITribEnderecosWriter
 {
-    Task<FTribEnderecos> WriteAsync(Models.TribEnderecos tribenderecos, MsiSqlConnection oCnn);
+    Task<FTribEnderecos> WriteAsync(Models.TribEnderecos tribenderecos, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(TribEnderecosResponse tribenderecos, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,7 +20,7 @@ public class TribEnderecosWriter(IFTribEnderecosFactory tribenderecosFactory) : 
         await _tribenderecosFactory.DeleteAsync(operadorId, tribenderecos.Id, oCnn);
     }
 
-    public virtual async Task<FTribEnderecos> WriteAsync(Models.TribEnderecos tribenderecos, MsiSqlConnection oCnn)
+    public virtual async Task<FTribEnderecos> WriteAsync(Models.TribEnderecos tribenderecos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tribenderecos.Id.IsEmptyIDNumber() ? _tribenderecosFactory.CreateAsync() : _tribenderecosFactory.CreateFromIdAsync(tribenderecos.Id, oCnn));
         dbRec.FTribunal = tribenderecos.Tribunal;
@@ -30,6 +30,7 @@ public class TribEnderecosWriter(IFTribEnderecosFactory tribenderecosFactory) : 
         dbRec.FFone = tribenderecos.Fone;
         dbRec.FFax = tribenderecos.Fax;
         dbRec.FOBS = tribenderecos.OBS;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

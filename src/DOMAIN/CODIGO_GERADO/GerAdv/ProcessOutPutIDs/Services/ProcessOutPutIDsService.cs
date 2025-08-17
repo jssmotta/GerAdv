@@ -125,7 +125,7 @@ public partial class ProcessOutPutIDsService(IOptions<AppSettings> appSettings, 
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regProcessOutPutIDs, oCnn);
+        using var saved = await writer.WriteAsync(regProcessOutPutIDs, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoEMailWriter
 {
-    Task<FTipoEMail> WriteAsync(Models.TipoEMail tipoemail, MsiSqlConnection oCnn);
+    Task<FTipoEMail> WriteAsync(Models.TipoEMail tipoemail, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(TipoEMailResponse tipoemail, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,10 +20,11 @@ public class TipoEMailWriter(IFTipoEMailFactory tipoemailFactory) : ITipoEMailWr
         await _tipoemailFactory.DeleteAsync(operadorId, tipoemail.Id, oCnn);
     }
 
-    public virtual async Task<FTipoEMail> WriteAsync(Models.TipoEMail tipoemail, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoEMail> WriteAsync(Models.TipoEMail tipoemail, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (tipoemail.Id.IsEmptyIDNumber() ? _tipoemailFactory.CreateAsync() : _tipoemailFactory.CreateFromIdAsync(tipoemail.Id, oCnn));
         dbRec.FNome = tipoemail.Nome;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

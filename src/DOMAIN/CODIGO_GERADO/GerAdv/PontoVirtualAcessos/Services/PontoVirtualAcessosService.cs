@@ -126,7 +126,7 @@ public partial class PontoVirtualAcessosService(IOptions<AppSettings> appSetting
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regPontoVirtualAcessos, oCnn);
+        using var saved = await writer.WriteAsync(regPontoVirtualAcessos, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

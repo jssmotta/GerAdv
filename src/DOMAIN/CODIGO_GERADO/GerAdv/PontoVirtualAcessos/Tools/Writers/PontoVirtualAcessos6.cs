@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPontoVirtualAcessosWriter
 {
-    Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, MsiSqlConnection oCnn);
+    Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,13 +20,14 @@ public class PontoVirtualAcessosWriter(IFPontoVirtualAcessosFactory pontovirtual
         await _pontovirtualacessosFactory.DeleteAsync(operadorId, pontovirtualacessos.Id, oCnn);
     }
 
-    public virtual async Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, MsiSqlConnection oCnn)
+    public virtual async Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (pontovirtualacessos.Id.IsEmptyIDNumber() ? _pontovirtualacessosFactory.CreateAsync() : _pontovirtualacessosFactory.CreateFromIdAsync(pontovirtualacessos.Id, oCnn));
         dbRec.FOperador = pontovirtualacessos.Operador;
         dbRec.FDataHora = pontovirtualacessos.DataHora;
         dbRec.FTipo = pontovirtualacessos.Tipo;
         dbRec.FOrigem = pontovirtualacessos.Origem;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

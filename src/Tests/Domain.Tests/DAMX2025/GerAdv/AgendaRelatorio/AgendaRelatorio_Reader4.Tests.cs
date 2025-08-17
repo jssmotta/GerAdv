@@ -50,7 +50,7 @@ public class AgendaRelatorioReaderTests : IDisposable
         // Arrange
         var max = 10;
         var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "carCodigo > 0";
+        var cWhere = "vqaCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "carNome";
         var cancellationToken = CancellationToken.None;
@@ -66,7 +66,7 @@ public class AgendaRelatorioReaderTests : IDisposable
         // Arrange
         var max = 10;
         var uri = "test-uri";
-        var cWhere = "carCodigo > 0";
+        var cWhere = "vqaCodigo > 0";
         var parameters = new List<SqlParameter>();
         var order = "carNome";
         var cancellationToken = new CancellationToken(true); // Already cancelled

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPontoVirtualWriter
 {
-    Task<FPontoVirtual> WriteAsync(Models.PontoVirtual pontovirtual, MsiSqlConnection oCnn);
+    Task<FPontoVirtual> WriteAsync(Models.PontoVirtual pontovirtual, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(PontoVirtualResponse pontovirtual, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,7 +20,7 @@ public class PontoVirtualWriter(IFPontoVirtualFactory pontovirtualFactory) : IPo
         await _pontovirtualFactory.DeleteAsync(operadorId, pontovirtual.Id, oCnn);
     }
 
-    public virtual async Task<FPontoVirtual> WriteAsync(Models.PontoVirtual pontovirtual, MsiSqlConnection oCnn)
+    public virtual async Task<FPontoVirtual> WriteAsync(Models.PontoVirtual pontovirtual, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (pontovirtual.Id.IsEmptyIDNumber() ? _pontovirtualFactory.CreateAsync() : _pontovirtualFactory.CreateFromIdAsync(pontovirtual.Id, oCnn));
         if (pontovirtual.HoraEntrada != null)
@@ -29,6 +29,7 @@ public class PontoVirtualWriter(IFPontoVirtualFactory pontovirtualFactory) : IPo
             dbRec.FHoraSaida = pontovirtual.HoraSaida.ToString();
         dbRec.FOperador = pontovirtual.Operador;
         dbRec.FKey = pontovirtual.Key;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

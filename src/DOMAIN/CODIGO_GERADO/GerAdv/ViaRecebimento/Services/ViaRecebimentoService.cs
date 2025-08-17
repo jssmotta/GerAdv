@@ -125,7 +125,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regViaRecebimento, oCnn);
+        using var saved = await writer.WriteAsync(regViaRecebimento, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

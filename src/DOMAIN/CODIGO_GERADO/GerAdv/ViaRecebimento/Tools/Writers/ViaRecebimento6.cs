@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IViaRecebimentoWriter
 {
-    Task<FViaRecebimento> WriteAsync(Models.ViaRecebimento viarecebimento, MsiSqlConnection oCnn);
+    Task<FViaRecebimento> WriteAsync(Models.ViaRecebimento viarecebimento, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(ViaRecebimentoResponse viarecebimento, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,10 +20,11 @@ public class ViaRecebimentoWriter(IFViaRecebimentoFactory viarecebimentoFactory)
         await _viarecebimentoFactory.DeleteAsync(operadorId, viarecebimento.Id, oCnn);
     }
 
-    public virtual async Task<FViaRecebimento> WriteAsync(Models.ViaRecebimento viarecebimento, MsiSqlConnection oCnn)
+    public virtual async Task<FViaRecebimento> WriteAsync(Models.ViaRecebimento viarecebimento, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (viarecebimento.Id.IsEmptyIDNumber() ? _viarecebimentoFactory.CreateAsync() : _viarecebimentoFactory.CreateFromIdAsync(viarecebimento.Id, oCnn));
         dbRec.FNome = viarecebimento.Nome;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }

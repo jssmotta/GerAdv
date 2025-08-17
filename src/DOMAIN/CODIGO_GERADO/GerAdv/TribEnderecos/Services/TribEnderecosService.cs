@@ -127,7 +127,7 @@ public partial class TribEnderecosService(IOptions<AppSettings> appSettings, IFT
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regTribEnderecos, oCnn);
+        using var saved = await writer.WriteAsync(regTribEnderecos, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

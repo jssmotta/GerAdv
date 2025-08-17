@@ -126,7 +126,7 @@ public partial class TipoEMailService(IOptions<AppSettings> appSettings, IFTipoE
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        using var saved = await writer.WriteAsync(regTipoEMail, oCnn);
+        using var saved = await writer.WriteAsync(regTipoEMail, BaseConsts.DefaultAuditor, oCnn);
         return reader.Read(saved, oCnn);
     }
 

@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProcessOutputEngineWriter
 {
-    Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, MsiSqlConnection oCnn);
+    Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection oCnn);
     Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection oCnn);
 }
 
@@ -20,7 +20,7 @@ public class ProcessOutputEngineWriter(IFProcessOutputEngineFactory processoutpu
         await _processoutputengineFactory.DeleteAsync(operadorId, processoutputengine.Id, oCnn);
     }
 
-    public virtual async Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, MsiSqlConnection oCnn)
+    public virtual async Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection oCnn)
     {
         using var dbRec = await (processoutputengine.Id.IsEmptyIDNumber() ? _processoutputengineFactory.CreateAsync() : _processoutputengineFactory.CreateFromIdAsync(processoutputengine.Id, oCnn));
         dbRec.FNome = processoutputengine.Nome;
@@ -36,6 +36,7 @@ public class ProcessOutputEngineWriter(IFProcessOutputEngineFactory processoutpu
         dbRec.FIDModulo = processoutputengine.IDModulo;
         dbRec.FIsOnlyProcesso = processoutputengine.IsOnlyProcesso;
         dbRec.FMyID = processoutputengine.MyID;
+        dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;
     }
