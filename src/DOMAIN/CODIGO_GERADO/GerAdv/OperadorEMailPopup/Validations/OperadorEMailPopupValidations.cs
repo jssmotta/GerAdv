@@ -28,8 +28,6 @@ public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBOperadorEMailPopupDicInfo.OepNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBOperadorEMailPopupDicInfo.OepNome.FTamanho} caracteres.");
-        if (reg.Senha != null && reg.Senha.Length > DBOperadorEMailPopupDicInfo.OepSenha.FTamanho)
-            throw new SGValidationException($"Senha deve ter no máximo {DBOperadorEMailPopupDicInfo.OepSenha.FTamanho} caracteres.");
         if (reg.SMTP != null && reg.SMTP.Length > DBOperadorEMailPopupDicInfo.OepSMTP.FTamanho)
             throw new SGValidationException($"SMTP deve ter no máximo {DBOperadorEMailPopupDicInfo.OepSMTP.FTamanho} caracteres.");
         if (reg.POP3 != null && reg.POP3.Length > DBOperadorEMailPopupDicInfo.OepPOP3.FTamanho)

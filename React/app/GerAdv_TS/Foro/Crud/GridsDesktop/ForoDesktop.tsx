@@ -82,18 +82,6 @@ const SearchFromCellInstancia = (props: any) => {
 </>
 );
 };
-const openSearchCellPoderJudiciarioAssociado = (id: number) => {
-  router.push(`/pages/poderjudiciarioassociado/?foro=${id}`);
-};
-const SearchFromCellPoderJudiciarioAssociado = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellPoderJudiciarioAssociado(props.dataItem.id)}><span title='Pesquisar relacionados em Poder Judiciario Associado'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -190,17 +178,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellInstancia }}
   />
   ), /* Track G.03 */
-  'id_edit_PoderJudiciarioAssociado': (
-  <GridColumn
-  key='PoderJudiciarioAssociado'
-  field='PoderJudiciarioAssociado'
-  title='Poder Judiciario Associado'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />
-  ), /* Track G.03 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
@@ -222,14 +199,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Instancia'
   cells={{ data: SearchFromCellInstancia }}
-  />, 
-  <GridColumn
-  field='id_edit_PoderJudiciarioAssociado'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Poder Judiciario Associado'
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
   />, 
   ], [RowNumberCell, EditRow, DeleteRow]);
   // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
@@ -280,14 +249,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Instancia'
   cells={{ data: SearchFromCellInstancia }}
-  />, 
-  <GridColumn
-  field='id_edit_PoderJudiciarioAssociado'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Poder Judiciario Associado'
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
   />, 
 
   // Colunas reordenáveis na ordem especificada

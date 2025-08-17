@@ -48,8 +48,6 @@ public static class AddServices
         builder.Services.AddScoped<ContatoCRMViewService>();
         builder.Services.AddScoped<IContratosService, ContratosService>();
         builder.Services.AddScoped<ContratosService>();
-        builder.Services.AddScoped<IDadosProcuracaoService, DadosProcuracaoService>();
-        builder.Services.AddScoped<DadosProcuracaoService>();
         builder.Services.AddScoped<IDiario2Service, Diario2Service>();
         builder.Services.AddScoped<Diario2Service>();
         builder.Services.AddScoped<IDivisaoTribunalService, DivisaoTribunalService>();
@@ -60,8 +58,6 @@ public static class AddServices
         builder.Services.AddScoped<EMPClassRiscosService>();
         builder.Services.AddScoped<IEnderecosService, EnderecosService>();
         builder.Services.AddScoped<EnderecosService>();
-        builder.Services.AddScoped<IEnderecoSistemaService, EnderecoSistemaService>();
-        builder.Services.AddScoped<EnderecoSistemaService>();
         builder.Services.AddScoped<IEnquadramentoEmpresaService, EnquadramentoEmpresaService>();
         builder.Services.AddScoped<EnquadramentoEmpresaService>();
         builder.Services.AddScoped<IEscritoriosService, EscritoriosService>();
@@ -140,10 +136,6 @@ public static class AddServices
         builder.Services.AddScoped<PenhoraService>();
         builder.Services.AddScoped<IPenhoraStatusService, PenhoraStatusService>();
         builder.Services.AddScoped<PenhoraStatusService>();
-        builder.Services.AddScoped<IPoderJudiciarioAssociadoService, PoderJudiciarioAssociadoService>();
-        builder.Services.AddScoped<PoderJudiciarioAssociadoService>();
-        builder.Services.AddScoped<IPontoVirtualService, PontoVirtualService>();
-        builder.Services.AddScoped<PontoVirtualService>();
         builder.Services.AddScoped<IPontoVirtualAcessosService, PontoVirtualAcessosService>();
         builder.Services.AddScoped<PontoVirtualAcessosService>();
         builder.Services.AddScoped<IPosicaoOutrasPartesService, PosicaoOutrasPartesService>();
@@ -160,8 +152,6 @@ public static class AddServices
         builder.Services.AddScoped<ProcessOutputEngineService>();
         builder.Services.AddScoped<IProcessOutPutIDsService, ProcessOutPutIDsService>();
         builder.Services.AddScoped<ProcessOutPutIDsService>();
-        builder.Services.AddScoped<IProcessOutputRequestService, ProcessOutputRequestService>();
-        builder.Services.AddScoped<ProcessOutputRequestService>();
         builder.Services.AddScoped<IProcessOutputSourcesService, ProcessOutputSourcesService>();
         builder.Services.AddScoped<ProcessOutputSourcesService>();
         builder.Services.AddScoped<IProDespesasService, ProDespesasService>();
@@ -226,8 +216,6 @@ public static class AddServices
         builder.Services.AddScoped<TiposAcaoService>();
         builder.Services.AddScoped<ITipoStatusBiuService, TipoStatusBiuService>();
         builder.Services.AddScoped<TipoStatusBiuService>();
-        builder.Services.AddScoped<ITribEnderecosService, TribEnderecosService>();
-        builder.Services.AddScoped<TribEnderecosService>();
         builder.Services.AddScoped<ITribunalService, TribunalService>();
         builder.Services.AddScoped<TribunalService>();
         builder.Services.AddScoped<IUFService, UFService>();

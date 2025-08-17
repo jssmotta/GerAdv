@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ICidadeValidation
 {
     Task<bool> ValidateReg(Models.Cidade reg, ICidadeService service, IUFReader ufReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEnderecoSistemaService enderecosistemaService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class CidadeValidation : ICidadeValidation
 {
-    public async Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEnderecoSistemaService enderecosistemaService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ICidadeService service, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -45,45 +45,36 @@ public class CidadeValidation : ICidadeValidation
         var enderecosExists7 = await enderecosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEnderecos { Cidade = id ?? default }, uri);
         if (enderecosExists7 != null && enderecosExists7.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Endereços associados a ele.");
-        var enderecosistemaExists8 = await enderecosistemaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEnderecoSistema { Cidade = id ?? default }, uri);
-        if (enderecosistemaExists8 != null && enderecosistemaExists8.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.");
-        var escritoriosExists9 = await escritoriosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEscritorios { Cidade = id ?? default }, uri);
-        if (escritoriosExists9 != null && escritoriosExists9.Any())
+        var escritoriosExists8 = await escritoriosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEscritorios { Cidade = id ?? default }, uri);
+        if (escritoriosExists8 != null && escritoriosExists8.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Escritorios associados a ele.");
-        var fornecedoresExists10 = await fornecedoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFornecedores { Cidade = id ?? default }, uri);
-        if (fornecedoresExists10 != null && fornecedoresExists10.Any())
+        var fornecedoresExists9 = await fornecedoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFornecedores { Cidade = id ?? default }, uri);
+        if (fornecedoresExists9 != null && fornecedoresExists9.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Fornecedores associados a ele.");
-        var foroExists11 = await foroService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterForo { Cidade = id ?? default }, uri);
-        if (foroExists11 != null && foroExists11.Any())
+        var foroExists10 = await foroService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterForo { Cidade = id ?? default }, uri);
+        if (foroExists10 != null && foroExists10.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Foro associados a ele.");
-        var funcionariosExists12 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Cidade = id ?? default }, uri);
-        if (funcionariosExists12 != null && funcionariosExists12.Any())
+        var funcionariosExists11 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Cidade = id ?? default }, uri);
+        if (funcionariosExists11 != null && funcionariosExists11.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
-        var oponentesExists13 = await oponentesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { Cidade = id ?? default }, uri);
-        if (oponentesExists13 != null && oponentesExists13.Any())
+        var oponentesExists12 = await oponentesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentes { Cidade = id ?? default }, uri);
+        if (oponentesExists12 != null && oponentesExists12.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Oponentes associados a ele.");
-        var oponentesreplegalExists14 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Cidade = id ?? default }, uri);
-        if (oponentesreplegalExists14 != null && oponentesreplegalExists14.Any())
+        var oponentesreplegalExists13 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Cidade = id ?? default }, uri);
+        if (oponentesreplegalExists13 != null && oponentesreplegalExists13.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Oponentes Rep Legal associados a ele.");
-        var outraspartesclienteExists15 = await outraspartesclienteService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOutrasPartesCliente { Cidade = id ?? default }, uri);
-        if (outraspartesclienteExists15 != null && outraspartesclienteExists15.Any())
+        var outraspartesclienteExists14 = await outraspartesclienteService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOutrasPartesCliente { Cidade = id ?? default }, uri);
+        if (outraspartesclienteExists14 != null && outraspartesclienteExists14.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Outras Partes Cliente associados a ele.");
-        var poderjudiciarioassociadoExists16 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Cidade = id ?? default }, uri);
-        if (poderjudiciarioassociadoExists16 != null && poderjudiciarioassociadoExists16.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var preclientesExists17 = await preclientesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPreClientes { Cidade = id ?? default }, uri);
-        if (preclientesExists17 != null && preclientesExists17.Any())
+        var preclientesExists15 = await preclientesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPreClientes { Cidade = id ?? default }, uri);
+        if (preclientesExists15 != null && preclientesExists15.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pre Clientes associados a ele.");
-        var prepostosExists18 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Cidade = id ?? default }, uri);
-        if (prepostosExists18 != null && prepostosExists18.Any())
+        var prepostosExists16 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Cidade = id ?? default }, uri);
+        if (prepostosExists16 != null && prepostosExists16.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
-        var terceirosExists19 = await terceirosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTerceiros { Cidade = id ?? default }, uri);
-        if (terceirosExists19 != null && terceirosExists19.Any())
+        var terceirosExists17 = await terceirosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTerceiros { Cidade = id ?? default }, uri);
+        if (terceirosExists17 != null && terceirosExists17.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Terceiros associados a ele.");
-        var tribenderecosExists20 = await tribenderecosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribEnderecos { Cidade = id ?? default }, uri);
-        if (tribenderecosExists20 != null && tribenderecosExists20.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Trib Endereços associados a ele.");
         return true;
     }
 

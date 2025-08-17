@@ -154,18 +154,6 @@ const SearchFromCellEnderecos = (props: any) => {
 </>
 );
 };
-const openSearchCellEnderecoSistema = (id: number) => {
-  router.push(`/pages/enderecosistema/?cidade=${id}`);
-};
-const SearchFromCellEnderecoSistema = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellEnderecoSistema(props.dataItem.id)}><span title='Pesquisar relacionados em Endereco Sistema'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellEscritorios = (id: number) => {
   router.push(`/pages/escritorios/?cidade=${id}`);
 };
@@ -250,18 +238,6 @@ const SearchFromCellOutrasPartesCliente = (props: any) => {
 </>
 );
 };
-const openSearchCellPoderJudiciarioAssociado = (id: number) => {
-  router.push(`/pages/poderjudiciarioassociado/?cidade=${id}`);
-};
-const SearchFromCellPoderJudiciarioAssociado = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellPoderJudiciarioAssociado(props.dataItem.id)}><span title='Pesquisar relacionados em Poder Judiciario Associado'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellPreClientes = (id: number) => {
   router.push(`/pages/preclientes/?cidade=${id}`);
 };
@@ -294,18 +270,6 @@ const SearchFromCellTerceiros = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellTerceiros(props.dataItem.id)}><span title='Pesquisar relacionados em Terceiros'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellTribEnderecos = (id: number) => {
-  router.push(`/pages/tribenderecos/?cidade=${id}`);
-};
-const SearchFromCellTribEnderecos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellTribEnderecos(props.dataItem.id)}><span title='Pesquisar relacionados em Trib Endereços'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -464,17 +428,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellEnderecos }}
   />
   ), /* Track G.03 */
-  'id_edit_EnderecoSistema': (
-  <GridColumn
-  key='EnderecoSistema'
-  field='EnderecoSistema'
-  title='Endereco Sistema'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellEnderecoSistema }}
-  />
-  ), /* Track G.03 */
   'id_edit_Escritorios': (
   <GridColumn
   key='Escritorios'
@@ -552,17 +505,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellOutrasPartesCliente }}
   />
   ), /* Track G.03 */
-  'id_edit_PoderJudiciarioAssociado': (
-  <GridColumn
-  key='PoderJudiciarioAssociado'
-  field='PoderJudiciarioAssociado'
-  title='Poder Judiciario Associado'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />
-  ), /* Track G.03 */
   'id_edit_PreClientes': (
   <GridColumn
   key='PreClientes'
@@ -594,17 +536,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellTerceiros }}
-  />
-  ), /* Track G.03 */
-  'id_edit_TribEnderecos': (
-  <GridColumn
-  key='TribEnderecos'
-  field='TribEnderecos'
-  title='Trib Endereços'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellTribEnderecos }}
   />
   ), /* Track G.03 */
   // ← Colunas aqui

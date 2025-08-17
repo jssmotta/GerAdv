@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITribunalValidation
 {
     Task<bool> ValidateReg(Models.Tribunal reg, ITribunalService service, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TribunalValidation : ITribunalValidation
 {
-    public async Task<bool> CanDelete(int? id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITribunalService service, IDivisaoTribunalService divisaotribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -24,12 +24,6 @@ public class TribunalValidation : ITribunalValidation
         var divisaotribunalExists0 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Tribunal = id ?? default }, uri);
         if (divisaotribunalExists0 != null && divisaotribunalExists0.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
-        var poderjudiciarioassociadoExists1 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Tribunal = id ?? default }, uri);
-        if (poderjudiciarioassociadoExists1 != null && poderjudiciarioassociadoExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var tribenderecosExists2 = await tribenderecosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribEnderecos { Tribunal = id ?? default }, uri);
-        if (tribenderecosExists2 != null && tribenderecosExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Trib Endereços associados a ele.");
         return true;
     }
 

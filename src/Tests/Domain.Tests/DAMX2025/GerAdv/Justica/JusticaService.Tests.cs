@@ -14,7 +14,6 @@ public class JusticaServiceTests : IDisposable
     private readonly Mock<IDivisaoTribunalService> _mockDivisaoTribunalService;
     private readonly Mock<IFaseService> _mockFaseService;
     private readonly Mock<IObjetosService> _mockObjetosService;
-    private readonly Mock<IPoderJudiciarioAssociadoService> _mockPoderJudiciarioAssociadoService;
     private readonly Mock<ITipoRecursoService> _mockTipoRecursoService;
     private readonly Mock<ITribunalService> _mockTribunalService;
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
@@ -34,7 +33,6 @@ public class JusticaServiceTests : IDisposable
         _mockDivisaoTribunalService = new Mock<IDivisaoTribunalService>();
         _mockFaseService = new Mock<IFaseService>();
         _mockObjetosService = new Mock<IObjetosService>();
-        _mockPoderJudiciarioAssociadoService = new Mock<IPoderJudiciarioAssociadoService>();
         _mockTipoRecursoService = new Mock<ITipoRecursoService>();
         _mockTribunalService = new Mock<ITribunalService>();
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
@@ -42,14 +40,14 @@ public class JusticaServiceTests : IDisposable
         _mockMemoryCache = new Mock<IMemoryCache>();
         var appSettings = new AppSettings();
         _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-        _service = new JusticaService(_mockAppSettings.Object, _mockJusticaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAcaoService.Object, _mockAgendaService.Object, _mockDivisaoTribunalService.Object, _mockFaseService.Object, _mockObjetosService.Object, _mockPoderJudiciarioAssociadoService.Object, _mockTipoRecursoService.Object, _mockTribunalService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        _service = new JusticaService(_mockAppSettings.Object, _mockJusticaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAcaoService.Object, _mockAgendaService.Object, _mockDivisaoTribunalService.Object, _mockFaseService.Object, _mockObjetosService.Object, _mockTipoRecursoService.Object, _mockTribunalService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_InitializesService()
     {
         // Arrange & Act
-        var service = new JusticaService(_mockAppSettings.Object, _mockJusticaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAcaoService.Object, _mockAgendaService.Object, _mockDivisaoTribunalService.Object, _mockFaseService.Object, _mockObjetosService.Object, _mockPoderJudiciarioAssociadoService.Object, _mockTipoRecursoService.Object, _mockTribunalService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        var service = new JusticaService(_mockAppSettings.Object, _mockJusticaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAcaoService.Object, _mockAgendaService.Object, _mockDivisaoTribunalService.Object, _mockFaseService.Object, _mockObjetosService.Object, _mockTipoRecursoService.Object, _mockTribunalService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
         // Assert
         Assert.NotNull(service);
     }

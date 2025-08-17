@@ -38,101 +38,95 @@ public class DicionarioDeDadosManagedDatabaseCodeTests
     [InlineData("16", typeof(DBContaCorrenteODicInfo))]
     [InlineData("17", typeof(DBContatoCRMViewODicInfo))]
     [InlineData("18", typeof(DBContratosODicInfo))]
-    [InlineData("19", typeof(DBDadosProcuracaoODicInfo))]
-    [InlineData("20", typeof(DBDiario2ODicInfo))]
-    [InlineData("21", typeof(DBDivisaoTribunalODicInfo))]
-    [InlineData("22", typeof(DBDocumentosODicInfo))]
-    [InlineData("23", typeof(DBEMPClassRiscosODicInfo))]
-    [InlineData("24", typeof(DBEnderecosODicInfo))]
-    [InlineData("25", typeof(DBEnderecoSistemaODicInfo))]
-    [InlineData("26", typeof(DBEnquadramentoEmpresaODicInfo))]
-    [InlineData("27", typeof(DBEscritoriosODicInfo))]
-    [InlineData("28", typeof(DBEventoPrazoAgendaODicInfo))]
-    [InlineData("29", typeof(DBFaseODicInfo))]
-    [InlineData("30", typeof(DBFornecedoresODicInfo))]
-    [InlineData("31", typeof(DBForoODicInfo))]
-    [InlineData("32", typeof(DBFuncaoODicInfo))]
-    [InlineData("33", typeof(DBFuncionariosODicInfo))]
-    [InlineData("34", typeof(DBGraphODicInfo))]
-    [InlineData("35", typeof(DBGruposEmpresasODicInfo))]
-    [InlineData("36", typeof(DBGUTAtividadesODicInfo))]
-    [InlineData("37", typeof(DBGUTAtividadesMatrizODicInfo))]
-    [InlineData("38", typeof(DBGUTMatrizODicInfo))]
-    [InlineData("39", typeof(DBGUTPeriodicidadeODicInfo))]
-    [InlineData("40", typeof(DBGUTPeriodicidadeStatusODicInfo))]
-    [InlineData("41", typeof(DBGUTTipoODicInfo))]
-    [InlineData("42", typeof(DBHonorariosDadosContratoODicInfo))]
-    [InlineData("43", typeof(DBHorasTrabODicInfo))]
-    [InlineData("44", typeof(DBInstanciaODicInfo))]
-    [InlineData("45", typeof(DBJusticaODicInfo))]
-    [InlineData("46", typeof(DBLigacoesODicInfo))]
-    [InlineData("47", typeof(DBLivroCaixaODicInfo))]
-    [InlineData("48", typeof(DBModelosDocumentosODicInfo))]
-    [InlineData("49", typeof(DBNECompromissosODicInfo))]
-    [InlineData("50", typeof(DBNENotasODicInfo))]
-    [InlineData("51", typeof(DBNEPalavrasChavesODicInfo))]
-    [InlineData("52", typeof(DBObjetosODicInfo))]
-    [InlineData("53", typeof(DBOperadorODicInfo))]
-    [InlineData("54", typeof(DBOperadorEMailPopupODicInfo))]
-    [InlineData("55", typeof(DBOperadoresODicInfo))]
-    [InlineData("56", typeof(DBOperadorGruposODicInfo))]
-    [InlineData("57", typeof(DBOperadorGruposAgendaODicInfo))]
-    [InlineData("58", typeof(DBOponentesODicInfo))]
-    [InlineData("59", typeof(DBOponentesRepLegalODicInfo))]
-    [InlineData("60", typeof(DBOutrasPartesClienteODicInfo))]
-    [InlineData("61", typeof(DBPaisesODicInfo))]
-    [InlineData("62", typeof(DBParceriaProcODicInfo))]
-    [InlineData("63", typeof(DBPenhoraODicInfo))]
-    [InlineData("64", typeof(DBPenhoraStatusODicInfo))]
-    [InlineData("65", typeof(DBPoderJudiciarioAssociadoODicInfo))]
-    [InlineData("66", typeof(DBPontoVirtualODicInfo))]
-    [InlineData("67", typeof(DBPontoVirtualAcessosODicInfo))]
-    [InlineData("68", typeof(DBPosicaoOutrasPartesODicInfo))]
-    [InlineData("69", typeof(DBPreClientesODicInfo))]
-    [InlineData("70", typeof(DBPrepostosODicInfo))]
-    [InlineData("71", typeof(DBProCDAODicInfo))]
-    [InlineData("72", typeof(DBProcessosObsReportODicInfo))]
-    [InlineData("73", typeof(DBProcessOutputEngineODicInfo))]
-    [InlineData("74", typeof(DBProcessOutPutIDsODicInfo))]
-    [InlineData("75", typeof(DBProcessOutputRequestODicInfo))]
-    [InlineData("76", typeof(DBProcessOutputSourcesODicInfo))]
-    [InlineData("77", typeof(DBProDespesasODicInfo))]
-    [InlineData("78", typeof(DBProObservacoesODicInfo))]
-    [InlineData("79", typeof(DBProProcuradoresODicInfo))]
-    [InlineData("80", typeof(DBProResumosODicInfo))]
-    [InlineData("81", typeof(DBProSucumbenciaODicInfo))]
-    [InlineData("82", typeof(DBProTipoBaixaODicInfo))]
-    [InlineData("83", typeof(DBProValoresODicInfo))]
-    [InlineData("84", typeof(DBRamalODicInfo))]
-    [InlineData("85", typeof(DBRegimeTributacaoODicInfo))]
-    [InlineData("86", typeof(DBReuniaoODicInfo))]
-    [InlineData("87", typeof(DBRitoODicInfo))]
-    [InlineData("88", typeof(DBServicosODicInfo))]
-    [InlineData("89", typeof(DBSetorODicInfo))]
-    [InlineData("90", typeof(DBSituacaoODicInfo))]
-    [InlineData("91", typeof(DBSMSAliceODicInfo))]
-    [InlineData("92", typeof(DBStatusAndamentoODicInfo))]
-    [InlineData("93", typeof(DBStatusHTrabODicInfo))]
-    [InlineData("94", typeof(DBStatusInstanciaODicInfo))]
-    [InlineData("95", typeof(DBStatusTarefasODicInfo))]
-    [InlineData("96", typeof(DBTerceirosODicInfo))]
-    [InlineData("97", typeof(DBTipoCompromissoODicInfo))]
-    [InlineData("98", typeof(DBTipoContatoCRMODicInfo))]
-    [InlineData("99", typeof(DBTipoEMailODicInfo))]
-    [InlineData("100", typeof(DBTipoEnderecoODicInfo))]
-    [InlineData("101", typeof(DBTipoEnderecoSistemaODicInfo))]
-    [InlineData("102", typeof(DBTipoModeloDocumentoODicInfo))]
-    [InlineData("103", typeof(DBTipoOrigemSucumbenciaODicInfo))]
-    [InlineData("104", typeof(DBTipoProDespositoODicInfo))]
-    [InlineData("105", typeof(DBTipoRecursoODicInfo))]
-    [InlineData("106", typeof(DBTiposAcaoODicInfo))]
-    [InlineData("107", typeof(DBTipoStatusBiuODicInfo))]
-    [InlineData("108", typeof(DBTribEnderecosODicInfo))]
-    [InlineData("109", typeof(DBTribunalODicInfo))]
-    [InlineData("110", typeof(DBUFODicInfo))]
-    [InlineData("111", typeof(DBViaRecebimentoODicInfo))]
-    [InlineData("112", typeof(DBAgendaRelatorioODicInfo))]
-    [InlineData("113", typeof(DBAgendaSemanaODicInfo))]
+    [InlineData("19", typeof(DBDiario2ODicInfo))]
+    [InlineData("20", typeof(DBDivisaoTribunalODicInfo))]
+    [InlineData("21", typeof(DBDocumentosODicInfo))]
+    [InlineData("22", typeof(DBEMPClassRiscosODicInfo))]
+    [InlineData("23", typeof(DBEnderecosODicInfo))]
+    [InlineData("24", typeof(DBEnquadramentoEmpresaODicInfo))]
+    [InlineData("25", typeof(DBEscritoriosODicInfo))]
+    [InlineData("26", typeof(DBEventoPrazoAgendaODicInfo))]
+    [InlineData("27", typeof(DBFaseODicInfo))]
+    [InlineData("28", typeof(DBFornecedoresODicInfo))]
+    [InlineData("29", typeof(DBForoODicInfo))]
+    [InlineData("30", typeof(DBFuncaoODicInfo))]
+    [InlineData("31", typeof(DBFuncionariosODicInfo))]
+    [InlineData("32", typeof(DBGraphODicInfo))]
+    [InlineData("33", typeof(DBGruposEmpresasODicInfo))]
+    [InlineData("34", typeof(DBGUTAtividadesODicInfo))]
+    [InlineData("35", typeof(DBGUTAtividadesMatrizODicInfo))]
+    [InlineData("36", typeof(DBGUTMatrizODicInfo))]
+    [InlineData("37", typeof(DBGUTPeriodicidadeODicInfo))]
+    [InlineData("38", typeof(DBGUTPeriodicidadeStatusODicInfo))]
+    [InlineData("39", typeof(DBGUTTipoODicInfo))]
+    [InlineData("40", typeof(DBHonorariosDadosContratoODicInfo))]
+    [InlineData("41", typeof(DBHorasTrabODicInfo))]
+    [InlineData("42", typeof(DBInstanciaODicInfo))]
+    [InlineData("43", typeof(DBJusticaODicInfo))]
+    [InlineData("44", typeof(DBLigacoesODicInfo))]
+    [InlineData("45", typeof(DBLivroCaixaODicInfo))]
+    [InlineData("46", typeof(DBModelosDocumentosODicInfo))]
+    [InlineData("47", typeof(DBNECompromissosODicInfo))]
+    [InlineData("48", typeof(DBNENotasODicInfo))]
+    [InlineData("49", typeof(DBNEPalavrasChavesODicInfo))]
+    [InlineData("50", typeof(DBObjetosODicInfo))]
+    [InlineData("51", typeof(DBOperadorODicInfo))]
+    [InlineData("52", typeof(DBOperadorEMailPopupODicInfo))]
+    [InlineData("53", typeof(DBOperadoresODicInfo))]
+    [InlineData("54", typeof(DBOperadorGruposODicInfo))]
+    [InlineData("55", typeof(DBOperadorGruposAgendaODicInfo))]
+    [InlineData("56", typeof(DBOponentesODicInfo))]
+    [InlineData("57", typeof(DBOponentesRepLegalODicInfo))]
+    [InlineData("58", typeof(DBOutrasPartesClienteODicInfo))]
+    [InlineData("59", typeof(DBPaisesODicInfo))]
+    [InlineData("60", typeof(DBParceriaProcODicInfo))]
+    [InlineData("61", typeof(DBPenhoraODicInfo))]
+    [InlineData("62", typeof(DBPenhoraStatusODicInfo))]
+    [InlineData("63", typeof(DBPontoVirtualAcessosODicInfo))]
+    [InlineData("64", typeof(DBPosicaoOutrasPartesODicInfo))]
+    [InlineData("65", typeof(DBPreClientesODicInfo))]
+    [InlineData("66", typeof(DBPrepostosODicInfo))]
+    [InlineData("67", typeof(DBProCDAODicInfo))]
+    [InlineData("68", typeof(DBProcessosObsReportODicInfo))]
+    [InlineData("69", typeof(DBProcessOutputEngineODicInfo))]
+    [InlineData("70", typeof(DBProcessOutPutIDsODicInfo))]
+    [InlineData("71", typeof(DBProcessOutputSourcesODicInfo))]
+    [InlineData("72", typeof(DBProDespesasODicInfo))]
+    [InlineData("73", typeof(DBProObservacoesODicInfo))]
+    [InlineData("74", typeof(DBProProcuradoresODicInfo))]
+    [InlineData("75", typeof(DBProResumosODicInfo))]
+    [InlineData("76", typeof(DBProSucumbenciaODicInfo))]
+    [InlineData("77", typeof(DBProTipoBaixaODicInfo))]
+    [InlineData("78", typeof(DBProValoresODicInfo))]
+    [InlineData("79", typeof(DBRamalODicInfo))]
+    [InlineData("80", typeof(DBRegimeTributacaoODicInfo))]
+    [InlineData("81", typeof(DBReuniaoODicInfo))]
+    [InlineData("82", typeof(DBRitoODicInfo))]
+    [InlineData("83", typeof(DBServicosODicInfo))]
+    [InlineData("84", typeof(DBSetorODicInfo))]
+    [InlineData("85", typeof(DBSituacaoODicInfo))]
+    [InlineData("86", typeof(DBSMSAliceODicInfo))]
+    [InlineData("87", typeof(DBStatusAndamentoODicInfo))]
+    [InlineData("88", typeof(DBStatusHTrabODicInfo))]
+    [InlineData("89", typeof(DBStatusInstanciaODicInfo))]
+    [InlineData("90", typeof(DBStatusTarefasODicInfo))]
+    [InlineData("91", typeof(DBTerceirosODicInfo))]
+    [InlineData("92", typeof(DBTipoCompromissoODicInfo))]
+    [InlineData("93", typeof(DBTipoContatoCRMODicInfo))]
+    [InlineData("94", typeof(DBTipoEMailODicInfo))]
+    [InlineData("95", typeof(DBTipoEnderecoODicInfo))]
+    [InlineData("96", typeof(DBTipoEnderecoSistemaODicInfo))]
+    [InlineData("97", typeof(DBTipoModeloDocumentoODicInfo))]
+    [InlineData("98", typeof(DBTipoOrigemSucumbenciaODicInfo))]
+    [InlineData("99", typeof(DBTipoProDespositoODicInfo))]
+    [InlineData("100", typeof(DBTipoRecursoODicInfo))]
+    [InlineData("101", typeof(DBTiposAcaoODicInfo))]
+    [InlineData("102", typeof(DBTipoStatusBiuODicInfo))]
+    [InlineData("103", typeof(DBTribunalODicInfo))]
+    [InlineData("104", typeof(DBUFODicInfo))]
+    [InlineData("105", typeof(DBViaRecebimentoODicInfo))]
+    [InlineData("106", typeof(DBAgendaRelatorioODicInfo))]
+    [InlineData("107", typeof(DBAgendaSemanaODicInfo))]
     public void GlobalObjectDicInfo_ComId_DeveRetornarTipoCorreto(string id, Type tipoEsperado)
     {
         // Act
@@ -161,13 +155,11 @@ public class DicionarioDeDadosManagedDatabaseCodeTests
     [InlineData("CONTACORRENTE", typeof(DBContaCorrenteODicInfo))]
     [InlineData("CONTATOCRMVIEW", typeof(DBContatoCRMViewODicInfo))]
     [InlineData("CONTRATOS", typeof(DBContratosODicInfo))]
-    [InlineData("DADOSPROCURACAO", typeof(DBDadosProcuracaoODicInfo))]
     [InlineData("DIARIO2", typeof(DBDiario2ODicInfo))]
     [InlineData("DIVISAOTRIBUNAL", typeof(DBDivisaoTribunalODicInfo))]
     [InlineData("DOCUMENTOS", typeof(DBDocumentosODicInfo))]
     [InlineData("EMPCLASSRISCOS", typeof(DBEMPClassRiscosODicInfo))]
     [InlineData("ENDERECOS", typeof(DBEnderecosODicInfo))]
-    [InlineData("ENDERECOSISTEMA", typeof(DBEnderecoSistemaODicInfo))]
     [InlineData("ENQUADRAMENTOEMPRESA", typeof(DBEnquadramentoEmpresaODicInfo))]
     [InlineData("ESCRITORIOS", typeof(DBEscritoriosODicInfo))]
     [InlineData("EVENTOPRAZOAGENDA", typeof(DBEventoPrazoAgendaODicInfo))]
@@ -207,8 +199,6 @@ public class DicionarioDeDadosManagedDatabaseCodeTests
     [InlineData("PARCERIAPROC", typeof(DBParceriaProcODicInfo))]
     [InlineData("PENHORA", typeof(DBPenhoraODicInfo))]
     [InlineData("PENHORASTATUS", typeof(DBPenhoraStatusODicInfo))]
-    [InlineData("PODERJUDICIARIOASSOCIADO", typeof(DBPoderJudiciarioAssociadoODicInfo))]
-    [InlineData("PONTOVIRTUAL", typeof(DBPontoVirtualODicInfo))]
     [InlineData("PONTOVIRTUALACESSOS", typeof(DBPontoVirtualAcessosODicInfo))]
     [InlineData("POSICAOOUTRASPARTES", typeof(DBPosicaoOutrasPartesODicInfo))]
     [InlineData("PRECLIENTES", typeof(DBPreClientesODicInfo))]
@@ -217,7 +207,6 @@ public class DicionarioDeDadosManagedDatabaseCodeTests
     [InlineData("PROCESSOSOBSREPORT", typeof(DBProcessosObsReportODicInfo))]
     [InlineData("PROCESSOUTPUTENGINE", typeof(DBProcessOutputEngineODicInfo))]
     [InlineData("PROCESSOUTPUTIDS", typeof(DBProcessOutPutIDsODicInfo))]
-    [InlineData("PROCESSOUTPUTREQUEST", typeof(DBProcessOutputRequestODicInfo))]
     [InlineData("PROCESSOUTPUTSOURCES", typeof(DBProcessOutputSourcesODicInfo))]
     [InlineData("PRODESPESAS", typeof(DBProDespesasODicInfo))]
     [InlineData("PROOBSERVACOES", typeof(DBProObservacoesODicInfo))]
@@ -250,7 +239,6 @@ public class DicionarioDeDadosManagedDatabaseCodeTests
     [InlineData("TIPORECURSO", typeof(DBTipoRecursoODicInfo))]
     [InlineData("TIPOSACAO", typeof(DBTiposAcaoODicInfo))]
     [InlineData("TIPOSTATUSBIU", typeof(DBTipoStatusBiuODicInfo))]
-    [InlineData("TRIBENDERECOS", typeof(DBTribEnderecosODicInfo))]
     [InlineData("TRIBUNAL", typeof(DBTribunalODicInfo))]
     [InlineData("UF", typeof(DBUFODicInfo))]
     [InlineData("VIARECEBIMENTO", typeof(DBViaRecebimentoODicInfo))]
@@ -356,194 +344,182 @@ public class DicionarioDeDadosManagedDatabaseCodeTests
             "18",
             "CONTRATOS",
             "19",
-            "DADOSPROCURACAO",
-            "20",
             "DIARIO2",
-            "21",
+            "20",
             "DIVISAOTRIBUNAL",
-            "22",
+            "21",
             "DOCUMENTOS",
-            "23",
+            "22",
             "EMPCLASSRISCOS",
-            "24",
+            "23",
             "ENDERECOS",
-            "25",
-            "ENDERECOSISTEMA",
-            "26",
+            "24",
             "ENQUADRAMENTOEMPRESA",
-            "27",
+            "25",
             "ESCRITORIOS",
-            "28",
+            "26",
             "EVENTOPRAZOAGENDA",
-            "29",
+            "27",
             "FASE",
-            "30",
+            "28",
             "FORNECEDORES",
-            "31",
+            "29",
             "FORO",
-            "32",
+            "30",
             "FUNCAO",
-            "33",
+            "31",
             "FUNCIONARIOS",
-            "34",
+            "32",
             "GRAPH",
-            "35",
+            "33",
             "GRUPOSEMPRESAS",
-            "36",
+            "34",
             "GUTATIVIDADES",
-            "37",
+            "35",
             "GUTATIVIDADESMATRIZ",
-            "38",
+            "36",
             "GUTMATRIZ",
-            "39",
+            "37",
             "GUTPERIODICIDADE",
-            "40",
+            "38",
             "GUTPERIODICIDADESTATUS",
-            "41",
+            "39",
             "GUTTIPO",
-            "42",
+            "40",
             "HONORARIOSDADOSCONTRATO",
-            "43",
+            "41",
             "HORASTRAB",
-            "44",
+            "42",
             "INSTANCIA",
-            "45",
+            "43",
             "JUSTICA",
-            "46",
+            "44",
             "LIGACOES",
-            "47",
+            "45",
             "LIVROCAIXA",
-            "48",
+            "46",
             "MODELOSDOCUMENTOS",
-            "49",
+            "47",
             "NECOMPROMISSOS",
-            "50",
+            "48",
             "NENOTAS",
-            "51",
+            "49",
             "NEPALAVRASCHAVES",
-            "52",
+            "50",
             "OBJETOS",
-            "53",
+            "51",
             "OPERADOR",
-            "54",
+            "52",
             "OPERADOREMAILPOPUP",
-            "55",
+            "53",
             "OPERADORES",
-            "56",
+            "54",
             "OPERADORGRUPOS",
-            "57",
+            "55",
             "OPERADORGRUPOSAGENDA",
-            "58",
+            "56",
             "OPONENTES",
-            "59",
+            "57",
             "OPONENTESREPLEGAL",
-            "60",
+            "58",
             "OUTRASPARTESCLIENTE",
-            "61",
+            "59",
             "PAISES",
-            "62",
+            "60",
             "PARCERIAPROC",
-            "63",
+            "61",
             "PENHORA",
-            "64",
+            "62",
             "PENHORASTATUS",
-            "65",
-            "PODERJUDICIARIOASSOCIADO",
-            "66",
-            "PONTOVIRTUAL",
-            "67",
+            "63",
             "PONTOVIRTUALACESSOS",
-            "68",
+            "64",
             "POSICAOOUTRASPARTES",
-            "69",
+            "65",
             "PRECLIENTES",
-            "70",
+            "66",
             "PREPOSTOS",
-            "71",
+            "67",
             "PROCDA",
-            "72",
+            "68",
             "PROCESSOSOBSREPORT",
-            "73",
+            "69",
             "PROCESSOUTPUTENGINE",
-            "74",
+            "70",
             "PROCESSOUTPUTIDS",
-            "75",
-            "PROCESSOUTPUTREQUEST",
-            "76",
+            "71",
             "PROCESSOUTPUTSOURCES",
-            "77",
+            "72",
             "PRODESPESAS",
-            "78",
+            "73",
             "PROOBSERVACOES",
-            "79",
+            "74",
             "PROPROCURADORES",
-            "80",
+            "75",
             "PRORESUMOS",
-            "81",
+            "76",
             "PROSUCUMBENCIA",
-            "82",
+            "77",
             "PROTIPOBAIXA",
-            "83",
+            "78",
             "PROVALORES",
-            "84",
+            "79",
             "RAMAL",
-            "85",
+            "80",
             "REGIMETRIBUTACAO",
-            "86",
+            "81",
             "REUNIAO",
-            "87",
+            "82",
             "RITO",
-            "88",
+            "83",
             "SERVICOS",
-            "89",
+            "84",
             "SETOR",
-            "90",
+            "85",
             "SITUACAO",
-            "91",
+            "86",
             "SMSALICE",
-            "92",
+            "87",
             "STATUSANDAMENTO",
-            "93",
+            "88",
             "STATUSHTRAB",
-            "94",
+            "89",
             "STATUSINSTANCIA",
-            "95",
+            "90",
             "STATUSTAREFAS",
-            "96",
+            "91",
             "TERCEIROS",
-            "97",
+            "92",
             "TIPOCOMPROMISSO",
-            "98",
+            "93",
             "TIPOCONTATOCRM",
-            "99",
+            "94",
             "TIPOEMAIL",
-            "100",
+            "95",
             "TIPOENDERECO",
-            "101",
+            "96",
             "TIPOENDERECOSISTEMA",
-            "102",
+            "97",
             "TIPOMODELODOCUMENTO",
-            "103",
+            "98",
             "TIPOORIGEMSUCUMBENCIA",
-            "104",
+            "99",
             "TIPOPRODESPOSITO",
-            "105",
+            "100",
             "TIPORECURSO",
-            "106",
+            "101",
             "TIPOSACAO",
-            "107",
+            "102",
             "TIPOSTATUSBIU",
-            "108",
-            "TRIBENDERECOS",
-            "109",
+            "103",
             "TRIBUNAL",
-            "110",
+            "104",
             "UF",
-            "111",
+            "105",
             "VIARECEBIMENTO",
-            "112",
+            "106",
             "AGENDARELATORIO",
-            "113",
+            "107",
             "AGENDASEMANA",
         };
         foreach (var entrada in entradas)

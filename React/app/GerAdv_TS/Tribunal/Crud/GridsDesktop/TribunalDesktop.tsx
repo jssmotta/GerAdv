@@ -72,30 +72,6 @@ const SearchFromCellDivisaoTribunal = (props: any) => {
 </>
 );
 };
-const openSearchCellPoderJudiciarioAssociado = (id: number) => {
-  router.push(`/pages/poderjudiciarioassociado/?tribunal=${id}`);
-};
-const SearchFromCellPoderJudiciarioAssociado = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellPoderJudiciarioAssociado(props.dataItem.id)}><span title='Pesquisar relacionados em Poder Judiciario Associado'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellTribEnderecos = (id: number) => {
-  router.push(`/pages/tribenderecos/?tribunal=${id}`);
-};
-const SearchFromCellTribEnderecos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellTribEnderecos(props.dataItem.id)}><span title='Pesquisar relacionados em Trib Endereços'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -197,28 +173,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellDivisaoTribunal }}
   />
   ), /* Track G.03 */
-  'id_edit_PoderJudiciarioAssociado': (
-  <GridColumn
-  key='PoderJudiciarioAssociado'
-  field='PoderJudiciarioAssociado'
-  title='Poder Judiciario Associado'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />
-  ), /* Track G.03 */
-  'id_edit_TribEnderecos': (
-  <GridColumn
-  key='TribEnderecos'
-  field='TribEnderecos'
-  title='Trib Endereços'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellTribEnderecos }}
-  />
-  ), /* Track G.03 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
@@ -232,22 +186,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Divisao Tribunal'
   cells={{ data: SearchFromCellDivisaoTribunal }}
-  />, 
-  <GridColumn
-  field='id_edit_PoderJudiciarioAssociado'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Poder Judiciario Associado'
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />, 
-  <GridColumn
-  field='id_edit_TribEnderecos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Trib Endereços'
-  cells={{ data: SearchFromCellTribEnderecos }}
   />, 
   ], [RowNumberCell, EditRow, DeleteRow]);
   // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
@@ -290,22 +228,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Divisao Tribunal'
   cells={{ data: SearchFromCellDivisaoTribunal }}
-  />, 
-  <GridColumn
-  field='id_edit_PoderJudiciarioAssociado'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Poder Judiciario Associado'
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />, 
-  <GridColumn
-  field='id_edit_TribEnderecos'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Trib Endereços'
-  cells={{ data: SearchFromCellTribEnderecos }}
   />, 
 
   // Colunas reordenáveis na ordem especificada

@@ -38,13 +38,11 @@ public class InitializeWarmUp
         await new ColaboradoresWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ContaCorrenteWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ContratosWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new DadosProcuracaoWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new Diario2WarmUp().WarmReadStringAuditor(uri, oCnn);
         await new DivisaoTribunalWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new DocumentosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new EMPClassRiscosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new EnderecosWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new EnderecoSistemaWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new EnquadramentoEmpresaWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new EscritoriosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new EventoPrazoAgendaWarmUp().WarmReadStringAuditor(uri, oCnn);
@@ -83,13 +81,11 @@ public class InitializeWarmUp
         await new ParceriaProcWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PenhoraWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PenhoraStatusWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new PoderJudiciarioAssociadoWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PosicaoOutrasPartesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PreClientesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new PrepostosWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProCDAWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProcessosObsReportWarmUp().WarmReadStringAuditor(uri, oCnn);
-        await new ProcessOutputRequestWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProDespesasWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProObservacoesWarmUp().WarmReadStringAuditor(uri, oCnn);
         await new ProProcuradoresWarmUp().WarmReadStringAuditor(uri, oCnn);

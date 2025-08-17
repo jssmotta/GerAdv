@@ -120,18 +120,6 @@ const SearchFromCellContratos = (props: any) => {
 </>
 );
 };
-const openSearchCellDadosProcuracao = (id: number) => {
-  router.push(`/pages/dadosprocuracao/?clientes=${id}`);
-};
-const SearchFromCellDadosProcuracao = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellDadosProcuracao(props.dataItem.id)}><span title='Pesquisar relacionados em Dados Procuracao'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellDiario2 = (id: number) => {
   router.push(`/pages/diario2/?clientes=${id}`);
 };
@@ -385,17 +373,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellContratos }}
   />
   ), /* Track G.03 */
-  'id_edit_DadosProcuracao': (
-  <GridColumn
-  key='DadosProcuracao'
-  field='DadosProcuracao'
-  title='Dados Procuracao'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellDadosProcuracao }}
-  />
-  ), /* Track G.03 */
   'id_edit_Diario2': (
   <GridColumn
   key='Diario2'
@@ -542,14 +519,6 @@ const baseGridColumns = useMemo(() => [
   cells={{ data: SearchFromCellContratos }}
   />, 
   <GridColumn
-  field='id_edit_DadosProcuracao'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Dados Procuracao'
-  cells={{ data: SearchFromCellDadosProcuracao }}
-  />, 
-  <GridColumn
   field='id_edit_Diario2'
   filterable={false}
   sortable={false}
@@ -694,14 +663,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Contratos'
   cells={{ data: SearchFromCellContratos }}
-  />, 
-  <GridColumn
-  field='id_edit_DadosProcuracao'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Dados Procuracao'
-  cells={{ data: SearchFromCellDadosProcuracao }}
   />, 
   <GridColumn
   field='id_edit_Diario2'

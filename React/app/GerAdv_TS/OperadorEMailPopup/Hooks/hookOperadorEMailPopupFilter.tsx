@@ -76,16 +76,6 @@ export const useOperadorEMailPopupFilter = ({ handleFetchWithFilter }: UseOperad
   />
   <InputInput
   type='text'
-  id='senha'
-  name='senha'
-  value={handlers.windowFilter?.senha ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Senha'
-  label='Senha'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
   id='smtp'
   name='smtp'
   value={handlers.windowFilter?.smtp ?? ''}

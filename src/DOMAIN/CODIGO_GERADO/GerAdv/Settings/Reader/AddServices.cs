@@ -28,13 +28,11 @@ public static class AddServices
         builder.Services.AddScoped<IContaCorrenteReader, ContaCorrenteReader>();
         builder.Services.AddScoped<IContatoCRMViewReader, ContatoCRMViewReader>();
         builder.Services.AddScoped<IContratosReader, ContratosReader>();
-        builder.Services.AddScoped<IDadosProcuracaoReader, DadosProcuracaoReader>();
         builder.Services.AddScoped<IDiario2Reader, Diario2Reader>();
         builder.Services.AddScoped<IDivisaoTribunalReader, DivisaoTribunalReader>();
         builder.Services.AddScoped<IDocumentosReader, DocumentosReader>();
         builder.Services.AddScoped<IEMPClassRiscosReader, EMPClassRiscosReader>();
         builder.Services.AddScoped<IEnderecosReader, EnderecosReader>();
-        builder.Services.AddScoped<IEnderecoSistemaReader, EnderecoSistemaReader>();
         builder.Services.AddScoped<IEnquadramentoEmpresaReader, EnquadramentoEmpresaReader>();
         builder.Services.AddScoped<IEscritoriosReader, EscritoriosReader>();
         builder.Services.AddScoped<IEventoPrazoAgendaReader, EventoPrazoAgendaReader>();
@@ -74,8 +72,6 @@ public static class AddServices
         builder.Services.AddScoped<IParceriaProcReader, ParceriaProcReader>();
         builder.Services.AddScoped<IPenhoraReader, PenhoraReader>();
         builder.Services.AddScoped<IPenhoraStatusReader, PenhoraStatusReader>();
-        builder.Services.AddScoped<IPoderJudiciarioAssociadoReader, PoderJudiciarioAssociadoReader>();
-        builder.Services.AddScoped<IPontoVirtualReader, PontoVirtualReader>();
         builder.Services.AddScoped<IPontoVirtualAcessosReader, PontoVirtualAcessosReader>();
         builder.Services.AddScoped<IPosicaoOutrasPartesReader, PosicaoOutrasPartesReader>();
         builder.Services.AddScoped<IPreClientesReader, PreClientesReader>();
@@ -84,7 +80,6 @@ public static class AddServices
         builder.Services.AddScoped<IProcessosObsReportReader, ProcessosObsReportReader>();
         builder.Services.AddScoped<IProcessOutputEngineReader, ProcessOutputEngineReader>();
         builder.Services.AddScoped<IProcessOutPutIDsReader, ProcessOutPutIDsReader>();
-        builder.Services.AddScoped<IProcessOutputRequestReader, ProcessOutputRequestReader>();
         builder.Services.AddScoped<IProcessOutputSourcesReader, ProcessOutputSourcesReader>();
         builder.Services.AddScoped<IProDespesasReader, ProDespesasReader>();
         builder.Services.AddScoped<IProObservacoesReader, ProObservacoesReader>();
@@ -117,7 +112,6 @@ public static class AddServices
         builder.Services.AddScoped<ITipoRecursoReader, TipoRecursoReader>();
         builder.Services.AddScoped<ITiposAcaoReader, TiposAcaoReader>();
         builder.Services.AddScoped<ITipoStatusBiuReader, TipoStatusBiuReader>();
-        builder.Services.AddScoped<ITribEnderecosReader, TribEnderecosReader>();
         builder.Services.AddScoped<ITribunalReader, TribunalReader>();
         builder.Services.AddScoped<IUFReader, UFReader>();
         builder.Services.AddScoped<IViaRecebimentoReader, ViaRecebimentoReader>();

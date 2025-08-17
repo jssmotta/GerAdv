@@ -554,24 +554,6 @@ public void IsNovo_InvalidEmail_ShouldThrow(string email)
     }
 
     [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void Senha_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FSenha = input;
-        Assert.Equal(expected, _instance.FSenha);
-    }
-
-    [Fact]
-    public void Senha_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 10 + 10);
-        _instance.FSenha = longString;
-        Assert.True(_instance.FSenha.Length <= 10);
-    }
-
-    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void Ativado_ShouldAcceptBooleanValues(bool value)
@@ -663,100 +645,6 @@ public void Ativado_ValidEmail_ShouldAccept(string email)
 public void Ativado_InvalidEmail_ShouldThrow(string email)
 {
     Assert.Throws<ArgumentException>(() => _instance.FAtivado = email);
-}
-*/
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void AtualizarSenha_ShouldAcceptBooleanValues(bool value)
-    {
-        _instance.FAtualizarSenha = value;
-        Assert.Equal(value, _instance.FAtualizarSenha);
-    }
-
-    [Fact]
-    public void AtualizarSenha_DefaultValue_ShouldBeFalse()
-    {
-        var instance = new DBOperadores();
-        Assert.False(instance.FAtualizarSenha);
-    }
-
-    /*
-TEMPLATE_INTEGER_FIELD:
-[Theory]
-[InlineData(0)]
-[InlineData(1)]
-[InlineData(-1)]
-[InlineData(int.MaxValue)]
-[InlineData(int.MinValue)]
-public void AtualizarSenha_ShouldAcceptIntegerValues(int value)
-{
-    _instance.FAtualizarSenha = value;
-    Assert.Equal(value, _instance.FAtualizarSenha);
-}
-
-[Fact]
-public void AtualizarSenha_DefaultValue_ShouldBeZero()
-{
-    var instance = new DBOperadores();
-    Assert.Equal(0, instance.AtualizarSenha);
-}
-*/
-    /*
-TEMPLATE_DATETIME_FIELD:
-[Theory]
-[InlineData("01/01/2000")]
-[InlineData("31/12/2023")]
-[InlineData("15/08/2024")]
-public void AtualizarSenha_ShouldFormatDateCorrectly(string dateString)
-{
-    _instance.FAtualizarSenha = dateString;
-    Assert.Equal(dateString, _instance.FAtualizarSenha);
-}
-
-[Fact]
-public void AtualizarSenha_EmptyDate_ShouldReturnEmptyString()
-{
-    var instance = new DBOperadores();
-    Assert.Equal(string.Empty, instance.AtualizarSenha);
-}
-*/
-    /*
-TEMPLATE_CPF_FIELD:
-[Theory]
-[InlineData("91751637484", "91751637484")]
-[InlineData("384.004.020-57", "38400402057")]
-[InlineData("", "")]
-public void AtualizarSenha_ShouldValidateCPF(string input, string expected)
-{
-    if (input == "" || IsValidCPF(input))
-    {
-        _instance.FAtualizarSenha = input;
-        Assert.Equal(expected, _instance.FAtualizarSenha);
-    }
-    else
-    {
-        Assert.Throws<ArgumentException>(() => _instance.FAtualizarSenha = input);
-    }
-}
-*/
-    /*
-TEMPLATE_EMAIL_FIELD:
-[Theory]
-[InlineData("test@example.com")]
-[InlineData("user.name@domain.co.uk")]
-public void AtualizarSenha_ValidEmail_ShouldAccept(string email)
-{
-    _instance.FAtualizarSenha = email;
-    Assert.Equal(email, _instance.FAtualizarSenha);
-}
-
-[Theory]
-[InlineData("invalid-email")]
-[InlineData("@domain.com")]
-public void AtualizarSenha_InvalidEmail_ShouldThrow(string email)
-{
-    Assert.Throws<ArgumentException>(() => _instance.FAtualizarSenha = email);
 }
 */
     [Theory]

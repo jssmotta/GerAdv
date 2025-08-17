@@ -216,24 +216,6 @@ public class DBOperadorEMailPopupTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void Senha_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FSenha = input;
-        Assert.Equal(expected, _instance.FSenha);
-    }
-
-    [Fact]
-    public void Senha_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 50 + 10);
-        _instance.FSenha = longString;
-        Assert.True(_instance.FSenha.Length <= 50);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
     public void SMTP_ShouldTrimAndHandleNulls(string input, string expected)
     {
         _instance.FSMTP = input;

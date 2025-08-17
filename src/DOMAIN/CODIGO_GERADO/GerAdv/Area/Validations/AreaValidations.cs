@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IAreaValidation
 {
     Task<bool> ValidateReg(Models.Area reg, IAreaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class AreaValidation : IAreaValidation
 {
-    public async Task<bool> CanDelete(int? id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAreaService service, IAcaoService acaoService, IAgendaService agendaService, IDivisaoTribunalService divisaotribunalService, IFaseService faseService, IObjetosService objetosService, ITipoRecursoService tiporecursoService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -36,14 +36,11 @@ public class AreaValidation : IAreaValidation
         var objetosExists4 = await objetosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterObjetos { Area = id ?? default }, uri);
         if (objetosExists4 != null && objetosExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Objetos associados a ele.");
-        var poderjudiciarioassociadoExists5 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Area = id ?? default }, uri);
-        if (poderjudiciarioassociadoExists5 != null && poderjudiciarioassociadoExists5.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
-        var tiporecursoExists6 = await tiporecursoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoRecurso { Area = id ?? default }, uri);
-        if (tiporecursoExists6 != null && tiporecursoExists6.Any())
+        var tiporecursoExists5 = await tiporecursoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoRecurso { Area = id ?? default }, uri);
+        if (tiporecursoExists5 != null && tiporecursoExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tipo Recurso associados a ele.");
-        var tribunalExists7 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Area = id ?? default }, uri);
-        if (tribunalExists7 != null && tribunalExists7.Any())
+        var tribunalExists6 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Area = id ?? default }, uri);
+        if (tribunalExists6 != null && tribunalExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
         return true;
     }

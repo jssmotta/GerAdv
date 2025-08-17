@@ -28,13 +28,11 @@ public static class AddServices
         builder.Services.ConfigureContaCorrenteJson();
         builder.Services.ConfigureContatoCRMViewJson();
         builder.Services.ConfigureContratosJson();
-        builder.Services.ConfigureDadosProcuracaoJson();
         builder.Services.ConfigureDiario2Json();
         builder.Services.ConfigureDivisaoTribunalJson();
         builder.Services.ConfigureDocumentosJson();
         builder.Services.ConfigureEMPClassRiscosJson();
         builder.Services.ConfigureEnderecosJson();
-        builder.Services.ConfigureEnderecoSistemaJson();
         builder.Services.ConfigureEnquadramentoEmpresaJson();
         builder.Services.ConfigureEscritoriosJson();
         builder.Services.ConfigureEventoPrazoAgendaJson();
@@ -74,8 +72,6 @@ public static class AddServices
         builder.Services.ConfigureParceriaProcJson();
         builder.Services.ConfigurePenhoraJson();
         builder.Services.ConfigurePenhoraStatusJson();
-        builder.Services.ConfigurePoderJudiciarioAssociadoJson();
-        builder.Services.ConfigurePontoVirtualJson();
         builder.Services.ConfigurePontoVirtualAcessosJson();
         builder.Services.ConfigurePosicaoOutrasPartesJson();
         builder.Services.ConfigurePreClientesJson();
@@ -84,7 +80,6 @@ public static class AddServices
         builder.Services.ConfigureProcessosObsReportJson();
         builder.Services.ConfigureProcessOutputEngineJson();
         builder.Services.ConfigureProcessOutPutIDsJson();
-        builder.Services.ConfigureProcessOutputRequestJson();
         builder.Services.ConfigureProcessOutputSourcesJson();
         builder.Services.ConfigureProDespesasJson();
         builder.Services.ConfigureProObservacoesJson();
@@ -117,7 +112,6 @@ public static class AddServices
         builder.Services.ConfigureTipoRecursoJson();
         builder.Services.ConfigureTiposAcaoJson();
         builder.Services.ConfigureTipoStatusBiuJson();
-        builder.Services.ConfigureTribEnderecosJson();
         builder.Services.ConfigureTribunalJson();
         builder.Services.ConfigureUFJson();
         builder.Services.ConfigureViaRecebimentoJson();

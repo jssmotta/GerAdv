@@ -15,7 +15,6 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         private readonly Mock<IColaboradoresService> _mockColaboradoresService;
         private readonly Mock<IContaCorrenteService> _mockContaCorrenteService;
         private readonly Mock<IContratosService> _mockContratosService;
-        private readonly Mock<IDadosProcuracaoService> _mockDadosProcuracaoService;
         private readonly Mock<IDiario2Service> _mockDiario2Service;
         private readonly Mock<IGruposEmpresasService> _mockGruposEmpresasService;
         private readonly Mock<IHonorariosDadosContratoService> _mockHonorariosDadosContratoService;
@@ -44,7 +43,6 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             _mockColaboradoresService = new Mock<IColaboradoresService>();
             _mockContaCorrenteService = new Mock<IContaCorrenteService>();
             _mockContratosService = new Mock<IContratosService>();
-            _mockDadosProcuracaoService = new Mock<IDadosProcuracaoService>();
             _mockDiario2Service = new Mock<IDiario2Service>();
             _mockGruposEmpresasService = new Mock<IGruposEmpresasService>();
             _mockHonorariosDadosContratoService = new Mock<IHonorariosDadosContratoService>();
@@ -62,7 +60,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             _mockMemoryCache = new Mock<IMemoryCache>();
             var appSettings = new AppSettings();
             _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-            _service = new ClientesService(_mockAppSettings.Object, _mockClientesFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _mockAgendaService.Object, _mockClientesSociosService.Object, _mockColaboradoresService.Object, _mockContaCorrenteService.Object, _mockContratosService.Object, _mockDadosProcuracaoService.Object, _mockDiario2Service.Object, _mockGruposEmpresasService.Object, _mockHonorariosDadosContratoService.Object, _mockHorasTrabService.Object, _mockLigacoesService.Object, _mockOperadoresService.Object, _mockPreClientesService.Object, _mockProDespesasService.Object, _mockReuniaoService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+            _service = new ClientesService(_mockAppSettings.Object, _mockClientesFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _mockAgendaService.Object, _mockClientesSociosService.Object, _mockColaboradoresService.Object, _mockContaCorrenteService.Object, _mockContratosService.Object, _mockDiario2Service.Object, _mockGruposEmpresasService.Object, _mockHonorariosDadosContratoService.Object, _mockHorasTrabService.Object, _mockLigacoesService.Object, _mockOperadoresService.Object, _mockPreClientesService.Object, _mockProDespesasService.Object, _mockReuniaoService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
         }
 
         [Fact]

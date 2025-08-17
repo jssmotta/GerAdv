@@ -14,9 +14,7 @@ public class OperadorServiceTests : IDisposable
     private readonly Mock<IGUTAtividadesService> _mockGUTAtividadesService;
     private readonly Mock<IOperadorEMailPopupService> _mockOperadorEMailPopupService;
     private readonly Mock<IOperadorGruposAgendaService> _mockOperadorGruposAgendaService;
-    private readonly Mock<IPontoVirtualService> _mockPontoVirtualService;
     private readonly Mock<IPontoVirtualAcessosService> _mockPontoVirtualAcessosService;
-    private readonly Mock<IProcessOutputRequestService> _mockProcessOutputRequestService;
     private readonly Mock<ISMSAliceService> _mockSMSAliceService;
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
     private readonly Mock<HybridCache> _mockCache;
@@ -35,23 +33,21 @@ public class OperadorServiceTests : IDisposable
         _mockGUTAtividadesService = new Mock<IGUTAtividadesService>();
         _mockOperadorEMailPopupService = new Mock<IOperadorEMailPopupService>();
         _mockOperadorGruposAgendaService = new Mock<IOperadorGruposAgendaService>();
-        _mockPontoVirtualService = new Mock<IPontoVirtualService>();
         _mockPontoVirtualAcessosService = new Mock<IPontoVirtualAcessosService>();
-        _mockProcessOutputRequestService = new Mock<IProcessOutputRequestService>();
         _mockSMSAliceService = new Mock<ISMSAliceService>();
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
         _mockCache = new Mock<HybridCache>();
         _mockMemoryCache = new Mock<IMemoryCache>();
         var appSettings = new AppSettings();
         _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-        _service = new OperadorService(_mockAppSettings.Object, _mockOperadorFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAgendaService.Object, _mockDiario2Service.Object, _mockGUTAtividadesService.Object, _mockOperadorEMailPopupService.Object, _mockOperadorGruposAgendaService.Object, _mockPontoVirtualService.Object, _mockPontoVirtualAcessosService.Object, _mockProcessOutputRequestService.Object, _mockSMSAliceService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        _service = new OperadorService(_mockAppSettings.Object, _mockOperadorFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAgendaService.Object, _mockDiario2Service.Object, _mockGUTAtividadesService.Object, _mockOperadorEMailPopupService.Object, _mockOperadorGruposAgendaService.Object, _mockPontoVirtualAcessosService.Object, _mockSMSAliceService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_InitializesService()
     {
         // Arrange & Act
-        var service = new OperadorService(_mockAppSettings.Object, _mockOperadorFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAgendaService.Object, _mockDiario2Service.Object, _mockGUTAtividadesService.Object, _mockOperadorEMailPopupService.Object, _mockOperadorGruposAgendaService.Object, _mockPontoVirtualService.Object, _mockPontoVirtualAcessosService.Object, _mockProcessOutputRequestService.Object, _mockSMSAliceService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        var service = new OperadorService(_mockAppSettings.Object, _mockOperadorFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockAgendaService.Object, _mockDiario2Service.Object, _mockGUTAtividadesService.Object, _mockOperadorEMailPopupService.Object, _mockOperadorGruposAgendaService.Object, _mockPontoVirtualAcessosService.Object, _mockSMSAliceService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
         // Assert
         Assert.NotNull(service);
     }

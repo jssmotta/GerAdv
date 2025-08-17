@@ -118,18 +118,6 @@ const SearchFromCellOperadorGruposAgenda = (props: any) => {
 </>
 );
 };
-const openSearchCellPontoVirtual = (id: number) => {
-  router.push(`/pages/pontovirtual/?operador=${id}`);
-};
-const SearchFromCellPontoVirtual = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellPontoVirtual(props.dataItem.id)}><span title='Pesquisar relacionados em Ponto Virtual'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellPontoVirtualAcessos = (id: number) => {
   router.push(`/pages/pontovirtualacessos/?operador=${id}`);
 };
@@ -138,18 +126,6 @@ const SearchFromCellPontoVirtualAcessos = (props: any) => {
   <>
   <td>
     <div onClick={() => openSearchCellPontoVirtualAcessos(props.dataItem.id)}><span title='Pesquisar relacionados em Ponto Virtual Acessos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellProcessOutputRequest = (id: number) => {
-  router.push(`/pages/processoutputrequest/?operador=${id}`);
-};
-const SearchFromCellProcessOutputRequest = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessOutputRequest(props.dataItem.id)}><span title='Pesquisar relacionados em Process Output Request'><SvgIcon icon={searchIcon} /></span></div>
   </td>
 </>
 );
@@ -287,17 +263,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellOperadorGruposAgenda }}
   />
   ), /* Track G.03 */
-  'id_edit_PontoVirtual': (
-  <GridColumn
-  key='PontoVirtual'
-  field='PontoVirtual'
-  title='Ponto Virtual'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellPontoVirtual }}
-  />
-  ), /* Track G.03 */
   'id_edit_PontoVirtualAcessos': (
   <GridColumn
   key='PontoVirtualAcessos'
@@ -307,17 +272,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellPontoVirtualAcessos }}
-  />
-  ), /* Track G.03 */
-  'id_edit_ProcessOutputRequest': (
-  <GridColumn
-  key='ProcessOutputRequest'
-  field='ProcessOutputRequest'
-  title='Process Output Request'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellProcessOutputRequest }}
   />
   ), /* Track G.03 */
   'id_edit_SMSAlice': (

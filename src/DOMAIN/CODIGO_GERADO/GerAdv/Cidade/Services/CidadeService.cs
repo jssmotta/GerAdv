@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFactory cidadeFactory, ICidadeReader reader, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEnderecoSistemaService enderecosistemaService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, ITribEnderecosService tribenderecosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ICidadeService, IDisposable
+public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFactory cidadeFactory, ICidadeReader reader, ICidadeValidation validation, ICidadeWriter writer, IUFReader ufReader, IAdvogadosService advogadosService, IAgendaService agendaService, IBensMateriaisService bensmateriaisService, IClientesService clientesService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IDivisaoTribunalService divisaotribunalService, IEnderecosService enderecosService, IEscritoriosService escritoriosService, IFornecedoresService fornecedoresService, IForoService foroService, IFuncionariosService funcionariosService, IOponentesService oponentesService, IOponentesRepLegalService oponentesreplegalService, IOutrasPartesClienteService outraspartesclienteService, IPreClientesService preclientesService, IPrepostosService prepostosService, ITerceirosService terceirosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ICidadeService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -26,7 +26,6 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
     private readonly IEnderecosService enderecosService = enderecosService;
-    private readonly IEnderecoSistemaService enderecosistemaService = enderecosistemaService;
     private readonly IEscritoriosService escritoriosService = escritoriosService;
     private readonly IFornecedoresService fornecedoresService = fornecedoresService;
     private readonly IForoService foroService = foroService;
@@ -34,11 +33,9 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
     private readonly IOponentesService oponentesService = oponentesService;
     private readonly IOponentesRepLegalService oponentesreplegalService = oponentesreplegalService;
     private readonly IOutrasPartesClienteService outraspartesclienteService = outraspartesclienteService;
-    private readonly IPoderJudiciarioAssociadoService poderjudiciarioassociadoService = poderjudiciarioassociadoService;
     private readonly IPreClientesService preclientesService = preclientesService;
     private readonly IPrepostosService prepostosService = prepostosService;
     private readonly ITerceirosService terceirosService = terceirosService;
-    private readonly ITribEnderecosService tribenderecosService = tribenderecosService;
     public async Task<IEnumerable<CidadeResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -223,7 +220,7 @@ public partial class CidadeService(IOptions<AppSettings> appSettings, IFCidadeFa
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, advogadosService, agendaService, bensmateriaisService, clientesService, clientessociosService, colaboradoresService, divisaotribunalService, enderecosService, enderecosistemaService, escritoriosService, fornecedoresService, foroService, funcionariosService, oponentesService, oponentesreplegalService, outraspartesclienteService, poderjudiciarioassociadoService, preclientesService, prepostosService, terceirosService, tribenderecosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, advogadosService, agendaService, bensmateriaisService, clientesService, clientessociosService, colaboradoresService, divisaotribunalService, enderecosService, escritoriosService, fornecedoresService, foroService, funcionariosService, oponentesService, oponentesreplegalService, outraspartesclienteService, preclientesService, prepostosService, terceirosService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

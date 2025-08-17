@@ -41,6 +41,12 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
         return result;
     }
 
+    public AgendaSemanaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    {
+        using var dbRec = _agendasemanaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
+        return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
+    }
+
     public AgendaSemanaResponse? Read(SG.GerAdv.DBAgendaSemana dbRec) // Track 002.16072025
     {
         if (dbRec == null)

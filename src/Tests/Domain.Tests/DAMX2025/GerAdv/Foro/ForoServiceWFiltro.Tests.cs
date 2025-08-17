@@ -12,7 +12,6 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         private readonly Mock<IForoWriter> _mockWriter;
         private readonly Mock<IDivisaoTribunalService> _mockDivisaoTribunalService;
         private readonly Mock<IInstanciaService> _mockInstanciaService;
-        private readonly Mock<IPoderJudiciarioAssociadoService> _mockPoderJudiciarioAssociadoService;
         private readonly Mock<ICidadeReader> _mockCidadeReader;
         private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private readonly Mock<HybridCache> _mockCache;
@@ -27,14 +26,13 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             _mockWriter = new Mock<IForoWriter>();
             _mockDivisaoTribunalService = new Mock<IDivisaoTribunalService>();
             _mockInstanciaService = new Mock<IInstanciaService>();
-            _mockPoderJudiciarioAssociadoService = new Mock<IPoderJudiciarioAssociadoService>();
             _mockCidadeReader = new Mock<ICidadeReader>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             _mockCache = new Mock<HybridCache>();
             _mockMemoryCache = new Mock<IMemoryCache>();
             var appSettings = new AppSettings();
             _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-            _service = new ForoService(_mockAppSettings.Object, _mockForoFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockCidadeReader.Object, _mockDivisaoTribunalService.Object, _mockInstanciaService.Object, _mockPoderJudiciarioAssociadoService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+            _service = new ForoService(_mockAppSettings.Object, _mockForoFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockCidadeReader.Object, _mockDivisaoTribunalService.Object, _mockInstanciaService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
         }
 
         [Fact]

@@ -28,13 +28,11 @@ public static class AddServices
         builder.Services.AddScoped<IFContaCorrenteFactory, FContaCorrenteFactory>();
         builder.Services.AddScoped<IFContatoCRMViewFactory, FContatoCRMViewFactory>();
         builder.Services.AddScoped<IFContratosFactory, FContratosFactory>();
-        builder.Services.AddScoped<IFDadosProcuracaoFactory, FDadosProcuracaoFactory>();
         builder.Services.AddScoped<IFDiario2Factory, FDiario2Factory>();
         builder.Services.AddScoped<IFDivisaoTribunalFactory, FDivisaoTribunalFactory>();
         builder.Services.AddScoped<IFDocumentosFactory, FDocumentosFactory>();
         builder.Services.AddScoped<IFEMPClassRiscosFactory, FEMPClassRiscosFactory>();
         builder.Services.AddScoped<IFEnderecosFactory, FEnderecosFactory>();
-        builder.Services.AddScoped<IFEnderecoSistemaFactory, FEnderecoSistemaFactory>();
         builder.Services.AddScoped<IFEnquadramentoEmpresaFactory, FEnquadramentoEmpresaFactory>();
         builder.Services.AddScoped<IFEscritoriosFactory, FEscritoriosFactory>();
         builder.Services.AddScoped<IFEventoPrazoAgendaFactory, FEventoPrazoAgendaFactory>();
@@ -74,8 +72,6 @@ public static class AddServices
         builder.Services.AddScoped<IFParceriaProcFactory, FParceriaProcFactory>();
         builder.Services.AddScoped<IFPenhoraFactory, FPenhoraFactory>();
         builder.Services.AddScoped<IFPenhoraStatusFactory, FPenhoraStatusFactory>();
-        builder.Services.AddScoped<IFPoderJudiciarioAssociadoFactory, FPoderJudiciarioAssociadoFactory>();
-        builder.Services.AddScoped<IFPontoVirtualFactory, FPontoVirtualFactory>();
         builder.Services.AddScoped<IFPontoVirtualAcessosFactory, FPontoVirtualAcessosFactory>();
         builder.Services.AddScoped<IFPosicaoOutrasPartesFactory, FPosicaoOutrasPartesFactory>();
         builder.Services.AddScoped<IFPreClientesFactory, FPreClientesFactory>();
@@ -84,7 +80,6 @@ public static class AddServices
         builder.Services.AddScoped<IFProcessosObsReportFactory, FProcessosObsReportFactory>();
         builder.Services.AddScoped<IFProcessOutputEngineFactory, FProcessOutputEngineFactory>();
         builder.Services.AddScoped<IFProcessOutPutIDsFactory, FProcessOutPutIDsFactory>();
-        builder.Services.AddScoped<IFProcessOutputRequestFactory, FProcessOutputRequestFactory>();
         builder.Services.AddScoped<IFProcessOutputSourcesFactory, FProcessOutputSourcesFactory>();
         builder.Services.AddScoped<IFProDespesasFactory, FProDespesasFactory>();
         builder.Services.AddScoped<IFProObservacoesFactory, FProObservacoesFactory>();
@@ -117,7 +112,6 @@ public static class AddServices
         builder.Services.AddScoped<IFTipoRecursoFactory, FTipoRecursoFactory>();
         builder.Services.AddScoped<IFTiposAcaoFactory, FTiposAcaoFactory>();
         builder.Services.AddScoped<IFTipoStatusBiuFactory, FTipoStatusBiuFactory>();
-        builder.Services.AddScoped<IFTribEnderecosFactory, FTribEnderecosFactory>();
         builder.Services.AddScoped<IFTribunalFactory, FTribunalFactory>();
         builder.Services.AddScoped<IFUFFactory, FUFFactory>();
         builder.Services.AddScoped<IFViaRecebimentoFactory, FViaRecebimentoFactory>();

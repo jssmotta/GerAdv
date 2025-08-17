@@ -70,30 +70,6 @@ const SearchFromCellDivisaoTribunal = (props: any) => {
 </>
 );
 };
-const openSearchCellPoderJudiciarioAssociado = (id: number) => {
-  router.push(`/pages/poderjudiciarioassociado/?tribunal=${id}`);
-};
-const SearchFromCellPoderJudiciarioAssociado = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellPoderJudiciarioAssociado(props.dataItem.id)}><span title='Pesquisar relacionados em Poder Judiciario Associado'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
-const openSearchCellTribEnderecos = (id: number) => {
-  router.push(`/pages/tribenderecos/?tribunal=${id}`);
-};
-const SearchFromCellTribEnderecos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellTribEnderecos(props.dataItem.id)}><span title='Pesquisar relacionados em Trib Endereços'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -169,28 +145,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellDivisaoTribunal }}
-  />
-  ), /* Track G.03 */
-  'id_edit_PoderJudiciarioAssociado': (
-  <GridColumn
-  key='PoderJudiciarioAssociado'
-  field='PoderJudiciarioAssociado'
-  title='Poder Judiciario Associado'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />
-  ), /* Track G.03 */
-  'id_edit_TribEnderecos': (
-  <GridColumn
-  key='TribEnderecos'
-  field='TribEnderecos'
-  title='Trib Endereços'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellTribEnderecos }}
   />
   ), /* Track G.03 */
   // ← Colunas aqui

@@ -9,21 +9,18 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IProcessOutputEngineValidation
 {
     Task<bool> ValidateReg(Models.ProcessOutputEngine reg, IProcessOutputEngineService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IProcessOutputEngineService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
 {
-    public async Task<bool> CanDelete(int? id, IProcessOutputEngineService service, IProcessOutputRequestService processoutputrequestService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProcessOutputEngineService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var processoutputrequestExists0 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { ProcessOutputEngine = id ?? default }, uri);
-        if (processoutputrequestExists0 != null && processoutputrequestExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.");
         return true;
     }
 

@@ -17,7 +17,6 @@ public class CidadeServiceTests : IDisposable
     private readonly Mock<IColaboradoresService> _mockColaboradoresService;
     private readonly Mock<IDivisaoTribunalService> _mockDivisaoTribunalService;
     private readonly Mock<IEnderecosService> _mockEnderecosService;
-    private readonly Mock<IEnderecoSistemaService> _mockEnderecoSistemaService;
     private readonly Mock<IEscritoriosService> _mockEscritoriosService;
     private readonly Mock<IFornecedoresService> _mockFornecedoresService;
     private readonly Mock<IForoService> _mockForoService;
@@ -25,11 +24,9 @@ public class CidadeServiceTests : IDisposable
     private readonly Mock<IOponentesService> _mockOponentesService;
     private readonly Mock<IOponentesRepLegalService> _mockOponentesRepLegalService;
     private readonly Mock<IOutrasPartesClienteService> _mockOutrasPartesClienteService;
-    private readonly Mock<IPoderJudiciarioAssociadoService> _mockPoderJudiciarioAssociadoService;
     private readonly Mock<IPreClientesService> _mockPreClientesService;
     private readonly Mock<IPrepostosService> _mockPrepostosService;
     private readonly Mock<ITerceirosService> _mockTerceirosService;
-    private readonly Mock<ITribEnderecosService> _mockTribEnderecosService;
     private readonly Mock<IUFReader> _mockUFReader;
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
     private readonly Mock<HybridCache> _mockCache;
@@ -51,7 +48,6 @@ public class CidadeServiceTests : IDisposable
         _mockColaboradoresService = new Mock<IColaboradoresService>();
         _mockDivisaoTribunalService = new Mock<IDivisaoTribunalService>();
         _mockEnderecosService = new Mock<IEnderecosService>();
-        _mockEnderecoSistemaService = new Mock<IEnderecoSistemaService>();
         _mockEscritoriosService = new Mock<IEscritoriosService>();
         _mockFornecedoresService = new Mock<IFornecedoresService>();
         _mockForoService = new Mock<IForoService>();
@@ -59,25 +55,23 @@ public class CidadeServiceTests : IDisposable
         _mockOponentesService = new Mock<IOponentesService>();
         _mockOponentesRepLegalService = new Mock<IOponentesRepLegalService>();
         _mockOutrasPartesClienteService = new Mock<IOutrasPartesClienteService>();
-        _mockPoderJudiciarioAssociadoService = new Mock<IPoderJudiciarioAssociadoService>();
         _mockPreClientesService = new Mock<IPreClientesService>();
         _mockPrepostosService = new Mock<IPrepostosService>();
         _mockTerceirosService = new Mock<ITerceirosService>();
-        _mockTribEnderecosService = new Mock<ITribEnderecosService>();
         _mockUFReader = new Mock<IUFReader>();
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
         _mockCache = new Mock<HybridCache>();
         _mockMemoryCache = new Mock<IMemoryCache>();
         var appSettings = new AppSettings();
         _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-        _service = new CidadeService(_mockAppSettings.Object, _mockCidadeFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockUFReader.Object, _mockAdvogadosService.Object, _mockAgendaService.Object, _mockBensMateriaisService.Object, _mockClientesService.Object, _mockClientesSociosService.Object, _mockColaboradoresService.Object, _mockDivisaoTribunalService.Object, _mockEnderecosService.Object, _mockEnderecoSistemaService.Object, _mockEscritoriosService.Object, _mockFornecedoresService.Object, _mockForoService.Object, _mockFuncionariosService.Object, _mockOponentesService.Object, _mockOponentesRepLegalService.Object, _mockOutrasPartesClienteService.Object, _mockPoderJudiciarioAssociadoService.Object, _mockPreClientesService.Object, _mockPrepostosService.Object, _mockTerceirosService.Object, _mockTribEnderecosService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        _service = new CidadeService(_mockAppSettings.Object, _mockCidadeFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockUFReader.Object, _mockAdvogadosService.Object, _mockAgendaService.Object, _mockBensMateriaisService.Object, _mockClientesService.Object, _mockClientesSociosService.Object, _mockColaboradoresService.Object, _mockDivisaoTribunalService.Object, _mockEnderecosService.Object, _mockEscritoriosService.Object, _mockFornecedoresService.Object, _mockForoService.Object, _mockFuncionariosService.Object, _mockOponentesService.Object, _mockOponentesRepLegalService.Object, _mockOutrasPartesClienteService.Object, _mockPreClientesService.Object, _mockPrepostosService.Object, _mockTerceirosService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_InitializesService()
     {
         // Arrange & Act
-        var service = new CidadeService(_mockAppSettings.Object, _mockCidadeFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockUFReader.Object, _mockAdvogadosService.Object, _mockAgendaService.Object, _mockBensMateriaisService.Object, _mockClientesService.Object, _mockClientesSociosService.Object, _mockColaboradoresService.Object, _mockDivisaoTribunalService.Object, _mockEnderecosService.Object, _mockEnderecoSistemaService.Object, _mockEscritoriosService.Object, _mockFornecedoresService.Object, _mockForoService.Object, _mockFuncionariosService.Object, _mockOponentesService.Object, _mockOponentesRepLegalService.Object, _mockOutrasPartesClienteService.Object, _mockPoderJudiciarioAssociadoService.Object, _mockPreClientesService.Object, _mockPrepostosService.Object, _mockTerceirosService.Object, _mockTribEnderecosService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        var service = new CidadeService(_mockAppSettings.Object, _mockCidadeFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockUFReader.Object, _mockAdvogadosService.Object, _mockAgendaService.Object, _mockBensMateriaisService.Object, _mockClientesService.Object, _mockClientesSociosService.Object, _mockColaboradoresService.Object, _mockDivisaoTribunalService.Object, _mockEnderecosService.Object, _mockEscritoriosService.Object, _mockFornecedoresService.Object, _mockForoService.Object, _mockFuncionariosService.Object, _mockOponentesService.Object, _mockOponentesRepLegalService.Object, _mockOutrasPartesClienteService.Object, _mockPreClientesService.Object, _mockPrepostosService.Object, _mockTerceirosService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
         // Assert
         Assert.NotNull(service);
     }

@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IForoValidation
 {
     Task<bool> ValidateReg(Models.Foro reg, IForoService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class ForoValidation : IForoValidation
 {
-    public async Task<bool> CanDelete(int? id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IForoService service, IDivisaoTribunalService divisaotribunalService, IInstanciaService instanciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -27,9 +27,6 @@ public class ForoValidation : IForoValidation
         var instanciaExists1 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { Foro = id ?? default }, uri);
         if (instanciaExists1 != null && instanciaExists1.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.");
-        var poderjudiciarioassociadoExists2 = await poderjudiciarioassociadoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPoderJudiciarioAssociado { Foro = id ?? default }, uri);
-        if (poderjudiciarioassociadoExists2 != null && poderjudiciarioassociadoExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Poder Judiciario Associado associados a ele.");
         return true;
     }
 

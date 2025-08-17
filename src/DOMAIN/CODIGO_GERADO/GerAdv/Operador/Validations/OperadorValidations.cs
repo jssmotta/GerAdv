@@ -9,12 +9,12 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface IOperadorValidation
 {
     Task<bool> ValidateReg(Models.Operador reg, IOperadorService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IOperadorService service, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, IOperadorService service, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualAcessosService pontovirtualacessosService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class OperadorValidation : IOperadorValidation
 {
-    public async Task<bool> CanDelete(int? id, IOperadorService service, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualService pontovirtualService, IPontoVirtualAcessosService pontovirtualacessosService, IProcessOutputRequestService processoutputrequestService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOperadorService service, IAgendaService agendaService, IDiario2Service diario2Service, IGUTAtividadesService gutatividadesService, IOperadorEMailPopupService operadoremailpopupService, IOperadorGruposAgendaService operadorgruposagendaService, IPontoVirtualAcessosService pontovirtualacessosService, ISMSAliceService smsaliceService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -36,17 +36,11 @@ public class OperadorValidation : IOperadorValidation
         var operadorgruposagendaExists4 = await operadorgruposagendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGruposAgenda { Operador = id ?? default }, uri);
         if (operadorgruposagendaExists4 != null && operadorgruposagendaExists4.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda associados a ele.");
-        var pontovirtualExists5 = await pontovirtualService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtual { Operador = id ?? default }, uri);
-        if (pontovirtualExists5 != null && pontovirtualExists5.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual associados a ele.");
-        var pontovirtualacessosExists6 = await pontovirtualacessosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtualAcessos { Operador = id ?? default }, uri);
-        if (pontovirtualacessosExists6 != null && pontovirtualacessosExists6.Any())
+        var pontovirtualacessosExists5 = await pontovirtualacessosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtualAcessos { Operador = id ?? default }, uri);
+        if (pontovirtualacessosExists5 != null && pontovirtualacessosExists5.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual Acessos associados a ele.");
-        var processoutputrequestExists7 = await processoutputrequestService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProcessOutputRequest { Operador = id ?? default }, uri);
-        if (processoutputrequestExists7 != null && processoutputrequestExists7.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Process Output Request associados a ele.");
-        var smsaliceExists8 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Operador = id ?? default }, uri);
-        if (smsaliceExists8 != null && smsaliceExists8.Any())
+        var smsaliceExists6 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Operador = id ?? default }, uri);
+        if (smsaliceExists6 != null && smsaliceExists6.Any())
             throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
         return true;
     }

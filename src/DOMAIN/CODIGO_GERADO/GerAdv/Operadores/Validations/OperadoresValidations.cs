@@ -28,8 +28,6 @@ public class OperadoresValidation : IOperadoresValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBOperadoresDicInfo.OperNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBOperadoresDicInfo.OperNome.FTamanho} caracteres.");
-        if (reg.Senha != null && reg.Senha.Length > DBOperadoresDicInfo.OperSenha.FTamanho)
-            throw new SGValidationException($"Senha deve ter no máximo {DBOperadoresDicInfo.OperSenha.FTamanho} caracteres.");
         return true;
     }
 

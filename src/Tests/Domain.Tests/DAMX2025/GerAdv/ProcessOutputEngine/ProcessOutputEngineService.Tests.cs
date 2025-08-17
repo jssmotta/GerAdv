@@ -9,7 +9,6 @@ public class ProcessOutputEngineServiceTests : IDisposable
     private readonly Mock<IProcessOutputEngineReader> _mockReader;
     private readonly Mock<IProcessOutputEngineValidation> _mockValidation;
     private readonly Mock<IProcessOutputEngineWriter> _mockWriter;
-    private readonly Mock<IProcessOutputRequestService> _mockProcessOutputRequestService;
     private readonly Mock<HybridCache> _mockCache;
     private readonly Mock<IMemoryCache> _mockMemoryCache;
     private readonly ProcessOutputEngineService _service;
@@ -21,19 +20,18 @@ public class ProcessOutputEngineServiceTests : IDisposable
         _mockReader = new Mock<IProcessOutputEngineReader>();
         _mockValidation = new Mock<IProcessOutputEngineValidation>();
         _mockWriter = new Mock<IProcessOutputEngineWriter>();
-        _mockProcessOutputRequestService = new Mock<IProcessOutputRequestService>();
         _mockCache = new Mock<HybridCache>();
         _mockMemoryCache = new Mock<IMemoryCache>();
         var appSettings = new AppSettings();
         _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-        _service = new ProcessOutputEngineService(_mockAppSettings.Object, _mockProcessOutputEngineFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockProcessOutputRequestService.Object, _mockCache.Object, _mockMemoryCache.Object);
+        _service = new ProcessOutputEngineService(_mockAppSettings.Object, _mockProcessOutputEngineFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockCache.Object, _mockMemoryCache.Object);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_InitializesService()
     {
         // Arrange & Act
-        var service = new ProcessOutputEngineService(_mockAppSettings.Object, _mockProcessOutputEngineFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockProcessOutputRequestService.Object, _mockCache.Object, _mockMemoryCache.Object);
+        var service = new ProcessOutputEngineService(_mockAppSettings.Object, _mockProcessOutputEngineFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockCache.Object, _mockMemoryCache.Object);
         // Assert
         Assert.NotNull(service);
     }

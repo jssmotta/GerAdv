@@ -9,7 +9,6 @@ public class TipoEnderecoSistemaServiceTests : IDisposable
     private readonly Mock<ITipoEnderecoSistemaReader> _mockReader;
     private readonly Mock<ITipoEnderecoSistemaValidation> _mockValidation;
     private readonly Mock<ITipoEnderecoSistemaWriter> _mockWriter;
-    private readonly Mock<IEnderecoSistemaService> _mockEnderecoSistemaService;
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
     private readonly Mock<HybridCache> _mockCache;
     private readonly Mock<IMemoryCache> _mockMemoryCache;
@@ -22,20 +21,19 @@ public class TipoEnderecoSistemaServiceTests : IDisposable
         _mockReader = new Mock<ITipoEnderecoSistemaReader>();
         _mockValidation = new Mock<ITipoEnderecoSistemaValidation>();
         _mockWriter = new Mock<ITipoEnderecoSistemaWriter>();
-        _mockEnderecoSistemaService = new Mock<IEnderecoSistemaService>();
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
         _mockCache = new Mock<HybridCache>();
         _mockMemoryCache = new Mock<IMemoryCache>();
         var appSettings = new AppSettings();
         _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-        _service = new TipoEnderecoSistemaService(_mockAppSettings.Object, _mockTipoEnderecoSistemaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockEnderecoSistemaService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        _service = new TipoEnderecoSistemaService(_mockAppSettings.Object, _mockTipoEnderecoSistemaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
     }
 
     [Fact]
     public void Constructor_WithValidParameters_InitializesService()
     {
         // Arrange & Act
-        var service = new TipoEnderecoSistemaService(_mockAppSettings.Object, _mockTipoEnderecoSistemaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockEnderecoSistemaService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+        var service = new TipoEnderecoSistemaService(_mockAppSettings.Object, _mockTipoEnderecoSistemaFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
         // Assert
         Assert.NotNull(service);
     }

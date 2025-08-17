@@ -117,18 +117,6 @@ const SearchFromCellObjetos = (props: any) => {
 </>
 );
 };
-const openSearchCellPoderJudiciarioAssociado = (id: number) => {
-  router.push(`/pages/poderjudiciarioassociado/?area=${id}`);
-};
-const SearchFromCellPoderJudiciarioAssociado = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellPoderJudiciarioAssociado(props.dataItem.id)}><span title='Pesquisar relacionados em Poder Judiciario Associado'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellTipoRecurso = (id: number) => {
   router.push(`/pages/tiporecurso/?area=${id}`);
 };
@@ -274,17 +262,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   cells={{ data: SearchFromCellObjetos }}
   />
   ), /* Track G.03 */
-  'id_edit_PoderJudiciarioAssociado': (
-  <GridColumn
-  key='PoderJudiciarioAssociado'
-  field='PoderJudiciarioAssociado'
-  title='Poder Judiciario Associado'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
-  />
-  ), /* Track G.03 */
   'id_edit_TipoRecurso': (
   <GridColumn
   key='TipoRecurso'
@@ -352,14 +329,6 @@ const baseGridColumns = useMemo(() => [
   width={'65px'}
   title='Objetos'
   cells={{ data: SearchFromCellObjetos }}
-  />, 
-  <GridColumn
-  field='id_edit_PoderJudiciarioAssociado'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Poder Judiciario Associado'
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
   />, 
   <GridColumn
   field='id_edit_TipoRecurso'
@@ -450,14 +419,6 @@ const finalGridColumns = useMemo(() => {
   width={'65px'}
   title='Objetos'
   cells={{ data: SearchFromCellObjetos }}
-  />, 
-  <GridColumn
-  field='id_edit_PoderJudiciarioAssociado'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Poder Judiciario Associado'
-  cells={{ data: SearchFromCellPoderJudiciarioAssociado }}
   />, 
   <GridColumn
   field='id_edit_TipoRecurso'

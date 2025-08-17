@@ -27,11 +27,6 @@ public partial class OperadorEMailPopupService
             parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Nome)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Nome)));
         }
 
-        if (!string.IsNullOrWhiteSpace(filtro.Senha))
-        {
-            parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.Senha)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Senha)));
-        }
-
         if (!string.IsNullOrWhiteSpace(filtro.SMTP))
         {
             parameters.Add(new($"@{(DBOperadorEMailPopupDicInfo.SMTP)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.SMTP)));
@@ -110,7 +105,6 @@ public partial class OperadorEMailPopupService
         }
 
         cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Nome)}");
-        cWhere.Append(filtro.Senha.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Senha}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.Senha)}");
         cWhere.Append(filtro.SMTP.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.SMTP}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.SMTP)}");
         cWhere.Append(filtro.POP3.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.POP3}]  {DevourerConsts.MsiCollate} like @{(DBOperadorEMailPopupDicInfo.POP3)}");
         cWhere.Append(filtro.Autenticacao == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadorEMailPopupDicInfo.PTabelaNome}].[{DBOperadorEMailPopupDicInfo.Autenticacao}] = @{(DBOperadorEMailPopupDicInfo.Autenticacao)}");

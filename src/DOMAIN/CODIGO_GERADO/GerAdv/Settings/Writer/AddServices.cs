@@ -28,13 +28,11 @@ public static class AddServices
         builder.Services.AddScoped<IContaCorrenteWriter, ContaCorrenteWriter>();
         builder.Services.AddScoped<IContatoCRMViewWriter, ContatoCRMViewWriter>();
         builder.Services.AddScoped<IContratosWriter, ContratosWriter>();
-        builder.Services.AddScoped<IDadosProcuracaoWriter, DadosProcuracaoWriter>();
         builder.Services.AddScoped<IDiario2Writer, Diario2Writer>();
         builder.Services.AddScoped<IDivisaoTribunalWriter, DivisaoTribunalWriter>();
         builder.Services.AddScoped<IDocumentosWriter, DocumentosWriter>();
         builder.Services.AddScoped<IEMPClassRiscosWriter, EMPClassRiscosWriter>();
         builder.Services.AddScoped<IEnderecosWriter, EnderecosWriter>();
-        builder.Services.AddScoped<IEnderecoSistemaWriter, EnderecoSistemaWriter>();
         builder.Services.AddScoped<IEnquadramentoEmpresaWriter, EnquadramentoEmpresaWriter>();
         builder.Services.AddScoped<IEscritoriosWriter, EscritoriosWriter>();
         builder.Services.AddScoped<IEventoPrazoAgendaWriter, EventoPrazoAgendaWriter>();
@@ -74,8 +72,6 @@ public static class AddServices
         builder.Services.AddScoped<IParceriaProcWriter, ParceriaProcWriter>();
         builder.Services.AddScoped<IPenhoraWriter, PenhoraWriter>();
         builder.Services.AddScoped<IPenhoraStatusWriter, PenhoraStatusWriter>();
-        builder.Services.AddScoped<IPoderJudiciarioAssociadoWriter, PoderJudiciarioAssociadoWriter>();
-        builder.Services.AddScoped<IPontoVirtualWriter, PontoVirtualWriter>();
         builder.Services.AddScoped<IPontoVirtualAcessosWriter, PontoVirtualAcessosWriter>();
         builder.Services.AddScoped<IPosicaoOutrasPartesWriter, PosicaoOutrasPartesWriter>();
         builder.Services.AddScoped<IPreClientesWriter, PreClientesWriter>();
@@ -84,7 +80,6 @@ public static class AddServices
         builder.Services.AddScoped<IProcessosObsReportWriter, ProcessosObsReportWriter>();
         builder.Services.AddScoped<IProcessOutputEngineWriter, ProcessOutputEngineWriter>();
         builder.Services.AddScoped<IProcessOutPutIDsWriter, ProcessOutPutIDsWriter>();
-        builder.Services.AddScoped<IProcessOutputRequestWriter, ProcessOutputRequestWriter>();
         builder.Services.AddScoped<IProcessOutputSourcesWriter, ProcessOutputSourcesWriter>();
         builder.Services.AddScoped<IProDespesasWriter, ProDespesasWriter>();
         builder.Services.AddScoped<IProObservacoesWriter, ProObservacoesWriter>();
@@ -117,7 +112,6 @@ public static class AddServices
         builder.Services.AddScoped<ITipoRecursoWriter, TipoRecursoWriter>();
         builder.Services.AddScoped<ITiposAcaoWriter, TiposAcaoWriter>();
         builder.Services.AddScoped<ITipoStatusBiuWriter, TipoStatusBiuWriter>();
-        builder.Services.AddScoped<ITribEnderecosWriter, TribEnderecosWriter>();
         builder.Services.AddScoped<ITribunalWriter, TribunalWriter>();
         builder.Services.AddScoped<IUFWriter, UFWriter>();
         builder.Services.AddScoped<IViaRecebimentoWriter, ViaRecebimentoWriter>();

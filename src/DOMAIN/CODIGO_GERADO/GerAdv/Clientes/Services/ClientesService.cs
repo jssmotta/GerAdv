@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDadosProcuracaoService dadosprocuracaoService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesService, IDisposable
+public partial class ClientesService(IOptions<AppSettings> appSettings, IFClientesFactory clientesFactory, IClientesReader reader, IClientesValidation validation, IClientesWriter writer, ICidadeReader cidadeReader, IRegimeTributacaoReader regimetributacaoReader, IEnquadramentoEmpresaReader enquadramentoempresaReader, IAgendaService agendaService, IClientesSociosService clientessociosService, IColaboradoresService colaboradoresService, IContaCorrenteService contacorrenteService, IContratosService contratosService, IDiario2Service diario2Service, IGruposEmpresasService gruposempresasService, IHonorariosDadosContratoService honorariosdadoscontratoService, IHorasTrabService horastrabService, ILigacoesService ligacoesService, IOperadoresService operadoresService, IPreClientesService preclientesService, IProDespesasService prodespesasService, IReuniaoService reuniaoService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IClientesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -25,7 +25,6 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
     private readonly IColaboradoresService colaboradoresService = colaboradoresService;
     private readonly IContaCorrenteService contacorrenteService = contacorrenteService;
     private readonly IContratosService contratosService = contratosService;
-    private readonly IDadosProcuracaoService dadosprocuracaoService = dadosprocuracaoService;
     private readonly IDiario2Service diario2Service = diario2Service;
     private readonly IGruposEmpresasService gruposempresasService = gruposempresasService;
     private readonly IHonorariosDadosContratoService honorariosdadoscontratoService = honorariosdadoscontratoService;
@@ -219,7 +218,7 @@ public partial class ClientesService(IOptions<AppSettings> appSettings, IFClient
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, contacorrenteService, contratosService, dadosprocuracaoService, diario2Service, gruposempresasService, honorariosdadoscontratoService, horastrabService, ligacoesService, operadoresService, preclientesService, prodespesasService, reuniaoService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, agendaService, clientessociosService, colaboradoresService, contacorrenteService, contratosService, diario2Service, gruposempresasService, honorariosdadoscontratoService, horastrabService, ligacoesService, operadoresService, preclientesService, prodespesasService, reuniaoService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

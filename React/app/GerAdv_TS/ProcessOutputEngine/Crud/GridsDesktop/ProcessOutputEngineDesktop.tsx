@@ -57,18 +57,6 @@ useEffect(() => {
 }
 }, []);
 
-const openSearchCellProcessOutputRequest = (id: number) => {
-  router.push(`/pages/processoutputrequest/?processoutputengine=${id}`);
-};
-const SearchFromCellProcessOutputRequest = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessOutputRequest(props.dataItem.id)}><span title='Pesquisar relacionados em Process Output Request'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -135,31 +123,12 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   filterable={true}
   />
   ), /* Track G.12 */
-  'id_edit_ProcessOutputRequest': (
-  <GridColumn
-  key='ProcessOutputRequest'
-  field='ProcessOutputRequest'
-  title='Process Output Request'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellProcessOutputRequest }}
-  />
-  ), /* Track G.03 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
 const baseGridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_ProcessOutputRequest'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Process Output Request'
-  cells={{ data: SearchFromCellProcessOutputRequest }}
-  />, 
   ], [RowNumberCell, EditRow, DeleteRow]);
   // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
   const {
@@ -194,14 +163,6 @@ const finalGridColumns = useMemo(() => {
   const finalColumns = [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_ProcessOutputRequest'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Process Output Request'
-  cells={{ data: SearchFromCellProcessOutputRequest }}
-  />, 
 
   // Colunas reordenáveis na ordem especificada
   ...columnsOrder.map(field => basicColumnMap[field]).filter(Boolean).map(column => {

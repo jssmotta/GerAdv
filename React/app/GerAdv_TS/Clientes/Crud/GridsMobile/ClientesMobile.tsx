@@ -118,18 +118,6 @@ const SearchFromCellContratos = (props: any) => {
 </>
 );
 };
-const openSearchCellDadosProcuracao = (id: number) => {
-  router.push(`/pages/dadosprocuracao/?clientes=${id}`);
-};
-const SearchFromCellDadosProcuracao = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellDadosProcuracao(props.dataItem.id)}><span title='Pesquisar relacionados em Dados Procuracao'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 const openSearchCellDiario2 = (id: number) => {
   router.push(`/pages/diario2/?clientes=${id}`);
 };
@@ -357,17 +345,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   sortable={false}
   filterable={false}
   cells={{ data: SearchFromCellContratos }}
-  />
-  ), /* Track G.03 */
-  'id_edit_DadosProcuracao': (
-  <GridColumn
-  key='DadosProcuracao'
-  field='DadosProcuracao'
-  title='Dados Procuracao'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellDadosProcuracao }}
   />
   ), /* Track G.03 */
   'id_edit_Diario2': (

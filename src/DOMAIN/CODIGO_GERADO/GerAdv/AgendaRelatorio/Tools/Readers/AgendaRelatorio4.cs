@@ -41,6 +41,12 @@ public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelato
         return result;
     }
 
+    public AgendaRelatorioResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    {
+        using var dbRec = _agendarelatorioFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
+        return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
+    }
+
     public AgendaRelatorioResponse? Read(SG.GerAdv.DBAgendaRelatorio dbRec) // Track 002.16072025
     {
         if (dbRec == null)

@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribunalFactory tribunalFactory, ITribunalReader reader, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, IDivisaoTribunalService divisaotribunalService, IPoderJudiciarioAssociadoService poderjudiciarioassociadoService, ITribEnderecosService tribenderecosService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITribunalService, IDisposable
+public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribunalFactory tribunalFactory, ITribunalReader reader, ITribunalValidation validation, ITribunalWriter writer, IAreaReader areaReader, IJusticaReader justicaReader, IInstanciaReader instanciaReader, IDivisaoTribunalService divisaotribunalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITribunalService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -21,8 +21,6 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IInstanciaReader instanciaReader = instanciaReader;
     private readonly IDivisaoTribunalService divisaotribunalService = divisaotribunalService;
-    private readonly IPoderJudiciarioAssociadoService poderjudiciarioassociadoService = poderjudiciarioassociadoService;
-    private readonly ITribEnderecosService tribenderecosService = tribenderecosService;
     public async Task<IEnumerable<TribunalResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -207,7 +205,7 @@ public partial class TribunalService(IOptions<AppSettings> appSettings, IFTribun
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, poderjudiciarioassociadoService, tribenderecosService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, divisaotribunalService, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

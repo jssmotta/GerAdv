@@ -174,16 +174,6 @@ export const useOperadoresFilter = ({ handleFetchWithFilter }: UseOperadoresFilt
   label='EMail'
   className='inputIncNome inputSearch'
   />
-  <InputInput
-  type='text'
-  id='senha'
-  name='senha'
-  value={handlers.windowFilter?.senha ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Senha'
-  label='Senha'
-  className='inputIncNome inputSearch'
-  />
   <InputComboFilterYesNo
   type='text'
   id='ativado'
@@ -191,15 +181,6 @@ export const useOperadoresFilter = ({ handleFetchWithFilter }: UseOperadoresFilt
   value={handlers.windowFilter?.ativado ?? -2147483648}
   onChange={handlers.handleInputChange}
   label='Ativado'
-  className='inputSearch inputSearchCheckbox'
-  />
-  <InputComboFilterYesNo
-  type='text'
-  id='atualizarsenha'
-  name='atualizarsenha'
-  value={handlers.windowFilter?.atualizarsenha ?? -2147483648}
-  onChange={handlers.handleInputChange}
-  label='AtualizarSenha'
   className='inputSearch inputSearchCheckbox'
   />
   <InputInput

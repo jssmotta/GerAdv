@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class TipoEnderecoSistemaService(IOptions<AppSettings> appSettings, IFTipoEnderecoSistemaFactory tipoenderecosistemaFactory, ITipoEnderecoSistemaReader reader, ITipoEnderecoSistemaValidation validation, ITipoEnderecoSistemaWriter writer, IEnderecoSistemaService enderecosistemaService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoEnderecoSistemaService, IDisposable
+public partial class TipoEnderecoSistemaService(IOptions<AppSettings> appSettings, IFTipoEnderecoSistemaFactory tipoenderecosistemaFactory, ITipoEnderecoSistemaReader reader, ITipoEnderecoSistemaValidation validation, ITipoEnderecoSistemaWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ITipoEnderecoSistemaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
@@ -17,7 +17,6 @@ public partial class TipoEnderecoSistemaService(IOptions<AppSettings> appSetting
     private readonly ITipoEnderecoSistemaReader reader = reader;
     private readonly ITipoEnderecoSistemaValidation validation = validation;
     private readonly ITipoEnderecoSistemaWriter writer = writer;
-    private readonly IEnderecoSistemaService enderecosistemaService = enderecosistemaService;
     public async Task<IEnumerable<TipoEnderecoSistemaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -202,7 +201,7 @@ public partial class TipoEnderecoSistemaService(IOptions<AppSettings> appSetting
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, enderecosistemaService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

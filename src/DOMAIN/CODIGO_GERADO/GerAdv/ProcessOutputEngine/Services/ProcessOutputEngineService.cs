@@ -6,7 +6,7 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProcessOutputEngineService(IOptions<AppSettings> appSettings, IFProcessOutputEngineFactory processoutputengineFactory, IProcessOutputEngineReader reader, IProcessOutputEngineValidation validation, IProcessOutputEngineWriter writer, IProcessOutputRequestService processoutputrequestService, HybridCache cache, IMemoryCache memory) : IProcessOutputEngineService, IDisposable
+public partial class ProcessOutputEngineService(IOptions<AppSettings> appSettings, IFProcessOutputEngineFactory processoutputengineFactory, IProcessOutputEngineReader reader, IProcessOutputEngineValidation validation, IProcessOutputEngineWriter writer, HybridCache cache, IMemoryCache memory) : IProcessOutputEngineService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
     private readonly HybridCache _cache = cache;
@@ -16,7 +16,6 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
     private readonly IProcessOutputEngineReader reader = reader;
     private readonly IProcessOutputEngineValidation validation = validation;
     private readonly IProcessOutputEngineWriter writer = writer;
-    private readonly IProcessOutputRequestService processoutputrequestService = processoutputrequestService;
     public async Task<IEnumerable<ProcessOutputEngineResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
     {
         max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
@@ -195,7 +194,7 @@ public partial class ProcessOutputEngineService(IOptions<AppSettings> appSetting
 
         try
         {
-            var deleteValidation = await validation.CanDelete(id, this, processoutputrequestService, uri, oCnn);
+            var deleteValidation = await validation.CanDelete(id, this, uri, oCnn);
             if (!deleteValidation)
             {
                 throw new Exception("Erro inesperado ao validar 0x0!");

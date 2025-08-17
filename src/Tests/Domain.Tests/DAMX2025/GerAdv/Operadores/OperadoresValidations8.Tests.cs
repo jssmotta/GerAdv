@@ -69,9 +69,7 @@ public class OperadoresValidationTests : IDisposable
             Grupo = 0,
             Nome = "João",
             EMail = "test@email.com",
-            Senha = "AAAAAAAA",
-            Ativado = true,
-            AtualizarSenha = false
+            Ativado = true
         };
     }
 
@@ -103,9 +101,7 @@ public class OperadoresValidationTests : IDisposable
             IsNovo = false,
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             EMail = null,
-            Senha = null,
-            Ativado = true,
-            AtualizarSenha = false
+            Ativado = true
         };
         SetupValidMocks();
         // Act

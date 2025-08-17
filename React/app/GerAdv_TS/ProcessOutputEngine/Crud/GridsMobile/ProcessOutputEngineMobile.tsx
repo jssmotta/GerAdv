@@ -58,18 +58,6 @@ useEffect(() => {
 }
 }, []);
 
-const openSearchCellProcessOutputRequest = (id: number) => {
-  router.push(`/pages/processoutputrequest/?processoutputengine=${id}`);
-};
-const SearchFromCellProcessOutputRequest = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellProcessOutputRequest(props.dataItem.id)}><span title='Pesquisar relacionados em Process Output Request'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -136,17 +124,6 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   filterable={true}
   />
   ), /* Track G.12 */
-  'id_edit_ProcessOutputRequest': (
-  <GridColumn
-  key='ProcessOutputRequest'
-  field='ProcessOutputRequest'
-  title='Process Output Request'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellProcessOutputRequest }}
-  />
-  ), /* Track G.03 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====

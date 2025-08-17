@@ -38,6 +38,7 @@
         <ProjectReference Include="..\..\SGMain\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
     </ItemGroup> 
     <ItemGroup>
+        <Folder Include="DAMX2025\" />
         <Folder Include="TEMP\" />
         <Folder Include="TestResults\" />
     </ItemGroup>

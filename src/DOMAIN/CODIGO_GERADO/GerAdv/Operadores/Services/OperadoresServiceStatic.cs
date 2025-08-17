@@ -74,19 +74,9 @@ public partial class OperadoresService
             parameters.Add(new($"@{(DBOperadoresDicInfo.EMail)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.EMail)));
         }
 
-        if (!string.IsNullOrWhiteSpace(filtro.Senha))
-        {
-            parameters.Add(new($"@{(DBOperadoresDicInfo.Senha)}", DevourerOne.ApplyWildCard(filtro.WildcardChar, filtro.Senha)));
-        }
-
         if (filtro.Ativado != int.MinValue)
         {
             parameters.Add(new($"@{(DBOperadoresDicInfo.Ativado)}", filtro.Ativado));
-        }
-
-        if (filtro.AtualizarSenha != int.MinValue)
-        {
-            parameters.Add(new($"@{(DBOperadoresDicInfo.AtualizarSenha)}", filtro.AtualizarSenha));
         }
 
         if (filtro.Codigo_filtro != int.MinValue)
@@ -145,9 +135,7 @@ public partial class OperadoresService
 
         cWhere.Append(filtro.Nome.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadoresDicInfo.PTabelaNome}].[{DBOperadoresDicInfo.Nome}]  {DevourerConsts.MsiCollate} like @{(DBOperadoresDicInfo.Nome)}");
         cWhere.Append(filtro.EMail.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadoresDicInfo.PTabelaNome}].[{DBOperadoresDicInfo.EMail}]  {DevourerConsts.MsiCollate} like @{(DBOperadoresDicInfo.EMail)}");
-        cWhere.Append(filtro.Senha.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadoresDicInfo.PTabelaNome}].[{DBOperadoresDicInfo.Senha}]  {DevourerConsts.MsiCollate} like @{(DBOperadoresDicInfo.Senha)}");
         cWhere.Append(filtro.Ativado == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadoresDicInfo.PTabelaNome}].[{DBOperadoresDicInfo.Ativado}] = @{(DBOperadoresDicInfo.Ativado)}");
-        cWhere.Append(filtro.AtualizarSenha == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadoresDicInfo.PTabelaNome}].[{DBOperadoresDicInfo.AtualizarSenha}] = @{(DBOperadoresDicInfo.AtualizarSenha)}");
         if (!(filtro.Codigo_filtro.IsEmptyX()) && filtro.Codigo_filtro_end.IsEmptyX())
         {
             cWhere.Append(filtro.Codigo_filtro.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBOperadoresDicInfo.PTabelaNome}].[{DBOperadoresDicInfo.CampoCodigo}] = @{(DBOperadoresDicInfo.CampoCodigo)}");

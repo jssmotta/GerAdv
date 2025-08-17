@@ -9,21 +9,18 @@ namespace MenphisSI.GerAdv.Validations;
 public partial interface ITipoEnderecoSistemaValidation
 {
     Task<bool> ValidateReg(Models.TipoEnderecoSistema reg, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> CanDelete(int? id, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
 }
 
 public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
 {
-    public async Task<bool> CanDelete(int? id, ITipoEnderecoSistemaService service, IEnderecoSistemaService enderecosistemaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoEnderecoSistemaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
         var reg = await service.GetById(id ?? default, uri, default);
         if (reg == null)
             throw new SGValidationException($"Registro com id {id} não encontrado.");
-        var enderecosistemaExists0 = await enderecosistemaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterEnderecoSistema { TipoEnderecoSistema = id ?? default }, uri);
-        if (enderecosistemaExists0 != null && enderecosistemaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Endereco Sistema associados a ele.");
         return true;
     }
 

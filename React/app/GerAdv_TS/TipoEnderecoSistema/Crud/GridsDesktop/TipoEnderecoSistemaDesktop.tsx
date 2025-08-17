@@ -57,18 +57,6 @@ useEffect(() => {
 }
 }, []);
 
-const openSearchCellEnderecoSistema = (id: number) => {
-  router.push(`/pages/enderecosistema/?tipoenderecosistema=${id}`);
-};
-const SearchFromCellEnderecoSistema = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellEnderecoSistema(props.dataItem.id)}><span title='Pesquisar relacionados em Endereco Sistema'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
-};
 // ===== USO DO HOOK CENTRALIZADO =====
 const {
   filteredData, 
@@ -135,31 +123,12 @@ const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
   filterable={true}
   />
   ), /* Track G.12 */
-  'id_edit_EnderecoSistema': (
-  <GridColumn
-  key='EnderecoSistema'
-  field='EnderecoSistema'
-  title='Endereco Sistema'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellEnderecoSistema }}
-  />
-  ), /* Track G.03 */
   // ← Colunas aqui
 }), []);
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
 const baseGridColumns = useMemo(() => [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_EnderecoSistema'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Endereco Sistema'
-  cells={{ data: SearchFromCellEnderecoSistema }}
-  />, 
   ], [RowNumberCell, EditRow, DeleteRow]);
   // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
   const {
@@ -194,14 +163,6 @@ const finalGridColumns = useMemo(() => {
   const finalColumns = [
   <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
   <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_EnderecoSistema'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Endereco Sistema'
-  cells={{ data: SearchFromCellEnderecoSistema }}
-  />, 
 
   // Colunas reordenáveis na ordem especificada
   ...columnsOrder.map(field => basicColumnMap[field]).filter(Boolean).map(column => {

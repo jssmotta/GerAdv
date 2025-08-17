@@ -36,7 +36,7 @@ public class OperadoresWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFOperadores(bool? Enviado = false, bool? Casa = true, int? CasaID = 1, int? CasaCodigo = 1, bool? IsNovo = false, int? Cliente = 1, int? Grupo = 1, string? Nome = "João", string? EMail = "test@email.com", string? Senha = "AAAAAAAA", bool? Ativado = true, bool? AtualizarSenha = false)
+    private void SetupMockFOperadores(bool? Enviado = false, bool? Casa = true, int? CasaID = 1, int? CasaCodigo = 1, bool? IsNovo = false, int? Cliente = 1, int? Grupo = 1, string? Nome = "João", string? EMail = "test@email.com", bool? Ativado = true)
     {
         _mockFOperadores.Setup(f => f.FEnviado).Returns(Enviado ?? false);
         _mockFOperadores.Setup(f => f.FCasa).Returns(Casa ?? false);
@@ -47,9 +47,7 @@ public class OperadoresWhereTests : IDisposable
         _mockFOperadores.Setup(f => f.FGrupo).Returns(Grupo ?? 0);
         _mockFOperadores.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
         _mockFOperadores.Setup(f => f.FEMail).Returns(EMail ?? string.Empty);
-        _mockFOperadores.Setup(f => f.FSenha).Returns(Senha ?? string.Empty);
         _mockFOperadores.Setup(f => f.FAtivado).Returns(Ativado ?? false);
-        _mockFOperadores.Setup(f => f.FAtualizarSenha).Returns(AtualizarSenha ?? false);
     }
 
 #endregion
@@ -98,9 +96,7 @@ public class OperadoresWhereTests : IDisposable
         result.Grupo.Should().Be(1);
         result.Nome.Should().Be("João");
         result.EMail.Should().Be("test@email.com");
-        result.Senha.Should().Be("AAAAAAAA");
         result.Ativado.Should().Be(true);
-        result.AtualizarSenha.Should().Be(false);
     }
 
 #endregion
@@ -111,7 +107,7 @@ public class OperadoresWhereTests : IDisposable
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
-        SetupMockFOperadores(Enviado: null, Casa: null, CasaID: null, CasaCodigo: null, IsNovo: null, Cliente: null, Grupo: null, Nome: null, EMail: null, Senha: null, Ativado: null, AtualizarSenha: null);
+        SetupMockFOperadores(Enviado: null, Casa: null, CasaID: null, CasaCodigo: null, IsNovo: null, Cliente: null, Grupo: null, Nome: null, EMail: null, Ativado: null);
         _mockOperadoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperadores.Object);
         // Act
         var result = _operadoresWhere.Read(where, parameters, _mockConnection.Object);
@@ -125,9 +121,7 @@ public class OperadoresWhereTests : IDisposable
         result.Grupo.Should().Be(0);
         result.Nome.Should().Be(string.Empty);
         result.EMail.Should().Be(string.Empty);
-        result.Senha.Should().Be(string.Empty);
         result.Ativado.Should().Be(false);
-        result.AtualizarSenha.Should().Be(false);
     }
 
 #endregion
@@ -238,7 +232,7 @@ public class OperadoresWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFOperadores(Enviado: false, Casa: true, CasaID: 1, CasaCodigo: 1, IsNovo: false, Cliente: 1, Grupo: 1, Nome: "João", EMail: "test@email.com", Senha: "AAAAAAAA", Ativado: true, AtualizarSenha: false);
+        SetupMockFOperadores(Enviado: false, Casa: true, CasaID: 1, CasaCodigo: 1, IsNovo: false, Cliente: 1, Grupo: 1, Nome: "João", EMail: "test@email.com", Ativado: true);
         _mockOperadoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperadores.Object);
         // Act
         var result = _operadoresWhere.Read(where, parameters, _mockConnection.Object);
@@ -254,9 +248,7 @@ public class OperadoresWhereTests : IDisposable
         result.Grupo.Should().Be(1);
         result.Nome.Should().Be("João");
         result.EMail.Should().Be("test@email.com");
-        result.Senha.Should().Be("AAAAAAAA");
         result.Ativado.Should().Be(true);
-        result.AtualizarSenha.Should().Be(false);
     }
 
     [Fact]
