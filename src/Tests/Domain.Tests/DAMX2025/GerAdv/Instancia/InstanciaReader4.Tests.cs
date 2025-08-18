@@ -663,7 +663,7 @@ public class InstanciaReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FInstancia
         {
             ID = testId,

@@ -103,9 +103,9 @@ public class DBPreClientesConfigureMethodsTests : IDisposable
             "pFldFEMail",
             "pFldFAssistido",
             "pFldFAssRG",
-            "pFldFAssCPF",
             "pFldFAssEndereco",
             "pFldFCNH",
+            "pFldFAssCPF",
         };
         foreach (var flag in fieldFlags)
         {
@@ -147,9 +147,9 @@ public class DBPreClientesConfigureMethodsTests : IDisposable
             "pFldFEMail",
             "pFldFAssistido",
             "pFldFAssRG",
-            "pFldFAssCPF",
             "pFldFAssEndereco",
             "pFldFCNH",
+            "pFldFAssCPF",
         };
         foreach (var flag in fieldFlags)
         {
@@ -189,9 +189,9 @@ public class DBPreClientesConfigureMethodsTests : IDisposable
         SetFieldValue("m_FEMail", "menphis@menphis.com.br");
         SetFieldValue("m_FAssistido", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         SetFieldValue("m_FAssRG", "AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        SetFieldValue("m_FAssCPF", "40392285029");
         SetFieldValue("m_FAssEndereco", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         SetFieldValue("m_FCNH", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        SetFieldValue("m_FAssCPF", "40392285029");
     }
 
 #endregion
@@ -4739,324 +4739,6 @@ public class DBPreClientesConfigureMethodsTests : IDisposable
     }
 
     [Theory]
-    [InlineData("40392285029 Name")]
-    [InlineData("Another Client")]
-    [InlineData("Valid Client")]
-    public void ConfigureUpdateFields_WithAssCPFFieldChanged_ShouldProcessUpdate(string value)
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", value);
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ConfigureUpdateFieldsAssCPF_OnInsert_ShouldConfigureBooleanFieldsAutomatically()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        _preclientes.ID = 0; // Insert scenario
-        SetFieldValue("m_FCancelou", true);
-        SetFieldValue("m_FRecibo", false);
-        SetFieldValue("m_FNaoCampareceu", true);
-        SetFieldValue("m_FLiberado", false);
-        SetFieldValue("m_FImportante", true);
-        SetFieldValue("m_FConcluido", false);
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ConfigureUpdateFieldsAssCPF_WithMultipleFieldsChanged_ShouldProcessAllChanges()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldFlag("pFldFCompromisso", true);
-        SetFieldValue("m_FAssCPF", "40392285029");
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Theory]
-    [InlineData("40392285029 Name")]
-    [InlineData("Another Client")]
-    [InlineData("Valid Client")]
-    public async Task ConfigureUpdateFieldsAsync_WithAssCPFFieldChanged_ShouldProcessUpdate(string value)
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", value);
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task ConfigureUpdateFieldsAsync_WithMultipleFieldsAssCPFChanged_ShouldProcessAllChanges()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldFlag("pFldFCompromisso", true);
-        SetFieldValue("m_FAssCPF", "40392285029");
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task ConfigureUpdateFieldsAsyncAssCPF_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", "40392285029");
-        _preclientes.ID = 0; // Insert scenario
-        using var cts = new CancellationTokenSource();
-        cts.Cancel(); // Cancel immediately
-        // Act & Assert - Should throw OperationCanceledException or another exception due to mocked connection
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object, cancellationToken: cts.Token));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task ConfigureUpdateFieldsAsyncAssCPF_WithTimeout_ShouldRespectTimeout()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", "40392285029");
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object, timeoutSeconds: 1));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ConfigureAuditorFields_WhenInsertAssCPF_ShouldSetInsertAuditFields()
-    {
-        // Arrange
-        _preclientes.ID = 0; // Insert scenario
-        _preclientes.AuditorQuem = 5;
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection but audit fields should be set
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        _preclientes.AuditorQuem.Should().Be(5);
-    }
-
-    [Fact]
-    public void ConfigureAuditorFieldsAssCPF_WhenUpdate_ShouldSetUpdateAuditFields()
-    {
-        // Arrange
-        _preclientes.ID = 123; // Update scenario
-        _preclientes.AuditorQuem = 7;
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection but audit fields should be set
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        _preclientes.AuditorQuem.Should().Be(7);
-    }
-
-    [Fact]
-    public void ConfigureAuditorFieldsAssCPF_WhenAuditorQuemIsZero_ShouldSetToDefaultValue()
-    {
-        // Arrange
-        _preclientes.ID = 0; // Insert scenario
-        _preclientes.AuditorQuem = 0; // Should be set to 1
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - AuditorQuem should be set to default value of 1
-        _preclientes.AuditorQuem.Should().Be(1);
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(5)]
-    [InlineData(999)]
-    public void ConfigureAuditorFieldsAssCPF_WhenAuditorQuemHasValue_ShouldPreserveValue(int auditorValue)
-    {
-        // Arrange
-        _preclientes.ID = 0; // Insert scenario
-        _preclientes.AuditorQuem = auditorValue;
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - AuditorQuem should preserve its value
-        _preclientes.AuditorQuem.Should().Be(auditorValue);
-    }
-
-    [Fact]
-    public void ConfigureAuditorFieldsAssCPF_WithZeroID_ShouldBeConsideredInsert()
-    {
-        // Arrange
-        _preclientes.ID = 0;
-        _preclientes.AuditorQuem = 10;
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - Should maintain auditor value for insert
-        _preclientes.AuditorQuem.Should().Be(10);
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(100)]
-    [InlineData(999)]
-    public void ConfigureAuditorFieldsAssCPF_WithNonZeroID_ShouldBeConsideredUpdate(int id)
-    {
-        // Arrange
-        _preclientes.ID = id;
-        _preclientes.AuditorQuem = 15;
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - Should maintain auditor value for update
-        _preclientes.AuditorQuem.Should().Be(15);
-    }
-
-    [Fact]
-    public async Task ConfigureAuditorFieldsAsyncAssCPF_WhenInsert_ShouldSetInsertAuditFields()
-    {
-        // Arrange
-        _preclientes.ID = 0; // Insert scenario
-        _preclientes.AuditorQuem = 5;
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection but audit fields should be set
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        _preclientes.AuditorQuem.Should().Be(5);
-    }
-
-    [Fact]
-    public async Task ConfigureAuditorFieldsAsyncAssCPF_WhenAuditorQuemIsZero_ShouldSetToDefaultValue()
-    {
-        // Arrange
-        _preclientes.ID = 0; // Insert scenario
-        _preclientes.AuditorQuem = 0; // Should be set to 1
-        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
-        SetFieldValue("m_FAssCPF", "40392285029");
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - AuditorQuem should be set to default value of 1
-        _preclientes.AuditorQuem.Should().Be(1);
-    }
-
-    [Fact]
-    public void ConfigureMethodsAssCPF_Integration_BothMethodsWorkTogether_ShouldNotInterfere()
-    {
-        // Arrange
-        SetAllFieldFlags(true);
-        SetAllFieldValues();
-        _preclientes.ID = 123;
-        _preclientes.AuditorQuem = 99;
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - Both update and audit configuration should work
-        _preclientes.FAssCPF.Should().Be("40392285029");
-        _preclientes.AuditorQuem.Should().Be(99);
-    }
-
-    [Fact]
-    public void ConfigureFieldsAssCPF_Integration_FieldChangeTracking_ShouldWorkCorrectly()
-    {
-        // Arrange
-        _preclientes.ID = 1; // Update scenario
-        // Initially no changes
-        var result1 = _preclientes.Update(_mockConnection.Object);
-        result1.Should().Be(0, "No fields changed, should return 0");
-        // Now change a field
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", "New Client Name");
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ConfigureFieldsAssCPF_EdgeCase_EmptyStringValues_ShouldBeHandled()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", "");
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ConfigureFieldsAssCPF_EdgeCase_NullStringValues_ShouldBeHandled()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldValue("m_FAssCPF", null);
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task ConfigureFieldsAsyncAssCPF_EdgeCase_EmptyStringValues_ShouldBeHandled()
-    {
-        // Arrange
-        ResetAllFieldFlags();
-        SetFieldFlag("pFldFAssCPF", true);
-        SetFieldFlag("pFldFCompromisso", true);
-        SetFieldValue("m_FAssCPF", "");
-        SetFieldValue("m_FCompromisso", "");
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
-        exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ConfigureUpdateFieldsAssCPF_Integration_WithAllFieldsChanged_ShouldProcessAllFields()
-    {
-        // Arrange
-        SetAllFieldFlags(true);
-        SetAllFieldValues();
-        _preclientes.ID = 0; // Insert scenario
-        // Act & Assert - Should throw exception due to mocked connection
-        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
-        exception.Should().NotBeNull();
-        // Assert - All field values should be preserved
-        _preclientes.FAssCPF.Should().Be("40392285029");
-        _preclientes.FAdv.Should().Be(123);
-    }
-
-    [Theory]
     [InlineData("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Name")]
     [InlineData("Another Client")]
     [InlineData("Valid Client")]
@@ -5689,6 +5371,324 @@ public class DBPreClientesConfigureMethodsTests : IDisposable
         exception.Should().NotBeNull();
         // Assert - All field values should be preserved
         _preclientes.FCNH.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        _preclientes.FAdv.Should().Be(123);
+    }
+
+    [Theory]
+    [InlineData("40392285029 Name")]
+    [InlineData("Another Client")]
+    [InlineData("Valid Client")]
+    public void ConfigureUpdateFields_WithAssCPFFieldChanged_ShouldProcessUpdate(string value)
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", value);
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ConfigureUpdateFieldsAssCPF_OnInsert_ShouldConfigureBooleanFieldsAutomatically()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        _preclientes.ID = 0; // Insert scenario
+        SetFieldValue("m_FCancelou", true);
+        SetFieldValue("m_FRecibo", false);
+        SetFieldValue("m_FNaoCampareceu", true);
+        SetFieldValue("m_FLiberado", false);
+        SetFieldValue("m_FImportante", true);
+        SetFieldValue("m_FConcluido", false);
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ConfigureUpdateFieldsAssCPF_WithMultipleFieldsChanged_ShouldProcessAllChanges()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldFlag("pFldFCompromisso", true);
+        SetFieldValue("m_FAssCPF", "40392285029");
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Theory]
+    [InlineData("40392285029 Name")]
+    [InlineData("Another Client")]
+    [InlineData("Valid Client")]
+    public async Task ConfigureUpdateFieldsAsync_WithAssCPFFieldChanged_ShouldProcessUpdate(string value)
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", value);
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ConfigureUpdateFieldsAsync_WithMultipleFieldsAssCPFChanged_ShouldProcessAllChanges()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldFlag("pFldFCompromisso", true);
+        SetFieldValue("m_FAssCPF", "40392285029");
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ConfigureUpdateFieldsAsyncAssCPF_WithCancellationToken_ShouldRespectCancellation()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", "40392285029");
+        _preclientes.ID = 0; // Insert scenario
+        using var cts = new CancellationTokenSource();
+        cts.Cancel(); // Cancel immediately
+        // Act & Assert - Should throw OperationCanceledException or another exception due to mocked connection
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object, cancellationToken: cts.Token));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ConfigureUpdateFieldsAsyncAssCPF_WithTimeout_ShouldRespectTimeout()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", "40392285029");
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object, timeoutSeconds: 1));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ConfigureAuditorFields_WhenInsertAssCPF_ShouldSetInsertAuditFields()
+    {
+        // Arrange
+        _preclientes.ID = 0; // Insert scenario
+        _preclientes.AuditorQuem = 5;
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection but audit fields should be set
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        _preclientes.AuditorQuem.Should().Be(5);
+    }
+
+    [Fact]
+    public void ConfigureAuditorFieldsAssCPF_WhenUpdate_ShouldSetUpdateAuditFields()
+    {
+        // Arrange
+        _preclientes.ID = 123; // Update scenario
+        _preclientes.AuditorQuem = 7;
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection but audit fields should be set
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        _preclientes.AuditorQuem.Should().Be(7);
+    }
+
+    [Fact]
+    public void ConfigureAuditorFieldsAssCPF_WhenAuditorQuemIsZero_ShouldSetToDefaultValue()
+    {
+        // Arrange
+        _preclientes.ID = 0; // Insert scenario
+        _preclientes.AuditorQuem = 0; // Should be set to 1
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - AuditorQuem should be set to default value of 1
+        _preclientes.AuditorQuem.Should().Be(1);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(999)]
+    public void ConfigureAuditorFieldsAssCPF_WhenAuditorQuemHasValue_ShouldPreserveValue(int auditorValue)
+    {
+        // Arrange
+        _preclientes.ID = 0; // Insert scenario
+        _preclientes.AuditorQuem = auditorValue;
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - AuditorQuem should preserve its value
+        _preclientes.AuditorQuem.Should().Be(auditorValue);
+    }
+
+    [Fact]
+    public void ConfigureAuditorFieldsAssCPF_WithZeroID_ShouldBeConsideredInsert()
+    {
+        // Arrange
+        _preclientes.ID = 0;
+        _preclientes.AuditorQuem = 10;
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - Should maintain auditor value for insert
+        _preclientes.AuditorQuem.Should().Be(10);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(100)]
+    [InlineData(999)]
+    public void ConfigureAuditorFieldsAssCPF_WithNonZeroID_ShouldBeConsideredUpdate(int id)
+    {
+        // Arrange
+        _preclientes.ID = id;
+        _preclientes.AuditorQuem = 15;
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - Should maintain auditor value for update
+        _preclientes.AuditorQuem.Should().Be(15);
+    }
+
+    [Fact]
+    public async Task ConfigureAuditorFieldsAsyncAssCPF_WhenInsert_ShouldSetInsertAuditFields()
+    {
+        // Arrange
+        _preclientes.ID = 0; // Insert scenario
+        _preclientes.AuditorQuem = 5;
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection but audit fields should be set
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        _preclientes.AuditorQuem.Should().Be(5);
+    }
+
+    [Fact]
+    public async Task ConfigureAuditorFieldsAsyncAssCPF_WhenAuditorQuemIsZero_ShouldSetToDefaultValue()
+    {
+        // Arrange
+        _preclientes.ID = 0; // Insert scenario
+        _preclientes.AuditorQuem = 0; // Should be set to 1
+        SetFieldFlag("pFldFAssCPF", true); // At least one field must change
+        SetFieldValue("m_FAssCPF", "40392285029");
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - AuditorQuem should be set to default value of 1
+        _preclientes.AuditorQuem.Should().Be(1);
+    }
+
+    [Fact]
+    public void ConfigureMethodsAssCPF_Integration_BothMethodsWorkTogether_ShouldNotInterfere()
+    {
+        // Arrange
+        SetAllFieldFlags(true);
+        SetAllFieldValues();
+        _preclientes.ID = 123;
+        _preclientes.AuditorQuem = 99;
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - Both update and audit configuration should work
+        _preclientes.FAssCPF.Should().Be("40392285029");
+        _preclientes.AuditorQuem.Should().Be(99);
+    }
+
+    [Fact]
+    public void ConfigureFieldsAssCPF_Integration_FieldChangeTracking_ShouldWorkCorrectly()
+    {
+        // Arrange
+        _preclientes.ID = 1; // Update scenario
+        // Initially no changes
+        var result1 = _preclientes.Update(_mockConnection.Object);
+        result1.Should().Be(0, "No fields changed, should return 0");
+        // Now change a field
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", "New Client Name");
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ConfigureFieldsAssCPF_EdgeCase_EmptyStringValues_ShouldBeHandled()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", "");
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ConfigureFieldsAssCPF_EdgeCase_NullStringValues_ShouldBeHandled()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldValue("m_FAssCPF", null);
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ConfigureFieldsAsyncAssCPF_EdgeCase_EmptyStringValues_ShouldBeHandled()
+    {
+        // Arrange
+        ResetAllFieldFlags();
+        SetFieldFlag("pFldFAssCPF", true);
+        SetFieldFlag("pFldFCompromisso", true);
+        SetFieldValue("m_FAssCPF", "");
+        SetFieldValue("m_FCompromisso", "");
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = await Record.ExceptionAsync(async () => await _preclientes.UpdateAsync(_mockConnection.Object));
+        exception.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void ConfigureUpdateFieldsAssCPF_Integration_WithAllFieldsChanged_ShouldProcessAllFields()
+    {
+        // Arrange
+        SetAllFieldFlags(true);
+        SetAllFieldValues();
+        _preclientes.ID = 0; // Insert scenario
+        // Act & Assert - Should throw exception due to mocked connection
+        var exception = Record.Exception(() => _preclientes.Update(_mockConnection.Object));
+        exception.Should().NotBeNull();
+        // Assert - All field values should be preserved
+        _preclientes.FAssCPF.Should().Be("40392285029");
         _preclientes.FAdv.Should().Be(123);
     }
 

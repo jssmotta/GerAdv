@@ -109,7 +109,7 @@ public class GUTMatrizValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Descricao Method Tests
+#region ValidateReg Required Descricao Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyDescricao_ShouldThrowSGValidationException()
     {

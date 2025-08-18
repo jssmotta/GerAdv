@@ -663,7 +663,7 @@ public class TipoModeloDocumentoReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FTipoModeloDocumento
         {
             ID = testId,

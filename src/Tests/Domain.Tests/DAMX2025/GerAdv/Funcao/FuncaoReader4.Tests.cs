@@ -663,7 +663,7 @@ public class FuncaoReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FFuncao
         {
             ID = testId,

@@ -58,7 +58,7 @@ public class CargosEscValidationTests : IDisposable
         return new Models.CargosEsc
         {
             Id = 1,
-            Percentual = 0m,
+            Percentual = 1m,
             Nome = "João",
             Classificacao = 0
         };

@@ -101,7 +101,7 @@ public class TipoOrigemSucumbenciaValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {

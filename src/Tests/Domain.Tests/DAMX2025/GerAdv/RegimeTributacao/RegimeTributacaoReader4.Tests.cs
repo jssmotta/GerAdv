@@ -663,7 +663,7 @@ public class RegimeTributacaoReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FRegimeTributacao
         {
             ID = testId,

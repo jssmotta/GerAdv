@@ -71,7 +71,7 @@ public class ContaCorrenteValidationTests : IDisposable
             DtOriginal = "24/04/1975",
             Processo = 0,
             ParcelaX = 0,
-            Valor = 0m,
+            Valor = 1m,
             Data = "27/05/2022",
             Cliente = 0,
             Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
@@ -81,7 +81,7 @@ public class ContaCorrenteValidationTests : IDisposable
             LC = false,
             IDHTrab = 0,
             NroParcelas = 0,
-            ValorPrincipal = 0m,
+            ValorPrincipal = 1m,
             ParcelaPrincipalID = 0,
             Hide = true,
             DataPgto = "24/04/1975"

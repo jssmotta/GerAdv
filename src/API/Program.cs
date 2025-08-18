@@ -1,3 +1,5 @@
+using MenphisSI;
+using MenphisSI.DB;
 using MenphisSI.GerAdv.HealthCheck;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -236,6 +238,7 @@ try
 
 
 
+
     app.UseHttpsRedirection();
     app.UseResponseCompression();
     //app.UseCors("AllowSpecificOrigins");
@@ -276,9 +279,22 @@ try
               context.Response.Redirect("https://menphis.com.br/?urapiadvi");
               return Task.CompletedTask;
           }
-  ).ShortCircuit(200);    
+  ).ShortCircuit(200);
 
+    /*
+    var sqlCommands = @"alter table PreClientes ADD cliAssCPF2[nvarchar](11) NULL;
+update PreClientes Set cliAssCPF=cliAssCPF2;
+alter table PreClientes drop column cliAssCPF;
+alter table PreClientes ADD cliAssCPF[nvarchar](11) NULL;
+update PreClientes Set cliAssCPF=cliAssCPF2;
+alter table PreClientes drop column cliAssCPF2;";
 
+    using var oCnn = Configuracoes.GetConnectionByUriRw("IBRADV");
+    foreach (var commandText in sqlCommands.Split(";", StringSplitOptions.RemoveEmptyEntries))
+    {
+        ConfiguracoesDBT.ExecuteSqlCreate(commandText, oCnn);
+    }
+    */
     app.Run();
 }
 catch (Exception exception)

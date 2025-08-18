@@ -64,11 +64,11 @@ public class ProDespesasValidationTests : IDisposable
             Cliente = 0,
             Corrigido = false,
             Data = "27/05/2022",
-            ValorOriginal = 0m,
+            ValorOriginal = 1m,
             Processo = 0,
             Quitado = 0,
             DataCorrecao = "24/04/1975",
-            Valor = 0m,
+            Valor = 1m,
             Tipo = true,
             Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             LivroCaixa = false

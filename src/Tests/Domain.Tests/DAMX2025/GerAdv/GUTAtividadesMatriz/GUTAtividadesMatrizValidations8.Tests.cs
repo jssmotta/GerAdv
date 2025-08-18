@@ -63,7 +63,8 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 1,
             GUTMatriz = 1,
-            GUTAtividade = 1
+            GUTAtividade = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -93,7 +94,8 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 1,
             GUTMatriz = 1,
-            GUTAtividade = 1
+            GUTAtividade = 1,
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -111,7 +113,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

@@ -663,7 +663,7 @@ public class UFReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "AA";
         var dbRec = new FUF
         {
             ID = testId,

@@ -58,6 +58,7 @@ public class ContatoCRMViewValidationTests : IDisposable
         return new Models.ContatoCRMView
         {
             Id = 1,
+            CGUID = Guid.NewGuid().ToString(),
             Data = "27/05/2022",
             IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
@@ -84,6 +85,7 @@ public class ContatoCRMViewValidationTests : IDisposable
         var contatocrmview = new Models.ContatoCRMView
         {
             Id = 1,
+            CGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Data = "27/05/2022",
             IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
@@ -103,7 +105,7 @@ public class ContatoCRMViewValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required CGUID Method Tests
+#region ValidateReg Required CGUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyCGUID_ShouldThrowSGValidationException()
     {
@@ -150,7 +152,7 @@ public class ContatoCRMViewValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required Data Method Tests
+#region ValidateReg Required Data Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyData_ShouldThrowSGValidationException()
     {
@@ -197,7 +199,7 @@ public class ContatoCRMViewValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required IP Method Tests
+#region ValidateReg Required IP Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyIP_ShouldThrowSGValidationException()
     {

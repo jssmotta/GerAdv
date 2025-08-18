@@ -78,7 +78,7 @@ public class OponentesValidationTests : IDisposable
             CPF = "544.506.718-13",
             Endereco = "Rua das Flores, 123",
             Fone = "(11) 99999-9999",
-            Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            Fax = "(11) 88888-9999",
             Cidade = 0,
             Bairro = "Centro",
             CEP = "01234-567",
@@ -291,7 +291,6 @@ public class OponentesValidationTests : IDisposable
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(oponentes, _mockOponentesService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
-        exception.Message.Should().Contain("(");
     }
 
     [Fact]

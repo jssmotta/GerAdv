@@ -36,7 +36,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProSucumbencia(int? Processo = 1, int? Instancia = 1, string? Data = "27/05/2022", string? Nome = "João", int? TipoOrigemSucumbencia = 1, decimal? Valor = 0m, string? Percentual = "AAA")
+    private void SetupMockFProSucumbencia(int? Processo = 1, int? Instancia = 1, string? Data = "27/05/2022", string? Nome = "João", int? TipoOrigemSucumbencia = 1, decimal? Valor = 1m, string? Percentual = "AAA")
     {
         _mockFProSucumbencia.Setup(f => f.FProcesso).Returns(Processo ?? 0);
         _mockFProSucumbencia.Setup(f => f.FInstancia).Returns(Instancia ?? 0);
@@ -89,7 +89,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         result.Data.Should().Be("27/05/2022");
         result.Nome.Should().Be("João");
         result.TipoOrigemSucumbencia.Should().Be(1);
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Percentual.Should().Be("AAA");
     }
 
@@ -223,7 +223,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProSucumbencia(Processo: 1, Instancia: 1, Data: "27/05/2022", Nome: "João", TipoOrigemSucumbencia: 1, Valor: 0m, Percentual: "AAA");
+        SetupMockFProSucumbencia(Processo: 1, Instancia: 1, Data: "27/05/2022", Nome: "João", TipoOrigemSucumbencia: 1, Valor: 1m, Percentual: "AAA");
         _mockProSucumbenciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProSucumbencia.Object);
         // Act
         var result = _prosucumbenciaWhere.Read(where, parameters, _mockConnection.Object);
@@ -235,7 +235,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         result.Data.Should().Be("27/05/2022");
         result.Nome.Should().Be("João");
         result.TipoOrigemSucumbencia.Should().Be(1);
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Percentual.Should().Be("AAA");
     }
 

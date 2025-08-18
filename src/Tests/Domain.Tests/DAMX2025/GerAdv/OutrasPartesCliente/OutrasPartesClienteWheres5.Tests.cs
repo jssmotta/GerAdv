@@ -36,7 +36,7 @@ public class OutrasPartesClienteWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFOutrasPartesCliente(string? Nome = "João", bool? Terceirizado = false, int? ClientePrincipal = 1, bool? Tipo = true, bool? Sexo = false, string? DtNasc = "24/04/1975", string? CPF = "544.506.718-13", string? RG = "12.345.678-9", string? CNPJ = "93016944000138", string? InscEst = "AAAAAAAAAAAAA", string? NomeFantasia = "João", string? Endereco = "Rua das Flores, 123", int? Cidade = 1, string? CEP = "01234-567", string? Bairro = "Centro", string? Fone = "(11) 99999-9999", string? Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? EMail = "test@email.com", string? Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Class = "A")
+    private void SetupMockFOutrasPartesCliente(string? Nome = "João", bool? Terceirizado = false, int? ClientePrincipal = 1, bool? Tipo = true, bool? Sexo = false, string? DtNasc = "24/04/1975", string? CPF = "544.506.718-13", string? RG = "12.345.678-9", string? CNPJ = "93016944000138", string? InscEst = "AAAAAAAAAAAAA", string? NomeFantasia = "João", string? Endereco = "Rua das Flores, 123", int? Cidade = 1, string? CEP = "01234-567", string? Bairro = "Centro", string? Fone = "(11) 99999-9999", string? Fax = "(11) 88888-9999", string? EMail = "test@email.com", string? Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Class = "A")
     {
         _mockFOutrasPartesCliente.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
         _mockFOutrasPartesCliente.Setup(f => f.FTerceirizado).Returns(Terceirizado ?? false);
@@ -113,7 +113,7 @@ public class OutrasPartesClienteWhereTests : IDisposable
         result.CEP.Should().Be("01234-567");
         result.Bairro.Should().Be("Centro");
         result.Fone.Should().Be("(11) 99999-9999");
-        result.Fax.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        result.Fax.Should().Be("(11) 88888-9999");
         result.EMail.Should().Be("test@email.com");
         result.Site.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Class.Should().Be("A");
@@ -262,7 +262,7 @@ public class OutrasPartesClienteWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFOutrasPartesCliente(Nome: "João", Terceirizado: false, ClientePrincipal: 1, Tipo: true, Sexo: false, DtNasc: "24/04/1975", CPF: "544.506.718-13", RG: "12.345.678-9", CNPJ: "93016944000138", InscEst: "AAAAAAAAAAAAA", NomeFantasia: "João", Endereco: "Rua das Flores, 123", Cidade: 1, CEP: "01234-567", Bairro: "Centro", Fone: "(11) 99999-9999", Fax: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", EMail: "test@email.com", Site: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Class: "A");
+        SetupMockFOutrasPartesCliente(Nome: "João", Terceirizado: false, ClientePrincipal: 1, Tipo: true, Sexo: false, DtNasc: "24/04/1975", CPF: "544.506.718-13", RG: "12.345.678-9", CNPJ: "93016944000138", InscEst: "AAAAAAAAAAAAA", NomeFantasia: "João", Endereco: "Rua das Flores, 123", Cidade: 1, CEP: "01234-567", Bairro: "Centro", Fone: "(11) 99999-9999", Fax: "(11) 88888-9999", EMail: "test@email.com", Site: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Class: "A");
         _mockOutrasPartesClienteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOutrasPartesCliente.Object);
         // Act
         var result = _outraspartesclienteWhere.Read(where, parameters, _mockConnection.Object);
@@ -285,7 +285,7 @@ public class OutrasPartesClienteWhereTests : IDisposable
         result.CEP.Should().Be("01234-567");
         result.Bairro.Should().Be("Centro");
         result.Fone.Should().Be("(11) 99999-9999");
-        result.Fax.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        result.Fax.Should().Be("(11) 88888-9999");
         result.EMail.Should().Be("test@email.com");
         result.Site.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Class.Should().Be("A");

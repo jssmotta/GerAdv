@@ -36,7 +36,7 @@ public class LivroCaixaWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFLivroCaixa(bool? Previsto = false, int? IDDes = 1, int? Pessoal = 1, bool? Ajuste = true, int? IDHon = 1, int? IDHonParc = 1, bool? IDHonSuc = false, string? Data = "27/05/2022", int? Processo = 1, decimal? Valor = 0m, bool? Tipo = true, string? Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Grupo = 1)
+    private void SetupMockFLivroCaixa(bool? Previsto = false, int? IDDes = 1, int? Pessoal = 1, bool? Ajuste = true, int? IDHon = 1, int? IDHonParc = 1, bool? IDHonSuc = false, string? Data = "27/05/2022", int? Processo = 1, decimal? Valor = 1m, bool? Tipo = true, string? Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Grupo = 1)
     {
         _mockFLivroCaixa.Setup(f => f.FPrevisto).Returns(Previsto ?? false);
         _mockFLivroCaixa.Setup(f => f.FIDDes).Returns(IDDes ?? 0);
@@ -99,7 +99,7 @@ public class LivroCaixaWhereTests : IDisposable
         result.IDHonSuc.Should().Be(false);
         result.Data.Should().Be("27/05/2022");
         result.Processo.Should().Be(1);
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Tipo.Should().Be(true);
         result.Historico.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Grupo.Should().Be(1);
@@ -241,7 +241,7 @@ public class LivroCaixaWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFLivroCaixa(Previsto: false, IDDes: 1, Pessoal: 1, Ajuste: true, IDHon: 1, IDHonParc: 1, IDHonSuc: false, Data: "27/05/2022", Processo: 1, Valor: 0m, Tipo: true, Historico: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Grupo: 1);
+        SetupMockFLivroCaixa(Previsto: false, IDDes: 1, Pessoal: 1, Ajuste: true, IDHon: 1, IDHonParc: 1, IDHonSuc: false, Data: "27/05/2022", Processo: 1, Valor: 1m, Tipo: true, Historico: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Grupo: 1);
         _mockLivroCaixaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLivroCaixa.Object);
         // Act
         var result = _livrocaixaWhere.Read(where, parameters, _mockConnection.Object);
@@ -257,7 +257,7 @@ public class LivroCaixaWhereTests : IDisposable
         result.IDHonSuc.Should().Be(false);
         result.Data.Should().Be("27/05/2022");
         result.Processo.Should().Be(1);
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Tipo.Should().Be(true);
         result.Historico.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Grupo.Should().Be(1);

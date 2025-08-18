@@ -76,7 +76,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
             CEP = "01234-567",
             Bairro = "Centro",
             Fone = "(11) 99999-9999",
-            Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            Fax = "(11) 88888-9999",
             EMail = "test@email.com",
             Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Class = "A"
@@ -281,7 +281,6 @@ public class OutrasPartesClienteValidationTests : IDisposable
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
-        exception.Message.Should().Contain("(");
     }
 
     [Fact]

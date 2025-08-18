@@ -36,7 +36,7 @@ public class CargosEscWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFCargosEsc(decimal? Percentual = 0m, string? Nome = "João", int? Classificacao = 1)
+    private void SetupMockFCargosEsc(decimal? Percentual = 1m, string? Nome = "João", int? Classificacao = 1)
     {
         _mockFCargosEsc.Setup(f => f.FPercentual).Returns(Percentual ?? 0m);
         _mockFCargosEsc.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
@@ -80,7 +80,7 @@ public class CargosEscWhereTests : IDisposable
         var result = _cargosescWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
-        result.Percentual.Should().Be(0m);
+        result.Percentual.Should().Be(1m);
         result.Nome.Should().Be("João");
         result.Classificacao.Should().Be(1);
     }
@@ -211,14 +211,14 @@ public class CargosEscWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFCargosEsc(Percentual: 0m, Nome: "João", Classificacao: 1);
+        SetupMockFCargosEsc(Percentual: 1m, Nome: "João", Classificacao: 1);
         _mockCargosEscFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFCargosEsc.Object);
         // Act
         var result = _cargosescWhere.Read(where, parameters, _mockConnection.Object);
         // Assert - Verify all properties are correctly mapped
         result.Should().NotBeNull();
         // Basic properties        
-        result.Percentual.Should().Be(0m);
+        result.Percentual.Should().Be(1m);
         result.Nome.Should().Be("João");
         result.Classificacao.Should().Be(1);
     }

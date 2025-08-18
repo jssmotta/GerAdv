@@ -184,7 +184,7 @@ public class CargosEscWriterTests
         return new Models.CargosEsc
         {
             Id = 0,
-            Percentual = 0m,
+            Percentual = 1m,
             Nome = "João",
             Classificacao = 1,
             GUID = Guid.NewGuid().ToString()

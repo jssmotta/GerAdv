@@ -216,14 +216,14 @@ public class ProValoresWriterTests
             Indice = "AAAAAAAAAAAAAAAAAA",
             Ignorar = false,
             Data = "27/05/2022",
-            ValorOriginal = 0m,
-            PercMulta = 0m,
-            ValorMulta = 0m,
-            PercJuros = 0m,
-            ValorOriginalCorrigidoIndice = 0m,
-            ValorMultaCorrigido = 0m,
-            ValorJurosCorrigido = 0m,
-            ValorFinal = 0m,
+            ValorOriginal = 1m,
+            PercMulta = 1m,
+            ValorMulta = 1m,
+            PercJuros = 1m,
+            ValorOriginalCorrigidoIndice = 1m,
+            ValorMultaCorrigido = 1m,
+            ValorJurosCorrigido = 1m,
+            ValorFinal = 1m,
             DataUltimaCorrecao = "24/04/1975"
         };
     }

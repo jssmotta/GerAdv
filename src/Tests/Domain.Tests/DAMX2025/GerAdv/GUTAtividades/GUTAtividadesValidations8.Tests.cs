@@ -70,7 +70,8 @@ public class GUTAtividadesValidationTests : IDisposable
             Concluido = false,
             DataConcluido = "24/04/1975",
             DiasParaIniciar = 0,
-            MinutosParaRealizar = 0
+            MinutosParaRealizar = 0,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -102,7 +103,8 @@ public class GUTAtividadesValidationTests : IDisposable
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Observacao = null,
             GUTPeriodicidade = 1,
-            DataConcluido = null
+            DataConcluido = null,
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -120,7 +122,7 @@ public class GUTAtividadesValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {
@@ -167,7 +169,7 @@ public class GUTAtividadesValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

@@ -36,7 +36,7 @@ public class ContaCorrenteWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFContaCorrente(int? CIAcordo = 1, bool? Quitado = false, int? IDContrato = 1, int? QuitadoID = 1, int? DebitoID = 1, int? LivroCaixaID = 1, bool? Sucumbencia = true, bool? DistRegra = false, string? DtOriginal = "24/04/1975", int? Processo = 1, int? ParcelaX = 1, decimal? Valor = 0m, string? Data = "27/05/2022", int? Cliente = 1, string? Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Contrato = true, bool? Pago = false, bool? Distribuir = true, bool? LC = false, int? IDHTrab = 1, int? NroParcelas = 1, decimal? ValorPrincipal = 0m, int? ParcelaPrincipalID = 1, bool? Hide = true, string? DataPgto = "24/04/1975")
+    private void SetupMockFContaCorrente(int? CIAcordo = 1, bool? Quitado = false, int? IDContrato = 1, int? QuitadoID = 1, int? DebitoID = 1, int? LivroCaixaID = 1, bool? Sucumbencia = true, bool? DistRegra = false, string? DtOriginal = "24/04/1975", int? Processo = 1, int? ParcelaX = 1, decimal? Valor = 1m, string? Data = "27/05/2022", int? Cliente = 1, string? Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Contrato = true, bool? Pago = false, bool? Distribuir = true, bool? LC = false, int? IDHTrab = 1, int? NroParcelas = 1, decimal? ValorPrincipal = 1m, int? ParcelaPrincipalID = 1, bool? Hide = true, string? DataPgto = "24/04/1975")
     {
         _mockFContaCorrente.Setup(f => f.FCIAcordo).Returns(CIAcordo ?? 0);
         _mockFContaCorrente.Setup(f => f.FQuitado).Returns(Quitado ?? false);
@@ -113,7 +113,7 @@ public class ContaCorrenteWhereTests : IDisposable
         result.DtOriginal.Should().Be("24/04/1975");
         result.Processo.Should().Be(1);
         result.ParcelaX.Should().Be(1);
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Data.Should().Be("27/05/2022");
         result.Cliente.Should().Be(1);
         result.Historico.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
@@ -123,7 +123,7 @@ public class ContaCorrenteWhereTests : IDisposable
         result.LC.Should().Be(false);
         result.IDHTrab.Should().Be(1);
         result.NroParcelas.Should().Be(1);
-        result.ValorPrincipal.Should().Be(0m);
+        result.ValorPrincipal.Should().Be(1m);
         result.ParcelaPrincipalID.Should().Be(1);
         result.Hide.Should().Be(true);
         result.DataPgto.Should().Be("24/04/1975");
@@ -277,7 +277,7 @@ public class ContaCorrenteWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFContaCorrente(CIAcordo: 1, Quitado: false, IDContrato: 1, QuitadoID: 1, DebitoID: 1, LivroCaixaID: 1, Sucumbencia: true, DistRegra: false, DtOriginal: "24/04/1975", Processo: 1, ParcelaX: 1, Valor: 0m, Data: "27/05/2022", Cliente: 1, Historico: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Contrato: true, Pago: false, Distribuir: true, LC: false, IDHTrab: 1, NroParcelas: 1, ValorPrincipal: 0m, ParcelaPrincipalID: 1, Hide: true, DataPgto: "24/04/1975");
+        SetupMockFContaCorrente(CIAcordo: 1, Quitado: false, IDContrato: 1, QuitadoID: 1, DebitoID: 1, LivroCaixaID: 1, Sucumbencia: true, DistRegra: false, DtOriginal: "24/04/1975", Processo: 1, ParcelaX: 1, Valor: 1m, Data: "27/05/2022", Cliente: 1, Historico: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Contrato: true, Pago: false, Distribuir: true, LC: false, IDHTrab: 1, NroParcelas: 1, ValorPrincipal: 1m, ParcelaPrincipalID: 1, Hide: true, DataPgto: "24/04/1975");
         _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
         // Act
         var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
@@ -295,7 +295,7 @@ public class ContaCorrenteWhereTests : IDisposable
         result.DtOriginal.Should().Be("24/04/1975");
         result.Processo.Should().Be(1);
         result.ParcelaX.Should().Be(1);
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Data.Should().Be("27/05/2022");
         result.Cliente.Should().Be(1);
         result.Historico.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
@@ -305,7 +305,7 @@ public class ContaCorrenteWhereTests : IDisposable
         result.LC.Should().Be(false);
         result.IDHTrab.Should().Be(1);
         result.NroParcelas.Should().Be(1);
-        result.ValorPrincipal.Should().Be(0m);
+        result.ValorPrincipal.Should().Be(1m);
         result.ParcelaPrincipalID.Should().Be(1);
         result.Hide.Should().Be(true);
         result.DataPgto.Should().Be("24/04/1975");

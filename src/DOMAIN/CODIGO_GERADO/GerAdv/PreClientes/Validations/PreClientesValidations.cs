@@ -56,7 +56,7 @@ public class PreClientesValidation : IPreClientesValidation
             throw new SGValidationException($"Assistido deve ter no máximo {DBPreClientesDicInfo.CliAssistido.FTamanho} caracteres.");
         if (reg.AssRG != null && reg.AssRG.Length > DBPreClientesDicInfo.CliAssRG.FTamanho)
             throw new SGValidationException($"AssRG deve ter no máximo {DBPreClientesDicInfo.CliAssRG.FTamanho} caracteres.");
-        if (reg.AssCPF != null && reg.AssCPF.Length > DBPreClientesDicInfo.CliAssCPF.FTamanho)
+        if (reg.AssCPF != null && reg.AssCPF.ClearInputCepCpfCnpj().Length > DBPreClientesDicInfo.CliAssCPF.FTamanho)
             throw new SGValidationException($"AssCPF deve ter no máximo {DBPreClientesDicInfo.CliAssCPF.FTamanho} caracteres.");
         if (reg.AssEndereco != null && reg.AssEndereco.Length > DBPreClientesDicInfo.CliAssEndereco.FTamanho)
             throw new SGValidationException($"AssEndereco deve ter no máximo {DBPreClientesDicInfo.CliAssEndereco.FTamanho} caracteres.");

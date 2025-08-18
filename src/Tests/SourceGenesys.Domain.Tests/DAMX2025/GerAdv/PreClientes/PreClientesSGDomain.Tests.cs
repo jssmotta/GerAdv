@@ -65,9 +65,9 @@ public class DBPreClientesTests : IDisposable
         dt.Columns.Add("cliEMail", typeof(string));
         dt.Columns.Add("cliAssistido", typeof(string));
         dt.Columns.Add("cliAssRG", typeof(string));
-        dt.Columns.Add("cliAssCPF", typeof(string));
         dt.Columns.Add("cliAssEndereco", typeof(string));
         dt.Columns.Add("cliCNH", typeof(string));
+        dt.Columns.Add("cliAssCPF", typeof(string));
         return dt;
     }
 
@@ -618,24 +618,6 @@ public class DBPreClientesTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void AssCPF_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FAssCPF = input;
-        Assert.Equal(expected, _instance.FAssCPF);
-    }
-
-    [Fact]
-    public void AssCPF_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 12 + 10);
-        _instance.FAssCPF = longString;
-        Assert.True(_instance.FAssCPF.Length <= 12);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
     public void AssEndereco_ShouldTrimAndHandleNulls(string input, string expected)
     {
         _instance.FAssEndereco = input;
@@ -666,6 +648,24 @@ public class DBPreClientesTests : IDisposable
         var longString = new string ('A', 100 + 10);
         _instance.FCNH = longString;
         Assert.True(_instance.FCNH.Length <= 100);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void AssCPF_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FAssCPF = input;
+        Assert.Equal(expected, _instance.FAssCPF);
+    }
+
+    [Fact]
+    public void AssCPF_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 11 + 10);
+        _instance.FAssCPF = longString;
+        Assert.True(_instance.FAssCPF.Length <= 11);
     }
 
     public virtual void Dispose()

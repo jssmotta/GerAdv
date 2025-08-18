@@ -48,6 +48,8 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
             throw new SGValidationException("Processo é obrigatório.");
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
+        if (reg.Nome.IsEmpty())
+            throw new SGValidationException("Nome é obrigatório.");
         if (reg.TipoOrigemSucumbencia == 0)
             throw new SGValidationException("TipoOrigemSucumbencia é obrigatório.");
         if (reg.GUID.IsEmpty())

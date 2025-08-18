@@ -109,7 +109,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 QuemID = 1,
                 QuemCodigo = 1,
                 Status = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-                Valor = 0m,
+                Valor = 1m,
                 Decisao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 Sempre = 1,
                 PrazoDias = 1,
@@ -1717,7 +1717,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDCOB = 1000,
                 IDCOB_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -1726,7 +1726,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDCOB}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -1741,7 +1741,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDCOB = 1000,
                 IDCOB_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -1760,7 +1760,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDCOB = 1000,
                 IDCOB_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -2040,7 +2040,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDCOB = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -2049,7 +2049,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDCOB}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -2063,7 +2063,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDCOB = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -2081,7 +2081,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDCOB = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -2099,7 +2099,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDCOB = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -2249,7 +2249,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDCOB = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -2258,7 +2258,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageIDCOB");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -2414,7 +2414,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDNE = 1000,
                 IDNE_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -2423,7 +2423,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDNE}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -2438,7 +2438,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDNE = 1000,
                 IDNE_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -2457,7 +2457,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDNE = 1000,
                 IDNE_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -2737,7 +2737,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDNE = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -2746,7 +2746,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDNE}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -2760,7 +2760,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDNE = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -2778,7 +2778,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDNE = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -2796,7 +2796,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDNE = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -2946,7 +2946,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDNE = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -2955,7 +2955,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageIDNE");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3111,7 +3111,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Cidade = 1000,
                 Cidade_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -3120,7 +3120,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Cidade}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -3135,7 +3135,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Cidade = 1000,
                 Cidade_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -3154,7 +3154,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Cidade = 1000,
                 Cidade_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -3434,7 +3434,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cidade = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -3443,7 +3443,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Cidade}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -3457,7 +3457,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cidade = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -3475,7 +3475,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cidade = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -3493,7 +3493,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cidade = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -3643,7 +3643,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cidade = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -3652,7 +3652,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageCidade");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3808,7 +3808,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Oculto = 1000,
                 Oculto_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -3817,7 +3817,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Oculto}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -3832,7 +3832,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Oculto = 1000,
                 Oculto_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -3851,7 +3851,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Oculto = 1000,
                 Oculto_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -4131,7 +4131,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Oculto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -4140,7 +4140,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Oculto}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -4154,7 +4154,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Oculto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -4172,7 +4172,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Oculto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -4190,7 +4190,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Oculto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -4340,7 +4340,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Oculto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -4349,7 +4349,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageOculto");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -4505,7 +4505,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 CartaPrecatoria = 1000,
                 CartaPrecatoria_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -4514,7 +4514,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.CartaPrecatoria}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -4529,7 +4529,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 CartaPrecatoria = 1000,
                 CartaPrecatoria_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -4548,7 +4548,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 CartaPrecatoria = 1000,
                 CartaPrecatoria_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -4828,7 +4828,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 CartaPrecatoria = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -4837,7 +4837,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.CartaPrecatoria}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -4851,7 +4851,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 CartaPrecatoria = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -4869,7 +4869,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 CartaPrecatoria = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -4887,7 +4887,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 CartaPrecatoria = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -5037,7 +5037,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 CartaPrecatoria = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -5046,7 +5046,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageCartaPrecatoria");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -5202,7 +5202,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Advogado = 1000,
                 Advogado_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -5211,7 +5211,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Advogado}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -5226,7 +5226,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Advogado = 1000,
                 Advogado_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -5245,7 +5245,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Advogado = 1000,
                 Advogado_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -5525,7 +5525,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Advogado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -5534,7 +5534,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Advogado}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -5548,7 +5548,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Advogado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -5566,7 +5566,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Advogado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -5584,7 +5584,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Advogado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -5734,7 +5734,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Advogado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -5743,7 +5743,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageAdvogado");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -5899,7 +5899,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 EventoGerador = 1000,
                 EventoGerador_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -5908,7 +5908,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.EventoGerador}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -5923,7 +5923,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 EventoGerador = 1000,
                 EventoGerador_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -5942,7 +5942,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 EventoGerador = 1000,
                 EventoGerador_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -6222,7 +6222,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoGerador = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -6231,7 +6231,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.EventoGerador}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -6245,7 +6245,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoGerador = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -6263,7 +6263,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoGerador = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -6281,7 +6281,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoGerador = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -6431,7 +6431,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoGerador = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -6440,7 +6440,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageEventoGerador");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -6596,7 +6596,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Funcionario = 1000,
                 Funcionario_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -6605,7 +6605,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Funcionario}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -6620,7 +6620,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Funcionario = 1000,
                 Funcionario_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -6639,7 +6639,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Funcionario = 1000,
                 Funcionario_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -6919,7 +6919,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Funcionario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -6928,7 +6928,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Funcionario}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -6942,7 +6942,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Funcionario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -6960,7 +6960,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Funcionario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -6978,7 +6978,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Funcionario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -7128,7 +7128,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Funcionario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -7137,7 +7137,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageFuncionario");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -7293,7 +7293,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 EventoPrazo = 1000,
                 EventoPrazo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -7302,7 +7302,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.EventoPrazo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -7317,7 +7317,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 EventoPrazo = 1000,
                 EventoPrazo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -7336,7 +7336,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 EventoPrazo = 1000,
                 EventoPrazo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -7616,7 +7616,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoPrazo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -7625,7 +7625,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.EventoPrazo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -7639,7 +7639,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoPrazo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -7657,7 +7657,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoPrazo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -7675,7 +7675,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoPrazo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -7825,7 +7825,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 EventoPrazo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -7834,7 +7834,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageEventoPrazo");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -7990,7 +7990,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 TipoCompromisso = 1000,
                 TipoCompromisso_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -7999,7 +7999,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.TipoCompromisso}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -8014,7 +8014,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 TipoCompromisso = 1000,
                 TipoCompromisso_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -8033,7 +8033,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 TipoCompromisso = 1000,
                 TipoCompromisso_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -8313,7 +8313,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 TipoCompromisso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -8322,7 +8322,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.TipoCompromisso}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -8336,7 +8336,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 TipoCompromisso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -8354,7 +8354,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 TipoCompromisso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -8372,7 +8372,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 TipoCompromisso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -8522,7 +8522,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 TipoCompromisso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -8531,7 +8531,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageTipoCompromisso");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -8687,7 +8687,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Cliente = 1000,
                 Cliente_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -8696,7 +8696,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Cliente}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -8711,7 +8711,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Cliente = 1000,
                 Cliente_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -8730,7 +8730,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Cliente = 1000,
                 Cliente_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -9010,7 +9010,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cliente = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -9019,7 +9019,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Cliente}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -9033,7 +9033,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cliente = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -9051,7 +9051,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cliente = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -9069,7 +9069,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cliente = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -9219,7 +9219,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Cliente = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -9228,7 +9228,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageCliente");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -9384,7 +9384,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Area = 1000,
                 Area_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -9393,7 +9393,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Area}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -9408,7 +9408,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Area = 1000,
                 Area_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -9427,7 +9427,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Area = 1000,
                 Area_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -9707,7 +9707,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Area = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -9716,7 +9716,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Area}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -9730,7 +9730,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Area = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -9748,7 +9748,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Area = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -9766,7 +9766,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Area = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -9916,7 +9916,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Area = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -9925,7 +9925,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageArea");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -10081,7 +10081,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Justica = 1000,
                 Justica_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -10090,7 +10090,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Justica}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -10105,7 +10105,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Justica = 1000,
                 Justica_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -10124,7 +10124,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Justica = 1000,
                 Justica_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -10404,7 +10404,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Justica = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -10413,7 +10413,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Justica}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -10427,7 +10427,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Justica = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -10445,7 +10445,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Justica = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -10463,7 +10463,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Justica = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -10613,7 +10613,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Justica = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -10622,7 +10622,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageJustica");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -10778,7 +10778,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Processo = 1000,
                 Processo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -10787,7 +10787,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Processo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -10802,7 +10802,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Processo = 1000,
                 Processo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -10821,7 +10821,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Processo = 1000,
                 Processo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -11101,7 +11101,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Processo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -11110,7 +11110,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Processo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -11124,7 +11124,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Processo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -11142,7 +11142,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Processo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -11160,7 +11160,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Processo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -11310,7 +11310,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Processo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -11319,7 +11319,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageProcesso");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -11475,7 +11475,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDHistorico = 1000,
                 IDHistorico_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -11484,7 +11484,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDHistorico}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -11499,7 +11499,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDHistorico = 1000,
                 IDHistorico_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -11518,7 +11518,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDHistorico = 1000,
                 IDHistorico_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -11798,7 +11798,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDHistorico = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -11807,7 +11807,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDHistorico}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -11821,7 +11821,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDHistorico = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -11839,7 +11839,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDHistorico = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -11857,7 +11857,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDHistorico = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -12007,7 +12007,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDHistorico = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -12016,7 +12016,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageIDHistorico");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -12172,7 +12172,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDInsProcesso = 1000,
                 IDInsProcesso_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -12181,7 +12181,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDInsProcesso}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -12196,7 +12196,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDInsProcesso = 1000,
                 IDInsProcesso_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -12215,7 +12215,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 IDInsProcesso = 1000,
                 IDInsProcesso_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -12495,7 +12495,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDInsProcesso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -12504,7 +12504,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.IDInsProcesso}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -12518,7 +12518,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDInsProcesso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -12536,7 +12536,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDInsProcesso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -12554,7 +12554,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDInsProcesso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -12704,7 +12704,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 IDInsProcesso = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -12713,7 +12713,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageIDInsProcesso");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -12869,7 +12869,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Usuario = 1000,
                 Usuario_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -12878,7 +12878,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Usuario}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -12893,7 +12893,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Usuario = 1000,
                 Usuario_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -12912,7 +12912,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Usuario = 1000,
                 Usuario_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -13192,7 +13192,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Usuario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -13201,7 +13201,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Usuario}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -13215,7 +13215,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Usuario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -13233,7 +13233,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Usuario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -13251,7 +13251,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Usuario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -13401,7 +13401,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Usuario = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -13410,7 +13410,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageUsuario");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -13566,7 +13566,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Preposto = 1000,
                 Preposto_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -13575,7 +13575,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Preposto}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -13590,7 +13590,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Preposto = 1000,
                 Preposto_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -13609,7 +13609,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Preposto = 1000,
                 Preposto_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -13889,7 +13889,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Preposto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -13898,7 +13898,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Preposto}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -13912,7 +13912,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Preposto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -13930,7 +13930,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Preposto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -13948,7 +13948,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Preposto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -14098,7 +14098,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Preposto = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -14107,7 +14107,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agePreposto");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -14263,7 +14263,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 QuemID = 1000,
                 QuemID_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -14272,7 +14272,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.QuemID}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -14287,7 +14287,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 QuemID = 1000,
                 QuemID_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -14306,7 +14306,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 QuemID = 1000,
                 QuemID_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -14586,7 +14586,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemID = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -14595,7 +14595,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.QuemID}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -14609,7 +14609,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemID = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -14627,7 +14627,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemID = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -14645,7 +14645,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemID = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -14795,7 +14795,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemID = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -14804,7 +14804,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageQuemID");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -14960,7 +14960,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 QuemCodigo = 1000,
                 QuemCodigo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -14969,7 +14969,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.QuemCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -14984,7 +14984,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 QuemCodigo = 1000,
                 QuemCodigo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -15003,7 +15003,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 QuemCodigo = 1000,
                 QuemCodigo_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -15283,7 +15283,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemCodigo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -15292,7 +15292,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.QuemCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -15306,7 +15306,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemCodigo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -15324,7 +15324,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemCodigo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -15342,7 +15342,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemCodigo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -15492,7 +15492,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 QuemCodigo = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -15501,7 +15501,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageQuemCodigo");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -15657,7 +15657,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Sempre = 1000,
                 Sempre_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -15666,7 +15666,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Sempre}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -15681,7 +15681,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Sempre = 1000,
                 Sempre_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -15700,7 +15700,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Sempre = 1000,
                 Sempre_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -15980,7 +15980,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Sempre = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -15989,7 +15989,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Sempre}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -16003,7 +16003,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Sempre = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -16021,7 +16021,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Sempre = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -16039,7 +16039,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Sempre = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -16189,7 +16189,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Sempre = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -16198,7 +16198,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageSempre");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -16354,7 +16354,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 PrazoDias = 1000,
                 PrazoDias_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -16363,7 +16363,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.PrazoDias}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -16378,7 +16378,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 PrazoDias = 1000,
                 PrazoDias_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -16397,7 +16397,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 PrazoDias = 1000,
                 PrazoDias_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -16677,7 +16677,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 PrazoDias = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -16686,7 +16686,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.PrazoDias}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -16700,7 +16700,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 PrazoDias = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -16718,7 +16718,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 PrazoDias = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -16736,7 +16736,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 PrazoDias = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -16886,7 +16886,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 PrazoDias = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -16895,7 +16895,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agePrazoDias");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -17051,7 +17051,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 ProtocoloIntegrado = 1000,
                 ProtocoloIntegrado_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -17060,7 +17060,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.ProtocoloIntegrado}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -17075,7 +17075,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 ProtocoloIntegrado = 1000,
                 ProtocoloIntegrado_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -17094,7 +17094,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 ProtocoloIntegrado = 1000,
                 ProtocoloIntegrado_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -17374,7 +17374,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 ProtocoloIntegrado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -17383,7 +17383,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.ProtocoloIntegrado}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -17397,7 +17397,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 ProtocoloIntegrado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -17415,7 +17415,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 ProtocoloIntegrado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -17433,7 +17433,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 ProtocoloIntegrado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -17583,7 +17583,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 ProtocoloIntegrado = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -17592,7 +17592,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@ageProtocoloIntegrado");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -17748,7 +17748,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Codigo_filtro = 1000,
                 Codigo_filtro_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -17757,7 +17757,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.CampoCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -17772,7 +17772,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Codigo_filtro = 1000,
                 Codigo_filtro_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -17791,7 +17791,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Codigo_filtro = 1000,
                 Codigo_filtro_end = 5000,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -18071,7 +18071,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Codigo_filtro = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -18080,7 +18080,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.CampoCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -18094,7 +18094,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Codigo_filtro = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -18112,7 +18112,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Codigo_filtro = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -18130,7 +18130,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Codigo_filtro = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -18280,7 +18280,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Codigo_filtro = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -18289,7 +18289,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.CampoCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -18447,7 +18447,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Valor = 1000m,
                 Valor_end = 5000m,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -18456,7 +18456,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Valor}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -18471,7 +18471,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Valor = 1000m,
                 Valor_end = 5000m,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -18490,7 +18490,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Valor = 1000m,
                 Valor_end = 5000m,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -18775,7 +18775,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Valor = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Data = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
@@ -18784,7 +18784,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Valor}");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -18798,7 +18798,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Valor = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
@@ -18816,7 +18816,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Valor = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
@@ -18834,7 +18834,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Valor = 1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
@@ -18984,7 +18984,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterAgenda
             {
                 Valor = (decimal)1,
-                HrFinal = "A", // Outro campo para testar o LogicalOperator
+                Data = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
@@ -18993,7 +18993,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain("@ageValor");
-            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.HrFinal}");
+            resultado.Value.where.Should().Contain($"@{DBAgendaDicInfo.Data}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -19221,7 +19221,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var testDate = "15/06/2023";
             var filtro = new FilterAgenda
             {
-                HrFinal = "A",
+                Data = "A",
                 EventoData = testDate,
                 EventoData_end = string.Empty,
                 LogicalOperator = TSql.And
@@ -19242,7 +19242,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var testDate = "15/06/2023";
             var filtro = new FilterAgenda
             {
-                HrFinal = "A",
+                Data = "A",
                 EventoData = testDate,
                 EventoData_end = string.Empty,
                 LogicalOperator = TSql.OR
@@ -19536,7 +19536,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var testDate = "15/06/2023";
             var filtro = new FilterAgenda
             {
-                HrFinal = "A",
+                Data = "A",
                 DataInicioPrazo = testDate,
                 DataInicioPrazo_end = string.Empty,
                 LogicalOperator = TSql.And
@@ -19557,7 +19557,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var testDate = "15/06/2023";
             var filtro = new FilterAgenda
             {
-                HrFinal = "A",
+                Data = "A",
                 DataInicioPrazo = testDate,
                 DataInicioPrazo_end = string.Empty,
                 LogicalOperator = TSql.OR
@@ -19740,7 +19740,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 ClienteAvisado = 1,
                 LogicalOperator = " AND "
             };
@@ -19757,7 +19757,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 ClienteAvisado = 1,
                 LogicalOperator = " OR "
             };
@@ -19856,7 +19856,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 RevisarP2 = 1,
                 LogicalOperator = " AND "
             };
@@ -19873,7 +19873,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 RevisarP2 = 1,
                 LogicalOperator = " OR "
             };
@@ -19972,7 +19972,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Revisar = 1,
                 LogicalOperator = " AND "
             };
@@ -19989,7 +19989,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Revisar = 1,
                 LogicalOperator = " OR "
             };
@@ -20088,7 +20088,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Liberado = 1,
                 LogicalOperator = " AND "
             };
@@ -20105,7 +20105,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Liberado = 1,
                 LogicalOperator = " OR "
             };
@@ -20204,7 +20204,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Importante = 1,
                 LogicalOperator = " AND "
             };
@@ -20221,7 +20221,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Importante = 1,
                 LogicalOperator = " OR "
             };
@@ -20320,7 +20320,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Concluido = 1,
                 LogicalOperator = " AND "
             };
@@ -20337,7 +20337,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 Concluido = 1,
                 LogicalOperator = " OR "
             };
@@ -20436,7 +20436,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 UsuarioCiente = 1,
                 LogicalOperator = " AND "
             };
@@ -20453,7 +20453,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterAgenda
             {
-                HrFinal = "HrFinal",
+                Data = "Data",
                 UsuarioCiente = 1,
                 LogicalOperator = " OR "
             };

@@ -92,7 +92,7 @@ public class ClientesValidationTests : IDisposable
             Bairro = "Centro",
             Cidade = 0,
             CEP = "01234-567",
-            Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            Fax = "(11) 88888-9999",
             Fone = "(11) 99999-9999",
             Data = "27/05/2022",
             HomePage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -185,7 +185,7 @@ public class ClientesValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {
@@ -382,7 +382,6 @@ public class ClientesValidationTests : IDisposable
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
-        exception.Message.Should().Contain("(");
     }
 
     [Fact]

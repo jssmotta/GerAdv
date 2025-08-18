@@ -51,9 +51,9 @@ public class DBPreClientesUpdate : IDisposable
             FEMail = "menphis@menphis.com.br",
             FAssistido = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FAssRG = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            FAssCPF = "40392285029",
             FAssEndereco = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FCNH = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FAssCPF = "40392285029",
         };
         // Assert - All properties should be set preclientes.FQuemIndicou.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         preclientes.FNome.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -74,9 +74,9 @@ public class DBPreClientesUpdate : IDisposable
         preclientes.FEMail.Should().Be("menphis@menphis.com.br");
         preclientes.FAssistido.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         preclientes.FAssRG.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        preclientes.FAssCPF.Should().Be("40392285029");
         preclientes.FAssEndereco.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         preclientes.FCNH.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        preclientes.FAssCPF.Should().Be("40392285029");
     }
 
     [Fact]
@@ -2993,8 +2993,8 @@ public class DBPreClientesUpdate : IDisposable
 
     [Theory]
     [InlineData("40392285029")]
-    [InlineData("BBBBBBBBB")]
-    [InlineData("CCCCCCCCCCc")]
+    [InlineData("BBBBBBBB")]
+    [InlineData("CCCCCCCCCc")]
     public void FAssCPF_Property_ShouldAcceptValidNames(string AssCPF)
     {
         // Arrange
@@ -3025,11 +3025,11 @@ public class DBPreClientesUpdate : IDisposable
     {
         // Arrange
         var preclientes = new DBPreClientes();
-        var longName = new string ('A', 12 + 10); // Exceeds 12 character limit
+        var longName = new string ('A', 11 + 10); // Exceeds 11 character limit
         // Act
         preclientes.FAssCPF = longName;
         // Assert
-        preclientes.FAssCPF.Should().HaveLength(12);
+        preclientes.FAssCPF.Should().HaveLength(11);
     }
 
     [Fact]
@@ -3158,8 +3158,8 @@ public class DBPreClientesUpdate : IDisposable
 
     [Theory]
     [InlineData("40392285029", "40392285029")]
-    [InlineData("  BBBBBBBBB  ", "BBBBBBBBB")]
-    [InlineData("CCCCCCCCCCc", "CCCCCCCCCCc")]
+    [InlineData("  BBBBBBBB  ", "BBBBBBBB")]
+    [InlineData("CCCCCCCCCc", "CCCCCCCCCc")]
     public void FAssCPF_Set_AppliesFixAbcTransformation(string input, string expected)
     {
         // Act

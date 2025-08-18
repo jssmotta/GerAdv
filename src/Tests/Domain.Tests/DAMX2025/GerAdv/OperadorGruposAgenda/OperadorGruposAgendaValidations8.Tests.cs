@@ -62,7 +62,8 @@ public class OperadorGruposAgendaValidationTests : IDisposable
             Id = 1,
             SQLWhere = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Nome = "João",
-            Operador = 1
+            Operador = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -91,7 +92,8 @@ public class OperadorGruposAgendaValidationTests : IDisposable
             Id = 1,
             SQLWhere = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Operador = 1
+            Operador = 1,
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -109,7 +111,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required SQLWhere Method Tests
+#region ValidateReg Required SQLWhere Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptySQLWhere_ShouldThrowSGValidationException()
     {
@@ -156,7 +158,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {
@@ -203,7 +205,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

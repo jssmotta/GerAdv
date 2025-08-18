@@ -58,7 +58,8 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         return new Models.EnquadramentoEmpresa
         {
             Id = 1,
-            Nome = "João"
+            Nome = "João",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -83,7 +84,8 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         var enquadramentoempresa = new Models.EnquadramentoEmpresa
         {
             Id = 1,
-            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -101,7 +103,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {
@@ -148,7 +150,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

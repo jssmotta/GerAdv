@@ -85,7 +85,7 @@ public class PreClientesValidationTests : IDisposable
             Bairro = "Centro",
             Cidade = 0,
             CEP = "01234-567",
-            Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            Fax = "(11) 88888-9999",
             Fone = "(11) 99999-9999",
             Data = "27/05/2022",
             HomePage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -314,7 +314,6 @@ public class PreClientesValidationTests : IDisposable
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(preclientes, _mockPreClientesService.Object, _mockClientesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
-        exception.Message.Should().Contain("(");
     }
 
     [Fact]

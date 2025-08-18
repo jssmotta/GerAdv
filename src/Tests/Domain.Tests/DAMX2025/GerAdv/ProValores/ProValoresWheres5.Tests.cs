@@ -36,7 +36,7 @@ public class ProValoresWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProValores(string? Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Processo = 1, int? TipoValorProcesso = 1, string? Indice = "AAAAAAAAAAAAAAAAAA", bool? Ignorar = false, string? Data = "27/05/2022", decimal? ValorOriginal = 0m, decimal? PercMulta = 0m, decimal? ValorMulta = 0m, decimal? PercJuros = 0m, decimal? ValorOriginalCorrigidoIndice = 0m, decimal? ValorMultaCorrigido = 0m, decimal? ValorJurosCorrigido = 0m, decimal? ValorFinal = 0m, string? DataUltimaCorrecao = "24/04/1975")
+    private void SetupMockFProValores(string? Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Processo = 1, int? TipoValorProcesso = 1, string? Indice = "AAAAAAAAAAAAAAAAAA", bool? Ignorar = false, string? Data = "27/05/2022", decimal? ValorOriginal = 1m, decimal? PercMulta = 1m, decimal? ValorMulta = 1m, decimal? PercJuros = 1m, decimal? ValorOriginalCorrigidoIndice = 1m, decimal? ValorMultaCorrigido = 1m, decimal? ValorJurosCorrigido = 1m, decimal? ValorFinal = 1m, string? DataUltimaCorrecao = "24/04/1975")
     {
         _mockFProValores.Setup(f => f.FGuid).Returns(Guid ?? string.Empty);
         _mockFProValores.Setup(f => f.FProcesso).Returns(Processo ?? 0);
@@ -98,14 +98,14 @@ public class ProValoresWhereTests : IDisposable
         result.Indice.Should().Be("AAAAAAAAAAAAAAAAAA");
         result.Ignorar.Should().Be(false);
         result.Data.Should().Be("27/05/2022");
-        result.ValorOriginal.Should().Be(0m);
-        result.PercMulta.Should().Be(0m);
-        result.ValorMulta.Should().Be(0m);
-        result.PercJuros.Should().Be(0m);
-        result.ValorOriginalCorrigidoIndice.Should().Be(0m);
-        result.ValorMultaCorrigido.Should().Be(0m);
-        result.ValorJurosCorrigido.Should().Be(0m);
-        result.ValorFinal.Should().Be(0m);
+        result.ValorOriginal.Should().Be(1m);
+        result.PercMulta.Should().Be(1m);
+        result.ValorMulta.Should().Be(1m);
+        result.PercJuros.Should().Be(1m);
+        result.ValorOriginalCorrigidoIndice.Should().Be(1m);
+        result.ValorMultaCorrigido.Should().Be(1m);
+        result.ValorJurosCorrigido.Should().Be(1m);
+        result.ValorFinal.Should().Be(1m);
         result.DataUltimaCorrecao.Should().Be("24/04/1975");
     }
 
@@ -247,7 +247,7 @@ public class ProValoresWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProValores(Guid: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Processo: 1, TipoValorProcesso: 1, Indice: "AAAAAAAAAAAAAAAAAA", Ignorar: false, Data: "27/05/2022", ValorOriginal: 0m, PercMulta: 0m, ValorMulta: 0m, PercJuros: 0m, ValorOriginalCorrigidoIndice: 0m, ValorMultaCorrigido: 0m, ValorJurosCorrigido: 0m, ValorFinal: 0m, DataUltimaCorrecao: "24/04/1975");
+        SetupMockFProValores(Guid: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Processo: 1, TipoValorProcesso: 1, Indice: "AAAAAAAAAAAAAAAAAA", Ignorar: false, Data: "27/05/2022", ValorOriginal: 1m, PercMulta: 1m, ValorMulta: 1m, PercJuros: 1m, ValorOriginalCorrigidoIndice: 1m, ValorMultaCorrigido: 1m, ValorJurosCorrigido: 1m, ValorFinal: 1m, DataUltimaCorrecao: "24/04/1975");
         _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
         // Act
         var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
@@ -260,14 +260,14 @@ public class ProValoresWhereTests : IDisposable
         result.Indice.Should().Be("AAAAAAAAAAAAAAAAAA");
         result.Ignorar.Should().Be(false);
         result.Data.Should().Be("27/05/2022");
-        result.ValorOriginal.Should().Be(0m);
-        result.PercMulta.Should().Be(0m);
-        result.ValorMulta.Should().Be(0m);
-        result.PercJuros.Should().Be(0m);
-        result.ValorOriginalCorrigidoIndice.Should().Be(0m);
-        result.ValorMultaCorrigido.Should().Be(0m);
-        result.ValorJurosCorrigido.Should().Be(0m);
-        result.ValorFinal.Should().Be(0m);
+        result.ValorOriginal.Should().Be(1m);
+        result.PercMulta.Should().Be(1m);
+        result.ValorMulta.Should().Be(1m);
+        result.PercJuros.Should().Be(1m);
+        result.ValorOriginalCorrigidoIndice.Should().Be(1m);
+        result.ValorMultaCorrigido.Should().Be(1m);
+        result.ValorJurosCorrigido.Should().Be(1m);
+        result.ValorFinal.Should().Be(1m);
         result.DataUltimaCorrecao.Should().Be("24/04/1975");
     }
 

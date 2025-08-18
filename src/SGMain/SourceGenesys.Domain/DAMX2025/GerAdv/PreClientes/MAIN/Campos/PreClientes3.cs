@@ -7,13 +7,13 @@ public partial class DBPreClientes
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFInativo, pFldFQuemIndicou, pFldFNome, pFldFAdv, pFldFIDRep, pFldFJuridica, pFldFNomeFantasia, pFldFClass, pFldFTipo, pFldFDtNasc, pFldFInscEst, pFldFQualificacao, pFldFSexo, pFldFIdade, pFldFCNPJ, pFldFCPF, pFldFRG, pFldFTipoCaptacao, pFldFObservacao, pFldFEndereco, pFldFBairro, pFldFCidade, pFldFCEP, pFldFFax, pFldFFone, pFldFData, pFldFHomePage, pFldFEMail, pFldFAssistido, pFldFAssRG, pFldFAssCPF, pFldFAssEndereco, pFldFCNH, pFldFEtiqueta, pFldFAni, pFldFBold;
+    private protected bool pFldFInativo, pFldFQuemIndicou, pFldFNome, pFldFAdv, pFldFIDRep, pFldFJuridica, pFldFNomeFantasia, pFldFClass, pFldFTipo, pFldFDtNasc, pFldFInscEst, pFldFQualificacao, pFldFSexo, pFldFIdade, pFldFCNPJ, pFldFCPF, pFldFRG, pFldFTipoCaptacao, pFldFObservacao, pFldFEndereco, pFldFBairro, pFldFCidade, pFldFCEP, pFldFFax, pFldFFone, pFldFData, pFldFHomePage, pFldFEMail, pFldFAssistido, pFldFAssRG, pFldFAssEndereco, pFldFCNH, pFldFAssCPF, pFldFEtiqueta, pFldFAni, pFldFBold;
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected int m_FAdv, m_FIDRep, m_FIdade, m_FCidade;
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FQuemIndicou, m_FNome, m_FNomeFantasia, m_FClass, m_FInscEst, m_FQualificacao, m_FCNPJ, m_FCPF, m_FRG, m_FObservacao, m_FEndereco, m_FBairro, m_FCEP, m_FFax, m_FFone, m_FHomePage, m_FEMail, m_FAssistido, m_FAssRG, m_FAssCPF, m_FAssEndereco, m_FCNH;
+    private protected string? m_FQuemIndicou, m_FNome, m_FNomeFantasia, m_FClass, m_FInscEst, m_FQualificacao, m_FCNPJ, m_FCPF, m_FRG, m_FObservacao, m_FEndereco, m_FBairro, m_FCEP, m_FFax, m_FFone, m_FHomePage, m_FEMail, m_FAssistido, m_FAssRG, m_FAssEndereco, m_FCNH, m_FAssCPF;
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected DateTime? m_FDtNasc, m_FData;
@@ -476,23 +476,6 @@ public partial class DBPreClientes
     }
 
     // Tracking Code: 20250503
-    [StringLength(12, ErrorMessage = "A propriedade FAssCPF da tabela PreClientes deve ter no máximo 12 caracteres.")]
-    public virtual string? FAssCPF
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAssCPF ?? string.Empty;
-        set
-        {
-            pFldFAssCPF = pFldFAssCPF || !(m_FAssCPF ?? string.Empty).Equals(value);
-            if (pFldFAssCPF)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FAssCPF = trimmed.Length > 12 ? trimmed.AsSpan(0, 12).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
     [StringLength(70, ErrorMessage = "A propriedade FAssEndereco da tabela PreClientes deve ter no máximo 70 caracteres.")]
     public virtual string? FAssEndereco
     {
@@ -522,6 +505,23 @@ public partial class DBPreClientes
             {
                 var trimmed = value?.Trim() ?? string.Empty;
                 m_FCNH = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(11, ErrorMessage = "A propriedade FAssCPF da tabela PreClientes deve ter no máximo 11 caracteres.")]
+    public virtual string? FAssCPF
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => m_FAssCPF ?? string.Empty;
+        set
+        {
+            pFldFAssCPF = pFldFAssCPF || !(m_FAssCPF ?? string.Empty).Equals(value);
+            if (pFldFAssCPF)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                m_FAssCPF = trimmed.Length > 11 ? trimmed.AsSpan(0, 11).ToString() : trimmed;
             }
         }
     }

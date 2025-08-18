@@ -111,7 +111,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required DataHora Method Tests
+#region ValidateReg Required DataHora Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyDataHora_ShouldThrowSGValidationException()
     {
@@ -158,7 +158,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required Origem Method Tests
+#region ValidateReg Required Origem Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyOrigem_ShouldThrowSGValidationException()
     {

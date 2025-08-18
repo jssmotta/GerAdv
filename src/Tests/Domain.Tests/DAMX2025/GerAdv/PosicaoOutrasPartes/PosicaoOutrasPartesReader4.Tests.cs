@@ -663,7 +663,7 @@ public class PosicaoOutrasPartesReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FPosicaoOutrasPartes
         {
             ID = testId,

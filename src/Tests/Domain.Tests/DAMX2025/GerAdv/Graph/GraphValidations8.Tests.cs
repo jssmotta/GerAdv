@@ -59,7 +59,8 @@ public class GraphValidationTests : IDisposable
         {
             Id = 1,
             Tabela = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            TabelaId = 1
+            TabelaId = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -85,7 +86,8 @@ public class GraphValidationTests : IDisposable
         {
             Id = 1,
             Tabela = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            TabelaId = 1
+            TabelaId = 1,
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -103,7 +105,7 @@ public class GraphValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Tabela Method Tests
+#region ValidateReg Required Tabela Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyTabela_ShouldThrowSGValidationException()
     {
@@ -150,7 +152,7 @@ public class GraphValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

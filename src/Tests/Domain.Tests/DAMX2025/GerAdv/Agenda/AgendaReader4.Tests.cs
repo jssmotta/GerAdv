@@ -115,7 +115,7 @@ public class AgendaReaderTests : IDisposable
         var expectedAgenda = new FAgenda
         {
             ID = id,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         _mockAgendaFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedAgenda);
         // Act
@@ -123,7 +123,7 @@ public class AgendaReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class AgendaReaderTests : IDisposable
         var expectedFAgenda = new FAgenda
         {
             ID = id,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         _mockAgendaFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFAgenda);
         // Act
@@ -176,7 +176,7 @@ public class AgendaReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public class AgendaReaderTests : IDisposable
         var emptyFAgenda = new FAgenda
         {
             ID = 0,
-            FHrFinal = null
+            FCompromisso = null
         };
         _mockAgendaFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFAgenda);
         // Act
@@ -195,7 +195,7 @@ public class AgendaReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(0);
-        result?.HrFinal.Should().Be(string.Empty);
+        result?.Compromisso.Should().Be(string.Empty);
     }
 
 #endregion
@@ -207,14 +207,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = 123,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         // Act
         var result = _agendaReader.Read(dbRec, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -242,7 +242,7 @@ public class AgendaReaderTests : IDisposable
         var expectedFAgenda = new FAgenda
         {
             ID = 123,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         _mockAgendaFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(expectedFAgenda);
         // Act
@@ -250,7 +250,7 @@ public class AgendaReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -282,14 +282,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = 123,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         // Act
         var result = _agendaReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -310,14 +310,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = 123,
-            FHrFinal = null
+            FCompromisso = null
         };
         // Act
         var result = _agendaReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be(string.Empty);
+        result?.Compromisso.Should().Be(string.Empty);
     }
 
 #endregion
@@ -329,14 +329,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new DBAgenda
         {
             ID = 123,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         // Act
         var result = _agendaReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -357,14 +357,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new DBAgenda
         {
             ID = 123,
-            FHrFinal = null // This should result in empty string in response
+            FCompromisso = null // This should result in empty string in response
         };
         // Act
         var result = _agendaReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be(string.Empty);
+        result?.Compromisso.Should().Be(string.Empty);
     }
 
 #endregion
@@ -376,14 +376,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = 123,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         // Act
         var result = _agendaReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -404,14 +404,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = 123,
-            FHrFinal = null
+            FCompromisso = null
         };
         // Act
         var result = _agendaReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be(string.Empty);
+        result?.Compromisso.Should().Be(string.Empty);
     }
 
 #endregion
@@ -423,14 +423,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new DBAgenda
         {
             ID = 123,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         // Act
         var result = _agendaReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be("27/05/2022");
+        result?.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
 
     [Fact]
@@ -451,14 +451,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new DBAgenda
         {
             ID = 123,
-            FHrFinal = null // This should result in empty string in response
+            FCompromisso = null // This should result in empty string in response
         };
         // Act
         var result = _agendaReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.HrFinal.Should().Be(string.Empty);
+        result?.Compromisso.Should().Be(string.Empty);
     }
 
 #endregion
@@ -506,8 +506,8 @@ public class AgendaReaderTests : IDisposable
 #endregion
 #region Data Consistency Tests
     [Theory]
-    [InlineData(1, "27/05/2022")]
-    [InlineData(999, "NOME2")]
+    [InlineData(1, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")]
+    [InlineData(999, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")]
     [InlineData(0, "")]
     public void Read_WithVariousData_ShouldMaintainConsistency(int id, string nome)
     {
@@ -515,7 +515,7 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = id,
-            FHrFinal = nome
+            FCompromisso = nome
         };
         // Act
         var result = _agendaReader.Read(dbRec);
@@ -529,13 +529,13 @@ public class AgendaReaderTests : IDisposable
         {
             result.Should().NotBeNull();
             result?.Id.Should().Be(id);
-            result?.HrFinal.Should().Be(nome);
+            result?.Compromisso.Should().Be(nome);
         }
     }
 
     [Theory]
-    [InlineData(1, "27/05/2022")]
-    [InlineData(999, "NOME2")]
+    [InlineData(1, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")]
+    [InlineData(999, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")]
     [InlineData(0, "")]
     public void ReadAll_WithVariousData_ShouldMaintainConsistency(int id, string nome)
     {
@@ -543,14 +543,14 @@ public class AgendaReaderTests : IDisposable
         var dbRec = new FAgenda
         {
             ID = id,
-            FHrFinal = nome
+            FCompromisso = nome
         };
         // Act
         var result = _agendaReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.HrFinal.Should().Be(nome);
+        result?.Compromisso.Should().Be(nome);
     }
 
 #endregion
@@ -563,7 +563,7 @@ public class AgendaReaderTests : IDisposable
         var expectedFAgenda = new FAgenda
         {
             ID = id,
-            FHrFinal = "27/05/2022"
+            FCompromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
         _mockAgendaFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFAgenda);
         // Act & Assert
@@ -663,11 +663,11 @@ public class AgendaReaderTests : IDisposable
     {
         // Arrange
         var testId = 456;
-        var testNome = "MA";
+        var testNome = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM";
         var dbRec = new FAgenda
         {
             ID = testId,
-            FHrFinal = testNome
+            FCompromisso = testNome
         };
         // Act
         var result = _agendaReader.Read(dbRec);
@@ -675,7 +675,7 @@ public class AgendaReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<AgendaResponse>();
         result!.Id.Should().Be(testId);
-        result.HrFinal.Should().Be(testNome);
+        result.Compromisso.Should().Be(testNome);
     }
 
     [Fact]
@@ -683,11 +683,11 @@ public class AgendaReaderTests : IDisposable
     {
         // Arrange
         var testId = 789;
-        var testNome = "27/05/2022";
+        var testNome = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM";
         var dbRec = new FAgenda
         {
             ID = testId,
-            FHrFinal = testNome
+            FCompromisso = testNome
         };
         // Act
         var result = _agendaReader.ReadAll(dbRec, _mockDataRecord.Object);
@@ -695,7 +695,7 @@ public class AgendaReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<AgendaResponseAll>();
         result!.Id.Should().Be(testId);
-        result.HrFinal.Should().Be(testNome);
+        result.Compromisso.Should().Be(testNome);
     }
 
 #endregion

@@ -59,7 +59,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterCargosEsc
             {
-                Percentual = 0m,
+                Percentual = 1m,
                 Nome = "João",
                 Classificacao = 1,
                 GUID = Guid.NewGuid().ToString(),

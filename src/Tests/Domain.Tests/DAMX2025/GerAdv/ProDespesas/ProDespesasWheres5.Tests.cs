@@ -36,7 +36,7 @@ public class ProDespesasWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProDespesas(int? LigacaoID = 1, int? Cliente = 1, bool? Corrigido = false, string? Data = "27/05/2022", decimal? ValorOriginal = 0m, int? Processo = 1, int? Quitado = 1, string? DataCorrecao = "24/04/1975", decimal? Valor = 0m, bool? Tipo = true, string? Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? LivroCaixa = false)
+    private void SetupMockFProDespesas(int? LigacaoID = 1, int? Cliente = 1, bool? Corrigido = false, string? Data = "27/05/2022", decimal? ValorOriginal = 1m, int? Processo = 1, int? Quitado = 1, string? DataCorrecao = "24/04/1975", decimal? Valor = 1m, bool? Tipo = true, string? Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? LivroCaixa = false)
     {
         _mockFProDespesas.Setup(f => f.FLigacaoID).Returns(LigacaoID ?? 0);
         _mockFProDespesas.Setup(f => f.FCliente).Returns(Cliente ?? 0);
@@ -93,11 +93,11 @@ public class ProDespesasWhereTests : IDisposable
         result.Cliente.Should().Be(1);
         result.Corrigido.Should().Be(false);
         result.Data.Should().Be("27/05/2022");
-        result.ValorOriginal.Should().Be(0m);
+        result.ValorOriginal.Should().Be(1m);
         result.Processo.Should().Be(1);
         result.Quitado.Should().Be(1);
         result.DataCorrecao.Should().Be("24/04/1975");
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Tipo.Should().Be(true);
         result.Historico.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.LivroCaixa.Should().Be(false);
@@ -238,7 +238,7 @@ public class ProDespesasWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProDespesas(LigacaoID: 1, Cliente: 1, Corrigido: false, Data: "27/05/2022", ValorOriginal: 0m, Processo: 1, Quitado: 1, DataCorrecao: "24/04/1975", Valor: 0m, Tipo: true, Historico: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", LivroCaixa: false);
+        SetupMockFProDespesas(LigacaoID: 1, Cliente: 1, Corrigido: false, Data: "27/05/2022", ValorOriginal: 1m, Processo: 1, Quitado: 1, DataCorrecao: "24/04/1975", Valor: 1m, Tipo: true, Historico: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", LivroCaixa: false);
         _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
         // Act
         var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
@@ -249,11 +249,11 @@ public class ProDespesasWhereTests : IDisposable
         result.Cliente.Should().Be(1);
         result.Corrigido.Should().Be(false);
         result.Data.Should().Be("27/05/2022");
-        result.ValorOriginal.Should().Be(0m);
+        result.ValorOriginal.Should().Be(1m);
         result.Processo.Should().Be(1);
         result.Quitado.Should().Be(1);
         result.DataCorrecao.Should().Be("24/04/1975");
-        result.Valor.Should().Be(0m);
+        result.Valor.Should().Be(1m);
         result.Tipo.Should().Be(true);
         result.Historico.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.LivroCaixa.Should().Be(false);

@@ -1,5 +1,3 @@
-
-# PowerShell
 $env:ASPNETCORE_ENVIRONMENT="Development"; dotnet test --collect:"XPlat Code Coverage" --settings .runsettings
 
 

@@ -40,9 +40,9 @@ public static partial class DBPreClientesDicInfo
     public const string EMail = "cliEMail"; // LOCALIZACAO 170523
     public const string Assistido = "cliAssistido"; // LOCALIZACAO 170523
     public const string AssRG = "cliAssRG"; // LOCALIZACAO 170523
-    public const string AssCPF = "cliAssCPF"; // LOCALIZACAO 170523
     public const string AssEndereco = "cliAssEndereco"; // LOCALIZACAO 170523
     public const string CNH = "cliCNH"; // LOCALIZACAO 170523
+    public const string AssCPF = "cliAssCPF"; // LOCALIZACAO 170523
     public const string Etiqueta = "cliEtiqueta"; // LOCALIZACAO 170523
     public const string Ani = "cliAni"; // LOCALIZACAO 170523
     public const string Bold = "cliBold"; // LOCALIZACAO 170523
@@ -83,9 +83,9 @@ public static partial class DBPreClientesDicInfo
         28 => EMail,
         29 => Assistido,
         30 => AssRG,
-        31 => AssCPF,
-        32 => AssEndereco,
-        33 => CNH,
+        31 => AssEndereco,
+        32 => CNH,
+        33 => AssCPF,
         34 => Etiqueta,
         35 => Ani,
         36 => Bold,
@@ -225,15 +225,15 @@ public static partial class DBPreClientesDicInfo
     {
         Prefixo = "cli"
     };
-    public static DBInfoSystem CliAssCPF => new(0, PTabelaNome, CampoCodigo, AssCPF, 12, "AssCPF", "AssCPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "cli"
-    };
     public static DBInfoSystem CliAssEndereco => new(0, PTabelaNome, CampoCodigo, AssEndereco, 70, "AssEndereco", "AssEndereco", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
     {
         Prefixo = "cli"
     };
     public static DBInfoSystem CliCNH => new(0, PTabelaNome, CampoCodigo, CNH, 100, "CNH", "CNH", ETipoDadosSysteminfo.SysteminfoTextCnh, true, false, false)
+    {
+        Prefixo = "cli"
+    };
+    public static DBInfoSystem CliAssCPF => new(0, PTabelaNome, CampoCodigo, AssCPF, 11, "AssCPF", "AssCPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
     {
         Prefixo = "cli"
     };
@@ -308,9 +308,9 @@ public static partial class DBPreClientesDicInfo
         CliEMail = 28,
         CliAssistido = 29,
         CliAssRG = 30,
-        CliAssCPF = 31,
-        CliAssEndereco = 32,
-        CliCNH = 33,
+        CliAssEndereco = 31,
+        CliCNH = 32,
+        CliAssCPF = 33,
         CliEtiqueta = 34,
         CliAni = 35,
         CliBold = 36,
@@ -353,9 +353,9 @@ public static partial class DBPreClientesDicInfo
         NomesCamposTabela.CliEMail => CliEMail,
         NomesCamposTabela.CliAssistido => CliAssistido,
         NomesCamposTabela.CliAssRG => CliAssRG,
-        NomesCamposTabela.CliAssCPF => CliAssCPF,
         NomesCamposTabela.CliAssEndereco => CliAssEndereco,
         NomesCamposTabela.CliCNH => CliCNH,
+        NomesCamposTabela.CliAssCPF => CliAssCPF,
         NomesCamposTabela.CliEtiqueta => CliEtiqueta,
         NomesCamposTabela.CliAni => CliAni,
         NomesCamposTabela.CliBold => CliBold,

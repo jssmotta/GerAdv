@@ -59,7 +59,8 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         {
             Id = 1,
             Nome = "João",
-            IntervaloDias = 0
+            IntervaloDias = 0,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -84,7 +85,8 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         var gutperiodicidade = new Models.GUTPeriodicidade
         {
             Id = 1,
-            Nome = "AAAAAAAAAAAAAAAAAA"
+            Nome = "AAAAAAAAAAAAAAAAAA",
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -102,7 +104,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {
@@ -149,7 +151,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

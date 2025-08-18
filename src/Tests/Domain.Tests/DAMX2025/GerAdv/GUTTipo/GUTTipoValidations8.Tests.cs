@@ -59,7 +59,8 @@ public class GUTTipoValidationTests : IDisposable
         {
             Id = 1,
             Nome = "João",
-            Ordem = 1
+            Ordem = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -85,7 +86,8 @@ public class GUTTipoValidationTests : IDisposable
         {
             Id = 1,
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Ordem = 1
+            Ordem = 1,
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -103,7 +105,7 @@ public class GUTTipoValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Nome Method Tests
+#region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
     {
@@ -150,7 +152,7 @@ public class GUTTipoValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

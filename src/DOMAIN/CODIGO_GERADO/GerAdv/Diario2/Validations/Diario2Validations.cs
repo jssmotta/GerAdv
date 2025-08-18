@@ -50,6 +50,8 @@ public class Diario2Validation : IDiario2Validation
             throw new SGValidationException("Hora é obrigatório.");
         if (reg.Operador == 0)
             throw new SGValidationException("Operador é obrigatório.");
+        if (reg.Nome.IsEmpty())
+            throw new SGValidationException("Nome é obrigatório.");
         if (reg.Ocorrencia.IsEmpty())
             throw new SGValidationException("Ocorrencia é obrigatório.");
         if (reg.GUID.IsEmpty())

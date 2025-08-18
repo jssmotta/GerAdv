@@ -61,7 +61,8 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         {
             Id = 1,
             GUTAtividade = 1,
-            DataRealizado = "24/04/1975"
+            DataRealizado = "24/04/1975",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 
@@ -89,7 +90,8 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         {
             Id = 1,
             GUTAtividade = 1,
-            DataRealizado = "27/05/2022"
+            DataRealizado = "27/05/2022",
+            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -107,7 +109,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required GUID Method Tests
+#region ValidateReg Required GUID Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
     {

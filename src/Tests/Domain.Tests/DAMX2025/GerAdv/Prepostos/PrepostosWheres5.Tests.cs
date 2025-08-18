@@ -36,7 +36,7 @@ public class PrepostosWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFPrepostos(string? Nome = "João", int? Funcao = 1, int? Setor = 1, string? DtNasc = "24/04/1975", string? Qualificacao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? Sexo = false, int? Idade = 1, string? CPF = "544.506.718-13", string? RG = "12.345.678-9", string? Periodo_Ini = "24/04/1975", string? Periodo_Fim = "24/04/1975", string? Registro = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? CTPSNumero = "AAAAAAAAAAAAA", string? CTPSSerie = "AAAAAAAA", string? CTPSDtEmissao = "24/04/1975", string? PIS = "AAAAAAAAAAAAAAAAAA", decimal? Salario = 0m, bool? LiberaAgenda = true, string? Observacao = "Observação teste", string? Endereco = "Rua das Flores, 123", string? Bairro = "Centro", int? Cidade = 1, string? CEP = "01234-567", string? Fone = "(11) 99999-9999", string? Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? EMail = "test@email.com", string? Pai = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Mae = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Class = "A")
+    private void SetupMockFPrepostos(string? Nome = "João", int? Funcao = 1, int? Setor = 1, string? DtNasc = "24/04/1975", string? Qualificacao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? Sexo = false, int? Idade = 1, string? CPF = "544.506.718-13", string? RG = "12.345.678-9", string? Periodo_Ini = "24/04/1975", string? Periodo_Fim = "24/04/1975", string? Registro = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? CTPSNumero = "AAAAAAAAAAAAA", string? CTPSSerie = "AAAAAAAA", string? CTPSDtEmissao = "24/04/1975", string? PIS = "AAAAAAAAAAAAAAAAAA", decimal? Salario = 1m, bool? LiberaAgenda = true, string? Observacao = "Observação teste", string? Endereco = "Rua das Flores, 123", string? Bairro = "Centro", int? Cidade = 1, string? CEP = "01234-567", string? Fone = "(11) 99999-9999", string? Fax = "(11) 88888-9999", string? EMail = "test@email.com", string? Pai = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Mae = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Class = "A")
     {
         _mockFPrepostos.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
         _mockFPrepostos.Setup(f => f.FFuncao).Returns(Funcao ?? 0);
@@ -122,7 +122,7 @@ public class PrepostosWhereTests : IDisposable
         result.CTPSSerie.Should().Be("AAAAAAAA");
         result.CTPSDtEmissao.Should().Be("24/04/1975");
         result.PIS.Should().Be("AAAAAAAAAAAAAAAAAA");
-        result.Salario.Should().Be(0m);
+        result.Salario.Should().Be(1m);
         result.LiberaAgenda.Should().Be(true);
         result.Observacao.Should().Be("Observação teste");
         result.Endereco.Should().Be("Rua das Flores, 123");
@@ -130,7 +130,7 @@ public class PrepostosWhereTests : IDisposable
         result.Cidade.Should().Be(1);
         result.CEP.Should().Be("01234-567");
         result.Fone.Should().Be("(11) 99999-9999");
-        result.Fax.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        result.Fax.Should().Be("(11) 88888-9999");
         result.EMail.Should().Be("test@email.com");
         result.Pai.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Mae.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -289,7 +289,7 @@ public class PrepostosWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFPrepostos(Nome: "João", Funcao: 1, Setor: 1, DtNasc: "24/04/1975", Qualificacao: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Sexo: false, Idade: 1, CPF: "544.506.718-13", RG: "12.345.678-9", Periodo_Ini: "24/04/1975", Periodo_Fim: "24/04/1975", Registro: "AAAAAAAAAAAAAAAAAAAAAAAAAAAA", CTPSNumero: "AAAAAAAAAAAAA", CTPSSerie: "AAAAAAAA", CTPSDtEmissao: "24/04/1975", PIS: "AAAAAAAAAAAAAAAAAA", Salario: 0m, LiberaAgenda: true, Observacao: "Observação teste", Endereco: "Rua das Flores, 123", Bairro: "Centro", Cidade: 1, CEP: "01234-567", Fone: "(11) 99999-9999", Fax: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", EMail: "test@email.com", Pai: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Mae: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Class: "A");
+        SetupMockFPrepostos(Nome: "João", Funcao: 1, Setor: 1, DtNasc: "24/04/1975", Qualificacao: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Sexo: false, Idade: 1, CPF: "544.506.718-13", RG: "12.345.678-9", Periodo_Ini: "24/04/1975", Periodo_Fim: "24/04/1975", Registro: "AAAAAAAAAAAAAAAAAAAAAAAAAAAA", CTPSNumero: "AAAAAAAAAAAAA", CTPSSerie: "AAAAAAAA", CTPSDtEmissao: "24/04/1975", PIS: "AAAAAAAAAAAAAAAAAA", Salario: 1m, LiberaAgenda: true, Observacao: "Observação teste", Endereco: "Rua das Flores, 123", Bairro: "Centro", Cidade: 1, CEP: "01234-567", Fone: "(11) 99999-9999", Fax: "(11) 88888-9999", EMail: "test@email.com", Pai: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Mae: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Class: "A");
         _mockPrepostosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPrepostos.Object);
         // Act
         var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
@@ -312,7 +312,7 @@ public class PrepostosWhereTests : IDisposable
         result.CTPSSerie.Should().Be("AAAAAAAA");
         result.CTPSDtEmissao.Should().Be("24/04/1975");
         result.PIS.Should().Be("AAAAAAAAAAAAAAAAAA");
-        result.Salario.Should().Be(0m);
+        result.Salario.Should().Be(1m);
         result.LiberaAgenda.Should().Be(true);
         result.Observacao.Should().Be("Observação teste");
         result.Endereco.Should().Be("Rua das Flores, 123");
@@ -320,7 +320,7 @@ public class PrepostosWhereTests : IDisposable
         result.Cidade.Should().Be(1);
         result.CEP.Should().Be("01234-567");
         result.Fone.Should().Be("(11) 99999-9999");
-        result.Fax.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        result.Fax.Should().Be("(11) 88888-9999");
         result.EMail.Should().Be("test@email.com");
         result.Pai.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Mae.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");

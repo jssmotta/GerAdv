@@ -64,14 +64,14 @@ public class ProValoresValidationTests : IDisposable
             Indice = "AAAAAAAAAAAAAAAAAA",
             Ignorar = false,
             Data = "27/05/2022",
-            ValorOriginal = 0m,
-            PercMulta = 0m,
-            ValorMulta = 0m,
-            PercJuros = 0m,
-            ValorOriginalCorrigidoIndice = 0m,
-            ValorMultaCorrigido = 0m,
-            ValorJurosCorrigido = 0m,
-            ValorFinal = 0m,
+            ValorOriginal = 1m,
+            PercMulta = 1m,
+            ValorMulta = 1m,
+            PercJuros = 1m,
+            ValorOriginalCorrigidoIndice = 1m,
+            ValorMultaCorrigido = 1m,
+            ValorJurosCorrigido = 1m,
+            ValorFinal = 1m,
             DataUltimaCorrecao = "24/04/1975"
         };
     }
@@ -103,7 +103,7 @@ public class ProValoresValidationTests : IDisposable
             Indice = "AAAAAAAAAAAAAAAAAA",
             Ignorar = false,
             Data = "27/05/2022",
-            ValorOriginal = 0m,
+            ValorOriginal = 1m,
             DataUltimaCorrecao = null
         };
         SetupValidMocks();
@@ -122,7 +122,7 @@ public class ProValoresValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Indice Method Tests
+#region ValidateReg Required Indice Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyIndice_ShouldThrowSGValidationException()
     {
@@ -169,7 +169,7 @@ public class ProValoresValidationTests : IDisposable
     }
 
 #endregion
-#region ValidateReg Required Data Method Tests
+#region ValidateReg Required Data Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyData_ShouldThrowSGValidationException()
     {

@@ -13,7 +13,7 @@ public static class Uris
             var uris = ProdutoURIs;
             if (DateTime.Now > UltimaAtualizacao)
             {
-                ProdutoURIs = EntityApi.GetListaUris("menphiscrm", appSettings.Value.ProdutoNET_ID);
+                ProdutoURIs = EntityApi.GetListaUris("menphiscrm", Convert.ToInt32(appSettings.Value.ProdutoNET_ID));
                 UltimaAtualizacao = DateTime.Now.AddMinutes(1);
 
                 ProdutoURIs += ";" + appSettings.Value.DevURI;

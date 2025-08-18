@@ -68,7 +68,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 Data = "27/05/2022",
                 Nome = "João",
                 TipoOrigemSucumbencia = 1,
-                Valor = 0m,
+                Valor = 1m,
                 Percentual = "AAA",
                 GUID = Guid.NewGuid().ToString(),
                 WildcardChar = '%',

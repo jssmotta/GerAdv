@@ -62,7 +62,7 @@ public partial class DBPreClientes : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFInativo || pFldFQuemIndicou || pFldFNome || pFldFAdv || pFldFIDRep || pFldFJuridica || pFldFNomeFantasia || pFldFClass || pFldFTipo || pFldFDtNasc || pFldFInscEst || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCNPJ || pFldFCPF || pFldFRG || pFldFTipoCaptacao || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFax || pFldFFone || pFldFData || pFldFHomePage || pFldFEMail || pFldFAssistido || pFldFAssRG || pFldFAssCPF || pFldFAssEndereco || pFldFCNH || pFldFEtiqueta || pFldFAni || pFldFBold))
+            if (!(pFldFInativo || pFldFQuemIndicou || pFldFNome || pFldFAdv || pFldFIDRep || pFldFJuridica || pFldFNomeFantasia || pFldFClass || pFldFTipo || pFldFDtNasc || pFldFInscEst || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCNPJ || pFldFCPF || pFldFRG || pFldFTipoCaptacao || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFax || pFldFFone || pFldFData || pFldFHomePage || pFldFEMail || pFldFAssistido || pFldFAssRG || pFldFAssEndereco || pFldFCNH || pFldFAssCPF || pFldFEtiqueta || pFldFAni || pFldFBold))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -152,12 +152,12 @@ public partial class DBPreClientes : VAuditor, ICadastros
             clsW.Fields(DBPreClientesDicInfo.Assistido, m_FAssistido, ETiposCampos.FString);
         if (pFldFAssRG)
             clsW.Fields(DBPreClientesDicInfo.AssRG, m_FAssRG, ETiposCampos.FString);
-        if (pFldFAssCPF)
-            clsW.Fields(DBPreClientesDicInfo.AssCPF, m_FAssCPF, ETiposCampos.FString);
         if (pFldFAssEndereco)
             clsW.Fields(DBPreClientesDicInfo.AssEndereco, m_FAssEndereco, ETiposCampos.FString);
         if (pFldFCNH)
             clsW.Fields(DBPreClientesDicInfo.CNH, m_FCNH, ETiposCampos.FString);
+        if (pFldFAssCPF)
+            clsW.Fields(DBPreClientesDicInfo.AssCPF, m_FAssCPF, ETiposCampos.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
             clsW.Fields(DBPreClientesDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
         if (pFldFAni || ID.IsEmptyIDNumber())
