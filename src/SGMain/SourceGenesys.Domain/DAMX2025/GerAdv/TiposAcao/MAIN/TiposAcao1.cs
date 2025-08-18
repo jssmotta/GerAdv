@@ -16,7 +16,7 @@ public partial class DBTiposAcao : VAuditor, ICadastros
     }
 
 #endregion
-    public DBTiposAcao(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBTiposAcao(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
         if (oCnn is null)

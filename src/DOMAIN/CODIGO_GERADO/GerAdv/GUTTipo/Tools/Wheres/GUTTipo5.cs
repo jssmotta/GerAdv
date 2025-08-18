@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IGUTTipoWhere
 {
-    GUTTipoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    GUTTipoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class GUTTipoWhere(IFGUTTipoFactory guttipoFactory) : IGUTTipoWhere
 {
     private readonly IFGUTTipoFactory _guttipoFactory = guttipoFactory ?? throw new ArgumentNullException(nameof(guttipoFactory));
-    public GUTTipoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public GUTTipoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _guttipoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var guttipo = new GUTTipoResponse

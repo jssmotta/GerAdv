@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IEMPClassRiscosReader
 {
-    Task<EMPClassRiscosResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.EMPClassRiscos?> ReadM(int id, MsiSqlConnection oCnn);
-    EMPClassRiscosResponse? Read(FEMPClassRiscos dbRec, MsiSqlConnection oCnn);
-    EMPClassRiscosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<EMPClassRiscosResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.EMPClassRiscos?> ReadM(int id, MsiSqlConnection? oCnn);
+    EMPClassRiscosResponse? Read(FEMPClassRiscos dbRec, MsiSqlConnection? oCnn);
+    EMPClassRiscosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     EMPClassRiscosResponse? Read(FEMPClassRiscos dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     EMPClassRiscosResponseAll? ReadAll(FEMPClassRiscos dbRec, IDataRecord dr);
     EMPClassRiscosResponseAll? ReadAll(SG.GerAdv.DBEMPClassRiscos dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<EMPClassRiscosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<EMPClassRiscosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

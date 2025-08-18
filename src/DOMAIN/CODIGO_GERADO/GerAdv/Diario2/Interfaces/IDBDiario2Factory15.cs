@@ -23,9 +23,9 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FDiario2 instance with parameters
         /// </summary>
-        FDiario2 CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
+        FDiario2 CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FDiario2> CreateAsync();
-        Task<FDiario2> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
-        Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);
+        Task<FDiario2> CreateFromIdAsync(int id, MsiSqlConnection? oCnn);
+        Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn);
     }
 }

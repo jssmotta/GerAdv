@@ -29,25 +29,25 @@ public partial class FGraph : MenphisSI.SG.GerAdv.DBGraph, IDBGraph
     {
     }
 
-    public async Task<FGraph> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGraph> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fGraph = new FGraph();
         await fGraph.CarregarAsync(id, oCnn);
         return fGraph;
     }
 
-    private FGraph(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
+    private FGraph(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FGraph CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FGraph CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FGraph(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

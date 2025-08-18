@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaReader
 {
     private readonly IFJusticaFactory _justicaFactory = justicaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("jusCodigo, jusNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<JusticaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBJustica.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<JusticaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("jusCodigo, jusNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<JusticaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBJustica.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<JusticaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<JusticaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         return result;
     }
 
-    public async Task<JusticaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<JusticaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _justicaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Justica?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Justica?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _justicaFactory.CreateFromIdAsync(id, oCnn);
         var justica = new Models.Justica
@@ -60,12 +60,12 @@ public partial class JusticaReader(IFJusticaFactory justicaFactory) : IJusticaRe
         return justica;
     }
 
-    public JusticaResponse? Read(FJustica dbRec, MsiSqlConnection oCnn)
+    public JusticaResponse? Read(FJustica dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public JusticaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public JusticaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _justicaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

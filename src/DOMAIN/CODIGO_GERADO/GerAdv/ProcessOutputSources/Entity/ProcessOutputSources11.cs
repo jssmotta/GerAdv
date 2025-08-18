@@ -23,7 +23,7 @@ public partial class FProcessOutputSourcesFactory : IFProcessOutputSourcesFactor
         return FProcessOutputSources.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProcessOutputSources> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FProcessOutputSources> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FProcessOutputSources().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FProcessOutputSourcesFactory : IFProcessOutputSourcesFactor
         return new FProcessOutputSources();
     }
 
-    public FProcessOutputSources CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FProcessOutputSources CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FProcessOutputSources.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FProcessOutputSources.DeleteRecordAsync(operadorId, id, oCnn);

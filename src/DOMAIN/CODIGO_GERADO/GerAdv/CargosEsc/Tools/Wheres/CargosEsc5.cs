@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ICargosEscWhere
 {
-    CargosEscResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    CargosEscResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class CargosEscWhere(IFCargosEscFactory cargosescFactory) : ICargosEscWhere
 {
     private readonly IFCargosEscFactory _cargosescFactory = cargosescFactory ?? throw new ArgumentNullException(nameof(cargosescFactory));
-    public CargosEscResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public CargosEscResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _cargosescFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var cargosesc = new CargosEscResponse

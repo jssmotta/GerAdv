@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IEscritoriosWhere
 {
-    EscritoriosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    EscritoriosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class EscritoriosWhere(IFEscritoriosFactory escritoriosFactory) : IEscritoriosWhere
 {
     private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException(nameof(escritoriosFactory));
-    public EscritoriosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public EscritoriosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _escritoriosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var escritorios = new EscritoriosResponse

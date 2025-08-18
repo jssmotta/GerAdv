@@ -17,7 +17,7 @@ public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
 
 #endregion
     // REF. 250325
-    public DBGUTPeriodicidadeStatus(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBGUTPeriodicidadeStatus(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-3
         if (oCnn is null)

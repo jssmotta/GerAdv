@@ -23,7 +23,7 @@ public partial class FTipoStatusBiuFactory : IFTipoStatusBiuFactory, IDisposable
         return FTipoStatusBiu.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FTipoStatusBiu> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FTipoStatusBiu> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FTipoStatusBiu().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FTipoStatusBiuFactory : IFTipoStatusBiuFactory, IDisposable
         return new FTipoStatusBiu();
     }
 
-    public FTipoStatusBiu CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FTipoStatusBiu CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FTipoStatusBiu.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FTipoStatusBiu.DeleteRecordAsync(operadorId, id, oCnn);

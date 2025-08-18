@@ -32,7 +32,7 @@ export enum FieldsPreClientes
 	email = `EMail`,
 	assistido = `Assistido`,
 	assrg = `AssRG`,
-	asscpf = `AssCPF`,
 	assendereco = `AssEndereco`,
 	cnh = `CNH`,
+	asscpf = `AssCPF`,
 }

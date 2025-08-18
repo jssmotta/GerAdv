@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoEnderecoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoEnderecoFactory> _mockTipoEnderecoFactory;
-    private readonly Mock<ITipoEnderecoReader> _mockReader;
     private readonly TipoEnderecoValidation _validation;
     private readonly Mock<ITipoEnderecoService> _mockTipoEnderecoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoEnderecoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoEnderecoValidationTests()
     {
-        _mockTipoEnderecoFactory = new Mock<IFTipoEnderecoFactory>();
-        _mockReader = new Mock<ITipoEnderecoReader>();
         _validation = new TipoEnderecoValidation();
         _mockTipoEnderecoService = new Mock<ITipoEnderecoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoEnderecoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoEndereco CreateValidTipoEndereco()
+    private static Models.TipoEndereco CreateValidTipoEndereco()
     {
         return new Models.TipoEndereco
         {
@@ -65,14 +60,14 @@ public class TipoEnderecoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoEnderecoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEndereco>(), It.IsAny<string>())).ReturnsAsync(new List<TipoEnderecoResponseAll>());
+        _mockTipoEnderecoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEndereco>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoEnderecos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoEnderecoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEndereco>(), It.IsAny<string>())).ReturnsAsync(new List<TipoEnderecoResponseAll>());
+        _mockTipoEnderecoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEndereco>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoEnderecos service mock
     }
 

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class HonorariosDadosContratoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFHonorariosDadosContratoFactory> _mockHonorariosDadosContratoFactory;
-    private readonly Mock<IHonorariosDadosContratoReader> _mockReader;
     private readonly HonorariosDadosContratoValidation _validation;
     private readonly Mock<IHonorariosDadosContratoService> _mockHonorariosDadosContratoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class HonorariosDadosContratoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public HonorariosDadosContratoValidationTests()
     {
-        _mockHonorariosDadosContratoFactory = new Mock<IFHonorariosDadosContratoFactory>();
-        _mockReader = new Mock<IHonorariosDadosContratoReader>();
         _validation = new HonorariosDadosContratoValidation();
         _mockHonorariosDadosContratoService = new Mock<IHonorariosDadosContratoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.HonorariosDadosContrato CreateValidHonorariosDadosContrato()
+    private static Models.HonorariosDadosContrato CreateValidHonorariosDadosContrato()
     {
         return new Models.HonorariosDadosContrato
         {
@@ -77,17 +72,17 @@ public class HonorariosDadosContratoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockHonorariosDadosContratoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterHonorariosDadosContrato>(), It.IsAny<string>())).ReturnsAsync(new List<HonorariosDadosContratoResponseAll>());
+        _mockHonorariosDadosContratoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterHonorariosDadosContrato>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the HonorariosDadosContratos service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockHonorariosDadosContratoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterHonorariosDadosContrato>(), It.IsAny<string>())).ReturnsAsync(new List<HonorariosDadosContratoResponseAll>());
+        _mockHonorariosDadosContratoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterHonorariosDadosContrato>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the HonorariosDadosContratos service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

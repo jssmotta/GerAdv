@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IFuncionariosWriter
 {
-    Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection oCnn);
+    Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFuncionariosWriter
 {
     private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory ?? throw new ArgumentNullException(nameof(funcionariosFactory));
-    public virtual async Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection? oCnn)
     {
         await _funcionariosFactory.DeleteAsync(operadorId, funcionarios.Id, oCnn);
     }
 
-    public virtual async Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (funcionarios.Id.IsEmptyIDNumber() ? _funcionariosFactory.CreateAsync() : _funcionariosFactory.CreateFromIdAsync(funcionarios.Id, oCnn));
         dbRec.FGUID = funcionarios.GUID;

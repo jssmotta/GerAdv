@@ -23,9 +23,9 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FRito instance with parameters
         /// </summary>
-        FRito CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
+        FRito CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FRito> CreateAsync();
-        Task<FRito> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
-        Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);
+        Task<FRito> CreateFromIdAsync(int id, MsiSqlConnection? oCnn);
+        Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn);
     }
 }

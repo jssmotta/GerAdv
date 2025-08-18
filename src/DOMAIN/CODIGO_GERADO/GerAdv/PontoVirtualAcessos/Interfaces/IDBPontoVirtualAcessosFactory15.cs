@@ -23,9 +23,9 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FPontoVirtualAcessos instance with parameters
         /// </summary>
-        FPontoVirtualAcessos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "");
+        FPontoVirtualAcessos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FPontoVirtualAcessos> CreateAsync();
-        Task<FPontoVirtualAcessos> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
-        Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);
+        Task<FPontoVirtualAcessos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn);
+        Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn);
     }
 }

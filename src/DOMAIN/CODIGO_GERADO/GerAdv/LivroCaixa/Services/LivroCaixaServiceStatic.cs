@@ -218,7 +218,7 @@ public partial class LivroCaixaService
         ThrowIfDisposed();
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
         if (oCnn == null)
         {
@@ -235,7 +235,7 @@ public partial class LivroCaixaService
         return await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataListNAsync(max, uri, where, parameters, cancel), entryOptions, cancellationToken: token) ?? [];
     }
 
-    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter> parameters, CancellationToken token)
+    private async Task<IEnumerable<NomeID>> GetDataListNAsync(int max, string uri, string where, List<SqlParameter>? parameters, CancellationToken token)
     {
         var result = new List<NomeID>(max);
         var lista = await reader.ListarN(max, uri, where, parameters, DBLivroCaixaDicInfo.CampoNome);
@@ -252,7 +252,7 @@ public partial class LivroCaixaService
         return result;
     }
 
-    private async Task<IEnumerable<LivroCaixaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<LivroCaixaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
     {
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
         if (oCnn == null)

@@ -23,7 +23,7 @@ public partial class FGUTTipoFactory : IFGUTTipoFactory, IDisposable
         return FGUTTipo.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGUTTipo> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGUTTipo> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FGUTTipo().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FGUTTipoFactory : IFGUTTipoFactory, IDisposable
         return new FGUTTipo();
     }
 
-    public FGUTTipo CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FGUTTipo CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FGUTTipo.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FGUTTipo.DeleteRecordAsync(operadorId, id, oCnn);

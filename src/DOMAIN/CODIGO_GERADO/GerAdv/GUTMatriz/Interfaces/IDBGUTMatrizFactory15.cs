@@ -23,9 +23,9 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FGUTMatriz instance with parameters
         /// </summary>
-        FGUTMatriz CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
+        FGUTMatriz CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FGUTMatriz> CreateAsync();
-        Task<FGUTMatriz> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
-        Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);
+        Task<FGUTMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn);
+        Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn);
     }
 }

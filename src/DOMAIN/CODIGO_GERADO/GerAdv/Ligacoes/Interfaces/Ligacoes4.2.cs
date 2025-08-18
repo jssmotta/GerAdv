@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ILigacoesReader
 {
-    Task<LigacoesResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Ligacoes?> ReadM(int id, MsiSqlConnection oCnn);
-    LigacoesResponse? Read(FLigacoes dbRec, MsiSqlConnection oCnn);
-    LigacoesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<LigacoesResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Ligacoes?> ReadM(int id, MsiSqlConnection? oCnn);
+    LigacoesResponse? Read(FLigacoes dbRec, MsiSqlConnection? oCnn);
+    LigacoesResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     LigacoesResponse? Read(FLigacoes dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     LigacoesResponseAll? ReadAll(FLigacoes dbRec, IDataRecord dr);
     LigacoesResponseAll? ReadAll(SG.GerAdv.DBLigacoes dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<LigacoesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<LigacoesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

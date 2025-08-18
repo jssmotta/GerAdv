@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IHonorariosDadosContratoWriter
 {
-    Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection oCnn);
+    Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class HonorariosDadosContratoWriter(IFHonorariosDadosContratoFactory honorariosdadoscontratoFactory) : IHonorariosDadosContratoWriter
 {
     private readonly IFHonorariosDadosContratoFactory _honorariosdadoscontratoFactory = honorariosdadoscontratoFactory ?? throw new ArgumentNullException(nameof(honorariosdadoscontratoFactory));
-    public virtual async Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection? oCnn)
     {
         await _honorariosdadoscontratoFactory.DeleteAsync(operadorId, honorariosdadoscontrato.Id, oCnn);
     }
 
-    public virtual async Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (honorariosdadoscontrato.Id.IsEmptyIDNumber() ? _honorariosdadoscontratoFactory.CreateAsync() : _honorariosdadoscontratoFactory.CreateFromIdAsync(honorariosdadoscontrato.Id, oCnn));
         dbRec.FCliente = honorariosdadoscontrato.Cliente;

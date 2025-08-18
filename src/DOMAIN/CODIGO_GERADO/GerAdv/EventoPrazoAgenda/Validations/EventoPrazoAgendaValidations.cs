@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IEventoPrazoAgendaValidation
 {
-    Task<bool> ValidateReg(Models.EventoPrazoAgenda reg, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.EventoPrazoAgenda reg, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class EventoPrazoAgendaValidation : IEventoPrazoAgendaValidation
 {
-    public async Task<bool> CanDelete(int? id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -31,7 +31,7 @@ public class EventoPrazoAgendaValidation : IEventoPrazoAgendaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.EventoPrazoAgenda reg, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.EventoPrazoAgenda reg, IEventoPrazoAgendaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

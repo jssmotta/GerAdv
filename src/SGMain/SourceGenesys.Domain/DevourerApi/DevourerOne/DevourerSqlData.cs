@@ -2,7 +2,7 @@
 namespace MenphisSI;
 
 public static partial class DevourerSqlData
-{ 
+{
     public static bool ExecuteSql(string cSql, MsiSqlConnection? oCnn)
     {
         if (oCnn == null || oCnn.InnerConnection == null)
@@ -46,15 +46,15 @@ public static partial class DevourerSqlData
         {
             ExecuteSql($"UPDATE {tabela} SET {campo}=0 WHERE {campo} IS NULL;", oCnn);
         }
-        catch (Exception) 
-        { 
-        // Ignore
+        catch (Exception)
+        {
+            // Ignore
         }
         ConfigSys.WriteCfgSys($"{nameof(UpdateBoolFields)}-{tabela}-{campo}", 2, oCnn);
     }
 
-    public async static Task<List<DBNomeID>?> ListarNomeID(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200)
-    {        
+    public async static Task<List<DBNomeID>?> ListarNomeID(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200)
+    {
 
         var result = new List<DBNomeID>(max); // Pr�-aloca para melhor performance
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -68,20 +68,22 @@ public static partial class DevourerSqlData
         {
             CommandTimeout = 0
         };
-        cmd.Parameters.AddRange([.. parameters]);
+        if (parameters != null)
+            cmd.Parameters.AddRange([.. parameters]);
+
         await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult).ConfigureAwait(false);
         while (await reader.ReadAsync().ConfigureAwait(false))
-        {            
+        {
             result.Add(new DBNomeID(reader.GetInt32(0), reader.GetString(1)));
         }
 
         return result;
-        
+
     }
 
-    public async static Task<List<DBNomeID>> ListarNomeID(string sql, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200)
-    {       
-        
+    public async static Task<List<DBNomeID>> ListarNomeID(string sql, string uri, bool caching = false, int max = 200)
+    {
+
         var result = new List<DBNomeID>(max); // Pr�-aloca para melhor performance
         await using var connection = Configuracoes.GetConnectionByUri(uri);
 
@@ -96,7 +98,7 @@ public static partial class DevourerSqlData
         }
 
         return result;
-        
+
     }
 
 }

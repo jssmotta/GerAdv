@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class TipoEMailReader(IFTipoEMailFactory tipoemailFactory) : ITipoEMailReader
 {
     private readonly IFTipoEMailFactory _tipoemailFactory = tipoemailFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tmlCodigo, tmlNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<TipoEMailResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoEMail.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TipoEMailResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tmlCodigo, tmlNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TipoEMailResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoEMail.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<TipoEMailResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TipoEMailResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class TipoEMailReader(IFTipoEMailFactory tipoemailFactory) : ITip
         return result;
     }
 
-    public async Task<TipoEMailResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<TipoEMailResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tipoemailFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.TipoEMail?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.TipoEMail?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tipoemailFactory.CreateFromIdAsync(id, oCnn);
         var tipoemail = new Models.TipoEMail
@@ -59,12 +59,12 @@ public partial class TipoEMailReader(IFTipoEMailFactory tipoemailFactory) : ITip
         return tipoemail;
     }
 
-    public TipoEMailResponse? Read(FTipoEMail dbRec, MsiSqlConnection oCnn)
+    public TipoEMailResponse? Read(FTipoEMail dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public TipoEMailResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoEMailResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipoemailFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

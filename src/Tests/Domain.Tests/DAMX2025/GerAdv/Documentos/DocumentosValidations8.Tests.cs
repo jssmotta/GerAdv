@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class DocumentosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFDocumentosFactory> _mockDocumentosFactory;
-    private readonly Mock<IDocumentosReader> _mockReader;
     private readonly DocumentosValidation _validation;
     private readonly Mock<IDocumentosService> _mockDocumentosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class DocumentosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public DocumentosValidationTests()
     {
-        _mockDocumentosFactory = new Mock<IFDocumentosFactory>();
-        _mockReader = new Mock<IDocumentosReader>();
         _validation = new DocumentosValidation();
         _mockDocumentosService = new Mock<IDocumentosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class DocumentosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Documentos CreateValidDocumentos()
+    private static Models.Documentos CreateValidDocumentos()
     {
         return new Models.Documentos
         {
@@ -67,14 +62,14 @@ public class DocumentosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDocumentos>(), It.IsAny<string>())).ReturnsAsync(new List<DocumentosResponseAll>());
+        _mockDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDocumentos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Documentoss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDocumentos>(), It.IsAny<string>())).ReturnsAsync(new List<DocumentosResponseAll>());
+        _mockDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDocumentos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Documentoss service mock
     }
 

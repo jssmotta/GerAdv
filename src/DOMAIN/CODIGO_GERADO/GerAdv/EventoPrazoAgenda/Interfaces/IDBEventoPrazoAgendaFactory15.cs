@@ -23,9 +23,9 @@ namespace MenphisSI.GerAdv.Factory
         /// <summary>
         /// Creates a FEventoPrazoAgenda instance with parameters
         /// </summary>
-        FEventoPrazoAgenda CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
+        FEventoPrazoAgenda CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "");
         Task<FEventoPrazoAgenda> CreateAsync();
-        Task<FEventoPrazoAgenda> CreateFromIdAsync(int id, MsiSqlConnection oCnn);
-        Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn);
+        Task<FEventoPrazoAgenda> CreateFromIdAsync(int id, MsiSqlConnection? oCnn);
+        Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn);
     }
 }

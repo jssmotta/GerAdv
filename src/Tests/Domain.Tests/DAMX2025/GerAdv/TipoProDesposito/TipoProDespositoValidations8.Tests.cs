@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoProDespositoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoProDespositoFactory> _mockTipoProDespositoFactory;
-    private readonly Mock<ITipoProDespositoReader> _mockReader;
     private readonly TipoProDespositoValidation _validation;
     private readonly Mock<ITipoProDespositoService> _mockTipoProDespositoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoProDespositoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoProDespositoValidationTests()
     {
-        _mockTipoProDespositoFactory = new Mock<IFTipoProDespositoFactory>();
-        _mockReader = new Mock<ITipoProDespositoReader>();
         _validation = new TipoProDespositoValidation();
         _mockTipoProDespositoService = new Mock<ITipoProDespositoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoProDespositoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoProDesposito CreateValidTipoProDesposito()
+    private static Models.TipoProDesposito CreateValidTipoProDesposito()
     {
         return new Models.TipoProDesposito
         {
@@ -65,14 +60,14 @@ public class TipoProDespositoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoProDespositoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoProDesposito>(), It.IsAny<string>())).ReturnsAsync(new List<TipoProDespositoResponseAll>());
+        _mockTipoProDespositoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoProDesposito>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoProDespositos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoProDespositoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoProDesposito>(), It.IsAny<string>())).ReturnsAsync(new List<TipoProDespositoResponseAll>());
+        _mockTipoProDespositoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoProDesposito>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoProDespositos service mock
     }
 

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface INENotasValidation
 {
-    Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, INENotasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, INENotasService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class NENotasValidation : INENotasValidation
 {
-    public async Task<bool> CanDelete(int? id, INENotasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, INENotasService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -31,7 +31,7 @@ public class NENotasValidation : INENotasValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.NENotas reg, INENotasService service, IInstanciaReader instanciaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

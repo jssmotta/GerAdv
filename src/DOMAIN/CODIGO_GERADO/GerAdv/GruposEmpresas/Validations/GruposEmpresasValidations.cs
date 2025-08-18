@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IGruposEmpresasValidation
 {
-    Task<bool> ValidateReg(Models.GruposEmpresas reg, IGruposEmpresasService service, IOponentesReader oponentesReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IGruposEmpresasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.GruposEmpresas reg, IGruposEmpresasService service, IOponentesReader oponentesReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IGruposEmpresasService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class GruposEmpresasValidation : IGruposEmpresasValidation
 {
-    public async Task<bool> CanDelete(int? id, IGruposEmpresasService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGruposEmpresasService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -35,7 +35,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.GruposEmpresas reg, IGruposEmpresasService service, IOponentesReader oponentesReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.GruposEmpresas reg, IGruposEmpresasService service, IOponentesReader oponentesReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

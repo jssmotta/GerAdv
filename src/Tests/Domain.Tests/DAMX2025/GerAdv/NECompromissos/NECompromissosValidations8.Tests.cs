@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class NECompromissosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFNECompromissosFactory> _mockNECompromissosFactory;
-    private readonly Mock<INECompromissosReader> _mockReader;
     private readonly NECompromissosValidation _validation;
     private readonly Mock<INECompromissosService> _mockNECompromissosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class NECompromissosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public NECompromissosValidationTests()
     {
-        _mockNECompromissosFactory = new Mock<IFNECompromissosFactory>();
-        _mockReader = new Mock<INECompromissosReader>();
         _validation = new NECompromissosValidation();
         _mockNECompromissosService = new Mock<INECompromissosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class NECompromissosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.NECompromissos CreateValidNECompromissos()
+    private static Models.NECompromissos CreateValidNECompromissos()
     {
         return new Models.NECompromissos
         {
@@ -70,17 +65,17 @@ public class NECompromissosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockNECompromissosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNECompromissos>(), It.IsAny<string>())).ReturnsAsync(new List<NECompromissosResponseAll>());
+        _mockNECompromissosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNECompromissos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NECompromissoss service mock
-        _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoCompromissoResponse { Id = id }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockNECompromissosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNECompromissos>(), It.IsAny<string>())).ReturnsAsync(new List<NECompromissosResponseAll>());
+        _mockNECompromissosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNECompromissos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NECompromissoss service mock
-        _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoCompromissoResponse { Id = 0 }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = 0 }));
     }
 
     [Fact]

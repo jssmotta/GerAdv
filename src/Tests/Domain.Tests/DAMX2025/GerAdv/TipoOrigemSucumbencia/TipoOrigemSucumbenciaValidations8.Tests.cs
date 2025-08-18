@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoOrigemSucumbenciaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoOrigemSucumbenciaFactory> _mockTipoOrigemSucumbenciaFactory;
-    private readonly Mock<ITipoOrigemSucumbenciaReader> _mockReader;
     private readonly TipoOrigemSucumbenciaValidation _validation;
     private readonly Mock<ITipoOrigemSucumbenciaService> _mockTipoOrigemSucumbenciaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoOrigemSucumbenciaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoOrigemSucumbenciaValidationTests()
     {
-        _mockTipoOrigemSucumbenciaFactory = new Mock<IFTipoOrigemSucumbenciaFactory>();
-        _mockReader = new Mock<ITipoOrigemSucumbenciaReader>();
         _validation = new TipoOrigemSucumbenciaValidation();
         _mockTipoOrigemSucumbenciaService = new Mock<ITipoOrigemSucumbenciaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoOrigemSucumbenciaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoOrigemSucumbencia CreateValidTipoOrigemSucumbencia()
+    private static Models.TipoOrigemSucumbencia CreateValidTipoOrigemSucumbencia()
     {
         return new Models.TipoOrigemSucumbencia
         {
@@ -65,14 +60,14 @@ public class TipoOrigemSucumbenciaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoOrigemSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoOrigemSucumbencia>(), It.IsAny<string>())).ReturnsAsync(new List<TipoOrigemSucumbenciaResponseAll>());
+        _mockTipoOrigemSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoOrigemSucumbencia>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoOrigemSucumbencias service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoOrigemSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoOrigemSucumbencia>(), It.IsAny<string>())).ReturnsAsync(new List<TipoOrigemSucumbenciaResponseAll>());
+        _mockTipoOrigemSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoOrigemSucumbencia>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoOrigemSucumbencias service mock
     }
 

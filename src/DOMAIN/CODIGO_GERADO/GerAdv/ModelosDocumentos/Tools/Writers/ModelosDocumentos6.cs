@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IModelosDocumentosWriter
 {
-    Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection oCnn);
+    Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ModelosDocumentosWriter(IFModelosDocumentosFactory modelosdocumentosFactory) : IModelosDocumentosWriter
 {
     private readonly IFModelosDocumentosFactory _modelosdocumentosFactory = modelosdocumentosFactory ?? throw new ArgumentNullException(nameof(modelosdocumentosFactory));
-    public virtual async Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _modelosdocumentosFactory.DeleteAsync(operadorId, modelosdocumentos.Id, oCnn);
     }
 
-    public virtual async Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (modelosdocumentos.Id.IsEmptyIDNumber() ? _modelosdocumentosFactory.CreateAsync() : _modelosdocumentosFactory.CreateFromIdAsync(modelosdocumentos.Id, oCnn));
         dbRec.FNome = modelosdocumentos.Nome;

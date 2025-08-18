@@ -5,8 +5,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class NECompromissosReader(IFNECompromissosFactory necompromissosFactory) : INECompromissosReader
 {
     private readonly IFNECompromissosFactory _necompromissosFactory = necompromissosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<NECompromissosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBNECompromissos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<NECompromissosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<NECompromissosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBNECompromissos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<NECompromissosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<NECompromissosResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -41,13 +41,13 @@ public partial class NECompromissosReader(IFNECompromissosFactory necompromissos
         return result;
     }
 
-    public async Task<NECompromissosResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<NECompromissosResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _necompromissosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.NECompromissos?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.NECompromissos?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _necompromissosFactory.CreateFromIdAsync(id, oCnn);
         var necompromissos = new Models.NECompromissos
@@ -61,12 +61,12 @@ public partial class NECompromissosReader(IFNECompromissosFactory necompromissos
         return necompromissos;
     }
 
-    public NECompromissosResponse? Read(FNECompromissos dbRec, MsiSqlConnection oCnn)
+    public NECompromissosResponse? Read(FNECompromissos dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public NECompromissosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public NECompromissosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _necompromissosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

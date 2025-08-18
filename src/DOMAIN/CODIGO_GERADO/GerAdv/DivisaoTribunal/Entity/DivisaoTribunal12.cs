@@ -29,25 +29,25 @@ public partial class FDivisaoTribunal : MenphisSI.SG.GerAdv.DBDivisaoTribunal, I
     {
     }
 
-    public async Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fDivisaoTribunal = new FDivisaoTribunal();
         await fDivisaoTribunal.CarregarAsync(id, oCnn);
         return fDivisaoTribunal;
     }
 
-    private FDivisaoTribunal(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
+    private FDivisaoTribunal(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FDivisaoTribunal CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FDivisaoTribunal CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FDivisaoTribunal(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

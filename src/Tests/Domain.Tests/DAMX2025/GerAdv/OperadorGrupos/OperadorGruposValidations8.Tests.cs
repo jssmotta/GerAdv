@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class OperadorGruposValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFOperadorGruposFactory> _mockOperadorGruposFactory;
-    private readonly Mock<IOperadorGruposReader> _mockReader;
     private readonly OperadorGruposValidation _validation;
     private readonly Mock<IOperadorGruposService> _mockOperadorGruposService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class OperadorGruposValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public OperadorGruposValidationTests()
     {
-        _mockOperadorGruposFactory = new Mock<IFOperadorGruposFactory>();
-        _mockReader = new Mock<IOperadorGruposReader>();
         _validation = new OperadorGruposValidation();
         _mockOperadorGruposService = new Mock<IOperadorGruposService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class OperadorGruposValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.OperadorGrupos CreateValidOperadorGrupos()
+    private static Models.OperadorGrupos CreateValidOperadorGrupos()
     {
         return new Models.OperadorGrupos
         {
@@ -65,14 +60,14 @@ public class OperadorGruposValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorGruposService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGrupos>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorGruposResponseAll>());
+        _mockOperadorGruposService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGrupos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the OperadorGruposs service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorGruposService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGrupos>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorGruposResponseAll>());
+        _mockOperadorGruposService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGrupos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the OperadorGruposs service mock
     }
 

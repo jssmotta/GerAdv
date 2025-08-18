@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TribunalValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTribunalFactory> _mockTribunalFactory;
-    private readonly Mock<ITribunalReader> _mockReader;
     private readonly TribunalValidation _validation;
     private readonly Mock<ITribunalService> _mockTribunalService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -17,8 +14,6 @@ public class TribunalValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TribunalValidationTests()
     {
-        _mockTribunalFactory = new Mock<IFTribunalFactory>();
-        _mockReader = new Mock<ITribunalReader>();
         _validation = new TribunalValidation();
         _mockTribunalService = new Mock<ITribunalService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -59,7 +54,7 @@ public class TribunalValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Tribunal CreateValidTribunal()
+    private static Models.Tribunal CreateValidTribunal()
     {
         return new Models.Tribunal
         {
@@ -77,21 +72,21 @@ public class TribunalValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTribunal>(), It.IsAny<string>())).ReturnsAsync(new List<TribunalResponseAll>());
+        _mockTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTribunal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Tribunals service mock
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = id }));
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = id }));
-        _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.InstanciaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTribunal>(), It.IsAny<string>())).ReturnsAsync(new List<TribunalResponseAll>());
+        _mockTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTribunal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Tribunals service mock
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = 0 }));
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = 0 }));
-        _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.InstanciaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = 0 }));
     }
 
     [Fact]

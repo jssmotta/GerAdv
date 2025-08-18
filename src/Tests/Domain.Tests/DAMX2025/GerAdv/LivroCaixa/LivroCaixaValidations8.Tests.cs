@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class LivroCaixaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFLivroCaixaFactory> _mockLivroCaixaFactory;
-    private readonly Mock<ILivroCaixaReader> _mockReader;
     private readonly LivroCaixaValidation _validation;
     private readonly Mock<ILivroCaixaService> _mockLivroCaixaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class LivroCaixaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public LivroCaixaValidationTests()
     {
-        _mockLivroCaixaFactory = new Mock<IFLivroCaixaFactory>();
-        _mockReader = new Mock<ILivroCaixaReader>();
         _validation = new LivroCaixaValidation();
         _mockLivroCaixaService = new Mock<ILivroCaixaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class LivroCaixaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.LivroCaixa CreateValidLivroCaixa()
+    private static Models.LivroCaixa CreateValidLivroCaixa()
     {
         return new Models.LivroCaixa
         {
@@ -77,14 +72,14 @@ public class LivroCaixaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockLivroCaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLivroCaixa>(), It.IsAny<string>())).ReturnsAsync(new List<LivroCaixaResponseAll>());
+        _mockLivroCaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLivroCaixa>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the LivroCaixas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockLivroCaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLivroCaixa>(), It.IsAny<string>())).ReturnsAsync(new List<LivroCaixaResponseAll>());
+        _mockLivroCaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLivroCaixa>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the LivroCaixas service mock
     }
 

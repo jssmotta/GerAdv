@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IForoReader
 {
-    Task<ForoResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Foro?> ReadM(int id, MsiSqlConnection oCnn);
-    ForoResponse? Read(FForo dbRec, MsiSqlConnection oCnn);
-    ForoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<ForoResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Foro?> ReadM(int id, MsiSqlConnection? oCnn);
+    ForoResponse? Read(FForo dbRec, MsiSqlConnection? oCnn);
+    ForoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ForoResponse? Read(FForo dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ForoResponseAll? ReadAll(FForo dbRec, IDataRecord dr);
     ForoResponseAll? ReadAll(SG.GerAdv.DBForo dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<ForoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<ForoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

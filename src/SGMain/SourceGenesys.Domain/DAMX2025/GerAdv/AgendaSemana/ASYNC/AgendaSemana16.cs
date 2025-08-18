@@ -193,7 +193,7 @@ if (pFldFTipo) updateTool.Fields(DBAgendaSemanaDicInfo.Tipo, m_FTipo, ETiposCamp
     private async Task<int> GravaNewIdAsync(
         DBToolWTable32Async updateTool,
         int insertId,
-        MsiSqlConnection oCnn,
+        MsiSqlConnection? oCnn,
         CancellationToken cancellationToken)
     {
         ID = insertId;

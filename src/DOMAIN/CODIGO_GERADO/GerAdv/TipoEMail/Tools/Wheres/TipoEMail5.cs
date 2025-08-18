@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoEMailWhere
 {
-    TipoEMailResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TipoEMailResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TipoEMailWhere(IFTipoEMailFactory tipoemailFactory) : ITipoEMailWhere
 {
     private readonly IFTipoEMailFactory _tipoemailFactory = tipoemailFactory ?? throw new ArgumentNullException(nameof(tipoemailFactory));
-    public TipoEMailResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoEMailResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipoemailFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipoemail = new TipoEMailResponse

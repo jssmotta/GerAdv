@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProSucumbenciaWriter
 {
-    Task<FProSucumbencia> WriteAsync(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection oCnn);
+    Task<FProSucumbencia> WriteAsync(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProSucumbenciaWriter(IFProSucumbenciaFactory prosucumbenciaFactory) : IProSucumbenciaWriter
 {
     private readonly IFProSucumbenciaFactory _prosucumbenciaFactory = prosucumbenciaFactory ?? throw new ArgumentNullException(nameof(prosucumbenciaFactory));
-    public virtual async Task Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection? oCnn)
     {
         await _prosucumbenciaFactory.DeleteAsync(operadorId, prosucumbencia.Id, oCnn);
     }
 
-    public virtual async Task<FProSucumbencia> WriteAsync(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProSucumbencia> WriteAsync(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (prosucumbencia.Id.IsEmptyIDNumber() ? _prosucumbenciaFactory.CreateAsync() : _prosucumbenciaFactory.CreateFromIdAsync(prosucumbencia.Id, oCnn));
         dbRec.FProcesso = prosucumbencia.Processo;

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOperadoresWhere
 {
-    OperadoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    OperadoresResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class OperadoresWhere(IFOperadoresFactory operadoresFactory) : IOperadoresWhere
 {
     private readonly IFOperadoresFactory _operadoresFactory = operadoresFactory ?? throw new ArgumentNullException(nameof(operadoresFactory));
-    public OperadoresResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OperadoresResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _operadoresFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var operadores = new OperadoresResponse

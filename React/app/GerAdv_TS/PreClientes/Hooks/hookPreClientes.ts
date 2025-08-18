@@ -225,14 +225,14 @@ if (data.assistido.length > 50) {
 if (data.assrg.length > 30) { 
                                              return { isValid: false, message: 'O campo AssRG não pode ter mais de 30 caracteres.' };
                                          } 
-if (data.asscpf.length > 12) { 
-                                             return { isValid: false, message: 'O campo AssCPF não pode ter mais de 12 caracteres.' };
-                                         } 
 if (data.assendereco.length > 70) { 
                                              return { isValid: false, message: 'O campo AssEndereco não pode ter mais de 70 caracteres.' };
                                          } 
 if (data.cnh.length > 100) { 
                                              return { isValid: false, message: 'O campo CNH não pode ter mais de 100 caracteres.' };
+                                         } 
+if (data.asscpf.length > 11) { 
+                                             return { isValid: false, message: 'O campo AssCPF não pode ter mais de 11 caracteres.' };
                                          } 
 
 

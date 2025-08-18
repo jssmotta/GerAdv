@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IHorasTrabValidation
 {
-    Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IHorasTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IHorasTrabService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class HorasTrabValidation : IHorasTrabValidation
 {
-    public async Task<bool> CanDelete(int? id, IHorasTrabService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IHorasTrabService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -41,7 +41,7 @@ public class HorasTrabValidation : IHorasTrabValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.HorasTrab reg, IHorasTrabService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, IServicosReader servicosReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

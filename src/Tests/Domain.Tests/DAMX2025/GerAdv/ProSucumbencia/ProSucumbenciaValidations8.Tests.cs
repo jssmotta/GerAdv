@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProSucumbenciaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProSucumbenciaFactory> _mockProSucumbenciaFactory;
-    private readonly Mock<IProSucumbenciaReader> _mockReader;
     private readonly ProSucumbenciaValidation _validation;
     private readonly Mock<IProSucumbenciaService> _mockProSucumbenciaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class ProSucumbenciaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProSucumbenciaValidationTests()
     {
-        _mockProSucumbenciaFactory = new Mock<IFProSucumbenciaFactory>();
-        _mockReader = new Mock<IProSucumbenciaReader>();
         _validation = new ProSucumbenciaValidation();
         _mockProSucumbenciaService = new Mock<IProSucumbenciaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProSucumbencia CreateValidProSucumbencia()
+    private static Models.ProSucumbencia CreateValidProSucumbencia()
     {
         return new Models.ProSucumbencia
         {
@@ -76,19 +71,19 @@ public class ProSucumbenciaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProSucumbencia>(), It.IsAny<string>())).ReturnsAsync(new List<ProSucumbenciaResponseAll>());
+        _mockProSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProSucumbencia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProSucumbencias service mock
-        _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.InstanciaResponse { Id = id }));
-        _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoOrigemSucumbenciaResponse { Id = id }));
+        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = id }));
+        _ = _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoOrigemSucumbenciaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProSucumbencia>(), It.IsAny<string>())).ReturnsAsync(new List<ProSucumbenciaResponseAll>());
+        _mockProSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProSucumbencia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProSucumbencias service mock
-        _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.InstanciaResponse { Id = 0 }));
-        _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoOrigemSucumbenciaResponse { Id = 0 }));
+        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = 0 }));
+        _ = _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoOrigemSucumbenciaResponse { Id = 0 }));
     }
 
     [Fact]

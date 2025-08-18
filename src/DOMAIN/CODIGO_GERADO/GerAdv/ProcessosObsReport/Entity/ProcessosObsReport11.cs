@@ -23,7 +23,7 @@ public partial class FProcessosObsReportFactory : IFProcessosObsReportFactory, I
         return FProcessosObsReport.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProcessosObsReport> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FProcessosObsReport> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FProcessosObsReport().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FProcessosObsReportFactory : IFProcessosObsReportFactory, I
         return new FProcessosObsReport();
     }
 
-    public FProcessosObsReport CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FProcessosObsReport CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FProcessosObsReport.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FProcessosObsReport.DeleteRecordAsync(operadorId, id, oCnn);

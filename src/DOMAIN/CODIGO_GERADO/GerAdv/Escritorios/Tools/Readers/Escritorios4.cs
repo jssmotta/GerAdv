@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) : IEscritoriosReader
 {
     private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("escCodigo, escNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<EscritoriosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEscritorios.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<EscritoriosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("escCodigo, escNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<EscritoriosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEscritorios.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<EscritoriosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<EscritoriosResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         return result;
     }
 
-    public async Task<EscritoriosResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<EscritoriosResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _escritoriosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Escritorios?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Escritorios?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _escritoriosFactory.CreateFromIdAsync(id, oCnn);
         var escritorios = new Models.Escritorios
@@ -78,12 +78,12 @@ public partial class EscritoriosReader(IFEscritoriosFactory escritoriosFactory) 
         return escritorios;
     }
 
-    public EscritoriosResponse? Read(FEscritorios dbRec, MsiSqlConnection oCnn)
+    public EscritoriosResponse? Read(FEscritorios dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public EscritoriosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public EscritoriosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _escritoriosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ObjetosReader(IFObjetosFactory objetosFactory) : IObjetosReader
 {
     private readonly IFObjetosFactory _objetosFactory = objetosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ojtCodigo, ojtNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ObjetosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBObjetos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ObjetosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ojtCodigo, ojtNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ObjetosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBObjetos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ObjetosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ObjetosResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ObjetosReader(IFObjetosFactory objetosFactory) : IObjetosRe
         return result;
     }
 
-    public async Task<ObjetosResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ObjetosResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _objetosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Objetos?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Objetos?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _objetosFactory.CreateFromIdAsync(id, oCnn);
         var objetos = new Models.Objetos
@@ -62,12 +62,12 @@ public partial class ObjetosReader(IFObjetosFactory objetosFactory) : IObjetosRe
         return objetos;
     }
 
-    public ObjetosResponse? Read(FObjetos dbRec, MsiSqlConnection oCnn)
+    public ObjetosResponse? Read(FObjetos dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ObjetosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ObjetosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _objetosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

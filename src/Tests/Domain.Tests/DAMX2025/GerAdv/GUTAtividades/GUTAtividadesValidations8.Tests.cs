@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GUTAtividadesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGUTAtividadesFactory> _mockGUTAtividadesFactory;
-    private readonly Mock<IGUTAtividadesReader> _mockReader;
     private readonly GUTAtividadesValidation _validation;
     private readonly Mock<IGUTAtividadesService> _mockGUTAtividadesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class GUTAtividadesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GUTAtividadesValidationTests()
     {
-        _mockGUTAtividadesFactory = new Mock<IFGUTAtividadesFactory>();
-        _mockReader = new Mock<IGUTAtividadesReader>();
         _validation = new GUTAtividadesValidation();
         _mockGUTAtividadesService = new Mock<IGUTAtividadesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class GUTAtividadesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GUTAtividades CreateValidGUTAtividades()
+    private static Models.GUTAtividades CreateValidGUTAtividades()
     {
         return new Models.GUTAtividades
         {
@@ -78,19 +73,19 @@ public class GUTAtividadesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGUTAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividades>(), It.IsAny<string>())).ReturnsAsync(new List<GUTAtividadesResponseAll>());
+        _mockGUTAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividades>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadess service mock
-        _mockGUTPeriodicidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTPeriodicidadeResponse { Id = id }));
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = id }));
+        _ = _mockGUTPeriodicidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTPeriodicidadeResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGUTAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividades>(), It.IsAny<string>())).ReturnsAsync(new List<GUTAtividadesResponseAll>());
+        _mockGUTAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividades>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadess service mock
-        _mockGUTPeriodicidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTPeriodicidadeResponse { Id = 0 }));
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = 0 }));
+        _ = _mockGUTPeriodicidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTPeriodicidadeResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]

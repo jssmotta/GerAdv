@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IAreaReader
 {
-    Task<AreaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Area?> ReadM(int id, MsiSqlConnection oCnn);
-    AreaResponse? Read(FArea dbRec, MsiSqlConnection oCnn);
-    AreaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<AreaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Area?> ReadM(int id, MsiSqlConnection? oCnn);
+    AreaResponse? Read(FArea dbRec, MsiSqlConnection? oCnn);
+    AreaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     AreaResponse? Read(FArea dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     AreaResponseAll? ReadAll(FArea dbRec, IDataRecord dr);
     AreaResponseAll? ReadAll(SG.GerAdv.DBArea dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<AreaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<AreaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

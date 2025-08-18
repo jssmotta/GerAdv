@@ -1,12 +1,4 @@
-
-namespace MenphisSI;
-public class DBNomeS
-{
-
-    public required string FNome { get; set; }
-
-}
- 
+namespace MenphisSI; 
  
 [Serializable]
 public record DBNomeID

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ViaRecebimentoReader(IFViaRecebimentoFactory viarecebimentoFactory) : IViaRecebimentoReader
 {
     private readonly IFViaRecebimentoFactory _viarecebimentoFactory = viarecebimentoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("vrbCodigo, vrbNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ViaRecebimentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBViaRecebimento.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ViaRecebimentoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("vrbCodigo, vrbNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ViaRecebimentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBViaRecebimento.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ViaRecebimentoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ViaRecebimentoResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ViaRecebimentoReader(IFViaRecebimentoFactory viarecebimento
         return result;
     }
 
-    public async Task<ViaRecebimentoResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ViaRecebimentoResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _viarecebimentoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ViaRecebimento?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ViaRecebimento?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _viarecebimentoFactory.CreateFromIdAsync(id, oCnn);
         var viarecebimento = new Models.ViaRecebimento
@@ -59,12 +59,12 @@ public partial class ViaRecebimentoReader(IFViaRecebimentoFactory viarecebimento
         return viarecebimento;
     }
 
-    public ViaRecebimentoResponse? Read(FViaRecebimento dbRec, MsiSqlConnection oCnn)
+    public ViaRecebimentoResponse? Read(FViaRecebimento dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ViaRecebimentoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ViaRecebimentoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _viarecebimentoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

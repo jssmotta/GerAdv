@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GruposEmpresasValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGruposEmpresasFactory> _mockGruposEmpresasFactory;
-    private readonly Mock<IGruposEmpresasReader> _mockReader;
     private readonly GruposEmpresasValidation _validation;
     private readonly Mock<IGruposEmpresasService> _mockGruposEmpresasService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class GruposEmpresasValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GruposEmpresasValidationTests()
     {
-        _mockGruposEmpresasFactory = new Mock<IFGruposEmpresasFactory>();
-        _mockReader = new Mock<IGruposEmpresasReader>();
         _validation = new GruposEmpresasValidation();
         _mockGruposEmpresasService = new Mock<IGruposEmpresasService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class GruposEmpresasValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GruposEmpresas CreateValidGruposEmpresas()
+    private static Models.GruposEmpresas CreateValidGruposEmpresas()
     {
         return new Models.GruposEmpresas
         {
@@ -76,19 +71,19 @@ public class GruposEmpresasValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGruposEmpresasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGruposEmpresas>(), It.IsAny<string>())).ReturnsAsync(new List<GruposEmpresasResponseAll>());
+        _mockGruposEmpresasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGruposEmpresas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GruposEmpresass service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGruposEmpresasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGruposEmpresas>(), It.IsAny<string>())).ReturnsAsync(new List<GruposEmpresasResponseAll>());
+        _mockGruposEmpresasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGruposEmpresas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GruposEmpresass service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = 0 }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

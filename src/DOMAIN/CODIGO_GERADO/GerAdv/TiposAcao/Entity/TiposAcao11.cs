@@ -23,7 +23,7 @@ public partial class FTiposAcaoFactory : IFTiposAcaoFactory, IDisposable
         return FTiposAcao.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FTiposAcao> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FTiposAcao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FTiposAcao().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FTiposAcaoFactory : IFTiposAcaoFactory, IDisposable
         return new FTiposAcao();
     }
 
-    public FTiposAcao CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FTiposAcao CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FTiposAcao.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FTiposAcao.DeleteRecordAsync(operadorId, id, oCnn);

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class SituacaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFSituacaoFactory> _mockSituacaoFactory;
-    private readonly Mock<ISituacaoReader> _mockReader;
     private readonly SituacaoValidation _validation;
     private readonly Mock<ISituacaoService> _mockSituacaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class SituacaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public SituacaoValidationTests()
     {
-        _mockSituacaoFactory = new Mock<IFSituacaoFactory>();
-        _mockReader = new Mock<ISituacaoReader>();
         _validation = new SituacaoValidation();
         _mockSituacaoService = new Mock<ISituacaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class SituacaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Situacao CreateValidSituacao()
+    private static Models.Situacao CreateValidSituacao()
     {
         return new Models.Situacao
         {
@@ -67,14 +62,14 @@ public class SituacaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockSituacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSituacao>(), It.IsAny<string>())).ReturnsAsync(new List<SituacaoResponseAll>());
+        _mockSituacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSituacao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Situacaos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockSituacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSituacao>(), It.IsAny<string>())).ReturnsAsync(new List<SituacaoResponseAll>());
+        _mockSituacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSituacao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Situacaos service mock
     }
 

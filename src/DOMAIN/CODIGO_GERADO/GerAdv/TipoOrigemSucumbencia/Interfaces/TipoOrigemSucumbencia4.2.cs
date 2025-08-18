@@ -4,13 +4,13 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITipoOrigemSucumbenciaReader
 {
-    Task<TipoOrigemSucumbenciaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.TipoOrigemSucumbencia?> ReadM(int id, MsiSqlConnection oCnn);
-    TipoOrigemSucumbenciaResponse? Read(FTipoOrigemSucumbencia dbRec, MsiSqlConnection oCnn);
-    TipoOrigemSucumbenciaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<TipoOrigemSucumbenciaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.TipoOrigemSucumbencia?> ReadM(int id, MsiSqlConnection? oCnn);
+    TipoOrigemSucumbenciaResponse? Read(FTipoOrigemSucumbencia dbRec, MsiSqlConnection? oCnn);
+    TipoOrigemSucumbenciaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoOrigemSucumbenciaResponse? Read(FTipoOrigemSucumbencia dbRec);
     TipoOrigemSucumbenciaResponseAll? ReadAll(FTipoOrigemSucumbencia dbRec, IDataRecord dr);
     TipoOrigemSucumbenciaResponseAll? ReadAll(SG.GerAdv.DBTipoOrigemSucumbencia dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

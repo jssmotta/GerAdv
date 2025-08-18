@@ -23,7 +23,7 @@ public partial class FGruposEmpresasFactory : IFGruposEmpresasFactory, IDisposab
         return FGruposEmpresas.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGruposEmpresas> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGruposEmpresas> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FGruposEmpresas().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FGruposEmpresasFactory : IFGruposEmpresasFactory, IDisposab
         return new FGruposEmpresas();
     }
 
-    public FGruposEmpresas CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FGruposEmpresas CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FGruposEmpresas.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FGruposEmpresas.DeleteRecordAsync(operadorId, id, oCnn);

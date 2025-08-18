@@ -4,13 +4,13 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IStatusHTrabReader
 {
-    Task<StatusHTrabResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.StatusHTrab?> ReadM(int id, MsiSqlConnection oCnn);
-    StatusHTrabResponse? Read(FStatusHTrab dbRec, MsiSqlConnection oCnn);
-    StatusHTrabResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<StatusHTrabResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.StatusHTrab?> ReadM(int id, MsiSqlConnection? oCnn);
+    StatusHTrabResponse? Read(FStatusHTrab dbRec, MsiSqlConnection? oCnn);
+    StatusHTrabResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     StatusHTrabResponse? Read(FStatusHTrab dbRec);
     StatusHTrabResponseAll? ReadAll(FStatusHTrab dbRec, IDataRecord dr);
     StatusHTrabResponseAll? ReadAll(SG.GerAdv.DBStatusHTrab dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<StatusHTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<StatusHTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

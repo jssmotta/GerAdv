@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAdvogadosWhere
 {
-    AdvogadosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    AdvogadosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class AdvogadosWhere(IFAdvogadosFactory advogadosFactory) : IAdvogadosWhere
 {
     private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException(nameof(advogadosFactory));
-    public AdvogadosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AdvogadosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _advogadosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var advogados = new AdvogadosResponse

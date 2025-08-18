@@ -8,7 +8,7 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAgendaRelatorioValidation
 {
-    Task<bool> ValidateReg(Models.AgendaRelatorio reg, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.AgendaRelatorio reg, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class AgendaRelatorioValidation : IAgendaRelatorioValidation
@@ -18,7 +18,7 @@ public class AgendaRelatorioValidation : IAgendaRelatorioValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.AgendaRelatorio reg, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.AgendaRelatorio reg, IAgendaRelatorioService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

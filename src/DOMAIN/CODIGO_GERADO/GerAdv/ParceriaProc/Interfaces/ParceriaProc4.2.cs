@@ -4,14 +4,14 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IParceriaProcReader
 {
-    Task<ParceriaProcResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.ParceriaProc?> ReadM(int id, MsiSqlConnection oCnn);
-    ParceriaProcResponse? Read(FParceriaProc dbRec, MsiSqlConnection oCnn);
-    ParceriaProcResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<ParceriaProcResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.ParceriaProc?> ReadM(int id, MsiSqlConnection? oCnn);
+    ParceriaProcResponse? Read(FParceriaProc dbRec, MsiSqlConnection? oCnn);
+    ParceriaProcResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ParceriaProcResponse? Read(FParceriaProc dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ParceriaProcResponseAll? ReadAll(FParceriaProc dbRec, IDataRecord dr);
     ParceriaProcResponseAll? ReadAll(SG.GerAdv.DBParceriaProc dbRec, DataRow dr);
-    Task<IEnumerable<ParceriaProcResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<ParceriaProcResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProValoresWriter
 {
-    Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection oCnn);
+    Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValoresWriter
 {
     private readonly IFProValoresFactory _provaloresFactory = provaloresFactory ?? throw new ArgumentNullException(nameof(provaloresFactory));
-    public virtual async Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _provaloresFactory.DeleteAsync(operadorId, provalores.Id, oCnn);
     }
 
-    public virtual async Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (provalores.Id.IsEmptyIDNumber() ? _provaloresFactory.CreateAsync() : _provaloresFactory.CreateFromIdAsync(provalores.Id, oCnn));
         dbRec.FProcesso = provalores.Processo;

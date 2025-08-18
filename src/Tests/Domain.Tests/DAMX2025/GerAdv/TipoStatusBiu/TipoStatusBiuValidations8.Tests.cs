@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoStatusBiuValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoStatusBiuFactory> _mockTipoStatusBiuFactory;
-    private readonly Mock<ITipoStatusBiuReader> _mockReader;
     private readonly TipoStatusBiuValidation _validation;
     private readonly Mock<ITipoStatusBiuService> _mockTipoStatusBiuService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoStatusBiuValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoStatusBiuValidationTests()
     {
-        _mockTipoStatusBiuFactory = new Mock<IFTipoStatusBiuFactory>();
-        _mockReader = new Mock<ITipoStatusBiuReader>();
         _validation = new TipoStatusBiuValidation();
         _mockTipoStatusBiuService = new Mock<ITipoStatusBiuService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoStatusBiuValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoStatusBiu CreateValidTipoStatusBiu()
+    private static Models.TipoStatusBiu CreateValidTipoStatusBiu()
     {
         return new Models.TipoStatusBiu
         {
@@ -65,14 +60,14 @@ public class TipoStatusBiuValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoStatusBiuService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoStatusBiu>(), It.IsAny<string>())).ReturnsAsync(new List<TipoStatusBiuResponseAll>());
+        _mockTipoStatusBiuService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoStatusBiu>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoStatusBius service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoStatusBiuService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoStatusBiu>(), It.IsAny<string>())).ReturnsAsync(new List<TipoStatusBiuResponseAll>());
+        _mockTipoStatusBiuService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoStatusBiu>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoStatusBius service mock
     }
 

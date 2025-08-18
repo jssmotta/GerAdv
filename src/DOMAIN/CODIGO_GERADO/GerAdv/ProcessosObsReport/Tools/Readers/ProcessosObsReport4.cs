@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProcessosObsReportReader(IFProcessosObsReportFactory processosobsreportFactory) : IProcessosObsReportReader
 {
     private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prrCodigo, prrData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ProcessosObsReportResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProcessosObsReport.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ProcessosObsReportResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prrCodigo, prrData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ProcessosObsReportResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProcessosObsReport.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ProcessosObsReportResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ProcessosObsReportResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         return result;
     }
 
-    public async Task<ProcessosObsReportResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ProcessosObsReportResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _processosobsreportFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProcessosObsReport?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ProcessosObsReport?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _processosobsreportFactory.CreateFromIdAsync(id, oCnn);
         var processosobsreport = new Models.ProcessosObsReport
@@ -62,12 +62,12 @@ public partial class ProcessosObsReportReader(IFProcessosObsReportFactory proces
         return processosobsreport;
     }
 
-    public ProcessosObsReportResponse? Read(FProcessosObsReport dbRec, MsiSqlConnection oCnn)
+    public ProcessosObsReportResponse? Read(FProcessosObsReport dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ProcessosObsReportResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ProcessosObsReportResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _processosobsreportFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IFornecedoresValidation
 {
-    Task<bool> ValidateReg(Models.Fornecedores reg, IFornecedoresService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Fornecedores reg, IFornecedoresService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class FornecedoresValidation : IFornecedoresValidation
 {
-    public async Task<bool> CanDelete(int? id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IFornecedoresService service, IBensMateriaisService bensmateriaisService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -52,7 +52,7 @@ public class FornecedoresValidation : IFornecedoresValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Fornecedores reg, IFornecedoresService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Fornecedores reg, IFornecedoresService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoModeloDocumentoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoModeloDocumentoFactory> _mockTipoModeloDocumentoFactory;
-    private readonly Mock<ITipoModeloDocumentoReader> _mockReader;
     private readonly TipoModeloDocumentoValidation _validation;
     private readonly Mock<ITipoModeloDocumentoService> _mockTipoModeloDocumentoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoModeloDocumentoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoModeloDocumentoValidationTests()
     {
-        _mockTipoModeloDocumentoFactory = new Mock<IFTipoModeloDocumentoFactory>();
-        _mockReader = new Mock<ITipoModeloDocumentoReader>();
         _validation = new TipoModeloDocumentoValidation();
         _mockTipoModeloDocumentoService = new Mock<ITipoModeloDocumentoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoModeloDocumentoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoModeloDocumento CreateValidTipoModeloDocumento()
+    private static Models.TipoModeloDocumento CreateValidTipoModeloDocumento()
     {
         return new Models.TipoModeloDocumento
         {
@@ -65,14 +60,14 @@ public class TipoModeloDocumentoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoModeloDocumentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoModeloDocumento>(), It.IsAny<string>())).ReturnsAsync(new List<TipoModeloDocumentoResponseAll>());
+        _mockTipoModeloDocumentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoModeloDocumento>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoModeloDocumentos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoModeloDocumentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoModeloDocumento>(), It.IsAny<string>())).ReturnsAsync(new List<TipoModeloDocumentoResponseAll>());
+        _mockTipoModeloDocumentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoModeloDocumento>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoModeloDocumentos service mock
     }
 

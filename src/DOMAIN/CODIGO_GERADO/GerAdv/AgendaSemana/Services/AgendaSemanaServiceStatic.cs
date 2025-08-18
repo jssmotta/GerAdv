@@ -188,7 +188,7 @@ public partial class AgendaSemanaService
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
-    private async Task<IEnumerable<AgendaSemanaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<AgendaSemanaResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
     {
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
         if (oCnn == null)

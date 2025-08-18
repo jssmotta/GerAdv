@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPrepostosWriter
 {
-    Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection oCnn);
+    Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PrepostosWriter(IFPrepostosFactory prepostosFactory) : IPrepostosWriter
 {
     private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory ?? throw new ArgumentNullException(nameof(prepostosFactory));
-    public virtual async Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _prepostosFactory.DeleteAsync(operadorId, prepostos.Id, oCnn);
     }
 
-    public virtual async Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (prepostos.Id.IsEmptyIDNumber() ? _prepostosFactory.CreateAsync() : _prepostosFactory.CreateFromIdAsync(prepostos.Id, oCnn));
         dbRec.FGUID = prepostos.GUID;

@@ -9,7 +9,7 @@ namespace MenphisSI.GerAdv.WarmUp;
 public partial class AgendaWarmUp
 {
     public async Task WarmReadStringAuditor(string uri, MsiSqlConnection? oCnn) => await CreateIdx(uri, oCnn);
-    private async Task CreateIdx(string uri, MsiSqlConnection oCnn)
+    private async Task CreateIdx(string uri, MsiSqlConnection? oCnn)
     {
         Console.WriteLine($"WarmUp Agenda: {uri}");
         var testSql = $"SELECT TOP (1) '1' FROM sys.indexes WHERE name = 'idx_Agenda_AuditorDtAtu' AND object_id = OBJECT_ID('[{oCnn.UseDbo}].[Agenda]')";

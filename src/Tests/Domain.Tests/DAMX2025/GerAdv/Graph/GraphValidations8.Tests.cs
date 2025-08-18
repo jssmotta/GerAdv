@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GraphValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGraphFactory> _mockGraphFactory;
-    private readonly Mock<IGraphReader> _mockReader;
     private readonly GraphValidation _validation;
     private readonly Mock<IGraphService> _mockGraphService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class GraphValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GraphValidationTests()
     {
-        _mockGraphFactory = new Mock<IFGraphFactory>();
-        _mockReader = new Mock<IGraphReader>();
         _validation = new GraphValidation();
         _mockGraphService = new Mock<IGraphService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class GraphValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Graph CreateValidGraph()
+    private static Models.Graph CreateValidGraph()
     {
         return new Models.Graph
         {
@@ -67,14 +62,14 @@ public class GraphValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGraphService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGraph>(), It.IsAny<string>())).ReturnsAsync(new List<GraphResponseAll>());
+        _mockGraphService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGraph>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Graphs service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGraphService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGraph>(), It.IsAny<string>())).ReturnsAsync(new List<GraphResponseAll>());
+        _mockGraphService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGraph>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Graphs service mock
     }
 

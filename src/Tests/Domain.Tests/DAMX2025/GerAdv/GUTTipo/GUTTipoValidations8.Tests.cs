@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GUTTipoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGUTTipoFactory> _mockGUTTipoFactory;
-    private readonly Mock<IGUTTipoReader> _mockReader;
     private readonly GUTTipoValidation _validation;
     private readonly Mock<IGUTTipoService> _mockGUTTipoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class GUTTipoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GUTTipoValidationTests()
     {
-        _mockGUTTipoFactory = new Mock<IFGUTTipoFactory>();
-        _mockReader = new Mock<IGUTTipoReader>();
         _validation = new GUTTipoValidation();
         _mockGUTTipoService = new Mock<IGUTTipoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class GUTTipoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GUTTipo CreateValidGUTTipo()
+    private static Models.GUTTipo CreateValidGUTTipo()
     {
         return new Models.GUTTipo
         {
@@ -67,14 +62,14 @@ public class GUTTipoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGUTTipoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTTipo>(), It.IsAny<string>())).ReturnsAsync(new List<GUTTipoResponseAll>());
+        _mockGUTTipoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTTipo>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the GUTTipos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGUTTipoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTTipo>(), It.IsAny<string>())).ReturnsAsync(new List<GUTTipoResponseAll>());
+        _mockGUTTipoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTTipo>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the GUTTipos service mock
     }
 

@@ -16,7 +16,7 @@ public partial class DBPreClientes : VAuditor, ICadastros
     }
 
 #endregion
-    public DBPreClientes(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBPreClientes(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
         if (oCnn is null)

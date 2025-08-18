@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class NENotasReader(IFNENotasFactory nenotasFactory) : INENotasReader
 {
     private readonly IFNENotasFactory _nenotasFactory = nenotasFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("nepCodigo, nepNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<NENotasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBNENotas.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<NENotasResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("nepCodigo, nepNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<NENotasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBNENotas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<NENotasResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<NENotasResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class NENotasReader(IFNENotasFactory nenotasFactory) : INENotasRe
         return result;
     }
 
-    public async Task<NENotasResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<NENotasResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _nenotasFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.NENotas?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.NENotas?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _nenotasFactory.CreateFromIdAsync(id, oCnn);
         var nenotas = new Models.NENotas
@@ -69,12 +69,12 @@ public partial class NENotasReader(IFNENotasFactory nenotasFactory) : INENotasRe
         return nenotas;
     }
 
-    public NENotasResponse? Read(FNENotas dbRec, MsiSqlConnection oCnn)
+    public NENotasResponse? Read(FNENotas dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public NENotasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public NENotasResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _nenotasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class RamalValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFRamalFactory> _mockRamalFactory;
-    private readonly Mock<IRamalReader> _mockReader;
     private readonly RamalValidation _validation;
     private readonly Mock<IRamalService> _mockRamalService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class RamalValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public RamalValidationTests()
     {
-        _mockRamalFactory = new Mock<IFRamalFactory>();
-        _mockReader = new Mock<IRamalReader>();
         _validation = new RamalValidation();
         _mockRamalService = new Mock<IRamalService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class RamalValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Ramal CreateValidRamal()
+    private static Models.Ramal CreateValidRamal()
     {
         return new Models.Ramal
         {
@@ -66,14 +61,14 @@ public class RamalValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockRamalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRamal>(), It.IsAny<string>())).ReturnsAsync(new List<RamalResponseAll>());
+        _mockRamalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRamal>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Ramals service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockRamalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRamal>(), It.IsAny<string>())).ReturnsAsync(new List<RamalResponseAll>());
+        _mockRamalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRamal>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Ramals service mock
     }
 

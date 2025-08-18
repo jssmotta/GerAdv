@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TerceirosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTerceirosFactory> _mockTerceirosFactory;
-    private readonly Mock<ITerceirosReader> _mockReader;
     private readonly TerceirosValidation _validation;
     private readonly Mock<ITerceirosService> _mockTerceirosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class TerceirosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TerceirosValidationTests()
     {
-        _mockTerceirosFactory = new Mock<IFTerceirosFactory>();
-        _mockReader = new Mock<ITerceirosReader>();
         _validation = new TerceirosValidation();
         _mockTerceirosService = new Mock<ITerceirosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class TerceirosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Terceiros CreateValidTerceiros()
+    private static Models.Terceiros CreateValidTerceiros()
     {
         return new Models.Terceiros
         {
@@ -82,19 +77,19 @@ public class TerceirosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTerceirosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTerceiros>(), It.IsAny<string>())).ReturnsAsync(new List<TerceirosResponseAll>());
+        _mockTerceirosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTerceiros>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Terceiross service mock
-        _mockPosicaoOutrasPartesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.PosicaoOutrasPartesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockPosicaoOutrasPartesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PosicaoOutrasPartesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTerceirosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTerceiros>(), It.IsAny<string>())).ReturnsAsync(new List<TerceirosResponseAll>());
+        _mockTerceirosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTerceiros>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Terceiross service mock
-        _mockPosicaoOutrasPartesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.PosicaoOutrasPartesResponse { Id = 0 }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockPosicaoOutrasPartesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PosicaoOutrasPartesResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]

@@ -4,13 +4,13 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IGUTMatrizReader
 {
-    Task<GUTMatrizResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.GUTMatriz?> ReadM(int id, MsiSqlConnection oCnn);
-    GUTMatrizResponse? Read(FGUTMatriz dbRec, MsiSqlConnection oCnn);
-    GUTMatrizResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<GUTMatrizResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.GUTMatriz?> ReadM(int id, MsiSqlConnection? oCnn);
+    GUTMatrizResponse? Read(FGUTMatriz dbRec, MsiSqlConnection? oCnn);
+    GUTMatrizResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTMatrizResponse? Read(FGUTMatriz dbRec);
     GUTMatrizResponseAll? ReadAll(FGUTMatriz dbRec, IDataRecord dr);
     GUTMatrizResponseAll? ReadAll(SG.GerAdv.DBGUTMatriz dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<GUTMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<GUTMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

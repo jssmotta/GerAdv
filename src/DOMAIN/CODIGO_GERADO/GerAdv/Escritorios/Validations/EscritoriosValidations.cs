@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IEscritoriosValidation
 {
-    Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class EscritoriosValidation : IEscritoriosValidation
 {
-    public async Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEscritoriosService service, IAdvogadosService advogadosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -54,7 +54,7 @@ public class EscritoriosValidation : IEscritoriosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Escritorios reg, IEscritoriosService service, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

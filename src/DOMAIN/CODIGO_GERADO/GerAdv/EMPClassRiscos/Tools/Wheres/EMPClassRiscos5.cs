@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IEMPClassRiscosWhere
 {
-    EMPClassRiscosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    EMPClassRiscosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class EMPClassRiscosWhere(IFEMPClassRiscosFactory empclassriscosFactory) : IEMPClassRiscosWhere
 {
     private readonly IFEMPClassRiscosFactory _empclassriscosFactory = empclassriscosFactory ?? throw new ArgumentNullException(nameof(empclassriscosFactory));
-    public EMPClassRiscosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public EMPClassRiscosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _empclassriscosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var empclassriscos = new EMPClassRiscosResponse

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class PontoVirtualAcessosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFPontoVirtualAcessosFactory> _mockPontoVirtualAcessosFactory;
-    private readonly Mock<IPontoVirtualAcessosReader> _mockReader;
     private readonly PontoVirtualAcessosValidation _validation;
     private readonly Mock<IPontoVirtualAcessosService> _mockPontoVirtualAcessosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class PontoVirtualAcessosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public PontoVirtualAcessosValidationTests()
     {
-        _mockPontoVirtualAcessosFactory = new Mock<IFPontoVirtualAcessosFactory>();
-        _mockReader = new Mock<IPontoVirtualAcessosReader>();
         _validation = new PontoVirtualAcessosValidation();
         _mockPontoVirtualAcessosService = new Mock<IPontoVirtualAcessosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.PontoVirtualAcessos CreateValidPontoVirtualAcessos()
+    private static Models.PontoVirtualAcessos CreateValidPontoVirtualAcessos()
     {
         return new Models.PontoVirtualAcessos
         {
@@ -70,17 +65,17 @@ public class PontoVirtualAcessosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockPontoVirtualAcessosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPontoVirtualAcessos>(), It.IsAny<string>())).ReturnsAsync(new List<PontoVirtualAcessosResponseAll>());
+        _mockPontoVirtualAcessosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPontoVirtualAcessos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the PontoVirtualAcessoss service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockPontoVirtualAcessosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPontoVirtualAcessos>(), It.IsAny<string>())).ReturnsAsync(new List<PontoVirtualAcessosResponseAll>());
+        _mockPontoVirtualAcessosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPontoVirtualAcessos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the PontoVirtualAcessoss service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]

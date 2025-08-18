@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ViaRecebimentoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFViaRecebimentoFactory> _mockViaRecebimentoFactory;
-    private readonly Mock<IViaRecebimentoReader> _mockReader;
     private readonly ViaRecebimentoValidation _validation;
     private readonly Mock<IViaRecebimentoService> _mockViaRecebimentoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ViaRecebimentoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ViaRecebimentoValidationTests()
     {
-        _mockViaRecebimentoFactory = new Mock<IFViaRecebimentoFactory>();
-        _mockReader = new Mock<IViaRecebimentoReader>();
         _validation = new ViaRecebimentoValidation();
         _mockViaRecebimentoService = new Mock<IViaRecebimentoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ViaRecebimentoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ViaRecebimento CreateValidViaRecebimento()
+    private static Models.ViaRecebimento CreateValidViaRecebimento()
     {
         return new Models.ViaRecebimento
         {
@@ -65,14 +60,14 @@ public class ViaRecebimentoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockViaRecebimentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterViaRecebimento>(), It.IsAny<string>())).ReturnsAsync(new List<ViaRecebimentoResponseAll>());
+        _mockViaRecebimentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterViaRecebimento>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ViaRecebimentos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockViaRecebimentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterViaRecebimento>(), It.IsAny<string>())).ReturnsAsync(new List<ViaRecebimentoResponseAll>());
+        _mockViaRecebimentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterViaRecebimento>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ViaRecebimentos service mock
     }
 

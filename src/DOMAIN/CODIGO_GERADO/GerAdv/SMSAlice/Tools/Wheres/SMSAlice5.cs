@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ISMSAliceWhere
 {
-    SMSAliceResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    SMSAliceResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class SMSAliceWhere(IFSMSAliceFactory smsaliceFactory) : ISMSAliceWhere
 {
     private readonly IFSMSAliceFactory _smsaliceFactory = smsaliceFactory ?? throw new ArgumentNullException(nameof(smsaliceFactory));
-    public SMSAliceResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public SMSAliceResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _smsaliceFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var smsalice = new SMSAliceResponse

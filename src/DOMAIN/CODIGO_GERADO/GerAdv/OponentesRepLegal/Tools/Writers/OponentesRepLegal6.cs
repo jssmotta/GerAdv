@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOponentesRepLegalWriter
 {
-    Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection oCnn);
+    Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OponentesRepLegalWriter(IFOponentesRepLegalFactory oponentesreplegalFactory) : IOponentesRepLegalWriter
 {
     private readonly IFOponentesRepLegalFactory _oponentesreplegalFactory = oponentesreplegalFactory ?? throw new ArgumentNullException(nameof(oponentesreplegalFactory));
-    public virtual async Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection? oCnn)
     {
         await _oponentesreplegalFactory.DeleteAsync(operadorId, oponentesreplegal.Id, oCnn);
     }
 
-    public virtual async Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (oponentesreplegal.Id.IsEmptyIDNumber() ? _oponentesreplegalFactory.CreateAsync() : _oponentesreplegalFactory.CreateFromIdAsync(oponentesreplegal.Id, oCnn));
         dbRec.FNome = oponentesreplegal.Nome;

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IEnderecosWhere
 {
-    EnderecosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    EnderecosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class EnderecosWhere(IFEnderecosFactory enderecosFactory) : IEnderecosWhere
 {
     private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory ?? throw new ArgumentNullException(nameof(enderecosFactory));
-    public EnderecosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public EnderecosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _enderecosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var enderecos = new EnderecosResponse

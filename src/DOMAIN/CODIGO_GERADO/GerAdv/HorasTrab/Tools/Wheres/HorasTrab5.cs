@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IHorasTrabWhere
 {
-    HorasTrabResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    HorasTrabResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class HorasTrabWhere(IFHorasTrabFactory horastrabFactory) : IHorasTrabWhere
 {
     private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException(nameof(horastrabFactory));
-    public HorasTrabResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public HorasTrabResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _horastrabFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var horastrab = new HorasTrabResponse

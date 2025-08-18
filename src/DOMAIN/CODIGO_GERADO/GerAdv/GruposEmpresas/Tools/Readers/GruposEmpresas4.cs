@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresasFactory) : IGruposEmpresasReader
 {
     private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("grpCodigo, grpDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<GruposEmpresasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGruposEmpresas.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<GruposEmpresasResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("grpCodigo, grpDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<GruposEmpresasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGruposEmpresas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<GruposEmpresasResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<GruposEmpresasResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
         return result;
     }
 
-    public async Task<GruposEmpresasResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<GruposEmpresasResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gruposempresasFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.GruposEmpresas?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.GruposEmpresas?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gruposempresasFactory.CreateFromIdAsync(id, oCnn);
         var gruposempresas = new Models.GruposEmpresas
@@ -67,12 +67,12 @@ public partial class GruposEmpresasReader(IFGruposEmpresasFactory gruposempresas
         return gruposempresas;
     }
 
-    public GruposEmpresasResponse? Read(FGruposEmpresas dbRec, MsiSqlConnection oCnn)
+    public GruposEmpresasResponse? Read(FGruposEmpresas dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public GruposEmpresasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public GruposEmpresasResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _gruposempresasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

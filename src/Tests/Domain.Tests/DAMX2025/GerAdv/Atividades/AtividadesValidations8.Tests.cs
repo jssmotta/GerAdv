@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class AtividadesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFAtividadesFactory> _mockAtividadesFactory;
-    private readonly Mock<IAtividadesReader> _mockReader;
     private readonly AtividadesValidation _validation;
     private readonly Mock<IAtividadesService> _mockAtividadesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class AtividadesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public AtividadesValidationTests()
     {
-        _mockAtividadesFactory = new Mock<IFAtividadesFactory>();
-        _mockReader = new Mock<IAtividadesReader>();
         _validation = new AtividadesValidation();
         _mockAtividadesService = new Mock<IAtividadesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class AtividadesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Atividades CreateValidAtividades()
+    private static Models.Atividades CreateValidAtividades()
     {
         return new Models.Atividades
         {
@@ -65,14 +60,14 @@ public class AtividadesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAtividades>(), It.IsAny<string>())).ReturnsAsync(new List<AtividadesResponseAll>());
+        _mockAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAtividades>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Atividadess service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAtividades>(), It.IsAny<string>())).ReturnsAsync(new List<AtividadesResponseAll>());
+        _mockAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAtividades>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Atividadess service mock
     }
 

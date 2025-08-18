@@ -23,7 +23,7 @@ public partial class FNECompromissosFactory : IFNECompromissosFactory, IDisposab
         return FNECompromissos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FNECompromissos> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FNECompromissos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FNECompromissos().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FNECompromissosFactory : IFNECompromissosFactory, IDisposab
         return new FNECompromissos();
     }
 
-    public FNECompromissos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FNECompromissos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FNECompromissos.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FNECompromissos.DeleteRecordAsync(operadorId, id, oCnn);

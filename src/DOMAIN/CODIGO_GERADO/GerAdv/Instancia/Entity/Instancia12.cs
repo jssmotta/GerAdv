@@ -29,25 +29,25 @@ public partial class FInstancia : MenphisSI.SG.GerAdv.DBInstancia, IDBInstancia
     {
     }
 
-    public async Task<FInstancia> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FInstancia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fInstancia = new FInstancia();
         await fInstancia.CarregarAsync(id, oCnn);
         return fInstancia;
     }
 
-    private FInstancia(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FInstancia(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FInstancia CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FInstancia CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FInstancia(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

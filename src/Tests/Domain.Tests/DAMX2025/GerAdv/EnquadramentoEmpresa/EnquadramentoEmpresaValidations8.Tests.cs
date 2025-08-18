@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class EnquadramentoEmpresaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFEnquadramentoEmpresaFactory> _mockEnquadramentoEmpresaFactory;
-    private readonly Mock<IEnquadramentoEmpresaReader> _mockReader;
     private readonly EnquadramentoEmpresaValidation _validation;
     private readonly Mock<IEnquadramentoEmpresaService> _mockEnquadramentoEmpresaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public EnquadramentoEmpresaValidationTests()
     {
-        _mockEnquadramentoEmpresaFactory = new Mock<IFEnquadramentoEmpresaFactory>();
-        _mockReader = new Mock<IEnquadramentoEmpresaReader>();
         _validation = new EnquadramentoEmpresaValidation();
         _mockEnquadramentoEmpresaService = new Mock<IEnquadramentoEmpresaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.EnquadramentoEmpresa CreateValidEnquadramentoEmpresa()
+    private static Models.EnquadramentoEmpresa CreateValidEnquadramentoEmpresa()
     {
         return new Models.EnquadramentoEmpresa
         {
@@ -66,14 +61,14 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockEnquadramentoEmpresaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnquadramentoEmpresa>(), It.IsAny<string>())).ReturnsAsync(new List<EnquadramentoEmpresaResponseAll>());
+        _mockEnquadramentoEmpresaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnquadramentoEmpresa>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the EnquadramentoEmpresas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockEnquadramentoEmpresaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnquadramentoEmpresa>(), It.IsAny<string>())).ReturnsAsync(new List<EnquadramentoEmpresaResponseAll>());
+        _mockEnquadramentoEmpresaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnquadramentoEmpresa>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the EnquadramentoEmpresas service mock
     }
 

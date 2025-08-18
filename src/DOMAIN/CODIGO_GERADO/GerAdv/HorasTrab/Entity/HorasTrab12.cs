@@ -29,25 +29,25 @@ public partial class FHorasTrab : MenphisSI.SG.GerAdv.DBHorasTrab, IDBHorasTrab
     {
     }
 
-    public async Task<FHorasTrab> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FHorasTrab> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fHorasTrab = new FHorasTrab();
         await fHorasTrab.CarregarAsync(id, oCnn);
         return fHorasTrab;
     }
 
-    private FHorasTrab(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FHorasTrab(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FHorasTrab CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FHorasTrab CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FHorasTrab(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

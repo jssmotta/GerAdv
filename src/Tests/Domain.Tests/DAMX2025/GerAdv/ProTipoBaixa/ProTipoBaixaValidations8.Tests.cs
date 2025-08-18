@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProTipoBaixaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProTipoBaixaFactory> _mockProTipoBaixaFactory;
-    private readonly Mock<IProTipoBaixaReader> _mockReader;
     private readonly ProTipoBaixaValidation _validation;
     private readonly Mock<IProTipoBaixaService> _mockProTipoBaixaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProTipoBaixaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProTipoBaixaValidationTests()
     {
-        _mockProTipoBaixaFactory = new Mock<IFProTipoBaixaFactory>();
-        _mockReader = new Mock<IProTipoBaixaReader>();
         _validation = new ProTipoBaixaValidation();
         _mockProTipoBaixaService = new Mock<IProTipoBaixaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProTipoBaixaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProTipoBaixa CreateValidProTipoBaixa()
+    private static Models.ProTipoBaixa CreateValidProTipoBaixa()
     {
         return new Models.ProTipoBaixa
         {
@@ -65,14 +60,14 @@ public class ProTipoBaixaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProTipoBaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProTipoBaixa>(), It.IsAny<string>())).ReturnsAsync(new List<ProTipoBaixaResponseAll>());
+        _mockProTipoBaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProTipoBaixa>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProTipoBaixas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProTipoBaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProTipoBaixa>(), It.IsAny<string>())).ReturnsAsync(new List<ProTipoBaixaResponseAll>());
+        _mockProTipoBaixaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProTipoBaixa>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProTipoBaixas service mock
     }
 

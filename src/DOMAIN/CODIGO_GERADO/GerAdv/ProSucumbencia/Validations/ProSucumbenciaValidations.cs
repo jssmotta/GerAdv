@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProSucumbenciaValidation
 {
-    Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class ProSucumbenciaValidation : IProSucumbenciaValidation
 {
-    public async Task<bool> CanDelete(int? id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -35,7 +35,7 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProSucumbencia reg, IProSucumbenciaService service, IInstanciaReader instanciaReader, ITipoOrigemSucumbenciaReader tipoorigemsucumbenciaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

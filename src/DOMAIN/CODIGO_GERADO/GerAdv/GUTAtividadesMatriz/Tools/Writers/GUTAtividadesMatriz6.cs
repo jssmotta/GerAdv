@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGUTAtividadesMatrizWriter
 {
-    Task<FGUTAtividadesMatriz> WriteAsync(Models.GUTAtividadesMatriz gutatividadesmatriz, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(GUTAtividadesMatrizResponse gutatividadesmatriz, int operadorId, MsiSqlConnection oCnn);
+    Task<FGUTAtividadesMatriz> WriteAsync(Models.GUTAtividadesMatriz gutatividadesmatriz, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(GUTAtividadesMatrizResponse gutatividadesmatriz, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GUTAtividadesMatrizWriter(IFGUTAtividadesMatrizFactory gutatividadesmatrizFactory) : IGUTAtividadesMatrizWriter
 {
     private readonly IFGUTAtividadesMatrizFactory _gutatividadesmatrizFactory = gutatividadesmatrizFactory ?? throw new ArgumentNullException(nameof(gutatividadesmatrizFactory));
-    public virtual async Task Delete(GUTAtividadesMatrizResponse gutatividadesmatriz, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(GUTAtividadesMatrizResponse gutatividadesmatriz, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gutatividadesmatrizFactory.DeleteAsync(operadorId, gutatividadesmatriz.Id, oCnn);
     }
 
-    public virtual async Task<FGUTAtividadesMatriz> WriteAsync(Models.GUTAtividadesMatriz gutatividadesmatriz, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTAtividadesMatriz> WriteAsync(Models.GUTAtividadesMatriz gutatividadesmatriz, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (gutatividadesmatriz.Id.IsEmptyIDNumber() ? _gutatividadesmatrizFactory.CreateAsync() : _gutatividadesmatrizFactory.CreateFromIdAsync(gutatividadesmatriz.Id, oCnn));
         dbRec.FGUTMatriz = gutatividadesmatriz.GUTMatriz;

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ModelosDocumentosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFModelosDocumentosFactory> _mockModelosDocumentosFactory;
-    private readonly Mock<IModelosDocumentosReader> _mockReader;
     private readonly ModelosDocumentosValidation _validation;
     private readonly Mock<IModelosDocumentosService> _mockModelosDocumentosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class ModelosDocumentosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ModelosDocumentosValidationTests()
     {
-        _mockModelosDocumentosFactory = new Mock<IFModelosDocumentosFactory>();
-        _mockReader = new Mock<IModelosDocumentosReader>();
         _validation = new ModelosDocumentosValidation();
         _mockModelosDocumentosService = new Mock<IModelosDocumentosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class ModelosDocumentosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ModelosDocumentos CreateValidModelosDocumentos()
+    private static Models.ModelosDocumentos CreateValidModelosDocumentos()
     {
         return new Models.ModelosDocumentos
         {
@@ -83,17 +78,17 @@ public class ModelosDocumentosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockModelosDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterModelosDocumentos>(), It.IsAny<string>())).ReturnsAsync(new List<ModelosDocumentosResponseAll>());
+        _mockModelosDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterModelosDocumentos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ModelosDocumentoss service mock
-        _mockTipoModeloDocumentoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoModeloDocumentoResponse { Id = id }));
+        _ = _mockTipoModeloDocumentoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoModeloDocumentoResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockModelosDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterModelosDocumentos>(), It.IsAny<string>())).ReturnsAsync(new List<ModelosDocumentosResponseAll>());
+        _mockModelosDocumentosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterModelosDocumentos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ModelosDocumentoss service mock
-        _mockTipoModeloDocumentoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoModeloDocumentoResponse { Id = 0 }));
+        _ = _mockTipoModeloDocumentoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoModeloDocumentoResponse { Id = 0 }));
     }
 
     [Fact]

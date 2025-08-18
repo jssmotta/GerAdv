@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class StatusHTrabValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFStatusHTrabFactory> _mockStatusHTrabFactory;
-    private readonly Mock<IStatusHTrabReader> _mockReader;
     private readonly StatusHTrabValidation _validation;
     private readonly Mock<IStatusHTrabService> _mockStatusHTrabService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class StatusHTrabValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public StatusHTrabValidationTests()
     {
-        _mockStatusHTrabFactory = new Mock<IFStatusHTrabFactory>();
-        _mockReader = new Mock<IStatusHTrabReader>();
         _validation = new StatusHTrabValidation();
         _mockStatusHTrabService = new Mock<IStatusHTrabService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class StatusHTrabValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.StatusHTrab CreateValidStatusHTrab()
+    private static Models.StatusHTrab CreateValidStatusHTrab()
     {
         return new Models.StatusHTrab
         {
@@ -66,14 +61,14 @@ public class StatusHTrabValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockStatusHTrabService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusHTrab>(), It.IsAny<string>())).ReturnsAsync(new List<StatusHTrabResponseAll>());
+        _mockStatusHTrabService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusHTrab>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the StatusHTrabs service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockStatusHTrabService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusHTrab>(), It.IsAny<string>())).ReturnsAsync(new List<StatusHTrabResponseAll>());
+        _mockStatusHTrabService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusHTrab>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the StatusHTrabs service mock
     }
 

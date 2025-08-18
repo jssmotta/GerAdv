@@ -17,7 +17,7 @@ public partial class DBPontoVirtualAcessos : VNoAuditor, ICadastros
 
 #endregion
     // REF. 250325
-    public DBPontoVirtualAcessos(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBPontoVirtualAcessos(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-3
         if (oCnn is null)

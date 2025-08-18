@@ -23,7 +23,7 @@ public partial class FInstanciaFactory : IFInstanciaFactory, IDisposable
         return FInstancia.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FInstancia> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FInstancia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FInstancia().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FInstanciaFactory : IFInstanciaFactory, IDisposable
         return new FInstancia();
     }
 
-    public FInstancia CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FInstancia CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FInstancia.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FInstancia.DeleteRecordAsync(operadorId, id, oCnn);

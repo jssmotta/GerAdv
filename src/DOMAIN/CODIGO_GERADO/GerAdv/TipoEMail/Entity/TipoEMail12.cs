@@ -29,25 +29,25 @@ public partial class FTipoEMail : MenphisSI.SG.GerAdv.DBTipoEMail, IDBTipoEMail
     {
     }
 
-    public async Task<FTipoEMail> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FTipoEMail> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fTipoEMail = new FTipoEMail();
         await fTipoEMail.CarregarAsync(id, oCnn);
         return fTipoEMail;
     }
 
-    private FTipoEMail(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FTipoEMail(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FTipoEMail CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FTipoEMail CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FTipoEMail(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

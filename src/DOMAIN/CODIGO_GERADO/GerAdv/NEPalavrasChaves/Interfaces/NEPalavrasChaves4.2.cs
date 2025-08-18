@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface INEPalavrasChavesReader
 {
-    Task<NEPalavrasChavesResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.NEPalavrasChaves?> ReadM(int id, MsiSqlConnection oCnn);
-    NEPalavrasChavesResponse? Read(FNEPalavrasChaves dbRec, MsiSqlConnection oCnn);
-    NEPalavrasChavesResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<NEPalavrasChavesResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.NEPalavrasChaves?> ReadM(int id, MsiSqlConnection? oCnn);
+    NEPalavrasChavesResponse? Read(FNEPalavrasChaves dbRec, MsiSqlConnection? oCnn);
+    NEPalavrasChavesResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     NEPalavrasChavesResponse? Read(FNEPalavrasChaves dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     NEPalavrasChavesResponseAll? ReadAll(FNEPalavrasChaves dbRec, IDataRecord dr);
     NEPalavrasChavesResponseAll? ReadAll(SG.GerAdv.DBNEPalavrasChaves dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<NEPalavrasChavesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<NEPalavrasChavesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

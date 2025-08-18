@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoEnderecoSistemaWhere
 {
-    TipoEnderecoSistemaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TipoEnderecoSistemaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TipoEnderecoSistemaWhere(IFTipoEnderecoSistemaFactory tipoenderecosistemaFactory) : ITipoEnderecoSistemaWhere
 {
     private readonly IFTipoEnderecoSistemaFactory _tipoenderecosistemaFactory = tipoenderecosistemaFactory ?? throw new ArgumentNullException(nameof(tipoenderecosistemaFactory));
-    public TipoEnderecoSistemaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoEnderecoSistemaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipoenderecosistemaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipoenderecosistema = new TipoEnderecoSistemaResponse

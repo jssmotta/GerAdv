@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAcaoWriter
 {
-    Task<FAcao> WriteAsync(Models.Acao acao, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(AcaoResponse acao, int operadorId, MsiSqlConnection oCnn);
+    Task<FAcao> WriteAsync(Models.Acao acao, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(AcaoResponse acao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AcaoWriter(IFAcaoFactory acaoFactory) : IAcaoWriter
 {
     private readonly IFAcaoFactory _acaoFactory = acaoFactory ?? throw new ArgumentNullException(nameof(acaoFactory));
-    public virtual async Task Delete(AcaoResponse acao, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(AcaoResponse acao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _acaoFactory.DeleteAsync(operadorId, acao.Id, oCnn);
     }
 
-    public virtual async Task<FAcao> WriteAsync(Models.Acao acao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAcao> WriteAsync(Models.Acao acao, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (acao.Id.IsEmptyIDNumber() ? _acaoFactory.CreateAsync() : _acaoFactory.CreateFromIdAsync(acao.Id, oCnn));
         dbRec.FGUID = acao.GUID;

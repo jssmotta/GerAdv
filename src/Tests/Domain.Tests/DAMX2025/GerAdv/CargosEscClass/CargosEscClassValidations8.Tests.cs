@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class CargosEscClassValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFCargosEscClassFactory> _mockCargosEscClassFactory;
-    private readonly Mock<ICargosEscClassReader> _mockReader;
     private readonly CargosEscClassValidation _validation;
     private readonly Mock<ICargosEscClassService> _mockCargosEscClassService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class CargosEscClassValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public CargosEscClassValidationTests()
     {
-        _mockCargosEscClassFactory = new Mock<IFCargosEscClassFactory>();
-        _mockReader = new Mock<ICargosEscClassReader>();
         _validation = new CargosEscClassValidation();
         _mockCargosEscClassService = new Mock<ICargosEscClassService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class CargosEscClassValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.CargosEscClass CreateValidCargosEscClass()
+    private static Models.CargosEscClass CreateValidCargosEscClass()
     {
         return new Models.CargosEscClass
         {
@@ -65,14 +60,14 @@ public class CargosEscClassValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockCargosEscClassService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargosEscClass>(), It.IsAny<string>())).ReturnsAsync(new List<CargosEscClassResponseAll>());
+        _mockCargosEscClassService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargosEscClass>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the CargosEscClasss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockCargosEscClassService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargosEscClass>(), It.IsAny<string>())).ReturnsAsync(new List<CargosEscClassResponseAll>());
+        _mockCargosEscClassService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargosEscClass>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the CargosEscClasss service mock
     }
 

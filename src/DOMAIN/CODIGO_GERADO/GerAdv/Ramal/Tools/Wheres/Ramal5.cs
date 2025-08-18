@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IRamalWhere
 {
-    RamalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    RamalResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class RamalWhere(IFRamalFactory ramalFactory) : IRamalWhere
 {
     private readonly IFRamalFactory _ramalFactory = ramalFactory ?? throw new ArgumentNullException(nameof(ramalFactory));
-    public RamalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public RamalResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _ramalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var ramal = new RamalResponse

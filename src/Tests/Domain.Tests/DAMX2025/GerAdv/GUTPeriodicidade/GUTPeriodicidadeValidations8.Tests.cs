@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GUTPeriodicidadeValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGUTPeriodicidadeFactory> _mockGUTPeriodicidadeFactory;
-    private readonly Mock<IGUTPeriodicidadeReader> _mockReader;
     private readonly GUTPeriodicidadeValidation _validation;
     private readonly Mock<IGUTPeriodicidadeService> _mockGUTPeriodicidadeService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class GUTPeriodicidadeValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GUTPeriodicidadeValidationTests()
     {
-        _mockGUTPeriodicidadeFactory = new Mock<IFGUTPeriodicidadeFactory>();
-        _mockReader = new Mock<IGUTPeriodicidadeReader>();
         _validation = new GUTPeriodicidadeValidation();
         _mockGUTPeriodicidadeService = new Mock<IGUTPeriodicidadeService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GUTPeriodicidade CreateValidGUTPeriodicidade()
+    private static Models.GUTPeriodicidade CreateValidGUTPeriodicidade()
     {
         return new Models.GUTPeriodicidade
         {
@@ -67,14 +62,14 @@ public class GUTPeriodicidadeValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGUTPeriodicidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidade>(), It.IsAny<string>())).ReturnsAsync(new List<GUTPeriodicidadeResponseAll>());
+        _mockGUTPeriodicidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidade>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the GUTPeriodicidades service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGUTPeriodicidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidade>(), It.IsAny<string>())).ReturnsAsync(new List<GUTPeriodicidadeResponseAll>());
+        _mockGUTPeriodicidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidade>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the GUTPeriodicidades service mock
     }
 

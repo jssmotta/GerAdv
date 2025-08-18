@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IRegimeTributacaoWhere
 {
-    RegimeTributacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    RegimeTributacaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class RegimeTributacaoWhere(IFRegimeTributacaoFactory regimetributacaoFactory) : IRegimeTributacaoWhere
 {
     private readonly IFRegimeTributacaoFactory _regimetributacaoFactory = regimetributacaoFactory ?? throw new ArgumentNullException(nameof(regimetributacaoFactory));
-    public RegimeTributacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public RegimeTributacaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _regimetributacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var regimetributacao = new RegimeTributacaoResponse

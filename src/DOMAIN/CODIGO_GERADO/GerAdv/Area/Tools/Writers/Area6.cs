@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAreaWriter
 {
-    Task<FArea> WriteAsync(Models.Area area, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(AreaResponse area, int operadorId, MsiSqlConnection oCnn);
+    Task<FArea> WriteAsync(Models.Area area, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(AreaResponse area, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AreaWriter(IFAreaFactory areaFactory) : IAreaWriter
 {
     private readonly IFAreaFactory _areaFactory = areaFactory ?? throw new ArgumentNullException(nameof(areaFactory));
-    public virtual async Task Delete(AreaResponse area, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(AreaResponse area, int operadorId, MsiSqlConnection? oCnn)
     {
         await _areaFactory.DeleteAsync(operadorId, area.Id, oCnn);
     }
 
-    public virtual async Task<FArea> WriteAsync(Models.Area area, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FArea> WriteAsync(Models.Area area, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (area.Id.IsEmptyIDNumber() ? _areaFactory.CreateAsync() : _areaFactory.CreateFromIdAsync(area.Id, oCnn));
         dbRec.FDescricao = area.Descricao;

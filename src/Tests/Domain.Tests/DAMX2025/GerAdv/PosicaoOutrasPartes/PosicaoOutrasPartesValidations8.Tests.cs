@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class PosicaoOutrasPartesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFPosicaoOutrasPartesFactory> _mockPosicaoOutrasPartesFactory;
-    private readonly Mock<IPosicaoOutrasPartesReader> _mockReader;
     private readonly PosicaoOutrasPartesValidation _validation;
     private readonly Mock<IPosicaoOutrasPartesService> _mockPosicaoOutrasPartesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class PosicaoOutrasPartesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public PosicaoOutrasPartesValidationTests()
     {
-        _mockPosicaoOutrasPartesFactory = new Mock<IFPosicaoOutrasPartesFactory>();
-        _mockReader = new Mock<IPosicaoOutrasPartesReader>();
         _validation = new PosicaoOutrasPartesValidation();
         _mockPosicaoOutrasPartesService = new Mock<IPosicaoOutrasPartesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class PosicaoOutrasPartesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.PosicaoOutrasPartes CreateValidPosicaoOutrasPartes()
+    private static Models.PosicaoOutrasPartes CreateValidPosicaoOutrasPartes()
     {
         return new Models.PosicaoOutrasPartes
         {
@@ -65,14 +60,14 @@ public class PosicaoOutrasPartesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockPosicaoOutrasPartesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPosicaoOutrasPartes>(), It.IsAny<string>())).ReturnsAsync(new List<PosicaoOutrasPartesResponseAll>());
+        _mockPosicaoOutrasPartesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPosicaoOutrasPartes>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the PosicaoOutrasPartess service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockPosicaoOutrasPartesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPosicaoOutrasPartes>(), It.IsAny<string>())).ReturnsAsync(new List<PosicaoOutrasPartesResponseAll>());
+        _mockPosicaoOutrasPartesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPosicaoOutrasPartes>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the PosicaoOutrasPartess service mock
     }
 

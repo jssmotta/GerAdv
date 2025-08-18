@@ -5,8 +5,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactory gutperiodicidadestatusFactory) : IGUTPeriodicidadeStatusReader
 {
     private readonly IFGUTPeriodicidadeStatusFactory _gutperiodicidadestatusFactory = gutperiodicidadestatusFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGUTPeriodicidadeStatus.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGUTPeriodicidadeStatus.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<GUTPeriodicidadeStatusResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -41,13 +41,13 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         return result;
     }
 
-    public async Task<GUTPeriodicidadeStatusResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<GUTPeriodicidadeStatusResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gutperiodicidadestatusFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.GUTPeriodicidadeStatus?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.GUTPeriodicidadeStatus?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gutperiodicidadestatusFactory.CreateFromIdAsync(id, oCnn);
         var gutperiodicidadestatus = new Models.GUTPeriodicidadeStatus
@@ -65,12 +65,12 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         return gutperiodicidadestatus;
     }
 
-    public GUTPeriodicidadeStatusResponse? Read(FGUTPeriodicidadeStatus dbRec, MsiSqlConnection oCnn)
+    public GUTPeriodicidadeStatusResponse? Read(FGUTPeriodicidadeStatus dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public GUTPeriodicidadeStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public GUTPeriodicidadeStatusResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _gutperiodicidadestatusFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

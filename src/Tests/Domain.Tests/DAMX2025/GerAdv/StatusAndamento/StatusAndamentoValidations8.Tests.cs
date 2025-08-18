@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class StatusAndamentoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFStatusAndamentoFactory> _mockStatusAndamentoFactory;
-    private readonly Mock<IStatusAndamentoReader> _mockReader;
     private readonly StatusAndamentoValidation _validation;
     private readonly Mock<IStatusAndamentoService> _mockStatusAndamentoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class StatusAndamentoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public StatusAndamentoValidationTests()
     {
-        _mockStatusAndamentoFactory = new Mock<IFStatusAndamentoFactory>();
-        _mockReader = new Mock<IStatusAndamentoReader>();
         _validation = new StatusAndamentoValidation();
         _mockStatusAndamentoService = new Mock<IStatusAndamentoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class StatusAndamentoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.StatusAndamento CreateValidStatusAndamento()
+    private static Models.StatusAndamento CreateValidStatusAndamento()
     {
         return new Models.StatusAndamento
         {
@@ -66,14 +61,14 @@ public class StatusAndamentoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockStatusAndamentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusAndamento>(), It.IsAny<string>())).ReturnsAsync(new List<StatusAndamentoResponseAll>());
+        _mockStatusAndamentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusAndamento>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the StatusAndamentos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockStatusAndamentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusAndamento>(), It.IsAny<string>())).ReturnsAsync(new List<StatusAndamentoResponseAll>());
+        _mockStatusAndamentoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusAndamento>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the StatusAndamentos service mock
     }
 

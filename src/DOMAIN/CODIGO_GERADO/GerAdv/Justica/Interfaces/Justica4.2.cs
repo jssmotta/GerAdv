@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IJusticaReader
 {
-    Task<JusticaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Justica?> ReadM(int id, MsiSqlConnection oCnn);
-    JusticaResponse? Read(FJustica dbRec, MsiSqlConnection oCnn);
-    JusticaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<JusticaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Justica?> ReadM(int id, MsiSqlConnection? oCnn);
+    JusticaResponse? Read(FJustica dbRec, MsiSqlConnection? oCnn);
+    JusticaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     JusticaResponse? Read(FJustica dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     JusticaResponseAll? ReadAll(FJustica dbRec, IDataRecord dr);
     JusticaResponseAll? ReadAll(SG.GerAdv.DBJustica dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<JusticaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<JusticaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

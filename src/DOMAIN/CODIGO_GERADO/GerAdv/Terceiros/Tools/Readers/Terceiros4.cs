@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITerceirosReader
 {
     private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("terCodigo, terNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<TerceirosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTerceiros.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TerceirosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("terCodigo, terNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TerceirosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTerceiros.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<TerceirosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TerceirosResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
         return result;
     }
 
-    public async Task<TerceirosResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<TerceirosResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _terceirosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Terceiros?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Terceiros?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _terceirosFactory.CreateFromIdAsync(id, oCnn);
         var terceiros = new Models.Terceiros
@@ -73,12 +73,12 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
         return terceiros;
     }
 
-    public TerceirosResponse? Read(FTerceiros dbRec, MsiSqlConnection oCnn)
+    public TerceirosResponse? Read(FTerceiros dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public TerceirosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TerceirosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _terceirosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

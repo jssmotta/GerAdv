@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IClientesSociosWriter
 {
-    Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection oCnn);
+    Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory) : IClientesSociosWriter
 {
     private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory ?? throw new ArgumentNullException(nameof(clientessociosFactory));
-    public virtual async Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection? oCnn)
     {
         await _clientessociosFactory.DeleteAsync(operadorId, clientessocios.Id, oCnn);
     }
 
-    public virtual async Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (clientessocios.Id.IsEmptyIDNumber() ? _clientessociosFactory.CreateAsync() : _clientessociosFactory.CreateFromIdAsync(clientessocios.Id, oCnn));
         dbRec.FSomenteRepresentante = clientessocios.SomenteRepresentante;

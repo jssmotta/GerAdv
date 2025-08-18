@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPreClientesWriter
 {
-    Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection oCnn);
+    Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreClientesWriter
 {
     private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory ?? throw new ArgumentNullException(nameof(preclientesFactory));
-    public virtual async Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _preclientesFactory.DeleteAsync(operadorId, preclientes.Id, oCnn);
     }
 
-    public virtual async Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (preclientes.Id.IsEmptyIDNumber() ? _preclientesFactory.CreateAsync() : _preclientesFactory.CreateFromIdAsync(preclientes.Id, oCnn));
         dbRec.FInativo = preclientes.Inativo;
@@ -54,9 +54,9 @@ public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreCl
         dbRec.FEMail = preclientes.EMail;
         dbRec.FAssistido = preclientes.Assistido;
         dbRec.FAssRG = preclientes.AssRG;
-        dbRec.FAssCPF = preclientes.AssCPF;
         dbRec.FAssEndereco = preclientes.AssEndereco;
         dbRec.FCNH = preclientes.CNH;
+        dbRec.FAssCPF = preclientes.AssCPF;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

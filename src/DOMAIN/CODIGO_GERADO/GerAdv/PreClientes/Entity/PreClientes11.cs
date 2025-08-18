@@ -23,7 +23,7 @@ public partial class FPreClientesFactory : IFPreClientesFactory, IDisposable
         return FPreClientes.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FPreClientes> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FPreClientes> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FPreClientes().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FPreClientesFactory : IFPreClientesFactory, IDisposable
         return new FPreClientes();
     }
 
-    public FPreClientes CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FPreClientes CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FPreClientes.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FPreClientes.DeleteRecordAsync(operadorId, id, oCnn);

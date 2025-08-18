@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ObjetosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFObjetosFactory> _mockObjetosFactory;
-    private readonly Mock<IObjetosReader> _mockReader;
     private readonly ObjetosValidation _validation;
     private readonly Mock<IObjetosService> _mockObjetosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class ObjetosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ObjetosValidationTests()
     {
-        _mockObjetosFactory = new Mock<IFObjetosFactory>();
-        _mockReader = new Mock<IObjetosReader>();
         _validation = new ObjetosValidation();
         _mockObjetosService = new Mock<IObjetosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class ObjetosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Objetos CreateValidObjetos()
+    private static Models.Objetos CreateValidObjetos()
     {
         return new Models.Objetos
         {
@@ -71,19 +66,19 @@ public class ObjetosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockObjetosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterObjetos>(), It.IsAny<string>())).ReturnsAsync(new List<ObjetosResponseAll>());
+        _mockObjetosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterObjetos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Objetoss service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = id }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockObjetosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterObjetos>(), It.IsAny<string>())).ReturnsAsync(new List<ObjetosResponseAll>());
+        _mockObjetosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterObjetos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Objetoss service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = 0 }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
     }
 
     [Fact]

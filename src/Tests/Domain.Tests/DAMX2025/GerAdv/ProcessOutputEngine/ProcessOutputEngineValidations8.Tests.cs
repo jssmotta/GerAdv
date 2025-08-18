@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProcessOutputEngineValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProcessOutputEngineFactory> _mockProcessOutputEngineFactory;
-    private readonly Mock<IProcessOutputEngineReader> _mockReader;
     private readonly ProcessOutputEngineValidation _validation;
     private readonly Mock<IProcessOutputEngineService> _mockProcessOutputEngineService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProcessOutputEngineValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProcessOutputEngineValidationTests()
     {
-        _mockProcessOutputEngineFactory = new Mock<IFProcessOutputEngineFactory>();
-        _mockReader = new Mock<IProcessOutputEngineReader>();
         _validation = new ProcessOutputEngineValidation();
         _mockProcessOutputEngineService = new Mock<IProcessOutputEngineService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProcessOutputEngineValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProcessOutputEngine CreateValidProcessOutputEngine()
+    private static Models.ProcessOutputEngine CreateValidProcessOutputEngine()
     {
         return new Models.ProcessOutputEngine
         {
@@ -76,14 +71,14 @@ public class ProcessOutputEngineValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProcessOutputEngineService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutputEngine>(), It.IsAny<string>())).ReturnsAsync(new List<ProcessOutputEngineResponseAll>());
+        _mockProcessOutputEngineService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutputEngine>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProcessOutputEngines service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProcessOutputEngineService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutputEngine>(), It.IsAny<string>())).ReturnsAsync(new List<ProcessOutputEngineResponseAll>());
+        _mockProcessOutputEngineService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutputEngine>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProcessOutputEngines service mock
     }
 

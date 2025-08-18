@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class AgendaSemanaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFAgendaSemanaFactory> _mockAgendaSemanaFactory;
-    private readonly Mock<IAgendaSemanaReader> _mockReader;
     private readonly AgendaSemanaValidation _validation;
     private readonly Mock<IAgendaSemanaService> _mockAgendaSemanaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -18,8 +15,6 @@ public class AgendaSemanaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public AgendaSemanaValidationTests()
     {
-        _mockAgendaSemanaFactory = new Mock<IFAgendaSemanaFactory>();
-        _mockReader = new Mock<IAgendaSemanaReader>();
         _validation = new AgendaSemanaValidation();
         _mockAgendaSemanaService = new Mock<IAgendaSemanaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -61,7 +56,7 @@ public class AgendaSemanaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.AgendaSemana CreateValidAgendaSemana()
+    private static Models.AgendaSemana CreateValidAgendaSemana()
     {
         return new Models.AgendaSemana
         {
@@ -87,23 +82,23 @@ public class AgendaSemanaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockAgendaSemanaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaSemana>(), It.IsAny<string>())).ReturnsAsync(new List<AgendaSemanaResponseAll>());
+        _mockAgendaSemanaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaSemana>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the AgendaSemanas service mock
-        _mockFuncionariosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.FuncionariosResponse { Id = id }));
-        _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AdvogadosResponse { Id = id }));
-        _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoCompromissoResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockFuncionariosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncionariosResponse { Id = id }));
+        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = id }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockAgendaSemanaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaSemana>(), It.IsAny<string>())).ReturnsAsync(new List<AgendaSemanaResponseAll>());
+        _mockAgendaSemanaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaSemana>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the AgendaSemanas service mock
-        _mockFuncionariosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.FuncionariosResponse { Id = 0 }));
-        _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AdvogadosResponse { Id = 0 }));
-        _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoCompromissoResponse { Id = 0 }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockFuncionariosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncionariosResponse { Id = 0 }));
+        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = 0 }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

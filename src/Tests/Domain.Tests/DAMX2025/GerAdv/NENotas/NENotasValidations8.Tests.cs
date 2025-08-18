@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class NENotasValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFNENotasFactory> _mockNENotasFactory;
-    private readonly Mock<INENotasReader> _mockReader;
     private readonly NENotasValidation _validation;
     private readonly Mock<INENotasService> _mockNENotasService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class NENotasValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public NENotasValidationTests()
     {
-        _mockNENotasFactory = new Mock<IFNENotasFactory>();
-        _mockReader = new Mock<INENotasReader>();
         _validation = new NENotasValidation();
         _mockNENotasService = new Mock<INENotasService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class NENotasValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.NENotas CreateValidNENotas()
+    private static Models.NENotas CreateValidNENotas()
     {
         return new Models.NENotas
         {
@@ -77,17 +72,17 @@ public class NENotasValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockNENotasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNENotas>(), It.IsAny<string>())).ReturnsAsync(new List<NENotasResponseAll>());
+        _mockNENotasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNENotas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NENotass service mock
-        _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.InstanciaResponse { Id = id }));
+        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockNENotasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNENotas>(), It.IsAny<string>())).ReturnsAsync(new List<NENotasResponseAll>());
+        _mockNENotasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNENotas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NENotass service mock
-        _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.InstanciaResponse { Id = 0 }));
+        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = 0 }));
     }
 
     [Fact]

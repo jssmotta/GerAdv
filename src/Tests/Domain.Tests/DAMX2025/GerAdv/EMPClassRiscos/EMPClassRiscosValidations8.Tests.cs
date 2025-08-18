@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class EMPClassRiscosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFEMPClassRiscosFactory> _mockEMPClassRiscosFactory;
-    private readonly Mock<IEMPClassRiscosReader> _mockReader;
     private readonly EMPClassRiscosValidation _validation;
     private readonly Mock<IEMPClassRiscosService> _mockEMPClassRiscosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class EMPClassRiscosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public EMPClassRiscosValidationTests()
     {
-        _mockEMPClassRiscosFactory = new Mock<IFEMPClassRiscosFactory>();
-        _mockReader = new Mock<IEMPClassRiscosReader>();
         _validation = new EMPClassRiscosValidation();
         _mockEMPClassRiscosService = new Mock<IEMPClassRiscosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class EMPClassRiscosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.EMPClassRiscos CreateValidEMPClassRiscos()
+    private static Models.EMPClassRiscos CreateValidEMPClassRiscos()
     {
         return new Models.EMPClassRiscos
         {
@@ -65,14 +60,14 @@ public class EMPClassRiscosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockEMPClassRiscosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEMPClassRiscos>(), It.IsAny<string>())).ReturnsAsync(new List<EMPClassRiscosResponseAll>());
+        _mockEMPClassRiscosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEMPClassRiscos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the EMPClassRiscoss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockEMPClassRiscosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEMPClassRiscos>(), It.IsAny<string>())).ReturnsAsync(new List<EMPClassRiscosResponseAll>());
+        _mockEMPClassRiscosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEMPClassRiscos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the EMPClassRiscoss service mock
     }
 

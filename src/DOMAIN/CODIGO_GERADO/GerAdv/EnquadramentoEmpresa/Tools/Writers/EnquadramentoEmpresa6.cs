@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEnquadramentoEmpresaWriter
 {
-    Task<FEnquadramentoEmpresa> WriteAsync(Models.EnquadramentoEmpresa enquadramentoempresa, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection oCnn);
+    Task<FEnquadramentoEmpresa> WriteAsync(Models.EnquadramentoEmpresa enquadramentoempresa, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EnquadramentoEmpresaWriter(IFEnquadramentoEmpresaFactory enquadramentoempresaFactory) : IEnquadramentoEmpresaWriter
 {
     private readonly IFEnquadramentoEmpresaFactory _enquadramentoempresaFactory = enquadramentoempresaFactory ?? throw new ArgumentNullException(nameof(enquadramentoempresaFactory));
-    public virtual async Task Delete(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection? oCnn)
     {
         await _enquadramentoempresaFactory.DeleteAsync(operadorId, enquadramentoempresa.Id, oCnn);
     }
 
-    public virtual async Task<FEnquadramentoEmpresa> WriteAsync(Models.EnquadramentoEmpresa enquadramentoempresa, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEnquadramentoEmpresa> WriteAsync(Models.EnquadramentoEmpresa enquadramentoempresa, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (enquadramentoempresa.Id.IsEmptyIDNumber() ? _enquadramentoempresaFactory.CreateAsync() : _enquadramentoempresaFactory.CreateFromIdAsync(enquadramentoempresa.Id, oCnn));
         dbRec.FNome = enquadramentoempresa.Nome;

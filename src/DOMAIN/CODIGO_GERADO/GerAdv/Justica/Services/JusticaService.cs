@@ -61,7 +61,7 @@ public partial class JusticaService(IOptions<AppSettings> appSettings, IFJustica
 
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
         var filterHash = GetFilterHash(filtro);
         var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
         var cacheKey = $"{uri}-{max}Justica-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";

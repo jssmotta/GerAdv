@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IRitoWhere
 {
-    RitoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    RitoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class RitoWhere(IFRitoFactory ritoFactory) : IRitoWhere
 {
     private readonly IFRitoFactory _ritoFactory = ritoFactory ?? throw new ArgumentNullException(nameof(ritoFactory));
-    public RitoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public RitoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _ritoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var rito = new RitoResponse

@@ -5,5 +5,5 @@ namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IAgendaSemanaReader
 {
     AgendaSemanaResponseAll? ReadAll(SG.GerAdv.DBAgendaSemana dbRec, IDataRecord dr);
-    Task<IEnumerable<AgendaSemanaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<AgendaSemanaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

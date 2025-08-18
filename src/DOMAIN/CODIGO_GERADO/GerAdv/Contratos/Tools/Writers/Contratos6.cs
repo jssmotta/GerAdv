@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IContratosWriter
 {
-    Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection oCnn);
+    Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWriter
 {
     private readonly IFContratosFactory _contratosFactory = contratosFactory ?? throw new ArgumentNullException(nameof(contratosFactory));
-    public virtual async Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _contratosFactory.DeleteAsync(operadorId, contratos.Id, oCnn);
     }
 
-    public virtual async Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (contratos.Id.IsEmptyIDNumber() ? _contratosFactory.CreateAsync() : _contratosFactory.CreateFromIdAsync(contratos.Id, oCnn));
         dbRec.FProcesso = contratos.Processo;

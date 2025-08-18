@@ -23,7 +23,7 @@ public partial class FAgendaRelatorioFactory : IFAgendaRelatorioFactory, IDispos
         return FAgendaRelatorio.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FAgendaRelatorio> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FAgendaRelatorio> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FAgendaRelatorio().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FAgendaRelatorioFactory : IFAgendaRelatorioFactory, IDispos
         return new FAgendaRelatorio();
     }
 
-    public FAgendaRelatorio CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FAgendaRelatorio CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FAgendaRelatorio.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FAgendaRelatorio.DeleteRecordAsync(operadorId, id, oCnn);

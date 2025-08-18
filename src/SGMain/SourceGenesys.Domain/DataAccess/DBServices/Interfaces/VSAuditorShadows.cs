@@ -1,15 +1,15 @@
-﻿
-
-namespace MenphisSI;
+﻿namespace MenphisSI;
 
 [Serializable]
-public class VSAuditorShadows : VSexoShadows
+public class VSAuditorShadows 
 {
+
     [XmlIgnore]
     // Aqui #1 DeclareFieldsType.cs
     // ReSharper disable InconsistentNaming
     private protected DateTime? m_FDtCad, m_FDtAtu;
     private protected bool m_FVisto, pFldFQuemCad, pFldFDtCad, pFldFQuemAtu, pFldFDtAtu, pFldFVisto, pFldFGUID;
+    private protected int m_IdRegistro;
     /// <summary>
     /// Auditor do Sistema (DBOperador.ID)
     /// </summary>

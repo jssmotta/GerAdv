@@ -220,7 +220,7 @@ public partial class DBContratos
         }
     }
 
-    private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection oCnn, CancellationToken cancellationToken)
+    private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
         updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);

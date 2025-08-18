@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IDivisaoTribunalWriter
 {
-    Task<FDivisaoTribunal> WriteAsync(Models.DivisaoTribunal divisaotribunal, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(DivisaoTribunalResponse divisaotribunal, int operadorId, MsiSqlConnection oCnn);
+    Task<FDivisaoTribunal> WriteAsync(Models.DivisaoTribunal divisaotribunal, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(DivisaoTribunalResponse divisaotribunal, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class DivisaoTribunalWriter(IFDivisaoTribunalFactory divisaotribunalFactory) : IDivisaoTribunalWriter
 {
     private readonly IFDivisaoTribunalFactory _divisaotribunalFactory = divisaotribunalFactory ?? throw new ArgumentNullException(nameof(divisaotribunalFactory));
-    public virtual async Task Delete(DivisaoTribunalResponse divisaotribunal, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(DivisaoTribunalResponse divisaotribunal, int operadorId, MsiSqlConnection? oCnn)
     {
         await _divisaotribunalFactory.DeleteAsync(operadorId, divisaotribunal.Id, oCnn);
     }
 
-    public virtual async Task<FDivisaoTribunal> WriteAsync(Models.DivisaoTribunal divisaotribunal, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FDivisaoTribunal> WriteAsync(Models.DivisaoTribunal divisaotribunal, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (divisaotribunal.Id.IsEmptyIDNumber() ? _divisaotribunalFactory.CreateAsync() : _divisaotribunalFactory.CreateFromIdAsync(divisaotribunal.Id, oCnn));
         dbRec.FGUID = divisaotribunal.GUID;

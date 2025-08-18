@@ -29,25 +29,25 @@ public partial class FGUTAtividadesMatriz : MenphisSI.SG.GerAdv.DBGUTAtividadesM
     {
     }
 
-    public async Task<FGUTAtividadesMatriz> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGUTAtividadesMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fGUTAtividadesMatriz = new FGUTAtividadesMatriz();
         await fGUTAtividadesMatriz.CarregarAsync(id, oCnn);
         return fGUTAtividadesMatriz;
     }
 
-    private FGUTAtividadesMatriz(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
+    private FGUTAtividadesMatriz(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FGUTAtividadesMatriz CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FGUTAtividadesMatriz CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FGUTAtividadesMatriz(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

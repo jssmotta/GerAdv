@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IRegimeTributacaoReader
 {
-    Task<RegimeTributacaoResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.RegimeTributacao?> ReadM(int id, MsiSqlConnection oCnn);
-    RegimeTributacaoResponse? Read(FRegimeTributacao dbRec, MsiSqlConnection oCnn);
-    RegimeTributacaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<RegimeTributacaoResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.RegimeTributacao?> ReadM(int id, MsiSqlConnection? oCnn);
+    RegimeTributacaoResponse? Read(FRegimeTributacao dbRec, MsiSqlConnection? oCnn);
+    RegimeTributacaoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     RegimeTributacaoResponse? Read(FRegimeTributacao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     RegimeTributacaoResponseAll? ReadAll(FRegimeTributacao dbRec, IDataRecord dr);
     RegimeTributacaoResponseAll? ReadAll(SG.GerAdv.DBRegimeTributacao dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<RegimeTributacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<RegimeTributacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

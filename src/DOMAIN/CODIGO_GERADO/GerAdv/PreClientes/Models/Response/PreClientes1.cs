@@ -197,12 +197,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public string AssRG { get; set; } = "";
 
         /// <summary>
-        /// AssCPF - cliAssCPF - tamanho máximo: 12 
-        /// </summary>
-        [JsonPropertyName("asscpf")]
-        public string AssCPF { get; set; } = "";
-
-        /// <summary>
         /// AssEndereco - cliAssEndereco - tamanho máximo: 70 
         /// </summary>
         [JsonPropertyName("assendereco")]
@@ -213,6 +207,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("cnh")]
         public string CNH { get; set; } = "";
+
+        /// <summary>
+        /// AssCPF - cliAssCPF - tamanho máximo: 11 
+        /// </summary>
+        [JsonPropertyName("asscpf")]
+        public string AssCPF { get; set; } = "";
     }
 }
 
@@ -408,12 +408,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string AssRG { get; set; } = "";
 
         /// <summary>
-        /// AssCPF - cliAssCPF - tamanho máximo: 12 
-        /// </summary>
-        [JsonPropertyName("asscpf")]
-        public string AssCPF { get; set; } = "";
-
-        /// <summary>
         /// AssEndereco - cliAssEndereco - tamanho máximo: 70 
         /// </summary>
         [JsonPropertyName("assendereco")]
@@ -424,6 +418,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("cnh")]
         public string CNH { get; set; } = "";
+
+        /// <summary>
+        /// AssCPF - cliAssCPF - tamanho máximo: 11 
+        /// </summary>
+        [JsonPropertyName("asscpf")]
+        public string AssCPF { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

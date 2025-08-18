@@ -30,8 +30,6 @@ public partial class DBDiario2ODicInfo : IODicInfo
     public string ICampoNome() => DBDiario2DicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TemAuditor() => true;
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DBInfoSystem? GetInfoSystemByNameField(string campo) => _fieldLookup.GetValueOrDefault(campo);

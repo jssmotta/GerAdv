@@ -51,7 +51,7 @@ public partial class ViaRecebimentoService(IOptions<AppSettings> appSettings, IF
 
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
         var filterHash = GetFilterHash(filtro);
         var cacheKey = $"{uri}-{max}-ViaRecebimento-Filter-{where.GetHashCode2()}{filterHash}";
         var entryOptions = new HybridCacheEntryOptions

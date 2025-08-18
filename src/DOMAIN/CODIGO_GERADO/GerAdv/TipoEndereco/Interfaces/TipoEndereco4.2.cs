@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITipoEnderecoReader
 {
-    Task<TipoEnderecoResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.TipoEndereco?> ReadM(int id, MsiSqlConnection oCnn);
-    TipoEnderecoResponse? Read(FTipoEndereco dbRec, MsiSqlConnection oCnn);
-    TipoEnderecoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<TipoEnderecoResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.TipoEndereco?> ReadM(int id, MsiSqlConnection? oCnn);
+    TipoEnderecoResponse? Read(FTipoEndereco dbRec, MsiSqlConnection? oCnn);
+    TipoEnderecoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoEnderecoResponse? Read(FTipoEndereco dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoEnderecoResponseAll? ReadAll(FTipoEndereco dbRec, IDataRecord dr);
     TipoEnderecoResponseAll? ReadAll(SG.GerAdv.DBTipoEndereco dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<TipoEnderecoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoEnderecoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

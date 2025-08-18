@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IUFWhere
 {
-    UFResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    UFResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class UFWhere(IFUFFactory ufFactory) : IUFWhere
 {
     private readonly IFUFFactory _ufFactory = ufFactory ?? throw new ArgumentNullException(nameof(ufFactory));
-    public UFResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public UFResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _ufFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var uf = new UFResponse

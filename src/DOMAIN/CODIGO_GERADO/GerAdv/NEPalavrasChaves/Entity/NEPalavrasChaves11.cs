@@ -23,7 +23,7 @@ public partial class FNEPalavrasChavesFactory : IFNEPalavrasChavesFactory, IDisp
         return FNEPalavrasChaves.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FNEPalavrasChaves> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FNEPalavrasChaves> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FNEPalavrasChaves().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FNEPalavrasChavesFactory : IFNEPalavrasChavesFactory, IDisp
         return new FNEPalavrasChaves();
     }
 
-    public FNEPalavrasChaves CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FNEPalavrasChaves CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FNEPalavrasChaves.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FNEPalavrasChaves.DeleteRecordAsync(operadorId, id, oCnn);

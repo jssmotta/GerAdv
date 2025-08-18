@@ -29,25 +29,25 @@ public partial class FTipoEnderecoSistema : MenphisSI.SG.GerAdv.DBTipoEnderecoSi
     {
     }
 
-    public async Task<FTipoEnderecoSistema> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FTipoEnderecoSistema> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fTipoEnderecoSistema = new FTipoEnderecoSistema();
         await fTipoEnderecoSistema.CarregarAsync(id, oCnn);
         return fTipoEnderecoSistema;
     }
 
-    private FTipoEnderecoSistema(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FTipoEnderecoSistema(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FTipoEnderecoSistema CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FTipoEnderecoSistema CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FTipoEnderecoSistema(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

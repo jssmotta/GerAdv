@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IPreClientesWhere
 {
-    PreClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    PreClientesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class PreClientesWhere(IFPreClientesFactory preclientesFactory) : IPreClientesWhere
 {
     private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory ?? throw new ArgumentNullException(nameof(preclientesFactory));
-    public PreClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public PreClientesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _preclientesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var preclientes = new PreClientesResponse
@@ -49,9 +49,9 @@ public partial class PreClientesWhere(IFPreClientesFactory preclientesFactory) :
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
             AssRG = dbRec.FAssRG ?? string.Empty,
-            AssCPF = dbRec.FAssCPF ?? string.Empty,
             AssEndereco = dbRec.FAssEndereco ?? string.Empty,
             CNH = dbRec.FCNH ?? string.Empty,
+            AssCPF = dbRec.FAssCPF ?? string.Empty,
         };
         if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
         {

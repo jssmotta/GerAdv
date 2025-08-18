@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class EMPClassRiscosReader(IFEMPClassRiscosFactory empclassriscosFactory) : IEMPClassRiscosReader
 {
     private readonly IFEMPClassRiscosFactory _empclassriscosFactory = empclassriscosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ecrCodigo, ecrNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<EMPClassRiscosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEMPClassRiscos.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<EMPClassRiscosResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ecrCodigo, ecrNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<EMPClassRiscosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEMPClassRiscos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<EMPClassRiscosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<EMPClassRiscosResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class EMPClassRiscosReader(IFEMPClassRiscosFactory empclassriscos
         return result;
     }
 
-    public async Task<EMPClassRiscosResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<EMPClassRiscosResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _empclassriscosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.EMPClassRiscos?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.EMPClassRiscos?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _empclassriscosFactory.CreateFromIdAsync(id, oCnn);
         var empclassriscos = new Models.EMPClassRiscos
@@ -60,12 +60,12 @@ public partial class EMPClassRiscosReader(IFEMPClassRiscosFactory empclassriscos
         return empclassriscos;
     }
 
-    public EMPClassRiscosResponse? Read(FEMPClassRiscos dbRec, MsiSqlConnection oCnn)
+    public EMPClassRiscosResponse? Read(FEMPClassRiscos dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public EMPClassRiscosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public EMPClassRiscosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _empclassriscosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

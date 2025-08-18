@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IStatusInstanciaReader
 {
-    Task<StatusInstanciaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.StatusInstancia?> ReadM(int id, MsiSqlConnection oCnn);
-    StatusInstanciaResponse? Read(FStatusInstancia dbRec, MsiSqlConnection oCnn);
-    StatusInstanciaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<StatusInstanciaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.StatusInstancia?> ReadM(int id, MsiSqlConnection? oCnn);
+    StatusInstanciaResponse? Read(FStatusInstancia dbRec, MsiSqlConnection? oCnn);
+    StatusInstanciaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     StatusInstanciaResponse? Read(FStatusInstancia dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     StatusInstanciaResponseAll? ReadAll(FStatusInstancia dbRec, IDataRecord dr);
     StatusInstanciaResponseAll? ReadAll(SG.GerAdv.DBStatusInstancia dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<StatusInstanciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<StatusInstanciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

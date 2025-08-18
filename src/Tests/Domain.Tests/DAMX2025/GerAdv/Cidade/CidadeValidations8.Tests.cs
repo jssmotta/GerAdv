@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class CidadeValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFCidadeFactory> _mockCidadeFactory;
-    private readonly Mock<ICidadeReader> _mockReader;
     private readonly CidadeValidation _validation;
     private readonly Mock<ICidadeService> _mockCidadeService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class CidadeValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public CidadeValidationTests()
     {
-        _mockCidadeFactory = new Mock<IFCidadeFactory>();
-        _mockReader = new Mock<ICidadeReader>();
         _validation = new CidadeValidation();
         _mockCidadeService = new Mock<ICidadeService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class CidadeValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Cidade CreateValidCidade()
+    private static Models.Cidade CreateValidCidade()
     {
         return new Models.Cidade
         {
@@ -73,17 +68,17 @@ public class CidadeValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockCidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCidade>(), It.IsAny<string>())).ReturnsAsync(new List<CidadeResponseAll>());
+        _mockCidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCidade>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Cidades service mock
-        _mockUFReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.UFResponse { Id = id }));
+        _ = _mockUFReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new UFResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockCidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCidade>(), It.IsAny<string>())).ReturnsAsync(new List<CidadeResponseAll>());
+        _mockCidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCidade>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Cidades service mock
-        _mockUFReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.UFResponse { Id = 0 }));
+        _ = _mockUFReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new UFResponse { Id = 0 }));
     }
 
     [Fact]

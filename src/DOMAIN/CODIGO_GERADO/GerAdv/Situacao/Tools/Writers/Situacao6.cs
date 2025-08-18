@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ISituacaoWriter
 {
-    Task<FSituacao> WriteAsync(Models.Situacao situacao, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(SituacaoResponse situacao, int operadorId, MsiSqlConnection oCnn);
+    Task<FSituacao> WriteAsync(Models.Situacao situacao, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(SituacaoResponse situacao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class SituacaoWriter(IFSituacaoFactory situacaoFactory) : ISituacaoWriter
 {
     private readonly IFSituacaoFactory _situacaoFactory = situacaoFactory ?? throw new ArgumentNullException(nameof(situacaoFactory));
-    public virtual async Task Delete(SituacaoResponse situacao, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(SituacaoResponse situacao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _situacaoFactory.DeleteAsync(operadorId, situacao.Id, oCnn);
     }
 
-    public virtual async Task<FSituacao> WriteAsync(Models.Situacao situacao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FSituacao> WriteAsync(Models.Situacao situacao, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (situacao.Id.IsEmptyIDNumber() ? _situacaoFactory.CreateAsync() : _situacaoFactory.CreateFromIdAsync(situacao.Id, oCnn));
         dbRec.FParte_Int = situacao.Parte_Int;

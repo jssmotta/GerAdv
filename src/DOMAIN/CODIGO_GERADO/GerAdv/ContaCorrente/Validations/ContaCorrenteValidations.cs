@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IContaCorrenteValidation
 {
-    Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IContaCorrenteService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IContaCorrenteService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class ContaCorrenteValidation : IContaCorrenteValidation
 {
-    public async Task<bool> CanDelete(int? id, IContaCorrenteService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IContaCorrenteService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -31,7 +31,7 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ContaCorrente reg, IContaCorrenteService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

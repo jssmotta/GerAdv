@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IObjetosValidation
 {
-    Task<bool> ValidateReg(Models.Objetos reg, IObjetosService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Objetos reg, IObjetosService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class ObjetosValidation : IObjetosValidation
 {
-    public async Task<bool> CanDelete(int? id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IObjetosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -33,7 +33,7 @@ public class ObjetosValidation : IObjetosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Objetos reg, IObjetosService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Objetos reg, IObjetosService service, IJusticaReader justicaReader, IAreaReader areaReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

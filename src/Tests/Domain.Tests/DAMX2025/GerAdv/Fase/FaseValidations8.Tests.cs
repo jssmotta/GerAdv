@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class FaseValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFFaseFactory> _mockFaseFactory;
-    private readonly Mock<IFaseReader> _mockReader;
     private readonly FaseValidation _validation;
     private readonly Mock<IFaseService> _mockFaseService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class FaseValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public FaseValidationTests()
     {
-        _mockFaseFactory = new Mock<IFFaseFactory>();
-        _mockReader = new Mock<IFaseReader>();
         _validation = new FaseValidation();
         _mockFaseService = new Mock<IFaseService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class FaseValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Fase CreateValidFase()
+    private static Models.Fase CreateValidFase()
     {
         return new Models.Fase
         {
@@ -71,19 +66,19 @@ public class FaseValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockFaseService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFase>(), It.IsAny<string>())).ReturnsAsync(new List<FaseResponseAll>());
+        _mockFaseService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFase>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Fases service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = id }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockFaseService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFase>(), It.IsAny<string>())).ReturnsAsync(new List<FaseResponseAll>());
+        _mockFaseService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFase>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Fases service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = 0 }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
     }
 
     [Fact]

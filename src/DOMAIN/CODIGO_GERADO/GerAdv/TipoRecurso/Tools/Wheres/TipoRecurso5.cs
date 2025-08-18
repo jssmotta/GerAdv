@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoRecursoWhere
 {
-    TipoRecursoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TipoRecursoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TipoRecursoWhere(IFTipoRecursoFactory tiporecursoFactory) : ITipoRecursoWhere
 {
     private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory ?? throw new ArgumentNullException(nameof(tiporecursoFactory));
-    public TipoRecursoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoRecursoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tiporecursoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tiporecurso = new TipoRecursoResponse

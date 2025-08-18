@@ -23,7 +23,7 @@ public partial class FDivisaoTribunalFactory : IFDivisaoTribunalFactory, IDispos
         return FDivisaoTribunal.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FDivisaoTribunal().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FDivisaoTribunalFactory : IFDivisaoTribunalFactory, IDispos
         return new FDivisaoTribunal();
     }
 
-    public FDivisaoTribunal CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FDivisaoTribunal CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FDivisaoTribunal.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FDivisaoTribunal.DeleteRecordAsync(operadorId, id, oCnn);

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AreaReader(IFAreaFactory areaFactory) : IAreaReader
 {
     private readonly IFAreaFactory _areaFactory = areaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("areCodigo, areDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<AreaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBArea.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<AreaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("areCodigo, areDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<AreaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBArea.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<AreaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<AreaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class AreaReader(IFAreaFactory areaFactory) : IAreaReader
         return result;
     }
 
-    public async Task<AreaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<AreaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _areaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Area?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Area?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _areaFactory.CreateFromIdAsync(id, oCnn);
         var area = new Models.Area
@@ -61,12 +61,12 @@ public partial class AreaReader(IFAreaFactory areaFactory) : IAreaReader
         return area;
     }
 
-    public AreaResponse? Read(FArea dbRec, MsiSqlConnection oCnn)
+    public AreaResponse? Read(FArea dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public AreaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AreaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _areaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

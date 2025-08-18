@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class EnquadramentoEmpresaReader(IFEnquadramentoEmpresaFactory enquadramentoempresaFactory) : IEnquadramentoEmpresaReader
 {
     private readonly IFEnquadramentoEmpresaFactory _enquadramentoempresaFactory = enquadramentoempresaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("eqeCodigo, eqeNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<EnquadramentoEmpresaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEnquadramentoEmpresa.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<EnquadramentoEmpresaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("eqeCodigo, eqeNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<EnquadramentoEmpresaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEnquadramentoEmpresa.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<EnquadramentoEmpresaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<EnquadramentoEmpresaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class EnquadramentoEmpresaReader(IFEnquadramentoEmpresaFactory en
         return result;
     }
 
-    public async Task<EnquadramentoEmpresaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<EnquadramentoEmpresaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _enquadramentoempresaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.EnquadramentoEmpresa?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.EnquadramentoEmpresa?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _enquadramentoempresaFactory.CreateFromIdAsync(id, oCnn);
         var enquadramentoempresa = new Models.EnquadramentoEmpresa
@@ -60,12 +60,12 @@ public partial class EnquadramentoEmpresaReader(IFEnquadramentoEmpresaFactory en
         return enquadramentoempresa;
     }
 
-    public EnquadramentoEmpresaResponse? Read(FEnquadramentoEmpresa dbRec, MsiSqlConnection oCnn)
+    public EnquadramentoEmpresaResponse? Read(FEnquadramentoEmpresa dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public EnquadramentoEmpresaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public EnquadramentoEmpresaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _enquadramentoempresaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IBensMateriaisWriter
 {
-    Task<FBensMateriais> WriteAsync(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection oCnn);
+    Task<FBensMateriais> WriteAsync(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class BensMateriaisWriter(IFBensMateriaisFactory bensmateriaisFactory) : IBensMateriaisWriter
 {
     private readonly IFBensMateriaisFactory _bensmateriaisFactory = bensmateriaisFactory ?? throw new ArgumentNullException(nameof(bensmateriaisFactory));
-    public virtual async Task Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection? oCnn)
     {
         await _bensmateriaisFactory.DeleteAsync(operadorId, bensmateriais.Id, oCnn);
     }
 
-    public virtual async Task<FBensMateriais> WriteAsync(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FBensMateriais> WriteAsync(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (bensmateriais.Id.IsEmptyIDNumber() ? _bensmateriaisFactory.CreateAsync() : _bensmateriaisFactory.CreateFromIdAsync(bensmateriais.Id, oCnn));
         dbRec.FNome = bensmateriais.Nome;

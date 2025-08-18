@@ -49,7 +49,7 @@ public partial class ConfiguracoesDBT
     /// Versão async com parâmetros
     /// </summary>
     public static async Task<DataTable?> GetDataTableAsync(
-        List<SqlParameter> parameters,
+        List<SqlParameter>? parameters,
         string? cSql,
         CommandBehavior cmdBehavior,
         MsiSqlConnection? oCnn,
@@ -63,21 +63,22 @@ public partial class ConfiguracoesDBT
             CommandTimeout = timeoutSeconds
         };
 
-        foreach (var param in parameters)
-        {
-            if (!command.Parameters.Contains(param.ParameterName))
+        if (parameters != null)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!command.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                command.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    command.Parameters.Add(newParam);
+                }
             }
-        }
 
         return await GetDataTableAsync(command, cmdBehavior, oCnn, cancellationToken);
     }

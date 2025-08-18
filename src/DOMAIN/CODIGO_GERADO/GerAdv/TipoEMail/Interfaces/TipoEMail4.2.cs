@@ -4,13 +4,13 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITipoEMailReader
 {
-    Task<TipoEMailResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.TipoEMail?> ReadM(int id, MsiSqlConnection oCnn);
-    TipoEMailResponse? Read(FTipoEMail dbRec, MsiSqlConnection oCnn);
-    TipoEMailResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<TipoEMailResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.TipoEMail?> ReadM(int id, MsiSqlConnection? oCnn);
+    TipoEMailResponse? Read(FTipoEMail dbRec, MsiSqlConnection? oCnn);
+    TipoEMailResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoEMailResponse? Read(FTipoEMail dbRec);
     TipoEMailResponseAll? ReadAll(FTipoEMail dbRec, IDataRecord dr);
     TipoEMailResponseAll? ReadAll(SG.GerAdv.DBTipoEMail dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<TipoEMailResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoEMailResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

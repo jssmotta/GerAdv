@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IProCDAReader
 {
-    Task<ProCDAResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.ProCDA?> ReadM(int id, MsiSqlConnection oCnn);
-    ProCDAResponse? Read(FProCDA dbRec, MsiSqlConnection oCnn);
-    ProCDAResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<ProCDAResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.ProCDA?> ReadM(int id, MsiSqlConnection? oCnn);
+    ProCDAResponse? Read(FProCDA dbRec, MsiSqlConnection? oCnn);
+    ProCDAResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ProCDAResponse? Read(FProCDA dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ProCDAResponseAll? ReadAll(FProCDA dbRec, IDataRecord dr);
     ProCDAResponseAll? ReadAll(SG.GerAdv.DBProCDA dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<ProCDAResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<ProCDAResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IOutrasPartesClienteReader
 {
-    Task<OutrasPartesClienteResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.OutrasPartesCliente?> ReadM(int id, MsiSqlConnection oCnn);
-    OutrasPartesClienteResponse? Read(FOutrasPartesCliente dbRec, MsiSqlConnection oCnn);
-    OutrasPartesClienteResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<OutrasPartesClienteResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.OutrasPartesCliente?> ReadM(int id, MsiSqlConnection? oCnn);
+    OutrasPartesClienteResponse? Read(FOutrasPartesCliente dbRec, MsiSqlConnection? oCnn);
+    OutrasPartesClienteResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OutrasPartesClienteResponse? Read(FOutrasPartesCliente dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OutrasPartesClienteResponseAll? ReadAll(FOutrasPartesCliente dbRec, IDataRecord dr);
     OutrasPartesClienteResponseAll? ReadAll(SG.GerAdv.DBOutrasPartesCliente dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<OutrasPartesClienteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<OutrasPartesClienteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

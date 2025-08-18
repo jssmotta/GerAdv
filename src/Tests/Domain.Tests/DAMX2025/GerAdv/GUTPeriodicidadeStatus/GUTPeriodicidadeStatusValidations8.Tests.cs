@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GUTPeriodicidadeStatusValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGUTPeriodicidadeStatusFactory> _mockGUTPeriodicidadeStatusFactory;
-    private readonly Mock<IGUTPeriodicidadeStatusReader> _mockReader;
     private readonly GUTPeriodicidadeStatusValidation _validation;
     private readonly Mock<IGUTPeriodicidadeStatusService> _mockGUTPeriodicidadeStatusService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GUTPeriodicidadeStatusValidationTests()
     {
-        _mockGUTPeriodicidadeStatusFactory = new Mock<IFGUTPeriodicidadeStatusFactory>();
-        _mockReader = new Mock<IGUTPeriodicidadeStatusReader>();
         _validation = new GUTPeriodicidadeStatusValidation();
         _mockGUTPeriodicidadeStatusService = new Mock<IGUTPeriodicidadeStatusService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GUTPeriodicidadeStatus CreateValidGUTPeriodicidadeStatus()
+    private static Models.GUTPeriodicidadeStatus CreateValidGUTPeriodicidadeStatus()
     {
         return new Models.GUTPeriodicidadeStatus
         {
@@ -69,17 +64,17 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGUTPeriodicidadeStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidadeStatus>(), It.IsAny<string>())).ReturnsAsync(new List<GUTPeriodicidadeStatusResponseAll>());
+        _mockGUTPeriodicidadeStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidadeStatus>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTPeriodicidadeStatuss service mock
-        _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTAtividadesResponse { Id = id }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGUTPeriodicidadeStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidadeStatus>(), It.IsAny<string>())).ReturnsAsync(new List<GUTPeriodicidadeStatusResponseAll>());
+        _mockGUTPeriodicidadeStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidadeStatus>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTPeriodicidadeStatuss service mock
-        _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTAtividadesResponse { Id = 0 }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = 0 }));
     }
 
     [Fact]

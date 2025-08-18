@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IReuniaoWriter
 {
-    Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection oCnn);
+    Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ReuniaoWriter(IFReuniaoFactory reuniaoFactory) : IReuniaoWriter
 {
     private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory ?? throw new ArgumentNullException(nameof(reuniaoFactory));
-    public virtual async Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _reuniaoFactory.DeleteAsync(operadorId, reuniao.Id, oCnn);
     }
 
-    public virtual async Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (reuniao.Id.IsEmptyIDNumber() ? _reuniaoFactory.CreateAsync() : _reuniaoFactory.CreateFromIdAsync(reuniao.Id, oCnn));
         dbRec.FCliente = reuniao.Cliente;

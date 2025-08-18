@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IFuncaoWhere
 {
-    FuncaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    FuncaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class FuncaoWhere(IFFuncaoFactory funcaoFactory) : IFuncaoWhere
 {
     private readonly IFFuncaoFactory _funcaoFactory = funcaoFactory ?? throw new ArgumentNullException(nameof(funcaoFactory));
-    public FuncaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public FuncaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _funcaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var funcao = new FuncaoResponse

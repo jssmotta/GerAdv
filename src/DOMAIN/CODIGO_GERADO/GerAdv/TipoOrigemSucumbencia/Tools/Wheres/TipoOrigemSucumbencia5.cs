@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoOrigemSucumbenciaWhere
 {
-    TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TipoOrigemSucumbenciaWhere(IFTipoOrigemSucumbenciaFactory tipoorigemsucumbenciaFactory) : ITipoOrigemSucumbenciaWhere
 {
     private readonly IFTipoOrigemSucumbenciaFactory _tipoorigemsucumbenciaFactory = tipoorigemsucumbenciaFactory ?? throw new ArgumentNullException(nameof(tipoorigemsucumbenciaFactory));
-    public TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoOrigemSucumbenciaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipoorigemsucumbenciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipoorigemsucumbencia = new TipoOrigemSucumbenciaResponse

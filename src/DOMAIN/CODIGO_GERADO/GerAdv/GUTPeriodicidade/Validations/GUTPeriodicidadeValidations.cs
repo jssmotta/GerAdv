@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IGUTPeriodicidadeValidation
 {
-    Task<bool> ValidateReg(Models.GUTPeriodicidade reg, IGUTPeriodicidadeService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.GUTPeriodicidade reg, IGUTPeriodicidadeService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
 {
-    public async Task<bool> CanDelete(int? id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTPeriodicidadeService service, IGUTAtividadesService gutatividadesService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -36,7 +36,7 @@ public class GUTPeriodicidadeValidation : IGUTPeriodicidadeValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.GUTPeriodicidade reg, IGUTPeriodicidadeService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.GUTPeriodicidade reg, IGUTPeriodicidadeService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

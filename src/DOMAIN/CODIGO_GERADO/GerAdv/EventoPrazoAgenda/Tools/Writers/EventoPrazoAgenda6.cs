@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEventoPrazoAgendaWriter
 {
-    Task<FEventoPrazoAgenda> WriteAsync(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection oCnn);
+    Task<FEventoPrazoAgenda> WriteAsync(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EventoPrazoAgendaWriter(IFEventoPrazoAgendaFactory eventoprazoagendaFactory) : IEventoPrazoAgendaWriter
 {
     private readonly IFEventoPrazoAgendaFactory _eventoprazoagendaFactory = eventoprazoagendaFactory ?? throw new ArgumentNullException(nameof(eventoprazoagendaFactory));
-    public virtual async Task Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(EventoPrazoAgendaResponse eventoprazoagenda, int operadorId, MsiSqlConnection? oCnn)
     {
         await _eventoprazoagendaFactory.DeleteAsync(operadorId, eventoprazoagenda.Id, oCnn);
     }
 
-    public virtual async Task<FEventoPrazoAgenda> WriteAsync(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEventoPrazoAgenda> WriteAsync(Models.EventoPrazoAgenda eventoprazoagenda, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (eventoprazoagenda.Id.IsEmptyIDNumber() ? _eventoprazoagendaFactory.CreateAsync() : _eventoprazoagendaFactory.CreateFromIdAsync(eventoprazoagenda.Id, oCnn));
         dbRec.FNome = eventoprazoagenda.Nome;

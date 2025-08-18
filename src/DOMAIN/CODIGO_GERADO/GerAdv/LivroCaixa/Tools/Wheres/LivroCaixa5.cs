@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ILivroCaixaWhere
 {
-    LivroCaixaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    LivroCaixaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class LivroCaixaWhere(IFLivroCaixaFactory livrocaixaFactory) : ILivroCaixaWhere
 {
     private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory ?? throw new ArgumentNullException(nameof(livrocaixaFactory));
-    public LivroCaixaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public LivroCaixaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _livrocaixaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var livrocaixa = new LivroCaixaResponse

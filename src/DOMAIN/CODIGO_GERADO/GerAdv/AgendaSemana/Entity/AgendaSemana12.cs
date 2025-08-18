@@ -29,25 +29,25 @@ public partial class FAgendaSemana : MenphisSI.SG.GerAdv.DBAgendaSemana, IDBAgen
     {
     }
 
-    public async Task<FAgendaSemana> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FAgendaSemana> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fAgendaSemana = new FAgendaSemana();
         await fAgendaSemana.CarregarAsync(id, oCnn);
         return fAgendaSemana;
     }
 
-    private FAgendaSemana(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FAgendaSemana(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FAgendaSemana CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FAgendaSemana CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FAgendaSemana(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class PenhoraValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFPenhoraFactory> _mockPenhoraFactory;
-    private readonly Mock<IPenhoraReader> _mockReader;
     private readonly PenhoraValidation _validation;
     private readonly Mock<IPenhoraService> _mockPenhoraService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class PenhoraValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public PenhoraValidationTests()
     {
-        _mockPenhoraFactory = new Mock<IFPenhoraFactory>();
-        _mockReader = new Mock<IPenhoraReader>();
         _validation = new PenhoraValidation();
         _mockPenhoraService = new Mock<IPenhoraService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class PenhoraValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Penhora CreateValidPenhora()
+    private static Models.Penhora CreateValidPenhora()
     {
         return new Models.Penhora
         {
@@ -72,17 +67,17 @@ public class PenhoraValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockPenhoraService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhora>(), It.IsAny<string>())).ReturnsAsync(new List<PenhoraResponseAll>());
+        _mockPenhoraService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhora>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Penhoras service mock
-        _mockPenhoraStatusReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.PenhoraStatusResponse { Id = id }));
+        _ = _mockPenhoraStatusReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PenhoraStatusResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockPenhoraService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhora>(), It.IsAny<string>())).ReturnsAsync(new List<PenhoraResponseAll>());
+        _mockPenhoraService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhora>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Penhoras service mock
-        _mockPenhoraStatusReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.PenhoraStatusResponse { Id = 0 }));
+        _ = _mockPenhoraStatusReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PenhoraStatusResponse { Id = 0 }));
     }
 
     [Fact]

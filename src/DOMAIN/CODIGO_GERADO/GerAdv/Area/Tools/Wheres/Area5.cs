@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAreaWhere
 {
-    AreaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    AreaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class AreaWhere(IFAreaFactory areaFactory) : IAreaWhere
 {
     private readonly IFAreaFactory _areaFactory = areaFactory ?? throw new ArgumentNullException(nameof(areaFactory));
-    public AreaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AreaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _areaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var area = new AreaResponse

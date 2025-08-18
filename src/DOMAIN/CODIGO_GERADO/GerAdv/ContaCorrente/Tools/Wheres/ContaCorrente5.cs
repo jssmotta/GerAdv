@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IContaCorrenteWhere
 {
-    ContaCorrenteResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ContaCorrenteResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteWhere
 {
     private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException(nameof(contacorrenteFactory));
-    public ContaCorrenteResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ContaCorrenteResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _contacorrenteFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var contacorrente = new ContaCorrenteResponse

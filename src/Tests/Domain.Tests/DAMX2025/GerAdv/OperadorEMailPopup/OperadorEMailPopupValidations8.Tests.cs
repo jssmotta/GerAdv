@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class OperadorEMailPopupValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFOperadorEMailPopupFactory> _mockOperadorEMailPopupFactory;
-    private readonly Mock<IOperadorEMailPopupReader> _mockReader;
     private readonly OperadorEMailPopupValidation _validation;
     private readonly Mock<IOperadorEMailPopupService> _mockOperadorEMailPopupService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class OperadorEMailPopupValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public OperadorEMailPopupValidationTests()
     {
-        _mockOperadorEMailPopupFactory = new Mock<IFOperadorEMailPopupFactory>();
-        _mockReader = new Mock<IOperadorEMailPopupReader>();
         _validation = new OperadorEMailPopupValidation();
         _mockOperadorEMailPopupService = new Mock<IOperadorEMailPopupService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.OperadorEMailPopup CreateValidOperadorEMailPopup()
+    private static Models.OperadorEMailPopup CreateValidOperadorEMailPopup()
     {
         return new Models.OperadorEMailPopup
         {
@@ -76,17 +71,17 @@ public class OperadorEMailPopupValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorEMailPopupService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorEMailPopup>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorEMailPopupResponseAll>());
+        _mockOperadorEMailPopupService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorEMailPopup>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorEMailPopups service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorEMailPopupService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorEMailPopup>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorEMailPopupResponseAll>());
+        _mockOperadorEMailPopupService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorEMailPopup>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorEMailPopups service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]

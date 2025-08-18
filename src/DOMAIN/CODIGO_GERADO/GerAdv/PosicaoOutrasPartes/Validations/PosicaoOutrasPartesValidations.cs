@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IPosicaoOutrasPartesValidation
 {
-    Task<bool> ValidateReg(Models.PosicaoOutrasPartes reg, IPosicaoOutrasPartesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.PosicaoOutrasPartes reg, IPosicaoOutrasPartesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
 {
-    public async Task<bool> CanDelete(int? id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPosicaoOutrasPartesService service, ITerceirosService terceirosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -36,7 +36,7 @@ public class PosicaoOutrasPartesValidation : IPosicaoOutrasPartesValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.PosicaoOutrasPartes reg, IPosicaoOutrasPartesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.PosicaoOutrasPartes reg, IPosicaoOutrasPartesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

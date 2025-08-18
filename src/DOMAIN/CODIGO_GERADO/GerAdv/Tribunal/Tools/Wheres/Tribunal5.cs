@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITribunalWhere
 {
-    TribunalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TribunalResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TribunalWhere(IFTribunalFactory tribunalFactory) : ITribunalWhere
 {
     private readonly IFTribunalFactory _tribunalFactory = tribunalFactory ?? throw new ArgumentNullException(nameof(tribunalFactory));
-    public TribunalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TribunalResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tribunalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tribunal = new TribunalResponse

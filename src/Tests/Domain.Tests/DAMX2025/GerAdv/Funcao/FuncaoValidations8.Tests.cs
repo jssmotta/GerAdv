@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class FuncaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFFuncaoFactory> _mockFuncaoFactory;
-    private readonly Mock<IFuncaoReader> _mockReader;
     private readonly FuncaoValidation _validation;
     private readonly Mock<IFuncaoService> _mockFuncaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class FuncaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public FuncaoValidationTests()
     {
-        _mockFuncaoFactory = new Mock<IFFuncaoFactory>();
-        _mockReader = new Mock<IFuncaoReader>();
         _validation = new FuncaoValidation();
         _mockFuncaoService = new Mock<IFuncaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class FuncaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Funcao CreateValidFuncao()
+    private static Models.Funcao CreateValidFuncao()
     {
         return new Models.Funcao
         {
@@ -65,14 +60,14 @@ public class FuncaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockFuncaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFuncao>(), It.IsAny<string>())).ReturnsAsync(new List<FuncaoResponseAll>());
+        _mockFuncaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFuncao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Funcaos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockFuncaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFuncao>(), It.IsAny<string>())).ReturnsAsync(new List<FuncaoResponseAll>());
+        _mockFuncaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterFuncao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Funcaos service mock
     }
 

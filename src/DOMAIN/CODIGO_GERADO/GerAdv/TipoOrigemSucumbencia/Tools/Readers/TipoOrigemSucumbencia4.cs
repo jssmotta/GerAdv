@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class TipoOrigemSucumbenciaReader(IFTipoOrigemSucumbenciaFactory tipoorigemsucumbenciaFactory) : ITipoOrigemSucumbenciaReader
 {
     private readonly IFTipoOrigemSucumbenciaFactory _tipoorigemsucumbenciaFactory = tipoorigemsucumbenciaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tosCodigo, tosNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoOrigemSucumbencia.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tosCodigo, tosNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoOrigemSucumbencia.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<TipoOrigemSucumbenciaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TipoOrigemSucumbenciaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class TipoOrigemSucumbenciaReader(IFTipoOrigemSucumbenciaFactory 
         return result;
     }
 
-    public async Task<TipoOrigemSucumbenciaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<TipoOrigemSucumbenciaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tipoorigemsucumbenciaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.TipoOrigemSucumbencia?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.TipoOrigemSucumbencia?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tipoorigemsucumbenciaFactory.CreateFromIdAsync(id, oCnn);
         var tipoorigemsucumbencia = new Models.TipoOrigemSucumbencia
@@ -59,12 +59,12 @@ public partial class TipoOrigemSucumbenciaReader(IFTipoOrigemSucumbenciaFactory 
         return tipoorigemsucumbencia;
     }
 
-    public TipoOrigemSucumbenciaResponse? Read(FTipoOrigemSucumbencia dbRec, MsiSqlConnection oCnn)
+    public TipoOrigemSucumbenciaResponse? Read(FTipoOrigemSucumbencia dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public TipoOrigemSucumbenciaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoOrigemSucumbenciaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipoorigemsucumbenciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

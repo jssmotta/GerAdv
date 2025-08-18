@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface INENotasWriter
 {
-    Task<FNENotas> WriteAsync(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection oCnn);
+    Task<FNENotas> WriteAsync(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class NENotasWriter(IFNENotasFactory nenotasFactory) : INENotasWriter
 {
     private readonly IFNENotasFactory _nenotasFactory = nenotasFactory ?? throw new ArgumentNullException(nameof(nenotasFactory));
-    public virtual async Task Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection? oCnn)
     {
         await _nenotasFactory.DeleteAsync(operadorId, nenotas.Id, oCnn);
     }
 
-    public virtual async Task<FNENotas> WriteAsync(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FNENotas> WriteAsync(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (nenotas.Id.IsEmptyIDNumber() ? _nenotasFactory.CreateAsync() : _nenotasFactory.CreateFromIdAsync(nenotas.Id, oCnn));
         dbRec.FApenso = nenotas.Apenso;

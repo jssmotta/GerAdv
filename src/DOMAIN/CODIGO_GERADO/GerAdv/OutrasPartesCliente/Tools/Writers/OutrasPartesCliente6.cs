@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOutrasPartesClienteWriter
 {
-    Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection oCnn);
+    Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OutrasPartesClienteWriter(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteWriter
 {
     private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException(nameof(outraspartesclienteFactory));
-    public virtual async Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection? oCnn)
     {
         await _outraspartesclienteFactory.DeleteAsync(operadorId, outraspartescliente.Id, oCnn);
     }
 
-    public virtual async Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (outraspartescliente.Id.IsEmptyIDNumber() ? _outraspartesclienteFactory.CreateAsync() : _outraspartesclienteFactory.CreateFromIdAsync(outraspartescliente.Id, oCnn));
         dbRec.FNome = outraspartescliente.Nome;

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPosicaoOutrasPartesWriter
 {
-    Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection oCnn);
+    Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PosicaoOutrasPartesWriter(IFPosicaoOutrasPartesFactory posicaooutraspartesFactory) : IPosicaoOutrasPartesWriter
 {
     private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory ?? throw new ArgumentNullException(nameof(posicaooutraspartesFactory));
-    public virtual async Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _posicaooutraspartesFactory.DeleteAsync(operadorId, posicaooutraspartes.Id, oCnn);
     }
 
-    public virtual async Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (posicaooutraspartes.Id.IsEmptyIDNumber() ? _posicaooutraspartesFactory.CreateAsync() : _posicaooutraspartesFactory.CreateFromIdAsync(posicaooutraspartes.Id, oCnn));
         dbRec.FDescricao = posicaooutraspartes.Descricao;

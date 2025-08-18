@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProObservacoesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProObservacoesFactory> _mockProObservacoesFactory;
-    private readonly Mock<IProObservacoesReader> _mockReader;
     private readonly ProObservacoesValidation _validation;
     private readonly Mock<IProObservacoesService> _mockProObservacoesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProObservacoesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProObservacoesValidationTests()
     {
-        _mockProObservacoesFactory = new Mock<IFProObservacoesFactory>();
-        _mockReader = new Mock<IProObservacoesReader>();
         _validation = new ProObservacoesValidation();
         _mockProObservacoesService = new Mock<IProObservacoesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProObservacoesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProObservacoes CreateValidProObservacoes()
+    private static Models.ProObservacoes CreateValidProObservacoes()
     {
         return new Models.ProObservacoes
         {
@@ -68,14 +63,14 @@ public class ProObservacoesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProObservacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProObservacoes>(), It.IsAny<string>())).ReturnsAsync(new List<ProObservacoesResponseAll>());
+        _mockProObservacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProObservacoes>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProObservacoess service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProObservacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProObservacoes>(), It.IsAny<string>())).ReturnsAsync(new List<ProObservacoesResponseAll>());
+        _mockProObservacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProObservacoes>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProObservacoess service mock
     }
 

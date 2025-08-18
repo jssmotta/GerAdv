@@ -23,7 +23,7 @@ public partial class FOponentesRepLegalFactory : IFOponentesRepLegalFactory, IDi
         return FOponentesRepLegal.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOponentesRepLegal> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FOponentesRepLegal> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FOponentesRepLegal().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FOponentesRepLegalFactory : IFOponentesRepLegalFactory, IDi
         return new FOponentesRepLegal();
     }
 
-    public FOponentesRepLegal CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FOponentesRepLegal CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FOponentesRepLegal.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FOponentesRepLegal.DeleteRecordAsync(operadorId, id, oCnn);

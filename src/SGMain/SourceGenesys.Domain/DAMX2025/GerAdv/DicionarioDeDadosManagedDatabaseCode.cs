@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace MenphisSI.SG.GerAdv;
-
 [ExcludeFromCodeCoverage]
 public class DicionarioDeDadosManagedDatabaseCode
 {

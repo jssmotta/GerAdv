@@ -23,7 +23,7 @@ public partial class FContaCorrenteFactory : IFContaCorrenteFactory, IDisposable
         return FContaCorrente.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FContaCorrente> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FContaCorrente> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FContaCorrente().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FContaCorrenteFactory : IFContaCorrenteFactory, IDisposable
         return new FContaCorrente();
     }
 
-    public FContaCorrente CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FContaCorrente CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FContaCorrente.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FContaCorrente.DeleteRecordAsync(operadorId, id, oCnn);

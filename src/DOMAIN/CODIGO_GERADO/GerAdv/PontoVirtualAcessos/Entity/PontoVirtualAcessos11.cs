@@ -23,7 +23,7 @@ public partial class FPontoVirtualAcessosFactory : IFPontoVirtualAcessosFactory,
         return FPontoVirtualAcessos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FPontoVirtualAcessos> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FPontoVirtualAcessos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FPontoVirtualAcessos().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FPontoVirtualAcessosFactory : IFPontoVirtualAcessosFactory,
         return new FPontoVirtualAcessos();
     }
 
-    public FPontoVirtualAcessos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FPontoVirtualAcessos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FPontoVirtualAcessos.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FPontoVirtualAcessos.DeleteRecordAsync(operadorId, id, oCnn);

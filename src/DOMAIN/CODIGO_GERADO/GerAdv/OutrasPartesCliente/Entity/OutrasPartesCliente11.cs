@@ -23,7 +23,7 @@ public partial class FOutrasPartesClienteFactory : IFOutrasPartesClienteFactory,
         return FOutrasPartesCliente.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOutrasPartesCliente> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FOutrasPartesCliente> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FOutrasPartesCliente().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FOutrasPartesClienteFactory : IFOutrasPartesClienteFactory,
         return new FOutrasPartesCliente();
     }
 
-    public FOutrasPartesCliente CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FOutrasPartesCliente CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FOutrasPartesCliente.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FOutrasPartesCliente.DeleteRecordAsync(operadorId, id, oCnn);

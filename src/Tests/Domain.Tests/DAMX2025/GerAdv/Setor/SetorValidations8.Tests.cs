@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class SetorValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFSetorFactory> _mockSetorFactory;
-    private readonly Mock<ISetorReader> _mockReader;
     private readonly SetorValidation _validation;
     private readonly Mock<ISetorService> _mockSetorService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class SetorValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public SetorValidationTests()
     {
-        _mockSetorFactory = new Mock<IFSetorFactory>();
-        _mockReader = new Mock<ISetorReader>();
         _validation = new SetorValidation();
         _mockSetorService = new Mock<ISetorService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class SetorValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Setor CreateValidSetor()
+    private static Models.Setor CreateValidSetor()
     {
         return new Models.Setor
         {
@@ -65,14 +60,14 @@ public class SetorValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockSetorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSetor>(), It.IsAny<string>())).ReturnsAsync(new List<SetorResponseAll>());
+        _mockSetorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSetor>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Setors service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockSetorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSetor>(), It.IsAny<string>())).ReturnsAsync(new List<SetorResponseAll>());
+        _mockSetorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSetor>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Setors service mock
     }
 

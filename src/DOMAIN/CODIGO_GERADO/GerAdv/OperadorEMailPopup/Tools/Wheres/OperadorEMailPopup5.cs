@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOperadorEMailPopupWhere
 {
-    OperadorEMailPopupResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    OperadorEMailPopupResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class OperadorEMailPopupWhere(IFOperadorEMailPopupFactory operadoremailpopupFactory) : IOperadorEMailPopupWhere
 {
     private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory ?? throw new ArgumentNullException(nameof(operadoremailpopupFactory));
-    public OperadorEMailPopupResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OperadorEMailPopupResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _operadoremailpopupFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var operadoremailpopup = new OperadorEMailPopupResponse

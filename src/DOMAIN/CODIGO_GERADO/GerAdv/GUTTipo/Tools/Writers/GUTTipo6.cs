@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGUTTipoWriter
 {
-    Task<FGUTTipo> WriteAsync(Models.GUTTipo guttipo, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(GUTTipoResponse guttipo, int operadorId, MsiSqlConnection oCnn);
+    Task<FGUTTipo> WriteAsync(Models.GUTTipo guttipo, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(GUTTipoResponse guttipo, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GUTTipoWriter(IFGUTTipoFactory guttipoFactory) : IGUTTipoWriter
 {
     private readonly IFGUTTipoFactory _guttipoFactory = guttipoFactory ?? throw new ArgumentNullException(nameof(guttipoFactory));
-    public virtual async Task Delete(GUTTipoResponse guttipo, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(GUTTipoResponse guttipo, int operadorId, MsiSqlConnection? oCnn)
     {
         await _guttipoFactory.DeleteAsync(operadorId, guttipo.Id, oCnn);
     }
 
-    public virtual async Task<FGUTTipo> WriteAsync(Models.GUTTipo guttipo, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTTipo> WriteAsync(Models.GUTTipo guttipo, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (guttipo.Id.IsEmptyIDNumber() ? _guttipoFactory.CreateAsync() : _guttipoFactory.CreateFromIdAsync(guttipo.Id, oCnn));
         dbRec.FNome = guttipo.Nome;

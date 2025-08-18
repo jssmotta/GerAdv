@@ -23,7 +23,7 @@ public partial class FLigacoesFactory : IFLigacoesFactory, IDisposable
         return FLigacoes.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FLigacoes> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FLigacoes> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FLigacoes().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FLigacoesFactory : IFLigacoesFactory, IDisposable
         return new FLigacoes();
     }
 
-    public FLigacoes CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FLigacoes CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FLigacoes.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FLigacoes.DeleteRecordAsync(operadorId, id, oCnn);

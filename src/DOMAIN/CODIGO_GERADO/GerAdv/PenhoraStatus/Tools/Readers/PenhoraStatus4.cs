@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class PenhoraStatusReader(IFPenhoraStatusFactory penhorastatusFactory) : IPenhoraStatusReader
 {
     private readonly IFPenhoraStatusFactory _penhorastatusFactory = penhorastatusFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("phsCodigo, phsNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<PenhoraStatusResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBPenhoraStatus.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<PenhoraStatusResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("phsCodigo, phsNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<PenhoraStatusResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBPenhoraStatus.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<PenhoraStatusResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<PenhoraStatusResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class PenhoraStatusReader(IFPenhoraStatusFactory penhorastatusFac
         return result;
     }
 
-    public async Task<PenhoraStatusResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<PenhoraStatusResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _penhorastatusFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.PenhoraStatus?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.PenhoraStatus?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _penhorastatusFactory.CreateFromIdAsync(id, oCnn);
         var penhorastatus = new Models.PenhoraStatus
@@ -60,12 +60,12 @@ public partial class PenhoraStatusReader(IFPenhoraStatusFactory penhorastatusFac
         return penhorastatus;
     }
 
-    public PenhoraStatusResponse? Read(FPenhoraStatus dbRec, MsiSqlConnection oCnn)
+    public PenhoraStatusResponse? Read(FPenhoraStatus dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public PenhoraStatusResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public PenhoraStatusResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _penhorastatusFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

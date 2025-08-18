@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IPontoVirtualAcessosValidation
 {
-    Task<bool> ValidateReg(Models.PontoVirtualAcessos reg, IPontoVirtualAcessosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.PontoVirtualAcessos reg, IPontoVirtualAcessosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
 {
-    public async Task<bool> CanDelete(int? id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPontoVirtualAcessosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -31,7 +31,7 @@ public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.PontoVirtualAcessos reg, IPontoVirtualAcessosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.PontoVirtualAcessos reg, IPontoVirtualAcessosService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

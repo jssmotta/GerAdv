@@ -23,7 +23,7 @@ public partial class FEscritoriosFactory : IFEscritoriosFactory, IDisposable
         return FEscritorios.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEscritorios> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FEscritorios> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FEscritorios().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FEscritoriosFactory : IFEscritoriosFactory, IDisposable
         return new FEscritorios();
     }
 
-    public FEscritorios CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FEscritorios CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FEscritorios.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FEscritorios.DeleteRecordAsync(operadorId, id, oCnn);

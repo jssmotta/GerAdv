@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITipoContatoCRMReader
 {
-    Task<TipoContatoCRMResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.TipoContatoCRM?> ReadM(int id, MsiSqlConnection oCnn);
-    TipoContatoCRMResponse? Read(FTipoContatoCRM dbRec, MsiSqlConnection oCnn);
-    TipoContatoCRMResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<TipoContatoCRMResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.TipoContatoCRM?> ReadM(int id, MsiSqlConnection? oCnn);
+    TipoContatoCRMResponse? Read(FTipoContatoCRM dbRec, MsiSqlConnection? oCnn);
+    TipoContatoCRMResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoContatoCRMResponse? Read(FTipoContatoCRM dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoContatoCRMResponseAll? ReadAll(FTipoContatoCRM dbRec, IDataRecord dr);
     TipoContatoCRMResponseAll? ReadAll(SG.GerAdv.DBTipoContatoCRM dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<TipoContatoCRMResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoContatoCRMResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

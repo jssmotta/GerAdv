@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IViaRecebimentoWhere
 {
-    ViaRecebimentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ViaRecebimentoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ViaRecebimentoWhere(IFViaRecebimentoFactory viarecebimentoFactory) : IViaRecebimentoWhere
 {
     private readonly IFViaRecebimentoFactory _viarecebimentoFactory = viarecebimentoFactory ?? throw new ArgumentNullException(nameof(viarecebimentoFactory));
-    public ViaRecebimentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ViaRecebimentoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _viarecebimentoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var viarecebimento = new ViaRecebimentoResponse

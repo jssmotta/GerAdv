@@ -5,8 +5,8 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribunalFactory) : IDivisaoTribunalReader
 {
     private readonly IFDivisaoTribunalFactory _divisaotribunalFactory = divisaotribunalFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DivisaoTribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDivisaoTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<DivisaoTribunalResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DivisaoTribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDivisaoTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<DivisaoTribunalResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<DivisaoTribunalResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -41,13 +41,13 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         return result;
     }
 
-    public async Task<DivisaoTribunalResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<DivisaoTribunalResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _divisaotribunalFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.DivisaoTribunal?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.DivisaoTribunal?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _divisaotribunalFactory.CreateFromIdAsync(id, oCnn);
         var divisaotribunal = new Models.DivisaoTribunal
@@ -73,12 +73,12 @@ public partial class DivisaoTribunalReader(IFDivisaoTribunalFactory divisaotribu
         return divisaotribunal;
     }
 
-    public DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec, MsiSqlConnection oCnn)
+    public DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public DivisaoTribunalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public DivisaoTribunalResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _divisaotribunalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

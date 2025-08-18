@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOponentesWriter
 {
-    Task<FOponentes> WriteAsync(Models.Oponentes oponentes, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(OponentesResponse oponentes, int operadorId, MsiSqlConnection oCnn);
+    Task<FOponentes> WriteAsync(Models.Oponentes oponentes, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(OponentesResponse oponentes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OponentesWriter(IFOponentesFactory oponentesFactory) : IOponentesWriter
 {
     private readonly IFOponentesFactory _oponentesFactory = oponentesFactory ?? throw new ArgumentNullException(nameof(oponentesFactory));
-    public virtual async Task Delete(OponentesResponse oponentes, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(OponentesResponse oponentes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _oponentesFactory.DeleteAsync(operadorId, oponentes.Id, oCnn);
     }
 
-    public virtual async Task<FOponentes> WriteAsync(Models.Oponentes oponentes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOponentes> WriteAsync(Models.Oponentes oponentes, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (oponentes.Id.IsEmptyIDNumber() ? _oponentesFactory.CreateAsync() : _oponentesFactory.CreateFromIdAsync(oponentes.Id, oCnn));
         dbRec.FEMPFuncao = oponentes.EMPFuncao;

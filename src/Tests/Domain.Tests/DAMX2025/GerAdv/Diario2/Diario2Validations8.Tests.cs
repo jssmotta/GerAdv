@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class Diario2ValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFDiario2Factory> _mockDiario2Factory;
-    private readonly Mock<IDiario2Reader> _mockReader;
     private readonly Diario2Validation _validation;
     private readonly Mock<IDiario2Service> _mockDiario2Service;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class Diario2ValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public Diario2ValidationTests()
     {
-        _mockDiario2Factory = new Mock<IFDiario2Factory>();
-        _mockReader = new Mock<IDiario2Reader>();
         _validation = new Diario2Validation();
         _mockDiario2Service = new Mock<IDiario2Service>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class Diario2ValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Diario2 CreateValidDiario2()
+    private static Models.Diario2 CreateValidDiario2()
     {
         return new Models.Diario2
         {
@@ -75,19 +70,19 @@ public class Diario2ValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockDiario2Service.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDiario2>(), It.IsAny<string>())).ReturnsAsync(new List<Diario2ResponseAll>());
+        _mockDiario2Service.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDiario2>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Diario2s service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockDiario2Service.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDiario2>(), It.IsAny<string>())).ReturnsAsync(new List<Diario2ResponseAll>());
+        _mockDiario2Service.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDiario2>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Diario2s service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = 0 }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

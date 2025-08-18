@@ -23,7 +23,7 @@ public partial class FStatusAndamentoFactory : IFStatusAndamentoFactory, IDispos
         return FStatusAndamento.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FStatusAndamento> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FStatusAndamento> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FStatusAndamento().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FStatusAndamentoFactory : IFStatusAndamentoFactory, IDispos
         return new FStatusAndamento();
     }
 
-    public FStatusAndamento CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FStatusAndamento CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FStatusAndamento.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FStatusAndamento.DeleteRecordAsync(operadorId, id, oCnn);

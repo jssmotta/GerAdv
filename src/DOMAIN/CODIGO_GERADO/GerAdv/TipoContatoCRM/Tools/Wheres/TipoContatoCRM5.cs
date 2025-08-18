@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoContatoCRMWhere
 {
-    TipoContatoCRMResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TipoContatoCRMResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TipoContatoCRMWhere(IFTipoContatoCRMFactory tipocontatocrmFactory) : ITipoContatoCRMWhere
 {
     private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory ?? throw new ArgumentNullException(nameof(tipocontatocrmFactory));
-    public TipoContatoCRMResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoContatoCRMResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipocontatocrmFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipocontatocrm = new TipoContatoCRMResponse

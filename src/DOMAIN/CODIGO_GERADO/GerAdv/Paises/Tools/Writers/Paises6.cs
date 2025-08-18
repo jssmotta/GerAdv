@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPaisesWriter
 {
-    Task<FPaises> WriteAsync(Models.Paises paises, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(PaisesResponse paises, int operadorId, MsiSqlConnection oCnn);
+    Task<FPaises> WriteAsync(Models.Paises paises, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(PaisesResponse paises, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PaisesWriter(IFPaisesFactory paisesFactory) : IPaisesWriter
 {
     private readonly IFPaisesFactory _paisesFactory = paisesFactory ?? throw new ArgumentNullException(nameof(paisesFactory));
-    public virtual async Task Delete(PaisesResponse paises, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(PaisesResponse paises, int operadorId, MsiSqlConnection? oCnn)
     {
         await _paisesFactory.DeleteAsync(operadorId, paises.Id, oCnn);
     }
 
-    public virtual async Task<FPaises> WriteAsync(Models.Paises paises, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPaises> WriteAsync(Models.Paises paises, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (paises.Id.IsEmptyIDNumber() ? _paisesFactory.CreateAsync() : _paisesFactory.CreateFromIdAsync(paises.Id, oCnn));
         dbRec.FNome = paises.Nome;

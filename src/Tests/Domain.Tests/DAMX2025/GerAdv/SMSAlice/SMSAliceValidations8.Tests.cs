@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class SMSAliceValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFSMSAliceFactory> _mockSMSAliceFactory;
-    private readonly Mock<ISMSAliceReader> _mockReader;
     private readonly SMSAliceValidation _validation;
     private readonly Mock<ISMSAliceService> _mockSMSAliceService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class SMSAliceValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public SMSAliceValidationTests()
     {
-        _mockSMSAliceFactory = new Mock<IFSMSAliceFactory>();
-        _mockReader = new Mock<ISMSAliceReader>();
         _validation = new SMSAliceValidation();
         _mockSMSAliceService = new Mock<ISMSAliceService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class SMSAliceValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.SMSAlice CreateValidSMSAlice()
+    private static Models.SMSAlice CreateValidSMSAlice()
     {
         return new Models.SMSAlice
         {
@@ -72,19 +67,19 @@ public class SMSAliceValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockSMSAliceService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSMSAlice>(), It.IsAny<string>())).ReturnsAsync(new List<SMSAliceResponseAll>());
+        _mockSMSAliceService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSMSAlice>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the SMSAlices service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = id }));
-        _mockTipoEMailReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoEMailResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockTipoEMailReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoEMailResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockSMSAliceService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSMSAlice>(), It.IsAny<string>())).ReturnsAsync(new List<SMSAliceResponseAll>());
+        _mockSMSAliceService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterSMSAlice>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the SMSAlices service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = 0 }));
-        _mockTipoEMailReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoEMailResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockTipoEMailReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoEMailResponse { Id = 0 }));
     }
 
     [Fact]

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IEnquadramentoEmpresaValidation
 {
-    Task<bool> ValidateReg(Models.EnquadramentoEmpresa reg, IEnquadramentoEmpresaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IEnquadramentoEmpresaService service, IClientesService clientesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.EnquadramentoEmpresa reg, IEnquadramentoEmpresaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IEnquadramentoEmpresaService service, IClientesService clientesService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
 {
-    public async Task<bool> CanDelete(int? id, IEnquadramentoEmpresaService service, IClientesService clientesService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IEnquadramentoEmpresaService service, IClientesService clientesService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -36,7 +36,7 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.EnquadramentoEmpresa reg, IEnquadramentoEmpresaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.EnquadramentoEmpresa reg, IEnquadramentoEmpresaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

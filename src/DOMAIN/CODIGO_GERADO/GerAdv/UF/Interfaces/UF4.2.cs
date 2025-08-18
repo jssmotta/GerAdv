@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IUFReader
 {
-    Task<UFResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.UF?> ReadM(int id, MsiSqlConnection oCnn);
-    UFResponse? Read(FUF dbRec, MsiSqlConnection oCnn);
-    UFResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<UFResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.UF?> ReadM(int id, MsiSqlConnection? oCnn);
+    UFResponse? Read(FUF dbRec, MsiSqlConnection? oCnn);
+    UFResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     UFResponse? Read(FUF dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     UFResponseAll? ReadAll(FUF dbRec, IDataRecord dr);
     UFResponseAll? ReadAll(SG.GerAdv.DBUF dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<UFResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<UFResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

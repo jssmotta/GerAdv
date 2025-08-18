@@ -1,12 +1,6 @@
-﻿using System.Globalization; 
-
-
-namespace MenphisSI;
-
- 
+﻿namespace MenphisSI; 
 public static partial class DevourerOne
-{
-   
+{   
     public static DateTime DateTimeUtc
     {
         get
@@ -17,12 +11,7 @@ public static partial class DevourerOne
             return TimeZoneInfo.ConvertTimeFromUtc(dateTime, hrBrasilia);
         }
     }
-     
-    public static string DiaSemana(in DateTime dData)
-    {
-        var cRet = dData.ToString(format: "dddd", provider: new CultureInfo(name: "pt-BR"));
-        return cRet[..1].ToUpper() + cRet[1..];
-    }
+      
    
     public static bool IsValidDate2(string? dateTime) => IsValidDate25(dateTime).ret;
 

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Reader
 {
     private readonly IFDiario2Factory _diario2Factory = diario2Factory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("diaCodigo, diaData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<Diario2ResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDiario2.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<Diario2ResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("diaCodigo, diaData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<Diario2ResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDiario2.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<Diario2ResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<Diario2ResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         return result;
     }
 
-    public async Task<Diario2Response?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<Diario2Response?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _diario2Factory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Diario2?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Diario2?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _diario2Factory.CreateFromIdAsync(id, oCnn);
         var diario2 = new Models.Diario2
@@ -65,12 +65,12 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         return diario2;
     }
 
-    public Diario2Response? Read(FDiario2 dbRec, MsiSqlConnection oCnn)
+    public Diario2Response? Read(FDiario2 dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public Diario2Response? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public Diario2Response? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _diario2Factory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

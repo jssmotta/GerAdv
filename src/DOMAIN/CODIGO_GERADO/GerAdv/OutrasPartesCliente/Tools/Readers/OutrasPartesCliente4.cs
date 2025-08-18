@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteReader
 {
     private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opcCodigo, opcNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<OutrasPartesClienteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOutrasPartesCliente.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<OutrasPartesClienteResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opcCodigo, opcNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<OutrasPartesClienteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOutrasPartesCliente.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<OutrasPartesClienteResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<OutrasPartesClienteResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
         return result;
     }
 
-    public async Task<OutrasPartesClienteResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<OutrasPartesClienteResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _outraspartesclienteFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.OutrasPartesCliente?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.OutrasPartesCliente?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _outraspartesclienteFactory.CreateFromIdAsync(id, oCnn);
         var outraspartescliente = new Models.OutrasPartesCliente
@@ -84,12 +84,12 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
         return outraspartescliente;
     }
 
-    public OutrasPartesClienteResponse? Read(FOutrasPartesCliente dbRec, MsiSqlConnection oCnn)
+    public OutrasPartesClienteResponse? Read(FOutrasPartesCliente dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public OutrasPartesClienteResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OutrasPartesClienteResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _outraspartesclienteFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

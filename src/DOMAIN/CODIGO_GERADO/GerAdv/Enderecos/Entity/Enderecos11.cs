@@ -23,7 +23,7 @@ public partial class FEnderecosFactory : IFEnderecosFactory, IDisposable
         return FEnderecos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEnderecos> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FEnderecos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FEnderecos().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FEnderecosFactory : IFEnderecosFactory, IDisposable
         return new FEnderecos();
     }
 
-    public FEnderecos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FEnderecos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FEnderecos.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FEnderecos.DeleteRecordAsync(operadorId, id, oCnn);

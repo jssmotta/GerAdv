@@ -37,9 +37,9 @@ export interface IPreClientes {
 	email: string,
 	assistido: string,
 	assrg: string,
-	asscpf: string,
 	assendereco: string,
 	cnh: string,
+	asscpf: string,
 }
 
 export interface IPreClientesFormProps {

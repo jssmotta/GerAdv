@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class PaisesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFPaisesFactory> _mockPaisesFactory;
-    private readonly Mock<IPaisesReader> _mockReader;
     private readonly PaisesValidation _validation;
     private readonly Mock<IPaisesService> _mockPaisesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class PaisesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public PaisesValidationTests()
     {
-        _mockPaisesFactory = new Mock<IFPaisesFactory>();
-        _mockReader = new Mock<IPaisesReader>();
         _validation = new PaisesValidation();
         _mockPaisesService = new Mock<IPaisesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class PaisesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Paises CreateValidPaises()
+    private static Models.Paises CreateValidPaises()
     {
         return new Models.Paises
         {
@@ -65,14 +60,14 @@ public class PaisesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockPaisesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPaises>(), It.IsAny<string>())).ReturnsAsync(new List<PaisesResponseAll>());
+        _mockPaisesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPaises>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Paisess service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockPaisesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPaises>(), It.IsAny<string>())).ReturnsAsync(new List<PaisesResponseAll>());
+        _mockPaisesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPaises>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Paisess service mock
     }
 

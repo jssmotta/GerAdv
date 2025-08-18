@@ -178,7 +178,7 @@ public partial class HonorariosDadosContratoService
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
-    private async Task<IEnumerable<HonorariosDadosContratoResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<HonorariosDadosContratoResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
     {
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
         if (oCnn == null)

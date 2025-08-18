@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAcaoWhere
 {
-    AcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    AcaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class AcaoWhere(IFAcaoFactory acaoFactory) : IAcaoWhere
 {
     private readonly IFAcaoFactory _acaoFactory = acaoFactory ?? throw new ArgumentNullException(nameof(acaoFactory));
-    public AcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AcaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _acaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var acao = new AcaoResponse

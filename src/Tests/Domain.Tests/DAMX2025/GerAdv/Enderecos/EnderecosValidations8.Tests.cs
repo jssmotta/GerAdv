@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class EnderecosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFEnderecosFactory> _mockEnderecosFactory;
-    private readonly Mock<IEnderecosReader> _mockReader;
     private readonly EnderecosValidation _validation;
     private readonly Mock<IEnderecosService> _mockEnderecosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class EnderecosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public EnderecosValidationTests()
     {
-        _mockEnderecosFactory = new Mock<IFEnderecosFactory>();
-        _mockReader = new Mock<IEnderecosReader>();
         _validation = new EnderecosValidation();
         _mockEnderecosService = new Mock<IEnderecosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class EnderecosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Enderecos CreateValidEnderecos()
+    private static Models.Enderecos CreateValidEnderecos()
     {
         return new Models.Enderecos
         {
@@ -86,17 +81,17 @@ public class EnderecosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockEnderecosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnderecos>(), It.IsAny<string>())).ReturnsAsync(new List<EnderecosResponseAll>());
+        _mockEnderecosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnderecos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Enderecoss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockEnderecosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnderecos>(), It.IsAny<string>())).ReturnsAsync(new List<EnderecosResponseAll>());
+        _mockEnderecosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEnderecos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Enderecoss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]

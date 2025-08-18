@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoEnderecoSistemaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoEnderecoSistemaFactory> _mockTipoEnderecoSistemaFactory;
-    private readonly Mock<ITipoEnderecoSistemaReader> _mockReader;
     private readonly TipoEnderecoSistemaValidation _validation;
     private readonly Mock<ITipoEnderecoSistemaService> _mockTipoEnderecoSistemaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoEnderecoSistemaValidationTests()
     {
-        _mockTipoEnderecoSistemaFactory = new Mock<IFTipoEnderecoSistemaFactory>();
-        _mockReader = new Mock<ITipoEnderecoSistemaReader>();
         _validation = new TipoEnderecoSistemaValidation();
         _mockTipoEnderecoSistemaService = new Mock<ITipoEnderecoSistemaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoEnderecoSistema CreateValidTipoEnderecoSistema()
+    private static Models.TipoEnderecoSistema CreateValidTipoEnderecoSistema()
     {
         return new Models.TipoEnderecoSistema
         {
@@ -66,14 +61,14 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoEnderecoSistemaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEnderecoSistema>(), It.IsAny<string>())).ReturnsAsync(new List<TipoEnderecoSistemaResponseAll>());
+        _mockTipoEnderecoSistemaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEnderecoSistema>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoEnderecoSistemas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoEnderecoSistemaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEnderecoSistema>(), It.IsAny<string>())).ReturnsAsync(new List<TipoEnderecoSistemaResponseAll>());
+        _mockTipoEnderecoSistemaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEnderecoSistema>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoEnderecoSistemas service mock
     }
 

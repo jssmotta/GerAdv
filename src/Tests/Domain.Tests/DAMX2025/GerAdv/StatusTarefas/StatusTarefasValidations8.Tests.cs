@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class StatusTarefasValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFStatusTarefasFactory> _mockStatusTarefasFactory;
-    private readonly Mock<IStatusTarefasReader> _mockReader;
     private readonly StatusTarefasValidation _validation;
     private readonly Mock<IStatusTarefasService> _mockStatusTarefasService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class StatusTarefasValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public StatusTarefasValidationTests()
     {
-        _mockStatusTarefasFactory = new Mock<IFStatusTarefasFactory>();
-        _mockReader = new Mock<IStatusTarefasReader>();
         _validation = new StatusTarefasValidation();
         _mockStatusTarefasService = new Mock<IStatusTarefasService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class StatusTarefasValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.StatusTarefas CreateValidStatusTarefas()
+    private static Models.StatusTarefas CreateValidStatusTarefas()
     {
         return new Models.StatusTarefas
         {
@@ -65,14 +60,14 @@ public class StatusTarefasValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockStatusTarefasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusTarefas>(), It.IsAny<string>())).ReturnsAsync(new List<StatusTarefasResponseAll>());
+        _mockStatusTarefasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusTarefas>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the StatusTarefass service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockStatusTarefasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusTarefas>(), It.IsAny<string>())).ReturnsAsync(new List<StatusTarefasResponseAll>());
+        _mockStatusTarefasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterStatusTarefas>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the StatusTarefass service mock
     }
 

@@ -23,7 +23,7 @@ public partial class FGraphFactory : IFGraphFactory, IDisposable
         return FGraph.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGraph> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGraph> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FGraph().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FGraphFactory : IFGraphFactory, IDisposable
         return new FGraph();
     }
 
-    public FGraph CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FGraph CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FGraph.CreateFromParameters(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FGraph.DeleteRecordAsync(operadorId, id, oCnn);

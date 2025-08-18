@@ -4,14 +4,14 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IGUTAtividadesMatrizReader
 {
-    Task<GUTAtividadesMatrizResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.GUTAtividadesMatriz?> ReadM(int id, MsiSqlConnection oCnn);
-    GUTAtividadesMatrizResponse? Read(FGUTAtividadesMatriz dbRec, MsiSqlConnection oCnn);
-    GUTAtividadesMatrizResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<GUTAtividadesMatrizResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.GUTAtividadesMatriz?> ReadM(int id, MsiSqlConnection? oCnn);
+    GUTAtividadesMatrizResponse? Read(FGUTAtividadesMatriz dbRec, MsiSqlConnection? oCnn);
+    GUTAtividadesMatrizResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTAtividadesMatrizResponse? Read(FGUTAtividadesMatriz dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTAtividadesMatrizResponseAll? ReadAll(FGUTAtividadesMatriz dbRec, IDataRecord dr);
     GUTAtividadesMatrizResponseAll? ReadAll(SG.GerAdv.DBGUTAtividadesMatriz dbRec, DataRow dr);
-    Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

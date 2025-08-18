@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) : IProDespesasReader
 {
     private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("desCodigo, desData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ProDespesasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProDespesas.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ProDespesasResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("desCodigo, desData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ProDespesasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProDespesas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ProDespesasResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ProDespesasResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         return result;
     }
 
-    public async Task<ProDespesasResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ProDespesasResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _prodespesasFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProDespesas?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ProDespesas?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _prodespesasFactory.CreateFromIdAsync(id, oCnn);
         var prodespesas = new Models.ProDespesas
@@ -76,12 +76,12 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         return prodespesas;
     }
 
-    public ProDespesasResponse? Read(FProDespesas dbRec, MsiSqlConnection oCnn)
+    public ProDespesasResponse? Read(FProDespesas dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ProDespesasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ProDespesasResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _prodespesasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

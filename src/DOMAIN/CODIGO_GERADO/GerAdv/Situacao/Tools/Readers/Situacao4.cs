@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class SituacaoReader(IFSituacaoFactory situacaoFactory) : ISituacaoReader
 {
     private readonly IFSituacaoFactory _situacaoFactory = situacaoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("sitCodigo, sitParte_Int", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<SituacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBSituacao.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<SituacaoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("sitCodigo, sitParte_Int", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<SituacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBSituacao.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<SituacaoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<SituacaoResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class SituacaoReader(IFSituacaoFactory situacaoFactory) : ISituac
         return result;
     }
 
-    public async Task<SituacaoResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<SituacaoResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _situacaoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Situacao?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Situacao?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _situacaoFactory.CreateFromIdAsync(id, oCnn);
         var situacao = new Models.Situacao
@@ -62,12 +62,12 @@ public partial class SituacaoReader(IFSituacaoFactory situacaoFactory) : ISituac
         return situacao;
     }
 
-    public SituacaoResponse? Read(FSituacao dbRec, MsiSqlConnection oCnn)
+    public SituacaoResponse? Read(FSituacao dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public SituacaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public SituacaoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _situacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

@@ -23,7 +23,7 @@ public partial class FDiario2Factory : IFDiario2Factory, IDisposable
         return FDiario2.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FDiario2> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FDiario2> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FDiario2().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FDiario2Factory : IFDiario2Factory, IDisposable
         return new FDiario2();
     }
 
-    public FDiario2 CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FDiario2 CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FDiario2.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FDiario2.DeleteRecordAsync(operadorId, id, oCnn);

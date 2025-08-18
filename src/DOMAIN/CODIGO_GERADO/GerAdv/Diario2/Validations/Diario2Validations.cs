@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IDiario2Validation
 {
-    Task<bool> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class Diario2Validation : IDiario2Validation
 {
-    public async Task<bool> CanDelete(int? id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IDiario2Service service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -35,7 +35,7 @@ public class Diario2Validation : IDiario2Validation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Diario2 reg, IDiario2Service service, IOperadorReader operadorReader, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

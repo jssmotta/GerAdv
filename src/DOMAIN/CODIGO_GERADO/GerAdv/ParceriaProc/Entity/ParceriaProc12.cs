@@ -29,25 +29,25 @@ public partial class FParceriaProc : MenphisSI.SG.GerAdv.DBParceriaProc, IDBParc
     {
     }
 
-    public async Task<FParceriaProc> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FParceriaProc> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fParceriaProc = new FParceriaProc();
         await fParceriaProc.CarregarAsync(id, oCnn);
         return fParceriaProc;
     }
 
-    private FParceriaProc(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
+    private FParceriaProc(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FParceriaProc CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FParceriaProc CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FParceriaProc(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

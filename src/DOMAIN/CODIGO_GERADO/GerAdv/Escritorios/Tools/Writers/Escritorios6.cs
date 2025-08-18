@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEscritoriosWriter
 {
-    Task<FEscritorios> WriteAsync(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection oCnn);
+    Task<FEscritorios> WriteAsync(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EscritoriosWriter(IFEscritoriosFactory escritoriosFactory) : IEscritoriosWriter
 {
     private readonly IFEscritoriosFactory _escritoriosFactory = escritoriosFactory ?? throw new ArgumentNullException(nameof(escritoriosFactory));
-    public virtual async Task Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(EscritoriosResponse escritorios, int operadorId, MsiSqlConnection? oCnn)
     {
         await _escritoriosFactory.DeleteAsync(operadorId, escritorios.Id, oCnn);
     }
 
-    public virtual async Task<FEscritorios> WriteAsync(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEscritorios> WriteAsync(Models.Escritorios escritorios, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (escritorios.Id.IsEmptyIDNumber() ? _escritoriosFactory.CreateAsync() : _escritoriosFactory.CreateFromIdAsync(escritorios.Id, oCnn));
         dbRec.FGUID = escritorios.GUID;

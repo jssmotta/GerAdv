@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITipoModeloDocumentoWhere
 {
-    TipoModeloDocumentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TipoModeloDocumentoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TipoModeloDocumentoWhere(IFTipoModeloDocumentoFactory tipomodelodocumentoFactory) : ITipoModeloDocumentoWhere
 {
     private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory ?? throw new ArgumentNullException(nameof(tipomodelodocumentoFactory));
-    public TipoModeloDocumentoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoModeloDocumentoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipomodelodocumentoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tipomodelodocumento = new TipoModeloDocumentoResponse

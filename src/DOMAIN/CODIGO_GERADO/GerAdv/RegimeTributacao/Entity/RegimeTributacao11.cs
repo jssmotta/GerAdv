@@ -23,7 +23,7 @@ public partial class FRegimeTributacaoFactory : IFRegimeTributacaoFactory, IDisp
         return FRegimeTributacao.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FRegimeTributacao> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FRegimeTributacao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FRegimeTributacao().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FRegimeTributacaoFactory : IFRegimeTributacaoFactory, IDisp
         return new FRegimeTributacao();
     }
 
-    public FRegimeTributacao CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FRegimeTributacao CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FRegimeTributacao.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FRegimeTributacao.DeleteRecordAsync(operadorId, id, oCnn);

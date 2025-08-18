@@ -16,7 +16,7 @@ public partial class DBContatoCRMView : VNoAuditor, ICadastros
     }
 
 #endregion
-    public DBContatoCRMView(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBContatoCRMView(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
         if (oCnn is null)

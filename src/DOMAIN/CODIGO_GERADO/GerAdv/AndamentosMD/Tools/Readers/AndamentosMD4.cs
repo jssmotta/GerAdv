@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactory) : IAndamentosMDReader
 {
     private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("amdCodigo, amdNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<AndamentosMDResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAndamentosMD.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<AndamentosMDResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("amdCodigo, amdNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<AndamentosMDResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAndamentosMD.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<AndamentosMDResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<AndamentosMDResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         return result;
     }
 
-    public async Task<AndamentosMDResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<AndamentosMDResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _andamentosmdFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.AndamentosMD?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.AndamentosMD?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _andamentosmdFactory.CreateFromIdAsync(id, oCnn);
         var andamentosmd = new Models.AndamentosMD
@@ -64,12 +64,12 @@ public partial class AndamentosMDReader(IFAndamentosMDFactory andamentosmdFactor
         return andamentosmd;
     }
 
-    public AndamentosMDResponse? Read(FAndamentosMD dbRec, MsiSqlConnection oCnn)
+    public AndamentosMDResponse? Read(FAndamentosMD dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public AndamentosMDResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AndamentosMDResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _andamentosmdFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

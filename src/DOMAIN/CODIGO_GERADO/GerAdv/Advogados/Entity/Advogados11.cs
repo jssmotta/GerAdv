@@ -23,7 +23,7 @@ public partial class FAdvogadosFactory : IFAdvogadosFactory, IDisposable
         return FAdvogados.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FAdvogados> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FAdvogados> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FAdvogados().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FAdvogadosFactory : IFAdvogadosFactory, IDisposable
         return new FAdvogados();
     }
 
-    public FAdvogados CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FAdvogados CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FAdvogados.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FAdvogados.DeleteRecordAsync(operadorId, id, oCnn);

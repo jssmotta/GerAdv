@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class OperadoresValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFOperadoresFactory> _mockOperadoresFactory;
-    private readonly Mock<IOperadoresReader> _mockReader;
     private readonly OperadoresValidation _validation;
     private readonly Mock<IOperadoresService> _mockOperadoresService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class OperadoresValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public OperadoresValidationTests()
     {
-        _mockOperadoresFactory = new Mock<IFOperadoresFactory>();
-        _mockReader = new Mock<IOperadoresReader>();
         _validation = new OperadoresValidation();
         _mockOperadoresService = new Mock<IOperadoresService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class OperadoresValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Operadores CreateValidOperadores()
+    private static Models.Operadores CreateValidOperadores()
     {
         return new Models.Operadores
         {
@@ -76,17 +71,17 @@ public class OperadoresValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockOperadoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadores>(), It.IsAny<string>())).ReturnsAsync(new List<OperadoresResponseAll>());
+        _mockOperadoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Operadoress service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockOperadoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadores>(), It.IsAny<string>())).ReturnsAsync(new List<OperadoresResponseAll>());
+        _mockOperadoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Operadoress service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

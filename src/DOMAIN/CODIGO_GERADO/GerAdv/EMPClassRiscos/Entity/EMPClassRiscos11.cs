@@ -23,7 +23,7 @@ public partial class FEMPClassRiscosFactory : IFEMPClassRiscosFactory, IDisposab
         return FEMPClassRiscos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEMPClassRiscos> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FEMPClassRiscos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FEMPClassRiscos().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FEMPClassRiscosFactory : IFEMPClassRiscosFactory, IDisposab
         return new FEMPClassRiscos();
     }
 
-    public FEMPClassRiscos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FEMPClassRiscos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FEMPClassRiscos.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FEMPClassRiscos.DeleteRecordAsync(operadorId, id, oCnn);

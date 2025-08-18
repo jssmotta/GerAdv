@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ContatoCRMViewReader(IFContatoCRMViewFactory contatocrmviewFactory) : IContatoCRMViewReader
 {
     private readonly IFContatoCRMViewFactory _contatocrmviewFactory = contatocrmviewFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ccwCodigo, ccwData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ContatoCRMViewResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContatoCRMView.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ContatoCRMViewResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ccwCodigo, ccwData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ContatoCRMViewResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContatoCRMView.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ContatoCRMViewResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ContatoCRMViewResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ContatoCRMViewReader(IFContatoCRMViewFactory contatocrmview
         return result;
     }
 
-    public async Task<ContatoCRMViewResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ContatoCRMViewResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _contatocrmviewFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ContatoCRMView?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ContatoCRMView?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _contatocrmviewFactory.CreateFromIdAsync(id, oCnn);
         var contatocrmview = new Models.ContatoCRMView
@@ -61,12 +61,12 @@ public partial class ContatoCRMViewReader(IFContatoCRMViewFactory contatocrmview
         return contatocrmview;
     }
 
-    public ContatoCRMViewResponse? Read(FContatoCRMView dbRec, MsiSqlConnection oCnn)
+    public ContatoCRMViewResponse? Read(FContatoCRMView dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ContatoCRMViewResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ContatoCRMViewResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _contatocrmviewFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

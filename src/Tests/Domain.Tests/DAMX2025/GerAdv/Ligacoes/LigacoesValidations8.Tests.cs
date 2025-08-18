@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class LigacoesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFLigacoesFactory> _mockLigacoesFactory;
-    private readonly Mock<ILigacoesReader> _mockReader;
     private readonly LigacoesValidation _validation;
     private readonly Mock<ILigacoesService> _mockLigacoesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class LigacoesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public LigacoesValidationTests()
     {
-        _mockLigacoesFactory = new Mock<IFLigacoesFactory>();
-        _mockReader = new Mock<ILigacoesReader>();
         _validation = new LigacoesValidation();
         _mockLigacoesService = new Mock<ILigacoesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class LigacoesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Ligacoes CreateValidLigacoes()
+    private static Models.Ligacoes CreateValidLigacoes()
     {
         return new Models.Ligacoes
         {
@@ -94,19 +89,19 @@ public class LigacoesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockLigacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLigacoes>(), It.IsAny<string>())).ReturnsAsync(new List<LigacoesResponseAll>());
+        _mockLigacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLigacoes>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Ligacoess service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
-        _mockRamalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RamalResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockRamalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RamalResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockLigacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLigacoes>(), It.IsAny<string>())).ReturnsAsync(new List<LigacoesResponseAll>());
+        _mockLigacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLigacoes>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Ligacoess service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
-        _mockRamalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RamalResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockRamalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RamalResponse { Id = 0 }));
     }
 
     [Fact]

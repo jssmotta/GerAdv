@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IOperadorEMailPopupReader
 {
-    Task<OperadorEMailPopupResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.OperadorEMailPopup?> ReadM(int id, MsiSqlConnection oCnn);
-    OperadorEMailPopupResponse? Read(FOperadorEMailPopup dbRec, MsiSqlConnection oCnn);
-    OperadorEMailPopupResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<OperadorEMailPopupResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.OperadorEMailPopup?> ReadM(int id, MsiSqlConnection? oCnn);
+    OperadorEMailPopupResponse? Read(FOperadorEMailPopup dbRec, MsiSqlConnection? oCnn);
+    OperadorEMailPopupResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OperadorEMailPopupResponse? Read(FOperadorEMailPopup dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OperadorEMailPopupResponseAll? ReadAll(FOperadorEMailPopup dbRec, IDataRecord dr);
     OperadorEMailPopupResponseAll? ReadAll(SG.GerAdv.DBOperadorEMailPopup dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<OperadorEMailPopupResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<OperadorEMailPopupResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

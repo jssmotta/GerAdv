@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class StatusInstanciaReader(IFStatusInstanciaFactory statusinstanciaFactory) : IStatusInstanciaReader
 {
     private readonly IFStatusInstanciaFactory _statusinstanciaFactory = statusinstanciaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("istCodigo, istNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<StatusInstanciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBStatusInstancia.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<StatusInstanciaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("istCodigo, istNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<StatusInstanciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBStatusInstancia.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<StatusInstanciaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<StatusInstanciaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class StatusInstanciaReader(IFStatusInstanciaFactory statusinstan
         return result;
     }
 
-    public async Task<StatusInstanciaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<StatusInstanciaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _statusinstanciaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.StatusInstancia?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.StatusInstancia?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _statusinstanciaFactory.CreateFromIdAsync(id, oCnn);
         var statusinstancia = new Models.StatusInstancia
@@ -60,12 +60,12 @@ public partial class StatusInstanciaReader(IFStatusInstanciaFactory statusinstan
         return statusinstancia;
     }
 
-    public StatusInstanciaResponse? Read(FStatusInstancia dbRec, MsiSqlConnection oCnn)
+    public StatusInstanciaResponse? Read(FStatusInstancia dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public StatusInstanciaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public StatusInstanciaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _statusinstanciaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

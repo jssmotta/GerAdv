@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ServicosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFServicosFactory> _mockServicosFactory;
-    private readonly Mock<IServicosReader> _mockReader;
     private readonly ServicosValidation _validation;
     private readonly Mock<IServicosService> _mockServicosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ServicosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ServicosValidationTests()
     {
-        _mockServicosFactory = new Mock<IFServicosFactory>();
-        _mockReader = new Mock<IServicosReader>();
         _validation = new ServicosValidation();
         _mockServicosService = new Mock<IServicosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ServicosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Servicos CreateValidServicos()
+    private static Models.Servicos CreateValidServicos()
     {
         return new Models.Servicos
         {
@@ -67,14 +62,14 @@ public class ServicosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockServicosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterServicos>(), It.IsAny<string>())).ReturnsAsync(new List<ServicosResponseAll>());
+        _mockServicosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterServicos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Servicoss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockServicosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterServicos>(), It.IsAny<string>())).ReturnsAsync(new List<ServicosResponseAll>());
+        _mockServicosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterServicos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Servicoss service mock
     }
 

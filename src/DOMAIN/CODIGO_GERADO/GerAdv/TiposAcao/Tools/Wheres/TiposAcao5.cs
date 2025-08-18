@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITiposAcaoWhere
 {
-    TiposAcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TiposAcaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TiposAcaoWhere(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWhere
 {
     private readonly IFTiposAcaoFactory _tiposacaoFactory = tiposacaoFactory ?? throw new ArgumentNullException(nameof(tiposacaoFactory));
-    public TiposAcaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TiposAcaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tiposacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var tiposacao = new TiposAcaoResponse

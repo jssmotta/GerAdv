@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class OponentesRepLegalValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFOponentesRepLegalFactory> _mockOponentesRepLegalFactory;
-    private readonly Mock<IOponentesRepLegalReader> _mockReader;
     private readonly OponentesRepLegalValidation _validation;
     private readonly Mock<IOponentesRepLegalService> _mockOponentesRepLegalService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class OponentesRepLegalValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public OponentesRepLegalValidationTests()
     {
-        _mockOponentesRepLegalFactory = new Mock<IFOponentesRepLegalFactory>();
-        _mockReader = new Mock<IOponentesRepLegalReader>();
         _validation = new OponentesRepLegalValidation();
         _mockOponentesRepLegalService = new Mock<IOponentesRepLegalService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class OponentesRepLegalValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.OponentesRepLegal CreateValidOponentesRepLegal()
+    private static Models.OponentesRepLegal CreateValidOponentesRepLegal()
     {
         return new Models.OponentesRepLegal
         {
@@ -82,19 +77,19 @@ public class OponentesRepLegalValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync(new List<OponentesRepLegalResponseAll>());
+        _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OponentesRepLegals service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync(new List<OponentesRepLegalResponseAll>());
+        _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OponentesRepLegals service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = 0 }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -150,8 +145,8 @@ public class OponentesRepLegalValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync(new List<OponentesRepLegalResponseAll> { existingOponentesRepLegal });
         // Setup other mocks but don't override the OponentesRepLegals service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(oponentesreplegal, _mockOponentesRepLegalService.Object, _mockOponentesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -174,8 +169,8 @@ public class OponentesRepLegalValidationTests : IDisposable
         };
         _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync(new List<OponentesRepLegalResponseAll> { existingOponentesRepLegal });
         // Setup other mocks but don't override the OponentesRepLegals service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(oponentesreplegal, _mockOponentesRepLegalService.Object, _mockOponentesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -197,8 +192,8 @@ public class OponentesRepLegalValidationTests : IDisposable
         };
         _mockOponentesRepLegalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOponentesRepLegal>(), It.IsAny<string>())).ReturnsAsync(new List<OponentesRepLegalResponseAll> { existingOponentesRepLegal });
         // Setup other mocks but don't override the OponentesRepLegals service mock
-        _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OponentesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(oponentesreplegal, _mockOponentesRepLegalService.Object, _mockOponentesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert

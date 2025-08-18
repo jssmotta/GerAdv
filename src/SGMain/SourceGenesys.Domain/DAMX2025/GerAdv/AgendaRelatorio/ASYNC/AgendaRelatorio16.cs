@@ -183,7 +183,7 @@ if (pFldFxxxNomeArea) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeArea, m_
     private async Task<int> GravaNewIdAsync(
         DBToolWTable32Async updateTool,
         int insertId,
-        MsiSqlConnection oCnn,
+        MsiSqlConnection? oCnn,
         CancellationToken cancellationToken)
     {
         ID = insertId;

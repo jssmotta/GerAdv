@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAdvogadosWriter
 {
-    Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection oCnn);
+    Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWriter
 {
     private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException(nameof(advogadosFactory));
-    public virtual async Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection? oCnn)
     {
         await _advogadosFactory.DeleteAsync(operadorId, advogados.Id, oCnn);
     }
 
-    public virtual async Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (advogados.Id.IsEmptyIDNumber() ? _advogadosFactory.CreateAsync() : _advogadosFactory.CreateFromIdAsync(advogados.Id, oCnn));
         dbRec.FCargo = advogados.Cargo;

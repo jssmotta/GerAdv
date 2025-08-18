@@ -40,9 +40,9 @@ export interface FilterPreClientes
  email?: string;
  assistido?: string;
  assrg?: string;
- asscpf?: string;
  assendereco?: string;
  cnh?: string;
+ asscpf?: string;
     codigo_filtro?: number;
     codigo_filtro_end?: number;
 }
@@ -85,9 +85,9 @@ export class FilterPreClientesDefaults implements FilterPreClientes {
     email?: string = '';
     assistido?: string = '';
     assrg?: string = '';
-    asscpf?: string = '';
     assendereco?: string = '';
     cnh?: string = '';
+    asscpf?: string = '';
     codigo_filtro?: number = -2147483648;
     codigo_filtro_end?: number = -2147483648;
 }

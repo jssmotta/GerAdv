@@ -180,12 +180,6 @@ public partial record FilterPreClientes
     [JsonPropertyName("assrg_end")]
     public string? AssRG_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("asscpf")]
-    public string? AssCPF { get; set; } = string.Empty;
-
-    [JsonPropertyName("asscpf_end")]
-    public string? AssCPF_end { get; set; } = string.Empty;
-
     [JsonPropertyName("assendereco")]
     public string? AssEndereco { get; set; } = string.Empty;
 
@@ -197,6 +191,12 @@ public partial record FilterPreClientes
 
     [JsonPropertyName("cnh_end")]
     public string? CNH_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("asscpf")]
+    public string? AssCPF { get; set; } = string.Empty;
+
+    [JsonPropertyName("asscpf_end")]
+    public string? AssCPF_end { get; set; } = string.Empty;
 
     [JsonPropertyName("codigo_filtro")]
     public int Codigo_filtro { get; set; } = int.MinValue;

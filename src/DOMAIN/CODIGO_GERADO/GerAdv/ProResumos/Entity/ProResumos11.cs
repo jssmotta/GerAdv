@@ -23,7 +23,7 @@ public partial class FProResumosFactory : IFProResumosFactory, IDisposable
         return FProResumos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProResumos> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FProResumos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FProResumos().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FProResumosFactory : IFProResumosFactory, IDisposable
         return new FProResumos();
     }
 
-    public FProResumos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FProResumos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FProResumos.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FProResumos.DeleteRecordAsync(operadorId, id, oCnn);

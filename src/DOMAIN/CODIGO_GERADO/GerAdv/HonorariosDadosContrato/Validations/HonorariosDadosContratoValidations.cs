@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IHonorariosDadosContratoValidation
 {
-    Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidation
 {
-    public async Task<bool> CanDelete(int? id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IHonorariosDadosContratoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -35,7 +35,7 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.HonorariosDadosContrato reg, IHonorariosDadosContratoService service, IClientesReader clientesReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

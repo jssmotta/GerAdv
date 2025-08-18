@@ -9,7 +9,7 @@ namespace MenphisSI.GerAdv.WarmUp;
 public partial class OperadorWarmUp
 {
     public async Task WarmReadStringAuditor(string uri, MsiSqlConnection? oCnn) => await CreateIdx(uri, oCnn);
-    private async Task CreateIdx(string uri, MsiSqlConnection oCnn)
+    private async Task CreateIdx(string uri, MsiSqlConnection? oCnn)
     {
         Console.WriteLine($"WarmUp Operador: {uri}");
         var testSql = $"SELECT TOP (1) '1' FROM sys.indexes WHERE name = 'idx_Operador_AuditorDtAtu' AND object_id = OBJECT_ID('[{oCnn.UseDbo}].[Operador]')";

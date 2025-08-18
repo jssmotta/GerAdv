@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class InstanciaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFInstanciaFactory> _mockInstanciaFactory;
-    private readonly Mock<IInstanciaReader> _mockReader;
     private readonly InstanciaValidation _validation;
     private readonly Mock<IInstanciaService> _mockInstanciaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -17,8 +14,6 @@ public class InstanciaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public InstanciaValidationTests()
     {
-        _mockInstanciaFactory = new Mock<IFInstanciaFactory>();
-        _mockReader = new Mock<IInstanciaReader>();
         _validation = new InstanciaValidation();
         _mockInstanciaService = new Mock<IInstanciaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -59,7 +54,7 @@ public class InstanciaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Instancia CreateValidInstancia()
+    private static Models.Instancia CreateValidInstancia()
     {
         return new Models.Instancia
         {
@@ -97,21 +92,21 @@ public class InstanciaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockInstanciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterInstancia>(), It.IsAny<string>())).ReturnsAsync(new List<InstanciaResponseAll>());
+        _mockInstanciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterInstancia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Instancias service mock
-        _mockAcaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AcaoResponse { Id = id }));
-        _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ForoResponse { Id = id }));
-        _mockTipoRecursoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoRecursoResponse { Id = id }));
+        _ = _mockAcaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AcaoResponse { Id = id }));
+        _ = _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ForoResponse { Id = id }));
+        _ = _mockTipoRecursoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoRecursoResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockInstanciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterInstancia>(), It.IsAny<string>())).ReturnsAsync(new List<InstanciaResponseAll>());
+        _mockInstanciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterInstancia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Instancias service mock
-        _mockAcaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AcaoResponse { Id = 0 }));
-        _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ForoResponse { Id = 0 }));
-        _mockTipoRecursoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.TipoRecursoResponse { Id = 0 }));
+        _ = _mockAcaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AcaoResponse { Id = 0 }));
+        _ = _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ForoResponse { Id = 0 }));
+        _ = _mockTipoRecursoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoRecursoResponse { Id = 0 }));
     }
 
     [Fact]

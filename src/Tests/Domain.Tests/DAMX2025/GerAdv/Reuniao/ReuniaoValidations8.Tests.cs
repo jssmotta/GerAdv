@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ReuniaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFReuniaoFactory> _mockReuniaoFactory;
-    private readonly Mock<IReuniaoReader> _mockReader;
     private readonly ReuniaoValidation _validation;
     private readonly Mock<IReuniaoService> _mockReuniaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class ReuniaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ReuniaoValidationTests()
     {
-        _mockReuniaoFactory = new Mock<IFReuniaoFactory>();
-        _mockReader = new Mock<IReuniaoReader>();
         _validation = new ReuniaoValidation();
         _mockReuniaoService = new Mock<IReuniaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class ReuniaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Reuniao CreateValidReuniao()
+    private static Models.Reuniao CreateValidReuniao()
     {
         return new Models.Reuniao
         {
@@ -77,17 +72,17 @@ public class ReuniaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockReuniaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterReuniao>(), It.IsAny<string>())).ReturnsAsync(new List<ReuniaoResponseAll>());
+        _mockReuniaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterReuniao>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Reuniaos service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockReuniaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterReuniao>(), It.IsAny<string>())).ReturnsAsync(new List<ReuniaoResponseAll>());
+        _mockReuniaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterReuniao>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Reuniaos service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

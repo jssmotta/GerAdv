@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IOperadorEMailPopupValidation
 {
-    Task<bool> ValidateReg(Models.OperadorEMailPopup reg, IOperadorEMailPopupService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.OperadorEMailPopup reg, IOperadorEMailPopupService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
 {
-    public async Task<bool> CanDelete(int? id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOperadorEMailPopupService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -41,7 +41,7 @@ public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.OperadorEMailPopup reg, IOperadorEMailPopupService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.OperadorEMailPopup reg, IOperadorEMailPopupService service, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

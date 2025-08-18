@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGraphWriter
 {
-    Task<FGraph> WriteAsync(Models.Graph graph, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(GraphResponse graph, int operadorId, MsiSqlConnection oCnn);
+    Task<FGraph> WriteAsync(Models.Graph graph, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(GraphResponse graph, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GraphWriter(IFGraphFactory graphFactory) : IGraphWriter
 {
     private readonly IFGraphFactory _graphFactory = graphFactory ?? throw new ArgumentNullException(nameof(graphFactory));
-    public virtual async Task Delete(GraphResponse graph, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(GraphResponse graph, int operadorId, MsiSqlConnection? oCnn)
     {
         await _graphFactory.DeleteAsync(operadorId, graph.Id, oCnn);
     }
 
-    public virtual async Task<FGraph> WriteAsync(Models.Graph graph, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGraph> WriteAsync(Models.Graph graph, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (graph.Id.IsEmptyIDNumber() ? _graphFactory.CreateAsync() : _graphFactory.CreateFromIdAsync(graph.Id, oCnn));
         dbRec.FTabela = graph.Tabela;

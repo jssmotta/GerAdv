@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAtividadesWriter
 {
-    Task<FAtividades> WriteAsync(Models.Atividades atividades, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(AtividadesResponse atividades, int operadorId, MsiSqlConnection oCnn);
+    Task<FAtividades> WriteAsync(Models.Atividades atividades, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(AtividadesResponse atividades, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AtividadesWriter(IFAtividadesFactory atividadesFactory) : IAtividadesWriter
 {
     private readonly IFAtividadesFactory _atividadesFactory = atividadesFactory ?? throw new ArgumentNullException(nameof(atividadesFactory));
-    public virtual async Task Delete(AtividadesResponse atividades, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(AtividadesResponse atividades, int operadorId, MsiSqlConnection? oCnn)
     {
         await _atividadesFactory.DeleteAsync(operadorId, atividades.Id, oCnn);
     }
 
-    public virtual async Task<FAtividades> WriteAsync(Models.Atividades atividades, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAtividades> WriteAsync(Models.Atividades atividades, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (atividades.Id.IsEmptyIDNumber() ? _atividadesFactory.CreateAsync() : _atividadesFactory.CreateFromIdAsync(atividades.Id, oCnn));
         dbRec.FDescricao = atividades.Descricao;

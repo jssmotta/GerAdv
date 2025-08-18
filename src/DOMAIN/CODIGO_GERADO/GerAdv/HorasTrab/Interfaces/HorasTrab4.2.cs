@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IHorasTrabReader
 {
-    Task<HorasTrabResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.HorasTrab?> ReadM(int id, MsiSqlConnection oCnn);
-    HorasTrabResponse? Read(FHorasTrab dbRec, MsiSqlConnection oCnn);
-    HorasTrabResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<HorasTrabResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.HorasTrab?> ReadM(int id, MsiSqlConnection? oCnn);
+    HorasTrabResponse? Read(FHorasTrab dbRec, MsiSqlConnection? oCnn);
+    HorasTrabResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     HorasTrabResponse? Read(FHorasTrab dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     HorasTrabResponseAll? ReadAll(FHorasTrab dbRec, IDataRecord dr);
     HorasTrabResponseAll? ReadAll(SG.GerAdv.DBHorasTrab dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<HorasTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<HorasTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

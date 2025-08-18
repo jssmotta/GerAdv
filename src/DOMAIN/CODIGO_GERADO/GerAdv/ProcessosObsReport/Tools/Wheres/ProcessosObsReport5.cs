@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProcessosObsReportWhere
 {
-    ProcessosObsReportResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ProcessosObsReportResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ProcessosObsReportWhere(IFProcessosObsReportFactory processosobsreportFactory) : IProcessosObsReportWhere
 {
     private readonly IFProcessosObsReportFactory _processosobsreportFactory = processosobsreportFactory ?? throw new ArgumentNullException(nameof(processosobsreportFactory));
-    public ProcessosObsReportResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ProcessosObsReportResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _processosobsreportFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var processosobsreport = new ProcessosObsReportResponse

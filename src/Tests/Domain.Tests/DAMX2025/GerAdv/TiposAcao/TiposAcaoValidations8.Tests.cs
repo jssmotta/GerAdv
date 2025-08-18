@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TiposAcaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTiposAcaoFactory> _mockTiposAcaoFactory;
-    private readonly Mock<ITiposAcaoReader> _mockReader;
     private readonly TiposAcaoValidation _validation;
     private readonly Mock<ITiposAcaoService> _mockTiposAcaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TiposAcaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TiposAcaoValidationTests()
     {
-        _mockTiposAcaoFactory = new Mock<IFTiposAcaoFactory>();
-        _mockReader = new Mock<ITiposAcaoReader>();
         _validation = new TiposAcaoValidation();
         _mockTiposAcaoService = new Mock<ITiposAcaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TiposAcaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TiposAcao CreateValidTiposAcao()
+    private static Models.TiposAcao CreateValidTiposAcao()
     {
         return new Models.TiposAcao
         {
@@ -66,14 +61,14 @@ public class TiposAcaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTiposAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTiposAcao>(), It.IsAny<string>())).ReturnsAsync(new List<TiposAcaoResponseAll>());
+        _mockTiposAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTiposAcao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TiposAcaos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTiposAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTiposAcao>(), It.IsAny<string>())).ReturnsAsync(new List<TiposAcaoResponseAll>());
+        _mockTiposAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTiposAcao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TiposAcaos service mock
     }
 

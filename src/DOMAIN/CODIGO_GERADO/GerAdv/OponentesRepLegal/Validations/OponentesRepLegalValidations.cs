@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IOponentesRepLegalValidation
 {
-    Task<bool> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class OponentesRepLegalValidation : IOponentesRepLegalValidation
 {
-    public async Task<bool> CanDelete(int? id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IOponentesRepLegalService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -43,7 +43,7 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.OponentesRepLegal reg, IOponentesRepLegalService service, IOponentesReader oponentesReader, ICidadeReader cidadeReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

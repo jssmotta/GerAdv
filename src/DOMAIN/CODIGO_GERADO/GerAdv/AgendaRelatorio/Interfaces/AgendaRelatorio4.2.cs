@@ -5,5 +5,5 @@ namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IAgendaRelatorioReader
 {
     AgendaRelatorioResponseAll? ReadAll(SG.GerAdv.DBAgendaRelatorio dbRec, IDataRecord dr);
-    Task<IEnumerable<AgendaRelatorioResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<AgendaRelatorioResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

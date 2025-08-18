@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoCompromissoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoCompromissoFactory> _mockTipoCompromissoFactory;
-    private readonly Mock<ITipoCompromissoReader> _mockReader;
     private readonly TipoCompromissoValidation _validation;
     private readonly Mock<ITipoCompromissoService> _mockTipoCompromissoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoCompromissoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoCompromissoValidationTests()
     {
-        _mockTipoCompromissoFactory = new Mock<IFTipoCompromissoFactory>();
-        _mockReader = new Mock<ITipoCompromissoReader>();
         _validation = new TipoCompromissoValidation();
         _mockTipoCompromissoService = new Mock<ITipoCompromissoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoCompromissoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoCompromisso CreateValidTipoCompromisso()
+    private static Models.TipoCompromisso CreateValidTipoCompromisso()
     {
         return new Models.TipoCompromisso
         {
@@ -67,14 +62,14 @@ public class TipoCompromissoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoCompromissoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoCompromisso>(), It.IsAny<string>())).ReturnsAsync(new List<TipoCompromissoResponseAll>());
+        _mockTipoCompromissoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoCompromisso>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoCompromissos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoCompromissoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoCompromisso>(), It.IsAny<string>())).ReturnsAsync(new List<TipoCompromissoResponseAll>());
+        _mockTipoCompromissoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoCompromisso>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoCompromissos service mock
     }
 

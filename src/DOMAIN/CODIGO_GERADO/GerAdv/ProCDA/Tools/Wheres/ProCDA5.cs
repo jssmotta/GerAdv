@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProCDAWhere
 {
-    ProCDAResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ProCDAResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ProCDAWhere(IFProCDAFactory procdaFactory) : IProCDAWhere
 {
     private readonly IFProCDAFactory _procdaFactory = procdaFactory ?? throw new ArgumentNullException(nameof(procdaFactory));
-    public ProCDAResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ProCDAResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _procdaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var procda = new ProCDAResponse

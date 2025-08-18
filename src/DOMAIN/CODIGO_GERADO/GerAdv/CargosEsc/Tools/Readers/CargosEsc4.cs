@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class CargosEscReader(IFCargosEscFactory cargosescFactory) : ICargosEscReader
 {
     private readonly IFCargosEscFactory _cargosescFactory = cargosescFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cgeCodigo, cgeNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<CargosEscResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBCargosEsc.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<CargosEscResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cgeCodigo, cgeNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<CargosEscResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBCargosEsc.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<CargosEscResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<CargosEscResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class CargosEscReader(IFCargosEscFactory cargosescFactory) : ICar
         return result;
     }
 
-    public async Task<CargosEscResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<CargosEscResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _cargosescFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.CargosEsc?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.CargosEsc?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _cargosescFactory.CreateFromIdAsync(id, oCnn);
         var cargosesc = new Models.CargosEsc
@@ -62,12 +62,12 @@ public partial class CargosEscReader(IFCargosEscFactory cargosescFactory) : ICar
         return cargosesc;
     }
 
-    public CargosEscResponse? Read(FCargosEsc dbRec, MsiSqlConnection oCnn)
+    public CargosEscResponse? Read(FCargosEsc dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public CargosEscResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public CargosEscResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _cargosescFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

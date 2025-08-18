@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ContatoCRMViewValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFContatoCRMViewFactory> _mockContatoCRMViewFactory;
-    private readonly Mock<IContatoCRMViewReader> _mockReader;
     private readonly ContatoCRMViewValidation _validation;
     private readonly Mock<IContatoCRMViewService> _mockContatoCRMViewService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ContatoCRMViewValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ContatoCRMViewValidationTests()
     {
-        _mockContatoCRMViewFactory = new Mock<IFContatoCRMViewFactory>();
-        _mockReader = new Mock<IContatoCRMViewReader>();
         _validation = new ContatoCRMViewValidation();
         _mockContatoCRMViewService = new Mock<IContatoCRMViewService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ContatoCRMViewValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ContatoCRMView CreateValidContatoCRMView()
+    private static Models.ContatoCRMView CreateValidContatoCRMView()
     {
         return new Models.ContatoCRMView
         {
@@ -67,14 +62,14 @@ public class ContatoCRMViewValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockContatoCRMViewService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContatoCRMView>(), It.IsAny<string>())).ReturnsAsync(new List<ContatoCRMViewResponseAll>());
+        _mockContatoCRMViewService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContatoCRMView>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ContatoCRMViews service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockContatoCRMViewService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContatoCRMView>(), It.IsAny<string>())).ReturnsAsync(new List<ContatoCRMViewResponseAll>());
+        _mockContatoCRMViewService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContatoCRMView>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ContatoCRMViews service mock
     }
 

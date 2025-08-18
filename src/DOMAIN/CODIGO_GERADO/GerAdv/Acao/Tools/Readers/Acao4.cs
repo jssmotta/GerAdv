@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
 {
     private readonly IFAcaoFactory _acaoFactory = acaoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("acaCodigo, acaDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<AcaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAcao.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<AcaoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("acaCodigo, acaDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<AcaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAcao.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<AcaoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<AcaoResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         return result;
     }
 
-    public async Task<AcaoResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<AcaoResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _acaoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Acao?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Acao?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _acaoFactory.CreateFromIdAsync(id, oCnn);
         var acao = new Models.Acao
@@ -62,12 +62,12 @@ public partial class AcaoReader(IFAcaoFactory acaoFactory) : IAcaoReader
         return acao;
     }
 
-    public AcaoResponse? Read(FAcao dbRec, MsiSqlConnection oCnn)
+    public AcaoResponse? Read(FAcao dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public AcaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AcaoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _acaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

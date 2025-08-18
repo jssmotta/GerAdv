@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class EventoPrazoAgendaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFEventoPrazoAgendaFactory> _mockEventoPrazoAgendaFactory;
-    private readonly Mock<IEventoPrazoAgendaReader> _mockReader;
     private readonly EventoPrazoAgendaValidation _validation;
     private readonly Mock<IEventoPrazoAgendaService> _mockEventoPrazoAgendaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class EventoPrazoAgendaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public EventoPrazoAgendaValidationTests()
     {
-        _mockEventoPrazoAgendaFactory = new Mock<IFEventoPrazoAgendaFactory>();
-        _mockReader = new Mock<IEventoPrazoAgendaReader>();
         _validation = new EventoPrazoAgendaValidation();
         _mockEventoPrazoAgendaService = new Mock<IEventoPrazoAgendaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class EventoPrazoAgendaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.EventoPrazoAgenda CreateValidEventoPrazoAgenda()
+    private static Models.EventoPrazoAgenda CreateValidEventoPrazoAgenda()
     {
         return new Models.EventoPrazoAgenda
         {
@@ -65,14 +60,14 @@ public class EventoPrazoAgendaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockEventoPrazoAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEventoPrazoAgenda>(), It.IsAny<string>())).ReturnsAsync(new List<EventoPrazoAgendaResponseAll>());
+        _mockEventoPrazoAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEventoPrazoAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the EventoPrazoAgendas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockEventoPrazoAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEventoPrazoAgenda>(), It.IsAny<string>())).ReturnsAsync(new List<EventoPrazoAgendaResponseAll>());
+        _mockEventoPrazoAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEventoPrazoAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the EventoPrazoAgendas service mock
     }
 

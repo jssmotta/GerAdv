@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class OperadorValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFOperadorFactory> _mockOperadorFactory;
-    private readonly Mock<IOperadorReader> _mockReader;
     private readonly OperadorValidation _validation;
     private readonly Mock<IOperadorService> _mockOperadorService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class OperadorValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public OperadorValidationTests()
     {
-        _mockOperadorFactory = new Mock<IFOperadorFactory>();
-        _mockReader = new Mock<IOperadorReader>();
         _validation = new OperadorValidation();
         _mockOperadorService = new Mock<IOperadorService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class OperadorValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Operador CreateValidOperador()
+    private static Models.Operador CreateValidOperador()
     {
         return new Models.Operador
         {
@@ -83,14 +78,14 @@ public class OperadorValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperador>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorResponseAll>());
+        _mockOperadorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperador>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Operadors service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperador>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorResponseAll>());
+        _mockOperadorService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperador>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Operadors service mock
     }
 

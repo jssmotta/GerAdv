@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProCDAWriter
 {
-    Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection oCnn);
+    Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProCDAWriter(IFProCDAFactory procdaFactory) : IProCDAWriter
 {
     private readonly IFProCDAFactory _procdaFactory = procdaFactory ?? throw new ArgumentNullException(nameof(procdaFactory));
-    public virtual async Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection? oCnn)
     {
         await _procdaFactory.DeleteAsync(operadorId, procda.Id, oCnn);
     }
 
-    public virtual async Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (procda.Id.IsEmptyIDNumber() ? _procdaFactory.CreateAsync() : _procdaFactory.CreateFromIdAsync(procda.Id, oCnn));
         dbRec.FProcesso = procda.Processo;

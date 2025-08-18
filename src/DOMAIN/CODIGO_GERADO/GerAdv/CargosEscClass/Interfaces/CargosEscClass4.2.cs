@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ICargosEscClassReader
 {
-    Task<CargosEscClassResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.CargosEscClass?> ReadM(int id, MsiSqlConnection oCnn);
-    CargosEscClassResponse? Read(FCargosEscClass dbRec, MsiSqlConnection oCnn);
-    CargosEscClassResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<CargosEscClassResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.CargosEscClass?> ReadM(int id, MsiSqlConnection? oCnn);
+    CargosEscClassResponse? Read(FCargosEscClass dbRec, MsiSqlConnection? oCnn);
+    CargosEscClassResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     CargosEscClassResponse? Read(FCargosEscClass dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     CargosEscClassResponseAll? ReadAll(FCargosEscClass dbRec, IDataRecord dr);
     CargosEscClassResponseAll? ReadAll(SG.GerAdv.DBCargosEscClass dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<CargosEscClassResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<CargosEscClassResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

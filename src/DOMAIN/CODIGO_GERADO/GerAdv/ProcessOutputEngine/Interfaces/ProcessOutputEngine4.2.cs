@@ -4,13 +4,13 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IProcessOutputEngineReader
 {
-    Task<ProcessOutputEngineResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.ProcessOutputEngine?> ReadM(int id, MsiSqlConnection oCnn);
-    ProcessOutputEngineResponse? Read(FProcessOutputEngine dbRec, MsiSqlConnection oCnn);
-    ProcessOutputEngineResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<ProcessOutputEngineResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.ProcessOutputEngine?> ReadM(int id, MsiSqlConnection? oCnn);
+    ProcessOutputEngineResponse? Read(FProcessOutputEngine dbRec, MsiSqlConnection? oCnn);
+    ProcessOutputEngineResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ProcessOutputEngineResponse? Read(FProcessOutputEngine dbRec);
     ProcessOutputEngineResponseAll? ReadAll(FProcessOutputEngine dbRec, IDataRecord dr);
     ProcessOutputEngineResponseAll? ReadAll(SG.GerAdv.DBProcessOutputEngine dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<ProcessOutputEngineResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<ProcessOutputEngineResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

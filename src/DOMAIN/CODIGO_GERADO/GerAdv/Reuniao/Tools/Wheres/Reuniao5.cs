@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IReuniaoWhere
 {
-    ReuniaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ReuniaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ReuniaoWhere(IFReuniaoFactory reuniaoFactory) : IReuniaoWhere
 {
     private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory ?? throw new ArgumentNullException(nameof(reuniaoFactory));
-    public ReuniaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ReuniaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _reuniaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var reuniao = new ReuniaoResponse

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IDocumentosWriter
 {
-    Task<FDocumentos> WriteAsync(Models.Documentos documentos, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(DocumentosResponse documentos, int operadorId, MsiSqlConnection oCnn);
+    Task<FDocumentos> WriteAsync(Models.Documentos documentos, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(DocumentosResponse documentos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class DocumentosWriter(IFDocumentosFactory documentosFactory) : IDocumentosWriter
 {
     private readonly IFDocumentosFactory _documentosFactory = documentosFactory ?? throw new ArgumentNullException(nameof(documentosFactory));
-    public virtual async Task Delete(DocumentosResponse documentos, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(DocumentosResponse documentos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _documentosFactory.DeleteAsync(operadorId, documentos.Id, oCnn);
     }
 
-    public virtual async Task<FDocumentos> WriteAsync(Models.Documentos documentos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FDocumentos> WriteAsync(Models.Documentos documentos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (documentos.Id.IsEmptyIDNumber() ? _documentosFactory.CreateAsync() : _documentosFactory.CreateFromIdAsync(documentos.Id, oCnn));
         dbRec.FGUID = documentos.GUID;

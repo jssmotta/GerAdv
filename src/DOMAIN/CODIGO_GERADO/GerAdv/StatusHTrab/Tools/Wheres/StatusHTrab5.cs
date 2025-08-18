@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IStatusHTrabWhere
 {
-    StatusHTrabResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    StatusHTrabResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class StatusHTrabWhere(IFStatusHTrabFactory statushtrabFactory) : IStatusHTrabWhere
 {
     private readonly IFStatusHTrabFactory _statushtrabFactory = statushtrabFactory ?? throw new ArgumentNullException(nameof(statushtrabFactory));
-    public StatusHTrabResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public StatusHTrabResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _statushtrabFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var statushtrab = new StatusHTrabResponse

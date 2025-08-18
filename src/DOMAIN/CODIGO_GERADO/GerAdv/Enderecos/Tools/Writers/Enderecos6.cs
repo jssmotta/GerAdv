@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IEnderecosWriter
 {
-    Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection oCnn);
+    Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EnderecosWriter(IFEnderecosFactory enderecosFactory) : IEnderecosWriter
 {
     private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory ?? throw new ArgumentNullException(nameof(enderecosFactory));
-    public virtual async Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _enderecosFactory.DeleteAsync(operadorId, enderecos.Id, oCnn);
     }
 
-    public virtual async Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (enderecos.Id.IsEmptyIDNumber() ? _enderecosFactory.CreateAsync() : _enderecosFactory.CreateFromIdAsync(enderecos.Id, oCnn));
         dbRec.FTopIndex = enderecos.TopIndex;

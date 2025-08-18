@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IOperadorGruposAgendaReader
 {
-    Task<OperadorGruposAgendaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.OperadorGruposAgenda?> ReadM(int id, MsiSqlConnection oCnn);
-    OperadorGruposAgendaResponse? Read(FOperadorGruposAgenda dbRec, MsiSqlConnection oCnn);
-    OperadorGruposAgendaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<OperadorGruposAgendaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.OperadorGruposAgenda?> ReadM(int id, MsiSqlConnection? oCnn);
+    OperadorGruposAgendaResponse? Read(FOperadorGruposAgenda dbRec, MsiSqlConnection? oCnn);
+    OperadorGruposAgendaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OperadorGruposAgendaResponse? Read(FOperadorGruposAgenda dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OperadorGruposAgendaResponseAll? ReadAll(FOperadorGruposAgenda dbRec, IDataRecord dr);
     OperadorGruposAgendaResponseAll? ReadAll(SG.GerAdv.DBOperadorGruposAgenda dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<OperadorGruposAgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<OperadorGruposAgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

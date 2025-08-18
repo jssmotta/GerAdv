@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IAgendaWriter
 {
-    Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection oCnn);
+    Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
 {
     private readonly IFAgendaFactory _agendaFactory = agendaFactory ?? throw new ArgumentNullException(nameof(agendaFactory));
-    public virtual async Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection? oCnn)
     {
         await _agendaFactory.DeleteAsync(operadorId, agenda.Id, oCnn);
     }
 
-    public virtual async Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (agenda.Id.IsEmptyIDNumber() ? _agendaFactory.CreateAsync() : _agendaFactory.CreateFromIdAsync(agenda.Id, oCnn));
         dbRec.FIDCOB = agenda.IDCOB;

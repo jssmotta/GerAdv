@@ -52,7 +52,7 @@ public partial class TipoOrigemSucumbenciaService(IOptions<AppSettings> appSetti
 
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
         var filterHash = GetFilterHash(filtro);
         var cacheKey = $"{uri}-{max}-TipoOrigemSucumbencia-Filter-{where.GetHashCode2()}{filterHash}";
         var entryOptions = new HybridCacheEntryOptions

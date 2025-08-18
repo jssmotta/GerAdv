@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GUTMatrizValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGUTMatrizFactory> _mockGUTMatrizFactory;
-    private readonly Mock<IGUTMatrizReader> _mockReader;
     private readonly GUTMatrizValidation _validation;
     private readonly Mock<IGUTMatrizService> _mockGUTMatrizService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class GUTMatrizValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GUTMatrizValidationTests()
     {
-        _mockGUTMatrizFactory = new Mock<IFGUTMatrizFactory>();
-        _mockReader = new Mock<IGUTMatrizReader>();
         _validation = new GUTMatrizValidation();
         _mockGUTMatrizService = new Mock<IGUTMatrizService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class GUTMatrizValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GUTMatriz CreateValidGUTMatriz()
+    private static Models.GUTMatriz CreateValidGUTMatriz()
     {
         return new Models.GUTMatriz
         {
@@ -69,17 +64,17 @@ public class GUTMatrizValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGUTMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTMatriz>(), It.IsAny<string>())).ReturnsAsync(new List<GUTMatrizResponseAll>());
+        _mockGUTMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTMatriz>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTMatrizs service mock
-        _mockGUTTipoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTTipoResponse { Id = id }));
+        _ = _mockGUTTipoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTTipoResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGUTMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTMatriz>(), It.IsAny<string>())).ReturnsAsync(new List<GUTMatrizResponseAll>());
+        _mockGUTMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTMatriz>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTMatrizs service mock
-        _mockGUTTipoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTTipoResponse { Id = 0 }));
+        _ = _mockGUTTipoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTTipoResponse { Id = 0 }));
     }
 
     [Fact]

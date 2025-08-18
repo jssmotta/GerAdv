@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class AndamentosMDValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFAndamentosMDFactory> _mockAndamentosMDFactory;
-    private readonly Mock<IAndamentosMDReader> _mockReader;
     private readonly AndamentosMDValidation _validation;
     private readonly Mock<IAndamentosMDService> _mockAndamentosMDService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class AndamentosMDValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public AndamentosMDValidationTests()
     {
-        _mockAndamentosMDFactory = new Mock<IFAndamentosMDFactory>();
-        _mockReader = new Mock<IAndamentosMDReader>();
         _validation = new AndamentosMDValidation();
         _mockAndamentosMDService = new Mock<IAndamentosMDService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class AndamentosMDValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.AndamentosMD CreateValidAndamentosMD()
+    private static Models.AndamentosMD CreateValidAndamentosMD()
     {
         return new Models.AndamentosMD
         {
@@ -69,14 +64,14 @@ public class AndamentosMDValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockAndamentosMDService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAndamentosMD>(), It.IsAny<string>())).ReturnsAsync(new List<AndamentosMDResponseAll>());
+        _mockAndamentosMDService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAndamentosMD>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the AndamentosMDs service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockAndamentosMDService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAndamentosMD>(), It.IsAny<string>())).ReturnsAsync(new List<AndamentosMDResponseAll>());
+        _mockAndamentosMDService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAndamentosMD>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the AndamentosMDs service mock
     }
 

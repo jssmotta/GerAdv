@@ -29,25 +29,25 @@ public partial class FGUTTipo : MenphisSI.SG.GerAdv.DBGUTTipo, IDBGUTTipo
     {
     }
 
-    public async Task<FGUTTipo> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGUTTipo> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fGUTTipo = new FGUTTipo();
         await fGUTTipo.CarregarAsync(id, oCnn);
         return fGUTTipo;
     }
 
-    private FGUTTipo(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FGUTTipo(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FGUTTipo CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FGUTTipo CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FGUTTipo(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

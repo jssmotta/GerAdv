@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class CidadeReader(IFCidadeFactory cidadeFactory) : ICidadeReader
 {
     private readonly IFCidadeFactory _cidadeFactory = cidadeFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cidCodigo, cidNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<CidadeResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBCidade.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<CidadeResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cidCodigo, cidNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<CidadeResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBCidade.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<CidadeResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<CidadeResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class CidadeReader(IFCidadeFactory cidadeFactory) : ICidadeReader
         return result;
     }
 
-    public async Task<CidadeResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<CidadeResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _cidadeFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Cidade?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Cidade?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _cidadeFactory.CreateFromIdAsync(id, oCnn);
         var cidade = new Models.Cidade
@@ -66,12 +66,12 @@ public partial class CidadeReader(IFCidadeFactory cidadeFactory) : ICidadeReader
         return cidade;
     }
 
-    public CidadeResponse? Read(FCidade dbRec, MsiSqlConnection oCnn)
+    public CidadeResponse? Read(FCidade dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public CidadeResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public CidadeResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _cidadeFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

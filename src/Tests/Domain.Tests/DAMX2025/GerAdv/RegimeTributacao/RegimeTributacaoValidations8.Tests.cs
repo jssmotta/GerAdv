@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class RegimeTributacaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFRegimeTributacaoFactory> _mockRegimeTributacaoFactory;
-    private readonly Mock<IRegimeTributacaoReader> _mockReader;
     private readonly RegimeTributacaoValidation _validation;
     private readonly Mock<IRegimeTributacaoService> _mockRegimeTributacaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class RegimeTributacaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public RegimeTributacaoValidationTests()
     {
-        _mockRegimeTributacaoFactory = new Mock<IFRegimeTributacaoFactory>();
-        _mockReader = new Mock<IRegimeTributacaoReader>();
         _validation = new RegimeTributacaoValidation();
         _mockRegimeTributacaoService = new Mock<IRegimeTributacaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class RegimeTributacaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.RegimeTributacao CreateValidRegimeTributacao()
+    private static Models.RegimeTributacao CreateValidRegimeTributacao()
     {
         return new Models.RegimeTributacao
         {
@@ -66,14 +61,14 @@ public class RegimeTributacaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockRegimeTributacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRegimeTributacao>(), It.IsAny<string>())).ReturnsAsync(new List<RegimeTributacaoResponseAll>());
+        _mockRegimeTributacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRegimeTributacao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the RegimeTributacaos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockRegimeTributacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRegimeTributacao>(), It.IsAny<string>())).ReturnsAsync(new List<RegimeTributacaoResponseAll>());
+        _mockRegimeTributacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRegimeTributacao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the RegimeTributacaos service mock
     }
 

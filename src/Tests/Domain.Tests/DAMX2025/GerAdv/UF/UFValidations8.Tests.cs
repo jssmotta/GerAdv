@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class UFValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFUFFactory> _mockUFFactory;
-    private readonly Mock<IUFReader> _mockReader;
     private readonly UFValidation _validation;
     private readonly Mock<IUFService> _mockUFService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class UFValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public UFValidationTests()
     {
-        _mockUFFactory = new Mock<IFUFFactory>();
-        _mockReader = new Mock<IUFReader>();
         _validation = new UFValidation();
         _mockUFService = new Mock<IUFService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class UFValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.UF CreateValidUF()
+    private static Models.UF CreateValidUF()
     {
         return new Models.UF
         {
@@ -71,17 +66,17 @@ public class UFValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockUFService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterUF>(), It.IsAny<string>())).ReturnsAsync(new List<UFResponseAll>());
+        _mockUFService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterUF>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the UFs service mock
-        _mockPaisesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.PaisesResponse { Id = id }));
+        _ = _mockPaisesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PaisesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockUFService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterUF>(), It.IsAny<string>())).ReturnsAsync(new List<UFResponseAll>());
+        _mockUFService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterUF>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the UFs service mock
-        _mockPaisesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.PaisesResponse { Id = 0 }));
+        _ = _mockPaisesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PaisesResponse { Id = 0 }));
     }
 
     [Fact]

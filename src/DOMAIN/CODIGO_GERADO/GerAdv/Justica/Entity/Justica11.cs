@@ -23,7 +23,7 @@ public partial class FJusticaFactory : IFJusticaFactory, IDisposable
         return FJustica.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FJustica> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FJustica> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FJustica().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FJusticaFactory : IFJusticaFactory, IDisposable
         return new FJustica();
     }
 
-    public FJustica CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FJustica CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FJustica.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FJustica.DeleteRecordAsync(operadorId, id, oCnn);

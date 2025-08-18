@@ -86,7 +86,7 @@ public partial class PontoVirtualAcessosService
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
-    private async Task<IEnumerable<PontoVirtualAcessosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter> parameters, string uri, CancellationToken token)
+    private async Task<IEnumerable<PontoVirtualAcessosResponseAll>> GetDataAllAsync(int max, string where, List<SqlParameter>? parameters, string uri, CancellationToken token)
     {
         using var oCnn = Configuracoes.GetConnectionByUri(uri);
         if (oCnn == null)

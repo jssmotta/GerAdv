@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IProcessOutPutIDsValidation
 {
-    Task<bool> ValidateReg(Models.ProcessOutPutIDs reg, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.ProcessOutPutIDs reg, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class ProcessOutPutIDsValidation : IProcessOutPutIDsValidation
 {
-    public async Task<bool> CanDelete(int? id, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -33,7 +33,7 @@ public class ProcessOutPutIDsValidation : IProcessOutPutIDsValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.ProcessOutPutIDs reg, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.ProcessOutPutIDs reg, IProcessOutPutIDsService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

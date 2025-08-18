@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProProcuradoresValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProProcuradoresFactory> _mockProProcuradoresFactory;
-    private readonly Mock<IProProcuradoresReader> _mockReader;
     private readonly ProProcuradoresValidation _validation;
     private readonly Mock<IProProcuradoresService> _mockProProcuradoresService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class ProProcuradoresValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProProcuradoresValidationTests()
     {
-        _mockProProcuradoresFactory = new Mock<IFProProcuradoresFactory>();
-        _mockReader = new Mock<IProProcuradoresReader>();
         _validation = new ProProcuradoresValidation();
         _mockProProcuradoresService = new Mock<IProProcuradoresService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class ProProcuradoresValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProProcuradores CreateValidProProcuradores()
+    private static Models.ProProcuradores CreateValidProProcuradores()
     {
         return new Models.ProProcuradores
         {
@@ -72,17 +67,17 @@ public class ProProcuradoresValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProProcuradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProProcuradores>(), It.IsAny<string>())).ReturnsAsync(new List<ProProcuradoresResponseAll>());
+        _mockProProcuradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProProcuradores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProProcuradoress service mock
-        _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AdvogadosResponse { Id = id }));
+        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProProcuradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProProcuradores>(), It.IsAny<string>())).ReturnsAsync(new List<ProProcuradoresResponseAll>());
+        _mockProProcuradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProProcuradores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProProcuradoress service mock
-        _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AdvogadosResponse { Id = 0 }));
+        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = 0 }));
     }
 
     [Fact]

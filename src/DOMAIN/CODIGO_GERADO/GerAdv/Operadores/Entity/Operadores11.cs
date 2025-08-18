@@ -23,7 +23,7 @@ public partial class FOperadoresFactory : IFOperadoresFactory, IDisposable
         return FOperadores.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOperadores> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FOperadores> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FOperadores().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FOperadoresFactory : IFOperadoresFactory, IDisposable
         return new FOperadores();
     }
 
-    public FOperadores CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FOperadores CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FOperadores.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FOperadores.DeleteRecordAsync(operadorId, id, oCnn);

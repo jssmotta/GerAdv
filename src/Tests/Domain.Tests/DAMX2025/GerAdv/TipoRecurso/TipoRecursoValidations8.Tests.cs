@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoRecursoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoRecursoFactory> _mockTipoRecursoFactory;
-    private readonly Mock<ITipoRecursoReader> _mockReader;
     private readonly TipoRecursoValidation _validation;
     private readonly Mock<ITipoRecursoService> _mockTipoRecursoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class TipoRecursoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoRecursoValidationTests()
     {
-        _mockTipoRecursoFactory = new Mock<IFTipoRecursoFactory>();
-        _mockReader = new Mock<ITipoRecursoReader>();
         _validation = new TipoRecursoValidation();
         _mockTipoRecursoService = new Mock<ITipoRecursoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class TipoRecursoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoRecurso CreateValidTipoRecurso()
+    private static Models.TipoRecurso CreateValidTipoRecurso()
     {
         return new Models.TipoRecurso
         {
@@ -71,19 +66,19 @@ public class TipoRecursoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoRecursoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoRecurso>(), It.IsAny<string>())).ReturnsAsync(new List<TipoRecursoResponseAll>());
+        _mockTipoRecursoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoRecurso>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the TipoRecursos service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = id }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoRecursoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoRecurso>(), It.IsAny<string>())).ReturnsAsync(new List<TipoRecursoResponseAll>());
+        _mockTipoRecursoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoRecurso>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the TipoRecursos service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = 0 }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
     }
 
     [Fact]

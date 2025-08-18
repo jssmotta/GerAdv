@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IDocumentosWhere
 {
-    DocumentosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    DocumentosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class DocumentosWhere(IFDocumentosFactory documentosFactory) : IDocumentosWhere
 {
     private readonly IFDocumentosFactory _documentosFactory = documentosFactory ?? throw new ArgumentNullException(nameof(documentosFactory));
-    public DocumentosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public DocumentosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _documentosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var documentos = new DocumentosResponse

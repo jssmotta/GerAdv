@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IProcessOutputSourcesWhere
 {
-    ProcessOutputSourcesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ProcessOutputSourcesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ProcessOutputSourcesWhere(IFProcessOutputSourcesFactory processoutputsourcesFactory) : IProcessOutputSourcesWhere
 {
     private readonly IFProcessOutputSourcesFactory _processoutputsourcesFactory = processoutputsourcesFactory ?? throw new ArgumentNullException(nameof(processoutputsourcesFactory));
-    public ProcessOutputSourcesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ProcessOutputSourcesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _processoutputsourcesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var processoutputsources = new ProcessOutputSourcesResponse

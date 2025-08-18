@@ -29,25 +29,25 @@ public partial class FProcessOutputSources : MenphisSI.SG.GerAdv.DBProcessOutput
     {
     }
 
-    public async Task<FProcessOutputSources> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FProcessOutputSources> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fProcessOutputSources = new FProcessOutputSources();
         await fProcessOutputSources.CarregarAsync(id, oCnn);
         return fProcessOutputSources;
     }
 
-    private FProcessOutputSources(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FProcessOutputSources(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FProcessOutputSources CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FProcessOutputSources CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FProcessOutputSources(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

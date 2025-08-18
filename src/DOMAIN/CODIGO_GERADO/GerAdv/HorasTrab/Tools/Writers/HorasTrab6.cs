@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IHorasTrabWriter
 {
-    Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection oCnn);
+    Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWriter
 {
     private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException(nameof(horastrabFactory));
-    public virtual async Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection? oCnn)
     {
         await _horastrabFactory.DeleteAsync(operadorId, horastrab.Id, oCnn);
     }
 
-    public virtual async Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (horastrab.Id.IsEmptyIDNumber() ? _horastrabFactory.CreateAsync() : _horastrabFactory.CreateFromIdAsync(horastrab.Id, oCnn));
         dbRec.FGUID = horastrab.GUID;

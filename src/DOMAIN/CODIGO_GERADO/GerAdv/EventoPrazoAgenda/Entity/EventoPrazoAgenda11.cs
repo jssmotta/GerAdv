@@ -23,7 +23,7 @@ public partial class FEventoPrazoAgendaFactory : IFEventoPrazoAgendaFactory, IDi
         return FEventoPrazoAgenda.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEventoPrazoAgenda> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FEventoPrazoAgenda> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FEventoPrazoAgenda().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FEventoPrazoAgendaFactory : IFEventoPrazoAgendaFactory, IDi
         return new FEventoPrazoAgenda();
     }
 
-    public FEventoPrazoAgenda CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FEventoPrazoAgenda CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FEventoPrazoAgenda.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FEventoPrazoAgenda.DeleteRecordAsync(operadorId, id, oCnn);

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IGUTAtividadesValidation
 {
-    Task<bool> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class GUTAtividadesValidation : IGUTAtividadesValidation
 {
-    public async Task<bool> CanDelete(int? id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IGUTAtividadesService service, IGUTAtividadesMatrizService gutatividadesmatrizService, IGUTPeriodicidadeStatusService gutperiodicidadestatusService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -39,7 +39,7 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.GUTAtividades reg, IGUTAtividadesService service, IGUTPeriodicidadeReader gutperiodicidadeReader, IOperadorReader operadorReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

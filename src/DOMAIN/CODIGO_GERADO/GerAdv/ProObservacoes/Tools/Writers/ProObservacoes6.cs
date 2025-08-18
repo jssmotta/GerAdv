@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProObservacoesWriter
 {
-    Task<FProObservacoes> WriteAsync(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection oCnn);
+    Task<FProObservacoes> WriteAsync(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProObservacoesWriter(IFProObservacoesFactory proobservacoesFactory) : IProObservacoesWriter
 {
     private readonly IFProObservacoesFactory _proobservacoesFactory = proobservacoesFactory ?? throw new ArgumentNullException(nameof(proobservacoesFactory));
-    public virtual async Task Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _proobservacoesFactory.DeleteAsync(operadorId, proobservacoes.Id, oCnn);
     }
 
-    public virtual async Task<FProObservacoes> WriteAsync(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProObservacoes> WriteAsync(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (proobservacoes.Id.IsEmptyIDNumber() ? _proobservacoesFactory.CreateAsync() : _proobservacoesFactory.CreateFromIdAsync(proobservacoes.Id, oCnn));
         dbRec.FProcesso = proobservacoes.Processo;

@@ -29,25 +29,25 @@ public partial class FTipoProDesposito : MenphisSI.SG.GerAdv.DBTipoProDesposito,
     {
     }
 
-    public async Task<FTipoProDesposito> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FTipoProDesposito> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fTipoProDesposito = new FTipoProDesposito();
         await fTipoProDesposito.CarregarAsync(id, oCnn);
         return fTipoProDesposito;
     }
 
-    private FTipoProDesposito(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FTipoProDesposito(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FTipoProDesposito CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FTipoProDesposito CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FTipoProDesposito(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

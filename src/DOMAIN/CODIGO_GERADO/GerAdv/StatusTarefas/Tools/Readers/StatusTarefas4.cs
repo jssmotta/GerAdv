@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFactory) : IStatusTarefasReader
 {
     private readonly IFStatusTarefasFactory _statustarefasFactory = statustarefasFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("sttCodigo, sttNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<StatusTarefasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBStatusTarefas.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<StatusTarefasResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("sttCodigo, sttNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<StatusTarefasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBStatusTarefas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<StatusTarefasResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<StatusTarefasResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         return result;
     }
 
-    public async Task<StatusTarefasResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<StatusTarefasResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _statustarefasFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.StatusTarefas?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.StatusTarefas?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _statustarefasFactory.CreateFromIdAsync(id, oCnn);
         var statustarefas = new Models.StatusTarefas
@@ -60,12 +60,12 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         return statustarefas;
     }
 
-    public StatusTarefasResponse? Read(FStatusTarefas dbRec, MsiSqlConnection oCnn)
+    public StatusTarefasResponse? Read(FStatusTarefas dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public StatusTarefasResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public StatusTarefasResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _statustarefasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

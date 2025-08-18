@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class PenhoraStatusValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFPenhoraStatusFactory> _mockPenhoraStatusFactory;
-    private readonly Mock<IPenhoraStatusReader> _mockReader;
     private readonly PenhoraStatusValidation _validation;
     private readonly Mock<IPenhoraStatusService> _mockPenhoraStatusService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class PenhoraStatusValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public PenhoraStatusValidationTests()
     {
-        _mockPenhoraStatusFactory = new Mock<IFPenhoraStatusFactory>();
-        _mockReader = new Mock<IPenhoraStatusReader>();
         _validation = new PenhoraStatusValidation();
         _mockPenhoraStatusService = new Mock<IPenhoraStatusService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class PenhoraStatusValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.PenhoraStatus CreateValidPenhoraStatus()
+    private static Models.PenhoraStatus CreateValidPenhoraStatus()
     {
         return new Models.PenhoraStatus
         {
@@ -65,14 +60,14 @@ public class PenhoraStatusValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockPenhoraStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhoraStatus>(), It.IsAny<string>())).ReturnsAsync(new List<PenhoraStatusResponseAll>());
+        _mockPenhoraStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhoraStatus>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the PenhoraStatuss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockPenhoraStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhoraStatus>(), It.IsAny<string>())).ReturnsAsync(new List<PenhoraStatusResponseAll>());
+        _mockPenhoraStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhoraStatus>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the PenhoraStatuss service mock
     }
 

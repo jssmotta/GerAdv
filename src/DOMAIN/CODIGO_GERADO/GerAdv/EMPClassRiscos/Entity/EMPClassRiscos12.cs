@@ -29,25 +29,25 @@ public partial class FEMPClassRiscos : MenphisSI.SG.GerAdv.DBEMPClassRiscos, IDB
     {
     }
 
-    public async Task<FEMPClassRiscos> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FEMPClassRiscos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fEMPClassRiscos = new FEMPClassRiscos();
         await fEMPClassRiscos.CarregarAsync(id, oCnn);
         return fEMPClassRiscos;
     }
 
-    private FEMPClassRiscos(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
+    private FEMPClassRiscos(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FEMPClassRiscos CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FEMPClassRiscos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FEMPClassRiscos(parameters, cNome, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

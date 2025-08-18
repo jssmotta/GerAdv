@@ -1,26 +1,13 @@
-﻿
-
-
-namespace MenphisSI;
+﻿namespace MenphisSI;
 
 public static partial class DevourerOne
 {
-    public static readonly DateTime DDataZerada = new(1, 1, 1);
-    public const string BuildCamposCadastrosCamposContractId = "04";
-    public const string PDataMigracao = "01/01/1975";
-
-    public const string PNomeAliceDigital = "Alice Digital";
-
-
+    public static readonly DateTime DDataZerada = new(1, 1, 1); 
     public const string PSenhor = "Sr.";
     public const string PSenhora = "Sra.";
     public const string PDoutor = "Dr.";
-    public const string PDoutora = "Dra.";
-     
-     
-    public static string PMessErrorDBWTable => "Erro ao executar uma instru\u00E7\u00E3o SQL";
-    public const bool PCachingDefault = false;
-
+    public const string PDoutora = "Dra.";   
+    
     public const string PTrue = "True";
     public const string PFalse = "False";
     public const string POk = "OK";  

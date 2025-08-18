@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class TipoModeloDocumentoReader(IFTipoModeloDocumentoFactory tipomodelodocumentoFactory) : ITipoModeloDocumentoReader
 {
     private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tpdCodigo, tpdNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<TipoModeloDocumentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoModeloDocumento.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TipoModeloDocumentoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("tpdCodigo, tpdNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TipoModeloDocumentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoModeloDocumento.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<TipoModeloDocumentoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TipoModeloDocumentoResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class TipoModeloDocumentoReader(IFTipoModeloDocumentoFactory tipo
         return result;
     }
 
-    public async Task<TipoModeloDocumentoResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<TipoModeloDocumentoResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tipomodelodocumentoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.TipoModeloDocumento?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.TipoModeloDocumento?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tipomodelodocumentoFactory.CreateFromIdAsync(id, oCnn);
         var tipomodelodocumento = new Models.TipoModeloDocumento
@@ -60,12 +60,12 @@ public partial class TipoModeloDocumentoReader(IFTipoModeloDocumentoFactory tipo
         return tipomodelodocumento;
     }
 
-    public TipoModeloDocumentoResponse? Read(FTipoModeloDocumento dbRec, MsiSqlConnection oCnn)
+    public TipoModeloDocumentoResponse? Read(FTipoModeloDocumento dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public TipoModeloDocumentoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TipoModeloDocumentoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tipomodelodocumentoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class NEPalavrasChavesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFNEPalavrasChavesFactory> _mockNEPalavrasChavesFactory;
-    private readonly Mock<INEPalavrasChavesReader> _mockReader;
     private readonly NEPalavrasChavesValidation _validation;
     private readonly Mock<INEPalavrasChavesService> _mockNEPalavrasChavesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class NEPalavrasChavesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public NEPalavrasChavesValidationTests()
     {
-        _mockNEPalavrasChavesFactory = new Mock<IFNEPalavrasChavesFactory>();
-        _mockReader = new Mock<INEPalavrasChavesReader>();
         _validation = new NEPalavrasChavesValidation();
         _mockNEPalavrasChavesService = new Mock<INEPalavrasChavesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class NEPalavrasChavesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.NEPalavrasChaves CreateValidNEPalavrasChaves()
+    private static Models.NEPalavrasChaves CreateValidNEPalavrasChaves()
     {
         return new Models.NEPalavrasChaves
         {
@@ -65,14 +60,14 @@ public class NEPalavrasChavesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockNEPalavrasChavesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNEPalavrasChaves>(), It.IsAny<string>())).ReturnsAsync(new List<NEPalavrasChavesResponseAll>());
+        _mockNEPalavrasChavesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNEPalavrasChaves>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the NEPalavrasChavess service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockNEPalavrasChavesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNEPalavrasChaves>(), It.IsAny<string>())).ReturnsAsync(new List<NEPalavrasChavesResponseAll>());
+        _mockNEPalavrasChavesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNEPalavrasChaves>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the NEPalavrasChavess service mock
     }
 

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
 {
     private readonly IFFaseFactory _faseFactory = faseFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("fasCodigo, fasDescricao", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<FaseResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBFase.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<FaseResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("fasCodigo, fasDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<FaseResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBFase.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<FaseResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<FaseResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         return result;
     }
 
-    public async Task<FaseResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<FaseResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _faseFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Fase?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Fase?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _faseFactory.CreateFromIdAsync(id, oCnn);
         var fase = new Models.Fase
@@ -62,12 +62,12 @@ public partial class FaseReader(IFFaseFactory faseFactory) : IFaseReader
         return fase;
     }
 
-    public FaseResponse? Read(FFase dbRec, MsiSqlConnection oCnn)
+    public FaseResponse? Read(FFase dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public FaseResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public FaseResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _faseFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

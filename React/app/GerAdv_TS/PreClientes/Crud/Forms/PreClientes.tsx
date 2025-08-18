@@ -482,7 +482,7 @@ if (getParamFromUrl('clientes') > 0) {
 
                     <InputInput
                     type='text'
-                    maxLength={12}
+                    maxLength={11}
                     id='asscpf'
                     label='AssCPF'
                     dataForm={preclientesData}

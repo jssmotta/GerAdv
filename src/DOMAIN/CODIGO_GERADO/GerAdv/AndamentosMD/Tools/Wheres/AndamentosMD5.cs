@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAndamentosMDWhere
 {
-    AndamentosMDResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    AndamentosMDResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class AndamentosMDWhere(IFAndamentosMDFactory andamentosmdFactory) : IAndamentosMDWhere
 {
     private readonly IFAndamentosMDFactory _andamentosmdFactory = andamentosmdFactory ?? throw new ArgumentNullException(nameof(andamentosmdFactory));
-    public AndamentosMDResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AndamentosMDResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _andamentosmdFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var andamentosmd = new AndamentosMDResponse

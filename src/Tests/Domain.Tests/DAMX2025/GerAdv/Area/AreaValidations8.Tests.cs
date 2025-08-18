@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class AreaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFAreaFactory> _mockAreaFactory;
-    private readonly Mock<IAreaReader> _mockReader;
     private readonly AreaValidation _validation;
     private readonly Mock<IAreaService> _mockAreaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class AreaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public AreaValidationTests()
     {
-        _mockAreaFactory = new Mock<IFAreaFactory>();
-        _mockReader = new Mock<IAreaReader>();
         _validation = new AreaValidation();
         _mockAreaService = new Mock<IAreaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class AreaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Area CreateValidArea()
+    private static Models.Area CreateValidArea()
     {
         return new Models.Area
         {
@@ -66,14 +61,14 @@ public class AreaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockAreaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterArea>(), It.IsAny<string>())).ReturnsAsync(new List<AreaResponseAll>());
+        _mockAreaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterArea>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Areas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockAreaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterArea>(), It.IsAny<string>())).ReturnsAsync(new List<AreaResponseAll>());
+        _mockAreaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterArea>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Areas service mock
     }
 

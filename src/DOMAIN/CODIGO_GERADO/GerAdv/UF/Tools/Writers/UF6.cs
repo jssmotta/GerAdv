@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IUFWriter
 {
-    Task<FUF> WriteAsync(Models.UF uf, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(UFResponse uf, int operadorId, MsiSqlConnection oCnn);
+    Task<FUF> WriteAsync(Models.UF uf, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(UFResponse uf, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class UFWriter(IFUFFactory ufFactory) : IUFWriter
 {
     private readonly IFUFFactory _ufFactory = ufFactory ?? throw new ArgumentNullException(nameof(ufFactory));
-    public virtual async Task Delete(UFResponse uf, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(UFResponse uf, int operadorId, MsiSqlConnection? oCnn)
     {
         await _ufFactory.DeleteAsync(operadorId, uf.Id, oCnn);
     }
 
-    public virtual async Task<FUF> WriteAsync(Models.UF uf, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FUF> WriteAsync(Models.UF uf, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (uf.Id.IsEmptyIDNumber() ? _ufFactory.CreateAsync() : _ufFactory.CreateFromIdAsync(uf.Id, oCnn));
         dbRec.FDDD = uf.DDD;

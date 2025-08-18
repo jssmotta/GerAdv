@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadoresWriter
 {
-    Task<FOperadores> WriteAsync(Models.Operadores operadores, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(OperadoresResponse operadores, int operadorId, MsiSqlConnection oCnn);
+    Task<FOperadores> WriteAsync(Models.Operadores operadores, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(OperadoresResponse operadores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OperadoresWriter(IFOperadoresFactory operadoresFactory) : IOperadoresWriter
 {
     private readonly IFOperadoresFactory _operadoresFactory = operadoresFactory ?? throw new ArgumentNullException(nameof(operadoresFactory));
-    public virtual async Task Delete(OperadoresResponse operadores, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(OperadoresResponse operadores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _operadoresFactory.DeleteAsync(operadorId, operadores.Id, oCnn);
     }
 
-    public virtual async Task<FOperadores> WriteAsync(Models.Operadores operadores, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOperadores> WriteAsync(Models.Operadores operadores, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (operadores.Id.IsEmptyIDNumber() ? _operadoresFactory.CreateAsync() : _operadoresFactory.CreateFromIdAsync(operadores.Id, oCnn));
         dbRec.FEnviado = operadores.Enviado;

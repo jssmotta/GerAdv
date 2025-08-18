@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class OperadoresReader(IFOperadoresFactory operadoresFactory) : IOperadoresReader
 {
     private readonly IFOperadoresFactory _operadoresFactory = operadoresFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<OperadoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperadores.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<OperadoresResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<OperadoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperadores.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<OperadoresResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<OperadoresResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class OperadoresReader(IFOperadoresFactory operadoresFactory) : I
         return result;
     }
 
-    public async Task<OperadoresResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<OperadoresResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadoresFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Operadores?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Operadores?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadoresFactory.CreateFromIdAsync(id, oCnn);
         var operadores = new Models.Operadores
@@ -74,12 +74,12 @@ public partial class OperadoresReader(IFOperadoresFactory operadoresFactory) : I
         return operadores;
     }
 
-    public OperadoresResponse? Read(FOperadores dbRec, MsiSqlConnection oCnn)
+    public OperadoresResponse? Read(FOperadores dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public OperadoresResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OperadoresResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _operadoresFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

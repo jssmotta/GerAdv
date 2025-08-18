@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IContaCorrenteWriter
 {
-    Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection oCnn);
+    Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteWriter
 {
     private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException(nameof(contacorrenteFactory));
-    public virtual async Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection? oCnn)
     {
         await _contacorrenteFactory.DeleteAsync(operadorId, contacorrente.Id, oCnn);
     }
 
-    public virtual async Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (contacorrente.Id.IsEmptyIDNumber() ? _contacorrenteFactory.CreateAsync() : _contacorrenteFactory.CreateFromIdAsync(contacorrente.Id, oCnn));
         dbRec.FCIAcordo = contacorrente.CIAcordo;

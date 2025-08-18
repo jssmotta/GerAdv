@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IGUTPeriodicidadeWhere
 {
-    GUTPeriodicidadeResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    GUTPeriodicidadeResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class GUTPeriodicidadeWhere(IFGUTPeriodicidadeFactory gutperiodicidadeFactory) : IGUTPeriodicidadeWhere
 {
     private readonly IFGUTPeriodicidadeFactory _gutperiodicidadeFactory = gutperiodicidadeFactory ?? throw new ArgumentNullException(nameof(gutperiodicidadeFactory));
-    public GUTPeriodicidadeResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public GUTPeriodicidadeResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _gutperiodicidadeFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var gutperiodicidade = new GUTPeriodicidadeResponse

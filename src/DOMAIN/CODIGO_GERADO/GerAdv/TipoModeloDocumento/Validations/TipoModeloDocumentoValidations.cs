@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoModeloDocumentoValidation
 {
-    Task<bool> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
 {
-    public async Task<bool> CanDelete(int? id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoModeloDocumentoService service, IModelosDocumentosService modelosdocumentosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -36,7 +36,7 @@ public class TipoModeloDocumentoValidation : ITipoModeloDocumentoValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.TipoModeloDocumento reg, ITipoModeloDocumentoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProValoresValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProValoresFactory> _mockProValoresFactory;
-    private readonly Mock<IProValoresReader> _mockReader;
     private readonly ProValoresValidation _validation;
     private readonly Mock<IProValoresService> _mockProValoresService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProValoresValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProValoresValidationTests()
     {
-        _mockProValoresFactory = new Mock<IFProValoresFactory>();
-        _mockReader = new Mock<IProValoresReader>();
         _validation = new ProValoresValidation();
         _mockProValoresService = new Mock<IProValoresService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProValoresValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProValores CreateValidProValores()
+    private static Models.ProValores CreateValidProValores()
     {
         return new Models.ProValores
         {
@@ -79,14 +74,14 @@ public class ProValoresValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProValoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProValores>(), It.IsAny<string>())).ReturnsAsync(new List<ProValoresResponseAll>());
+        _mockProValoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProValores>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProValoress service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProValoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProValores>(), It.IsAny<string>())).ReturnsAsync(new List<ProValoresResponseAll>());
+        _mockProValoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProValores>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProValoress service mock
     }
 

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class OperadorGruposAgendaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFOperadorGruposAgendaFactory> _mockOperadorGruposAgendaFactory;
-    private readonly Mock<IOperadorGruposAgendaReader> _mockReader;
     private readonly OperadorGruposAgendaValidation _validation;
     private readonly Mock<IOperadorGruposAgendaService> _mockOperadorGruposAgendaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class OperadorGruposAgendaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public OperadorGruposAgendaValidationTests()
     {
-        _mockOperadorGruposAgendaFactory = new Mock<IFOperadorGruposAgendaFactory>();
-        _mockReader = new Mock<IOperadorGruposAgendaReader>();
         _validation = new OperadorGruposAgendaValidation();
         _mockOperadorGruposAgendaService = new Mock<IOperadorGruposAgendaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.OperadorGruposAgenda CreateValidOperadorGruposAgenda()
+    private static Models.OperadorGruposAgenda CreateValidOperadorGruposAgenda()
     {
         return new Models.OperadorGruposAgenda
         {
@@ -70,17 +65,17 @@ public class OperadorGruposAgendaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorGruposAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGruposAgenda>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorGruposAgendaResponseAll>());
+        _mockOperadorGruposAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGruposAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorGruposAgendas service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockOperadorGruposAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGruposAgenda>(), It.IsAny<string>())).ReturnsAsync(new List<OperadorGruposAgendaResponseAll>());
+        _mockOperadorGruposAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGruposAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorGruposAgendas service mock
-        _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.OperadorResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]

@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IProResumosReader
 {
-    Task<ProResumosResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.ProResumos?> ReadM(int id, MsiSqlConnection oCnn);
-    ProResumosResponse? Read(FProResumos dbRec, MsiSqlConnection oCnn);
-    ProResumosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<ProResumosResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.ProResumos?> ReadM(int id, MsiSqlConnection? oCnn);
+    ProResumosResponse? Read(FProResumos dbRec, MsiSqlConnection? oCnn);
+    ProResumosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ProResumosResponse? Read(FProResumos dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ProResumosResponseAll? ReadAll(FProResumos dbRec, IDataRecord dr);
     ProResumosResponseAll? ReadAll(SG.GerAdv.DBProResumos dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<ProResumosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<ProResumosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

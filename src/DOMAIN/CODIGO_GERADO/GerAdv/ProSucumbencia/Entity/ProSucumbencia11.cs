@@ -23,7 +23,7 @@ public partial class FProSucumbenciaFactory : IFProSucumbenciaFactory, IDisposab
         return FProSucumbencia.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProSucumbencia> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FProSucumbencia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FProSucumbencia().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FProSucumbenciaFactory : IFProSucumbenciaFactory, IDisposab
         return new FProSucumbencia();
     }
 
-    public FProSucumbencia CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FProSucumbencia CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FProSucumbencia.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FProSucumbencia.DeleteRecordAsync(operadorId, id, oCnn);

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoRecursoWriter
 {
-    Task<FTipoRecurso> WriteAsync(Models.TipoRecurso tiporecurso, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(TipoRecursoResponse tiporecurso, int operadorId, MsiSqlConnection oCnn);
+    Task<FTipoRecurso> WriteAsync(Models.TipoRecurso tiporecurso, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(TipoRecursoResponse tiporecurso, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoRecursoWriter(IFTipoRecursoFactory tiporecursoFactory) : ITipoRecursoWriter
 {
     private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory ?? throw new ArgumentNullException(nameof(tiporecursoFactory));
-    public virtual async Task Delete(TipoRecursoResponse tiporecurso, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(TipoRecursoResponse tiporecurso, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tiporecursoFactory.DeleteAsync(operadorId, tiporecurso.Id, oCnn);
     }
 
-    public virtual async Task<FTipoRecurso> WriteAsync(Models.TipoRecurso tiporecurso, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoRecurso> WriteAsync(Models.TipoRecurso tiporecurso, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (tiporecurso.Id.IsEmptyIDNumber() ? _tiporecursoFactory.CreateAsync() : _tiporecursoFactory.CreateFromIdAsync(tiporecurso.Id, oCnn));
         dbRec.FGUID = tiporecurso.GUID;

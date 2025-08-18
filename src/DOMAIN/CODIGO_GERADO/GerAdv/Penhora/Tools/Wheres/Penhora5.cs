@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IPenhoraWhere
 {
-    PenhoraResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    PenhoraResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class PenhoraWhere(IFPenhoraFactory penhoraFactory) : IPenhoraWhere
 {
     private readonly IFPenhoraFactory _penhoraFactory = penhoraFactory ?? throw new ArgumentNullException(nameof(penhoraFactory));
-    public PenhoraResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public PenhoraResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _penhoraFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var penhora = new PenhoraResponse

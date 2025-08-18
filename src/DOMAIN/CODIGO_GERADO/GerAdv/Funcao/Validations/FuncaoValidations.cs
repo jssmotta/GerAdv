@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IFuncaoValidation
 {
-    Task<bool> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class FuncaoValidation : IFuncaoValidation
 {
-    public async Task<bool> CanDelete(int? id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IFuncaoService service, IFuncionariosService funcionariosService, IPrepostosService prepostosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -37,7 +37,7 @@ public class FuncaoValidation : IFuncaoValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Funcao reg, IFuncaoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

@@ -1,5 +1,4 @@
-﻿
-namespace MenphisSI;
+﻿namespace MenphisSI;
 
 [Serializable]
 public class VAuditor : XCodeIdBase
@@ -56,35 +55,7 @@ public class VAuditor : XCodeIdBase
     /// Auditor do Sistema (DBOperador.ID)
     /// </summary>
     [XmlIgnore]
-    private protected int m_AuditorQuem, m_FQuemCad, m_FQuemAtu;    
-     
-    /// <summary>
-    /// FDtCad com a Data e a Hora
-    /// </summary>
-    [XmlIgnore]
-    public string MDtCadDataX_DataHora => $"{m_FDtCad:dd/MM/yyyy HH:mm:ss}";
-    /// <summary>
-    /// FDtCad somente com a Hora
-    /// </summary>
-    [XmlIgnore]
-    public string MDtCadX_Hora => $"{m_FDtCad:HH:mm:ss}";
- 
-    /// <summary>
-    /// FDtAtu com a Data e a Hora
-    /// </summary>
-    [XmlIgnore]
-    public string MDtAtuDataX_DataHora => $"{m_FDtAtu:dd/MM/yyyy HH:mm:ss}";
-    /// <summary>
-    /// FDtAtu somente com a Hora
-    /// </summary>
-    [XmlIgnore]
-    public string MDtAtuX_Hora => $"{m_FDtAtu:HH:mm:ss}";
-    /// <summary>
-    /// É Visto
-    /// </summary>
-    [XmlIgnore]
-    public bool IsVisto => m_FVisto;
-   
+    private protected int m_AuditorQuem, m_FQuemCad, m_FQuemAtu;     
 
     /// <summary>
     /// Campo: advQuemCad
@@ -95,15 +66,7 @@ public class VAuditor : XCodeIdBase
     {
         get => m_FQuemCad;
         set { if (value == m_FQuemCad) return; pFldFQuemCad = true; m_FQuemCad = value; }
-    }
-    /// <summary>
-    /// FDtCad como DateTime
-    /// </summary>
-    [XmlIgnore]
-    public DateTime MDtCad => Convert.ToDateTime(m_FDtCad);
-    /// <summary>
-    /// Campo: advDtCad
-    /// </summary>
+    }   
     
     // ReSharper disable once InconsistentNaming
     public string FDtCad
@@ -120,17 +83,8 @@ public class VAuditor : XCodeIdBase
     {
         get => m_FQuemAtu;
         set { if (value == m_FQuemAtu) return; pFldFQuemAtu = true; m_FQuemAtu = value; }
-    }
-    /// <summary>
-    /// FDtAtu como DateTime
-    /// </summary>
-    [XmlIgnore]
-    public DateTime MDtAtu => Convert.ToDateTime(m_FDtAtu);
-    /// <summary>
-    /// Campo: advDtAtu
-    /// </summary>
+    }   
     
-    // ReSharper disable once InconsistentNaming
     public string? FDtAtu
     {
         get => $"{m_FDtAtu:dd/MM/yyyy}".Equals(DevourerOne.PDataZerada) ? string.Empty : $"{m_FDtAtu:dd/MM/yyyy}";

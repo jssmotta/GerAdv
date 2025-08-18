@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class BensClassificacaoReader(IFBensClassificacaoFactory bensclassificacaoFactory) : IBensClassificacaoReader
 {
     private readonly IFBensClassificacaoFactory _bensclassificacaoFactory = bensclassificacaoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("bcsCodigo, bcsNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<BensClassificacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBBensClassificacao.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<BensClassificacaoResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("bcsCodigo, bcsNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<BensClassificacaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBBensClassificacao.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<BensClassificacaoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<BensClassificacaoResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class BensClassificacaoReader(IFBensClassificacaoFactory bensclas
         return result;
     }
 
-    public async Task<BensClassificacaoResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<BensClassificacaoResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _bensclassificacaoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.BensClassificacao?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.BensClassificacao?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _bensclassificacaoFactory.CreateFromIdAsync(id, oCnn);
         var bensclassificacao = new Models.BensClassificacao
@@ -60,12 +60,12 @@ public partial class BensClassificacaoReader(IFBensClassificacaoFactory bensclas
         return bensclassificacao;
     }
 
-    public BensClassificacaoResponse? Read(FBensClassificacao dbRec, MsiSqlConnection oCnn)
+    public BensClassificacaoResponse? Read(FBensClassificacao dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public BensClassificacaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public BensClassificacaoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _bensclassificacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

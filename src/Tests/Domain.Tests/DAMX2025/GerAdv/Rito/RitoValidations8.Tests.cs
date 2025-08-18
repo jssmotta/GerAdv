@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class RitoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFRitoFactory> _mockRitoFactory;
-    private readonly Mock<IRitoReader> _mockReader;
     private readonly RitoValidation _validation;
     private readonly Mock<IRitoService> _mockRitoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class RitoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public RitoValidationTests()
     {
-        _mockRitoFactory = new Mock<IFRitoFactory>();
-        _mockReader = new Mock<IRitoReader>();
         _validation = new RitoValidation();
         _mockRitoService = new Mock<IRitoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class RitoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Rito CreateValidRito()
+    private static Models.Rito CreateValidRito()
     {
         return new Models.Rito
         {
@@ -66,14 +61,14 @@ public class RitoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockRitoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRito>(), It.IsAny<string>())).ReturnsAsync(new List<RitoResponseAll>());
+        _mockRitoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRito>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Ritos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockRitoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRito>(), It.IsAny<string>())).ReturnsAsync(new List<RitoResponseAll>());
+        _mockRitoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterRito>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Ritos service mock
     }
 

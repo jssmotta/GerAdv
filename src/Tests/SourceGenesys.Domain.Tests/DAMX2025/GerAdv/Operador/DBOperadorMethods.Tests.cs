@@ -45,10 +45,10 @@ public class DBOperadorUpdateAdvancedTests : IDisposable
 #endregion
 #region Data Flow Tests
     [Theory]
-    [InlineData(0, 0, true)] // Insert case
-    [InlineData(1, 0, false)] // Update case
-    [InlineData(0, 100, true)] // Insert with specific ID case
-    public void Update_DataFlow_ShouldIdentifyOperationType(int id, int insertId, bool expectedIsInsert)
+    [InlineData(0, 0)] // Insert case
+    [InlineData(1, 0)] // Update case
+    [InlineData(0, 100)] // Insert with specific ID case
+    public void Update_DataFlow_ShouldIdentifyOperationType(int id, int insertId)
     {
         // Arrange
         _instance.ID = id;

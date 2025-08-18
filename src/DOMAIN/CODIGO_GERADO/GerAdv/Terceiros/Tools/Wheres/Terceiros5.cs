@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface ITerceirosWhere
 {
-    TerceirosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    TerceirosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class TerceirosWhere(IFTerceirosFactory terceirosFactory) : ITerceirosWhere
 {
     private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException(nameof(terceirosFactory));
-    public TerceirosResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TerceirosResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _terceirosFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var terceiros = new TerceirosResponse

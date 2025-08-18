@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IContatoCRMViewWhere
 {
-    ContatoCRMViewResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ContatoCRMViewResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ContatoCRMViewWhere(IFContatoCRMViewFactory contatocrmviewFactory) : IContatoCRMViewWhere
 {
     private readonly IFContatoCRMViewFactory _contatocrmviewFactory = contatocrmviewFactory ?? throw new ArgumentNullException(nameof(contatocrmviewFactory));
-    public ContatoCRMViewResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ContatoCRMViewResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _contatocrmviewFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var contatocrmview = new ContatoCRMViewResponse

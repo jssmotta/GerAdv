@@ -164,7 +164,7 @@ public class FNENotasFactoryTests : IDisposable
     public void CreateFromParameters_WithNullParameters_ShouldReturnInstance()
     {
         // Arrange
-        List<SqlParameter> parameters = null;
+        List<SqlParameter>? parameters = null;
         var testName = "TestName";
         SetupMockConnection();
         // Act & Assert

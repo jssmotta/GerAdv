@@ -23,7 +23,7 @@ public partial class FOperadorGruposAgendaFactory : IFOperadorGruposAgendaFactor
         return FOperadorGruposAgenda.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOperadorGruposAgenda> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FOperadorGruposAgenda> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FOperadorGruposAgenda().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FOperadorGruposAgendaFactory : IFOperadorGruposAgendaFactor
         return new FOperadorGruposAgenda();
     }
 
-    public FOperadorGruposAgenda CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FOperadorGruposAgenda CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FOperadorGruposAgenda.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FOperadorGruposAgenda.DeleteRecordAsync(operadorId, id, oCnn);

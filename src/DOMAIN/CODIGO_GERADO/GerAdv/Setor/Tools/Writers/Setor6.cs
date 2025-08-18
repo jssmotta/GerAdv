@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ISetorWriter
 {
-    Task<FSetor> WriteAsync(Models.Setor setor, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(SetorResponse setor, int operadorId, MsiSqlConnection oCnn);
+    Task<FSetor> WriteAsync(Models.Setor setor, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(SetorResponse setor, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class SetorWriter(IFSetorFactory setorFactory) : ISetorWriter
 {
     private readonly IFSetorFactory _setorFactory = setorFactory ?? throw new ArgumentNullException(nameof(setorFactory));
-    public virtual async Task Delete(SetorResponse setor, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(SetorResponse setor, int operadorId, MsiSqlConnection? oCnn)
     {
         await _setorFactory.DeleteAsync(operadorId, setor.Id, oCnn);
     }
 
-    public virtual async Task<FSetor> WriteAsync(Models.Setor setor, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FSetor> WriteAsync(Models.Setor setor, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (setor.Id.IsEmptyIDNumber() ? _setorFactory.CreateAsync() : _setorFactory.CreateFromIdAsync(setor.Id, oCnn));
         dbRec.FDescricao = setor.Descricao;

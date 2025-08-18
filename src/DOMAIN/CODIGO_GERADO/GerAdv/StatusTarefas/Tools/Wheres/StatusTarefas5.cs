@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IStatusTarefasWhere
 {
-    StatusTarefasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    StatusTarefasResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class StatusTarefasWhere(IFStatusTarefasFactory statustarefasFactory) : IStatusTarefasWhere
 {
     private readonly IFStatusTarefasFactory _statustarefasFactory = statustarefasFactory ?? throw new ArgumentNullException(nameof(statustarefasFactory));
-    public StatusTarefasResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public StatusTarefasResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _statustarefasFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var statustarefas = new StatusTarefasResponse

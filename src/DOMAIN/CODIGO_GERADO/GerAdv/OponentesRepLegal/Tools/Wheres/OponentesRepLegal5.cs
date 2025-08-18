@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOponentesRepLegalWhere
 {
-    OponentesRepLegalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    OponentesRepLegalResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class OponentesRepLegalWhere(IFOponentesRepLegalFactory oponentesreplegalFactory) : IOponentesRepLegalWhere
 {
     private readonly IFOponentesRepLegalFactory _oponentesreplegalFactory = oponentesreplegalFactory ?? throw new ArgumentNullException(nameof(oponentesreplegalFactory));
-    public OponentesRepLegalResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OponentesRepLegalResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _oponentesreplegalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var oponentesreplegal = new OponentesRepLegalResponse

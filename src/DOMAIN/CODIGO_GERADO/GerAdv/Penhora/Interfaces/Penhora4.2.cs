@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IPenhoraReader
 {
-    Task<PenhoraResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Penhora?> ReadM(int id, MsiSqlConnection oCnn);
-    PenhoraResponse? Read(FPenhora dbRec, MsiSqlConnection oCnn);
-    PenhoraResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<PenhoraResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Penhora?> ReadM(int id, MsiSqlConnection? oCnn);
+    PenhoraResponse? Read(FPenhora dbRec, MsiSqlConnection? oCnn);
+    PenhoraResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     PenhoraResponse? Read(FPenhora dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     PenhoraResponseAll? ReadAll(FPenhora dbRec, IDataRecord dr);
     PenhoraResponseAll? ReadAll(SG.GerAdv.DBPenhora dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<PenhoraResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<PenhoraResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

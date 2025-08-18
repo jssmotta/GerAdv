@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ColaboradoresValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFColaboradoresFactory> _mockColaboradoresFactory;
-    private readonly Mock<IColaboradoresReader> _mockReader;
     private readonly ColaboradoresValidation _validation;
     private readonly Mock<IColaboradoresService> _mockColaboradoresService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -17,8 +14,6 @@ public class ColaboradoresValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ColaboradoresValidationTests()
     {
-        _mockColaboradoresFactory = new Mock<IFColaboradoresFactory>();
-        _mockReader = new Mock<IColaboradoresReader>();
         _validation = new ColaboradoresValidation();
         _mockColaboradoresService = new Mock<IColaboradoresService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -59,7 +54,7 @@ public class ColaboradoresValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Colaboradores CreateValidColaboradores()
+    private static Models.Colaboradores CreateValidColaboradores()
     {
         return new Models.Colaboradores
         {
@@ -87,21 +82,21 @@ public class ColaboradoresValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync(new List<ColaboradoresResponseAll>());
+        _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Colaboradoress service mock
-        _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CargosResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CargosResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync(new List<ColaboradoresResponseAll>());
+        _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Colaboradoress service mock
-        _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CargosResponse { Id = 0 }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CargosResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -158,9 +153,9 @@ public class ColaboradoresValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync(new List<ColaboradoresResponseAll> { existingColaboradores });
         // Setup other mocks but don't override the Colaboradoress service mock
-        _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CargosResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CargosResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(colaboradores, _mockColaboradoresService.Object, _mockCargosReader.Object, _mockClientesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -183,9 +178,9 @@ public class ColaboradoresValidationTests : IDisposable
         };
         _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync(new List<ColaboradoresResponseAll> { existingColaboradores });
         // Setup other mocks but don't override the Colaboradoress service mock
-        _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CargosResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CargosResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(colaboradores, _mockColaboradoresService.Object, _mockCargosReader.Object, _mockClientesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -207,9 +202,9 @@ public class ColaboradoresValidationTests : IDisposable
         };
         _mockColaboradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterColaboradores>(), It.IsAny<string>())).ReturnsAsync(new List<ColaboradoresResponseAll> { existingColaboradores });
         // Setup other mocks but don't override the Colaboradoress service mock
-        _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CargosResponse { Id = id }));
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCargosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CargosResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(colaboradores, _mockColaboradoresService.Object, _mockCargosReader.Object, _mockClientesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert

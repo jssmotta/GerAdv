@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAtividadesWhere
 {
-    AtividadesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    AtividadesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class AtividadesWhere(IFAtividadesFactory atividadesFactory) : IAtividadesWhere
 {
     private readonly IFAtividadesFactory _atividadesFactory = atividadesFactory ?? throw new ArgumentNullException(nameof(atividadesFactory));
-    public AtividadesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AtividadesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _atividadesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var atividades = new AtividadesResponse

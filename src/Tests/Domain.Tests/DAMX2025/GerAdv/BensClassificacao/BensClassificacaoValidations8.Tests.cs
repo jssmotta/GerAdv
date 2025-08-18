@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class BensClassificacaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFBensClassificacaoFactory> _mockBensClassificacaoFactory;
-    private readonly Mock<IBensClassificacaoReader> _mockReader;
     private readonly BensClassificacaoValidation _validation;
     private readonly Mock<IBensClassificacaoService> _mockBensClassificacaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class BensClassificacaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public BensClassificacaoValidationTests()
     {
-        _mockBensClassificacaoFactory = new Mock<IFBensClassificacaoFactory>();
-        _mockReader = new Mock<IBensClassificacaoReader>();
         _validation = new BensClassificacaoValidation();
         _mockBensClassificacaoService = new Mock<IBensClassificacaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class BensClassificacaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.BensClassificacao CreateValidBensClassificacao()
+    private static Models.BensClassificacao CreateValidBensClassificacao()
     {
         return new Models.BensClassificacao
         {
@@ -65,14 +60,14 @@ public class BensClassificacaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockBensClassificacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensClassificacao>(), It.IsAny<string>())).ReturnsAsync(new List<BensClassificacaoResponseAll>());
+        _mockBensClassificacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensClassificacao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the BensClassificacaos service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockBensClassificacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensClassificacao>(), It.IsAny<string>())).ReturnsAsync(new List<BensClassificacaoResponseAll>());
+        _mockBensClassificacaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensClassificacao>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the BensClassificacaos service mock
     }
 

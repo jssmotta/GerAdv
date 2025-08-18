@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IInstanciaValidation
 {
-    Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class InstanciaValidation : IInstanciaValidation
 {
-    public async Task<bool> CanDelete(int? id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IInstanciaService service, INENotasService nenotasService, IProSucumbenciaService prosucumbenciaService, ITribunalService tribunalService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -52,7 +52,7 @@ public class InstanciaValidation : IInstanciaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Instancia reg, IInstanciaService service, IAcaoReader acaoReader, IForoReader foroReader, ITipoRecursoReader tiporecursoReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

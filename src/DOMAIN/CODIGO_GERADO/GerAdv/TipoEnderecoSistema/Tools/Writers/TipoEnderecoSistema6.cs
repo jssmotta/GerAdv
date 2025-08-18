@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoEnderecoSistemaWriter
 {
-    Task<FTipoEnderecoSistema> WriteAsync(Models.TipoEnderecoSistema tipoenderecosistema, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(TipoEnderecoSistemaResponse tipoenderecosistema, int operadorId, MsiSqlConnection oCnn);
+    Task<FTipoEnderecoSistema> WriteAsync(Models.TipoEnderecoSistema tipoenderecosistema, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(TipoEnderecoSistemaResponse tipoenderecosistema, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoEnderecoSistemaWriter(IFTipoEnderecoSistemaFactory tipoenderecosistemaFactory) : ITipoEnderecoSistemaWriter
 {
     private readonly IFTipoEnderecoSistemaFactory _tipoenderecosistemaFactory = tipoenderecosistemaFactory ?? throw new ArgumentNullException(nameof(tipoenderecosistemaFactory));
-    public virtual async Task Delete(TipoEnderecoSistemaResponse tipoenderecosistema, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(TipoEnderecoSistemaResponse tipoenderecosistema, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipoenderecosistemaFactory.DeleteAsync(operadorId, tipoenderecosistema.Id, oCnn);
     }
 
-    public virtual async Task<FTipoEnderecoSistema> WriteAsync(Models.TipoEnderecoSistema tipoenderecosistema, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoEnderecoSistema> WriteAsync(Models.TipoEnderecoSistema tipoenderecosistema, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (tipoenderecosistema.Id.IsEmptyIDNumber() ? _tipoenderecosistemaFactory.CreateAsync() : _tipoenderecosistemaFactory.CreateFromIdAsync(tipoenderecosistema.Id, oCnn));
         dbRec.FNome = tipoenderecosistema.Nome;

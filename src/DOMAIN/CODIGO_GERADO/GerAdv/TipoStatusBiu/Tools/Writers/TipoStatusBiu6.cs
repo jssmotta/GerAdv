@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITipoStatusBiuWriter
 {
-    Task<FTipoStatusBiu> WriteAsync(Models.TipoStatusBiu tipostatusbiu, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(TipoStatusBiuResponse tipostatusbiu, int operadorId, MsiSqlConnection oCnn);
+    Task<FTipoStatusBiu> WriteAsync(Models.TipoStatusBiu tipostatusbiu, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(TipoStatusBiuResponse tipostatusbiu, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoStatusBiuWriter(IFTipoStatusBiuFactory tipostatusbiuFactory) : ITipoStatusBiuWriter
 {
     private readonly IFTipoStatusBiuFactory _tipostatusbiuFactory = tipostatusbiuFactory ?? throw new ArgumentNullException(nameof(tipostatusbiuFactory));
-    public virtual async Task Delete(TipoStatusBiuResponse tipostatusbiu, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(TipoStatusBiuResponse tipostatusbiu, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipostatusbiuFactory.DeleteAsync(operadorId, tipostatusbiu.Id, oCnn);
     }
 
-    public virtual async Task<FTipoStatusBiu> WriteAsync(Models.TipoStatusBiu tipostatusbiu, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTipoStatusBiu> WriteAsync(Models.TipoStatusBiu tipostatusbiu, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (tipostatusbiu.Id.IsEmptyIDNumber() ? _tipostatusbiuFactory.CreateAsync() : _tipostatusbiuFactory.CreateFromIdAsync(tipostatusbiu.Id, oCnn));
         dbRec.FNome = tipostatusbiu.Nome;

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class CargosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFCargosFactory> _mockCargosFactory;
-    private readonly Mock<ICargosReader> _mockReader;
     private readonly CargosValidation _validation;
     private readonly Mock<ICargosService> _mockCargosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class CargosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public CargosValidationTests()
     {
-        _mockCargosFactory = new Mock<IFCargosFactory>();
-        _mockReader = new Mock<ICargosReader>();
         _validation = new CargosValidation();
         _mockCargosService = new Mock<ICargosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class CargosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Cargos CreateValidCargos()
+    private static Models.Cargos CreateValidCargos()
     {
         return new Models.Cargos
         {
@@ -65,14 +60,14 @@ public class CargosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockCargosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargos>(), It.IsAny<string>())).ReturnsAsync(new List<CargosResponseAll>());
+        _mockCargosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Cargoss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockCargosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargos>(), It.IsAny<string>())).ReturnsAsync(new List<CargosResponseAll>());
+        _mockCargosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCargos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Cargoss service mock
     }
 

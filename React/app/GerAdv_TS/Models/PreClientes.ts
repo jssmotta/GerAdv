@@ -36,9 +36,9 @@ export interface PreClientes
 	email : string;
 	assistido : string;
 	assrg : string;
-	asscpf : string;
 	assendereco : string;
 	cnh : string;
+	asscpf : string;
 	nomeclientes?: string;
 	nomecidade?: string;
 
@@ -80,9 +80,9 @@ export function PreClientesEmpty(): IPreClientes {
 		email: '',
 		assistido: '',
 		assrg: '',
-		asscpf: '',
 		assendereco: '',
 		cnh: '',
+		asscpf: '',
     };
 }
 
@@ -121,9 +121,9 @@ export function PreClientesTestEmpty(): IPreClientes {
 		email: 'X',
 		assistido: 'X',
 		assrg: 'X',
-		asscpf: 'X',
 		assendereco: 'X',
 		cnh: 'X',
+		asscpf: 'X',
     };
 }
 

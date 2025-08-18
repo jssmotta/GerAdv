@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IDiario2Where
 {
-    Diario2Response Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Diario2Response Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class Diario2Where(IFDiario2Factory diario2Factory) : IDiario2Where
 {
     private readonly IFDiario2Factory _diario2Factory = diario2Factory ?? throw new ArgumentNullException(nameof(diario2Factory));
-    public Diario2Response Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public Diario2Response Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _diario2Factory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var diario2 = new Diario2Response

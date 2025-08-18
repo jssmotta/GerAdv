@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoContatoCRMValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoContatoCRMFactory> _mockTipoContatoCRMFactory;
-    private readonly Mock<ITipoContatoCRMReader> _mockReader;
     private readonly TipoContatoCRMValidation _validation;
     private readonly Mock<ITipoContatoCRMService> _mockTipoContatoCRMService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoContatoCRMValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoContatoCRMValidationTests()
     {
-        _mockTipoContatoCRMFactory = new Mock<IFTipoContatoCRMFactory>();
-        _mockReader = new Mock<ITipoContatoCRMReader>();
         _validation = new TipoContatoCRMValidation();
         _mockTipoContatoCRMService = new Mock<ITipoContatoCRMService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoContatoCRMValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoContatoCRM CreateValidTipoContatoCRM()
+    private static Models.TipoContatoCRM CreateValidTipoContatoCRM()
     {
         return new Models.TipoContatoCRM
         {
@@ -65,14 +60,14 @@ public class TipoContatoCRMValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoContatoCRMService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoContatoCRM>(), It.IsAny<string>())).ReturnsAsync(new List<TipoContatoCRMResponseAll>());
+        _mockTipoContatoCRMService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoContatoCRM>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoContatoCRMs service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoContatoCRMService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoContatoCRM>(), It.IsAny<string>())).ReturnsAsync(new List<TipoContatoCRMResponseAll>());
+        _mockTipoContatoCRMService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoContatoCRM>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoContatoCRMs service mock
     }
 

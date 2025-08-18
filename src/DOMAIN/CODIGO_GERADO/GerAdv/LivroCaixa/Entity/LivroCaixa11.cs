@@ -23,7 +23,7 @@ public partial class FLivroCaixaFactory : IFLivroCaixaFactory, IDisposable
         return FLivroCaixa.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FLivroCaixa> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FLivroCaixa> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FLivroCaixa().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FLivroCaixaFactory : IFLivroCaixaFactory, IDisposable
         return new FLivroCaixa();
     }
 
-    public FLivroCaixa CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FLivroCaixa CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FLivroCaixa.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FLivroCaixa.DeleteRecordAsync(operadorId, id, oCnn);

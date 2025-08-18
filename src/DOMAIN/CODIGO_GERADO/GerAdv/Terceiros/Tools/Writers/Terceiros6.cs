@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITerceirosWriter
 {
-    Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection oCnn);
+    Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TerceirosWriter(IFTerceirosFactory terceirosFactory) : ITerceirosWriter
 {
     private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException(nameof(terceirosFactory));
-    public virtual async Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection? oCnn)
     {
         await _terceirosFactory.DeleteAsync(operadorId, terceiros.Id, oCnn);
     }
 
-    public virtual async Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (terceiros.Id.IsEmptyIDNumber() ? _terceirosFactory.CreateAsync() : _terceirosFactory.CreateFromIdAsync(terceiros.Id, oCnn));
         dbRec.FProcesso = terceiros.Processo;

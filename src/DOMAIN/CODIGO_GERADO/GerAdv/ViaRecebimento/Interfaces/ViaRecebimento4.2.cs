@@ -4,13 +4,13 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IViaRecebimentoReader
 {
-    Task<ViaRecebimentoResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.ViaRecebimento?> ReadM(int id, MsiSqlConnection oCnn);
-    ViaRecebimentoResponse? Read(FViaRecebimento dbRec, MsiSqlConnection oCnn);
-    ViaRecebimentoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<ViaRecebimentoResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.ViaRecebimento?> ReadM(int id, MsiSqlConnection? oCnn);
+    ViaRecebimentoResponse? Read(FViaRecebimento dbRec, MsiSqlConnection? oCnn);
+    ViaRecebimentoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     ViaRecebimentoResponse? Read(FViaRecebimento dbRec);
     ViaRecebimentoResponseAll? ReadAll(FViaRecebimento dbRec, IDataRecord dr);
     ViaRecebimentoResponseAll? ReadAll(SG.GerAdv.DBViaRecebimento dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<ViaRecebimentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<ViaRecebimentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

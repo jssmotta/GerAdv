@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProcessOutputEngineWriter
 {
-    Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection oCnn);
+    Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProcessOutputEngineWriter(IFProcessOutputEngineFactory processoutputengineFactory) : IProcessOutputEngineWriter
 {
     private readonly IFProcessOutputEngineFactory _processoutputengineFactory = processoutputengineFactory ?? throw new ArgumentNullException(nameof(processoutputengineFactory));
-    public virtual async Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection? oCnn)
     {
         await _processoutputengineFactory.DeleteAsync(operadorId, processoutputengine.Id, oCnn);
     }
 
-    public virtual async Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (processoutputengine.Id.IsEmptyIDNumber() ? _processoutputengineFactory.CreateAsync() : _processoutputengineFactory.CreateFromIdAsync(processoutputengine.Id, oCnn));
         dbRec.FNome = processoutputengine.Nome;

@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class OperadorGruposAgendaReader(IFOperadorGruposAgendaFactory operadorgruposagendaFactory) : IOperadorGruposAgendaReader
 {
     private readonly IFOperadorGruposAgendaFactory _operadorgruposagendaFactory = operadorgruposagendaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("groCodigo, groNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<OperadorGruposAgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperadorGruposAgenda.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<OperadorGruposAgendaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("groCodigo, groNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<OperadorGruposAgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperadorGruposAgenda.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<OperadorGruposAgendaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<OperadorGruposAgendaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class OperadorGruposAgendaReader(IFOperadorGruposAgendaFactory op
         return result;
     }
 
-    public async Task<OperadorGruposAgendaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<OperadorGruposAgendaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadorgruposagendaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.OperadorGruposAgenda?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.OperadorGruposAgenda?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadorgruposagendaFactory.CreateFromIdAsync(id, oCnn);
         var operadorgruposagenda = new Models.OperadorGruposAgenda
@@ -62,12 +62,12 @@ public partial class OperadorGruposAgendaReader(IFOperadorGruposAgendaFactory op
         return operadorgruposagenda;
     }
 
-    public OperadorGruposAgendaResponse? Read(FOperadorGruposAgenda dbRec, MsiSqlConnection oCnn)
+    public OperadorGruposAgendaResponse? Read(FOperadorGruposAgenda dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public OperadorGruposAgendaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OperadorGruposAgendaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _operadorgruposagendaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

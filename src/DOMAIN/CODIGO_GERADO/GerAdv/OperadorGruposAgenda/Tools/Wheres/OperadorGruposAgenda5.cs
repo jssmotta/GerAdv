@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IOperadorGruposAgendaWhere
 {
-    OperadorGruposAgendaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    OperadorGruposAgendaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class OperadorGruposAgendaWhere(IFOperadorGruposAgendaFactory operadorgruposagendaFactory) : IOperadorGruposAgendaWhere
 {
     private readonly IFOperadorGruposAgendaFactory _operadorgruposagendaFactory = operadorgruposagendaFactory ?? throw new ArgumentNullException(nameof(operadorgruposagendaFactory));
-    public OperadorGruposAgendaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public OperadorGruposAgendaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _operadorgruposagendaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var operadorgruposagenda = new OperadorGruposAgendaResponse

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IStatusHTrabWriter
 {
-    Task<FStatusHTrab> WriteAsync(Models.StatusHTrab statushtrab, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection oCnn);
+    Task<FStatusHTrab> WriteAsync(Models.StatusHTrab statushtrab, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class StatusHTrabWriter(IFStatusHTrabFactory statushtrabFactory) : IStatusHTrabWriter
 {
     private readonly IFStatusHTrabFactory _statushtrabFactory = statushtrabFactory ?? throw new ArgumentNullException(nameof(statushtrabFactory));
-    public virtual async Task Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(StatusHTrabResponse statushtrab, int operadorId, MsiSqlConnection? oCnn)
     {
         await _statushtrabFactory.DeleteAsync(operadorId, statushtrab.Id, oCnn);
     }
 
-    public virtual async Task<FStatusHTrab> WriteAsync(Models.StatusHTrab statushtrab, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FStatusHTrab> WriteAsync(Models.StatusHTrab statushtrab, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (statushtrab.Id.IsEmptyIDNumber() ? _statushtrabFactory.CreateAsync() : _statushtrabFactory.CreateFromIdAsync(statushtrab.Id, oCnn));
         dbRec.FDescricao = statushtrab.Descricao;

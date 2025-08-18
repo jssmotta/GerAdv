@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAtividadesValidation
 {
-    Task<bool> ValidateReg(Models.Atividades reg, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Atividades reg, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class AtividadesValidation : IAtividadesValidation
 {
-    public async Task<bool> CanDelete(int? id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -33,7 +33,7 @@ public class AtividadesValidation : IAtividadesValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Atividades reg, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Atividades reg, IAtividadesService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

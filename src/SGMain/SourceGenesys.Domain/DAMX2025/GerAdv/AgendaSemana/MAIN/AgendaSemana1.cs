@@ -16,7 +16,7 @@ public partial class DBAgendaSemana : VNoAuditor
     }
 
 #endregion
-    public DBAgendaSemana(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBAgendaSemana(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
         if (oCnn is null)

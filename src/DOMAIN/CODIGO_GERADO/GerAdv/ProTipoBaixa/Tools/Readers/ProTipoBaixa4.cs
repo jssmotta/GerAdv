@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ProTipoBaixaReader(IFProTipoBaixaFactory protipobaixaFactory) : IProTipoBaixaReader
 {
     private readonly IFProTipoBaixaFactory _protipobaixaFactory = protipobaixaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ptxCodigo, ptxNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ProTipoBaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProTipoBaixa.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ProTipoBaixaResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ptxCodigo, ptxNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ProTipoBaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProTipoBaixa.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ProTipoBaixaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ProTipoBaixaResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ProTipoBaixaReader(IFProTipoBaixaFactory protipobaixaFactor
         return result;
     }
 
-    public async Task<ProTipoBaixaResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ProTipoBaixaResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _protipobaixaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProTipoBaixa?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ProTipoBaixa?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _protipobaixaFactory.CreateFromIdAsync(id, oCnn);
         var protipobaixa = new Models.ProTipoBaixa
@@ -60,12 +60,12 @@ public partial class ProTipoBaixaReader(IFProTipoBaixaFactory protipobaixaFactor
         return protipobaixa;
     }
 
-    public ProTipoBaixaResponse? Read(FProTipoBaixa dbRec, MsiSqlConnection oCnn)
+    public ProTipoBaixaResponse? Read(FProTipoBaixa dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ProTipoBaixaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ProTipoBaixaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _protipobaixaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

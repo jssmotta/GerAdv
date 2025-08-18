@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IPenhoraValidation
 {
-    Task<bool> ValidateReg(Models.Penhora reg, IPenhoraService service, IPenhoraStatusReader penhorastatusReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Penhora reg, IPenhoraService service, IPenhoraStatusReader penhorastatusReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class PenhoraValidation : IPenhoraValidation
 {
-    public async Task<bool> CanDelete(int? id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IPenhoraService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -33,7 +33,7 @@ public class PenhoraValidation : IPenhoraValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Penhora reg, IPenhoraService service, IPenhoraStatusReader penhorastatusReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Penhora reg, IPenhoraService service, IPenhoraStatusReader penhorastatusReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

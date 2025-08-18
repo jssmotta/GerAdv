@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ILigacoesWriter
 {
-    Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection oCnn);
+    Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
 {
     private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory ?? throw new ArgumentNullException(nameof(ligacoesFactory));
-    public virtual async Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _ligacoesFactory.DeleteAsync(operadorId, ligacoes.Id, oCnn);
     }
 
-    public virtual async Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (ligacoes.Id.IsEmptyIDNumber() ? _ligacoesFactory.CreateAsync() : _ligacoesFactory.CreateFromIdAsync(ligacoes.Id, oCnn));
         dbRec.FAssunto = ligacoes.Assunto;

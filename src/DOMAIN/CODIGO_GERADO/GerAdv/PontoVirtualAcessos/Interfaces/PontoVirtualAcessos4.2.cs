@@ -4,12 +4,12 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IPontoVirtualAcessosReader
 {
-    Task<PontoVirtualAcessosResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.PontoVirtualAcessos?> ReadM(int id, MsiSqlConnection oCnn);
-    PontoVirtualAcessosResponse? Read(FPontoVirtualAcessos dbRec, MsiSqlConnection oCnn);
-    PontoVirtualAcessosResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<PontoVirtualAcessosResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.PontoVirtualAcessos?> ReadM(int id, MsiSqlConnection? oCnn);
+    PontoVirtualAcessosResponse? Read(FPontoVirtualAcessos dbRec, MsiSqlConnection? oCnn);
+    PontoVirtualAcessosResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     PontoVirtualAcessosResponse? Read(FPontoVirtualAcessos dbRec);
     PontoVirtualAcessosResponseAll? ReadAll(FPontoVirtualAcessos dbRec, IDataRecord dr);
     PontoVirtualAcessosResponseAll? ReadAll(SG.GerAdv.DBPontoVirtualAcessos dbRec, DataRow dr);
-    Task<IEnumerable<PontoVirtualAcessosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<PontoVirtualAcessosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

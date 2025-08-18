@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ILivroCaixaReader
 {
-    Task<LivroCaixaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.LivroCaixa?> ReadM(int id, MsiSqlConnection oCnn);
-    LivroCaixaResponse? Read(FLivroCaixa dbRec, MsiSqlConnection oCnn);
-    LivroCaixaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<LivroCaixaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.LivroCaixa?> ReadM(int id, MsiSqlConnection? oCnn);
+    LivroCaixaResponse? Read(FLivroCaixa dbRec, MsiSqlConnection? oCnn);
+    LivroCaixaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     LivroCaixaResponse? Read(FLivroCaixa dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     LivroCaixaResponseAll? ReadAll(FLivroCaixa dbRec, IDataRecord dr);
     LivroCaixaResponseAll? ReadAll(SG.GerAdv.DBLivroCaixa dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<LivroCaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<LivroCaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

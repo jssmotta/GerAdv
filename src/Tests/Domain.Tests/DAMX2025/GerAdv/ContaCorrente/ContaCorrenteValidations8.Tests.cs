@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ContaCorrenteValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFContaCorrenteFactory> _mockContaCorrenteFactory;
-    private readonly Mock<IContaCorrenteReader> _mockReader;
     private readonly ContaCorrenteValidation _validation;
     private readonly Mock<IContaCorrenteService> _mockContaCorrenteService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class ContaCorrenteValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ContaCorrenteValidationTests()
     {
-        _mockContaCorrenteFactory = new Mock<IFContaCorrenteFactory>();
-        _mockReader = new Mock<IContaCorrenteReader>();
         _validation = new ContaCorrenteValidation();
         _mockContaCorrenteService = new Mock<IContaCorrenteService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class ContaCorrenteValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ContaCorrente CreateValidContaCorrente()
+    private static Models.ContaCorrente CreateValidContaCorrente()
     {
         return new Models.ContaCorrente
         {
@@ -91,17 +86,17 @@ public class ContaCorrenteValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockContaCorrenteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContaCorrente>(), It.IsAny<string>())).ReturnsAsync(new List<ContaCorrenteResponseAll>());
+        _mockContaCorrenteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContaCorrente>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ContaCorrentes service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockContaCorrenteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContaCorrente>(), It.IsAny<string>())).ReturnsAsync(new List<ContaCorrenteResponseAll>());
+        _mockContaCorrenteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContaCorrente>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ContaCorrentes service mock
-        _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.ClientesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]

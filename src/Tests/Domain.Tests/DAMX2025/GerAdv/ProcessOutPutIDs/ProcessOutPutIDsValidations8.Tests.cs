@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProcessOutPutIDsValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProcessOutPutIDsFactory> _mockProcessOutPutIDsFactory;
-    private readonly Mock<IProcessOutPutIDsReader> _mockReader;
     private readonly ProcessOutPutIDsValidation _validation;
     private readonly Mock<IProcessOutPutIDsService> _mockProcessOutPutIDsService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProcessOutPutIDsValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProcessOutPutIDsValidationTests()
     {
-        _mockProcessOutPutIDsFactory = new Mock<IFProcessOutPutIDsFactory>();
-        _mockReader = new Mock<IProcessOutPutIDsReader>();
         _validation = new ProcessOutPutIDsValidation();
         _mockProcessOutPutIDsService = new Mock<IProcessOutPutIDsService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProcessOutPutIDsValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProcessOutPutIDs CreateValidProcessOutPutIDs()
+    private static Models.ProcessOutPutIDs CreateValidProcessOutPutIDs()
     {
         return new Models.ProcessOutPutIDs
         {
@@ -65,14 +60,14 @@ public class ProcessOutPutIDsValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProcessOutPutIDsService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutPutIDs>(), It.IsAny<string>())).ReturnsAsync(new List<ProcessOutPutIDsResponseAll>());
+        _mockProcessOutPutIDsService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutPutIDs>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProcessOutPutIDss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProcessOutPutIDsService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutPutIDs>(), It.IsAny<string>())).ReturnsAsync(new List<ProcessOutPutIDsResponseAll>());
+        _mockProcessOutPutIDsService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessOutPutIDs>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProcessOutPutIDss service mock
     }
 

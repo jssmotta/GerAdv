@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class EscritoriosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFEscritoriosFactory> _mockEscritoriosFactory;
-    private readonly Mock<IEscritoriosReader> _mockReader;
     private readonly EscritoriosValidation _validation;
     private readonly Mock<IEscritoriosService> _mockEscritoriosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class EscritoriosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public EscritoriosValidationTests()
     {
-        _mockEscritoriosFactory = new Mock<IFEscritoriosFactory>();
-        _mockReader = new Mock<IEscritoriosReader>();
         _validation = new EscritoriosValidation();
         _mockEscritoriosService = new Mock<IEscritoriosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class EscritoriosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Escritorios CreateValidEscritorios()
+    private static Models.Escritorios CreateValidEscritorios()
     {
         return new Models.Escritorios
         {
@@ -85,17 +80,17 @@ public class EscritoriosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync(new List<EscritoriosResponseAll>());
+        _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Escritorioss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync(new List<EscritoriosResponseAll>());
+        _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Escritorioss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -155,7 +150,7 @@ public class EscritoriosValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync(new List<EscritoriosResponseAll> { existingEscritorios });
         // Setup other mocks but don't override the Escritorioss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(escritorios, _mockEscritoriosService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -178,7 +173,7 @@ public class EscritoriosValidationTests : IDisposable
         };
         _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync(new List<EscritoriosResponseAll> { existingEscritorios });
         // Setup other mocks but don't override the Escritorioss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(escritorios, _mockEscritoriosService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -199,7 +194,7 @@ public class EscritoriosValidationTests : IDisposable
         };
         _mockEscritoriosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterEscritorios>(), It.IsAny<string>())).ReturnsAsync(new List<EscritoriosResponseAll> { existingEscritorios });
         // Setup other mocks but don't override the Escritorioss service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(escritorios, _mockEscritoriosService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert

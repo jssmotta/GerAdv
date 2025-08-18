@@ -4,27 +4,7 @@ namespace MenphisSI;
 /// -1 return com int.TryParse;
 /// </summary>
 public static partial class ConfigSys
-{
-
-    private static bool ExecuteSql(string cSql, MsiSqlConnection? conn)
-    {
-        if (conn is null) return false;
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = cSql;
-        var trans = conn.BeginTransaction();
-        cmd.Transaction = trans;
-        try
-        {
-            cmd.ExecuteNonQuery();
-            trans.Commit();
-            return true;
-        }
-        catch
-        {
-            trans.Rollback();
-            return false;
-        }
-    }
+{ 
     /// <summary>
     /// 05-02-2015
     /// </summary>
@@ -33,11 +13,11 @@ public static partial class ConfigSys
     /// <param name="oCnn"></param>
     public static bool DeleteKeyCfgSys(string cKey, int operador, MsiSqlConnection? oCnn)
     =>
-        ExecuteSql($"delete from {"WCfgSys".dbo(oCnn)} where Usuario={operador} AND Chave like '{cKey.Replace("'", "''")}'", oCnn);
+        ConfiguracoesDBT.ExecuteSqlCreate($"delete from {"WCfgSys".dbo(oCnn)} where Usuario={operador} AND Chave like '{cKey.Replace("'", "''")}'", oCnn);
 
     public static bool DeleteKeyCfgSys(string cKey, MsiSqlConnection? oCnn)
 =>
-    ExecuteSql($"delete from {"WCfgSys".dbo(oCnn)} where Chave like '{cKey.Replace("'", "''")}'", oCnn);
+    ConfiguracoesDBT.ExecuteSqlCreate($"delete from {"WCfgSys".dbo(oCnn)} where Chave like '{cKey.Replace("'", "''")}'", oCnn);
 
     public static bool WriteCfgSys(string cKey, int nValue, MsiSqlConnection? oCnnP)
         => iWrite(cKey, nValue.ToString(), oCnnP);

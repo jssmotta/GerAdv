@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class AgendaRelatorioValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFAgendaRelatorioFactory> _mockAgendaRelatorioFactory;
-    private readonly Mock<IAgendaRelatorioReader> _mockReader;
     private readonly AgendaRelatorioValidation _validation;
     private readonly Mock<IAgendaRelatorioService> _mockAgendaRelatorioService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class AgendaRelatorioValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public AgendaRelatorioValidationTests()
     {
-        _mockAgendaRelatorioFactory = new Mock<IFAgendaRelatorioFactory>();
-        _mockReader = new Mock<IAgendaRelatorioReader>();
         _validation = new AgendaRelatorioValidation();
         _mockAgendaRelatorioService = new Mock<IAgendaRelatorioService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class AgendaRelatorioValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.AgendaRelatorio CreateValidAgendaRelatorio()
+    private static Models.AgendaRelatorio CreateValidAgendaRelatorio()
     {
         return new Models.AgendaRelatorio
         {
@@ -74,14 +69,14 @@ public class AgendaRelatorioValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockAgendaRelatorioService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaRelatorio>(), It.IsAny<string>())).ReturnsAsync(new List<AgendaRelatorioResponseAll>());
+        _mockAgendaRelatorioService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaRelatorio>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the AgendaRelatorios service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockAgendaRelatorioService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaRelatorio>(), It.IsAny<string>())).ReturnsAsync(new List<AgendaRelatorioResponseAll>());
+        _mockAgendaRelatorioService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgendaRelatorio>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the AgendaRelatorios service mock
     }
 

@@ -23,7 +23,7 @@ public partial class FUFFactory : IFUFFactory, IDisposable
         return FUF.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FUF> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FUF> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FUF().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FUFFactory : IFUFFactory, IDisposable
         return new FUF();
     }
 
-    public FUF CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FUF CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FUF.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FUF.DeleteRecordAsync(operadorId, id, oCnn);

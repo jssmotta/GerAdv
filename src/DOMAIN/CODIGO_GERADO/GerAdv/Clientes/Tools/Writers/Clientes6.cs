@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IClientesWriter
 {
-    Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection oCnn);
+    Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
 {
     private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException(nameof(clientesFactory));
-    public virtual async Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _clientesFactory.DeleteAsync(operadorId, clientes.Id, oCnn);
     }
 
-    public virtual async Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (clientes.Id.IsEmptyIDNumber() ? _clientesFactory.CreateAsync() : _clientesFactory.CreateFromIdAsync(clientes.Id, oCnn));
         dbRec.FEmpresa = clientes.Empresa;

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IPontoVirtualAcessosWriter
 {
-    Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection oCnn);
+    Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PontoVirtualAcessosWriter(IFPontoVirtualAcessosFactory pontovirtualacessosFactory) : IPontoVirtualAcessosWriter
 {
     private readonly IFPontoVirtualAcessosFactory _pontovirtualacessosFactory = pontovirtualacessosFactory ?? throw new ArgumentNullException(nameof(pontovirtualacessosFactory));
-    public virtual async Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(PontoVirtualAcessosResponse pontovirtualacessos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _pontovirtualacessosFactory.DeleteAsync(operadorId, pontovirtualacessos.Id, oCnn);
     }
 
-    public virtual async Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FPontoVirtualAcessos> WriteAsync(Models.PontoVirtualAcessos pontovirtualacessos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (pontovirtualacessos.Id.IsEmptyIDNumber() ? _pontovirtualacessosFactory.CreateAsync() : _pontovirtualacessosFactory.CreateFromIdAsync(pontovirtualacessos.Id, oCnn));
         dbRec.FOperador = pontovirtualacessos.Operador;

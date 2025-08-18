@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribunalReader
 {
     private readonly IFTribunalFactory _tribunalFactory = tribunalFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("triCodigo, triNome", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<TribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TribunalResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("triCodigo, triNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTribunal.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<TribunalResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TribunalResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
         return result;
     }
 
-    public async Task<TribunalResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<TribunalResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tribunalFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Tribunal?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.Tribunal?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tribunalFactory.CreateFromIdAsync(id, oCnn);
         var tribunal = new Models.Tribunal
@@ -66,12 +66,12 @@ public partial class TribunalReader(IFTribunalFactory tribunalFactory) : ITribun
         return tribunal;
     }
 
-    public TribunalResponse? Read(FTribunal dbRec, MsiSqlConnection oCnn)
+    public TribunalResponse? Read(FTribunal dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public TribunalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public TribunalResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _tribunalFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

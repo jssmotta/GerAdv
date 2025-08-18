@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ForoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFForoFactory> _mockForoFactory;
-    private readonly Mock<IForoReader> _mockReader;
     private readonly ForoValidation _validation;
     private readonly Mock<IForoService> _mockForoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class ForoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ForoValidationTests()
     {
-        _mockForoFactory = new Mock<IFForoFactory>();
-        _mockReader = new Mock<IForoReader>();
         _validation = new ForoValidation();
         _mockForoService = new Mock<IForoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class ForoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Foro CreateValidForo()
+    private static Models.Foro CreateValidForo()
     {
         return new Models.Foro
         {
@@ -79,17 +74,17 @@ public class ForoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockForoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterForo>(), It.IsAny<string>())).ReturnsAsync(new List<ForoResponseAll>());
+        _mockForoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterForo>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Foros service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockForoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterForo>(), It.IsAny<string>())).ReturnsAsync(new List<ForoResponseAll>());
+        _mockForoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterForo>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Foros service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]

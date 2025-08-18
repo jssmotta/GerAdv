@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProcessosObsReportValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProcessosObsReportFactory> _mockProcessosObsReportFactory;
-    private readonly Mock<IProcessosObsReportReader> _mockReader;
     private readonly ProcessosObsReportValidation _validation;
     private readonly Mock<IProcessosObsReportService> _mockProcessosObsReportService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProcessosObsReportValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProcessosObsReportValidationTests()
     {
-        _mockProcessosObsReportFactory = new Mock<IFProcessosObsReportFactory>();
-        _mockReader = new Mock<IProcessosObsReportReader>();
         _validation = new ProcessosObsReportValidation();
         _mockProcessosObsReportService = new Mock<IProcessosObsReportService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProcessosObsReportValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProcessosObsReport CreateValidProcessosObsReport()
+    private static Models.ProcessosObsReport CreateValidProcessosObsReport()
     {
         return new Models.ProcessosObsReport
         {
@@ -68,14 +63,14 @@ public class ProcessosObsReportValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProcessosObsReportService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessosObsReport>(), It.IsAny<string>())).ReturnsAsync(new List<ProcessosObsReportResponseAll>());
+        _mockProcessosObsReportService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessosObsReport>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProcessosObsReports service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProcessosObsReportService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessosObsReport>(), It.IsAny<string>())).ReturnsAsync(new List<ProcessosObsReportResponseAll>());
+        _mockProcessosObsReportService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProcessosObsReport>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProcessosObsReports service mock
     }
 

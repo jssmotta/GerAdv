@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProResumosValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProResumosFactory> _mockProResumosFactory;
-    private readonly Mock<IProResumosReader> _mockReader;
     private readonly ProResumosValidation _validation;
     private readonly Mock<IProResumosService> _mockProResumosService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProResumosValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProResumosValidationTests()
     {
-        _mockProResumosFactory = new Mock<IFProResumosFactory>();
-        _mockReader = new Mock<IProResumosReader>();
         _validation = new ProResumosValidation();
         _mockProResumosService = new Mock<IProResumosService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProResumosValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProResumos CreateValidProResumos()
+    private static Models.ProResumos CreateValidProResumos()
     {
         return new Models.ProResumos
         {
@@ -68,14 +63,14 @@ public class ProResumosValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProResumosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProResumos>(), It.IsAny<string>())).ReturnsAsync(new List<ProResumosResponseAll>());
+        _mockProResumosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProResumos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProResumoss service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProResumosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProResumos>(), It.IsAny<string>())).ReturnsAsync(new List<ProResumosResponseAll>());
+        _mockProResumosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProResumos>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProResumoss service mock
     }
 

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IOperadorEMailPopupWriter
 {
-    Task<FOperadorEMailPopup> WriteAsync(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection oCnn);
+    Task<FOperadorEMailPopup> WriteAsync(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OperadorEMailPopupWriter(IFOperadorEMailPopupFactory operadoremailpopupFactory) : IOperadorEMailPopupWriter
 {
     private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory ?? throw new ArgumentNullException(nameof(operadoremailpopupFactory));
-    public virtual async Task Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(OperadorEMailPopupResponse operadoremailpopup, int operadorId, MsiSqlConnection? oCnn)
     {
         await _operadoremailpopupFactory.DeleteAsync(operadorId, operadoremailpopup.Id, oCnn);
     }
 
-    public virtual async Task<FOperadorEMailPopup> WriteAsync(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FOperadorEMailPopup> WriteAsync(Models.OperadorEMailPopup operadoremailpopup, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (operadoremailpopup.Id.IsEmptyIDNumber() ? _operadoremailpopupFactory.CreateAsync() : _operadoremailpopupFactory.CreateFromIdAsync(operadoremailpopup.Id, oCnn));
         dbRec.FOperador = operadoremailpopup.Operador;

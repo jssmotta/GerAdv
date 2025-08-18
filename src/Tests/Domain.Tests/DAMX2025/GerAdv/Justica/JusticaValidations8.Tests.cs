@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class JusticaValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFJusticaFactory> _mockJusticaFactory;
-    private readonly Mock<IJusticaReader> _mockReader;
     private readonly JusticaValidation _validation;
     private readonly Mock<IJusticaService> _mockJusticaService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class JusticaValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public JusticaValidationTests()
     {
-        _mockJusticaFactory = new Mock<IFJusticaFactory>();
-        _mockReader = new Mock<IJusticaReader>();
         _validation = new JusticaValidation();
         _mockJusticaService = new Mock<IJusticaService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class JusticaValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Justica CreateValidJustica()
+    private static Models.Justica CreateValidJustica()
     {
         return new Models.Justica
         {
@@ -65,14 +60,14 @@ public class JusticaValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockJusticaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterJustica>(), It.IsAny<string>())).ReturnsAsync(new List<JusticaResponseAll>());
+        _mockJusticaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterJustica>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Justicas service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockJusticaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterJustica>(), It.IsAny<string>())).ReturnsAsync(new List<JusticaResponseAll>());
+        _mockJusticaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterJustica>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the Justicas service mock
     }
 

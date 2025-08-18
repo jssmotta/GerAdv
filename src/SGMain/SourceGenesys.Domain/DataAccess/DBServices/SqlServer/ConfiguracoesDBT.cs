@@ -2,14 +2,14 @@ using System.Diagnostics;
 
 namespace MenphisSI.DB;
 
- 
+
 public partial class ConfiguracoesDBT
 {
     public const string SQLNoCount = "SET STATISTICS IO OFF;SET NOCOUNT ON;set dateformat ymd;";
-     
+
     public static string CmdSql(in string cSql) => $"{SQLNoCount}{cSql}";
 
-   
+
     public static DataTable? GetDataTable(SqlCommand command, CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
@@ -28,11 +28,11 @@ public partial class ConfiguracoesDBT
             //dataReader?.Close();
         }
         catch (SqlException)
-        { 
+        {
         }
         catch (Exception)
         {
-            
+
         }
         return resultTable;
 
@@ -42,12 +42,12 @@ public partial class ConfiguracoesDBT
           GetDataTable3(cSql, oCnn) ?? throw new Exception(cSql);
     public static DataTable? GetDataTable3(string cSql, MsiSqlConnection? oCnn)
     {
-      
+
         if (oCnn is null) throw new Exception("Conexão fechada DataTable.");
 
         var trans = oCnn.BeginTransaction();
         using var command = new SqlCommand($"{DevourerConsts.SQLNoCount}{cSql}", oCnn?.InnerConnection, trans);
-        
+
         try
         {
             var table = new DataTable();
@@ -62,11 +62,11 @@ public partial class ConfiguracoesDBT
             if (Debugger.IsAttached)
                 throw new Exception($"{cSql} - {ex.Message}");
             throw new Exception(ex.Message);
-            
-        } 
+
+        }
     }
 
- 
+
     public static DataTable? GetDataTable(in string? cSql, in CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
 
@@ -90,8 +90,8 @@ public partial class ConfiguracoesDBT
         return resultTable;
     }
 
-   
-   
+
+
     public static DataTable? GetDataTable2(string cSql, MsiSqlConnection? oCnn)
     {
         using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
@@ -117,7 +117,7 @@ public partial class ConfiguracoesDBT
 
     public static async Task<DataTable?> GetDataTable2Async(string cSql, List<SqlParameter> parametros, MsiSqlConnection? oCnn)
     {
-        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null) { CommandTimeout = 30};
+        using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null) { CommandTimeout = 30 };
         foreach (var param in parametros)
         {
             if (!command.Parameters.Contains(param.ParameterName))
@@ -169,7 +169,7 @@ public partial class ConfiguracoesDBT
         }
 
         return resultTable;
-    } 
+    }
     public static MsiSqlConnection? GetConnection(string? cStrConn)
     {
 
@@ -181,12 +181,12 @@ public partial class ConfiguracoesDBT
         }
         catch
         {
-             return null;
+            return null;
         }
 
         return oCnnSql;
     }
-  
+
     [Serializable]
     public enum E_TipoSQLCommandTransaction
     {
@@ -216,7 +216,7 @@ public partial class ConfiguracoesDBT
 
         return sqlAd;
     }
-   
+
     public static bool ExecuteSql(string? cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
     {
         if (conn is null || cSql is null) return false;
@@ -231,15 +231,15 @@ public partial class ConfiguracoesDBT
             trans.Commit();
             return true;
         }
-        catch  
+        catch
         {
-            trans.Rollback(); 
-            
+            trans.Rollback();
+
             return false;
         }
     }
 
-     
+
     public static bool ExecuteSqlCreate(string cSql, MsiSqlConnection? conn, SqlTransaction? trans = null)
     {
         if (conn is null) return false;
@@ -256,7 +256,7 @@ public partial class ConfiguracoesDBT
             return true;
         }
 
- 
+
         catch (Exception ex)
         {
             trans.Rollback();
@@ -268,8 +268,8 @@ public partial class ConfiguracoesDBT
 
     public static string DeleteCommand(MsiSqlConnection? oCnn, in bool lTop1 = false)
         => $"DELETE {(lTop1 ? " TOP (1) " : "")}";
- 
-    
+
+
     public static bool CreatePmk(in string tabela, string campoCodigo, MsiSqlConnection? oCnn)
     {
         if (oCnn is null) return false;
@@ -341,26 +341,27 @@ public partial class ConfiguracoesDBT
         return false;
     }
 
-    public static DataTable? GetDataTable(List<SqlParameter> parameters, in string? cSql, in CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
+    public static DataTable? GetDataTable(List<SqlParameter>? parameters, in string? cSql, in CommandBehavior cmdBehavior, MsiSqlConnection? oCnn)
     {
         if (oCnn is null) return null;
         using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
 
-        foreach (var param in parameters)
-        {
-            if (!command.Parameters.Contains(param.ParameterName))
+        if (parameters != null)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!command.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                command.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    command.Parameters.Add(newParam);
+                }
             }
-        }
 
         var resultTable = new DataTable(command.CommandText);
 

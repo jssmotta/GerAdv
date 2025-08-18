@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IBensClassificacaoWhere
 {
-    BensClassificacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    BensClassificacaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class BensClassificacaoWhere(IFBensClassificacaoFactory bensclassificacaoFactory) : IBensClassificacaoWhere
 {
     private readonly IFBensClassificacaoFactory _bensclassificacaoFactory = bensclassificacaoFactory ?? throw new ArgumentNullException(nameof(bensclassificacaoFactory));
-    public BensClassificacaoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public BensClassificacaoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _bensclassificacaoFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var bensclassificacao = new BensClassificacaoResponse

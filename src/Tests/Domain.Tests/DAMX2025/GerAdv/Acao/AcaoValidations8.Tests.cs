@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class AcaoValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFAcaoFactory> _mockAcaoFactory;
-    private readonly Mock<IAcaoReader> _mockReader;
     private readonly AcaoValidation _validation;
     private readonly Mock<IAcaoService> _mockAcaoService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class AcaoValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public AcaoValidationTests()
     {
-        _mockAcaoFactory = new Mock<IFAcaoFactory>();
-        _mockReader = new Mock<IAcaoReader>();
         _validation = new AcaoValidation();
         _mockAcaoService = new Mock<IAcaoService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class AcaoValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Acao CreateValidAcao()
+    private static Models.Acao CreateValidAcao()
     {
         return new Models.Acao
         {
@@ -71,19 +66,19 @@ public class AcaoValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAcao>(), It.IsAny<string>())).ReturnsAsync(new List<AcaoResponseAll>());
+        _mockAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAcao>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Acaos service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = id }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAcao>(), It.IsAny<string>())).ReturnsAsync(new List<AcaoResponseAll>());
+        _mockAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAcao>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Acaos service mock
-        _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.JusticaResponse { Id = 0 }));
-        _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
     }
 
     [Fact]

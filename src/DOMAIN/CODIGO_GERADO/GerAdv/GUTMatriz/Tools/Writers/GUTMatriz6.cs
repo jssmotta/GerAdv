@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGUTMatrizWriter
 {
-    Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection oCnn);
+    Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GUTMatrizWriter(IFGUTMatrizFactory gutmatrizFactory) : IGUTMatrizWriter
 {
     private readonly IFGUTMatrizFactory _gutmatrizFactory = gutmatrizFactory ?? throw new ArgumentNullException(nameof(gutmatrizFactory));
-    public virtual async Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gutmatrizFactory.DeleteAsync(operadorId, gutmatriz.Id, oCnn);
     }
 
-    public virtual async Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (gutmatriz.Id.IsEmptyIDNumber() ? _gutmatrizFactory.CreateAsync() : _gutmatrizFactory.CreateFromIdAsync(gutmatriz.Id, oCnn));
         dbRec.FDescricao = gutmatriz.Descricao;

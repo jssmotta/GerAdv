@@ -5,9 +5,9 @@ namespace MenphisSI.GerAdv.Readers;
 public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteReader
 {
     private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ctoCodigo, ctoData", cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max);
-    public async Task<IEnumerable<ContaCorrenteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContaCorrente.CamposSqlX, cWhere, order, max), parameters, uri, caching: DevourerOne.PCachingDefault, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ContaCorrenteResponseAll>> ListarTabela(string sql, List<SqlParameter> parameters, string uri, bool caching = DevourerOne.PCachingDefault, int max = 200, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ctoCodigo, ctoData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ContaCorrenteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBContaCorrente.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    private async Task<IEnumerable<ContaCorrenteResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ContaCorrenteResponseAll>(max);
         await using var connection = Configuracoes.GetConnectionByUri(uri);
@@ -42,13 +42,13 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         return result;
     }
 
-    public async Task<ContaCorrenteResponse?> Read(int id, MsiSqlConnection oCnn)
+    public async Task<ContaCorrenteResponse?> Read(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _contacorrenteFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ContaCorrente?> ReadM(int id, MsiSqlConnection oCnn)
+    public async Task<Models.ContaCorrente?> ReadM(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _contacorrenteFactory.CreateFromIdAsync(id, oCnn);
         var contacorrente = new Models.ContaCorrente
@@ -94,12 +94,12 @@ public partial class ContaCorrenteReader(IFContaCorrenteFactory contacorrenteFac
         return contacorrente;
     }
 
-    public ContaCorrenteResponse? Read(FContaCorrente dbRec, MsiSqlConnection oCnn)
+    public ContaCorrenteResponse? Read(FContaCorrente dbRec, MsiSqlConnection? oCnn)
     {
         return Read(dbRec);
     }
 
-    public ContaCorrenteResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ContaCorrenteResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _contacorrenteFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);

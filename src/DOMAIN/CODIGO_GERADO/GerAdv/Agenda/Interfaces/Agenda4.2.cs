@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IAgendaReader
 {
-    Task<AgendaResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Agenda?> ReadM(int id, MsiSqlConnection oCnn);
-    AgendaResponse? Read(FAgenda dbRec, MsiSqlConnection oCnn);
-    AgendaResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<AgendaResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Agenda?> ReadM(int id, MsiSqlConnection? oCnn);
+    AgendaResponse? Read(FAgenda dbRec, MsiSqlConnection? oCnn);
+    AgendaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     AgendaResponse? Read(FAgenda dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     AgendaResponseAll? ReadAll(FAgenda dbRec, IDataRecord dr);
     AgendaResponseAll? ReadAll(SG.GerAdv.DBAgenda dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<AgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<AgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

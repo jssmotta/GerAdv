@@ -23,7 +23,7 @@ public partial class FPenhoraStatusFactory : IFPenhoraStatusFactory, IDisposable
         return FPenhoraStatus.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FPenhoraStatus> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FPenhoraStatus> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FPenhoraStatus().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FPenhoraStatusFactory : IFPenhoraStatusFactory, IDisposable
         return new FPenhoraStatus();
     }
 
-    public FPenhoraStatus CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FPenhoraStatus CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FPenhoraStatus.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FPenhoraStatus.DeleteRecordAsync(operadorId, id, oCnn);

@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IRegimeTributacaoWriter
 {
-    Task<FRegimeTributacao> WriteAsync(Models.RegimeTributacao regimetributacao, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(RegimeTributacaoResponse regimetributacao, int operadorId, MsiSqlConnection oCnn);
+    Task<FRegimeTributacao> WriteAsync(Models.RegimeTributacao regimetributacao, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(RegimeTributacaoResponse regimetributacao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class RegimeTributacaoWriter(IFRegimeTributacaoFactory regimetributacaoFactory) : IRegimeTributacaoWriter
 {
     private readonly IFRegimeTributacaoFactory _regimetributacaoFactory = regimetributacaoFactory ?? throw new ArgumentNullException(nameof(regimetributacaoFactory));
-    public virtual async Task Delete(RegimeTributacaoResponse regimetributacao, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(RegimeTributacaoResponse regimetributacao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _regimetributacaoFactory.DeleteAsync(operadorId, regimetributacao.Id, oCnn);
     }
 
-    public virtual async Task<FRegimeTributacao> WriteAsync(Models.RegimeTributacao regimetributacao, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FRegimeTributacao> WriteAsync(Models.RegimeTributacao regimetributacao, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (regimetributacao.Id.IsEmptyIDNumber() ? _regimetributacaoFactory.CreateAsync() : _regimetributacaoFactory.CreateFromIdAsync(regimetributacao.Id, oCnn));
         dbRec.FNome = regimetributacao.Nome;

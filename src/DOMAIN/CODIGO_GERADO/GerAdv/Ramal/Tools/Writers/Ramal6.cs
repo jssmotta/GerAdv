@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IRamalWriter
 {
-    Task<FRamal> WriteAsync(Models.Ramal ramal, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(RamalResponse ramal, int operadorId, MsiSqlConnection oCnn);
+    Task<FRamal> WriteAsync(Models.Ramal ramal, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(RamalResponse ramal, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class RamalWriter(IFRamalFactory ramalFactory) : IRamalWriter
 {
     private readonly IFRamalFactory _ramalFactory = ramalFactory ?? throw new ArgumentNullException(nameof(ramalFactory));
-    public virtual async Task Delete(RamalResponse ramal, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(RamalResponse ramal, int operadorId, MsiSqlConnection? oCnn)
     {
         await _ramalFactory.DeleteAsync(operadorId, ramal.Id, oCnn);
     }
 
-    public virtual async Task<FRamal> WriteAsync(Models.Ramal ramal, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FRamal> WriteAsync(Models.Ramal ramal, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (ramal.Id.IsEmptyIDNumber() ? _ramalFactory.CreateAsync() : _ramalFactory.CreateFromIdAsync(ramal.Id, oCnn));
         dbRec.FNome = ramal.Nome;

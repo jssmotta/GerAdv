@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IClientesWhere
 {
-    ClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ClientesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ClientesWhere(IFClientesFactory clientesFactory) : IClientesWhere
 {
     private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException(nameof(clientesFactory));
-    public ClientesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ClientesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _clientesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var clientes = new ClientesResponse

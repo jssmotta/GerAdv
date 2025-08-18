@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IRamalReader
 {
-    Task<RamalResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Ramal?> ReadM(int id, MsiSqlConnection oCnn);
-    RamalResponse? Read(FRamal dbRec, MsiSqlConnection oCnn);
-    RamalResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<RamalResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Ramal?> ReadM(int id, MsiSqlConnection? oCnn);
+    RamalResponse? Read(FRamal dbRec, MsiSqlConnection? oCnn);
+    RamalResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     RamalResponse? Read(FRamal dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     RamalResponseAll? ReadAll(FRamal dbRec, IDataRecord dr);
     RamalResponseAll? ReadAll(SG.GerAdv.DBRamal dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<RamalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<RamalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

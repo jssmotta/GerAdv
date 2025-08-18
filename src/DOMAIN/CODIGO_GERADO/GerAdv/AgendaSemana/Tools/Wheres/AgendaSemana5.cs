@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IAgendaSemanaWhere
 {
-    AgendaSemanaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    AgendaSemanaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class AgendaSemanaWhere(IFAgendaSemanaFactory agendasemanaFactory) : IAgendaSemanaWhere
 {
     private readonly IFAgendaSemanaFactory _agendasemanaFactory = agendasemanaFactory ?? throw new ArgumentNullException(nameof(agendasemanaFactory));
-    public AgendaSemanaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public AgendaSemanaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _agendasemanaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var agendasemana = new AgendaSemanaResponse

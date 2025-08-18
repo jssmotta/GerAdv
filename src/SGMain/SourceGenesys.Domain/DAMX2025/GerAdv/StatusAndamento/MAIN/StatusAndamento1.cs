@@ -16,7 +16,7 @@ public partial class DBStatusAndamento : VAuditor, ICadastros
     }
 
 #endregion
-    public DBStatusAndamento(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBStatusAndamento(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
         if (oCnn is null)

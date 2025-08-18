@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ISMSAliceWriter
 {
-    Task<FSMSAlice> WriteAsync(Models.SMSAlice smsalice, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(SMSAliceResponse smsalice, int operadorId, MsiSqlConnection oCnn);
+    Task<FSMSAlice> WriteAsync(Models.SMSAlice smsalice, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(SMSAliceResponse smsalice, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class SMSAliceWriter(IFSMSAliceFactory smsaliceFactory) : ISMSAliceWriter
 {
     private readonly IFSMSAliceFactory _smsaliceFactory = smsaliceFactory ?? throw new ArgumentNullException(nameof(smsaliceFactory));
-    public virtual async Task Delete(SMSAliceResponse smsalice, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(SMSAliceResponse smsalice, int operadorId, MsiSqlConnection? oCnn)
     {
         await _smsaliceFactory.DeleteAsync(operadorId, smsalice.Id, oCnn);
     }
 
-    public virtual async Task<FSMSAlice> WriteAsync(Models.SMSAlice smsalice, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FSMSAlice> WriteAsync(Models.SMSAlice smsalice, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (smsalice.Id.IsEmptyIDNumber() ? _smsaliceFactory.CreateAsync() : _smsaliceFactory.CreateFromIdAsync(smsalice.Id, oCnn));
         dbRec.FOperador = smsalice.Operador;

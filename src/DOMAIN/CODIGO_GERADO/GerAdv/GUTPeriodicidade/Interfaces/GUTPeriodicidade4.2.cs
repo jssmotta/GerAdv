@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IGUTPeriodicidadeReader
 {
-    Task<GUTPeriodicidadeResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.GUTPeriodicidade?> ReadM(int id, MsiSqlConnection oCnn);
-    GUTPeriodicidadeResponse? Read(FGUTPeriodicidade dbRec, MsiSqlConnection oCnn);
-    GUTPeriodicidadeResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<GUTPeriodicidadeResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.GUTPeriodicidade?> ReadM(int id, MsiSqlConnection? oCnn);
+    GUTPeriodicidadeResponse? Read(FGUTPeriodicidade dbRec, MsiSqlConnection? oCnn);
+    GUTPeriodicidadeResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTPeriodicidadeResponse? Read(FGUTPeriodicidade dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTPeriodicidadeResponseAll? ReadAll(FGUTPeriodicidade dbRec, IDataRecord dr);
     GUTPeriodicidadeResponseAll? ReadAll(SG.GerAdv.DBGUTPeriodicidade dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<GUTPeriodicidadeResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<GUTPeriodicidadeResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

@@ -4,15 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITiposAcaoReader
 {
-    Task<TiposAcaoResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.TiposAcao?> ReadM(int id, MsiSqlConnection oCnn);
-    TiposAcaoResponse? Read(FTiposAcao dbRec, MsiSqlConnection oCnn);
-    TiposAcaoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<TiposAcaoResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.TiposAcao?> ReadM(int id, MsiSqlConnection? oCnn);
+    TiposAcaoResponse? Read(FTiposAcao dbRec, MsiSqlConnection? oCnn);
+    TiposAcaoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TiposAcaoResponse? Read(FTiposAcao dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TiposAcaoResponseAll? ReadAll(FTiposAcao dbRec, IDataRecord dr);
     TiposAcaoResponseAll? ReadAll(SG.GerAdv.DBTiposAcao dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter> parameters, string order);
-    Task<IEnumerable<TiposAcaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TiposAcaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

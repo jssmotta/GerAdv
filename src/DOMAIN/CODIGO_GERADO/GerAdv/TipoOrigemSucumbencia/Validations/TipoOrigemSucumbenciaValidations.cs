@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoOrigemSucumbenciaValidation
 {
-    Task<bool> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
 {
-    public async Task<bool> CanDelete(int? id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoOrigemSucumbenciaService service, IProSucumbenciaService prosucumbenciaService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -34,7 +34,7 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.TipoOrigemSucumbencia reg, ITipoOrigemSucumbenciaService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

@@ -23,7 +23,7 @@ public partial class FNENotasFactory : IFNENotasFactory, IDisposable
         return FNENotas.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FNENotas> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FNENotas> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FNENotas().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FNENotasFactory : IFNENotasFactory, IDisposable
         return new FNENotas();
     }
 
-    public FNENotas CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FNENotas CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FNENotas.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FNENotas.DeleteRecordAsync(operadorId, id, oCnn);

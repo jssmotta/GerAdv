@@ -4,14 +4,14 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IHonorariosDadosContratoReader
 {
-    Task<HonorariosDadosContratoResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.HonorariosDadosContrato?> ReadM(int id, MsiSqlConnection oCnn);
-    HonorariosDadosContratoResponse? Read(FHonorariosDadosContrato dbRec, MsiSqlConnection oCnn);
-    HonorariosDadosContratoResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<HonorariosDadosContratoResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.HonorariosDadosContrato?> ReadM(int id, MsiSqlConnection? oCnn);
+    HonorariosDadosContratoResponse? Read(FHonorariosDadosContrato dbRec, MsiSqlConnection? oCnn);
+    HonorariosDadosContratoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     HonorariosDadosContratoResponse? Read(FHonorariosDadosContrato dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     HonorariosDadosContratoResponseAll? ReadAll(FHonorariosDadosContrato dbRec, IDataRecord dr);
     HonorariosDadosContratoResponseAll? ReadAll(SG.GerAdv.DBHonorariosDadosContrato dbRec, DataRow dr);
-    Task<IEnumerable<HonorariosDadosContratoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<HonorariosDadosContratoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

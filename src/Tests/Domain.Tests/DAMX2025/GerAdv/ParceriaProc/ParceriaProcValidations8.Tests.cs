@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ParceriaProcValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFParceriaProcFactory> _mockParceriaProcFactory;
-    private readonly Mock<IParceriaProcReader> _mockReader;
     private readonly ParceriaProcValidation _validation;
     private readonly Mock<IParceriaProcService> _mockParceriaProcService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -15,8 +12,6 @@ public class ParceriaProcValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ParceriaProcValidationTests()
     {
-        _mockParceriaProcFactory = new Mock<IFParceriaProcFactory>();
-        _mockReader = new Mock<IParceriaProcReader>();
         _validation = new ParceriaProcValidation();
         _mockParceriaProcService = new Mock<IParceriaProcService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -55,7 +50,7 @@ public class ParceriaProcValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ParceriaProc CreateValidParceriaProc()
+    private static Models.ParceriaProc CreateValidParceriaProc()
     {
         return new Models.ParceriaProc
         {
@@ -68,17 +63,17 @@ public class ParceriaProcValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockParceriaProcService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterParceriaProc>(), It.IsAny<string>())).ReturnsAsync(new List<ParceriaProcResponseAll>());
+        _mockParceriaProcService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterParceriaProc>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ParceriaProcs service mock
-        _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AdvogadosResponse { Id = id }));
+        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockParceriaProcService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterParceriaProc>(), It.IsAny<string>())).ReturnsAsync(new List<ParceriaProcResponseAll>());
+        _mockParceriaProcService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterParceriaProc>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ParceriaProcs service mock
-        _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.AdvogadosResponse { Id = 0 }));
+        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = 0 }));
     }
 
     [Fact]

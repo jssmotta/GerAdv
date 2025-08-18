@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IGruposEmpresasWriter
 {
-    Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection oCnn);
+    Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GruposEmpresasWriter(IFGruposEmpresasFactory gruposempresasFactory) : IGruposEmpresasWriter
 {
     private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory ?? throw new ArgumentNullException(nameof(gruposempresasFactory));
-    public virtual async Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gruposempresasFactory.DeleteAsync(operadorId, gruposempresas.Id, oCnn);
     }
 
-    public virtual async Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (gruposempresas.Id.IsEmptyIDNumber() ? _gruposempresasFactory.CreateAsync() : _gruposempresasFactory.CreateFromIdAsync(gruposempresas.Id, oCnn));
         dbRec.FEMail = gruposempresas.EMail;

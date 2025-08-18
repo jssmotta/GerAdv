@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ClientesValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFClientesFactory> _mockClientesFactory;
-    private readonly Mock<IClientesReader> _mockReader;
     private readonly ClientesValidation _validation;
     private readonly Mock<IClientesService> _mockClientesService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -17,8 +14,6 @@ public class ClientesValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ClientesValidationTests()
     {
-        _mockClientesFactory = new Mock<IFClientesFactory>();
-        _mockReader = new Mock<IClientesReader>();
         _validation = new ClientesValidation();
         _mockClientesService = new Mock<IClientesService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -59,7 +54,7 @@ public class ClientesValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.Clientes CreateValidClientes()
+    private static Models.Clientes CreateValidClientes()
     {
         return new Models.Clientes
         {
@@ -112,21 +107,21 @@ public class ClientesValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll>());
+        _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll>());
+        _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = 0 }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = 0 }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = 0 }));
     }
 
     [Fact]
@@ -249,9 +244,9 @@ public class ClientesValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll> { existingClientes });
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -274,9 +269,9 @@ public class ClientesValidationTests : IDisposable
         };
         _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll> { existingClientes });
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -298,9 +293,9 @@ public class ClientesValidationTests : IDisposable
         };
         _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll> { existingClientes });
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object);
         // Assert
@@ -351,9 +346,9 @@ public class ClientesValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll> { existingClientes });
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -376,9 +371,9 @@ public class ClientesValidationTests : IDisposable
         };
         _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll> { existingClientes });
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -399,9 +394,9 @@ public class ClientesValidationTests : IDisposable
         };
         _mockClientesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterClientes>(), It.IsAny<string>())).ReturnsAsync(new List<ClientesResponseAll> { existingClientes });
         // Setup other mocks but don't override the Clientess service mock
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
-        _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.RegimeTributacaoResponse { Id = id }));
-        _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.EnquadramentoEmpresaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockRegimeTributacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RegimeTributacaoResponse { Id = id }));
+        _ = _mockEnquadramentoEmpresaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new EnquadramentoEmpresaResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(clientes, _mockClientesService.Object, _mockCidadeReader.Object, _mockRegimeTributacaoReader.Object, _mockEnquadramentoEmpresaReader.Object, _validUri, _mockConnection.Object);
         // Assert

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface INEPalavrasChavesWhere
 {
-    NEPalavrasChavesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    NEPalavrasChavesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class NEPalavrasChavesWhere(IFNEPalavrasChavesFactory nepalavraschavesFactory) : INEPalavrasChavesWhere
 {
     private readonly IFNEPalavrasChavesFactory _nepalavraschavesFactory = nepalavraschavesFactory ?? throw new ArgumentNullException(nameof(nepalavraschavesFactory));
-    public NEPalavrasChavesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public NEPalavrasChavesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _nepalavraschavesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var nepalavraschaves = new NEPalavrasChavesResponse

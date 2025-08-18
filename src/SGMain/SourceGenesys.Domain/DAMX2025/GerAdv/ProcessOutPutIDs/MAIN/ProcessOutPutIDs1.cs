@@ -16,7 +16,7 @@ public partial class DBProcessOutPutIDs : VNoAuditor, ICadastros
     }
 
 #endregion
-    public DBProcessOutPutIDs(List<SqlParameter> parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public DBProcessOutPutIDs(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         // Tracking: 250605-0
         if (oCnn is null)

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class TipoEMailValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFTipoEMailFactory> _mockTipoEMailFactory;
-    private readonly Mock<ITipoEMailReader> _mockReader;
     private readonly TipoEMailValidation _validation;
     private readonly Mock<ITipoEMailService> _mockTipoEMailService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class TipoEMailValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public TipoEMailValidationTests()
     {
-        _mockTipoEMailFactory = new Mock<IFTipoEMailFactory>();
-        _mockReader = new Mock<ITipoEMailReader>();
         _validation = new TipoEMailValidation();
         _mockTipoEMailService = new Mock<ITipoEMailService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class TipoEMailValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.TipoEMail CreateValidTipoEMail()
+    private static Models.TipoEMail CreateValidTipoEMail()
     {
         return new Models.TipoEMail
         {
@@ -65,14 +60,14 @@ public class TipoEMailValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockTipoEMailService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEMail>(), It.IsAny<string>())).ReturnsAsync(new List<TipoEMailResponseAll>());
+        _mockTipoEMailService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEMail>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoEMails service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockTipoEMailService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEMail>(), It.IsAny<string>())).ReturnsAsync(new List<TipoEMailResponseAll>());
+        _mockTipoEMailService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTipoEMail>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the TipoEMails service mock
     }
 

@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class ProCDAValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFProCDAFactory> _mockProCDAFactory;
-    private readonly Mock<IProCDAReader> _mockReader;
     private readonly ProCDAValidation _validation;
     private readonly Mock<IProCDAService> _mockProCDAService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -14,8 +11,6 @@ public class ProCDAValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public ProCDAValidationTests()
     {
-        _mockProCDAFactory = new Mock<IFProCDAFactory>();
-        _mockReader = new Mock<IProCDAReader>();
         _validation = new ProCDAValidation();
         _mockProCDAService = new Mock<IProCDAService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -53,7 +48,7 @@ public class ProCDAValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.ProCDA CreateValidProCDA()
+    private static Models.ProCDA CreateValidProCDA()
     {
         return new Models.ProCDA
         {
@@ -67,14 +62,14 @@ public class ProCDAValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockProCDAService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProCDA>(), It.IsAny<string>())).ReturnsAsync(new List<ProCDAResponseAll>());
+        _mockProCDAService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProCDA>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProCDAs service mock
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockProCDAService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProCDA>(), It.IsAny<string>())).ReturnsAsync(new List<ProCDAResponseAll>());
+        _mockProCDAService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProCDA>(), It.IsAny<string>())).ReturnsAsync([]);
     // Setup other mocks but don't override the ProCDAs service mock
     }
 

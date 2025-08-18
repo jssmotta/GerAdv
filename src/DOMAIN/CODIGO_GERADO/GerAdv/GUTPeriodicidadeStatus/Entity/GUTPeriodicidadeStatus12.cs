@@ -29,25 +29,25 @@ public partial class FGUTPeriodicidadeStatus : MenphisSI.SG.GerAdv.DBGUTPeriodic
     {
     }
 
-    public async Task<FGUTPeriodicidadeStatus> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGUTPeriodicidadeStatus> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         var fGUTPeriodicidadeStatus = new FGUTPeriodicidadeStatus();
         await fGUTPeriodicidadeStatus.CarregarAsync(id, oCnn);
         return fGUTPeriodicidadeStatus;
     }
 
-    private FGUTPeriodicidadeStatus(List<SqlParameter> parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
+    private FGUTPeriodicidadeStatus(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
 
     // Factory method for creating instances with parameters
-    public static FGUTPeriodicidadeStatus CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public static FGUTPeriodicidadeStatus CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FGUTPeriodicidadeStatus(parameters, oCnn, fullSql, sqlWhere, join);
     }
 
     // Initialize method to load data with parameters after DI construction
-    public void Initialize(List<SqlParameter> parameters, MsiSqlConnection oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
+    public void Initialize(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         if (oCnn is null)
             return;

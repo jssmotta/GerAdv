@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IContratosValidation
 {
-    Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class ContratosValidation : IContratosValidation
 {
-    public async Task<bool> CanDelete(int? id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IContratosService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -47,7 +47,7 @@ public class ContratosValidation : IContratosValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.Contratos reg, IContratosService service, IClientesReader clientesReader, IAdvogadosReader advogadosReader, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

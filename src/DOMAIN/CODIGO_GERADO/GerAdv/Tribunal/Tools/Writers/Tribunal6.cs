@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface ITribunalWriter
 {
-    Task<FTribunal> WriteAsync(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection oCnn);
+    Task<FTribunal> WriteAsync(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TribunalWriter(IFTribunalFactory tribunalFactory) : ITribunalWriter
 {
     private readonly IFTribunalFactory _tribunalFactory = tribunalFactory ?? throw new ArgumentNullException(nameof(tribunalFactory));
-    public virtual async Task Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(TribunalResponse tribunal, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tribunalFactory.DeleteAsync(operadorId, tribunal.Id, oCnn);
     }
 
-    public virtual async Task<FTribunal> WriteAsync(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FTribunal> WriteAsync(Models.Tribunal tribunal, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (tribunal.Id.IsEmptyIDNumber() ? _tribunalFactory.CreateAsync() : _tribunalFactory.CreateFromIdAsync(tribunal.Id, oCnn));
         dbRec.FNome = tribunal.Nome;

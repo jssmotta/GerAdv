@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IJusticaWhere
 {
-    JusticaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    JusticaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class JusticaWhere(IFJusticaFactory justicaFactory) : IJusticaWhere
 {
     private readonly IFJusticaFactory _justicaFactory = justicaFactory ?? throw new ArgumentNullException(nameof(justicaFactory));
-    public JusticaResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public JusticaResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _justicaFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var justica = new JusticaResponse

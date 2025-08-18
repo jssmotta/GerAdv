@@ -8,19 +8,19 @@ namespace MenphisSI.GerAdv.Writers;
 
 public partial interface IProTipoBaixaWriter
 {
-    Task<FProTipoBaixa> WriteAsync(Models.ProTipoBaixa protipobaixa, int auditorQuem, MsiSqlConnection oCnn);
-    Task Delete(ProTipoBaixaResponse protipobaixa, int operadorId, MsiSqlConnection oCnn);
+    Task<FProTipoBaixa> WriteAsync(Models.ProTipoBaixa protipobaixa, int auditorQuem, MsiSqlConnection? oCnn);
+    Task Delete(ProTipoBaixaResponse protipobaixa, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProTipoBaixaWriter(IFProTipoBaixaFactory protipobaixaFactory) : IProTipoBaixaWriter
 {
     private readonly IFProTipoBaixaFactory _protipobaixaFactory = protipobaixaFactory ?? throw new ArgumentNullException(nameof(protipobaixaFactory));
-    public virtual async Task Delete(ProTipoBaixaResponse protipobaixa, int operadorId, MsiSqlConnection oCnn)
+    public virtual async Task Delete(ProTipoBaixaResponse protipobaixa, int operadorId, MsiSqlConnection? oCnn)
     {
         await _protipobaixaFactory.DeleteAsync(operadorId, protipobaixa.Id, oCnn);
     }
 
-    public virtual async Task<FProTipoBaixa> WriteAsync(Models.ProTipoBaixa protipobaixa, int auditorQuem, MsiSqlConnection oCnn)
+    public virtual async Task<FProTipoBaixa> WriteAsync(Models.ProTipoBaixa protipobaixa, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (protipobaixa.Id.IsEmptyIDNumber() ? _protipobaixaFactory.CreateAsync() : _protipobaixaFactory.CreateFromIdAsync(protipobaixa.Id, oCnn));
         dbRec.FNome = protipobaixa.Nome;

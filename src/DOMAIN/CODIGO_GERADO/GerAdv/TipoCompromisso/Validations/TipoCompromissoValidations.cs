@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface ITipoCompromissoValidation
 {
-    Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class TipoCompromissoValidation : ITipoCompromissoValidation
 {
-    public async Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, ITipoCompromissoService service, IAgendaService agendaService, INECompromissosService necompromissosService, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -39,7 +39,7 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.TipoCompromisso reg, ITipoCompromissoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

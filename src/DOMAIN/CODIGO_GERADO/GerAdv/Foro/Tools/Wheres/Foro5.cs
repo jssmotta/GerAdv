@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IForoWhere
 {
-    ForoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    ForoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class ForoWhere(IFForoFactory foroFactory) : IForoWhere
 {
     private readonly IFForoFactory _foroFactory = foroFactory ?? throw new ArgumentNullException(nameof(foroFactory));
-    public ForoResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public ForoResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _foroFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var foro = new ForoResponse

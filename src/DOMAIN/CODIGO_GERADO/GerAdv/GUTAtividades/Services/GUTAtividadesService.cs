@@ -58,7 +58,7 @@ public partial class GUTAtividadesService(IOptions<AppSettings> appSettings, IFG
 
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter> parameters = filtroResult?.parametros ?? [];
+        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
         var filterHash = GetFilterHash(filtro);
         var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
         var cacheKey = $"{uri}-{max}GUTAtividades-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";

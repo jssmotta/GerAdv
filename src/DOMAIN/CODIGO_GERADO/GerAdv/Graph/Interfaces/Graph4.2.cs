@@ -4,14 +4,14 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IGraphReader
 {
-    Task<GraphResponse?> Read(int id, MsiSqlConnection oCnn);
-    Task<Models.Graph?> ReadM(int id, MsiSqlConnection oCnn);
-    GraphResponse? Read(FGraph dbRec, MsiSqlConnection oCnn);
-    GraphResponse? Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    Task<GraphResponse?> Read(int id, MsiSqlConnection? oCnn);
+    Task<Models.Graph?> ReadM(int id, MsiSqlConnection? oCnn);
+    GraphResponse? Read(FGraph dbRec, MsiSqlConnection? oCnn);
+    GraphResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GraphResponse? Read(FGraph dbRec);
     Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter> parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GraphResponseAll? ReadAll(FGraph dbRec, IDataRecord dr);
     GraphResponseAll? ReadAll(SG.GerAdv.DBGraph dbRec, DataRow dr);
-    Task<IEnumerable<GraphResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter> parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<GraphResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

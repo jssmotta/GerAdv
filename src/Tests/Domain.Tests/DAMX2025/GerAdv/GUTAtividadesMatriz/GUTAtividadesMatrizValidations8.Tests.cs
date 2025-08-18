@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class GUTAtividadesMatrizValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFGUTAtividadesMatrizFactory> _mockGUTAtividadesMatrizFactory;
-    private readonly Mock<IGUTAtividadesMatrizReader> _mockReader;
     private readonly GUTAtividadesMatrizValidation _validation;
     private readonly Mock<IGUTAtividadesMatrizService> _mockGUTAtividadesMatrizService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -16,8 +13,6 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public GUTAtividadesMatrizValidationTests()
     {
-        _mockGUTAtividadesMatrizFactory = new Mock<IFGUTAtividadesMatrizFactory>();
-        _mockReader = new Mock<IGUTAtividadesMatrizReader>();
         _validation = new GUTAtividadesMatrizValidation();
         _mockGUTAtividadesMatrizService = new Mock<IGUTAtividadesMatrizService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -57,7 +52,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.GUTAtividadesMatriz CreateValidGUTAtividadesMatriz()
+    private static Models.GUTAtividadesMatriz CreateValidGUTAtividadesMatriz()
     {
         return new Models.GUTAtividadesMatriz
         {
@@ -71,19 +66,19 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockGUTAtividadesMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividadesMatriz>(), It.IsAny<string>())).ReturnsAsync(new List<GUTAtividadesMatrizResponseAll>());
+        _mockGUTAtividadesMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividadesMatriz>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadesMatrizs service mock
-        _mockGUTMatrizReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTMatrizResponse { Id = id }));
-        _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTAtividadesResponse { Id = id }));
+        _ = _mockGUTMatrizReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTMatrizResponse { Id = id }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockGUTAtividadesMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividadesMatriz>(), It.IsAny<string>())).ReturnsAsync(new List<GUTAtividadesMatrizResponseAll>());
+        _mockGUTAtividadesMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividadesMatriz>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadesMatrizs service mock
-        _mockGUTMatrizReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTMatrizResponse { Id = 0 }));
-        _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.GUTAtividadesResponse { Id = 0 }));
+        _ = _mockGUTMatrizReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTMatrizResponse { Id = 0 }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = 0 }));
     }
 
     [Fact]

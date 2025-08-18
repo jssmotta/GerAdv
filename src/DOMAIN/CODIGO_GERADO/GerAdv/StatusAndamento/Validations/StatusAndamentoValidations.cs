@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IStatusAndamentoValidation
 {
-    Task<bool> ValidateReg(Models.StatusAndamento reg, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.StatusAndamento reg, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class StatusAndamentoValidation : IStatusAndamentoValidation
 {
-    public async Task<bool> CanDelete(int? id, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -33,7 +33,7 @@ public class StatusAndamentoValidation : IStatusAndamentoValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.StatusAndamento reg, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.StatusAndamento reg, IStatusAndamentoService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Validations;
 
 public partial interface IAndamentosMDValidation
 {
-    Task<bool> ValidateReg(Models.AndamentosMD reg, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
-    Task<bool> CanDelete(int? id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn);
+    Task<bool> ValidateReg(Models.AndamentosMD reg, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
+    Task<bool> CanDelete(int? id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn);
 }
 
 public class AndamentosMDValidation : IAndamentosMDValidation
 {
-    public async Task<bool> CanDelete(int? id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> CanDelete(int? id, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (id == null || id <= 0)
             throw new SGValidationException("Id inválido");
@@ -33,7 +33,7 @@ public class AndamentosMDValidation : IAndamentosMDValidation
         return true;
     }
 
-    public async Task<bool> ValidateReg(Models.AndamentosMD reg, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection oCnn)
+    public async Task<bool> ValidateReg(Models.AndamentosMD reg, IAndamentosMDService service, [FromRoute, Required] string uri, MsiSqlConnection? oCnn)
     {
         if (reg == null)
             throw new SGValidationException("Objeto está nulo");

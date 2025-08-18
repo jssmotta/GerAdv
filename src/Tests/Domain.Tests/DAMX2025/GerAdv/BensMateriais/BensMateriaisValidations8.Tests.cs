@@ -4,9 +4,6 @@
 namespace MenphisSI.GerAdv.Tests;
 public class BensMateriaisValidationTests : IDisposable
 {
-    private readonly Mock<IOptions<AppSettings>> _mockAppSettings;
-    private readonly Mock<IFBensMateriaisFactory> _mockBensMateriaisFactory;
-    private readonly Mock<IBensMateriaisReader> _mockReader;
     private readonly BensMateriaisValidation _validation;
     private readonly Mock<IBensMateriaisService> _mockBensMateriaisService;
     private readonly Mock<MsiSqlConnection> _mockConnection;
@@ -17,8 +14,6 @@ public class BensMateriaisValidationTests : IDisposable
     private readonly string _validUri = "test-uri";
     public BensMateriaisValidationTests()
     {
-        _mockBensMateriaisFactory = new Mock<IFBensMateriaisFactory>();
-        _mockReader = new Mock<IBensMateriaisReader>();
         _validation = new BensMateriaisValidation();
         _mockBensMateriaisService = new Mock<IBensMateriaisService>();
         _mockConnection = new Mock<MsiSqlConnection>();
@@ -59,7 +54,7 @@ public class BensMateriaisValidationTests : IDisposable
         constructors[0].IsPublic.Should().BeTrue();
     }
 
-    private Models.BensMateriais CreateValidBensMateriais()
+    private static Models.BensMateriais CreateValidBensMateriais()
     {
         return new Models.BensMateriais
         {
@@ -84,21 +79,21 @@ public class BensMateriaisValidationTests : IDisposable
     private void SetupValidMocks()
     {
         // Setup default valid responses for all mocks
-        _mockBensMateriaisService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensMateriais>(), It.IsAny<string>())).ReturnsAsync(new List<BensMateriaisResponseAll>());
+        _mockBensMateriaisService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensMateriais>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the BensMateriaiss service mock
-        _mockBensClassificacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.BensClassificacaoResponse { Id = id }));
-        _mockFornecedoresReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.FornecedoresResponse { Id = id }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = id }));
+        _ = _mockBensClassificacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new BensClassificacaoResponse { Id = id }));
+        _ = _mockFornecedoresReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FornecedoresResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
     {
         // Setup default valid responses for all mocks
-        _mockBensMateriaisService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensMateriais>(), It.IsAny<string>())).ReturnsAsync(new List<BensMateriaisResponseAll>());
+        _mockBensMateriaisService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensMateriais>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the BensMateriaiss service mock
-        _mockBensClassificacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.BensClassificacaoResponse { Id = 0 }));
-        _mockFornecedoresReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.FornecedoresResponse { Id = 0 }));
-        _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>((id, conn) => Task.FromResult(new Models.Response.CidadeResponse { Id = 0 }));
+        _ = _mockBensClassificacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new BensClassificacaoResponse { Id = 0 }));
+        _ = _mockFornecedoresReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FornecedoresResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]

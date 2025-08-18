@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IPosicaoOutrasPartesWhere
 {
-    PosicaoOutrasPartesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    PosicaoOutrasPartesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class PosicaoOutrasPartesWhere(IFPosicaoOutrasPartesFactory posicaooutraspartesFactory) : IPosicaoOutrasPartesWhere
 {
     private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory ?? throw new ArgumentNullException(nameof(posicaooutraspartesFactory));
-    public PosicaoOutrasPartesResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public PosicaoOutrasPartesResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _posicaooutraspartesFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var posicaooutraspartes = new PosicaoOutrasPartesResponse

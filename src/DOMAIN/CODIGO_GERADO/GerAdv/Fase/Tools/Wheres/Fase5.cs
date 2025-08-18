@@ -8,13 +8,13 @@ namespace MenphisSI.GerAdv.Wheres;
 
 public partial interface IFaseWhere
 {
-    FaseResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn);
+    FaseResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
 }
 
 public partial class FaseWhere(IFFaseFactory faseFactory) : IFaseWhere
 {
     private readonly IFFaseFactory _faseFactory = faseFactory ?? throw new ArgumentNullException(nameof(faseFactory));
-    public FaseResponse Read(string where, List<SqlParameter> parameters, MsiSqlConnection oCnn)
+    public FaseResponse Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         using var dbRec = _faseFactory.CreateFromParameters(parameters, oCnn, sqlWhere: where);
         var fase = new FaseResponse

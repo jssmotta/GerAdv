@@ -23,7 +23,7 @@ public partial class FGUTMatrizFactory : IFGUTMatrizFactory, IDisposable
         return FGUTMatriz.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGUTMatriz> CreateFromIdAsync(int id, MsiSqlConnection oCnn)
+    public async Task<FGUTMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return await new FGUTMatriz().CreateFromIdAsync(id, oCnn);
@@ -36,13 +36,13 @@ public partial class FGUTMatrizFactory : IFGUTMatrizFactory, IDisposable
         return new FGUTMatriz();
     }
 
-    public FGUTMatriz CreateFromParameters(List<SqlParameter> parameters, MsiSqlConnection oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
+    public FGUTMatriz CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         ThrowIfDisposed();
         return FGUTMatriz.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection oCnn)
+    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
     {
         ThrowIfDisposed();
         return FGUTMatriz.DeleteRecordAsync(operadorId, id, oCnn);
