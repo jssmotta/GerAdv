@@ -82,7 +82,6 @@ public class AdvogadosWriterTests
         _mockFAdvogados.VerifySet(x => x.FCasa = advogados.Casa, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FNomeMae = advogados.NomeMae, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FEscritorio = advogados.Escritorio, Times.Once);
-        _mockFAdvogados.VerifySet(x => x.FGUID = advogados.GUID, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FEstagiario = advogados.Estagiario, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FOAB = advogados.OAB, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FNomeCompleto = advogados.NomeCompleto, Times.Once);
@@ -110,6 +109,7 @@ public class AdvogadosWriterTests
         _mockFAdvogados.VerifySet(x => x.FParcTop = advogados.ParcTop, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FClass = advogados.Class, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FTop = advogados.Top, Times.Once);
+        _mockFAdvogados.VerifySet(x => x.FGUID = advogados.GUID, Times.Once);
         _mockFAdvogados.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -269,7 +269,6 @@ public class AdvogadosWriterTests
             Casa = false,
             NomeMae = "João",
             Escritorio = 1,
-            GUID = Guid.NewGuid().ToString(),
             Estagiario = false,
             OAB = "AAAAAAAAAA",
             NomeCompleto = "João",
@@ -296,7 +295,8 @@ public class AdvogadosWriterTests
             ContaBancaria = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             ParcTop = false,
             Class = "A",
-            Top = false
+            Top = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

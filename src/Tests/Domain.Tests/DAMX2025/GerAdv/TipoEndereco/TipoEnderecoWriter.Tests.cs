@@ -74,8 +74,8 @@ public class TipoEnderecoWriterTests
         var result = await _tipoenderecoWriter.WriteAsync(tipoendereco, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoEndereco.Object);
-        _mockFTipoEndereco.VerifySet(x => x.FGUID = tipoendereco.GUID, Times.Once);
         _mockFTipoEndereco.VerifySet(x => x.FDescricao = tipoendereco.Descricao, Times.Once);
+        _mockFTipoEndereco.VerifySet(x => x.FGUID = tipoendereco.GUID, Times.Once);
         _mockFTipoEndereco.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -182,8 +182,8 @@ public class TipoEnderecoWriterTests
         return new Models.TipoEndereco
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

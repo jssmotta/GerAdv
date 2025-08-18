@@ -74,7 +74,6 @@ public class DivisaoTribunalWriterTests
         var result = await _divisaotribunalWriter.WriteAsync(divisaotribunal, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFDivisaoTribunal.Object);
-        _mockFDivisaoTribunal.VerifySet(x => x.FGUID = divisaotribunal.GUID, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FNumCodigo = divisaotribunal.NumCodigo, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FJustica = divisaotribunal.Justica, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FNomeEspecial = divisaotribunal.NomeEspecial, Times.Once);
@@ -90,6 +89,7 @@ public class DivisaoTribunalWriterTests
         _mockFDivisaoTribunal.VerifySet(x => x.FObs = divisaotribunal.Obs, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FEMail = divisaotribunal.EMail, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FAndar = divisaotribunal.Andar, Times.Once);
+        _mockFDivisaoTribunal.VerifySet(x => x.FGUID = divisaotribunal.GUID, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -196,7 +196,6 @@ public class DivisaoTribunalWriterTests
         return new Models.DivisaoTribunal
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             NumCodigo = 1,
             Justica = 1,
             NomeEspecial = "João",
@@ -211,7 +210,8 @@ public class DivisaoTribunalWriterTests
             CEP = "01234-567",
             Obs = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             EMail = "test@email.com",
-            Andar = "AAAAAAAAAA"
+            Andar = "AAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

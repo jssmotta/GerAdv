@@ -75,8 +75,8 @@ public class ParceriaProcWriterTests
         // Assert
         result.Should().Be(_mockFParceriaProc.Object);
         _mockFParceriaProc.VerifySet(x => x.FAdvogado = parceriaproc.Advogado, Times.Once);
-        _mockFParceriaProc.VerifySet(x => x.FGUID = parceriaproc.GUID, Times.Once);
         _mockFParceriaProc.VerifySet(x => x.FProcesso = parceriaproc.Processo, Times.Once);
+        _mockFParceriaProc.VerifySet(x => x.FGUID = parceriaproc.GUID, Times.Once);
         _mockFParceriaProc.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,8 +184,8 @@ public class ParceriaProcWriterTests
         {
             Id = 0,
             Advogado = 1,
-            GUID = Guid.NewGuid().ToString(),
-            Processo = 1
+            Processo = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

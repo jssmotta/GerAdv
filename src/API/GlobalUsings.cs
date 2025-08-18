@@ -6,3 +6,4 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Text;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.AspNetCore.RateLimiting;
+global using Domain.BaseCommon.Models;

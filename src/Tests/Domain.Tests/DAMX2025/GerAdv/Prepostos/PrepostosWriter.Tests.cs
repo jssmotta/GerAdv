@@ -74,7 +74,6 @@ public class PrepostosWriterTests
         var result = await _prepostosWriter.WriteAsync(prepostos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFPrepostos.Object);
-        _mockFPrepostos.VerifySet(x => x.FGUID = prepostos.GUID, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FNome = prepostos.Nome, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FFuncao = prepostos.Funcao, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FSetor = prepostos.Setor, Times.Once);
@@ -104,6 +103,7 @@ public class PrepostosWriterTests
         _mockFPrepostos.VerifySet(x => x.FPai = prepostos.Pai, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FMae = prepostos.Mae, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FClass = prepostos.Class, Times.Once);
+        _mockFPrepostos.VerifySet(x => x.FGUID = prepostos.GUID, Times.Once);
         _mockFPrepostos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -270,7 +270,6 @@ public class PrepostosWriterTests
         return new Models.Prepostos
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             Nome = "João",
             Funcao = 1,
             Setor = 1,
@@ -299,7 +298,8 @@ public class PrepostosWriterTests
             EMail = "test@email.com",
             Pai = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Mae = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Class = "A"
+            Class = "A",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

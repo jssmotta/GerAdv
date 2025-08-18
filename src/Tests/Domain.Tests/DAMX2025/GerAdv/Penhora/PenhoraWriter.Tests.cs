@@ -79,8 +79,8 @@ public class PenhoraWriterTests
         _mockFPenhora.VerifySet(x => x.FDescricao = penhora.Descricao, Times.Once);
         _mockFPenhora.VerifySet(x => x.FDataPenhora = penhora.DataPenhora.ToString(), Times.Once);
         _mockFPenhora.VerifySet(x => x.FPenhoraStatus = penhora.PenhoraStatus, Times.Once);
-        _mockFPenhora.VerifySet(x => x.FGUID = penhora.GUID, Times.Once);
         _mockFPenhora.VerifySet(x => x.FMaster = penhora.Master, Times.Once);
+        _mockFPenhora.VerifySet(x => x.FGUID = penhora.GUID, Times.Once);
         _mockFPenhora.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -205,10 +205,10 @@ public class PenhoraWriterTests
             Processo = 1,
             Nome = "João",
             Descricao = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            DataPenhora = "24/04/1975",
+            DataPenhora = "04:04",
             PenhoraStatus = 1,
-            GUID = Guid.NewGuid().ToString(),
-            Master = 1
+            Master = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

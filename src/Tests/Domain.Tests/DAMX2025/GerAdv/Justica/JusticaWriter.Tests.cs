@@ -74,8 +74,8 @@ public class JusticaWriterTests
         var result = await _justicaWriter.WriteAsync(justica, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFJustica.Object);
-        _mockFJustica.VerifySet(x => x.FGUID = justica.GUID, Times.Once);
         _mockFJustica.VerifySet(x => x.FNome = justica.Nome, Times.Once);
+        _mockFJustica.VerifySet(x => x.FGUID = justica.GUID, Times.Once);
         _mockFJustica.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -182,8 +182,8 @@ public class JusticaWriterTests
         return new Models.Justica
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
-            Nome = "João"
+            Nome = "João",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

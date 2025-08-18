@@ -74,7 +74,6 @@ public class FuncionariosWriterTests
         var result = await _funcionariosWriter.WriteAsync(funcionarios, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFFuncionarios.Object);
-        _mockFFuncionarios.VerifySet(x => x.FGUID = funcionarios.GUID, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FEMailPro = funcionarios.EMailPro, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FCargo = funcionarios.Cargo, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FNome = funcionarios.Nome, Times.Once);
@@ -105,6 +104,7 @@ public class FuncionariosWriterTests
         _mockFFuncionarios.VerifySet(x => x.FLiberaAgenda = funcionarios.LiberaAgenda, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FPasta = funcionarios.Pasta, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FClass = funcionarios.Class, Times.Once);
+        _mockFFuncionarios.VerifySet(x => x.FGUID = funcionarios.GUID, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -271,7 +271,6 @@ public class FuncionariosWriterTests
         return new Models.Funcionarios
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             EMailPro = "test@email.com",
             Cargo = 1,
             Nome = "João",
@@ -301,7 +300,8 @@ public class FuncionariosWriterTests
             Data = "27/05/2022",
             LiberaAgenda = false,
             Pasta = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Class = "A"
+            Class = "A",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

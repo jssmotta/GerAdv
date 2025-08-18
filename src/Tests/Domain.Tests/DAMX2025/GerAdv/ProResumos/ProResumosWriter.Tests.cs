@@ -77,8 +77,8 @@ public class ProResumosWriterTests
         _mockFProResumos.VerifySet(x => x.FProcesso = proresumos.Processo, Times.Once);
         _mockFProResumos.VerifySet(x => x.FData = proresumos.Data, Times.Once);
         _mockFProResumos.VerifySet(x => x.FResumo = proresumos.Resumo, Times.Once);
-        _mockFProResumos.VerifySet(x => x.FGUID = proresumos.GUID, Times.Once);
         _mockFProResumos.VerifySet(x => x.FTipoResumo = proresumos.TipoResumo, Times.Once);
+        _mockFProResumos.VerifySet(x => x.FGUID = proresumos.GUID, Times.Once);
         _mockFProResumos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -188,8 +188,8 @@ public class ProResumosWriterTests
             Processo = 1,
             Data = "27/05/2022",
             Resumo = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            GUID = Guid.NewGuid().ToString(),
-            TipoResumo = 1
+            TipoResumo = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

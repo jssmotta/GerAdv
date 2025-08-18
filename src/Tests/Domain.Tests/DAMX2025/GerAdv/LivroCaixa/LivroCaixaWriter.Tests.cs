@@ -74,6 +74,7 @@ public class LivroCaixaWriterTests
         var result = await _livrocaixaWriter.WriteAsync(livrocaixa, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFLivroCaixa.Object);
+        _mockFLivroCaixa.VerifySet(x => x.FPrevisto = livrocaixa.Previsto, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FIDDes = livrocaixa.IDDes, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FPessoal = livrocaixa.Pessoal, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FAjuste = livrocaixa.Ajuste, Times.Once);
@@ -85,7 +86,6 @@ public class LivroCaixaWriterTests
         _mockFLivroCaixa.VerifySet(x => x.FValor = livrocaixa.Valor, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FTipo = livrocaixa.Tipo, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FHistorico = livrocaixa.Historico, Times.Once);
-        _mockFLivroCaixa.VerifySet(x => x.FPrevisto = livrocaixa.Previsto, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FGrupo = livrocaixa.Grupo, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
@@ -193,6 +193,7 @@ public class LivroCaixaWriterTests
         return new Models.LivroCaixa
         {
             Id = 0,
+            Previsto = false,
             IDDes = 1,
             Pessoal = 1,
             Ajuste = false,
@@ -204,7 +205,6 @@ public class LivroCaixaWriterTests
             Valor = 0m,
             Tipo = false,
             Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Previsto = false,
             Grupo = 1
         };
     }

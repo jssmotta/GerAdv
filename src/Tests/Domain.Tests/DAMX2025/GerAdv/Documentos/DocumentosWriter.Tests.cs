@@ -74,10 +74,10 @@ public class DocumentosWriterTests
         var result = await _documentosWriter.WriteAsync(documentos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFDocumentos.Object);
-        _mockFDocumentos.VerifySet(x => x.FGUID = documentos.GUID, Times.Once);
         _mockFDocumentos.VerifySet(x => x.FProcesso = documentos.Processo, Times.Once);
         _mockFDocumentos.VerifySet(x => x.FData = documentos.Data, Times.Once);
         _mockFDocumentos.VerifySet(x => x.FObservacao = documentos.Observacao, Times.Once);
+        _mockFDocumentos.VerifySet(x => x.FGUID = documentos.GUID, Times.Once);
         _mockFDocumentos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,10 +184,10 @@ public class DocumentosWriterTests
         return new Models.Documentos
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             Processo = 1,
             Data = "27/05/2022",
-            Observacao = "Observação teste"
+            Observacao = "Observação teste",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

@@ -68,6 +68,12 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]
+    [ProducesResponseType(typeof(Diario2Response), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Diario2Response), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Diario2 regDiario2, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
@@ -90,13 +96,14 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
         catch (Exception ex)
         {
             _logger.Error(ex, "Diario2: AddAndUpdate failed with exception for uri = {0}", uri);
-            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+            return StatusCode(500, new Error500 { success = false, data = "", message = ex.Message });
         }
     }
 
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [HttpDelete]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("Diario2: Delete called with id = {0}, {2}", id, uri);
@@ -114,7 +121,7 @@ public partial class Diario2Controller(IDiario2Service diario2Service) : Control
         catch (Exception ex)
         {
             _logger.Error(ex, "Diario2: Delete failed with exception for id = {0}, {1}", id, uri);
-            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+            return Conflict(new Error500 { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
 

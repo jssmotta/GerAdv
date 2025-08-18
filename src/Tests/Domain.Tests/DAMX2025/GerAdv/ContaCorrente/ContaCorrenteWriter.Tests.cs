@@ -75,7 +75,6 @@ public class ContaCorrenteWriterTests
         // Assert
         result.Should().Be(_mockFContaCorrente.Object);
         _mockFContaCorrente.VerifySet(x => x.FCIAcordo = contacorrente.CIAcordo, Times.Once);
-        _mockFContaCorrente.VerifySet(x => x.FGUID = contacorrente.GUID, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FQuitado = contacorrente.Quitado, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FIDContrato = contacorrente.IDContrato, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FQuitadoID = contacorrente.QuitadoID, Times.Once);
@@ -100,6 +99,7 @@ public class ContaCorrenteWriterTests
         _mockFContaCorrente.VerifySet(x => x.FParcelaPrincipalID = contacorrente.ParcelaPrincipalID, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FHide = contacorrente.Hide, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FDataPgto = contacorrente.DataPgto.ToString(), Times.Once);
+        _mockFContaCorrente.VerifySet(x => x.FGUID = contacorrente.GUID, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -237,7 +237,6 @@ public class ContaCorrenteWriterTests
         {
             Id = 0,
             CIAcordo = 1,
-            GUID = Guid.NewGuid().ToString(),
             Quitado = false,
             IDContrato = 1,
             QuitadoID = 1,
@@ -261,7 +260,8 @@ public class ContaCorrenteWriterTests
             ValorPrincipal = 0m,
             ParcelaPrincipalID = 1,
             Hide = false,
-            DataPgto = "24/04/1975"
+            DataPgto = "24/04/1975",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

@@ -80,9 +80,9 @@ public class GruposEmpresasWriterTests
         _mockFGruposEmpresas.VerifySet(x => x.FDescricao = gruposempresas.Descricao, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FObservacoes = gruposempresas.Observacoes, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FCliente = gruposempresas.Cliente, Times.Once);
-        _mockFGruposEmpresas.VerifySet(x => x.FGUID = gruposempresas.GUID, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FIcone = gruposempresas.Icone, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FDespesaUnificada = gruposempresas.DespesaUnificada, Times.Once);
+        _mockFGruposEmpresas.VerifySet(x => x.FGUID = gruposempresas.GUID, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -195,9 +195,9 @@ public class GruposEmpresasWriterTests
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Cliente = 1,
-            GUID = Guid.NewGuid().ToString(),
             Icone = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            DespesaUnificada = false
+            DespesaUnificada = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

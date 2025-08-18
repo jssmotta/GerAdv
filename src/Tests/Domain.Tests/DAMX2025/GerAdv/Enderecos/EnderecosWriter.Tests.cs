@@ -75,7 +75,6 @@ public class EnderecosWriterTests
         // Assert
         result.Should().Be(_mockFEnderecos.Object);
         _mockFEnderecos.VerifySet(x => x.FTopIndex = enderecos.TopIndex, Times.Once);
-        _mockFEnderecos.VerifySet(x => x.FGUID = enderecos.GUID, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FDescricao = enderecos.Descricao, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FContato = enderecos.Contato, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FDtNasc = enderecos.DtNasc.ToString(), Times.Once);
@@ -95,6 +94,7 @@ public class EnderecosWriterTests
         _mockFEnderecos.VerifySet(x => x.FQuem = enderecos.Quem, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FQuemIndicou = enderecos.QuemIndicou, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FReportECBOnly = enderecos.ReportECBOnly, Times.Once);
+        _mockFEnderecos.VerifySet(x => x.FGUID = enderecos.GUID, Times.Once);
         _mockFEnderecos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -217,7 +217,6 @@ public class EnderecosWriterTests
         {
             Id = 0,
             TopIndex = false,
-            GUID = Guid.NewGuid().ToString(),
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Contato = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             DtNasc = "24/04/1975",
@@ -236,7 +235,8 @@ public class EnderecosWriterTests
             EMail = "test@email.com",
             Quem = 1,
             QuemIndicou = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            ReportECBOnly = false
+            ReportECBOnly = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

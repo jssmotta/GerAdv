@@ -233,13 +233,13 @@ public class DBReuniaoTests : IDisposable
     }
 
     [Theory]
-    [InlineData("01/01/2000")]
-    [InlineData("31/12/2023")]
-    [InlineData("15/08/2024")]
-    public void HoraInicial_ShouldFormatDateCorrectly(string dateString)
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HoraInicial_ShouldFormatDateCorrectly(string dateString, string expected)
     {
         _instance.FHoraInicial = dateString;
-        Assert.Equal(dateString, _instance.FHoraInicial);
+        Assert.Equal(expected, _instance.FHoraInicial);
     }
 
     [Fact]
@@ -265,92 +265,14 @@ public class DBReuniaoTests : IDisposable
         Assert.False(instance.FExterna);
     }
 
-    /*
-TEMPLATE_INTEGER_FIELD:
-[Theory]
-[InlineData(0)]
-[InlineData(1)]
-[InlineData(-1)]
-[InlineData(int.MaxValue)]
-[InlineData(int.MinValue)]
-public void Externa_ShouldAcceptIntegerValues(int value)
-{
-    _instance.FExterna = value;
-    Assert.Equal(value, _instance.FExterna);
-}
-
-[Fact]
-public void Externa_DefaultValue_ShouldBeZero()
-{
-    var instance = new DBReuniao();
-    Assert.Equal(0, instance.Externa);
-}
-*/
-    /*
-TEMPLATE_DATETIME_FIELD:
-[Theory]
-[InlineData("01/01/2000")]
-[InlineData("31/12/2023")]
-[InlineData("15/08/2024")]
-public void Externa_ShouldFormatDateCorrectly(string dateString)
-{
-    _instance.FExterna = dateString;
-    Assert.Equal(dateString, _instance.FExterna);
-}
-
-[Fact]
-public void Externa_EmptyDate_ShouldReturnEmptyString()
-{
-    var instance = new DBReuniao();
-    Assert.Equal(string.Empty, instance.Externa);
-}
-*/
-    /*
-TEMPLATE_CPF_FIELD:
-[Theory]
-[InlineData("91751637484", "91751637484")]
-[InlineData("384.004.020-57", "38400402057")]
-[InlineData("", "")]
-public void Externa_ShouldValidateCPF(string input, string expected)
-{
-    if (input == "" || IsValidCPF(input))
-    {
-        _instance.FExterna = input;
-        Assert.Equal(expected, _instance.FExterna);
-    }
-    else
-    {
-        Assert.Throws<ArgumentException>(() => _instance.FExterna = input);
-    }
-}
-*/
-    /*
-TEMPLATE_EMAIL_FIELD:
-[Theory]
-[InlineData("test@example.com")]
-[InlineData("user.name@domain.co.uk")]
-public void Externa_ValidEmail_ShouldAccept(string email)
-{
-    _instance.FExterna = email;
-    Assert.Equal(email, _instance.FExterna);
-}
-
-[Theory]
-[InlineData("invalid-email")]
-[InlineData("@domain.com")]
-public void Externa_InvalidEmail_ShouldThrow(string email)
-{
-    Assert.Throws<ArgumentException>(() => _instance.FExterna = email);
-}
-*/
     [Theory]
-    [InlineData("01/01/2000")]
-    [InlineData("31/12/2023")]
-    [InlineData("15/08/2024")]
-    public void HoraSaida_ShouldFormatDateCorrectly(string dateString)
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HoraSaida_ShouldFormatDateCorrectly(string dateString, string expected)
     {
         _instance.FHoraSaida = dateString;
-        Assert.Equal(dateString, _instance.FHoraSaida);
+        Assert.Equal(expected, _instance.FHoraSaida);
     }
 
     [Fact]
@@ -361,13 +283,13 @@ public void Externa_InvalidEmail_ShouldThrow(string email)
     }
 
     [Theory]
-    [InlineData("01/01/2000")]
-    [InlineData("31/12/2023")]
-    [InlineData("15/08/2024")]
-    public void HoraRetorno_ShouldFormatDateCorrectly(string dateString)
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HoraRetorno_ShouldFormatDateCorrectly(string dateString, string expected)
     {
         _instance.FHoraRetorno = dateString;
-        Assert.Equal(dateString, _instance.FHoraRetorno);
+        Assert.Equal(expected, _instance.FHoraRetorno);
     }
 
     [Fact]

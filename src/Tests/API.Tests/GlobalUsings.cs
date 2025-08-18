@@ -6,3 +6,4 @@ global using MenphisSI.BaseCommon;
 global using MenphisSI.GerAdv.Interface;
 global using MenphisSI.GerAdv.Controller;
 global using Microsoft.AspNetCore.Http;
+global using Domain.BaseCommon.Models;

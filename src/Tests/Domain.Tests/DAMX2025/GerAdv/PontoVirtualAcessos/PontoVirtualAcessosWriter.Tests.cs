@@ -184,7 +184,7 @@ public class PontoVirtualAcessosWriterTests
         {
             Id = 0,
             Operador = 1,
-            DataHora = "04:04",
+            DataHora = "27/05/2022",
             Tipo = false,
             Origem = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };

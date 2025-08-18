@@ -81,12 +81,12 @@ public class ProcessOutputEngineWriterTests
         _mockFProcessOutputEngine.VerifySet(x => x.FValor = processoutputengine.Valor, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FOutput = processoutputengine.Output, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FAdministrador = processoutputengine.Administrador, Times.Once);
-        _mockFProcessOutputEngine.VerifySet(x => x.FGUID = processoutputengine.GUID, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FOutputSource = processoutputengine.OutputSource, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FDisabledItem = processoutputengine.DisabledItem, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FIDModulo = processoutputengine.IDModulo, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FIsOnlyProcesso = processoutputengine.IsOnlyProcesso, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FMyID = processoutputengine.MyID, Times.Once);
+        _mockFProcessOutputEngine.VerifySet(x => x.FGUID = processoutputengine.GUID, Times.Once);
     }
 
     [Fact]
@@ -199,12 +199,12 @@ public class ProcessOutputEngineWriterTests
             Valor = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Output = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Administrador = false,
-            GUID = Guid.NewGuid().ToString(),
             OutputSource = 1,
             DisabledItem = false,
             IDModulo = 1,
             IsOnlyProcesso = false,
-            MyID = 1
+            MyID = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

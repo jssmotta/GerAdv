@@ -74,10 +74,10 @@ public class TipoCompromissoWriterTests
         var result = await _tipocompromissoWriter.WriteAsync(tipocompromisso, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoCompromisso.Object);
-        _mockFTipoCompromisso.VerifySet(x => x.FGUID = tipocompromisso.GUID, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.FIcone = tipocompromisso.Icone, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.FDescricao = tipocompromisso.Descricao, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.FFinanceiro = tipocompromisso.Financeiro, Times.Once);
+        _mockFTipoCompromisso.VerifySet(x => x.FGUID = tipocompromisso.GUID, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,10 +184,10 @@ public class TipoCompromissoWriterTests
         return new Models.TipoCompromisso
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             Icone = 1,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Financeiro = false
+            Financeiro = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

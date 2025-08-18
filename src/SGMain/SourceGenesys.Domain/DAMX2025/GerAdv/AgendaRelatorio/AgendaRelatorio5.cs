@@ -8,8 +8,7 @@ public partial class DBAgendaRelatorio
     public const string CadastroGuid = "1c63b021-27ce-46f4-ab4e-e042950a69ad";
     public const string PTabelaNome = "AgendaRelatorio";
     public const string CamposSqlX = " AgendaRelatorio.* ";
-    public static string CampoCodigo => "";
-
+    public const string CampoCodigo = "vqaCodigo";
     public const string CampoNome = "advNome";
     public const string PTabelaPrefixo = "";
 #pragma warning disable CA1822 // Mark members as static

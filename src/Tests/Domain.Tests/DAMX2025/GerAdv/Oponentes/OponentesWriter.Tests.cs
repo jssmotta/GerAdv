@@ -75,7 +75,6 @@ public class OponentesWriterTests
         // Assert
         result.Should().Be(_mockFOponentes.Object);
         _mockFOponentes.VerifySet(x => x.FEMPFuncao = oponentes.EMPFuncao, Times.Once);
-        _mockFOponentes.VerifySet(x => x.FGUID = oponentes.GUID, Times.Once);
         _mockFOponentes.VerifySet(x => x.FCTPSNumero = oponentes.CTPSNumero, Times.Once);
         _mockFOponentes.VerifySet(x => x.FSite = oponentes.Site, Times.Once);
         _mockFOponentes.VerifySet(x => x.FCTPSSerie = oponentes.CTPSSerie, Times.Once);
@@ -102,6 +101,7 @@ public class OponentesWriterTests
         _mockFOponentes.VerifySet(x => x.FEMail = oponentes.EMail, Times.Once);
         _mockFOponentes.VerifySet(x => x.FClass = oponentes.Class, Times.Once);
         _mockFOponentes.VerifySet(x => x.FTop = oponentes.Top, Times.Once);
+        _mockFOponentes.VerifySet(x => x.FGUID = oponentes.GUID, Times.Once);
         _mockFOponentes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -209,7 +209,6 @@ public class OponentesWriterTests
         {
             Id = 0,
             EMPFuncao = 1,
-            GUID = Guid.NewGuid().ToString(),
             CTPSNumero = "AAAAAAAAAAAAA",
             Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             CTPSSerie = "AAAAAAAA",
@@ -235,7 +234,8 @@ public class OponentesWriterTests
             Observacao = "Observação teste",
             EMail = "test@email.com",
             Class = "A",
-            Top = false
+            Top = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

@@ -75,9 +75,9 @@ public class SituacaoWriterTests
         // Assert
         result.Should().Be(_mockFSituacao.Object);
         _mockFSituacao.VerifySet(x => x.FParte_Int = situacao.Parte_Int, Times.Once);
-        _mockFSituacao.VerifySet(x => x.FGUID = situacao.GUID, Times.Once);
         _mockFSituacao.VerifySet(x => x.FParte_Opo = situacao.Parte_Opo, Times.Once);
         _mockFSituacao.VerifySet(x => x.FTop = situacao.Top, Times.Once);
+        _mockFSituacao.VerifySet(x => x.FGUID = situacao.GUID, Times.Once);
         _mockFSituacao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -185,9 +185,9 @@ public class SituacaoWriterTests
         {
             Id = 0,
             Parte_Int = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString(),
             Parte_Opo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Top = false
+            Top = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

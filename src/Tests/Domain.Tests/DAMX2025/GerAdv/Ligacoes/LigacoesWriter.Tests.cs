@@ -96,11 +96,11 @@ public class LigacoesWriterTests
         _mockFLigacoes.VerifySet(x => x.FData = ligacoes.Data, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FHora = ligacoes.Hora, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FUrgente = ligacoes.Urgente, Times.Once);
-        _mockFLigacoes.VerifySet(x => x.FGUID = ligacoes.GUID, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FLigarPara = ligacoes.LigarPara, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FProcesso = ligacoes.Processo, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FStartScreen = ligacoes.StartScreen, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FEmotion = ligacoes.Emotion, Times.Once);
+        _mockFLigacoes.VerifySet(x => x.FGUID = ligacoes.GUID, Times.Once);
         _mockFLigacoes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -246,7 +246,7 @@ public class LigacoesWriterTests
             QuemID = 1,
             Telefonista = 1,
             UltimoAviso = "24/04/1975",
-            HoraFinal = "04:04",
+            HoraFinal = "27/05/2022",
             Nome = "João",
             QuemCodigo = 1,
             Solicitante = 1,
@@ -257,13 +257,13 @@ public class LigacoesWriterTests
             Realizada = false,
             Status = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Data = "27/05/2022",
-            Hora = "04:04",
+            Hora = "27/05/2022",
             Urgente = false,
-            GUID = Guid.NewGuid().ToString(),
             LigarPara = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             StartScreen = false,
-            Emotion = 1
+            Emotion = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

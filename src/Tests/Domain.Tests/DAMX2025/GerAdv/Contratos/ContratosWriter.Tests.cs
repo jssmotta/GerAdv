@@ -84,7 +84,6 @@ public class ContratosWriterTests
         _mockFContratos.VerifySet(x => x.FOcultarRelatorio = contratos.OcultarRelatorio, Times.Once);
         _mockFContratos.VerifySet(x => x.FPercEscritorio = contratos.PercEscritorio, Times.Once);
         _mockFContratos.VerifySet(x => x.FValorConsultoria = contratos.ValorConsultoria, Times.Once);
-        _mockFContratos.VerifySet(x => x.FGUID = contratos.GUID, Times.Once);
         _mockFContratos.VerifySet(x => x.FTipoCobranca = contratos.TipoCobranca, Times.Once);
         _mockFContratos.VerifySet(x => x.FProtestar = contratos.Protestar, Times.Once);
         _mockFContratos.VerifySet(x => x.FJuros = contratos.Juros, Times.Once);
@@ -103,6 +102,7 @@ public class ContratosWriterTests
         _mockFContratos.VerifySet(x => x.FAvulso = contratos.Avulso, Times.Once);
         _mockFContratos.VerifySet(x => x.FSuspenso = contratos.Suspenso, Times.Once);
         _mockFContratos.VerifySet(x => x.FMulta = contratos.Multa, Times.Once);
+        _mockFContratos.VerifySet(x => x.FGUID = contratos.GUID, Times.Once);
         _mockFContratos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -249,7 +249,6 @@ public class ContratosWriterTests
             OcultarRelatorio = false,
             PercEscritorio = 0m,
             ValorConsultoria = 0m,
-            GUID = Guid.NewGuid().ToString(),
             TipoCobranca = 1,
             Protestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Juros = "AAA",
@@ -267,7 +266,8 @@ public class ContratosWriterTests
             ChaveContrato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Avulso = false,
             Suspenso = false,
-            Multa = "AAAAAAAA"
+            Multa = "AAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

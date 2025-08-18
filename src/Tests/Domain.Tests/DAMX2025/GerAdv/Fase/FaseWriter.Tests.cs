@@ -75,9 +75,9 @@ public class FaseWriterTests
         // Assert
         result.Should().Be(_mockFFase.Object);
         _mockFFase.VerifySet(x => x.FDescricao = fase.Descricao, Times.Once);
-        _mockFFase.VerifySet(x => x.FGUID = fase.GUID, Times.Once);
         _mockFFase.VerifySet(x => x.FJustica = fase.Justica, Times.Once);
         _mockFFase.VerifySet(x => x.FArea = fase.Area, Times.Once);
+        _mockFFase.VerifySet(x => x.FGUID = fase.GUID, Times.Once);
         _mockFFase.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -185,9 +185,9 @@ public class FaseWriterTests
         {
             Id = 0,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString(),
             Justica = 1,
-            Area = 1
+            Area = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

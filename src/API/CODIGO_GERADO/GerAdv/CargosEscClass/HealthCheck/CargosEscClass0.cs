@@ -12,6 +12,6 @@ public partial class CargosEscClassController
     [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public IActionResult HealthCheck()
     {
-        return Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow });
+        return Ok(new HealthStatus { Status = "Healthy", Timestamp = DateTime.UtcNow });
     }
 }

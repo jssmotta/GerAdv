@@ -83,26 +83,8 @@ public class OperadoresWriterTests
         _mockFOperadores.VerifySet(x => x.FGrupo = operadores.Grupo, Times.Once);
         _mockFOperadores.VerifySet(x => x.FNome = operadores.Nome, Times.Once);
         _mockFOperadores.VerifySet(x => x.FEMail = operadores.EMail, Times.Once);
-        _mockFOperadores.VerifySet(x => x.FSenha = operadores.Senha, Times.Once);
         _mockFOperadores.VerifySet(x => x.FAtivado = operadores.Ativado, Times.Once);
-        _mockFOperadores.VerifySet(x => x.FAtualizarSenha = operadores.AtualizarSenha, Times.Once);
-        _mockFOperadores.VerifySet(x => x.FSuporteMaxAge = operadores.SuporteMaxAge.ToString(), Times.Once);
         _mockFOperadores.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
-    }
-
-    [Fact]
-    public async Task WriteAsync_WithNullSuporteMaxAge_ShouldNotSetFSuporteMaxAge()
-    {
-        // Arrange
-        var operadores = CreateValidOperadoresModel();
-        operadores.SuporteMaxAge = null;
-        var auditorQuem = 123;
-        _mockOperadoresFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFOperadores.Object);
-        _mockFOperadores.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
-        // Act
-        await _operadoresWriter.WriteAsync(operadores, auditorQuem, _mockConnection.Object);
-        // Assert
-        _mockFOperadores.VerifySet(x => x.FSuporteMaxAge = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -217,10 +199,7 @@ public class OperadoresWriterTests
             Grupo = 1,
             Nome = "João",
             EMail = "test@email.com",
-            Senha = "AAAAAAAA",
-            Ativado = false,
-            AtualizarSenha = false,
-            SuporteMaxAge = "24/04/1975"
+            Ativado = false
         };
     }
 #endregion

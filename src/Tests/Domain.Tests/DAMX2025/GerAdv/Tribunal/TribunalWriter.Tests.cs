@@ -76,12 +76,12 @@ public class TribunalWriterTests
         result.Should().Be(_mockFTribunal.Object);
         _mockFTribunal.VerifySet(x => x.FNome = tribunal.Nome, Times.Once);
         _mockFTribunal.VerifySet(x => x.FArea = tribunal.Area, Times.Once);
-        _mockFTribunal.VerifySet(x => x.FGUID = tribunal.GUID, Times.Once);
         _mockFTribunal.VerifySet(x => x.FJustica = tribunal.Justica, Times.Once);
         _mockFTribunal.VerifySet(x => x.FDescricao = tribunal.Descricao, Times.Once);
         _mockFTribunal.VerifySet(x => x.FInstancia = tribunal.Instancia, Times.Once);
         _mockFTribunal.VerifySet(x => x.FSigla = tribunal.Sigla, Times.Once);
         _mockFTribunal.VerifySet(x => x.FWeb = tribunal.Web, Times.Once);
+        _mockFTribunal.VerifySet(x => x.FGUID = tribunal.GUID, Times.Once);
         _mockFTribunal.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -190,12 +190,12 @@ public class TribunalWriterTests
             Id = 0,
             Nome = "João",
             Area = 1,
-            GUID = Guid.NewGuid().ToString(),
             Justica = 1,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Instancia = 1,
             Sigla = "AAAAAAAAAAAAAAAAAA",
-            Web = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Web = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

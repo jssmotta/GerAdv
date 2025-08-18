@@ -74,10 +74,10 @@ public class AcaoWriterTests
         var result = await _acaoWriter.WriteAsync(acao, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFAcao.Object);
-        _mockFAcao.VerifySet(x => x.FGUID = acao.GUID, Times.Once);
         _mockFAcao.VerifySet(x => x.FJustica = acao.Justica, Times.Once);
         _mockFAcao.VerifySet(x => x.FArea = acao.Area, Times.Once);
         _mockFAcao.VerifySet(x => x.FDescricao = acao.Descricao, Times.Once);
+        _mockFAcao.VerifySet(x => x.FGUID = acao.GUID, Times.Once);
         _mockFAcao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,10 +184,10 @@ public class AcaoWriterTests
         return new Models.Acao
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             Justica = 1,
             Area = 1,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

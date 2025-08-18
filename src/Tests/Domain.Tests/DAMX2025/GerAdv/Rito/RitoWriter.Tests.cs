@@ -75,8 +75,8 @@ public class RitoWriterTests
         // Assert
         result.Should().Be(_mockFRito.Object);
         _mockFRito.VerifySet(x => x.FDescricao = rito.Descricao, Times.Once);
-        _mockFRito.VerifySet(x => x.FGUID = rito.GUID, Times.Once);
         _mockFRito.VerifySet(x => x.FTop = rito.Top, Times.Once);
+        _mockFRito.VerifySet(x => x.FGUID = rito.GUID, Times.Once);
         _mockFRito.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,8 +184,8 @@ public class RitoWriterTests
         {
             Id = 0,
             Descricao = "AAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString(),
-            Top = false
+            Top = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

@@ -85,10 +85,10 @@ public class TerceirosWriterTests
         _mockFTerceiros.VerifySet(x => x.FFax = terceiros.Fax, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FOBS = terceiros.OBS, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FEMail = terceiros.EMail, Times.Once);
-        _mockFTerceiros.VerifySet(x => x.FGUID = terceiros.GUID, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FClass = terceiros.Class, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FVaraForoComarca = terceiros.VaraForoComarca, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FSexo = terceiros.Sexo, Times.Once);
+        _mockFTerceiros.VerifySet(x => x.FGUID = terceiros.GUID, Times.Once);
         _mockFTerceiros.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -206,10 +206,10 @@ public class TerceirosWriterTests
             Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             OBS = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             EMail = "test@email.com",
-            GUID = Guid.NewGuid().ToString(),
             Class = "A",
             VaraForoComarca = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Sexo = false
+            Sexo = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

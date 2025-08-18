@@ -29,8 +29,8 @@ public class AgendaRelatorioControllerTests
         result.Should().BeOfType<OkObjectResult>();
         OkObjectResult? okResult = result as OkObjectResult;
         _ = okResult.Value.Should().NotBeNull();
-        dynamic value = okResult.Value;
-        ((string)value.Status).Should().Be("Healthy");
+        HealthStatus value = okResult.Value as HealthStatus;
+        value.Status.Should().Be("Healthy");
     }
 
     [Fact]

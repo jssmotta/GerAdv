@@ -79,11 +79,11 @@ public class GUTAtividadesWriterTests
         _mockFGUTAtividades.VerifySet(x => x.FGUTGrupo = gutatividades.GUTGrupo, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FGUTPeriodicidade = gutatividades.GUTPeriodicidade, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FOperador = gutatividades.Operador, Times.Once);
-        _mockFGUTAtividades.VerifySet(x => x.FGUID = gutatividades.GUID, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FConcluido = gutatividades.Concluido, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FDataConcluido = gutatividades.DataConcluido.ToString(), Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FDiasParaIniciar = gutatividades.DiasParaIniciar, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FMinutosParaRealizar = gutatividades.MinutosParaRealizar, Times.Once);
+        _mockFGUTAtividades.VerifySet(x => x.FGUID = gutatividades.GUID, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -210,11 +210,11 @@ public class GUTAtividadesWriterTests
             GUTGrupo = 1,
             GUTPeriodicidade = 1,
             Operador = 1,
-            GUID = Guid.NewGuid().ToString(),
             Concluido = false,
             DataConcluido = "24/04/1975",
             DiasParaIniciar = 1,
-            MinutosParaRealizar = 1
+            MinutosParaRealizar = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

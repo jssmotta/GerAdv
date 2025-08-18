@@ -29,8 +29,8 @@ public class OperadorControllerTests
         result.Should().BeOfType<OkObjectResult>();
         OkObjectResult? okResult = result as OkObjectResult;
         _ = okResult.Value.Should().NotBeNull();
-        dynamic value = okResult.Value;
-        ((string)value.Status).Should().Be("Healthy");
+        HealthStatus value = okResult.Value as HealthStatus;
+        value.Status.Should().Be("Healthy");
     }
 
     [Fact]
@@ -233,9 +233,9 @@ public class OperadorControllerTests
         result.Should().BeOfType<ObjectResult>();
         var objectResult = result as ObjectResult;
         objectResult.StatusCode.Should().Be(500);
-        dynamic value = objectResult.Value;
-        ((bool)value.success).Should().BeFalse();
-        ((string)value.message).Should().Be("Test exception");
+        Error500 value = objectResult.Value as Error500;
+        value.success.Should().BeFalse();
+        value.message.Should().Be("Test exception");
     }
 
     [Fact]
@@ -279,9 +279,9 @@ public class OperadorControllerTests
         // Assert
         result.Should().BeOfType<ConflictObjectResult>();
         var conflictResult = result as ConflictObjectResult;
-        dynamic value = conflictResult.Value;
-        ((bool)value.success).Should().BeFalse();
-        ((string)value.message).Should().Contain("Não é possível excluir");
+        Error500 value = conflictResult.Value as Error500;
+        value.success.Should().BeFalse();
+        value.message.Should().Contain("Não é possível excluir");
     }
 
     [Fact]

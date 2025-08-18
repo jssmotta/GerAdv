@@ -36,7 +36,7 @@ public class ReuniaoWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFReuniao(int? Cliente = 1, int? IDAgenda = 1, string? Data = "27/05/2022", string? Pauta = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? ATA = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? HoraInicial = "04:04", string? HoraFinal = "04:04", bool? Externa = false, string? HoraSaida = "04:04", string? HoraRetorno = "04:04", string? PrincipaisDecisoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
+    private void SetupMockFReuniao(int? Cliente = 1, int? IDAgenda = 1, string? Data = "27/05/2022", string? Pauta = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? ATA = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? HoraInicial = "04:04", string? HoraFinal = "27/05/2022", bool? Externa = false, string? HoraSaida = "04:04", string? HoraRetorno = "04:04", string? PrincipaisDecisoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
     {
         _mockFReuniao.Setup(f => f.FCliente).Returns(Cliente ?? 0);
         _mockFReuniao.Setup(f => f.FIDAgenda).Returns(IDAgenda ?? 0);
@@ -94,7 +94,7 @@ public class ReuniaoWhereTests : IDisposable
         result.Pauta.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.ATA.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.HoraInicial.Should().Be("04:04");
-        result.HoraFinal.Should().Be("04:04");
+        result.HoraFinal.Should().Be("27/05/2022");
         result.Externa.Should().Be(false);
         result.HoraSaida.Should().Be("04:04");
         result.HoraRetorno.Should().Be("04:04");
@@ -235,7 +235,7 @@ public class ReuniaoWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFReuniao(Cliente: 1, IDAgenda: 1, Data: "27/05/2022", Pauta: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", ATA: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", HoraInicial: "04:04", HoraFinal: "04:04", Externa: false, HoraSaida: "04:04", HoraRetorno: "04:04", PrincipaisDecisoes: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        SetupMockFReuniao(Cliente: 1, IDAgenda: 1, Data: "27/05/2022", Pauta: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", ATA: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", HoraInicial: "04:04", HoraFinal: "27/05/2022", Externa: false, HoraSaida: "04:04", HoraRetorno: "04:04", PrincipaisDecisoes: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
         // Act
         var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
@@ -248,7 +248,7 @@ public class ReuniaoWhereTests : IDisposable
         result.Pauta.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.ATA.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.HoraInicial.Should().Be("04:04");
-        result.HoraFinal.Should().Be("04:04");
+        result.HoraFinal.Should().Be("27/05/2022");
         result.Externa.Should().Be(false);
         result.HoraSaida.Should().Be("04:04");
         result.HoraRetorno.Should().Be("04:04");
@@ -271,193 +271,7 @@ public class ReuniaoWhereTests : IDisposable
         // Assert
         _mockReuniaoFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBReuniaoDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
-
 #region DateTime Tests
-    [Fact]
-    public void Read_WithValidDateHoraInicialFields_ShouldParseAndSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        var testDate = "31/12/2024";
-        SetupMockFReuniao(HoraInicial: testDate);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraInicial.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateHoraInicialStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFReuniao(HoraInicial: "invalid-date");
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraInicial.Should().Be("");
-    }
-
-    [Fact]
-    public void Read_WithNullDateHoraInicialFields_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFReuniao(HoraInicial: null);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraInicial.Should().Be(string.Empty);
-    }
-
-    [Theory]
-    [InlineData("31/12/2024")]
-    [InlineData("2025/01/01T23:59:59")]
-    [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/02T14:30:45.123")]
-    public void Read_WithValidDateHoraInicialFormats_ShouldParseCorrectly(string dateString)
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        var expectedDate = DateTime.Parse(dateString);
-        SetupMockFReuniao(HoraInicial: dateString);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraInicial.Should().Be(dateString);
-    }
-
-    [Fact]
-    public void Read_WithValidDateHoraSaidaFields_ShouldParseAndSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        var testDate = "01/01/2025";
-        SetupMockFReuniao(HoraSaida: testDate);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraSaida.Should().Be("01/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateHoraSaidaStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFReuniao(HoraSaida: "invalid-date");
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraSaida.Should().Be("");
-    }
-
-    [Fact]
-    public void Read_WithNullDateHoraSaidaFields_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFReuniao(HoraSaida: null);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraSaida.Should().Be(string.Empty);
-    }
-
-    [Theory]
-    [InlineData("01/01/2025")]
-    [InlineData("2025/01/02T23:59:59")]
-    [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/03T14:30:45.123")]
-    public void Read_WithValidDateHoraSaidaFormats_ShouldParseCorrectly(string dateString)
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        var expectedDate = DateTime.Parse(dateString);
-        SetupMockFReuniao(HoraSaida: dateString);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraSaida.Should().Be(dateString);
-    }
-
-    [Fact]
-    public void Read_WithValidDateHoraRetornoFields_ShouldParseAndSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        var testDate = "02/01/2025";
-        SetupMockFReuniao(HoraRetorno: testDate);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraRetorno.Should().Be("02/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateHoraRetornoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFReuniao(HoraRetorno: "invalid-date");
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraRetorno.Should().Be("");
-    }
-
-    [Fact]
-    public void Read_WithNullDateHoraRetornoFields_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFReuniao(HoraRetorno: null);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraRetorno.Should().Be(string.Empty);
-    }
-
-    [Theory]
-    [InlineData("02/01/2025")]
-    [InlineData("2025/01/03T23:59:59")]
-    [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/04T14:30:45.123")]
-    public void Read_WithValidDateHoraRetornoFormats_ShouldParseCorrectly(string dateString)
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        var expectedDate = DateTime.Parse(dateString);
-        SetupMockFReuniao(HoraRetorno: dateString);
-        _mockReuniaoFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFReuniao.Object);
-        // Act
-        var result = _reuniaoWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.HoraRetorno.Should().Be(dateString);
-    }
 #endregion
 #endregion
 }

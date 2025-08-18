@@ -93,8 +93,8 @@ public class OutrasPartesClienteWriterTests
         _mockFOutrasPartesCliente.VerifySet(x => x.FFax = outraspartescliente.Fax, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FEMail = outraspartescliente.EMail, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FSite = outraspartescliente.Site, Times.Once);
-        _mockFOutrasPartesCliente.VerifySet(x => x.FGUID = outraspartescliente.GUID, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FClass = outraspartescliente.Class, Times.Once);
+        _mockFOutrasPartesCliente.VerifySet(x => x.FGUID = outraspartescliente.GUID, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -235,8 +235,8 @@ public class OutrasPartesClienteWriterTests
             Fax = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             EMail = "test@email.com",
             Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString(),
-            Class = "A"
+            Class = "A",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

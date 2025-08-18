@@ -74,7 +74,6 @@ public class InstanciaWriterTests
         var result = await _instanciaWriter.WriteAsync(instancia, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFInstancia.Object);
-        _mockFInstancia.VerifySet(x => x.FGUID = instancia.GUID, Times.Once);
         _mockFInstancia.VerifySet(x => x.FLiminarPedida = instancia.LiminarPedida, Times.Once);
         _mockFInstancia.VerifySet(x => x.FObjeto = instancia.Objeto, Times.Once);
         _mockFInstancia.VerifySet(x => x.FStatusResultado = instancia.StatusResultado, Times.Once);
@@ -102,6 +101,7 @@ public class InstanciaWriterTests
         _mockFInstancia.VerifySet(x => x.FAccessCode = instancia.AccessCode, Times.Once);
         _mockFInstancia.VerifySet(x => x.FJulgador = instancia.Julgador, Times.Once);
         _mockFInstancia.VerifySet(x => x.FZKeyIA = instancia.ZKeyIA, Times.Once);
+        _mockFInstancia.VerifySet(x => x.FGUID = instancia.GUID, Times.Once);
         _mockFInstancia.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -223,7 +223,6 @@ public class InstanciaWriterTests
         return new Models.Instancia
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             LiminarPedida = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Objeto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             StatusResultado = 1,
@@ -250,7 +249,8 @@ public class InstanciaWriterTests
             NroAntigo = "AAAAAAAAAAAAAAAAAAAAAAA",
             AccessCode = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Julgador = 1,
-            ZKeyIA = "AAAAAAAAAAAAAAAAAAAAAAA"
+            ZKeyIA = "AAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

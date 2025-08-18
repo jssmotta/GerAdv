@@ -8,7 +8,7 @@ public class VNoAuditor : XCodeIdBase
     private int m_AuditorQuem;
     public virtual int AuditorQuem
     {
-        get => m_AuditorQuem;
+        get => m_AuditorQuem == 0 ? 1 : m_AuditorQuem;
         set => m_AuditorQuem = value;        
     }
 }

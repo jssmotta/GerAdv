@@ -74,7 +74,6 @@ public class ProDespesasWriterTests
         var result = await _prodespesasWriter.WriteAsync(prodespesas, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProDespesas.Object);
-        _mockFProDespesas.VerifySet(x => x.FGUID = prodespesas.GUID, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FLigacaoID = prodespesas.LigacaoID, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FCliente = prodespesas.Cliente, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FCorrigido = prodespesas.Corrigido, Times.Once);
@@ -87,6 +86,7 @@ public class ProDespesasWriterTests
         _mockFProDespesas.VerifySet(x => x.FTipo = prodespesas.Tipo, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FHistorico = prodespesas.Historico, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FLivroCaixa = prodespesas.LivroCaixa, Times.Once);
+        _mockFProDespesas.VerifySet(x => x.FGUID = prodespesas.GUID, Times.Once);
         _mockFProDespesas.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -208,7 +208,6 @@ public class ProDespesasWriterTests
         return new Models.ProDespesas
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             LigacaoID = 1,
             Cliente = 1,
             Corrigido = false,
@@ -220,7 +219,8 @@ public class ProDespesasWriterTests
             Valor = 0m,
             Tipo = false,
             Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            LivroCaixa = false
+            LivroCaixa = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

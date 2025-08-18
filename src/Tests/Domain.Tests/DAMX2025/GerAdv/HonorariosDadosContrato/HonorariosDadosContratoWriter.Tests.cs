@@ -74,6 +74,7 @@ public class HonorariosDadosContratoWriterTests
         var result = await _honorariosdadoscontratoWriter.WriteAsync(honorariosdadoscontrato, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFHonorariosDadosContrato.Object);
+        _mockFHonorariosDadosContrato.VerifySet(x => x.FGuid = honorariosdadoscontrato.Guid, Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.FCliente = honorariosdadoscontrato.Cliente, Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.FFixo = honorariosdadoscontrato.Fixo, Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.FVariavel = honorariosdadoscontrato.Variavel, Times.Once);
@@ -83,7 +84,6 @@ public class HonorariosDadosContratoWriterTests
         _mockFHonorariosDadosContrato.VerifySet(x => x.FTextoContrato = honorariosdadoscontrato.TextoContrato, Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.FValorFixo = honorariosdadoscontrato.ValorFixo, Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.FObservacao = honorariosdadoscontrato.Observacao, Times.Once);
-        _mockFHonorariosDadosContrato.VerifySet(x => x.FGuid = honorariosdadoscontrato.Guid, Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.FDataContrato = honorariosdadoscontrato.DataContrato.ToString(), Times.Once);
         _mockFHonorariosDadosContrato.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
@@ -206,6 +206,7 @@ public class HonorariosDadosContratoWriterTests
         return new Models.HonorariosDadosContrato
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Cliente = 1,
             Fixo = false,
             Variavel = false,
@@ -215,7 +216,6 @@ public class HonorariosDadosContratoWriterTests
             TextoContrato = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             ValorFixo = 0m,
             Observacao = "Observação teste",
-            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             DataContrato = "24/04/1975"
         };
     }

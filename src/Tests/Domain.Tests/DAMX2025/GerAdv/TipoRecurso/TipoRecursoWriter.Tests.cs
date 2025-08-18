@@ -74,10 +74,10 @@ public class TipoRecursoWriterTests
         var result = await _tiporecursoWriter.WriteAsync(tiporecurso, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoRecurso.Object);
-        _mockFTipoRecurso.VerifySet(x => x.FGUID = tiporecurso.GUID, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.FJustica = tiporecurso.Justica, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.FArea = tiporecurso.Area, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.FDescricao = tiporecurso.Descricao, Times.Once);
+        _mockFTipoRecurso.VerifySet(x => x.FGUID = tiporecurso.GUID, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,10 +184,10 @@ public class TipoRecursoWriterTests
         return new Models.TipoRecurso
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             Justica = 1,
             Area = 1,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

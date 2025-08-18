@@ -66,6 +66,12 @@ public partial class ProcessOutPutIDsService
     {
         // Tracking: 20250606-1
         ThrowIfDisposed();
+        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        if (oCnn == null)
+        {
+            throw new Exception($"Coneão nula.");
+        }
+
         var filtroResult = filtro == null ? null : WFiltro(filtro!);
         string where = filtroResult?.where ?? string.Empty;
         List<SqlParameter> parameters = filtroResult?.parametros ?? [];

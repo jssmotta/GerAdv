@@ -74,7 +74,6 @@ public class HorasTrabWriterTests
         var result = await _horastrabWriter.WriteAsync(horastrab, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFHorasTrab.Object);
-        _mockFHorasTrab.VerifySet(x => x.FGUID = horastrab.GUID, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FIDContatoCRM = horastrab.IDContatoCRM, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FHonorario = horastrab.Honorario, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FIDAgenda = horastrab.IDAgenda, Times.Once);
@@ -93,6 +92,7 @@ public class HorasTrabWriterTests
         _mockFHorasTrab.VerifySet(x => x.FAnexoComp = horastrab.AnexoComp, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FAnexoUNC = horastrab.AnexoUNC, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FServico = horastrab.Servico, Times.Once);
+        _mockFHorasTrab.VerifySet(x => x.FGUID = horastrab.GUID, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -199,7 +199,6 @@ public class HorasTrabWriterTests
         return new Models.HorasTrab
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             IDContatoCRM = 1,
             Honorario = false,
             IDAgenda = 1,
@@ -217,7 +216,8 @@ public class HorasTrabWriterTests
             Anexo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             AnexoComp = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             AnexoUNC = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Servico = 1
+            Servico = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

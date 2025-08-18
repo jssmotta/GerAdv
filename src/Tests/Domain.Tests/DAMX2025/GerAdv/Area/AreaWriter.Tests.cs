@@ -75,8 +75,8 @@ public class AreaWriterTests
         // Assert
         result.Should().Be(_mockFArea.Object);
         _mockFArea.VerifySet(x => x.FDescricao = area.Descricao, Times.Once);
-        _mockFArea.VerifySet(x => x.FGUID = area.GUID, Times.Once);
         _mockFArea.VerifySet(x => x.FTop = area.Top, Times.Once);
+        _mockFArea.VerifySet(x => x.FGUID = area.GUID, Times.Once);
         _mockFArea.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,8 +184,8 @@ public class AreaWriterTests
         {
             Id = 0,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString(),
-            Top = false
+            Top = false,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

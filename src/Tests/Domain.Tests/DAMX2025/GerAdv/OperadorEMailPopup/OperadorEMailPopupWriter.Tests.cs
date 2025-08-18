@@ -76,16 +76,15 @@ public class OperadorEMailPopupWriterTests
         result.Should().Be(_mockFOperadorEMailPopup.Object);
         _mockFOperadorEMailPopup.VerifySet(x => x.FOperador = operadoremailpopup.Operador, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FNome = operadoremailpopup.Nome, Times.Once);
-        _mockFOperadorEMailPopup.VerifySet(x => x.FSenha = operadoremailpopup.Senha, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FSMTP = operadoremailpopup.SMTP, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FPOP3 = operadoremailpopup.POP3, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FAutenticacao = operadoremailpopup.Autenticacao, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FDescricao = operadoremailpopup.Descricao, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FUsuario = operadoremailpopup.Usuario, Times.Once);
-        _mockFOperadorEMailPopup.VerifySet(x => x.FGUID = operadoremailpopup.GUID, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FPortaSmtp = operadoremailpopup.PortaSmtp, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FPortaPop3 = operadoremailpopup.PortaPop3, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FAssinatura = operadoremailpopup.Assinatura, Times.Once);
+        _mockFOperadorEMailPopup.VerifySet(x => x.FGUID = operadoremailpopup.GUID, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -194,16 +193,15 @@ public class OperadorEMailPopupWriterTests
             Id = 0,
             Operador = 1,
             Nome = "João",
-            Senha = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             SMTP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             POP3 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Autenticacao = false,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Usuario = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString(),
             PortaSmtp = 1,
             PortaPop3 = 1,
-            Assinatura = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+            Assinatura = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

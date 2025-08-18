@@ -74,6 +74,7 @@ public class ProValoresWriterTests
         var result = await _provaloresWriter.WriteAsync(provalores, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProValores.Object);
+        _mockFProValores.VerifySet(x => x.FGuid = provalores.Guid, Times.Once);
         _mockFProValores.VerifySet(x => x.FProcesso = provalores.Processo, Times.Once);
         _mockFProValores.VerifySet(x => x.FTipoValorProcesso = provalores.TipoValorProcesso, Times.Once);
         _mockFProValores.VerifySet(x => x.FIndice = provalores.Indice, Times.Once);
@@ -88,7 +89,6 @@ public class ProValoresWriterTests
         _mockFProValores.VerifySet(x => x.FValorJurosCorrigido = provalores.ValorJurosCorrigido, Times.Once);
         _mockFProValores.VerifySet(x => x.FValorFinal = provalores.ValorFinal, Times.Once);
         _mockFProValores.VerifySet(x => x.FDataUltimaCorrecao = provalores.DataUltimaCorrecao.ToString(), Times.Once);
-        _mockFProValores.VerifySet(x => x.FGuid = provalores.Guid, Times.Once);
         _mockFProValores.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -210,6 +210,7 @@ public class ProValoresWriterTests
         return new Models.ProValores
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             TipoValorProcesso = 1,
             Indice = "AAAAAAAAAAAAAAAAAA",
@@ -223,8 +224,7 @@ public class ProValoresWriterTests
             ValorMultaCorrigido = 0m,
             ValorJurosCorrigido = 0m,
             ValorFinal = 0m,
-            DataUltimaCorrecao = "24/04/1975",
-            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            DataUltimaCorrecao = "24/04/1975"
         };
     }
 #endregion

@@ -76,7 +76,6 @@ public class GraphWriterTests
         result.Should().Be(_mockFGraph.Object);
         _mockFGraph.VerifySet(x => x.FTabela = graph.Tabela, Times.Once);
         _mockFGraph.VerifySet(x => x.FTabelaId = graph.TabelaId, Times.Once);
-        _mockFGraph.VerifySet(x => x.FImagem = graph.Imagem, Times.Once);
         _mockFGraph.VerifySet(x => x.FGUID = graph.GUID, Times.Once);
         _mockFGraph.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
@@ -186,7 +185,6 @@ public class GraphWriterTests
             Id = 0,
             Tabela = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             TabelaId = 1,
-            Imagem = default,
             GUID = Guid.NewGuid().ToString()
         };
     }

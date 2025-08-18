@@ -60,7 +60,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterPontoVirtualAcessos
             {
                 Operador = 1,
-                DataHora = "04:04",
+                DataHora = "27/05/2022",
                 Tipo = 2,
                 Origem = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 WildcardChar = '%',

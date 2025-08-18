@@ -75,8 +75,8 @@ public class StatusAndamentoWriterTests
         // Assert
         result.Should().Be(_mockFStatusAndamento.Object);
         _mockFStatusAndamento.VerifySet(x => x.FNome = statusandamento.Nome, Times.Once);
-        _mockFStatusAndamento.VerifySet(x => x.FGUID = statusandamento.GUID, Times.Once);
         _mockFStatusAndamento.VerifySet(x => x.FIcone = statusandamento.Icone, Times.Once);
+        _mockFStatusAndamento.VerifySet(x => x.FGUID = statusandamento.GUID, Times.Once);
         _mockFStatusAndamento.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -184,8 +184,8 @@ public class StatusAndamentoWriterTests
         {
             Id = 0,
             Nome = "João",
-            GUID = Guid.NewGuid().ToString(),
-            Icone = 1
+            Icone = 1,
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

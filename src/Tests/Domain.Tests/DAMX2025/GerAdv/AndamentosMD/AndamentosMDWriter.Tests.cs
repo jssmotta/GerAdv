@@ -74,12 +74,12 @@ public class AndamentosMDWriterTests
         var result = await _andamentosmdWriter.WriteAsync(andamentosmd, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFAndamentosMD.Object);
-        _mockFAndamentosMD.VerifySet(x => x.FGUID = andamentosmd.GUID, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FNome = andamentosmd.Nome, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FProcesso = andamentosmd.Processo, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FAndamento = andamentosmd.Andamento, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FPathFull = andamentosmd.PathFull, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FUNC = andamentosmd.UNC, Times.Once);
+        _mockFAndamentosMD.VerifySet(x => x.FGUID = andamentosmd.GUID, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -186,12 +186,12 @@ public class AndamentosMDWriterTests
         return new Models.AndamentosMD
         {
             Id = 0,
-            GUID = Guid.NewGuid().ToString(),
             Nome = "João",
             Processo = 1,
             Andamento = 1,
             PathFull = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            UNC = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+            UNC = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

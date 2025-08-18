@@ -78,7 +78,6 @@ public class ClientesWriterTests
         _mockFClientes.VerifySet(x => x.FIcone = clientes.Icone, Times.Once);
         _mockFClientes.VerifySet(x => x.FNomeMae = clientes.NomeMae, Times.Once);
         _mockFClientes.VerifySet(x => x.FRGDataExp = clientes.RGDataExp.ToString(), Times.Once);
-        _mockFClientes.VerifySet(x => x.FGUID = clientes.GUID, Times.Once);
         _mockFClientes.VerifySet(x => x.FInativo = clientes.Inativo, Times.Once);
         _mockFClientes.VerifySet(x => x.FQuemIndicou = clientes.QuemIndicou, Times.Once);
         _mockFClientes.VerifySet(x => x.FSendEMail = clientes.SendEMail, Times.Once);
@@ -117,6 +116,7 @@ public class ClientesWriterTests
         _mockFClientes.VerifySet(x => x.FProBono = clientes.ProBono, Times.Once);
         _mockFClientes.VerifySet(x => x.FCNH = clientes.CNH, Times.Once);
         _mockFClientes.VerifySet(x => x.FPessoaContato = clientes.PessoaContato, Times.Once);
+        _mockFClientes.VerifySet(x => x.FGUID = clientes.GUID, Times.Once);
         _mockFClientes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -257,7 +257,6 @@ public class ClientesWriterTests
             Icone = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             NomeMae = "João",
             RGDataExp = "24/04/1975",
-            GUID = Guid.NewGuid().ToString(),
             Inativo = false,
             QuemIndicou = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             SendEMail = false,
@@ -295,7 +294,8 @@ public class ClientesWriterTests
             ReportECBOnly = false,
             ProBono = false,
             CNH = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            PessoaContato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            PessoaContato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            GUID = Guid.NewGuid().ToString()
         };
     }
 #endregion

@@ -24,7 +24,7 @@ try
     {
         builder.Configuration
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables(); 
     }
@@ -51,9 +51,7 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
     builder.Services.AddHttpContextAccessor();
-    builder.Services.AddScoped<IUserService, UserService>();
-
-
+    builder.Services.AddScoped<IUserService, UserService>(); 
 
     //builder.Services.AddSingleton<MenphisSI.DB.ITokenService, TokenService>();
 

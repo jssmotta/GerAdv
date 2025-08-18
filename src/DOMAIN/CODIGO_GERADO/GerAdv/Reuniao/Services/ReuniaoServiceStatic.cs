@@ -137,31 +137,31 @@ public partial class ReuniaoService
         cWhere.Append(filtro.ATA.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.ATA}]  {DevourerConsts.MsiCollate} like @{(DBReuniaoDicInfo.ATA)}");
         if (!(filtro.HoraInicial.IsEmptyDX()) && filtro.HoraInicial_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.HoraInicial.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraInicial}], 103) = CONVERT(DATE, @{(DBReuniaoDicInfo.HoraInicial)}, 103)");
+            cWhere.Append(filtro.HoraInicial.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraInicial}], 'HH:mm') = FORMAT(@{(DBReuniaoDicInfo.HoraInicial)}, 'HH:mm')");
         }
         else if (!(filtro.HoraInicial.IsEmptyDX()) && !(filtro.HoraInicial_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.HoraInicial} BETWEEN @{(DBReuniaoDicInfo.HoraInicial)} AND @{(DBReuniaoDicInfo.HoraInicial)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraInicial}], 'HH:mm') BETWEEN FORMAT(@{(DBReuniaoDicInfo.HoraInicial)}, 'HH:mm') AND FORMAT(@{(DBReuniaoDicInfo.HoraInicial)}_end, 'HH:mm')");
         }
 
         cWhere.Append(filtro.HoraFinal.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraFinal}]  {DevourerConsts.MsiCollate} like @{(DBReuniaoDicInfo.HoraFinal)}");
         cWhere.Append(filtro.Externa == int.MinValue ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.Externa}] = @{(DBReuniaoDicInfo.Externa)}");
         if (!(filtro.HoraSaida.IsEmptyDX()) && filtro.HoraSaida_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.HoraSaida.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraSaida}], 103) = CONVERT(DATE, @{(DBReuniaoDicInfo.HoraSaida)}, 103)");
+            cWhere.Append(filtro.HoraSaida.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraSaida}], 'HH:mm') = FORMAT(@{(DBReuniaoDicInfo.HoraSaida)}, 'HH:mm')");
         }
         else if (!(filtro.HoraSaida.IsEmptyDX()) && !(filtro.HoraSaida_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.HoraSaida} BETWEEN @{(DBReuniaoDicInfo.HoraSaida)} AND @{(DBReuniaoDicInfo.HoraSaida)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraSaida}], 'HH:mm') BETWEEN FORMAT(@{(DBReuniaoDicInfo.HoraSaida)}, 'HH:mm') AND FORMAT(@{(DBReuniaoDicInfo.HoraSaida)}_end, 'HH:mm')");
         }
 
         if (!(filtro.HoraRetorno.IsEmptyDX()) && filtro.HoraRetorno_end.IsEmptyDX())
         {
-            cWhere.Append(filtro.HoraRetorno.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"CONVERT(DATE,[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraRetorno}], 103) = CONVERT(DATE, @{(DBReuniaoDicInfo.HoraRetorno)}, 103)");
+            cWhere.Append(filtro.HoraRetorno.IsEmptyDX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraRetorno}], 'HH:mm') = FORMAT(@{(DBReuniaoDicInfo.HoraRetorno)}, 'HH:mm')");
         }
         else if (!(filtro.HoraRetorno.IsEmptyDX()) && !(filtro.HoraRetorno_end.IsEmptyDX()))
         {
-            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].{DBReuniaoDicInfo.HoraRetorno} BETWEEN @{(DBReuniaoDicInfo.HoraRetorno)} AND @{(DBReuniaoDicInfo.HoraRetorno)}_end");
+            cWhere.Append((cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"FORMAT([{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.HoraRetorno}], 'HH:mm') BETWEEN FORMAT(@{(DBReuniaoDicInfo.HoraRetorno)}, 'HH:mm') AND FORMAT(@{(DBReuniaoDicInfo.HoraRetorno)}_end, 'HH:mm')");
         }
 
         cWhere.Append(filtro.PrincipaisDecisoes.IsEmptyX() ? string.Empty : (cWhere.Length == 0 ? string.Empty : filtro.LogicalOperator) + $"[{DBReuniaoDicInfo.PTabelaNome}].[{DBReuniaoDicInfo.PrincipaisDecisoes}]  {DevourerConsts.MsiCollate} like @{(DBReuniaoDicInfo.PrincipaisDecisoes)}");

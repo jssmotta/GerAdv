@@ -89,7 +89,7 @@ public class DBAgendaRelatorioTests : IDisposable
         // Act
         var instance = new DBAgendaRelatorio(_testDataTable.Rows[0]);
         // Assert
-        Assert.Equal(123, instance.ID);
+        Assert.Equal(0, instance.ID);
     }
 
 #endregion

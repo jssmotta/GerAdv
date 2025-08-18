@@ -68,6 +68,12 @@ public partial class ForoController(IForoService foroService) : ControllerBase
     [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
     [Authorize]
+    [ProducesResponseType(typeof(ForoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ForoResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddAndUpdate([FromBody] Models.Foro regForo, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
@@ -90,13 +96,14 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         catch (Exception ex)
         {
             _logger.Error(ex, "Foro: AddAndUpdate failed with exception for uri = {0}", uri);
-            return StatusCode(500, new { success = false, data = "", message = ex.Message });
+            return StatusCode(500, new Error500 { success = false, data = "", message = ex.Message });
         }
     }
 
     [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [HttpDelete]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("Foro: Delete called with id = {0}, {2}", id, uri);
@@ -114,7 +121,7 @@ public partial class ForoController(IForoService foroService) : ControllerBase
         catch (Exception ex)
         {
             _logger.Error(ex, "Foro: Delete failed with exception for id = {0}, {1}", id, uri);
-            return Conflict(new { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
+            return Conflict(new Error500 { success = false, data = "", message = "Não é possível excluir o registro porque ele está sendo referenciado/em uso em outra tabela." });
         }
     }
 
