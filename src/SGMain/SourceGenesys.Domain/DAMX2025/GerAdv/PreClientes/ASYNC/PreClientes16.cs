@@ -134,7 +134,7 @@ public partial class DBPreClientes
 
 #if (!NOTSTORED_PreClientes)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFInativo || pFldFQuemIndicou || pFldFNome || pFldFAdv || pFldFIDRep || pFldFJuridica || pFldFNomeFantasia || pFldFClass || pFldFTipo || pFldFDtNasc || pFldFInscEst || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCNPJ || pFldFCPF || pFldFRG || pFldFTipoCaptacao || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFax || pFldFFone || pFldFData || pFldFHomePage || pFldFEMail || pFldFAssistido || pFldFAssRG || pFldFAssCPF || pFldFAssEndereco || pFldFCNH;
+    private bool HasAnyFieldChanged() => pFldFInativo || pFldFQuemIndicou || pFldFNome || pFldFAdv || pFldFIDRep || pFldFJuridica || pFldFNomeFantasia || pFldFClass || pFldFTipo || pFldFDtNasc || pFldFInscEst || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCNPJ || pFldFCPF || pFldFRG || pFldFTipoCaptacao || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFax || pFldFFone || pFldFData || pFldFHomePage || pFldFEMail || pFldFAssistido || pFldFAssRG || pFldFAssEndereco || pFldFCNH || pFldFAssCPF;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFInativo || updateTool.Insert)
@@ -197,12 +197,12 @@ public partial class DBPreClientes
             updateTool.Fields(DBPreClientesDicInfo.Assistido, m_FAssistido, ETiposCampos.FString);
         if (pFldFAssRG)
             updateTool.Fields(DBPreClientesDicInfo.AssRG, m_FAssRG, ETiposCampos.FString);
-        if (pFldFAssCPF)
-            updateTool.Fields(DBPreClientesDicInfo.AssCPF, m_FAssCPF, ETiposCampos.FString);
         if (pFldFAssEndereco)
             updateTool.Fields(DBPreClientesDicInfo.AssEndereco, m_FAssEndereco, ETiposCampos.FString);
         if (pFldFCNH)
             updateTool.Fields(DBPreClientesDicInfo.CNH, m_FCNH, ETiposCampos.FString);
+        if (pFldFAssCPF)
+            updateTool.Fields(DBPreClientesDicInfo.AssCPF, m_FAssCPF, ETiposCampos.FString);
     }
 
 #endif

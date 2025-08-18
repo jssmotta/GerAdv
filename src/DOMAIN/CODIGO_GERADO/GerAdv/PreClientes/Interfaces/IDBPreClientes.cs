@@ -35,7 +35,7 @@ public partial interface IDBPreClientes
     public string? FEMail { get; set; }
     public string? FAssistido { get; set; }
     public string? FAssRG { get; set; }
-    public string? FAssCPF { get; set; }
     public string? FAssEndereco { get; set; }
     public string? FCNH { get; set; }
+    public string? FAssCPF { get; set; }
 }

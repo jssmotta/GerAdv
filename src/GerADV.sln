@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGenesys.Domain", "SGM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGenesys.Domain.Tests", "Tests\SourceGenesys.Domain.Tests\SourceGenesys.Domain.Tests.csproj", "{1DCE1DDE-1E90-31EA-D2F3-259EAA640176}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastrucuture.Tests", "Tests\Infrastructure.Tests\Infrastrucuture.Tests.csproj", "{DDBBAEE6-92D3-5AFA-E2B5-81105EB9A04C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Tests", "Tests\Infrastructure.Tests\Infrastructure.Tests.csproj", "{DDBBAEE6-92D3-5AFA-E2B5-81105EB9A04C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenphisSI.GerEntityTools.Tests", "..\..\GerEntity\src\Tests\MenphisSI.GerEntityTools.Tests\MenphisSI.GerEntityTools.Tests.csproj", "{76DC8C4D-F67A-3755-FC15-5EA1C46FF641}"
 EndProject

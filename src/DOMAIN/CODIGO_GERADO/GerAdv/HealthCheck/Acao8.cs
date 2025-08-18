@@ -8,6 +8,9 @@ dotnet add package AspNetCore.HealthChecks.UI.InMemory.Storage
 dotnet add package AspNetCore.HealthChecks.UI.Client
  
 */
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 
 namespace MenphisSI.GerAdv.HealthCheck;
