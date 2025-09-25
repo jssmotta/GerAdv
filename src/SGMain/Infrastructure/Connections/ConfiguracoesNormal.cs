@@ -31,7 +31,7 @@ public static partial class Configuracoes
                 return cachedConnection;
             }
 
-            var dbRec = EntityApi.Read(uri);
+            var dbRec = new EntityApi().Read(uri);
             if (dbRec is null)
             {
                 throw new InvalidEnumArgumentException("dbRec is null");
@@ -68,7 +68,7 @@ public static partial class Configuracoes
                 return cachedConnection;
             }
 
-            var dbRec = EntityApi.Read(uri);
+            var dbRec = new EntityApi().Read(uri);
             if (dbRec is null)
             {
                 throw new InvalidEnumArgumentException("dbRec is null");
