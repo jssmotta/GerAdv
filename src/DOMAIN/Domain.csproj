@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Platforms>AnyCPU;x86</Platforms>
-	  <LangVersion>13.0</LangVersion>
+	  <LangVersion>14.0</LangVersion>
 	  <Configurations>Debug;Release;TESTE_PROD;Development</Configurations>
   </PropertyGroup>
 

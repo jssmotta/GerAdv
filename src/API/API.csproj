@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Platforms>AnyCPU;x86</Platforms>
 		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-		<LangVersion>13.0</LangVersion>
+		<LangVersion>14.0</LangVersion>
 		<Configurations>Debug;Release;TESTE_PROD;Development</Configurations>
 	</PropertyGroup>
 
