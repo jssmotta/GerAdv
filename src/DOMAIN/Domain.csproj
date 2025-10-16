@@ -11,6 +11,7 @@
   </PropertyGroup>
 
 <ItemGroup>
+<PackageReference Include="KubernetesClient" Version="18.0.5" />
 <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
 <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
 <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" />
@@ -74,11 +75,12 @@
 		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />		
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />		
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NLog" Version="6.0.3" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />		
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="NLog" Version="6.0.5" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
 	</ItemGroup>
 
