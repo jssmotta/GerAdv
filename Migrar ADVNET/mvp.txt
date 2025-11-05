@@ -1,0 +1,12 @@
+/Sistema/AndamentoINC.aspx
+/Sistema/Andamentos.aspx 
+/Sistema/Audiencias.aspx
+/Sistema/CompromissoINC.aspx
+/Sistema/FINDespesasPRO.aspx
+/Sistema/FINDespesasREL.aspx
+/Sistema/InBox4.aspx
+/Sistema/OponenteINC.aspx
+/Sistema/PesquisaProcessos.aspx
+/Sistema/PesquisaProcessosResultado.aspx
+/Sistema/RelCompromissoCAD.aspx
+/Sistema/RelCompromissos.aspx
