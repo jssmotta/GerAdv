@@ -1,10 +1,10 @@
+using Domain.BaseCommon.Helpers;
 using MenphisSI;
-using MenphisSI.DB;
 using MenphisSI.GerAdv.HealthCheck;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using NLog.Web;
 using System.Globalization;
 using System.Security.Authentication;
@@ -173,20 +173,20 @@ try
             In = ParameterLocation.Header,
             Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
         });
-        swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+        //swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+        //    {
+        //        {
+        //            new OpenApiSecurityScheme
+        //            {
+        //                Reference = new OpenApiReference
+        //                {
+        //                    Type = ReferenceType.SecurityScheme,
+        //                    Id = "Bearer"
+        //                }
+        //            },
+        //            Array.Empty<string>()
+        //        }
+        //    });
     });
 
 
@@ -295,6 +295,12 @@ alter table PreClientes drop column cliAssCPF2;";
         ConfiguracoesDBT.ExecuteSqlCreate(commandText, oCnn);
     }
     */
+
+
+    //using var oCnn = Configuracoes.GetConnectionByUri("SIEBRA");
+
+    //var notificationService = new EnvioNotificacoes();
+    //int sentCount = await notificationService.EnviarEmailsParaAdvogados(E_TIPO_ENVIO.DIA, "SIEBRA", oCnn);
     app.Run();
 }
 catch (Exception exception)

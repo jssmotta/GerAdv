@@ -168,7 +168,7 @@ ORDER BY vqaData;";
 
         var reader = new OperadorReader(new FOperadorFactory());
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
-        var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
+       // var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
         var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
       
         var servicoEmail = new SendEmailApi();
@@ -184,7 +184,7 @@ ORDER BY vqaData;";
 
             var cNome = operador.CadID == 1 ?
                      (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+                    :  "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -211,7 +211,7 @@ ORDER BY vqaData;";
             if (count == 0)
             {
 #if (!DEBUG)
-                if (uri.ToUpper().Equals("IBRADV"))
+                if (uri.ToUpper().Equals("SIEBRA"))
 #endif
                 {
                     var email2 = new MenphisSI.Api.Models.SendEmail
