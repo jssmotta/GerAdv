@@ -45,14 +45,17 @@ public partial class AppSettingsHealthCheck
     {
         builder.Services.AddHealthChecksUI(options =>
         { 
-            options.SetMinimumSecondsBetweenFailureNotifications(60);
-            // As configurações são feitas no AppSettings
+            // Aumentar intervalo entre notificações de falha para reduzir overhead
+            options.SetMinimumSecondsBetweenFailureNotifications(300); // 5 minutos ao invés de 60 segundos
+            
 #if (DEBUG)
-            options.SetEvaluationTimeInSeconds(15);
-            options.MaximumHistoryEntriesPerEndpoint(60);
+            // Em desenvolvimento, avaliar a cada 30 segundos
+            options.SetEvaluationTimeInSeconds(30);  // Aumentado de 15 para 30
+            options.MaximumHistoryEntriesPerEndpoint(30); // Reduzido de 60 para 30
 #else
-            options.SetEvaluationTimeInSeconds(60*10);
-            options.MaximumHistoryEntriesPerEndpoint(60);
+            // Em produção, avaliar a cada 30 minutos ao invés de 10
+            options.SetEvaluationTimeInSeconds(60*30); // 30 minutos
+            options.MaximumHistoryEntriesPerEndpoint(24); // Reduzido de 60 para 24 (últimas 12 horas com intervalo de 30 min)
 #endif
         }).AddInMemoryStorage();
     }
@@ -79,8 +82,5 @@ public partial class AppSettingsHealthCheck
             context.Response.ContentType = "application/json";
             await UIResponseWriter.WriteHealthCheckUIResponse(context, report);
         });
-
-
-
     }
 }
