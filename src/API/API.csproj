@@ -207,9 +207,12 @@
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\Newtonsoft.Json.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\pl\System.CommandLine.resources.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\pt-BR\System.CommandLine.resources.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\ru\System.CommandLine.resources.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\System.Collections.Immutable.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\System.CommandLine.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\System.Text.Encodings.Web.dll" />
+	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\System.Text.Json.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\tr\System.CommandLine.resources.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\zh-Hans\System.CommandLine.resources.dll" />
 	  <Content Remove="C:\Users\jeffs\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\4.14.0\contentFiles\any\any\BuildHost-netcore\zh-Hant\System.CommandLine.resources.dll" />
@@ -243,6 +246,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.0" />
 		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
