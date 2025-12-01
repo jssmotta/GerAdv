@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Platforms>AnyCPU;x86</Platforms>
 	  <LangVersion>14.0</LangVersion>
-	  <Configurations>Debug;Release;TESTE_PROD;Development</Configurations>
+	  <Configurations>Debug;Release;DEBUG_API_URL;Development</Configurations>
   </PropertyGroup>
 
 <ItemGroup>
@@ -26,7 +26,7 @@
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TESTE_PROD|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEBUG_API_URL|AnyCPU'">
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
@@ -38,7 +38,7 @@
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TESTE_PROD|x86'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEBUG_API_URL|x86'">
     <DefineConstants>$(DefineConstants);shadowsDisabled</DefineConstants>
   </PropertyGroup>
 

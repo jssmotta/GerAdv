@@ -7,7 +7,7 @@
 		<Platforms>AnyCPU;x86</Platforms>
 		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
 		<LangVersion>14.0</LangVersion>
-		<Configurations>Debug;Release;TESTE_PROD;Development</Configurations>
+		<Configurations>Debug;Release;DEBUG_API_URL;Development</Configurations>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,11 +19,11 @@
 	</PropertyGroup>
 <ItemGroup>
 <PackageReference Include="KubernetesClient" Version="18.0.5" />
-<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
-<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+<PackageReference Include="Microsoft.Build.Tasks.Core" Version="18.0.2" />
+<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
 </ItemGroup>
 
 	<ItemGroup>
@@ -229,11 +229,11 @@
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
 
 
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0">
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
  
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -242,9 +242,9 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.0" />
 		<PackageReference Include="NLog" Version="6.0.6" />
-		<PackageReference Include="NLog.Web.AspNetCore" Version="6.0.6" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.0" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="6.1.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.1" />
 		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
 	</ItemGroup>
