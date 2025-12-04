@@ -16,8 +16,8 @@ public static partial class DBProProcuradoresDicInfo
     public const string Data = "papData"; // LOCALIZACAO 170523
     public const string Substabelecimento = "papSubstabelecimento"; // LOCALIZACAO 170523
     public const string Procuracao = "papProcuracao"; // LOCALIZACAO 170523
-    public const string GUID = "papGUID"; // LOCALIZACAO 170523
     public const string Bold = "papBold"; // LOCALIZACAO 170523
+    public const string Guid = "papGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "papQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "papDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "papQuemAtu"; // LOCALIZACAO 170523
@@ -43,62 +43,19 @@ public static partial class DBProProcuradoresDicInfo
 
     public const string PTabelaNome = "ProProcuradores";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PapAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, "Advogado", "Advogado", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false)
-    {
-        Prefixo = "pap"
-    }; // DBI 11 
-    public static DBInfoSystem PapNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapSubstabelecimento => new(0, PTabelaNome, CampoCodigo, Substabelecimento, "Substabelecimento", "Substabelecimento", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapProcuracao => new(0, PTabelaNome, CampoCodigo, Procuracao, "Procuracao", "Procuracao", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pap"
-    }; // DBI 11 
-    public static DBInfoSystem PapDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pap"
-    }; // DBI 11 
-    public static DBInfoSystem PapDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pap"
-    };
-    public static DBInfoSystem PapVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pap"
-    };
+    public static DBInfoSystem PapAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, Advogado, Advogado, EDataTypeSystemInfo.SystemInfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false, prefixo: "pap"); // DBI 11 
+    public static DBInfoSystem PapNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "pap");
+    public static DBInfoSystem PapProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "pap");
+    public static DBInfoSystem PapData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "pap");
+    public static DBInfoSystem PapSubstabelecimento => new(0, PTabelaNome, CampoCodigo, Substabelecimento, Substabelecimento, Substabelecimento, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "pap", isRequired: true);
+    public static DBInfoSystem PapProcuracao => new(0, PTabelaNome, CampoCodigo, Procuracao, Procuracao, Procuracao, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "pap", isRequired: true);
+    public static DBInfoSystem PapBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "pap", isRequired: true);
+    public static DBInfoSystem PapGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pap");
+    public static DBInfoSystem PapQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pap"); // DBI 11 
+    public static DBInfoSystem PapDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pap");
+    public static DBInfoSystem PapQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pap"); // DBI 11 
+    public static DBInfoSystem PapDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pap");
+    public static DBInfoSystem PapVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pap", isRequired: true);
 
 #endregion
     [Serializable]

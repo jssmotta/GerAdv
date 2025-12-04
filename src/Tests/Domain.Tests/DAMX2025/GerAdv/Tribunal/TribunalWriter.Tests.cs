@@ -81,7 +81,7 @@ public class TribunalWriterTests
         _mockFTribunal.VerifySet(x => x.FInstancia = tribunal.Instancia, Times.Once);
         _mockFTribunal.VerifySet(x => x.FSigla = tribunal.Sigla, Times.Once);
         _mockFTribunal.VerifySet(x => x.FWeb = tribunal.Web, Times.Once);
-        _mockFTribunal.VerifySet(x => x.FGUID = tribunal.GUID, Times.Once);
+        _mockFTribunal.VerifySet(x => x.FGuid = tribunal.Guid, Times.Once);
         _mockFTribunal.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -125,7 +125,7 @@ public class TribunalWriterTests
         var operadorId = 456;
         _mockTribunalFactory.Setup(x => x.DeleteAsync(operadorId, tribunalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tribunalWriter.Delete(tribunalResponse, operadorId, _mockConnection.Object);
+        await _tribunalWriter.DeleteAsync(tribunalResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTribunalFactory.Verify(x => x.DeleteAsync(operadorId, tribunalResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -141,7 +141,7 @@ public class TribunalWriterTests
         var operadorId = 111;
         _mockTribunalFactory.Setup(x => x.DeleteAsync(operadorId, tribunalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tribunalWriter.Delete(tribunalResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tribunalWriter.DeleteAsync(tribunalResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -158,7 +158,7 @@ public class TribunalWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTribunalFactory.Setup(x => x.DeleteAsync(operadorId, tribunalResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tribunalWriter.Delete(tribunalResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tribunalWriter.DeleteAsync(tribunalResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -195,7 +195,7 @@ public class TribunalWriterTests
             Instancia = 1,
             Sigla = "AAAAAAAAAAAAAAAAAA",
             Web = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

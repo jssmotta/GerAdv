@@ -9,54 +9,61 @@ import { ProProcuradoresService } from '../../Services/ProProcuradores.service';
 import { ProProcuradoresApi } from '../../Apis/ApiProProcuradores';
 import ProProcuradoresWindow from './ProProcuradoresWindow';
 import {ProProcuradoresEmpty } from '@/app/GerAdv_TS/Models/ProProcuradores';
-interface ProProcuradoresWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ProProcuradoresWindowId: React.FC<ProProcuradoresWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const proprocuradoresService = useMemo(() => {
-  return new ProProcuradoresService(
-  new ProProcuradoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IProProcuradores | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ProProcuradoresEmpty() as IProProcuradores);
-      return;
-    }
-    if (id) {
-      const response = await proprocuradoresService.fetchProProcuradoresById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ProProcuradoresWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedProProcuradores={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ProProcuradoresWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ProProcuradoresWindowId: React.FC<ProProcuradoresWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const proprocuradoresService = useMemo(() => {
+        return new ProProcuradoresService(
+            new ProProcuradoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IProProcuradores | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ProProcuradoresEmpty() as IProProcuradores);
+                return;
+            }
+            if (id) {
+                 const response = await proprocuradoresService.fetchProProcuradoresById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ProProcuradoresWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedProProcuradores={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ProProcuradoresWindowId;

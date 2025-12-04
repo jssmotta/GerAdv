@@ -172,6 +172,9 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// HomePage - cliHomePage - tamanho máximo: 60 
         /// </summary>
@@ -213,6 +216,24 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("asscpf")]
         public string AssCPF { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - cliEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - cliAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - cliBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
     }
 }
 
@@ -383,6 +404,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// HomePage - cliHomePage - tamanho máximo: 60 
         /// </summary>
@@ -424,6 +448,24 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("asscpf")]
         public string AssCPF { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - cliEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - cliAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - cliBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

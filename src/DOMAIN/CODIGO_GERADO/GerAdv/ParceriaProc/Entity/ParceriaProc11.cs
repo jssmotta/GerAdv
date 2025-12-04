@@ -23,12 +23,6 @@ public partial class FParceriaProcFactory : IFParceriaProcFactory, IDisposable
         return FParceriaProc.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FParceriaProc> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FParceriaProc().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FParceriaProc> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FParceriaProcFactory : IFParceriaProcFactory, IDisposable
         return FParceriaProc.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FParceriaProc> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FParceriaProc().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FParceriaProcFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

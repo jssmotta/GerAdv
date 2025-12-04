@@ -44,12 +44,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int GUTGrupo { get; set; }
 
         /// <summary>
-        /// GUID - agtGUID - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Concluido - agtConcluido  
         /// </summary>
         [JsonPropertyName("concluido")]
@@ -75,6 +69,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("minutospararealizar")]
         public int MinutosParaRealizar { get; set; }
+
+        /// <summary>
+        /// GUID - agtGuid - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -117,12 +117,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int GUTGrupo { get; set; }
 
         /// <summary>
-        /// GUID - agtGUID - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Concluido - agtConcluido  
         /// </summary>
         [JsonPropertyName("concluido")]
@@ -148,6 +142,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("minutospararealizar")]
         public int MinutosParaRealizar { get; set; }
+
+        /// <summary>
+        /// GUID - agtGuid - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomegutperiodicidade")]
         public string NomeGUTPeriodicidade { get; set; } = string.Empty;

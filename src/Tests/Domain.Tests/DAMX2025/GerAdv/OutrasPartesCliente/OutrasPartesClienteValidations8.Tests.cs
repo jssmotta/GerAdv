@@ -83,7 +83,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -91,7 +91,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync(new List<OutrasPartesClienteResponseAll> { existingOutrasPartesCliente });
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -176,7 +176,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         };
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync(new List<OutrasPartesClienteResponseAll> { existingOutrasPartesCliente });
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -198,7 +198,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         };
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync(new List<OutrasPartesClienteResponseAll> { existingOutrasPartesCliente });
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
@@ -249,7 +249,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync(new List<OutrasPartesClienteResponseAll> { existingOutrasPartesCliente });
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -272,7 +272,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         };
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync(new List<OutrasPartesClienteResponseAll> { existingOutrasPartesCliente });
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -293,7 +293,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         };
         _mockOutrasPartesClienteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOutrasPartesCliente>(), It.IsAny<string>())).ReturnsAsync(new List<OutrasPartesClienteResponseAll> { existingOutrasPartesCliente });
         // Setup other mocks but don't override the OutrasPartesClientes service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
@@ -480,7 +480,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         // Arrange
         var outraspartescliente = CreateValidOutrasPartesCliente();
         outraspartescliente.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -497,7 +497,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -514,7 +514,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -534,7 +534,7 @@ public class OutrasPartesClienteValidationTests : IDisposable
         var result = await _validation.ValidateReg(outraspartescliente, _mockOutrasPartesClienteService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockCidadeReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockCidadeReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

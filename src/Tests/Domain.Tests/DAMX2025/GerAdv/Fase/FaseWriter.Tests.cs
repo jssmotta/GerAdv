@@ -74,10 +74,10 @@ public class FaseWriterTests
         var result = await _faseWriter.WriteAsync(fase, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFFase.Object);
+        _mockFFase.VerifySet(x => x.FGuid = fase.Guid, Times.Once);
         _mockFFase.VerifySet(x => x.FDescricao = fase.Descricao, Times.Once);
         _mockFFase.VerifySet(x => x.FJustica = fase.Justica, Times.Once);
         _mockFFase.VerifySet(x => x.FArea = fase.Area, Times.Once);
-        _mockFFase.VerifySet(x => x.FGUID = fase.GUID, Times.Once);
         _mockFFase.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class FaseWriterTests
         var operadorId = 456;
         _mockFaseFactory.Setup(x => x.DeleteAsync(operadorId, faseResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _faseWriter.Delete(faseResponse, operadorId, _mockConnection.Object);
+        await _faseWriter.DeleteAsync(faseResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockFaseFactory.Verify(x => x.DeleteAsync(operadorId, faseResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class FaseWriterTests
         var operadorId = 111;
         _mockFaseFactory.Setup(x => x.DeleteAsync(operadorId, faseResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _faseWriter.Delete(faseResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _faseWriter.DeleteAsync(faseResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class FaseWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockFaseFactory.Setup(x => x.DeleteAsync(operadorId, faseResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _faseWriter.Delete(faseResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _faseWriter.DeleteAsync(faseResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class FaseWriterTests
         return new Models.Fase
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Justica = 1,
-            Area = 1,
-            GUID = Guid.NewGuid().ToString()
+            Area = 1
         };
     }
 #endregion

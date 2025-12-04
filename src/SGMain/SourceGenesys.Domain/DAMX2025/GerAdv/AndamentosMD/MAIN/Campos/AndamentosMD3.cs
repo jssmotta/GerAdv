@@ -7,43 +7,20 @@ public partial class DBAndamentosMD
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFGUID, pFldFNome, pFldFProcesso, pFldFAndamento, pFldFPathFull, pFldFUNC;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FProcesso, m_FAndamento;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FGUID, m_FNome, m_FPathFull, m_FUNC;
+    private protected bool pFldFNome, pFldFProcesso, pFldFAndamento, pFldFPathFull, pFldFUNC, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela AndamentosMD deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela AndamentosMD deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela 'AndamentosMD' deve ter no máximo 255 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -51,24 +28,24 @@ public partial class DBAndamentosMD
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     public virtual int FAndamento
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAndamento;
+        get => field;
         set
         {
-            pFldFAndamento = pFldFAndamento || value != m_FAndamento;
+            pFldFAndamento = pFldFAndamento || value != field;
             if (pFldFAndamento)
-                m_FAndamento = value;
+                field = value;
         }
     }
 
@@ -76,12 +53,12 @@ public partial class DBAndamentosMD
     public virtual string? FPathFull
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPathFull ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFPathFull = pFldFPathFull || !(m_FPathFull ?? string.Empty).Equals(value);
+            pFldFPathFull = pFldFPathFull || !(field ?? string.Empty).Equals(value);
             if (pFldFPathFull)
-                m_FPathFull = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -89,24 +66,41 @@ public partial class DBAndamentosMD
     public virtual string? FUNC
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FUNC ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFUNC = pFldFUNC || !(m_FUNC ?? string.Empty).Equals(value);
+            pFldFUNC = pFldFUNC || !(field ?? string.Empty).Equals(value);
             if (pFldFUNC)
-                m_FUNC = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'AndamentosMD' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -116,9 +110,13 @@ public partial class DBAndamentosMD
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

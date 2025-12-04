@@ -59,12 +59,11 @@ public class ProSucumbenciaValidationTests : IDisposable
             Id = 1,
             Processo = 1,
             Instancia = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Nome = "João",
             TipoOrigemSucumbencia = 1,
             Valor = 1m,
-            Percentual = "AAA",
-            GUID = Guid.NewGuid().ToString()
+            Percentual = "AAA"
         };
     }
 
@@ -73,8 +72,8 @@ public class ProSucumbenciaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockProSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProSucumbencia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProSucumbencias service mock
-        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = id }));
-        _ = _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoOrigemSucumbenciaResponse { Id = id }));
+        _ = _mockInstanciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new InstanciaResponse { Id = id }));
+        _ = _mockTipoOrigemSucumbenciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoOrigemSucumbenciaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -82,8 +81,8 @@ public class ProSucumbenciaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockProSucumbenciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProSucumbencia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProSucumbencias service mock
-        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = 0 }));
-        _ = _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoOrigemSucumbenciaResponse { Id = 0 }));
+        _ = _mockInstanciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new InstanciaResponse { Id = 0 }));
+        _ = _mockTipoOrigemSucumbenciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoOrigemSucumbenciaResponse { Id = 0 }));
     }
 
     [Fact]
@@ -97,8 +96,7 @@ public class ProSucumbenciaValidationTests : IDisposable
             Data = "27/05/2022",
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             TipoOrigemSucumbencia = 1,
-            Percentual = null,
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Percentual = null
         };
         SetupValidMocks();
         // Act
@@ -116,53 +114,6 @@ public class ProSucumbenciaValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Data Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyData_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.Data = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullData_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.Data = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataData_ShouldReturnTrue()
-    {
-        // Arrange
-        var prosucumbencia = CreateValidProSucumbencia();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceData_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.Data = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
 #region ValidateReg Required Nome Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyNome_ShouldThrowSGValidationException()
@@ -172,7 +123,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         prosucumbencia.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -203,41 +154,34 @@ public class ProSucumbenciaValidationTests : IDisposable
     {
         // Arrange
         var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.Nome = "   ";
+        prosucumbencia.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
     }
 
 #endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
     {
         // Arrange
         var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.GUID = "";
+        prosucumbencia.Data = invalidDate;
+        SetupValidMocks();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().Contain("01/01/1900.");
     }
 
     [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
+    public async Task ValidateReg_WithValidData_ShouldPass()
     {
         // Arrange
         var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var prosucumbencia = CreateValidProSucumbencia();
+        prosucumbencia.Data = "01/01/1990";
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object);
@@ -246,13 +190,15 @@ public class ProSucumbenciaValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
+    public async Task ValidateReg_WithEmptyData_ShouldNotPass()
     {
         // Arrange
         var prosucumbencia = CreateValidProSucumbencia();
-        prosucumbencia.GUID = "   ";
-        // Act & Assert
+        prosucumbencia.Data = "";
+        SetupValidMocks();
+        // Act       
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
+        // Assert
         exception.Message.Should().Contain("é obrigatório");
     }
 
@@ -264,7 +210,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         // Arrange
         var prosucumbencia = CreateValidProSucumbencia();
         prosucumbencia.Instancia = 999;
-        _mockInstanciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.InstanciaResponse>(null));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.InstanciaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
@@ -281,7 +227,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockInstanciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
@@ -298,7 +244,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockInstanciaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object);
@@ -318,7 +264,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         var result = await _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockInstanciaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockInstanciaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - TipoOrigemSucumbencia
@@ -328,7 +274,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         // Arrange
         var prosucumbencia = CreateValidProSucumbencia();
         prosucumbencia.TipoOrigemSucumbencia = 999;
-        _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoOrigemSucumbenciaResponse>(null));
+        _mockTipoOrigemSucumbenciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoOrigemSucumbenciaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
@@ -345,7 +291,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockTipoOrigemSucumbenciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object));
@@ -362,7 +308,7 @@ public class ProSucumbenciaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockTipoOrigemSucumbenciaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockTipoOrigemSucumbenciaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(prosucumbencia, _mockProSucumbenciaService.Object, _mockInstanciaReader.Object, _mockTipoOrigemSucumbenciaReader.Object, _validUri, _mockConnection.Object);

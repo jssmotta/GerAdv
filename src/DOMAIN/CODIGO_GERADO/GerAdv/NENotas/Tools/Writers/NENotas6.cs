@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface INENotasWriter
 {
     Task<FNENotas> WriteAsync(Models.NENotas nenotas, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(NENotasResponse nenotas, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class NENotasWriter(IFNENotasFactory nenotasFactory) : INENotasWriter
 {
     private readonly IFNENotasFactory _nenotasFactory = nenotasFactory ?? throw new ArgumentNullException(nameof(nenotasFactory));
-    public virtual async Task Delete(NENotasResponse nenotas, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(NENotasResponse nenotas, int operadorId, MsiSqlConnection? oCnn)
     {
         await _nenotasFactory.DeleteAsync(operadorId, nenotas.Id, oCnn);
     }
@@ -32,7 +32,11 @@ public class NENotasWriter(IFNENotasFactory nenotasFactory) : INENotasWriter
         dbRec.FRevisada = nenotas.Revisada;
         dbRec.FProcesso = nenotas.Processo;
         dbRec.FPalavraChave = nenotas.PalavraChave;
-        dbRec.FData = nenotas.Data;
+        if (nenotas.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(nenotas.Data));
+        }
+
         dbRec.FNotaPublicada = nenotas.NotaPublicada;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);

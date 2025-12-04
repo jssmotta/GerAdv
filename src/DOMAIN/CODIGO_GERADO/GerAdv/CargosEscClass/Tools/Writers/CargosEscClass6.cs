@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ICargosEscClassWriter
 {
     Task<FCargosEscClass> WriteAsync(Models.CargosEscClass cargosescclass, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class CargosEscClassWriter(IFCargosEscClassFactory cargosescclassFactory) : ICargosEscClassWriter
 {
     private readonly IFCargosEscClassFactory _cargosescclassFactory = cargosescclassFactory ?? throw new ArgumentNullException(nameof(cargosescclassFactory));
-    public virtual async Task Delete(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(CargosEscClassResponse cargosescclass, int operadorId, MsiSqlConnection? oCnn)
     {
         await _cargosescclassFactory.DeleteAsync(operadorId, cargosescclass.Id, oCnn);
     }
@@ -24,7 +24,7 @@ public class CargosEscClassWriter(IFCargosEscClassFactory cargosescclassFactory)
     {
         using var dbRec = await (cargosescclass.Id.IsEmptyIDNumber() ? _cargosescclassFactory.CreateAsync() : _cargosescclassFactory.CreateFromIdAsync(cargosescclass.Id, oCnn));
         dbRec.FNome = cargosescclass.Nome;
-        dbRec.FGUID = cargosescclass.GUID;
+        dbRec.FGuid = cargosescclass.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

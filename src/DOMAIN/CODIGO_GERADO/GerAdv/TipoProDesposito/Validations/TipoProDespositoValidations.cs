@@ -37,6 +37,8 @@ public class TipoProDespositoValidation : ITipoProDespositoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

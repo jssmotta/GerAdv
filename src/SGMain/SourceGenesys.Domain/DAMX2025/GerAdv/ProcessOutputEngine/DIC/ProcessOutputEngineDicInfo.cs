@@ -17,12 +17,12 @@ public static partial class DBProcessOutputEngineDicInfo
     public const string Valor = "poeValor"; // LOCALIZACAO 170523
     public const string Output = "poeOutput"; // LOCALIZACAO 170523
     public const string Administrador = "poeAdministrador"; // LOCALIZACAO 170523
-    public const string GUID = "poeGUID"; // LOCALIZACAO 170523
     public const string OutputSource = "poeOutputSource"; // LOCALIZACAO 170523
     public const string DisabledItem = "poeDisabledItem"; // LOCALIZACAO 170523
     public const string IDModulo = "poeIDModulo"; // LOCALIZACAO 170523
     public const string IsOnlyProcesso = "poeIsOnlyProcesso"; // LOCALIZACAO 170523
     public const string MyID = "poeMyID"; // LOCALIZACAO 170523
+    public const string Guid = "poeGuid"; // LOCALIZACAO 170523
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Nome,
@@ -43,61 +43,19 @@ public static partial class DBProcessOutputEngineDicInfo
 
     public const string PTabelaNome = "ProcessOutputEngine";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PoeNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeDatabase => new(0, PTabelaNome, CampoCodigo, Database, 255, "Database", "Database", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeTabela => new(0, PTabelaNome, CampoCodigo, Tabela, 255, "Tabela", "Tabela", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeCampo => new(0, PTabelaNome, CampoCodigo, Campo, 255, "Campo", "Campo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeValor => new(0, PTabelaNome, CampoCodigo, Valor, 255, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeOutput => new(0, PTabelaNome, CampoCodigo, Output, DevourerOne.PMaxSizeCampoMemo, "Output", "Output", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeAdministrador => new(0, PTabelaNome, CampoCodigo, Administrador, "Administrador", "Administrador", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeOutputSource => new(0, PTabelaNome, CampoCodigo, OutputSource, "OutputSource", "OutputSource", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeDisabledItem => new(0, PTabelaNome, CampoCodigo, DisabledItem, "DisabledItem", "DisabledItem", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeIDModulo => new(0, PTabelaNome, CampoCodigo, IDModulo, "IDModulo", "IDModulo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeIsOnlyProcesso => new(0, PTabelaNome, CampoCodigo, IsOnlyProcesso, "IsOnlyProcesso", "IsOnlyProcesso", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "poe"
-    };
-    public static DBInfoSystem PoeMyID => new(0, PTabelaNome, CampoCodigo, MyID, "MyID", "MyID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "poe"
-    };
+    public static DBInfoSystem PoeNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "poe");
+    public static DBInfoSystem PoeDatabase => new(0, PTabelaNome, CampoCodigo, Database, 255, Database, Database, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "poe");
+    public static DBInfoSystem PoeTabela => new(0, PTabelaNome, CampoCodigo, Tabela, 255, Tabela, Tabela, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "poe");
+    public static DBInfoSystem PoeCampo => new(0, PTabelaNome, CampoCodigo, Campo, 255, Campo, Campo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "poe");
+    public static DBInfoSystem PoeValor => new(0, PTabelaNome, CampoCodigo, Valor, 255, Valor, Valor, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "poe");
+    public static DBInfoSystem PoeOutput => new(0, PTabelaNome, CampoCodigo, Output, DevourerOne.PMaxSizeCampoMemo, Output, Output, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "poe");
+    public static DBInfoSystem PoeAdministrador => new(0, PTabelaNome, CampoCodigo, Administrador, Administrador, Administrador, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "poe", isRequired: true);
+    public static DBInfoSystem PoeOutputSource => new(0, PTabelaNome, CampoCodigo, OutputSource, OutputSource, OutputSource, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "poe");
+    public static DBInfoSystem PoeDisabledItem => new(0, PTabelaNome, CampoCodigo, DisabledItem, DisabledItem, DisabledItem, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "poe", isRequired: true);
+    public static DBInfoSystem PoeIDModulo => new(0, PTabelaNome, CampoCodigo, IDModulo, IDModulo, IDModulo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "poe");
+    public static DBInfoSystem PoeIsOnlyProcesso => new(0, PTabelaNome, CampoCodigo, IsOnlyProcesso, IsOnlyProcesso, IsOnlyProcesso, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "poe", isRequired: true);
+    public static DBInfoSystem PoeMyID => new(0, PTabelaNome, CampoCodigo, MyID, MyID, MyID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "poe");
+    public static DBInfoSystem PoeGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "poe");
 
 #endregion
     [Serializable]

@@ -28,8 +28,6 @@ public class AgendaValidation : IAgendaValidation
     {
         if (reg.Decisao != null && reg.Decisao.Length > DBAgendaDicInfo.AgeDecisao.FTamanho)
             throw new SGValidationException($"Decisao deve ter no máximo {DBAgendaDicInfo.AgeDecisao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBAgendaDicInfo.AgeGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBAgendaDicInfo.AgeGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,15 +37,44 @@ public class AgendaValidation : IAgendaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.HrFinal))
+        {
+            if (DateTime.TryParse(reg.HrFinal, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HrFinal não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.EventoData))
         {
             if (DateTime.TryParse(reg.EventoData, out DateTime dataAntiga))
             {
                 if (dataAntiga < new DateTime(1900, 1, 1))
                     throw new SGValidationException("EventoData não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Hora))
+        {
+            if (DateTime.TryParse(reg.Hora, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Hora não pode ser anterior a 01/01/1900.");
             }
         }
 
@@ -63,7 +90,7 @@ public class AgendaValidation : IAgendaValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");
@@ -73,7 +100,7 @@ public class AgendaValidation : IAgendaValidation
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {
-            var regAdvogados = await advogadosReader.Read(reg.Advogado, oCnn);
+            var regAdvogados = await advogadosReader.ReadAsync(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");
@@ -83,7 +110,7 @@ public class AgendaValidation : IAgendaValidation
         // Funcionarios
         if (!reg.Funcionario.IsEmptyIDNumber())
         {
-            var regFuncionarios = await funcionariosReader.Read(reg.Funcionario, oCnn);
+            var regFuncionarios = await funcionariosReader.ReadAsync(reg.Funcionario, oCnn);
             if (regFuncionarios == null || regFuncionarios.Id != reg.Funcionario)
             {
                 throw new SGValidationException($"Colaborador não encontrado ({regFuncionarios?.Id}).");
@@ -93,7 +120,7 @@ public class AgendaValidation : IAgendaValidation
         // TipoCompromisso
         if (!reg.TipoCompromisso.IsEmptyIDNumber())
         {
-            var regTipoCompromisso = await tipocompromissoReader.Read(reg.TipoCompromisso, oCnn);
+            var regTipoCompromisso = await tipocompromissoReader.ReadAsync(reg.TipoCompromisso, oCnn);
             if (regTipoCompromisso == null || regTipoCompromisso.Id != reg.TipoCompromisso)
             {
                 throw new SGValidationException($"Tipo Compromisso não encontrado ({regTipoCompromisso?.Id}).");
@@ -103,7 +130,7 @@ public class AgendaValidation : IAgendaValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
@@ -113,7 +140,7 @@ public class AgendaValidation : IAgendaValidation
         // Area
         if (!reg.Area.IsEmptyIDNumber())
         {
-            var regArea = await areaReader.Read(reg.Area, oCnn);
+            var regArea = await areaReader.ReadAsync(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
                 throw new SGValidationException($"Área não encontrado ({regArea?.Id}).");
@@ -123,7 +150,7 @@ public class AgendaValidation : IAgendaValidation
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {
-            var regJustica = await justicaReader.Read(reg.Justica, oCnn);
+            var regJustica = await justicaReader.ReadAsync(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
@@ -133,7 +160,7 @@ public class AgendaValidation : IAgendaValidation
         // Operador
         if (!reg.Usuario.IsEmptyIDNumber())
         {
-            var regOperador = await operadorReader.Read(reg.Usuario, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Usuario, oCnn);
             if (regOperador == null || regOperador.Id != reg.Usuario)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");
@@ -143,7 +170,7 @@ public class AgendaValidation : IAgendaValidation
         // Prepostos
         if (!reg.Preposto.IsEmptyIDNumber())
         {
-            var regPrepostos = await prepostosReader.Read(reg.Preposto, oCnn);
+            var regPrepostos = await prepostosReader.ReadAsync(reg.Preposto, oCnn);
             if (regPrepostos == null || regPrepostos.Id != reg.Preposto)
             {
                 throw new SGValidationException($"Prepostos não encontrado ({regPrepostos?.Id}).");

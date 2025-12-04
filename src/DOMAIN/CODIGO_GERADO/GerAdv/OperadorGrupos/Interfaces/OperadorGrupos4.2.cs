@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IOperadorGruposReader
 {
-    Task<OperadorGruposResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.OperadorGrupos?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<OperadorGruposResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.OperadorGrupos?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     OperadorGruposResponse? Read(FOperadorGrupos dbRec, MsiSqlConnection? oCnn);
     OperadorGruposResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OperadorGruposResponse? Read(FOperadorGrupos dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     OperadorGruposResponseAll? ReadAll(FOperadorGrupos dbRec, IDataRecord dr);
     OperadorGruposResponseAll? ReadAll(SG.GerAdv.DBOperadorGrupos dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<OperadorGruposResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<OperadorGruposResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

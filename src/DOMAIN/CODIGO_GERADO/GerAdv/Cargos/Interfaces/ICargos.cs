@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ICargosService
 {
+    Task<Filters.FilterCargos> FilterVoice([FromBody] Filters.FilterCargos filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<CargosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterCargos filter, [FromRoute, Required] string uri = "");
     Task<CargosResponse?> AddAndUpdate(Models.Cargos? regCargos, [FromRoute, Required] string uri = "");
     Task<CargosResponse?> Validation(Models.Cargos? regCargos, [FromRoute, Required] string uri = "");
     Task<CargosResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<CargosResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<CargosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterCargos? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

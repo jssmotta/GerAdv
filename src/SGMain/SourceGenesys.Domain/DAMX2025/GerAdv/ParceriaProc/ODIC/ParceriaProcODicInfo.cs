@@ -9,25 +9,29 @@ public partial class DBParceriaProcODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBParceriaProcDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBParceriaProcDicInfo.CampoCodigo;
+    public string IFieldId() => DBParceriaProcDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBParceriaProcDicInfo.TablePrefix;
+    public string IPrefix() => DBParceriaProcDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBParceriaProcDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBParceriaProcDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBParceriaProcODicInfo : IODicInfo
     public static string TCampoNome => DBParceriaProcDicInfo.CampoNome;
     public static string TTabelaNome => DBParceriaProcDicInfo.TabelaNome;
     public static string TTablePrefix => DBParceriaProcDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParGUID, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParQuemCad, DBParceriaProcDicInfo.ParDtCad, DBParceriaProcDicInfo.ParQuemAtu, DBParceriaProcDicInfo.ParDtAtu, DBParceriaProcDicInfo.ParVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParGUID, DBParceriaProcDicInfo.ParProcesso];
+    public static ImmutableArray<DBInfoSystem> List => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGuid, DBParceriaProcDicInfo.ParQuemCad, DBParceriaProcDicInfo.ParDtCad, DBParceriaProcDicInfo.ParQuemAtu, DBParceriaProcDicInfo.ParDtAtu, DBParceriaProcDicInfo.ParVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBParceriaProcDicInfo.ParAdvogado, DBParceriaProcDicInfo.ParProcesso, DBParceriaProcDicInfo.ParGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["parCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBParceriaProcDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["parCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBParceriaProcDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

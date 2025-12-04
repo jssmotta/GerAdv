@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { DocumentosGridAdapter } from '@/app/GerAdv_TS/Documentos/Adapter/DocumentosGridAdapter';
 import DocumentosGridContainer from '@/app/GerAdv_TS/Documentos/Components/DocumentosGridContainer';
+
 const DocumentosPage: React.FC = () => {
-  const DocumentosGrid = new DocumentosGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Documentos' />
-    <DocumentosGridContainer grid={DocumentosGrid} />
-  </PageLayout>
-);
+    const DocumentosGrid = new DocumentosGridAdapter();
+
+    return (
+        <PageLayout>            
+            <DocumentosGridContainer grid={DocumentosGrid} />
+        </PageLayout>
+    );
 };
+
 export default DocumentosPage;

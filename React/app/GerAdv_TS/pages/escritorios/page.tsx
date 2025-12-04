@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { EscritoriosGridAdapter } from '@/app/GerAdv_TS/Escritorios/Adapter/EscritoriosGridAdapter';
 import EscritoriosGridContainer from '@/app/GerAdv_TS/Escritorios/Components/EscritoriosGridContainer';
+
 const EscritoriosPage: React.FC = () => {
-  const EscritoriosGrid = new EscritoriosGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Escritorios' />
-    <EscritoriosGridContainer grid={EscritoriosGrid} />
-  </PageLayout>
-);
+    const EscritoriosGrid = new EscritoriosGridAdapter();
+
+    return (
+        <PageLayout>            
+            <EscritoriosGridContainer grid={EscritoriosGrid} />
+        </PageLayout>
+    );
 };
+
 export default EscritoriosPage;

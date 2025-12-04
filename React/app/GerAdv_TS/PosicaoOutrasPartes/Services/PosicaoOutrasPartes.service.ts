@@ -7,6 +7,8 @@ import { PosicaoOutrasPartesApi, PosicaoOutrasPartesApiError } from '../Apis/Api
 import { FilterPosicaoOutrasPartes } from '../Filters/PosicaoOutrasPartes';
 import { IPosicaoOutrasPartes } from '../Interfaces/interface.PosicaoOutrasPartes';
 import { PosicaoOutrasPartesEmpty } from '../../Models/PosicaoOutrasPartes';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
+import { AxiosResponse } from 'axios';
 
 export class PosicaoOutrasPartesValidator {
   static validatePosicaoOutrasPartes(posicaooutraspartes: IPosicaoOutrasPartes): { isValid: boolean; errors: string[] } {
@@ -29,6 +31,7 @@ export interface IPosicaoOutrasPartesService {
   getAll: (filtro?: FilterPosicaoOutrasPartes) => Promise<IPosicaoOutrasPartes[]>;
   deletePosicaoOutrasPartes: (id: number) => Promise<void>;
   validatePosicaoOutrasPartes: (posicaooutraspartes: IPosicaoOutrasPartes) => { isValid: boolean; errors: string[] };
+  filterVoice: (filtro?: FilterPosicaoOutrasPartes, voiceCommand?: ICommandSpeakerRequest) => Promise<AxiosResponse>;
 }
 
 export class PosicaoOutrasPartesService implements IPosicaoOutrasPartesService {
@@ -94,15 +97,24 @@ export class PosicaoOutrasPartesService implements IPosicaoOutrasPartesService {
   ): Promise<IPosicaoOutrasPartes[]> {
     try {
       // Carrega dados offline primeiro
-      const preloadResponse = await this.api.filterPreload(0, filtro ?? {});
-      const offlineData = preloadResponse?.data || [];
+      const preloadResponse = await this.api.filterPreload(0, (filtro ?? {}) as any);
+       // Normaliza offline
+      const offlineRaw = preloadResponse?.data;
+      const offlineData = Array.isArray(offlineRaw)
+        ? offlineRaw
+        : offlineRaw?.data ?? offlineRaw?.items ?? offlineRaw?.rows ?? [];
 
       if (onOnlineData) {
         // Busca dados online em background e envia via callback
-        this.api.filter(0, filtro ?? {})
+        this.api
+          .filter(0, (filtro ?? {}) as any)
           .then(response => {
-            if (response?.data) {
-              onOnlineData(response.data);
+            const raw = response?.data;
+            const onlineData = Array.isArray(raw)
+              ? raw
+              : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+            if (onlineData) {
+              onOnlineData(onlineData);
             }
           })
           .catch(error => {
@@ -114,8 +126,12 @@ export class PosicaoOutrasPartesService implements IPosicaoOutrasPartesService {
       } else {
         // Se não há callback, aguarda dados online e retorna
         try {
-          const onlineResponse = await this.api.filter(0, filtro ?? {});
-          return onlineResponse?.data || offlineData;
+          const onlineResponse = await this.api.filter(0, (filtro ?? {}) as any);
+          const raw = onlineResponse?.data;
+          const onlineData = Array.isArray(raw)
+            ? raw
+            : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+          return onlineData || offlineData;
         } catch (error) {
             if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
                 console.log('Error fetching online PosicaoOutrasPartes');
@@ -147,5 +163,22 @@ export class PosicaoOutrasPartesService implements IPosicaoOutrasPartesService {
 
   validatePosicaoOutrasPartes(posicaooutraspartes: IPosicaoOutrasPartes): { isValid: boolean; errors: string[] } {
     return PosicaoOutrasPartesValidator.validatePosicaoOutrasPartes(posicaooutraspartes);
+  }
+
+  async filterVoice(filtro?: FilterPosicaoOutrasPartes, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+    try {
+      const response = await this.api.filterVoice(filtro, voiceCommand);
+      return response;
+    } catch (error) {
+      if (error instanceof PosicaoOutrasPartesApiError) {
+        throw error;
+      }
+      throw new PosicaoOutrasPartesApiError(
+        'Erro ao processar filtro de voz',
+        500,
+        'VOICE_FILTER_ERROR',
+        error
+      );
+    }
   }
 }

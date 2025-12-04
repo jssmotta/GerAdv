@@ -74,6 +74,7 @@ public class CidadeWriterTests
         var result = await _cidadeWriter.WriteAsync(cidade, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFCidade.Object);
+        _mockFCidade.VerifySet(x => x.FGuid = cidade.Guid, Times.Once);
         _mockFCidade.VerifySet(x => x.FDDD = cidade.DDD, Times.Once);
         _mockFCidade.VerifySet(x => x.FTop = cidade.Top, Times.Once);
         _mockFCidade.VerifySet(x => x.FComarca = cidade.Comarca, Times.Once);
@@ -81,7 +82,6 @@ public class CidadeWriterTests
         _mockFCidade.VerifySet(x => x.FNome = cidade.Nome, Times.Once);
         _mockFCidade.VerifySet(x => x.FUF = cidade.UF, Times.Once);
         _mockFCidade.VerifySet(x => x.FSigla = cidade.Sigla, Times.Once);
-        _mockFCidade.VerifySet(x => x.FGUID = cidade.GUID, Times.Once);
         _mockFCidade.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -125,7 +125,7 @@ public class CidadeWriterTests
         var operadorId = 456;
         _mockCidadeFactory.Setup(x => x.DeleteAsync(operadorId, cidadeResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _cidadeWriter.Delete(cidadeResponse, operadorId, _mockConnection.Object);
+        await _cidadeWriter.DeleteAsync(cidadeResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockCidadeFactory.Verify(x => x.DeleteAsync(operadorId, cidadeResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -141,7 +141,7 @@ public class CidadeWriterTests
         var operadorId = 111;
         _mockCidadeFactory.Setup(x => x.DeleteAsync(operadorId, cidadeResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _cidadeWriter.Delete(cidadeResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _cidadeWriter.DeleteAsync(cidadeResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -158,7 +158,7 @@ public class CidadeWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockCidadeFactory.Setup(x => x.DeleteAsync(operadorId, cidadeResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _cidadeWriter.Delete(cidadeResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _cidadeWriter.DeleteAsync(cidadeResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -188,14 +188,14 @@ public class CidadeWriterTests
         return new Models.Cidade
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             DDD = "AAAAAAAA",
             Top = false,
             Comarca = false,
             Capital = false,
             Nome = "João",
             UF = 1,
-            Sigla = "AAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Sigla = "AAAAAAAA"
         };
     }
 #endregion

@@ -23,7 +23,6 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -49,7 +48,6 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
             CEP = dbRec.FCEP ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -61,17 +59,27 @@ public partial class ClientesWhere(IFClientesFactory clientesFactory) : ICliente
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp.ToString(), out DateTime XRGDataExp))
         {
-            clientes.RGDataExp = dbRec.FRGDataExp;
+            clientes.RGDataExp = XRGDataExp.ToString("dd/MM/yyyy");
             clientes.RGDataExp_date = XRGDataExp;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            clientes.DtNasc = dbRec.FDtNasc;
+            clientes.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             clientes.DtNasc_date = XDtNasc;
+        }
+
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            clientes.Data = XData.ToString("dd/MM/yyyy");
+            clientes.Data_date = XData;
         }
 
         return clientes;

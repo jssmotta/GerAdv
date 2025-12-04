@@ -26,8 +26,6 @@ public class ReuniaoValidation : IReuniaoValidation
 
     private bool ValidSizes(Models.Reuniao reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > DBReuniaoDicInfo.RenGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBReuniaoDicInfo.RenGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -37,15 +35,35 @@ public class ReuniaoValidation : IReuniaoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.HoraInicial))
         {
             if (DateTime.TryParse(reg.HoraInicial, out DateTime dataAntiga))
             {
                 if (dataAntiga < new DateTime(1900, 1, 1))
                     throw new SGValidationException("HoraInicial não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.HoraFinal))
+        {
+            if (DateTime.TryParse(reg.HoraFinal, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraFinal não pode ser anterior a 01/01/1900.");
             }
         }
 
@@ -70,7 +88,7 @@ public class ReuniaoValidation : IReuniaoValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

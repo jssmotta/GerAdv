@@ -36,7 +36,7 @@ public class OperadorWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFOperador(string? EMail = "test@email.com", string? Pasta = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Telefonista = false, bool? Master = true, string? Nome = "João", string? Nick = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? Excluido = false, bool? Situacao = true, string? MinhaDescricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? EMailNet = "test@email.com", bool? OnLine = false, bool? SysOp = true, bool? IsFinanceiro = false, bool? Top = true, bool? Sexo = false, bool? Basico = true, bool? Externo = false, bool? EMailConfirmado = true, string? DataLimiteReset = "24/04/1975")
+    private void SetupMockFOperador(string? EMail = "test@email.com", string? Pasta = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Telefonista = false, bool? Master = true, string? Nome = "João", string? Nick = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Ramal = "AAAAAAAAAAAAAAAAAA", bool? Excluido = false, bool? Situacao = true, int? Computador = 1, string? MinhaDescricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? UltimoLogoff = "24/04/1975", string? EMailNet = "test@email.com", string? OnlineIP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? OnLine = false, bool? SysOp = true, int? StatusId = 1, string? StatusMessage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? IsFinanceiro = false, bool? Top = true, bool? Sexo = false, bool? Basico = true, bool? Externo = false, bool? EMailConfirmado = true, string? DataLimiteReset = "24/04/1975", string? SuporteMaxAge = "24/04/1975", string? SuporteNomeSolicitante = "João", string? SuporteUltimoAcesso = "24/04/1975", string? SuporteIpUltimoAcesso = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     {
         _mockFOperador.Setup(f => f.FEMail).Returns(EMail ?? string.Empty);
         _mockFOperador.Setup(f => f.FPasta).Returns(Pasta ?? string.Empty);
@@ -44,12 +44,18 @@ public class OperadorWhereTests : IDisposable
         _mockFOperador.Setup(f => f.FMaster).Returns(Master ?? false);
         _mockFOperador.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
         _mockFOperador.Setup(f => f.FNick).Returns(Nick ?? string.Empty);
+        _mockFOperador.Setup(f => f.FRamal).Returns(Ramal ?? string.Empty);
         _mockFOperador.Setup(f => f.FExcluido).Returns(Excluido ?? false);
         _mockFOperador.Setup(f => f.FSituacao).Returns(Situacao ?? false);
+        _mockFOperador.Setup(f => f.FComputador).Returns(Computador ?? 0);
         _mockFOperador.Setup(f => f.FMinhaDescricao).Returns(MinhaDescricao ?? string.Empty);
+        _mockFOperador.Setup(f => f.FUltimoLogoff).Returns(UltimoLogoff ?? string.Empty);
         _mockFOperador.Setup(f => f.FEMailNet).Returns(EMailNet ?? string.Empty);
+        _mockFOperador.Setup(f => f.FOnlineIP).Returns(OnlineIP ?? string.Empty);
         _mockFOperador.Setup(f => f.FOnLine).Returns(OnLine ?? false);
         _mockFOperador.Setup(f => f.FSysOp).Returns(SysOp ?? false);
+        _mockFOperador.Setup(f => f.FStatusId).Returns(StatusId ?? 0);
+        _mockFOperador.Setup(f => f.FStatusMessage).Returns(StatusMessage ?? string.Empty);
         _mockFOperador.Setup(f => f.FIsFinanceiro).Returns(IsFinanceiro ?? false);
         _mockFOperador.Setup(f => f.FTop).Returns(Top ?? false);
         _mockFOperador.Setup(f => f.FSexo).Returns(Sexo ?? false);
@@ -57,6 +63,10 @@ public class OperadorWhereTests : IDisposable
         _mockFOperador.Setup(f => f.FExterno).Returns(Externo ?? false);
         _mockFOperador.Setup(f => f.FEMailConfirmado).Returns(EMailConfirmado ?? false);
         _mockFOperador.Setup(f => f.FDataLimiteReset).Returns(DataLimiteReset ?? string.Empty);
+        _mockFOperador.Setup(f => f.FSuporteMaxAge).Returns(SuporteMaxAge ?? string.Empty);
+        _mockFOperador.Setup(f => f.FSuporteNomeSolicitante).Returns(SuporteNomeSolicitante ?? string.Empty);
+        _mockFOperador.Setup(f => f.FSuporteUltimoAcesso).Returns(SuporteUltimoAcesso ?? string.Empty);
+        _mockFOperador.Setup(f => f.FSuporteIpUltimoAcesso).Returns(SuporteIpUltimoAcesso ?? string.Empty);
     }
 
 #endregion
@@ -102,12 +112,18 @@ public class OperadorWhereTests : IDisposable
         result.Master.Should().Be(true);
         result.Nome.Should().Be("João");
         result.Nick.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result.Ramal.Should().Be("AAAAAAAAAAAAAAAAAA");
         result.Excluido.Should().Be(false);
         result.Situacao.Should().Be(true);
+        result.Computador.Should().Be(1);
         result.MinhaDescricao.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result.UltimoLogoff.Should().Be("24/04/1975");
         result.EMailNet.Should().Be("test@email.com");
+        result.OnlineIP.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.OnLine.Should().Be(false);
         result.SysOp.Should().Be(true);
+        result.StatusId.Should().Be(1);
+        result.StatusMessage.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.IsFinanceiro.Should().Be(false);
         result.Top.Should().Be(true);
         result.Sexo.Should().Be(false);
@@ -115,6 +131,10 @@ public class OperadorWhereTests : IDisposable
         result.Externo.Should().Be(false);
         result.EMailConfirmado.Should().Be(true);
         result.DataLimiteReset.Should().Be("24/04/1975");
+        result.SuporteMaxAge.Should().Be("24/04/1975");
+        result.SuporteNomeSolicitante.Should().Be("João");
+        result.SuporteUltimoAcesso.Should().Be("24/04/1975");
+        result.SuporteIpUltimoAcesso.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
 #endregion
@@ -125,7 +145,7 @@ public class OperadorWhereTests : IDisposable
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
-        SetupMockFOperador(EMail: null, Pasta: null, Telefonista: null, Master: null, Nome: null, Nick: null, Excluido: null, Situacao: null, MinhaDescricao: null, EMailNet: null, OnLine: null, SysOp: null, IsFinanceiro: null, Top: null, Sexo: null, Basico: null, Externo: null, EMailConfirmado: null, DataLimiteReset: null);
+        SetupMockFOperador(EMail: null, Pasta: null, Telefonista: null, Master: null, Nome: null, Nick: null, Ramal: null, Excluido: null, Situacao: null, Computador: null, MinhaDescricao: null, UltimoLogoff: null, EMailNet: null, OnlineIP: null, OnLine: null, SysOp: null, StatusId: null, StatusMessage: null, IsFinanceiro: null, Top: null, Sexo: null, Basico: null, Externo: null, EMailConfirmado: null, DataLimiteReset: null, SuporteMaxAge: null, SuporteNomeSolicitante: null, SuporteUltimoAcesso: null, SuporteIpUltimoAcesso: null);
         _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
         // Act
         var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
@@ -136,12 +156,18 @@ public class OperadorWhereTests : IDisposable
         result.Master.Should().Be(false);
         result.Nome.Should().Be(string.Empty);
         result.Nick.Should().Be(string.Empty);
+        result.Ramal.Should().Be(string.Empty);
         result.Excluido.Should().Be(false);
         result.Situacao.Should().Be(false);
+        result.Computador.Should().Be(0);
         result.MinhaDescricao.Should().Be(string.Empty);
+        result.UltimoLogoff.Should().Be(string.Empty);
         result.EMailNet.Should().Be(string.Empty);
+        result.OnlineIP.Should().Be(string.Empty);
         result.OnLine.Should().Be(false);
         result.SysOp.Should().Be(false);
+        result.StatusId.Should().Be(0);
+        result.StatusMessage.Should().Be(string.Empty);
         result.IsFinanceiro.Should().Be(false);
         result.Top.Should().Be(false);
         result.Sexo.Should().Be(false);
@@ -149,6 +175,10 @@ public class OperadorWhereTests : IDisposable
         result.Externo.Should().Be(false);
         result.EMailConfirmado.Should().Be(false);
         result.DataLimiteReset.Should().Be(string.Empty);
+        result.SuporteMaxAge.Should().Be(string.Empty);
+        result.SuporteNomeSolicitante.Should().Be(string.Empty);
+        result.SuporteUltimoAcesso.Should().Be(string.Empty);
+        result.SuporteIpUltimoAcesso.Should().Be(string.Empty);
     }
 
 #endregion
@@ -259,7 +289,7 @@ public class OperadorWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFOperador(EMail: "test@email.com", Pasta: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Telefonista: false, Master: true, Nome: "João", Nick: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Excluido: false, Situacao: true, MinhaDescricao: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", EMailNet: "test@email.com", OnLine: false, SysOp: true, IsFinanceiro: false, Top: true, Sexo: false, Basico: true, Externo: false, EMailConfirmado: true, DataLimiteReset: "24/04/1975");
+        SetupMockFOperador(EMail: "test@email.com", Pasta: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Telefonista: false, Master: true, Nome: "João", Nick: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Ramal: "AAAAAAAAAAAAAAAAAA", Excluido: false, Situacao: true, Computador: 1, MinhaDescricao: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", UltimoLogoff: "24/04/1975", EMailNet: "test@email.com", OnlineIP: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", OnLine: false, SysOp: true, StatusId: 1, StatusMessage: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", IsFinanceiro: false, Top: true, Sexo: false, Basico: true, Externo: false, EMailConfirmado: true, DataLimiteReset: "24/04/1975", SuporteMaxAge: "24/04/1975", SuporteNomeSolicitante: "João", SuporteUltimoAcesso: "24/04/1975", SuporteIpUltimoAcesso: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
         // Act
         var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
@@ -272,12 +302,18 @@ public class OperadorWhereTests : IDisposable
         result.Master.Should().Be(true);
         result.Nome.Should().Be("João");
         result.Nick.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result.Ramal.Should().Be("AAAAAAAAAAAAAAAAAA");
         result.Excluido.Should().Be(false);
         result.Situacao.Should().Be(true);
+        result.Computador.Should().Be(1);
         result.MinhaDescricao.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result.UltimoLogoff.Should().Be("24/04/1975");
         result.EMailNet.Should().Be("test@email.com");
+        result.OnlineIP.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.OnLine.Should().Be(false);
         result.SysOp.Should().Be(true);
+        result.StatusId.Should().Be(1);
+        result.StatusMessage.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.IsFinanceiro.Should().Be(false);
         result.Top.Should().Be(true);
         result.Sexo.Should().Be(false);
@@ -285,6 +321,10 @@ public class OperadorWhereTests : IDisposable
         result.Externo.Should().Be(false);
         result.EMailConfirmado.Should().Be(true);
         result.DataLimiteReset.Should().Be("24/04/1975");
+        result.SuporteMaxAge.Should().Be("24/04/1975");
+        result.SuporteNomeSolicitante.Should().Be("João");
+        result.SuporteUltimoAcesso.Should().Be("24/04/1975");
+        result.SuporteIpUltimoAcesso.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -306,32 +346,66 @@ public class OperadorWhereTests : IDisposable
 
 #region DateTime Tests
     [Fact]
-    public void Read_WithValidDateDataLimiteResetFields_ShouldParseAndSetDateProperties()
+    public void Read_WithValidDateUltimoLogoffFields_ShouldParseAndSetDateProperties()
     {
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
         var testDate = "31/12/2024";
+        SetupMockFOperador(UltimoLogoff: testDate);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.UltimoLogoff.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateUltimoLogoffFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFOperador(UltimoLogoff: null);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.UltimoLogoff.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateUltimoLogoffFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFOperador(UltimoLogoff: dateString);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.UltimoLogoff.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataLimiteResetFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "01/01/2025";
         SetupMockFOperador(DataLimiteReset: testDate);
         _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
         // Act
         var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
-        result.DataLimiteReset.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDataLimiteResetStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFOperador(DataLimiteReset: "invalid-date");
-        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
-        // Act
-        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataLimiteReset.Should().Be("");
+        result.DataLimiteReset.Should().Be("01/01/2025");
     }
 
     [Fact]
@@ -349,10 +423,10 @@ public class OperadorWhereTests : IDisposable
     }
 
     [Theory]
-    [InlineData("31/12/2024")]
-    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("01/01/2025")]
+    [InlineData("2025/01/02T23:59:59")]
     [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/02T14:30:45.123")]
+    [InlineData("2025/01/03T14:30:45.123")]
     public void Read_WithValidDateDataLimiteResetFormats_ShouldParseCorrectly(string dateString)
     {
         // Arrange
@@ -365,6 +439,102 @@ public class OperadorWhereTests : IDisposable
         var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.DataLimiteReset.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateSuporteMaxAgeFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "02/01/2025";
+        SetupMockFOperador(SuporteMaxAge: testDate);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.SuporteMaxAge.Should().Be("02/01/2025");
+    }
+
+    [Fact]
+    public void Read_WithNullDateSuporteMaxAgeFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFOperador(SuporteMaxAge: null);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.SuporteMaxAge.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("02/01/2025")]
+    [InlineData("2025/01/03T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/04T14:30:45.123")]
+    public void Read_WithValidDateSuporteMaxAgeFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFOperador(SuporteMaxAge: dateString);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.SuporteMaxAge.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateSuporteUltimoAcessoFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "03/01/2025";
+        SetupMockFOperador(SuporteUltimoAcesso: testDate);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.SuporteUltimoAcesso.Should().Be("03/01/2025");
+    }
+
+    [Fact]
+    public void Read_WithNullDateSuporteUltimoAcessoFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFOperador(SuporteUltimoAcesso: null);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.SuporteUltimoAcesso.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("03/01/2025")]
+    [InlineData("2025/01/04T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/05T14:30:45.123")]
+    public void Read_WithValidDateSuporteUltimoAcessoFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFOperador(SuporteUltimoAcesso: dateString);
+        _mockOperadorFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOperador.Object);
+        // Act
+        var result = _operadorWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.SuporteUltimoAcesso.Should().Be(dateString);
     }
 #endregion
 #endregion

@@ -10,11 +10,11 @@ public static partial class DBTipoCompromissoDicInfo
     public const string CampoCodigo = "tipCodigo";
     public const string CampoNome = "tipDescricao";
     public const string TablePrefix = "tip";
-    public const string GUID = "tipGUID"; // LOCALIZACAO 170523
     public const string Icone = "tipIcone"; // LOCALIZACAO 170523
     public const string Descricao = "tipDescricao"; // LOCALIZACAO 170523
     public const string Financeiro = "tipFinanceiro"; // LOCALIZACAO 170523
     public const string Bold = "tipBold"; // LOCALIZACAO 170523
+    public const string Guid = "tipGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "tipQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "tipDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "tipQuemAtu"; // LOCALIZACAO 170523
@@ -37,48 +37,16 @@ public static partial class DBTipoCompromissoDicInfo
 
     public const string PTabelaNome = "TipoCompromisso";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TipGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipIcone => new(0, PTabelaNome, CampoCodigo, Icone, "Icone", "Icone", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipFinanceiro => new(0, PTabelaNome, CampoCodigo, Financeiro, "Financeiro", "Financeiro", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tip"
-    }; // DBI 11 
-    public static DBInfoSystem TipDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tip"
-    }; // DBI 11 
-    public static DBInfoSystem TipDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "tip"
-    };
-    public static DBInfoSystem TipVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "tip"
-    };
+    public static DBInfoSystem TipIcone => new(0, PTabelaNome, CampoCodigo, Icone, Icone, Icone, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "tip");
+    public static DBInfoSystem TipDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tip");
+    public static DBInfoSystem TipFinanceiro => new(0, PTabelaNome, CampoCodigo, Financeiro, Financeiro, Financeiro, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "tip");
+    public static DBInfoSystem TipBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tip", isRequired: true);
+    public static DBInfoSystem TipGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tip");
+    public static DBInfoSystem TipQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tip"); // DBI 11 
+    public static DBInfoSystem TipDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tip");
+    public static DBInfoSystem TipQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tip"); // DBI 11 
+    public static DBInfoSystem TipDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tip");
+    public static DBInfoSystem TipVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tip", isRequired: true);
 
 #endregion
     [Serializable]

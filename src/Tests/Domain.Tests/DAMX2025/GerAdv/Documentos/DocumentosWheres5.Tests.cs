@@ -36,7 +36,7 @@ public class DocumentosWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFDocumentos(int? Processo = 1, string? Data = "27/05/2022", string? Observacao = "Observação teste")
+    private void SetupMockFDocumentos(int? Processo = 1, string? Data = "24/04/1975", string? Observacao = "Observação teste")
     {
         _mockFDocumentos.Setup(f => f.FProcesso).Returns(Processo ?? 0);
         _mockFDocumentos.Setup(f => f.FData).Returns(Data ?? string.Empty);
@@ -81,7 +81,7 @@ public class DocumentosWhereTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result.Processo.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Observacao.Should().Be("Observação teste");
     }
 
@@ -211,7 +211,7 @@ public class DocumentosWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFDocumentos(Processo: 1, Data: "27/05/2022", Observacao: "Observação teste");
+        SetupMockFDocumentos(Processo: 1, Data: "24/04/1975", Observacao: "Observação teste");
         _mockDocumentosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFDocumentos.Object);
         // Act
         var result = _documentosWhere.Read(where, parameters, _mockConnection.Object);
@@ -219,7 +219,7 @@ public class DocumentosWhereTests : IDisposable
         result.Should().NotBeNull();
         // Basic properties        
         result.Processo.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Observacao.Should().Be("Observação teste");
     }
 
@@ -239,7 +239,55 @@ public class DocumentosWhereTests : IDisposable
         // Assert
         _mockDocumentosFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBDocumentosDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFDocumentos(Data: testDate);
+        _mockDocumentosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFDocumentos.Object);
+        // Act
+        var result = _documentosWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFDocumentos(Data: null);
+        _mockDocumentosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFDocumentos.Object);
+        // Act
+        var result = _documentosWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFDocumentos(Data: dateString);
+        _mockDocumentosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFDocumentos.Object);
+        // Act
+        var result = _documentosWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

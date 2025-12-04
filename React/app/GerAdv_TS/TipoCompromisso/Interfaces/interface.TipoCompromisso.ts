@@ -10,6 +10,7 @@ export interface ITipoCompromisso {
 	icone: number,
 	descricao: string,
 	financeiro: boolean,
+	bold: boolean,
 }
 
 export interface ITipoCompromissoFormProps {

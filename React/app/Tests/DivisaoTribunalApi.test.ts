@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { DivisaoTribunalApiError } from '../GerAdv_TS/DivisaoTribunal/Apis/ApiDivisaoTribunal';
+import { DivisaoTribunalApiError } from '@/app/GerAdv_TS/DivisaoTribunal/Apis/ApiDivisaoTribunal';
 import { DivisaoTribunalApi } from '@/app/GerAdv_TS/DivisaoTribunal/Apis/ApiDivisaoTribunal';
-import { FilterDivisaoTribunal } from '../GerAdv_TS/DivisaoTribunal/Filters/DivisaoTribunal';
-import { IDivisaoTribunal } from '../GerAdv_TS/DivisaoTribunal/Interfaces/interface.DivisaoTribunal';
-import { DivisaoTribunalTestEmpty } from '../GerAdv_TS/Models/DivisaoTribunal';
+import { FilterDivisaoTribunal } from '@/app/GerAdv_TS/DivisaoTribunal/Filters/DivisaoTribunal';
+import { IDivisaoTribunal } from '@/app/GerAdv_TS/DivisaoTribunal/Interfaces/interface.DivisaoTribunal';
+import { DivisaoTribunalTestEmpty } from '@/app/GerAdv_TS/Models/DivisaoTribunal';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('DivisaoTribunalApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterDivisaoTribunal = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,22 @@ describe('DivisaoTribunalApi', () => {
   describe('addAndUpdate', () => {
     const mockDivisaoTribunal: IDivisaoTribunal = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+numcodigo: 0,
+justica: 0,
+nomeespecial: 'João',
+area: 1,
+cidade: 1,
+foro: 0,
+tribunal: 1,
+codigodiv: 'AAA',
+endereco: 'Rua das Flores, 123',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+cep: '01234-567',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+email: 'test@email.com',
+andar: 'AAAAAAAAAA'
     };
 
     it('should add new divisaotribunal successfully', async () => {
@@ -487,7 +489,7 @@ describe('DivisaoTribunalApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterDivisaoTribunal = { funcionario: 1 };
+      const mockFilter: FilterDivisaoTribunal = { : 1 };
       
       const result = divisaotribunalApi.useFilter(mockFilter);
       

@@ -54,8 +54,24 @@ public partial class DBContaCorrente
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBContaCorrenteDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHistorico = getValue(DBContaCorrenteDicInfo.Historico)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.CIAcordo)))
-                m_FCIAcordo = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.CIAcordo));
+                FCIAcordo = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.CIAcordo));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.Cliente));
         }
         catch
         {
@@ -73,7 +89,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Contrato)))
-                m_FContrato = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Contrato));
+                FContrato = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Contrato));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBContaCorrenteDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBContaCorrenteDicInfo.Data)));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.DataPgto)))
-                m_FDataPgto = Convert.ToDateTime(getValue(DBContaCorrenteDicInfo.DataPgto));
+                FDataPgto = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBContaCorrenteDicInfo.DataPgto)));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.DebitoID)))
-                m_FDebitoID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.DebitoID));
+                FDebitoID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.DebitoID));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.DistRegra)))
-                m_FDistRegra = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.DistRegra));
+                FDistRegra = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.DistRegra));
         }
         catch
         {
@@ -118,7 +134,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Distribuir)))
-                m_FDistribuir = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Distribuir));
+                FDistribuir = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Distribuir));
         }
         catch
         {
@@ -145,7 +161,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.DtOriginal)))
-                m_FDtOriginal = Convert.ToDateTime(getValue(DBContaCorrenteDicInfo.DtOriginal));
+                FDtOriginal = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBContaCorrenteDicInfo.DtOriginal)));
         }
         catch
         {
@@ -154,7 +170,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Hide)))
-                m_FHide = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Hide));
+                FHide = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Hide));
         }
         catch
         {
@@ -163,7 +179,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.IDContrato)))
-                m_FIDContrato = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.IDContrato));
+                FIDContrato = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.IDContrato));
         }
         catch
         {
@@ -172,7 +188,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.IDHTrab)))
-                m_FIDHTrab = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.IDHTrab));
+                FIDHTrab = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.IDHTrab));
         }
         catch
         {
@@ -181,7 +197,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.LC)))
-                m_FLC = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.LC));
+                FLC = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.LC));
         }
         catch
         {
@@ -190,7 +206,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.LivroCaixaID)))
-                m_FLivroCaixaID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.LivroCaixaID));
+                FLivroCaixaID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.LivroCaixaID));
         }
         catch
         {
@@ -199,7 +215,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.NroParcelas)))
-                m_FNroParcelas = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.NroParcelas));
+                FNroParcelas = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.NroParcelas));
         }
         catch
         {
@@ -208,7 +224,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Pago)))
-                m_FPago = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Pago));
+                FPago = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Pago));
         }
         catch
         {
@@ -217,7 +233,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.ParcelaPrincipalID)))
-                m_FParcelaPrincipalID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.ParcelaPrincipalID));
+                FParcelaPrincipalID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.ParcelaPrincipalID));
         }
         catch
         {
@@ -226,7 +242,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.ParcelaX)))
-                m_FParcelaX = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.ParcelaX));
+                FParcelaX = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.ParcelaX));
         }
         catch
         {
@@ -235,7 +251,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.Processo));
         }
         catch
         {
@@ -244,7 +260,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.QuemAtu));
         }
         catch
         {
@@ -253,7 +269,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.QuemCad));
         }
         catch
         {
@@ -262,7 +278,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Quitado)))
-                m_FQuitado = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Quitado));
+                FQuitado = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Quitado));
         }
         catch
         {
@@ -271,7 +287,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.QuitadoID)))
-                m_FQuitadoID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.QuitadoID));
+                FQuitadoID = Convert.ToInt32(getValue(DBContaCorrenteDicInfo.QuitadoID));
         }
         catch
         {
@@ -280,7 +296,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Sucumbencia)))
-                m_FSucumbencia = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Sucumbencia));
+                FSucumbencia = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Sucumbencia));
         }
         catch
         {
@@ -289,7 +305,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBContaCorrenteDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBContaCorrenteDicInfo.Valor));
         }
         catch
         {
@@ -298,7 +314,7 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.ValorPrincipal)))
-                m_FValorPrincipal = Convert.ToDecimal(getValue(DBContaCorrenteDicInfo.ValorPrincipal));
+                FValorPrincipal = Convert.ToDecimal(getValue(DBContaCorrenteDicInfo.ValorPrincipal));
         }
         catch
         {
@@ -307,30 +323,14 @@ public partial class DBContaCorrente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContaCorrenteDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBContaCorrenteDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHistorico = getValue(DBContaCorrenteDicInfo.Historico)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBContaCorrenteDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -354,7 +354,7 @@ public partial class DBContaCorrente
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

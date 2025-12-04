@@ -6,13 +6,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class OponentesService(IOptions<AppSettings> appSettings, IFOponentesFactory oponentesFactory, IOponentesReader reader, IOponentesValidation validation, IOponentesWriter writer, ICidadeReader cidadeReader, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IOponentesService, IDisposable
+public partial class OponentesService(IOptions<AppSettings> appSettings, IFOponentesFactory oponentesFactory, IOponentesReader reader, IOponentesValidation validation, IOponentesWriter writer, ICidadeReader cidadeReader, IGruposEmpresasService gruposempresasService, IOponentesRepLegalService oponentesreplegalService, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterOponentes> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IOponentesService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterOponentes> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFOponentesFactory oponentesFactory = oponentesFactory;
     private readonly IOponentesReader reader = reader;
     private readonly IOponentesValidation validation = validation;
@@ -20,54 +24,73 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IGruposEmpresasService gruposempresasService = gruposempresasService;
     private readonly IOponentesRepLegalService oponentesreplegalService = oponentesreplegalService;
-    public async Task<IEnumerable<OponentesResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<OponentesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOponentes filtro, [FromRoute, Required] string uri)
     {
-        max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Oponentes: URI inválida");
         }
 
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
-            LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
-        };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-Oponentes-Filter-{max}-{keyCache}";
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
-        return result;
-    }
-
-    public async Task<IEnumerable<OponentesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOponentes filtro, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new DatabaseConnectionException();
-        }
-
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
-        var cacheKey = $"{uri}-{max}Oponentes-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroOponentes(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterOponentes>.GetFilterHash(filtro);
+            var keyCache = await reader.ReadStringAuditorAsync(max, uri, where, parameters, oCnn);
+            var cacheKey = $"{uri}-{max}Oponentes-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"Oponentes - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterOponentes> FilterVoice([FromBody] Filters.FilterOponentes filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("Oponentes: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterOponentes? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterOponentes();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterOponentes();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"Oponentes - error on creating filter.");
+        }
     }
 
     public async Task<OponentesResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
@@ -83,10 +106,11 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
             var result = await _cache.GetOrCreateAsync($"{uri}-Oponentes-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
@@ -96,7 +120,29 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
     }
 
-    private async Task<OponentesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<OponentesResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
+    public async Task<AuditorResponse?> GetAuditor([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        ThrowIfDisposed();
+        AuditorResponse? result = null;
+        if (id < 1)
+        {
+            return result;
+        }
+
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
+        try
+        {
+            result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            return result;
+        }
+        catch (Exception)
+        {
+            throw new Exception($"Oponentes - {uri}-: GetAuditor");
+        }
+    }
+
     public async Task<OponentesResponse?> AddAndUpdate([FromBody] Models.Oponentes? regOponentes, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -105,12 +151,13 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Oponentes: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -146,12 +193,13 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Oponentes: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -179,7 +227,7 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             return new OponentesResponse();
         }
 
-        return await reader.Read(regOponentes.Id, oCnn);
+        return await reader.ReadAsync(regOponentes.Id, oCnn);
     }
 
     public async Task<OponentesResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
@@ -190,13 +238,14 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
         }
 
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Oponentes: URI inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -219,12 +268,12 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var oponentes = await reader.Read(id ?? default, oCnn);
+        var oponentes = await reader.ReadAsync(id ?? default, oCnn);
         try
         {
             if (oponentes != null)
             {
-                await writer.Delete(oponentes, nOperador, oCnn);
+                await writer.DeleteAsync(oponentes, nOperador, oCnn);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
@@ -259,9 +308,6 @@ public partial class OponentesService(IOptions<AppSettings> appSettings, IFOpone
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

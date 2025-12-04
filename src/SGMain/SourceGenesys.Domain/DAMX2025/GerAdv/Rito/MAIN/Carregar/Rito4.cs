@@ -54,8 +54,24 @@ public partial class DBRito
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBRitoDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBRitoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBRitoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBRitoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBRitoDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBRito
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRitoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBRitoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBRitoDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBRito
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRitoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBRitoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBRitoDicInfo.QuemCad));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBRito
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRitoDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBRitoDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBRitoDicInfo.Top));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBRito
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRitoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBRitoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBRitoDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBRitoDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBRitoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBRito
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

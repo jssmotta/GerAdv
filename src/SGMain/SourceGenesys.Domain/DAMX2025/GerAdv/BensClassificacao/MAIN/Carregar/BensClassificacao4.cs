@@ -54,8 +54,24 @@ public partial class DBBensClassificacao
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBBensClassificacaoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBBensClassificacaoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBBensClassificacaoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBBensClassificacaoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBBensClassificacaoDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBBensClassificacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensClassificacaoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBBensClassificacaoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBBensClassificacaoDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBBensClassificacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensClassificacaoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBBensClassificacaoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBBensClassificacaoDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBBensClassificacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensClassificacaoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBBensClassificacaoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBBensClassificacaoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBBensClassificacaoDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBBensClassificacaoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBBensClassificacao
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

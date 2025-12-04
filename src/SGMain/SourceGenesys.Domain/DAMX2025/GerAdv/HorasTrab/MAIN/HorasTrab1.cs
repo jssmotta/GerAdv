@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBHorasTrab : VAuditor, ICadastros
+public partial class DBHorasTrab : VAuditor, ICrud
 {
 #region TableDefinition_HorasTrab
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBHorasTrab : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBHorasTrab : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_HorasTrab
@@ -62,7 +62,7 @@ public partial class DBHorasTrab : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFGUID || pFldFIDContatoCRM || pFldFHonorario || pFldFIDAgenda || pFldFData || pFldFCliente || pFldFStatus || pFldFProcesso || pFldFAdvogado || pFldFFuncionario || pFldFHrIni || pFldFHrFim || pFldFTempo || pFldFValor || pFldFOBS || pFldFAnexo || pFldFAnexoComp || pFldFAnexoUNC || pFldFServico))
+            if (!(pFldFIDContatoCRM || pFldFHonorario || pFldFIDAgenda || pFldFData || pFldFCliente || pFldFStatus || pFldFProcesso || pFldFAdvogado || pFldFFuncionario || pFldFHrIni || pFldFHrFim || pFldFTempo || pFldFValor || pFldFOBS || pFldFAnexo || pFldFAnexoComp || pFldFAnexoUNC || pFldFServico || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,50 +92,49 @@ public partial class DBHorasTrab : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
-        if (pFldFGUID)
-            clsW.Fields(DBHorasTrabDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFIDContatoCRM)
-            clsW.Fields(DBHorasTrabDicInfo.IDContatoCRM, m_FIDContatoCRM, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.IDContatoCRM, FIDContatoCRM, EGenericTypeFields.FNumberNull);
         if (pFldFHonorario || ID.IsEmptyIDNumber())
-            clsW.Fields(DBHorasTrabDicInfo.Honorario, m_FHonorario, ETiposCampos.FBoolean);
+            clsW.Fields(DBHorasTrabDicInfo.Honorario, FHonorario, EGenericTypeFields.FBoolean);
         if (pFldFIDAgenda)
-            clsW.Fields(DBHorasTrabDicInfo.IDAgenda, m_FIDAgenda, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.IDAgenda, FIDAgenda, EGenericTypeFields.FNumberNull);
         if (pFldFData)
-            clsW.Fields(DBHorasTrabDicInfo.Data, m_FData, ETiposCampos.FDate);
+            clsW.Fields(DBHorasTrabDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFCliente)
-            clsW.Fields(DBHorasTrabDicInfo.Cliente, m_FCliente, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.Cliente, FCliente, EGenericTypeFields.FNumberNull);
         if (pFldFStatus)
-            clsW.Fields(DBHorasTrabDicInfo.Status, m_FStatus, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.Status, FStatus, EGenericTypeFields.FNumberNull);
         if (pFldFProcesso)
-            clsW.Fields(DBHorasTrabDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFAdvogado)
-            clsW.Fields(DBHorasTrabDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumberNull);
         if (pFldFFuncionario)
-            clsW.Fields(DBHorasTrabDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.Funcionario, FFuncionario, EGenericTypeFields.FNumberNull);
         if (pFldFHrIni)
-            clsW.Fields(DBHorasTrabDicInfo.HrIni, m_FHrIni, ETiposCampos.FString);
+            clsW.Fields(DBHorasTrabDicInfo.HrIni, FHrIni, EGenericTypeFields.FString);
         if (pFldFHrFim)
-            clsW.Fields(DBHorasTrabDicInfo.HrFim, m_FHrFim, ETiposCampos.FString);
+            clsW.Fields(DBHorasTrabDicInfo.HrFim, FHrFim, EGenericTypeFields.FString);
         if (pFldFTempo)
-            clsW.Fields(DBHorasTrabDicInfo.Tempo, m_FTempo, ETiposCampos.FDecimal);
+            clsW.Fields(DBHorasTrabDicInfo.Tempo, FTempo, EGenericTypeFields.FDecimal);
         if (pFldFValor)
-            clsW.Fields(DBHorasTrabDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            clsW.Fields(DBHorasTrabDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFOBS)
-            clsW.Fields(DBHorasTrabDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            clsW.Fields(DBHorasTrabDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFAnexo)
-            clsW.Fields(DBHorasTrabDicInfo.Anexo, m_FAnexo, ETiposCampos.FString);
+            clsW.Fields(DBHorasTrabDicInfo.Anexo, FAnexo, EGenericTypeFields.FString);
         if (pFldFAnexoComp)
-            clsW.Fields(DBHorasTrabDicInfo.AnexoComp, m_FAnexoComp, ETiposCampos.FString);
+            clsW.Fields(DBHorasTrabDicInfo.AnexoComp, FAnexoComp, EGenericTypeFields.FString);
         if (pFldFAnexoUNC)
-            clsW.Fields(DBHorasTrabDicInfo.AnexoUNC, m_FAnexoUNC, ETiposCampos.FString);
+            clsW.Fields(DBHorasTrabDicInfo.AnexoUNC, FAnexoUNC, EGenericTypeFields.FString);
         if (pFldFServico)
-            clsW.Fields(DBHorasTrabDicInfo.Servico, m_FServico, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.Servico, FServico, EGenericTypeFields.FNumberNull);
+        if (pFldFGuid)
+            clsW.Fields(DBHorasTrabDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_HorasTrab)
         if (clsW.HasUpdates)
         {
@@ -150,15 +149,15 @@ public partial class DBHorasTrab : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBHorasTrabDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBHorasTrabDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBHorasTrabDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBHorasTrabDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHorasTrabDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBHorasTrabDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBHorasTrabDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBHorasTrabDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBHorasTrabDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -182,7 +181,7 @@ public partial class DBHorasTrab : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

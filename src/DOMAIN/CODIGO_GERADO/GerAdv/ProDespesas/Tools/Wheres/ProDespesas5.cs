@@ -20,11 +20,9 @@ public partial class ProDespesasWhere(IFProDespesasFactory prodespesasFactory) :
         var prodespesas = new ProDespesasResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -32,10 +30,17 @@ public partial class ProDespesasWhere(IFProDespesasFactory prodespesasFactory) :
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
         {
-            prodespesas.DataCorrecao = dbRec.FDataCorrecao;
+            prodespesas.Data = XData.ToString("dd/MM/yyyy");
+            prodespesas.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataCorrecao.ToString(), out DateTime XDataCorrecao))
+        {
+            prodespesas.DataCorrecao = XDataCorrecao.ToString("dd/MM/yyyy");
             prodespesas.DataCorrecao_date = XDataCorrecao;
         }
 

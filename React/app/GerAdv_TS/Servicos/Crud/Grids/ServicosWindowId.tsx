@@ -9,54 +9,61 @@ import { ServicosService } from '../../Services/Servicos.service';
 import { ServicosApi } from '../../Apis/ApiServicos';
 import ServicosWindow from './ServicosWindow';
 import {ServicosEmpty } from '@/app/GerAdv_TS/Models/Servicos';
-interface ServicosWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ServicosWindowId: React.FC<ServicosWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const servicosService = useMemo(() => {
-  return new ServicosService(
-  new ServicosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IServicos | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ServicosEmpty() as IServicos);
-      return;
-    }
-    if (id) {
-      const response = await servicosService.fetchServicosById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ServicosWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedServicos={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ServicosWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ServicosWindowId: React.FC<ServicosWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const servicosService = useMemo(() => {
+        return new ServicosService(
+            new ServicosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IServicos | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ServicosEmpty() as IServicos);
+                return;
+            }
+            if (id) {
+                 const response = await servicosService.fetchServicosById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ServicosWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedServicos={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ServicosWindowId;

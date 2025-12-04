@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { GUTTipoApiError } from '../GerAdv_TS/GUTTipo/Apis/ApiGUTTipo';
+import { GUTTipoApiError } from '@/app/GerAdv_TS/GUTTipo/Apis/ApiGUTTipo';
 import { GUTTipoApi } from '@/app/GerAdv_TS/GUTTipo/Apis/ApiGUTTipo';
-import { FilterGUTTipo } from '../GerAdv_TS/GUTTipo/Filters/GUTTipo';
-import { IGUTTipo } from '../GerAdv_TS/GUTTipo/Interfaces/interface.GUTTipo';
-import { GUTTipoTestEmpty } from '../GerAdv_TS/Models/GUTTipo';
+import { FilterGUTTipo } from '@/app/GerAdv_TS/GUTTipo/Filters/GUTTipo';
+import { IGUTTipo } from '@/app/GerAdv_TS/GUTTipo/Interfaces/interface.GUTTipo';
+import { GUTTipoTestEmpty } from '@/app/GerAdv_TS/Models/GUTTipo';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('GUTTipoApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterGUTTipo = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,9 @@ describe('GUTTipoApi', () => {
   describe('addAndUpdate', () => {
     const mockGUTTipo: IGUTTipo = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+ordem: 1
     };
 
     it('should add new guttipo successfully', async () => {
@@ -487,7 +476,7 @@ describe('GUTTipoApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterGUTTipo = { funcionario: 1 };
+      const mockFilter: FilterGUTTipo = { : 1 };
       
       const result = guttipoApi.useFilter(mockFilter);
       

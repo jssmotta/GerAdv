@@ -20,11 +20,7 @@ public static partial class DBTipoStatusBiuDicInfo
 
     public const string PTabelaNome = "TipoStatusBiu";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TsbNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "tsb"
-    };
+    public static DBInfoSystem TsbNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tsb", isRequired: true);
 
 #endregion
     [Serializable]

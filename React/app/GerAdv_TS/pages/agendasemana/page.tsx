@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { AgendaSemanaGridAdapter } from '@/app/GerAdv_TS/AgendaSemana/Adapter/AgendaSemanaGridAdapter';
 import AgendaSemanaGridContainer from '@/app/GerAdv_TS/AgendaSemana/Components/AgendaSemanaGridContainer';
+
 const AgendaSemanaPage: React.FC = () => {
-  const AgendaSemanaGrid = new AgendaSemanaGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Agenda Semana' />
-    <AgendaSemanaGridContainer grid={AgendaSemanaGrid} />
-  </PageLayout>
-);
+    const AgendaSemanaGrid = new AgendaSemanaGridAdapter();
+
+    return (
+        <PageLayout>            
+            <AgendaSemanaGridContainer grid={AgendaSemanaGrid} />
+        </PageLayout>
+    );
 };
+
 export default AgendaSemanaPage;

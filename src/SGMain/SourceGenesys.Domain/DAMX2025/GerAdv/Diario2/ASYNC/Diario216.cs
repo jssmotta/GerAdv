@@ -14,6 +14,14 @@ public partial class DBDiario2
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBDiario2
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,23 +142,25 @@ public partial class DBDiario2
 
 #if (!NOTSTORED_Diario2)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFData || pFldFHora || pFldFOperador || pFldFGUID || pFldFNome || pFldFOcorrencia || pFldFCliente;
+    private bool HasAnyFieldChanged() => pFldFData || pFldFHora || pFldFOperador || pFldFNome || pFldFOcorrencia || pFldFCliente || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFData)
-            updateTool.Fields(DBDiario2DicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBDiario2DicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFHora)
-            updateTool.Fields(DBDiario2DicInfo.Hora, m_FHora, ETiposCampos.FString);
+            updateTool.Fields(DBDiario2DicInfo.Hora, FHora, EGenericTypeFields.FDate);
         if (pFldFOperador)
-            updateTool.Fields(DBDiario2DicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBDiario2DicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBDiario2DicInfo.Operador, FOperador, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBDiario2DicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBDiario2DicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFOcorrencia)
-            updateTool.Fields(DBDiario2DicInfo.Ocorrencia, m_FOcorrencia, ETiposCampos.FString);
+            updateTool.Fields(DBDiario2DicInfo.Ocorrencia, FOcorrencia, EGenericTypeFields.FString);
         if (pFldFCliente)
-            updateTool.Fields(DBDiario2DicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBDiario2DicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBDiario2DicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBDiario2DicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -162,24 +172,23 @@ public partial class DBDiario2
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBDiario2DicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBDiario2DicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBDiario2DicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBDiario2DicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBDiario2DicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBDiario2DicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBDiario2DicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBDiario2DicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBDiario2DicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBDiario2DicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBDiario2DicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

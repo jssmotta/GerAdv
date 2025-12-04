@@ -20,7 +20,7 @@ namespace MenphisSI.GerAdv.Models
         public int GUTTipo { get; set; }
 
         /// <summary>
-        /// Descricao - gutDescricao - tamanho máximo: 150 
+        /// Descrições - gutDescricao - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -48,7 +48,7 @@ namespace MenphisSI.GerAdv.Models.All
         public int GUTTipo { get; set; }
 
         /// <summary>
-        /// Descricao - gutDescricao - tamanho máximo: 150 
+        /// Descrições - gutDescricao - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";

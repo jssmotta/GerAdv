@@ -96,9 +96,9 @@ public class PrepostosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockPrepostosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPrepostos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Prepostoss service mock
-        _ = _mockFuncaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncaoResponse { Id = id }));
-        _ = _mockSetorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new SetorResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockFuncaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncaoResponse { Id = id }));
+        _ = _mockSetorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new SetorResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -106,9 +106,9 @@ public class PrepostosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockPrepostosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPrepostos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Prepostoss service mock
-        _ = _mockFuncaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncaoResponse { Id = 0 }));
-        _ = _mockSetorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new SetorResponse { Id = 0 }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockFuncaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncaoResponse { Id = 0 }));
+        _ = _mockSetorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new SetorResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -176,9 +176,9 @@ public class PrepostosValidationTests : IDisposable
         // Setup the Filter method with any filter to see if it's being called
         _mockPrepostosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPrepostos>(), It.IsAny<string>())).ReturnsAsync(new List<PrepostosResponseAll> { existingPrepostos });
         // Setup other mocks but don't override the Prepostoss service mock
-        _ = _mockFuncaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncaoResponse { Id = id }));
-        _ = _mockSetorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new SetorResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockFuncaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncaoResponse { Id = id }));
+        _ = _mockSetorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new SetorResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -201,9 +201,9 @@ public class PrepostosValidationTests : IDisposable
         };
         _mockPrepostosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPrepostos>(), It.IsAny<string>())).ReturnsAsync(new List<PrepostosResponseAll> { existingPrepostos });
         // Setup other mocks but don't override the Prepostoss service mock
-        _ = _mockFuncaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncaoResponse { Id = id }));
-        _ = _mockSetorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new SetorResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockFuncaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncaoResponse { Id = id }));
+        _ = _mockSetorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new SetorResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("já cadastrado");
@@ -225,9 +225,9 @@ public class PrepostosValidationTests : IDisposable
         };
         _mockPrepostosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPrepostos>(), It.IsAny<string>())).ReturnsAsync(new List<PrepostosResponseAll> { existingPrepostos });
         // Setup other mocks but don't override the Prepostoss service mock
-        _ = _mockFuncaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncaoResponse { Id = id }));
-        _ = _mockSetorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new SetorResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockFuncaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncaoResponse { Id = id }));
+        _ = _mockSetorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new SetorResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
         // Act
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
@@ -618,7 +618,7 @@ public class PrepostosValidationTests : IDisposable
         // Arrange
         var prepostos = CreateValidPrepostos();
         prepostos.Funcao = 999;
-        _mockFuncaoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.FuncaoResponse>(null));
+        _mockFuncaoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.FuncaoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -635,7 +635,7 @@ public class PrepostosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockFuncaoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockFuncaoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -652,7 +652,7 @@ public class PrepostosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockFuncaoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockFuncaoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -672,7 +672,7 @@ public class PrepostosValidationTests : IDisposable
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockFuncaoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockFuncaoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Setor
@@ -682,7 +682,7 @@ public class PrepostosValidationTests : IDisposable
         // Arrange
         var prepostos = CreateValidPrepostos();
         prepostos.Setor = 999;
-        _mockSetorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.SetorResponse>(null));
+        _mockSetorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.SetorResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -699,7 +699,7 @@ public class PrepostosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockSetorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockSetorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -716,7 +716,7 @@ public class PrepostosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockSetorReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockSetorReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -736,7 +736,7 @@ public class PrepostosValidationTests : IDisposable
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockSetorReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockSetorReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Cidade
@@ -746,7 +746,7 @@ public class PrepostosValidationTests : IDisposable
         // Arrange
         var prepostos = CreateValidPrepostos();
         prepostos.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -763,7 +763,7 @@ public class PrepostosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -780,7 +780,7 @@ public class PrepostosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -800,7 +800,7 @@ public class PrepostosValidationTests : IDisposable
         var result = await _validation.ValidateReg(prepostos, _mockPrepostosService.Object, _mockFuncaoReader.Object, _mockSetorReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockCidadeReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockCidadeReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

@@ -5,12 +5,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReuniaoGridAdapter } from '@/app/GerAdv_TS/Reuniao/Adapter/ReuniaoGridAdapter';
+
 // Mock ReuniaoGrid component
 jest.mock('@/app/GerAdv_TS/Reuniao/Crud/Grids/ReuniaoGrid', () => () => <div data-testid='reuniao-grid-mock' />);
+
 describe('ReuniaoGridAdapter', () => {
-  it('should render ReuniaoGrid component', () => {
-    const adapter = new ReuniaoGridAdapter();
-    const { getByTestId } = render(<>{adapter.render()}</>);
-    expect(getByTestId('reuniao-grid-mock')).toBeInTheDocument();
-  });
+    it('should render ReuniaoGrid component', () => {
+        const adapter = new ReuniaoGridAdapter();
+        const { getByTestId } = render(<>{adapter.render()}</>);
+        expect(getByTestId('reuniao-grid-mock')).toBeInTheDocument();
+    });
 });

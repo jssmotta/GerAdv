@@ -21,8 +21,8 @@ public partial class AreaWhere(IFAreaFactory areaFactory) : IAreaWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return area;
     }

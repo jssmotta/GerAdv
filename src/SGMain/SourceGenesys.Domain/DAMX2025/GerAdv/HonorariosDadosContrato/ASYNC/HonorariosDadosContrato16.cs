@@ -14,6 +14,14 @@ public partial class DBHonorariosDadosContrato
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBHonorariosDadosContrato
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,31 +142,31 @@ public partial class DBHonorariosDadosContrato
 
 #if (!NOTSTORED_HonorariosDadosContrato)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFCliente || pFldFFixo || pFldFVariavel || pFldFPercSucesso || pFldFProcesso || pFldFArquivoContrato || pFldFTextoContrato || pFldFValorFixo || pFldFObservacao || pFldFGuid || pFldFDataContrato;
+    private bool HasAnyFieldChanged() => pFldFCliente || pFldFFixo || pFldFVariavel || pFldFPercSucesso || pFldFProcesso || pFldFArquivoContrato || pFldFTextoContrato || pFldFValorFixo || pFldFObservacao || pFldFDataContrato || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFCliente)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFFixo || updateTool.Insert)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Fixo, m_FFixo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Fixo, FFixo, EGenericTypeFields.FBoolean);
         if (pFldFVariavel || updateTool.Insert)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Variavel, m_FVariavel, ETiposCampos.FBoolean);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Variavel, FVariavel, EGenericTypeFields.FBoolean);
         if (pFldFPercSucesso)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.PercSucesso, m_FPercSucesso, ETiposCampos.FDecimal);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.PercSucesso, FPercSucesso, EGenericTypeFields.FDecimal);
         if (pFldFProcesso)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFArquivoContrato)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.ArquivoContrato, m_FArquivoContrato, ETiposCampos.FString);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.ArquivoContrato, FArquivoContrato, EGenericTypeFields.FString);
         if (pFldFTextoContrato)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.TextoContrato, m_FTextoContrato, ETiposCampos.FString);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.TextoContrato, FTextoContrato, EGenericTypeFields.FString);
         if (pFldFValorFixo)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.ValorFixo, m_FValorFixo, ETiposCampos.FDecimal);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.ValorFixo, FValorFixo, EGenericTypeFields.FDecimal);
         if (pFldFObservacao)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
-        if (pFldFGuid)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Guid, m_FGuid, ETiposCampos.FString);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFDataContrato)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.DataContrato, m_FDataContrato, ETiposCampos.FDate);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.DataContrato, FDataContrato, EGenericTypeFields.FDate);
+        if (pFldFGuid)
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -170,20 +178,23 @@ public partial class DBHonorariosDadosContrato
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBHonorariosDadosContratoDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBHonorariosDadosContratoDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBHonorariosDadosContratoDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBHonorariosDadosContratoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

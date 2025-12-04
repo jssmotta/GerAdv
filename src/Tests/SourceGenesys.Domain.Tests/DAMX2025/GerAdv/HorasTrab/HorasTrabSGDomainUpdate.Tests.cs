@@ -22,7 +22,7 @@ public class DBHorasTrabUpdate : IDisposable
         var horastrab = new DBHorasTrab();
         // Assert
         horastrab.Should().NotBeNull();
-        horastrab.ITabelaName().Should().Be("HorasTrab");
+        horastrab.ITableName().Should().Be("HorasTrab");
         horastrab.ID.Should().Be(0);
     }
 
@@ -32,23 +32,39 @@ public class DBHorasTrabUpdate : IDisposable
         // Arrange
         var horastrab = new DBHorasTrab
         {
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FHrIni = "AAAAA",
             FHrFim = "AAAAA",
             FOBS = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FAnexo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FAnexoComp = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FAnexoUNC = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
-        // Assert - All properties should be set horastrab.FGUID.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        horastrab.FHrIni.Should().Be("AAAAA");
+        // Assert - All properties should be set horastrab.FHrIni.Should().Be( "AAAAA");
         horastrab.FHrFim.Should().Be("AAAAA");
         horastrab.FOBS.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         horastrab.FAnexo.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         horastrab.FAnexoComp.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         horastrab.FAnexoUNC.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        horastrab.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
+#region Testes de Guid
+    [Fact]
+    public void Guid_DefaultValue_ShouldBeEmpty()
+    {
+        Assert.Equal(string.Empty, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_SetValidGuid_ShouldStore()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
+    }
+
+#endregion
     [Theory]
     [InlineData("AAA")]
     [InlineData("BB")]
@@ -123,7 +139,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHrIni);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -137,7 +153,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHrIni);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -153,7 +169,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FHrIni);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -168,7 +184,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrIni = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -182,7 +198,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrIni = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -196,7 +212,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrIni = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -210,7 +226,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHrIni);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -236,7 +252,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrIni = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -250,7 +266,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrIni = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -328,7 +344,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHrFim);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -342,7 +358,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHrFim);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -358,7 +374,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FHrFim);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -373,7 +389,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrFim = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -387,7 +403,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrFim = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -401,7 +417,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrFim = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -415,7 +431,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHrFim);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -441,7 +457,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrFim = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -455,7 +471,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FHrFim = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -549,7 +565,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -563,7 +579,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -579,7 +595,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -594,7 +610,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FOBS = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -608,7 +624,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FOBS = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -622,7 +638,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FOBS = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -636,7 +652,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -662,7 +678,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FOBS = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -676,7 +692,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FOBS = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -754,7 +770,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -768,7 +784,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -784,7 +800,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FAnexo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -799,7 +815,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexo = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -813,7 +829,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexo = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -827,7 +843,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexo = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -841,7 +857,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -867,7 +883,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexo = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -881,7 +897,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexo = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -959,7 +975,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexoComp);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -973,7 +989,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexoComp);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -989,7 +1005,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FAnexoComp);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1004,7 +1020,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoComp = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1018,7 +1034,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoComp = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1032,7 +1048,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoComp = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1046,7 +1062,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexoComp);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1072,7 +1088,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoComp = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1086,7 +1102,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoComp = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1164,7 +1180,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexoUNC);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1178,7 +1194,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexoUNC);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1194,7 +1210,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FAnexoUNC);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1209,7 +1225,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoUNC = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1223,7 +1239,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoUNC = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1237,7 +1253,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoUNC = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1251,7 +1267,7 @@ public class DBHorasTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FAnexoUNC);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1277,7 +1293,7 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoUNC = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1291,26 +1307,10 @@ public class DBHorasTrabUpdate : IDisposable
         _instance.FAnexoUNC = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
-    [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
-    {
-        Assert.Equal(string.Empty, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
-    }
-
-#endregion
     [Fact]
     public void TabelaNome_Property_ShouldReturnCorrectTableName()
     {

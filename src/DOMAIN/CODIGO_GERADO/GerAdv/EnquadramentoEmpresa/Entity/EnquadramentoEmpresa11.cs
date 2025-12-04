@@ -23,12 +23,6 @@ public partial class FEnquadramentoEmpresaFactory : IFEnquadramentoEmpresaFactor
         return FEnquadramentoEmpresa.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEnquadramentoEmpresa> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FEnquadramentoEmpresa().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FEnquadramentoEmpresa> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FEnquadramentoEmpresaFactory : IFEnquadramentoEmpresaFactor
         return FEnquadramentoEmpresa.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FEnquadramentoEmpresa> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FEnquadramentoEmpresa().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FEnquadramentoEmpresaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

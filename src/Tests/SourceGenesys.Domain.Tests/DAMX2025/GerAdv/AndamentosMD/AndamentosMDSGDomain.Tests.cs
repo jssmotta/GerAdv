@@ -35,13 +35,26 @@ public class DBAndamentosMDTests : IDisposable
         dt.Columns.Add("amdQuemAtu", typeof(int));
         dt.Columns.Add("amdDtAtu", typeof(DateTime));
         dt.Columns.Add("amdVisto", typeof(bool));
-        dt.Columns.Add("amdGUID", typeof(string));
         dt.Columns.Add("amdNome", typeof(string));
         dt.Columns.Add("amdProcesso", typeof(int));
         dt.Columns.Add("amdAndamento", typeof(int));
         dt.Columns.Add("amdPathFull", typeof(string));
         dt.Columns.Add("amdUNC", typeof(string));
+        dt.Columns.Add("amdGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["amdCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBAndamentosMD(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -62,7 +75,7 @@ public class DBAndamentosMDTests : IDisposable
     {
         var instance = new DBAndamentosMD();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("AndamentosMD", instance.ITabelaName());
+        Assert.Equal("AndamentosMD", instance.ITableName());
         Assert.Equal("amd", instance.Prefixo);
     }
 
@@ -80,29 +93,16 @@ public class DBAndamentosMDTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["amdCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBAndamentosMD(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("AndamentosMD", cadastro.ITabelaName());
-        Assert.Equal("amdCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("amdNome", cadastro.ICampoNome());
-        Assert.Equal("amd", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("AndamentosMD", cadastro.ITableName());
+        Assert.Equal("amdCodigo", cadastro.IFieldId());
+        Assert.Equal("amdNome", cadastro.IFieldNameDescription());
+        Assert.Equal("amd", cadastro.IPrefix());
     }
 
 #endregion
@@ -162,30 +162,12 @@ public class DBAndamentosMDTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
@@ -260,6 +242,24 @@ public class DBAndamentosMDTests : IDisposable
     {
         _instance.FUNC = input;
         Assert.Equal(expected, _instance.FUNC);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

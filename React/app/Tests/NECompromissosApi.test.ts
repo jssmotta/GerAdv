@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { NECompromissosApiError } from '../GerAdv_TS/NECompromissos/Apis/ApiNECompromissos';
+import { NECompromissosApiError } from '@/app/GerAdv_TS/NECompromissos/Apis/ApiNECompromissos';
 import { NECompromissosApi } from '@/app/GerAdv_TS/NECompromissos/Apis/ApiNECompromissos';
-import { FilterNECompromissos } from '../GerAdv_TS/NECompromissos/Filters/NECompromissos';
-import { INECompromissos } from '../GerAdv_TS/NECompromissos/Interfaces/interface.NECompromissos';
-import { NECompromissosTestEmpty } from '../GerAdv_TS/Models/NECompromissos';
+import { FilterNECompromissos } from '@/app/GerAdv_TS/NECompromissos/Filters/NECompromissos';
+import { INECompromissos } from '@/app/GerAdv_TS/NECompromissos/Interfaces/interface.NECompromissos';
+import { NECompromissosTestEmpty } from '@/app/GerAdv_TS/Models/NECompromissos';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('NECompromissosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterNECompromissos = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,11 @@ describe('NECompromissosApi', () => {
   describe('addAndUpdate', () => {
     const mockNECompromissos: INECompromissos = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+palavrachave: 0,
+provisionar: false,
+tipocompromisso: 0,
+textocompromisso: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
     };
 
     it('should add new necompromissos successfully', async () => {
@@ -487,7 +478,7 @@ describe('NECompromissosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterNECompromissos = { funcionario: 1 };
+      const mockFilter: FilterNECompromissos = { : 1 };
       
       const result = necompromissosApi.useFilter(mockFilter);
       

@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IProcessOutPutIDsFormProps } from '../../Interfaces/interface.ProcessOutPutIDs';
 import { ProcessOutPutIDsService } from '../../Services/ProcessOutPutIDs.service';
 import { useProcessOutPutIDsForm, useValidationsProcessOutPutIDs } from '../../Hooks/hookProcessOutPutIDs';
-import { ProcessOutPutIDsEmpty } from '../../../Models/ProcessOutPutIDs';
+import { ProcessOutPutIDsEmpty } from '../../../Models/ProcessOutPutIDs'; 
 import { ProcessOutPutIDsForm } from '../Forms/ProcessOutPutIDs';
+ 
 
 const ProcessOutPutIDsInc: React.FC<IProcessOutPutIDsFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const processoutputidsService = new ProcessOutPutIDsService(
-  new ProcessOutPutIDsApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadProcessOutPutIDs } = useProcessOutPutIDsForm(
-ProcessOutPutIDsEmpty(), 
-processoutputidsService
-);
-useEffect(() => {
-  loadProcessOutPutIDs(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedProcessOutPutIDs = await processoutputidsService.saveProcessOutPutIDs(data);
-    if (savedProcessOutPutIDs.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedProcessOutPutIDs);
+  const processoutputidsService = new ProcessOutPutIDsService(
+    new ProcessOutPutIDsApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadProcessOutPutIDs } = useProcessOutPutIDsForm(
+    ProcessOutPutIDsEmpty(),
+    processoutputidsService
+  );
+
+  useEffect(() => {
+    loadProcessOutPutIDs(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedProcessOutPutIDs = await processoutputidsService.saveProcessOutPutIDs(data);
+
+      if (savedProcessOutPutIDs.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedProcessOutPutIDs);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadProcessOutPutIDs(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <ProcessOutPutIDsForm
+        processoutputidsData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadProcessOutPutIDs(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<ProcessOutPutIDsForm
-processoutputidsData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default ProcessOutPutIDsInc;

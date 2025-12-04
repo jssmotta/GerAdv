@@ -22,7 +22,7 @@ public class DBAgendaSemanaUpdate : IDisposable
         var agendasemana = new DBAgendaSemana();
         // Assert
         agendasemana.Should().NotBeNull();
-        agendasemana.ITabelaName().Should().Be("AgendaSemana");
+        agendasemana.ITableName().Should().Be("AgendaSemana");
         agendasemana.ID.Should().Be(0);
     }
 

@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ContratosGridAdapter } from '@/app/GerAdv_TS/Contratos/Adapter/ContratosGridAdapter';
 import ContratosGridContainer from '@/app/GerAdv_TS/Contratos/Components/ContratosGridContainer';
+
 const ContratosPage: React.FC = () => {
-  const ContratosGrid = new ContratosGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Contratos' />
-    <ContratosGridContainer grid={ContratosGrid} />
-  </PageLayout>
-);
+    const ContratosGrid = new ContratosGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ContratosGridContainer grid={ContratosGrid} />
+        </PageLayout>
+    );
 };
+
 export default ContratosPage;

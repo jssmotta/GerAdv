@@ -68,12 +68,6 @@ namespace MenphisSI.GerAdv.Models
         public string NomeMae { get; set; } = "";
 
         /// <summary>
-        /// GUID - advGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Estagiario - advEstagiario  
         /// </summary>
         [JsonPropertyName("estagiario")]
@@ -237,6 +231,30 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// Etiqueta - advEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - advAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - advBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - advGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -303,12 +321,6 @@ namespace MenphisSI.GerAdv.Models.All
         public string NomeMae { get; set; } = "";
 
         /// <summary>
-        /// GUID - advGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Estagiario - advEstagiario  
         /// </summary>
         [JsonPropertyName("estagiario")]
@@ -472,6 +484,30 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// Etiqueta - advEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - advAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - advBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - advGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomecargos")]
         public string NomeCargos { get; set; } = string.Empty;

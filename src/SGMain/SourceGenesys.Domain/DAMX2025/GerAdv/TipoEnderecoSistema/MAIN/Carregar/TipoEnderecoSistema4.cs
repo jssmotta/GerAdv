@@ -54,6 +54,22 @@ public partial class DBTipoEnderecoSistema
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBTipoEnderecoSistemaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBTipoEnderecoSistemaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoSistemaDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBTipoEnderecoSistemaDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBTipoEnderecoSistema
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoSistemaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTipoEnderecoSistemaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTipoEnderecoSistemaDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBTipoEnderecoSistema
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoSistemaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTipoEnderecoSistemaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTipoEnderecoSistemaDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBTipoEnderecoSistema
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoSistemaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTipoEnderecoSistemaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTipoEnderecoSistemaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBTipoEnderecoSistemaDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTipoEnderecoSistemaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBTipoEnderecoSistema
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IViaRecebimentoService
 {
+    Task<Filters.FilterViaRecebimento> FilterVoice([FromBody] Filters.FilterViaRecebimento filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ViaRecebimentoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterViaRecebimento filter, [FromRoute, Required] string uri = "");
     Task<ViaRecebimentoResponse?> AddAndUpdate(Models.ViaRecebimento? regViaRecebimento, [FromRoute, Required] string uri = "");
     Task<ViaRecebimentoResponse?> Validation(Models.ViaRecebimento? regViaRecebimento, [FromRoute, Required] string uri = "");

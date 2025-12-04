@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFactory) : IStatusTarefasReader
+public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFactory, IConnectionService connection) : IStatusTarefasReader
 {
     private readonly IFStatusTarefasFactory _statustarefasFactory = statustarefasFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("sttCodigo, sttNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<StatusTarefasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBStatusTarefas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<StatusTarefasResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("sttCodigo, sttNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<StatusTarefasResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBStatusTarefas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<StatusTarefasResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<StatusTarefasResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,20 +48,20 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         return result;
     }
 
-    public async Task<StatusTarefasResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<StatusTarefasResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _statustarefasFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.StatusTarefas?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.StatusTarefas?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _statustarefasFactory.CreateFromIdAsync(id, oCnn);
         var statustarefas = new Models.StatusTarefas
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return statustarefas;
     }
@@ -82,7 +88,7 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return statustarefas;
     }
@@ -98,7 +104,7 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return statustarefas;
     }
@@ -114,7 +120,7 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return statustarefas;
     }
@@ -130,7 +136,7 @@ public partial class StatusTarefasReader(IFStatusTarefasFactory statustarefasFac
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return statustarefas;
     }

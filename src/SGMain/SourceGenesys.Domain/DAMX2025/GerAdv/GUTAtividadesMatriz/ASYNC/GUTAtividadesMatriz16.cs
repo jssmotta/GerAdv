@@ -14,6 +14,14 @@ public partial class DBGUTAtividadesMatriz
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBGUTAtividadesMatriz
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,15 +142,15 @@ public partial class DBGUTAtividadesMatriz
 
 #if (!NOTSTORED_GUTAtividadesMatriz)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUTMatriz || pFldFGUTAtividade || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFGUTMatriz || pFldFGUTAtividade || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFGUTMatriz)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.GUTMatriz, m_FGUTMatriz, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.GUTMatriz, FGUTMatriz, EGenericTypeFields.FNumber);
         if (pFldFGUTAtividade)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.GUTAtividade, m_FGUTAtividade, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.GUTAtividade, FGUTAtividade, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -154,24 +162,23 @@ public partial class DBGUTAtividadesMatriz
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBGUTAtividadesMatrizDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBGUTAtividadesMatrizDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBGUTAtividadesMatrizDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

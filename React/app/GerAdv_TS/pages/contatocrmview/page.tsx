@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ContatoCRMViewGridAdapter } from '@/app/GerAdv_TS/ContatoCRMView/Adapter/ContatoCRMViewGridAdapter';
 import ContatoCRMViewGridContainer from '@/app/GerAdv_TS/ContatoCRMView/Components/ContatoCRMViewGridContainer';
+
 const ContatoCRMViewPage: React.FC = () => {
-  const ContatoCRMViewGrid = new ContatoCRMViewGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Contato C R M View' />
-    <ContatoCRMViewGridContainer grid={ContatoCRMViewGrid} />
-  </PageLayout>
-);
+    const ContatoCRMViewGrid = new ContatoCRMViewGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ContatoCRMViewGridContainer grid={ContatoCRMViewGrid} />
+        </PageLayout>
+    );
 };
+
 export default ContatoCRMViewPage;

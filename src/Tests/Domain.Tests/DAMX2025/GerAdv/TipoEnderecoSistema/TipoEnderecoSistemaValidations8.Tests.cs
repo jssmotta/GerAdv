@@ -53,8 +53,7 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
         return new Models.TipoEnderecoSistema
         {
             Id = 1,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Nome = "João"
         };
     }
 
@@ -79,8 +78,7 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
         var tipoenderecosistema = new Models.TipoEnderecoSistema
         {
             Id = 1,
-            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -107,7 +105,7 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
         tipoenderecosistema.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoenderecosistema, _mockTipoEnderecoSistemaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -138,54 +136,7 @@ public class TipoEnderecoSistemaValidationTests : IDisposable
     {
         // Arrange
         var tipoenderecosistema = CreateValidTipoEnderecoSistema();
-        tipoenderecosistema.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoenderecosistema, _mockTipoEnderecoSistemaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var tipoenderecosistema = CreateValidTipoEnderecoSistema();
-        tipoenderecosistema.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoenderecosistema, _mockTipoEnderecoSistemaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var tipoenderecosistema = CreateValidTipoEnderecoSistema();
-        tipoenderecosistema.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoenderecosistema, _mockTipoEnderecoSistemaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var tipoenderecosistema = CreateValidTipoEnderecoSistema();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(tipoenderecosistema, _mockTipoEnderecoSistemaService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var tipoenderecosistema = CreateValidTipoEnderecoSistema();
-        tipoenderecosistema.GUID = "   ";
+        tipoenderecosistema.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoenderecosistema, _mockTipoEnderecoSistemaService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

@@ -23,7 +23,7 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var clientesExists0 = await clientesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterClientes { EnquadramentoEmpresa = id ?? default }, uri);
         if (clientesExists0 != null && clientesExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Clientes associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Clientes associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBEnquadramentoEmpresaDicInfo.EqeNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBEnquadramentoEmpresaDicInfo.EqeNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBEnquadramentoEmpresaDicInfo.EqeGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBEnquadramentoEmpresaDicInfo.EqeGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,11 +40,11 @@ public class EnquadramentoEmpresaValidation : IEnquadramentoEmpresaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         await Task.Delay(0);
         return true;
     }

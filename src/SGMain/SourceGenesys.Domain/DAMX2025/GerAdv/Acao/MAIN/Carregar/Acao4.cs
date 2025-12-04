@@ -54,8 +54,24 @@ public partial class DBAcao
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBAcaoDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBAcaoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAcaoDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBAcaoDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBAcaoDicInfo.Area));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAcaoDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBAcaoDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBAcaoDicInfo.Justica));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAcaoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBAcaoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBAcaoDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAcaoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBAcaoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBAcaoDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAcaoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBAcaoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBAcaoDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBAcaoDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBAcaoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBAcao
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

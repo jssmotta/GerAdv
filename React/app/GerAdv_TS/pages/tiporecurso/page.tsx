@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { TipoRecursoGridAdapter } from '@/app/GerAdv_TS/TipoRecurso/Adapter/TipoRecursoGridAdapter';
 import TipoRecursoGridContainer from '@/app/GerAdv_TS/TipoRecurso/Components/TipoRecursoGridContainer';
+
 const TipoRecursoPage: React.FC = () => {
-  const TipoRecursoGrid = new TipoRecursoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Tipo Recurso' />
-    <TipoRecursoGridContainer grid={TipoRecursoGrid} />
-  </PageLayout>
-);
+    const TipoRecursoGrid = new TipoRecursoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <TipoRecursoGridContainer grid={TipoRecursoGrid} />
+        </PageLayout>
+    );
 };
+
 export default TipoRecursoPage;

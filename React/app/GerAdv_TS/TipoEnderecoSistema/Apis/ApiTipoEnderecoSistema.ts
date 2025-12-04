@@ -4,12 +4,14 @@
 'use client';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import useSWR from 'swr';
-import { FilterTipoEnderecoSistema } from '../Filters/TipoEnderecoSistema'
+import { FilterTipoEnderecoSistema, FilterTipoEnderecoSistemaDefaults } from '../Filters/TipoEnderecoSistema'
+import { IFilterTipoEnderecoSistemaWithVoiceRequest } from '../Interfaces/interface.CommandSpeaker';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
 import { TipoEnderecoSistema } from '../../Models/TipoEnderecoSistema';
 import { ITipoEnderecoSistema } from '../Interfaces/interface.TipoEnderecoSistema';
 import { decodeBase64Token, fetcher } from '@/app/tools/Fetcher';
 import { INotificationService, INotifySystemEntity, NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
-import { CRUD_CONSTANTS, decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
+import { CRUD_CONSTANTS, decodeDataFromStorage, encodeDataForStorage, uniqueKeyDay } from '@/app/tools/crud';
 
 
 export class TipoEnderecoSistemaApiError extends Error {
@@ -110,7 +112,7 @@ export class TipoEnderecoSistemaApi {
 
    
         public async getAll(max: number = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS): Promise<AxiosResponse> {
-        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema_last_getAll_${max}`);
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${uniqueKeyDay()}_lst_getAll_${max}`);
         try {
             const response = await axios.get(`${this.baseUrl}/GetAll?max=${max}`, this.getHeaders());
             
@@ -145,7 +147,7 @@ export class TipoEnderecoSistemaApi {
     }
     
         public async getById(id: number): Promise<AxiosResponse> {
-        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema_last_getById_${id}`);
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${uniqueKeyDay()}_lst_getById_${id}`);
         try {
             const response = await axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
             
@@ -181,7 +183,7 @@ export class TipoEnderecoSistemaApi {
     
         public async getListN(max?: number, filtro?: FilterTipoEnderecoSistema): Promise<AxiosResponse> {
         if (max === undefined) max = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS;
-        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema_last_listN_data`);
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${uniqueKeyDay()}_lst_listN_data`);
 
         try {
             const response = await axios.post(`${this.baseUrl}/GetListN/?max=${max}`, filtro, this.getHeaders());
@@ -215,25 +217,32 @@ export class TipoEnderecoSistemaApi {
             this.handleApiError(error, 'Erro ao buscar lista de TipoEnderecoSistema');
         }
     }
- public async filterPreload(max: number, filtro: FilterTipoEnderecoSistema): Promise<AxiosResponse> {
-                        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${max}_last_filter_data_${JSON.stringify(filtro)}`);
-                        const offlineData = localStorage.getItem(storageKey);        
-                        const decoded = offlineData ? decodeDataFromStorage(offlineData) : [];
+ public async filterPreload(max: number, filtro?: FilterTipoEnderecoSistema): Promise<AxiosResponse> {
 
-                        return {
-                            data: decoded,
-                            status: 200,
-                            statusText: 'OK (offline)',
-                            headers: {},
-                            config: {},
-                        } as AxiosResponse;        
-                    }
+        const _filtro = filtro || new FilterTipoEnderecoSistemaDefaults();
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`);
+        const offlineData = localStorage.getItem(storageKey);        
+        const decoded = offlineData ? decodeDataFromStorage(offlineData) : [];
+
+        return {
+            data: decoded,
+            status: 200,
+            statusText: 'OK (offline)',
+            headers: {},
+            config: {},
+        } as AxiosResponse;        
+    }
 
 
-            public async filter(max: number, filtro: FilterTipoEnderecoSistema): Promise<AxiosResponse> {
-                const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${max}_last_filter_data_${JSON.stringify(filtro)}`);
+
+            public async filter(max: number, filtro?: FilterTipoEnderecoSistema): Promise<AxiosResponse> {
+
+                const _max = max || CRUD_CONSTANTS.DEFAULT_MAX_RECORDS;
+                const _filtro = filtro || new FilterTipoEnderecoSistemaDefaults();
+ 
+                const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`);
                 try {
-                    const response = await axios.post(`${this.baseUrl}/Filter?max=${max}`, filtro, this.getHeaders());
+                    const response = await axios.post(`${this.baseUrl}/Filter?max=${_max}`, _filtro, this.getHeaders());
                     
                 Promise.resolve().then(() => {
                     try {
@@ -263,6 +272,49 @@ export class TipoEnderecoSistemaApi {
                     }
 
                     this.handleApiError(error, 'Erro ao filtrar TipoEnderecoSistema');
+                }
+            }
+
+
+            public async filterVoice(filtro?: FilterTipoEnderecoSistema, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+
+                const _filtro = filtro || new FilterTipoEnderecoSistemaDefaults();
+
+                // Create request object according to new backend structure
+                const request: IFilterTipoEnderecoSistemaWithVoiceRequest = {filter: _filtro, voiceCommand: voiceCommand };
+
+                const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-TipoEnderecoSistema-${uniqueKeyDay()}-fltVoice-last_filter_data_${JSON.stringify(request)}`);
+                try {
+                    const response = await axios.post(`${this.baseUrl}/FilterVoice`, request, this.getHeaders());
+                    
+                Promise.resolve().then(() => {
+                    try {
+                        const encoded = encodeDataForStorage(response.data);
+                        localStorage.setItem(storageKey, encoded);
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
+                    }
+                });
+        
+                    return response;
+                } catch (error: any) {
+                    const offlineData = localStorage.getItem(storageKey);
+                    if (offlineData) {
+                        const decoded = decodeDataFromStorage(offlineData);
+                        this.notificationService.notify(
+                            this.createNotificationOffLiveEntity(0, NotifySystemActions.INFO)
+                        );
+                        return {
+                            data: decoded,
+                            status: 200,
+                            statusText: 'OK (offline)',
+                            headers: {},
+                            config: {},
+                        } as AxiosResponse;
+                    }
+
+                    this.handleApiError(error, 'Erro ao gerar voice filter TipoEnderecoSistema');
                 }
             }
 
@@ -347,9 +399,14 @@ export class TipoEnderecoSistemaApi {
 
 
 
-    public useFilter(filtro: FilterTipoEnderecoSistema) {
-       const url = `${this.baseUrl}/Filter`;
-       const key = `${url}::${this.authorization}::${JSON.stringify(filtro)}`;
+
+    public useFilter(filtro: FilterTipoEnderecoSistema, voiceCommand?: ICommandSpeakerRequest) {
+    const request: IFilterTipoEnderecoSistemaWithVoiceRequest = {filter: filtro || new FilterTipoEnderecoSistemaDefaults(),
+      voiceCommand: voiceCommand
+    };
+    
+    const url = `${this.baseUrl}/Filter/${this.uri}`;
+    const key = `${url}::${this.authorization}::${JSON.stringify(request)}`;
     
         return useSWR<TipoEnderecoSistema[]>(key, fetcher, {
           revalidateOnFocus: false,

@@ -6,65 +6,88 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IFCargosEscClassFactory cargosescclassFactory, ICargosEscClassReader reader, ICargosEscClassValidation validation, ICargosEscClassWriter writer, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : ICargosEscClassService, IDisposable
+public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IFCargosEscClassFactory cargosescclassFactory, ICargosEscClassReader reader, ICargosEscClassValidation validation, ICargosEscClassWriter writer, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterCargosEscClass> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : ICargosEscClassService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterCargosEscClass> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFCargosEscClassFactory cargosescclassFactory = cargosescclassFactory;
     private readonly ICargosEscClassReader reader = reader;
     private readonly ICargosEscClassValidation validation = validation;
     private readonly ICargosEscClassWriter writer = writer;
-    public async Task<IEnumerable<CargosEscClassResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<CargosEscClassResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterCargosEscClass filtro, [FromRoute, Required] string uri)
     {
-        max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("CargosEscClass: URI inválida");
         }
 
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
-            LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
-        };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-CargosEscClass-Filter-{max}-{keyCache}";
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
-        return result;
-    }
-
-    public async Task<IEnumerable<CargosEscClassResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterCargosEscClass filtro, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new DatabaseConnectionException();
-        }
-
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
-        var cacheKey = $"{uri}-{max}CargosEscClass-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroCargosEscClass(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterCargosEscClass>.GetFilterHash(filtro);
+            var keyCache = await reader.ReadStringAuditorAsync(max, uri, where, parameters, oCnn);
+            var cacheKey = $"{uri}-{max}CargosEscClass-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"CargosEscClass - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterCargosEscClass> FilterVoice([FromBody] Filters.FilterCargosEscClass filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("CargosEscClass: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterCargosEscClass? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterCargosEscClass();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterCargosEscClass();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"CargosEscClass - error on creating filter.");
+        }
     }
 
     public async Task<CargosEscClassResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
@@ -80,10 +103,11 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
             var result = await _cache.GetOrCreateAsync($"{uri}-CargosEscClass-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
@@ -93,7 +117,29 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
         }
     }
 
-    private async Task<CargosEscClassResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<CargosEscClassResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
+    public async Task<AuditorResponse?> GetAuditor([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        ThrowIfDisposed();
+        AuditorResponse? result = null;
+        if (id < 1)
+        {
+            return result;
+        }
+
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
+        try
+        {
+            result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            return result;
+        }
+        catch (Exception)
+        {
+            throw new Exception($"CargosEscClass - {uri}-: GetAuditor");
+        }
+    }
+
     public async Task<CargosEscClassResponse?> AddAndUpdate([FromBody] Models.CargosEscClass? regCargosEscClass, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -102,12 +148,13 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("CargosEscClass: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -143,12 +190,13 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("CargosEscClass: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -176,7 +224,7 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
             return new CargosEscClassResponse();
         }
 
-        return await reader.Read(regCargosEscClass.Id, oCnn);
+        return await reader.ReadAsync(regCargosEscClass.Id, oCnn);
     }
 
     public async Task<CargosEscClassResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
@@ -187,13 +235,14 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
         }
 
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("CargosEscClass: URI inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -216,12 +265,12 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var cargosescclass = await reader.Read(id ?? default, oCnn);
+        var cargosescclass = await reader.ReadAsync(id ?? default, oCnn);
         try
         {
             if (cargosescclass != null)
             {
-                await writer.Delete(cargosescclass, nOperador, oCnn);
+                await writer.DeleteAsync(cargosescclass, nOperador, oCnn);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
@@ -256,9 +305,6 @@ public partial class CargosEscClassService(IOptions<AppSettings> appSettings, IF
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

@@ -9,6 +9,7 @@ export interface IStatusAndamento {
  
 	nome: string,
 	icone: number,
+	bold: boolean,
 }
 
 export interface IStatusAndamentoFormProps {

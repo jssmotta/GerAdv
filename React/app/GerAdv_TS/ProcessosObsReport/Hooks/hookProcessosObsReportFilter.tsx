@@ -9,142 +9,280 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterProcessosObsReport } from '@/app/GerAdv_TS/ProcessosObsReport/Filters/ProcessosObsReport';
+import FilterDialogButton from '@/app/components/Cruds/FilterDialogButton';
+
+
 interface UseProcessosObsReportFilterProps {
-  handleFetchWithFilter: (filtro?: FilterProcessosObsReport | undefined | null) => Promise<void>;
+    handleFetchWithFilter: (filtro?: FilterProcessosObsReport | undefined | null) => Promise<void>;
 }
+
 interface UseProcessosObsReportFilterReturn {
-  // Estados
-  showSearch: boolean;
-  windowFilter: FilterProcessosObsReport;
-  setWindowFilter: React.Dispatch<React.SetStateAction<FilterProcessosObsReport>>;
-  // Handlers do Dialog
-  handleSearch: () => void;
-  handleCloseSearch: () => void;
-  handleConfirmSearch: (filter: FilterProcessosObsReport) => Promise<void>;
-  // Render function
-  renderInputFilters: (handlers: FilterHandlers<FilterProcessosObsReport>) => React.ReactNode;
-  // Utilitários
-  clearFilter: () => void;
-  hasActiveFilter: boolean;
+    // Estados
+    showSearch: boolean;
+    windowFilter: FilterProcessosObsReport;
+    setWindowFilter: React.Dispatch<React.SetStateAction<FilterProcessosObsReport>>;
+
+    // Handlers do Dialog
+    handleSearch: () => void;
+    handleCloseSearch: () => void;
+    handleConfirmSearch: (filter: FilterProcessosObsReport) => Promise<void>;
+
+    // Render function
+    renderInputFilters: (handlers: FilterHandlers<FilterProcessosObsReport>) => React.ReactNode;
+
+    // Utilitários
+    clearFilter: () => void;
+    hasActiveFilter: boolean;
 }
+
 export const useProcessosObsReportFilter = ({ handleFetchWithFilter }: UseProcessosObsReportFilterProps): UseProcessosObsReportFilterReturn => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [windowFilter, setWindowFilter] = useState<FilterProcessosObsReport>({} as FilterProcessosObsReport);
-  // Handlers do Dialog
-  const handleSearch = () => {
-    setShowSearch(true);
-    const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterProcessosObsReport;
-    setWindowFilter(filterWildechar);
-  };
-  const handleCloseSearch = () => {
-    setShowSearch(false);
-  };
-  const handleConfirmSearch = async (filter: FilterProcessosObsReport) => {
-    await handleFetchWithFilter(filter);
-  };
-  // Função para limpar filtros
-  const clearFilter = () => {
-    setWindowFilter({});
-    sessionStorage.removeItem(btoa('ProcessosObsReportFilter'));
-    handleFetchWithFilter({});
-  };
-  // Verificar se há filtros ativos
-  const hasActiveFilter = Object.values(windowFilter).some(value =>
-    value !== undefined && value !== null && value !== '' && value !== -2147483648
-  );
-  // Função para renderizar os campos de filtro
-  const renderInputFilters = (handlers: FilterHandlers<FilterProcessosObsReport>) => (
-  <>
-  <InputInput
-  type='text'
-  id='processo'
-  name='processo'
-  value={handlers.windowFilter?.processo ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Processo'
-  label='Processo (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='processo_end'
-  name='processo_end'
-  value={handlers.windowFilter?.processo_end ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Processo final'
-  label='Processo final'
-  disabled={handlers.windowFilter?.processo ? false: true}
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='observacao'
-  name='observacao'
-  value={handlers.windowFilter?.observacao ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Observacao'
-  label='Observacao'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='historico'
-  name='historico'
-  value={handlers.windowFilter?.historico ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Historico'
-  label='Historico (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='historico_end'
-  name='historico_end'
-  value={handlers.windowFilter?.historico_end ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Historico final'
-  label='Historico final'
-  disabled={handlers.windowFilter?.historico ? false: true}
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro'
-  name='codigo_filtro'
-  value={handlers.windowFilter?.codigo_filtro ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código do cadastro'
-  label='Código (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro_end'
-  name='codigo_filtro_end'
-  value={handlers.windowFilter?.codigo_filtro_end ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código final do cadastro'
-  label='Código final'
-  disabled={handlers.windowFilter?.codigo_filtro ? false: true}
-  className='inputIncNome inputSearch'
-  />
-</>
-);
-return {
-  // Estados
-  showSearch, 
-  windowFilter, 
-  setWindowFilter, 
-  // Handlers
-  handleSearch, 
-  handleCloseSearch, 
-  handleConfirmSearch, 
-  // Render function
-  renderInputFilters, 
-  // Utilitários
-  clearFilter, 
-  hasActiveFilter
-};
+    const [showSearch, setShowSearch] = useState(false);
+    const [windowFilter, setWindowFilter] = useState<FilterProcessosObsReport>({} as FilterProcessosObsReport);
+
+    // Handlers do Dialog
+    const handleSearch = () => {
+        setShowSearch(true);
+        const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterProcessosObsReport;
+        setWindowFilter(filterWildechar);
+    };
+
+    const handleCloseSearch = () => {
+        setShowSearch(false);
+    };
+
+    const handleConfirmSearch = async (filter: FilterProcessosObsReport) => {
+        await handleFetchWithFilter(filter);
+    };
+
+    // Função para limpar filtros
+    const clearFilter = () => {
+        setWindowFilter({} as FilterProcessosObsReport);
+        sessionStorage.removeItem(btoa('ProcessosObsReportFilter'));
+        handleFetchWithFilter({} as FilterProcessosObsReport);
+    };
+
+    // Verificar se há filtros ativos
+    const hasActiveFilter = Object.values(windowFilter).some(value =>
+        value !== undefined && value !== null && value !== '' && value !== -2147483648
+    );
+
+    // Função para renderizar os campos de filtro
+    const renderInputFilters = (handlers: FilterHandlers<FilterProcessosObsReport>) => (        
+        <>
+        <InputDate
+                type='text'
+                id='data'
+                label='Data (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='data'
+                value={handlers.windowFilter?.data ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('data', value)}
+            />
+<InputDate
+                type='text'
+                id='data_end'
+                label='Data (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='data_end'
+                value={handlers.windowFilter?.data_end ?? ''}
+                disabled={handlers.windowFilter?.data ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('data_end', value)}
+            />
+<InputInput
+                type='text'
+                id='processo'
+                name='processo'
+                value={handlers.windowFilter?.processo ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Processo'
+                label='Processo (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='processo_end'
+                name='processo_end'
+                value={handlers.windowFilter?.processo_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Processo final'
+                label='Processo final'
+                disabled={handlers.windowFilter?.processo ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='observacao'
+                name='observacao'
+                value={handlers.windowFilter?.observacao ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Observacao'
+                label='Observacao'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='historico'
+                name='historico'
+                value={handlers.windowFilter?.historico ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Historico'
+                label='Historico (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='historico_end'
+                name='historico_end'
+                value={handlers.windowFilter?.historico_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Historico final'
+                label='Historico final'
+                disabled={handlers.windowFilter?.historico ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad'
+                name='quemcad'
+                value={handlers.windowFilter?.quemcad ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro'
+                label='Usuário de Cadastro (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad_end'
+                name='quemcad_end'
+                value={handlers.windowFilter?.quemcad_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro final'
+                label='Usuário de Cadastro final'
+                disabled={handlers.windowFilter?.quemcad ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtcad'
+                label='Data de Cadastro (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad'
+                value={handlers.windowFilter?.dtcad ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtcad', value)}
+            />
+<InputDate
+                type='text'
+                id='dtcad_end'
+                label='Data de Cadastro (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad_end'
+                value={handlers.windowFilter?.dtcad_end ?? ''}
+                disabled={handlers.windowFilter?.dtcad ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtcad_end', value)}
+            />
+<InputInput
+                type='text'
+                id='quematu'
+                name='quematu'
+                value={handlers.windowFilter?.quematu ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização'
+                label='Usuário de Atualização (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quematu_end'
+                name='quematu_end'
+                value={handlers.windowFilter?.quematu_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização final'
+                label='Usuário de Atualização final'
+                disabled={handlers.windowFilter?.quematu ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtatu'
+                label='Data de Atualização (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu'
+                value={handlers.windowFilter?.dtatu ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtatu', value)}
+            />
+<InputDate
+                type='text'
+                id='dtatu_end'
+                label='Data de Atualização (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu_end'
+                value={handlers.windowFilter?.dtatu_end ?? ''}
+                disabled={handlers.windowFilter?.dtatu ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtatu_end', value)}
+            />
+<InputComboFilterYesNo
+                type='text'
+                id='visto'
+                name='visto'
+                value={handlers.windowFilter?.visto ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Visto'
+                className='inputSearch inputSearchCheckbox'
+                />
+
+<InputInput
+                type='text'
+                id='codigo_filtro'
+                name='codigo_filtro'
+                value={handlers.windowFilter?.codigo_filtro ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código do cadastro'
+                label='Código (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='codigo_filtro_end'
+                name='codigo_filtro_end'
+                value={handlers.windowFilter?.codigo_filtro_end ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código final do cadastro'
+                label='Código final'
+                disabled={handlers.windowFilter?.codigo_filtro ? false : true}
+                className='input-default-main inputSearch'
+                />
+
+        </>        
+    );
+
+
+    
+
+
+    return {
+        // Estados
+        showSearch,
+        windowFilter,
+        setWindowFilter,
+
+        // Handlers
+        handleSearch,
+        handleCloseSearch,
+        handleConfirmSearch,
+
+        // Render function
+        renderInputFilters,
+
+        // Utilitários
+        clearFilter,
+        hasActiveFilter
+    };
 };

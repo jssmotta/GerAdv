@@ -28,8 +28,6 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBTipoEnderecoSistemaDicInfo.TesNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBTipoEnderecoSistemaDicInfo.TesNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTipoEnderecoSistemaDicInfo.TesGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTipoEnderecoSistemaDicInfo.TesGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,11 +37,11 @@ public class TipoEnderecoSistemaValidation : ITipoEnderecoSistemaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         await Task.Delay(0);
         return true;
     }

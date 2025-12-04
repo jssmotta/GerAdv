@@ -11,7 +11,7 @@ public static partial class DBTipoEnderecoSistemaDicInfo
     public const string CampoNome = "tesNome";
     public const string TablePrefix = "tes";
     public const string Nome = "tesNome"; // LOCALIZACAO 170523
-    public const string GUID = "tesGUID"; // LOCALIZACAO 170523
+    public const string Guid = "tesGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "tesQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "tesDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "tesQuemAtu"; // LOCALIZACAO 170523
@@ -31,39 +31,13 @@ public static partial class DBTipoEnderecoSistemaDicInfo
 
     public const string PTabelaNome = "TipoEnderecoSistema";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TesNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "tes"
-    };
-    public static DBInfoSystem TesGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "tes"
-    };
-    public static DBInfoSystem TesQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "tes"
-    }; // DBI 11 
-    public static DBInfoSystem TesDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "tes"
-    };
-    public static DBInfoSystem TesQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tes"
-    }; // DBI 11 
-    public static DBInfoSystem TesDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "tes"
-    };
-    public static DBInfoSystem TesVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "tes"
-    };
+    public static DBInfoSystem TesNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tes", isRequired: true);
+    public static DBInfoSystem TesGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tes", isRequired: true);
+    public static DBInfoSystem TesQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tes", isRequired: true); // DBI 11 
+    public static DBInfoSystem TesDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tes", isRequired: true);
+    public static DBInfoSystem TesQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tes"); // DBI 11 
+    public static DBInfoSystem TesDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tes");
+    public static DBInfoSystem TesVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tes", isRequired: true);
 
 #endregion
     [Serializable]

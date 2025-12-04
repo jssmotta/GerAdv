@@ -14,6 +14,14 @@ public partial class DBAgenda
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBAgenda
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,89 +142,89 @@ public partial class DBAgenda
 
 #if (!NOTSTORED_Agenda)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFIDCOB || pFldFClienteAvisado || pFldFRevisarP2 || pFldFIDNE || pFldFCidade || pFldFOculto || pFldFCartaPrecatoria || pFldFRevisar || pFldFHrFinal || pFldFAdvogado || pFldFEventoGerador || pFldFEventoData || pFldFFuncionario || pFldFData || pFldFEventoPrazo || pFldFHora || pFldFCompromisso || pFldFTipoCompromisso || pFldFCliente || pFldFLiberado || pFldFImportante || pFldFConcluido || pFldFArea || pFldFJustica || pFldFProcesso || pFldFIDHistorico || pFldFIDInsProcesso || pFldFUsuario || pFldFPreposto || pFldFQuemID || pFldFQuemCodigo || pFldFGUID || pFldFStatus || pFldFValor || pFldFDecisao || pFldFSempre || pFldFPrazoDias || pFldFProtocoloIntegrado || pFldFDataInicioPrazo || pFldFUsuarioCiente;
+    private bool HasAnyFieldChanged() => pFldFIDCOB || pFldFClienteAvisado || pFldFRevisarP2 || pFldFIDNE || pFldFCidade || pFldFOculto || pFldFCartaPrecatoria || pFldFRevisar || pFldFHrFinal || pFldFAdvogado || pFldFEventoGerador || pFldFEventoData || pFldFFuncionario || pFldFData || pFldFEventoPrazo || pFldFHora || pFldFCompromisso || pFldFTipoCompromisso || pFldFCliente || pFldFLiberado || pFldFImportante || pFldFConcluido || pFldFArea || pFldFJustica || pFldFProcesso || pFldFIDHistorico || pFldFIDInsProcesso || pFldFUsuario || pFldFPreposto || pFldFQuemID || pFldFQuemCodigo || pFldFStatus || pFldFValor || pFldFDecisao || pFldFSempre || pFldFPrazoDias || pFldFProtocoloIntegrado || pFldFDataInicioPrazo || pFldFUsuarioCiente || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFIDCOB)
-            updateTool.Fields(DBAgendaDicInfo.IDCOB, m_FIDCOB, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.IDCOB, FIDCOB, EGenericTypeFields.FNumber);
         if (pFldFClienteAvisado || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.ClienteAvisado, m_FClienteAvisado, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.ClienteAvisado, FClienteAvisado, EGenericTypeFields.FBoolean);
         if (pFldFRevisarP2 || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.RevisarP2, m_FRevisarP2, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.RevisarP2, FRevisarP2, EGenericTypeFields.FBoolean);
         if (pFldFIDNE)
-            updateTool.Fields(DBAgendaDicInfo.IDNE, m_FIDNE, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.IDNE, FIDNE, EGenericTypeFields.FNumber);
         if (pFldFCidade)
-            updateTool.Fields(DBAgendaDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFOculto)
-            updateTool.Fields(DBAgendaDicInfo.Oculto, m_FOculto, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Oculto, FOculto, EGenericTypeFields.FNumber);
         if (pFldFCartaPrecatoria)
-            updateTool.Fields(DBAgendaDicInfo.CartaPrecatoria, m_FCartaPrecatoria, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.CartaPrecatoria, FCartaPrecatoria, EGenericTypeFields.FNumber);
         if (pFldFRevisar || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.Revisar, m_FRevisar, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.Revisar, FRevisar, EGenericTypeFields.FBoolean);
         if (pFldFHrFinal)
-            updateTool.Fields(DBAgendaDicInfo.HrFinal, m_FHrFinal, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.HrFinal, FHrFinal, EGenericTypeFields.FDate);
         if (pFldFAdvogado)
-            updateTool.Fields(DBAgendaDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumber);
         if (pFldFEventoGerador)
-            updateTool.Fields(DBAgendaDicInfo.EventoGerador, m_FEventoGerador, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.EventoGerador, FEventoGerador, EGenericTypeFields.FNumber);
         if (pFldFEventoData)
-            updateTool.Fields(DBAgendaDicInfo.EventoData, m_FEventoData, ETiposCampos.FDate);
+            updateTool.Fields(DBAgendaDicInfo.EventoData, FEventoData, EGenericTypeFields.FDate);
         if (pFldFFuncionario)
-            updateTool.Fields(DBAgendaDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Funcionario, FFuncionario, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBAgendaDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFEventoPrazo)
-            updateTool.Fields(DBAgendaDicInfo.EventoPrazo, m_FEventoPrazo, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.EventoPrazo, FEventoPrazo, EGenericTypeFields.FNumber);
         if (pFldFHora)
-            updateTool.Fields(DBAgendaDicInfo.Hora, m_FHora, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.Hora, FHora, EGenericTypeFields.FDate);
         if (pFldFCompromisso)
-            updateTool.Fields(DBAgendaDicInfo.Compromisso, m_FCompromisso, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.Compromisso, FCompromisso, EGenericTypeFields.FString);
         if (pFldFTipoCompromisso)
-            updateTool.Fields(DBAgendaDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.TipoCompromisso, FTipoCompromisso, EGenericTypeFields.FNumber);
         if (pFldFCliente)
-            updateTool.Fields(DBAgendaDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFLiberado || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.Liberado, m_FLiberado, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.Liberado, FLiberado, EGenericTypeFields.FBoolean);
         if (pFldFImportante || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.Importante, m_FImportante, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.Importante, FImportante, EGenericTypeFields.FBoolean);
         if (pFldFConcluido || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.Concluido, FConcluido, EGenericTypeFields.FBoolean);
         if (pFldFArea)
-            updateTool.Fields(DBAgendaDicInfo.Area, m_FArea, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Area, FArea, EGenericTypeFields.FNumber);
         if (pFldFJustica)
-            updateTool.Fields(DBAgendaDicInfo.Justica, m_FJustica, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Justica, FJustica, EGenericTypeFields.FNumber);
         if (pFldFProcesso)
-            updateTool.Fields(DBAgendaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFIDHistorico)
-            updateTool.Fields(DBAgendaDicInfo.IDHistorico, m_FIDHistorico, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.IDHistorico, FIDHistorico, EGenericTypeFields.FNumber);
         if (pFldFIDInsProcesso)
-            updateTool.Fields(DBAgendaDicInfo.IDInsProcesso, m_FIDInsProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.IDInsProcesso, FIDInsProcesso, EGenericTypeFields.FNumber);
         if (pFldFUsuario)
-            updateTool.Fields(DBAgendaDicInfo.Usuario, m_FUsuario, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Usuario, FUsuario, EGenericTypeFields.FNumber);
         if (pFldFPreposto)
-            updateTool.Fields(DBAgendaDicInfo.Preposto, m_FPreposto, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Preposto, FPreposto, EGenericTypeFields.FNumber);
         if (pFldFQuemID)
-            updateTool.Fields(DBAgendaDicInfo.QuemID, m_FQuemID, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.QuemID, FQuemID, EGenericTypeFields.FNumber);
         if (pFldFQuemCodigo)
-            updateTool.Fields(DBAgendaDicInfo.QuemCodigo, m_FQuemCodigo, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBAgendaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.QuemCodigo, FQuemCodigo, EGenericTypeFields.FNumber);
         if (pFldFStatus)
-            updateTool.Fields(DBAgendaDicInfo.Status, m_FStatus, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.Status, FStatus, EGenericTypeFields.FString);
         if (pFldFValor)
-            updateTool.Fields(DBAgendaDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBAgendaDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFDecisao)
-            updateTool.Fields(DBAgendaDicInfo.Decisao, m_FDecisao, ETiposCampos.FString);
+            updateTool.Fields(DBAgendaDicInfo.Decisao, FDecisao, EGenericTypeFields.FString);
         if (pFldFSempre)
-            updateTool.Fields(DBAgendaDicInfo.Sempre, m_FSempre, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.Sempre, FSempre, EGenericTypeFields.FNumber);
         if (pFldFPrazoDias)
-            updateTool.Fields(DBAgendaDicInfo.PrazoDias, m_FPrazoDias, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.PrazoDias, FPrazoDias, EGenericTypeFields.FNumber);
         if (pFldFProtocoloIntegrado)
-            updateTool.Fields(DBAgendaDicInfo.ProtocoloIntegrado, m_FProtocoloIntegrado, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.ProtocoloIntegrado, FProtocoloIntegrado, EGenericTypeFields.FNumber);
         if (pFldFDataInicioPrazo)
-            updateTool.Fields(DBAgendaDicInfo.DataInicioPrazo, m_FDataInicioPrazo, ETiposCampos.FDate);
+            updateTool.Fields(DBAgendaDicInfo.DataInicioPrazo, FDataInicioPrazo, EGenericTypeFields.FDate);
         if (pFldFUsuarioCiente || updateTool.Insert)
-            updateTool.Fields(DBAgendaDicInfo.UsuarioCiente, m_FUsuarioCiente, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAgendaDicInfo.UsuarioCiente, FUsuarioCiente, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBAgendaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -228,24 +236,23 @@ public partial class DBAgenda
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBAgendaDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBAgendaDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBAgendaDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBAgendaDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBAgendaDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBAgendaDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBAgendaDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBAgendaDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBAgendaDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBAgendaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

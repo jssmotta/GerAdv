@@ -20,8 +20,9 @@ public partial class JusticaWhere(IFJusticaFactory justicaFactory) : IJusticaWhe
         var justica = new JusticaResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return justica;
     }

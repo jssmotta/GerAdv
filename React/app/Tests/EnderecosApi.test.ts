@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { EnderecosApiError } from '../GerAdv_TS/Enderecos/Apis/ApiEnderecos';
+import { EnderecosApiError } from '@/app/GerAdv_TS/Enderecos/Apis/ApiEnderecos';
 import { EnderecosApi } from '@/app/GerAdv_TS/Enderecos/Apis/ApiEnderecos';
-import { FilterEnderecos } from '../GerAdv_TS/Enderecos/Filters/Enderecos';
-import { IEnderecos } from '../GerAdv_TS/Enderecos/Interfaces/interface.Enderecos';
-import { EnderecosTestEmpty } from '../GerAdv_TS/Models/Enderecos';
+import { FilterEnderecos } from '@/app/GerAdv_TS/Enderecos/Filters/Enderecos';
+import { IEnderecos } from '@/app/GerAdv_TS/Enderecos/Interfaces/interface.Enderecos';
+import { EnderecosTestEmpty } from '@/app/GerAdv_TS/Models/Enderecos';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('EnderecosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterEnderecos = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,27 @@ describe('EnderecosApi', () => {
   describe('addAndUpdate', () => {
     const mockEnderecos: IEnderecos = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+topindex: false,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+contato: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+dtnasc: '24/04/1975',
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+privativo: true,
+addcontato: false,
+cep: '01234-567',
+oab: 'AAAAAAAAAAAAAAAAAA',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+tratamento: 'AAAAAAAAAAAAAAAAAA',
+cidade: 0,
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+email: 'test@email.com',
+quem: 0,
+quemindicou: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+reportecbonly: true
     };
 
     it('should add new enderecos successfully', async () => {
@@ -487,7 +494,7 @@ describe('EnderecosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterEnderecos = { funcionario: 1 };
+      const mockFilter: FilterEnderecos = { : 1 };
       
       const result = enderecosApi.useFilter(mockFilter);
       

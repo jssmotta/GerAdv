@@ -7,29 +7,20 @@ public partial class DBGraph
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFTabela, pFldFTabelaId, pFldFImagem, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FTabelaId;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FTabela, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected byte[]? m_FImagem;
+    private protected bool pFldFTabela, pFldFTabelaId, pFldFImagem, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FTabela da tabela Graph deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FTabela da tabela 'Graph' deve ter no máximo 80 caracteres.")]
     public virtual string? FTabela
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTabela ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFTabela = pFldFTabela || !(m_FTabela ?? string.Empty).Equals(value);
+            pFldFTabela = pFldFTabela || !(field ?? string.Empty).Equals(value);
             if (pFldFTabela)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FTabela = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
@@ -37,12 +28,12 @@ public partial class DBGraph
     public virtual int FTabelaId
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTabelaId;
+        get => field;
         set
         {
-            pFldFTabelaId = pFldFTabelaId || value != m_FTabelaId;
+            pFldFTabelaId = pFldFTabelaId || value != field;
             if (pFldFTabelaId)
-                m_FTabelaId = value;
+                field = value;
         }
     }
 
@@ -52,49 +43,53 @@ public partial class DBGraph
         get => m_FImagem ?? [0];
         set
         {
-            pFldFImagem = value != m_FImagem;
-            m_FImagem = value;
+            pFldFImagem = value != field;
+            field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FGUID da tabela Graph deve ter no máximo 150 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(150, ErrorMessage = "A propriedade FGuid da tabela 'Graph' deve ter no máximo 150 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IdIsIdentity() => false;
+    public bool IdIsIdentity() => true;
 #pragma warning disable CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

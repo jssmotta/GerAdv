@@ -2,36 +2,42 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactory) : IAgendaSemanaReader
+public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactory, IConnectionService connection) : IAgendaSemanaReader
 {
     private readonly IFAgendaSemanaFactory _agendasemanaFactory = agendasemanaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<AgendaSemanaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAgendaSemana.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<AgendaSemanaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<AgendaSemanaResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBAgendaSemana.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<AgendaSemanaResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<AgendaSemanaResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -58,16 +64,16 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
         {
             Id = dbRec.ID,
             ParaNome = dbRec.FParaNome ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
+            Data = dbRec.FData?.ToString("dd/MM/yyyy") ?? string.Empty,
             Funcionario = dbRec.FFuncionario,
             Advogado = dbRec.FAdvogado,
-            Hora = dbRec.FHora ?? string.Empty,
+            Hora = dbRec.FHora?.ToString("HH:mm") ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             Concluido = dbRec.FConcluido,
             Liberado = dbRec.FLiberado,
             Importante = dbRec.FImportante,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
+            HoraFinal = dbRec.FHoraFinal?.ToString("HH:mm") ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Cliente = dbRec.FCliente,
             NomeCliente = dbRec.FNomeCliente ?? string.Empty,
@@ -87,53 +93,21 @@ public partial class AgendaSemanaReader(IFAgendaSemanaFactory agendasemanaFactor
         {
             Id = dbRec.ID,
             ParaNome = dbRec.FParaNome ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
+            Data = dbRec.FData?.ToString("dd/MM/yyyy") ?? string.Empty,
             Funcionario = dbRec.FFuncionario,
             Advogado = dbRec.FAdvogado,
-            Hora = dbRec.FHora ?? string.Empty,
+            Hora = dbRec.FHora?.ToString("HH:mm") ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             Concluido = dbRec.FConcluido,
             Liberado = dbRec.FLiberado,
             Importante = dbRec.FImportante,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
+            HoraFinal = dbRec.FHoraFinal?.ToString("HH:mm") ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Cliente = dbRec.FCliente,
             NomeCliente = dbRec.FNomeCliente ?? string.Empty,
             Tipo = dbRec.FTipo ?? string.Empty,
         };
-        try
-        {
-            agendasemana.NomeFuncionarios = dr[DBFuncionariosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            agendasemana.NomeAdvogados = dr[DBAdvogadosDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            agendasemana.DescricaoTipoCompromisso = dr[DBTipoCompromissoDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            agendasemana.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
         return agendasemana;
     }
 }

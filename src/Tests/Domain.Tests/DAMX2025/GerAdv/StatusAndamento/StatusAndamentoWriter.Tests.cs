@@ -74,9 +74,9 @@ public class StatusAndamentoWriterTests
         var result = await _statusandamentoWriter.WriteAsync(statusandamento, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFStatusAndamento.Object);
+        _mockFStatusAndamento.VerifySet(x => x.FGuid = statusandamento.Guid, Times.Once);
         _mockFStatusAndamento.VerifySet(x => x.FNome = statusandamento.Nome, Times.Once);
         _mockFStatusAndamento.VerifySet(x => x.FIcone = statusandamento.Icone, Times.Once);
-        _mockFStatusAndamento.VerifySet(x => x.FGUID = statusandamento.GUID, Times.Once);
         _mockFStatusAndamento.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class StatusAndamentoWriterTests
         var operadorId = 456;
         _mockStatusAndamentoFactory.Setup(x => x.DeleteAsync(operadorId, statusandamentoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _statusandamentoWriter.Delete(statusandamentoResponse, operadorId, _mockConnection.Object);
+        await _statusandamentoWriter.DeleteAsync(statusandamentoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockStatusAndamentoFactory.Verify(x => x.DeleteAsync(operadorId, statusandamentoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class StatusAndamentoWriterTests
         var operadorId = 111;
         _mockStatusAndamentoFactory.Setup(x => x.DeleteAsync(operadorId, statusandamentoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _statusandamentoWriter.Delete(statusandamentoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _statusandamentoWriter.DeleteAsync(statusandamentoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class StatusAndamentoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockStatusAndamentoFactory.Setup(x => x.DeleteAsync(operadorId, statusandamentoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _statusandamentoWriter.Delete(statusandamentoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _statusandamentoWriter.DeleteAsync(statusandamentoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class StatusAndamentoWriterTests
         return new Models.StatusAndamento
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
-            Icone = 1,
-            GUID = Guid.NewGuid().ToString()
+            Icone = 1
         };
     }
 #endregion

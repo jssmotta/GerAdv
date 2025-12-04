@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { EnderecosGridAdapter } from '@/app/GerAdv_TS/Enderecos/Adapter/EnderecosGridAdapter';
 import EnderecosGridContainer from '@/app/GerAdv_TS/Enderecos/Components/EnderecosGridContainer';
+
 const EnderecosPage: React.FC = () => {
-  const EnderecosGrid = new EnderecosGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Endereços' />
-    <EnderecosGridContainer grid={EnderecosGrid} />
-  </PageLayout>
-);
+    const EnderecosGrid = new EnderecosGridAdapter();
+
+    return (
+        <PageLayout>            
+            <EnderecosGridContainer grid={EnderecosGrid} />
+        </PageLayout>
+    );
 };
+
 export default EnderecosPage;

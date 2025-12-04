@@ -37,6 +37,8 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         if (await IsDuplicado(reg, service, uri))
             throw new SGValidationException($"Processos Obs Report '{reg.Data}'  - Processo");
         var validSizes = ValidSizes(reg);
@@ -44,8 +46,24 @@ public class ProcessosObsReportValidation : IProcessosObsReportValidation
             return false;
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
+        if (!DateTime.TryParse(reg.Data, out _))
+        {
+            throw new SGValidationException($"Data inválida: {reg.Data}");
+        }
+
+        if (reg.Data.IsEmpty())
+            throw new SGValidationException("Data é obrigatório.");
         if (reg.Processo == 0)
             throw new SGValidationException("Processo é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         return true;
     }
 

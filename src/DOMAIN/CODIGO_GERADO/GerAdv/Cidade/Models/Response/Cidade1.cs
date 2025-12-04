@@ -56,10 +56,10 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Sigla { get; set; } = "";
 
         /// <summary>
-        /// GUID - cidGUID - tamanho máximo: 100 
+        /// GUID - cidGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -114,10 +114,10 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Sigla { get; set; } = "";
 
         /// <summary>
-        /// GUID - cidGUID - tamanho máximo: 100 
+        /// GUID - cidGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("iduf")]
         public string IDUF { get; set; } = string.Empty;

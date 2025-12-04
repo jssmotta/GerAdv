@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import TipoOrigemSucumbenciaInc from '../Crud/Inc/TipoOrigemSucumbencia';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface TipoOrigemSucumbenciaIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const TipoOrigemSucumbenciaIncContainer: React.FC<TipoOrigemSucumbenciaIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <TipoOrigemSucumbenciaInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <TipoOrigemSucumbenciaInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default TipoOrigemSucumbenciaIncContainer;

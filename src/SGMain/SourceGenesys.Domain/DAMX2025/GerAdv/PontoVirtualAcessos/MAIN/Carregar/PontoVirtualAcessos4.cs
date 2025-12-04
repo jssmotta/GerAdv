@@ -54,8 +54,16 @@ public partial class DBPontoVirtualAcessos
         // Checkpoint Carregar 
         try
         {
+            FOrigem = getValue(DBPontoVirtualAcessosDicInfo.Origem)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPontoVirtualAcessosDicInfo.DataHora)))
-                m_FDataHora = Convert.ToDateTime(getValue(DBPontoVirtualAcessosDicInfo.DataHora));
+                FDataHora = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBPontoVirtualAcessosDicInfo.DataHora)));
         }
         catch
         {
@@ -64,7 +72,7 @@ public partial class DBPontoVirtualAcessos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPontoVirtualAcessosDicInfo.Operador)))
-                m_FOperador = Convert.ToInt32(getValue(DBPontoVirtualAcessosDicInfo.Operador));
+                FOperador = Convert.ToInt32(getValue(DBPontoVirtualAcessosDicInfo.Operador));
         }
         catch
         {
@@ -73,22 +81,14 @@ public partial class DBPontoVirtualAcessos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPontoVirtualAcessosDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBPontoVirtualAcessosDicInfo.Tipo));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOrigem = getValue(DBPontoVirtualAcessosDicInfo.Origem)?.ToString() ?? string.Empty;
+                FTipo = Convert.ToBoolean(getValue(DBPontoVirtualAcessosDicInfo.Tipo));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -112,7 +112,7 @@ public partial class DBPontoVirtualAcessos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

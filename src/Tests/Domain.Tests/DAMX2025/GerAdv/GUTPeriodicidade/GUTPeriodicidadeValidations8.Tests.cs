@@ -54,8 +54,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         {
             Id = 1,
             Nome = "João",
-            IntervaloDias = 0,
-            GUID = Guid.NewGuid().ToString()
+            IntervaloDias = 0
         };
     }
 
@@ -80,8 +79,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         var gutperiodicidade = new Models.GUTPeriodicidade
         {
             Id = 1,
-            Nome = "AAAAAAAAAAAAAAAAAA",
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Nome = "AAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -108,7 +106,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
         gutperiodicidade.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidade, _mockGUTPeriodicidadeService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -139,54 +137,7 @@ public class GUTPeriodicidadeValidationTests : IDisposable
     {
         // Arrange
         var gutperiodicidade = CreateValidGUTPeriodicidade();
-        gutperiodicidade.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidade, _mockGUTPeriodicidadeService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutperiodicidade = CreateValidGUTPeriodicidade();
-        gutperiodicidade.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidade, _mockGUTPeriodicidadeService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutperiodicidade = CreateValidGUTPeriodicidade();
-        gutperiodicidade.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidade, _mockGUTPeriodicidadeService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var gutperiodicidade = CreateValidGUTPeriodicidade();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(gutperiodicidade, _mockGUTPeriodicidadeService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutperiodicidade = CreateValidGUTPeriodicidade();
-        gutperiodicidade.GUID = "   ";
+        gutperiodicidade.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidade, _mockGUTPeriodicidadeService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

@@ -10,10 +10,10 @@ public static partial class DBTipoRecursoDicInfo
     public const string CampoCodigo = "trcCodigo";
     public const string CampoNome = "trcDescricao";
     public const string TablePrefix = "trc";
-    public const string GUID = "trcGUID"; // LOCALIZACAO 170523
     public const string Justica = "trcJustica"; // LOCALIZACAO 170523
     public const string Area = "trcArea"; // LOCALIZACAO 170523
     public const string Descricao = "trcDescricao"; // LOCALIZACAO 170523
+    public const string Guid = "trcGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "trcQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "trcDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "trcQuemAtu"; // LOCALIZACAO 170523
@@ -35,43 +35,15 @@ public static partial class DBTipoRecursoDicInfo
 
     public const string PTabelaNome = "TipoRecurso";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TrcGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "trc"
-    };
-    public static DBInfoSystem TrcJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", ETipoDadosSysteminfo.SysteminfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false)
-    {
-        Prefixo = "trc"
-    }; // DBI 11 
-    public static DBInfoSystem TrcArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false)
-    {
-        Prefixo = "trc"
-    }; // DBI 11 
-    public static DBInfoSystem TrcDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "trc"
-    };
-    public static DBInfoSystem TrcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "trc"
-    }; // DBI 11 
-    public static DBInfoSystem TrcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "trc"
-    };
-    public static DBInfoSystem TrcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "trc"
-    }; // DBI 11 
-    public static DBInfoSystem TrcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "trc"
-    };
-    public static DBInfoSystem TrcVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "trc"
-    };
+    public static DBInfoSystem TrcJustica => new(0, PTabelaNome, CampoCodigo, Justica, Justica, Justica, EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "trc"); // DBI 11 
+    public static DBInfoSystem TrcArea => new(0, PTabelaNome, CampoCodigo, Area, Area, Area, EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "trc"); // DBI 11 
+    public static DBInfoSystem TrcDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "trc");
+    public static DBInfoSystem TrcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "trc");
+    public static DBInfoSystem TrcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "trc"); // DBI 11 
+    public static DBInfoSystem TrcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "trc");
+    public static DBInfoSystem TrcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "trc"); // DBI 11 
+    public static DBInfoSystem TrcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "trc");
+    public static DBInfoSystem TrcVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "trc", isRequired: true);
 
 #endregion
     [Serializable]

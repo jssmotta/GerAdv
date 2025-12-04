@@ -117,7 +117,7 @@ public class ViaRecebimentoWriterTests
         var operadorId = 456;
         _mockViaRecebimentoFactory.Setup(x => x.DeleteAsync(operadorId, viarecebimentoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _viarecebimentoWriter.Delete(viarecebimentoResponse, operadorId, _mockConnection.Object);
+        await _viarecebimentoWriter.DeleteAsync(viarecebimentoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockViaRecebimentoFactory.Verify(x => x.DeleteAsync(operadorId, viarecebimentoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -133,7 +133,7 @@ public class ViaRecebimentoWriterTests
         var operadorId = 111;
         _mockViaRecebimentoFactory.Setup(x => x.DeleteAsync(operadorId, viarecebimentoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _viarecebimentoWriter.Delete(viarecebimentoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _viarecebimentoWriter.DeleteAsync(viarecebimentoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -150,7 +150,7 @@ public class ViaRecebimentoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockViaRecebimentoFactory.Setup(x => x.DeleteAsync(operadorId, viarecebimentoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _viarecebimentoWriter.Delete(viarecebimentoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _viarecebimentoWriter.DeleteAsync(viarecebimentoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

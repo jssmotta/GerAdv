@@ -19,8 +19,8 @@ public static partial class DBHonorariosDadosContratoDicInfo
     public const string TextoContrato = "hdcTextoContrato"; // LOCALIZACAO 170523
     public const string ValorFixo = "hdcValorFixo"; // LOCALIZACAO 170523
     public const string Observacao = "hdcObservacao"; // LOCALIZACAO 170523
-    public const string Guid = "hdcGuid"; // LOCALIZACAO 170523
     public const string DataContrato = "hdcDataContrato"; // LOCALIZACAO 170523
+    public const string Guid = "hdcGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "hdcQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "hdcDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "hdcQuemAtu"; // LOCALIZACAO 170523
@@ -37,90 +37,34 @@ public static partial class DBHonorariosDadosContratoDicInfo
         7 => TextoContrato,
         8 => ValorFixo,
         9 => Observacao,
-        10 => Guid,
-        11 => DataContrato,
-        12 => QuemCad,
-        13 => DtCad,
-        14 => QuemAtu,
-        15 => DtAtu,
-        16 => Visto,
+        10 => DataContrato,
+        11 => QuemCad,
+        12 => DtCad,
+        13 => QuemAtu,
+        14 => DtAtu,
+        15 => Visto,
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
 
     public const string PTabelaNome = "HonorariosDadosContrato";
 #region PropriedadesDaTabela
-    public static DBInfoSystem HdcCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    }; // DBI 11 
-    public static DBInfoSystem HdcFixo => new(0, PTabelaNome, CampoCodigo, Fixo, "Fixo", "Fixo", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcVariavel => new(0, PTabelaNome, CampoCodigo, Variavel, "Variavel", "Variavel", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcPercSucesso => new(0, PTabelaNome, CampoCodigo, PercSucesso, "PercSucesso", "PercSucesso", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcArquivoContrato => new(0, PTabelaNome, CampoCodigo, ArquivoContrato, 2048, "ArquivoContrato", "ArquivoContrato", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcTextoContrato => new(0, PTabelaNome, CampoCodigo, TextoContrato, DevourerOne.PMaxSizeCampoMemo, "TextoContrato", "TextoContrato", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcValorFixo => new(0, PTabelaNome, CampoCodigo, ValorFixo, "ValorFixo", "ValorFixo", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, 2048, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcDataContrato => new(0, PTabelaNome, CampoCodigo, DataContrato, "DataContrato", "DataContrato", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    }; // DBI 11 
-    public static DBInfoSystem HdcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "hdc"
-    }; // DBI 11 
-    public static DBInfoSystem HdcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "hdc"
-    };
-    public static DBInfoSystem HdcVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "hdc"
-    };
+    public static DBInfoSystem HdcCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "hdc", isRequired: true); // DBI 11 
+    public static DBInfoSystem HdcFixo => new(0, PTabelaNome, CampoCodigo, Fixo, Fixo, Fixo, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "hdc", isRequired: true);
+    public static DBInfoSystem HdcVariavel => new(0, PTabelaNome, CampoCodigo, Variavel, Variavel, Variavel, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "hdc", isRequired: true);
+    public static DBInfoSystem HdcPercSucesso => new(0, PTabelaNome, CampoCodigo, PercSucesso, PercSucesso, PercSucesso, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "hdc");
+    public static DBInfoSystem HdcProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "hdc");
+    public static DBInfoSystem HdcArquivoContrato => new(0, PTabelaNome, CampoCodigo, ArquivoContrato, 2048, ArquivoContrato, ArquivoContrato, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "hdc");
+    public static DBInfoSystem HdcTextoContrato => new(0, PTabelaNome, CampoCodigo, TextoContrato, DevourerOne.PMaxSizeCampoMemo, TextoContrato, TextoContrato, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "hdc");
+    public static DBInfoSystem HdcValorFixo => new(0, PTabelaNome, CampoCodigo, ValorFixo, ValorFixo, ValorFixo, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "hdc");
+    public static DBInfoSystem HdcObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, 2048, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "hdc");
+    public static DBInfoSystem HdcDataContrato => new(0, PTabelaNome, CampoCodigo, DataContrato, DataContrato, DataContrato, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "hdc", isRequired: true);
+    public static DBInfoSystem HdcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "hdc");
+    public static DBInfoSystem HdcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "hdc", isRequired: true); // DBI 11 
+    public static DBInfoSystem HdcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "hdc", isRequired: true);
+    public static DBInfoSystem HdcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "hdc"); // DBI 11 
+    public static DBInfoSystem HdcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "hdc");
+    public static DBInfoSystem HdcVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "hdc", isRequired: true);
 
 #endregion
     [Serializable]
@@ -135,13 +79,12 @@ public static partial class DBHonorariosDadosContratoDicInfo
         HdcTextoContrato = 7,
         HdcValorFixo = 8,
         HdcObservacao = 9,
-        HdcGuid = 10,
-        HdcDataContrato = 11,
-        HdcQuemCad = 12,
-        HdcDtCad = 13,
-        HdcQuemAtu = 14,
-        HdcDtAtu = 15,
-        HdcVisto = 16
+        HdcDataContrato = 10,
+        HdcQuemCad = 11,
+        HdcDtCad = 12,
+        HdcQuemAtu = 13,
+        HdcDtAtu = 14,
+        HdcVisto = 15
     }
 
     public static DBInfoSystem? GetInfoSystemByEnum(NomesCamposTabela idTable) => idTable switch
@@ -155,7 +98,6 @@ public static partial class DBHonorariosDadosContratoDicInfo
         NomesCamposTabela.HdcTextoContrato => HdcTextoContrato,
         NomesCamposTabela.HdcValorFixo => HdcValorFixo,
         NomesCamposTabela.HdcObservacao => HdcObservacao,
-        NomesCamposTabela.HdcGuid => HdcGuid,
         NomesCamposTabela.HdcDataContrato => HdcDataContrato,
         NomesCamposTabela.HdcQuemCad => HdcQuemCad,
         NomesCamposTabela.HdcDtCad => HdcDtCad,

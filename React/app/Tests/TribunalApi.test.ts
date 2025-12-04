@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { TribunalApiError } from '../GerAdv_TS/Tribunal/Apis/ApiTribunal';
+import { TribunalApiError } from '@/app/GerAdv_TS/Tribunal/Apis/ApiTribunal';
 import { TribunalApi } from '@/app/GerAdv_TS/Tribunal/Apis/ApiTribunal';
-import { FilterTribunal } from '../GerAdv_TS/Tribunal/Filters/Tribunal';
-import { ITribunal } from '../GerAdv_TS/Tribunal/Interfaces/interface.Tribunal';
-import { TribunalTestEmpty } from '../GerAdv_TS/Models/Tribunal';
+import { FilterTribunal } from '@/app/GerAdv_TS/Tribunal/Filters/Tribunal';
+import { ITribunal } from '@/app/GerAdv_TS/Tribunal/Interfaces/interface.Tribunal';
+import { TribunalTestEmpty } from '@/app/GerAdv_TS/Models/Tribunal';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('TribunalApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterTribunal = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,14 @@ describe('TribunalApi', () => {
   describe('addAndUpdate', () => {
     const mockTribunal: ITribunal = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+area: 1,
+justica: 0,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+instancia: 0,
+sigla: 'AAAAAAAAAAAAAAAAAA',
+web: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new tribunal successfully', async () => {
@@ -487,7 +481,7 @@ describe('TribunalApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterTribunal = { funcionario: 1 };
+      const mockFilter: FilterTribunal = { : 1 };
       
       const result = tribunalApi.useFilter(mockFilter);
       

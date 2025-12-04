@@ -59,19 +59,29 @@ public class OperadorValidationTests : IDisposable
             Master = true,
             Nome = "João",
             Nick = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Ramal = "AAAAAAAAAAAAAAAAAA",
             Excluido = false,
             Situacao = true,
+            Computador = 0,
             MinhaDescricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            UltimoLogoff = "24/04/1975",
             EMailNet = "test@email.com",
+            OnlineIP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             OnLine = false,
             SysOp = true,
+            StatusId = 0,
+            StatusMessage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             IsFinanceiro = false,
             Top = true,
             Sexo = false,
             Basico = true,
             Externo = false,
             EMailConfirmado = true,
-            DataLimiteReset = "24/04/1975"
+            DataLimiteReset = "24/04/1975",
+            SuporteMaxAge = "24/04/1975",
+            SuporteNomeSolicitante = "João",
+            SuporteUltimoAcesso = "24/04/1975",
+            SuporteIpUltimoAcesso = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 
@@ -102,11 +112,19 @@ public class OperadorValidationTests : IDisposable
             Master = true,
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nick = null,
+            Ramal = null,
             Excluido = false,
             Situacao = true,
             MinhaDescricao = null,
+            UltimoLogoff = null,
             EMailNet = null,
-            DataLimiteReset = null
+            OnlineIP = null,
+            StatusMessage = null,
+            DataLimiteReset = null,
+            SuporteMaxAge = null,
+            SuporteNomeSolicitante = null,
+            SuporteUltimoAcesso = null,
+            SuporteIpUltimoAcesso = null
         };
         SetupValidMocks();
         // Act
@@ -204,6 +222,74 @@ public class OperadorValidationTests : IDisposable
     }
 
 #endregion
+#region UltimoLogoff Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithUltimoLogoffBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.UltimoLogoff = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidUltimoLogoff_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.UltimoLogoff = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullUltimoLogoff_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.UltimoLogoff = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateUltimoLogoffFormat_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.UltimoLogoff = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyUltimoLogoff_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.UltimoLogoff = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region DataLimiteReset Validation Tests
     [Theory]
     [InlineData("01/01/1899")]
@@ -264,6 +350,142 @@ public class OperadorValidationTests : IDisposable
         // Arrange
         var operador = CreateValidOperador();
         operador.DataLimiteReset = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
+#region SuporteMaxAge Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithSuporteMaxAgeBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteMaxAge = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidSuporteMaxAge_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteMaxAge = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullSuporteMaxAge_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteMaxAge = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateSuporteMaxAgeFormat_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteMaxAge = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptySuporteMaxAge_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteMaxAge = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
+#region SuporteUltimoAcesso Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithSuporteUltimoAcessoBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteUltimoAcesso = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidSuporteUltimoAcesso_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteUltimoAcesso = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullSuporteUltimoAcesso_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteUltimoAcesso = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateSuporteUltimoAcessoFormat_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteUltimoAcesso = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptySuporteUltimoAcesso_ShouldPass()
+    {
+        // Arrange
+        var operador = CreateValidOperador();
+        operador.SuporteUltimoAcesso = "";
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(operador, _mockOperadorService.Object, _validUri, _mockConnection.Object);

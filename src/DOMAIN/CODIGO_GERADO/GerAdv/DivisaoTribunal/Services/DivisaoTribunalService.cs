@@ -6,13 +6,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, IFDivisaoTribunalFactory divisaotribunalFactory, IDivisaoTribunalReader reader, IDivisaoTribunalValidation validation, IDivisaoTribunalWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IDivisaoTribunalService, IDisposable
+public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, IFDivisaoTribunalFactory divisaotribunalFactory, IDivisaoTribunalReader reader, IDivisaoTribunalValidation validation, IDivisaoTribunalWriter writer, IJusticaReader justicaReader, IAreaReader areaReader, ICidadeReader cidadeReader, IForoReader foroReader, ITribunalReader tribunalReader, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterDivisaoTribunal> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IDivisaoTribunalService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterDivisaoTribunal> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFDivisaoTribunalFactory divisaotribunalFactory = divisaotribunalFactory;
     private readonly IDivisaoTribunalReader reader = reader;
     private readonly IDivisaoTribunalValidation validation = validation;
@@ -22,54 +26,73 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
     private readonly ICidadeReader cidadeReader = cidadeReader;
     private readonly IForoReader foroReader = foroReader;
     private readonly ITribunalReader tribunalReader = tribunalReader;
-    public async Task<IEnumerable<DivisaoTribunalResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<DivisaoTribunalResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal filtro, [FromRoute, Required] string uri)
     {
-        max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("DivisaoTribunal: URI inválida");
         }
 
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
-            LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
-        };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-DivisaoTribunal-Filter-{max}-{keyCache}";
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
-        return result;
-    }
-
-    public async Task<IEnumerable<DivisaoTribunalResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal filtro, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new DatabaseConnectionException();
-        }
-
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
-        var cacheKey = $"{uri}-{max}DivisaoTribunal-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroDivisaoTribunal(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterDivisaoTribunal>.GetFilterHash(filtro);
+            var keyCache = await reader.ReadStringAuditorAsync(max, uri, where, parameters, oCnn);
+            var cacheKey = $"{uri}-{max}DivisaoTribunal-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"DivisaoTribunal - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterDivisaoTribunal> FilterVoice([FromBody] Filters.FilterDivisaoTribunal filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("DivisaoTribunal: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterDivisaoTribunal? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterDivisaoTribunal();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterDivisaoTribunal();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"DivisaoTribunal - error on creating filter.");
+        }
     }
 
     public async Task<DivisaoTribunalResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
@@ -85,10 +108,11 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
             var result = await _cache.GetOrCreateAsync($"{uri}-DivisaoTribunal-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
@@ -98,7 +122,29 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private async Task<DivisaoTribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<DivisaoTribunalResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
+    public async Task<AuditorResponse?> GetAuditor([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        ThrowIfDisposed();
+        AuditorResponse? result = null;
+        if (id < 1)
+        {
+            return result;
+        }
+
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
+        try
+        {
+            result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            return result;
+        }
+        catch (Exception)
+        {
+            throw new Exception($"DivisaoTribunal - {uri}-: GetAuditor");
+        }
+    }
+
     public async Task<DivisaoTribunalResponse?> AddAndUpdate([FromBody] Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -107,12 +153,13 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("DivisaoTribunal: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -148,12 +195,13 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("DivisaoTribunal: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -181,7 +229,7 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             return new DivisaoTribunalResponse();
         }
 
-        return await reader.Read(regDivisaoTribunal.Id, oCnn);
+        return await reader.ReadAsync(regDivisaoTribunal.Id, oCnn);
     }
 
     public async Task<DivisaoTribunalResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
@@ -192,13 +240,14 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
         }
 
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("DivisaoTribunal: URI inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -221,12 +270,12 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var divisaotribunal = await reader.Read(id ?? default, oCnn);
+        var divisaotribunal = await reader.ReadAsync(id ?? default, oCnn);
         try
         {
             if (divisaotribunal != null)
             {
-                await writer.Delete(divisaotribunal, nOperador, oCnn);
+                await writer.DeleteAsync(divisaotribunal, nOperador, oCnn);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
@@ -261,9 +310,6 @@ public partial class DivisaoTribunalService(IOptions<AppSettings> appSettings, I
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

@@ -54,8 +54,24 @@ public partial class DBEMPClassRiscos
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBEMPClassRiscosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBEMPClassRiscosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBEMPClassRiscosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBEMPClassRiscosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBEMPClassRiscosDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBEMPClassRiscos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEMPClassRiscosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBEMPClassRiscosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBEMPClassRiscosDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBEMPClassRiscos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEMPClassRiscosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBEMPClassRiscosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBEMPClassRiscosDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBEMPClassRiscos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEMPClassRiscosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBEMPClassRiscosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBEMPClassRiscosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBEMPClassRiscosDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBEMPClassRiscosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBEMPClassRiscos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

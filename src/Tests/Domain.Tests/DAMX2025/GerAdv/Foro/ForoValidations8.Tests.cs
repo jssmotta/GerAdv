@@ -76,7 +76,7 @@ public class ForoValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockForoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterForo>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Foros service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -84,7 +84,7 @@ public class ForoValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockForoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterForo>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Foros service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class ForoValidationTests : IDisposable
         // Arrange
         var foro = CreateValidForo();
         foro.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(foro, _mockForoService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -187,7 +187,7 @@ public class ForoValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(foro, _mockForoService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -204,7 +204,7 @@ public class ForoValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(foro, _mockForoService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -224,7 +224,7 @@ public class ForoValidationTests : IDisposable
         var result = await _validation.ValidateReg(foro, _mockForoService.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockCidadeReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockCidadeReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

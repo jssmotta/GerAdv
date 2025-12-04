@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IEMPClassRiscosWriter
 {
     Task<FEMPClassRiscos> WriteAsync(Models.EMPClassRiscos empclassriscos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(EMPClassRiscosResponse empclassriscos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(EMPClassRiscosResponse empclassriscos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EMPClassRiscosWriter(IFEMPClassRiscosFactory empclassriscosFactory) : IEMPClassRiscosWriter
 {
     private readonly IFEMPClassRiscosFactory _empclassriscosFactory = empclassriscosFactory ?? throw new ArgumentNullException(nameof(empclassriscosFactory));
-    public virtual async Task Delete(EMPClassRiscosResponse empclassriscos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(EMPClassRiscosResponse empclassriscos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _empclassriscosFactory.DeleteAsync(operadorId, empclassriscos.Id, oCnn);
     }
@@ -24,7 +24,8 @@ public class EMPClassRiscosWriter(IFEMPClassRiscosFactory empclassriscosFactory)
     {
         using var dbRec = await (empclassriscos.Id.IsEmptyIDNumber() ? _empclassriscosFactory.CreateAsync() : _empclassriscosFactory.CreateFromIdAsync(empclassriscos.Id, oCnn));
         dbRec.FNome = empclassriscos.Nome;
-        dbRec.FGUID = empclassriscos.GUID;
+        dbRec.FBold = empclassriscos.Bold;
+        dbRec.FGuid = empclassriscos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -10,10 +10,10 @@ public static partial class DBDocumentosDicInfo
     public const string CampoCodigo = "docCodigo";
     public const string CampoNome = "docData";
     public const string TablePrefix = "doc";
-    public const string GUID = "docGUID"; // LOCALIZACAO 170523
     public const string Processo = "docProcesso"; // LOCALIZACAO 170523
     public const string Data = "docData"; // LOCALIZACAO 170523
     public const string Observacao = "docObservacao"; // LOCALIZACAO 170523
+    public const string Guid = "docGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "docQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "docDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "docQuemAtu"; // LOCALIZACAO 170523
@@ -35,43 +35,15 @@ public static partial class DBDocumentosDicInfo
 
     public const string PTabelaNome = "Documentos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem DocGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "doc"
-    };
-    public static DBInfoSystem DocProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "doc"
-    };
-    public static DBInfoSystem DocData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "doc"
-    };
-    public static DBInfoSystem DocObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "doc"
-    };
-    public static DBInfoSystem DocQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "doc"
-    }; // DBI 11 
-    public static DBInfoSystem DocDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "doc"
-    };
-    public static DBInfoSystem DocQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "doc"
-    }; // DBI 11 
-    public static DBInfoSystem DocDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "doc"
-    };
-    public static DBInfoSystem DocVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "doc"
-    };
+    public static DBInfoSystem DocProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "doc");
+    public static DBInfoSystem DocData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "doc");
+    public static DBInfoSystem DocObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "doc");
+    public static DBInfoSystem DocGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "doc");
+    public static DBInfoSystem DocQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "doc"); // DBI 11 
+    public static DBInfoSystem DocDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "doc");
+    public static DBInfoSystem DocQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "doc"); // DBI 11 
+    public static DBInfoSystem DocDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "doc");
+    public static DBInfoSystem DocVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "doc", isRequired: true);
 
 #endregion
     [Serializable]

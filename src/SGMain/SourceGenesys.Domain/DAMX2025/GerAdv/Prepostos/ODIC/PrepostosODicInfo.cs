@@ -9,25 +9,29 @@ public partial class DBPrepostosODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBPrepostosDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBPrepostosDicInfo.CampoCodigo;
+    public string IFieldId() => DBPrepostosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBPrepostosDicInfo.TablePrefix;
+    public string IPrefix() => DBPrepostosDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBPrepostosDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBPrepostosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBPrepostosODicInfo : IODicInfo
     public static string TCampoNome => DBPrepostosDicInfo.CampoNome;
     public static string TTabelaNome => DBPrepostosDicInfo.TabelaNome;
     public static string TTablePrefix => DBPrepostosDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBPrepostosDicInfo.PreGUID, DBPrepostosDicInfo.PreNome, DBPrepostosDicInfo.PreFuncao, DBPrepostosDicInfo.PreSetor, DBPrepostosDicInfo.PreDtNasc, DBPrepostosDicInfo.PreQualificacao, DBPrepostosDicInfo.PreSexo, DBPrepostosDicInfo.PreIdade, DBPrepostosDicInfo.PreCPF, DBPrepostosDicInfo.PreRG, DBPrepostosDicInfo.PrePeriodo_Ini, DBPrepostosDicInfo.PrePeriodo_Fim, DBPrepostosDicInfo.PreRegistro, DBPrepostosDicInfo.PreCTPSNumero, DBPrepostosDicInfo.PreCTPSSerie, DBPrepostosDicInfo.PreCTPSDtEmissao, DBPrepostosDicInfo.PrePIS, DBPrepostosDicInfo.PreSalario, DBPrepostosDicInfo.PreLiberaAgenda, DBPrepostosDicInfo.PreObservacao, DBPrepostosDicInfo.PreEndereco, DBPrepostosDicInfo.PreBairro, DBPrepostosDicInfo.PreCidade, DBPrepostosDicInfo.PreCEP, DBPrepostosDicInfo.PreFone, DBPrepostosDicInfo.PreFax, DBPrepostosDicInfo.PreEMail, DBPrepostosDicInfo.PrePai, DBPrepostosDicInfo.PreMae, DBPrepostosDicInfo.PreClass, DBPrepostosDicInfo.PreEtiqueta, DBPrepostosDicInfo.PreAni, DBPrepostosDicInfo.PreBold, DBPrepostosDicInfo.PreQuemCad, DBPrepostosDicInfo.PreDtCad, DBPrepostosDicInfo.PreQuemAtu, DBPrepostosDicInfo.PreDtAtu, DBPrepostosDicInfo.PreVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBPrepostosDicInfo.PreGUID, DBPrepostosDicInfo.PreNome, DBPrepostosDicInfo.PreFuncao, DBPrepostosDicInfo.PreSetor, DBPrepostosDicInfo.PreDtNasc, DBPrepostosDicInfo.PreQualificacao, DBPrepostosDicInfo.PreSexo, DBPrepostosDicInfo.PreIdade, DBPrepostosDicInfo.PreCPF, DBPrepostosDicInfo.PreRG, DBPrepostosDicInfo.PrePeriodo_Ini, DBPrepostosDicInfo.PrePeriodo_Fim, DBPrepostosDicInfo.PreRegistro, DBPrepostosDicInfo.PreCTPSNumero, DBPrepostosDicInfo.PreCTPSSerie, DBPrepostosDicInfo.PreCTPSDtEmissao, DBPrepostosDicInfo.PrePIS, DBPrepostosDicInfo.PreSalario, DBPrepostosDicInfo.PreLiberaAgenda, DBPrepostosDicInfo.PreObservacao, DBPrepostosDicInfo.PreEndereco, DBPrepostosDicInfo.PreBairro, DBPrepostosDicInfo.PreCidade, DBPrepostosDicInfo.PreCEP, DBPrepostosDicInfo.PreFone, DBPrepostosDicInfo.PreFax, DBPrepostosDicInfo.PreEMail, DBPrepostosDicInfo.PrePai, DBPrepostosDicInfo.PreMae, DBPrepostosDicInfo.PreClass];
+    public static ImmutableArray<DBInfoSystem> List => [DBPrepostosDicInfo.PreNome, DBPrepostosDicInfo.PreFuncao, DBPrepostosDicInfo.PreSetor, DBPrepostosDicInfo.PreDtNasc, DBPrepostosDicInfo.PreQualificacao, DBPrepostosDicInfo.PreSexo, DBPrepostosDicInfo.PreIdade, DBPrepostosDicInfo.PreCPF, DBPrepostosDicInfo.PreRG, DBPrepostosDicInfo.PrePeriodo_Ini, DBPrepostosDicInfo.PrePeriodo_Fim, DBPrepostosDicInfo.PreRegistro, DBPrepostosDicInfo.PreCTPSNumero, DBPrepostosDicInfo.PreCTPSSerie, DBPrepostosDicInfo.PreCTPSDtEmissao, DBPrepostosDicInfo.PrePIS, DBPrepostosDicInfo.PreSalario, DBPrepostosDicInfo.PreLiberaAgenda, DBPrepostosDicInfo.PreObservacao, DBPrepostosDicInfo.PreEndereco, DBPrepostosDicInfo.PreBairro, DBPrepostosDicInfo.PreCidade, DBPrepostosDicInfo.PreCEP, DBPrepostosDicInfo.PreFone, DBPrepostosDicInfo.PreFax, DBPrepostosDicInfo.PreEMail, DBPrepostosDicInfo.PrePai, DBPrepostosDicInfo.PreMae, DBPrepostosDicInfo.PreClass, DBPrepostosDicInfo.PreEtiqueta, DBPrepostosDicInfo.PreAni, DBPrepostosDicInfo.PreBold, DBPrepostosDicInfo.PreGuid, DBPrepostosDicInfo.PreQuemCad, DBPrepostosDicInfo.PreDtCad, DBPrepostosDicInfo.PreQuemAtu, DBPrepostosDicInfo.PreDtAtu, DBPrepostosDicInfo.PreVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBPrepostosDicInfo.PreNome, DBPrepostosDicInfo.PreFuncao, DBPrepostosDicInfo.PreSetor, DBPrepostosDicInfo.PreDtNasc, DBPrepostosDicInfo.PreQualificacao, DBPrepostosDicInfo.PreSexo, DBPrepostosDicInfo.PreIdade, DBPrepostosDicInfo.PreCPF, DBPrepostosDicInfo.PreRG, DBPrepostosDicInfo.PrePeriodo_Ini, DBPrepostosDicInfo.PrePeriodo_Fim, DBPrepostosDicInfo.PreRegistro, DBPrepostosDicInfo.PreCTPSNumero, DBPrepostosDicInfo.PreCTPSSerie, DBPrepostosDicInfo.PreCTPSDtEmissao, DBPrepostosDicInfo.PrePIS, DBPrepostosDicInfo.PreSalario, DBPrepostosDicInfo.PreLiberaAgenda, DBPrepostosDicInfo.PreObservacao, DBPrepostosDicInfo.PreEndereco, DBPrepostosDicInfo.PreBairro, DBPrepostosDicInfo.PreCidade, DBPrepostosDicInfo.PreCEP, DBPrepostosDicInfo.PreFone, DBPrepostosDicInfo.PreFax, DBPrepostosDicInfo.PreEMail, DBPrepostosDicInfo.PrePai, DBPrepostosDicInfo.PreMae, DBPrepostosDicInfo.PreClass, DBPrepostosDicInfo.PreEtiqueta, DBPrepostosDicInfo.PreAni, DBPrepostosDicInfo.PreBold, DBPrepostosDicInfo.PreGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["preCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBPrepostosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["preCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBPrepostosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

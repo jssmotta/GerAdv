@@ -23,12 +23,6 @@ public partial class FEMPClassRiscosFactory : IFEMPClassRiscosFactory, IDisposab
         return FEMPClassRiscos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEMPClassRiscos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FEMPClassRiscos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FEMPClassRiscos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FEMPClassRiscosFactory : IFEMPClassRiscosFactory, IDisposab
         return FEMPClassRiscos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FEMPClassRiscos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FEMPClassRiscos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FEMPClassRiscosFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

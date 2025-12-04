@@ -7,32 +7,20 @@ public partial class DBGUTAtividades
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFNome, pFldFObservacao, pFldFGUTGrupo, pFldFGUTPeriodicidade, pFldFOperador, pFldFGUID, pFldFConcluido, pFldFDataConcluido, pFldFDiasParaIniciar, pFldFMinutosParaRealizar;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FGUTGrupo, m_FGUTPeriodicidade, m_FOperador, m_FDiasParaIniciar, m_FMinutosParaRealizar;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FObservacao, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDataConcluido;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FConcluido;
+    private protected bool pFldFNome, pFldFObservacao, pFldFGUTGrupo, pFldFGUTPeriodicidade, pFldFOperador, pFldFConcluido, pFldFDataConcluido, pFldFDiasParaIniciar, pFldFMinutosParaRealizar, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela GUTAtividades deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela 'GUTAtividades' deve ter no máximo 255 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -41,125 +29,139 @@ public partial class DBGUTAtividades
     public virtual string? FObservacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObservacao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObservacao = pFldFObservacao || !(m_FObservacao ?? string.Empty).Equals(value);
+            pFldFObservacao = pFldFObservacao || !(field ?? string.Empty).Equals(value);
             if (pFldFObservacao)
-                m_FObservacao = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual int FGUTGrupo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUTGrupo;
+        get => field;
         set
         {
-            pFldFGUTGrupo = pFldFGUTGrupo || value != m_FGUTGrupo;
+            pFldFGUTGrupo = pFldFGUTGrupo || value != field;
             if (pFldFGUTGrupo)
-                m_FGUTGrupo = value;
+                field = value;
         }
     }
 
     public virtual int FGUTPeriodicidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUTPeriodicidade;
+        get => field;
         set
         {
-            pFldFGUTPeriodicidade = pFldFGUTPeriodicidade || value != m_FGUTPeriodicidade;
+            pFldFGUTPeriodicidade = pFldFGUTPeriodicidade || value != field;
             if (pFldFGUTPeriodicidade)
-                m_FGUTPeriodicidade = value;
+                field = value;
         }
     }
 
     public virtual int FOperador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOperador;
+        get => field;
         set
         {
-            pFldFOperador = pFldFOperador || value != m_FOperador;
+            pFldFOperador = pFldFOperador || value != field;
             if (pFldFOperador)
-                m_FOperador = value;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FGUID da tabela GUTAtividades deve ter no máximo 50 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
-            }
+                field = value;
         }
     }
 
     public virtual bool FConcluido
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FConcluido;
+        get => field;
         set
         {
-            pFldFConcluido = pFldFConcluido || value != m_FConcluido;
+            pFldFConcluido = pFldFConcluido || value != field;
             if (pFldFConcluido)
-                m_FConcluido = value;
+                field = value;
         }
     }
 
-    public virtual string? FDataConcluido
+    public virtual DateOnly? FDataConcluido
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataConcluido is null || m_FDataConcluido == DevourerOne.DDataZerada ? string.Empty : m_FDataConcluido.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataConcluido, m_FDataConcluido, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataConcluido = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataConcluido, m_FDataConcluido) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataConcluido = true;
+                field = value;
+            }
         }
     }
 
     public virtual int FDiasParaIniciar
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDiasParaIniciar;
+        get => field;
         set
         {
-            pFldFDiasParaIniciar = pFldFDiasParaIniciar || value != m_FDiasParaIniciar;
+            pFldFDiasParaIniciar = pFldFDiasParaIniciar || value != field;
             if (pFldFDiasParaIniciar)
-                m_FDiasParaIniciar = value;
+                field = value;
         }
     }
 
     public virtual int FMinutosParaRealizar
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FMinutosParaRealizar;
+        get => field;
         set
         {
-            pFldFMinutosParaRealizar = pFldFMinutosParaRealizar || value != m_FMinutosParaRealizar;
+            pFldFMinutosParaRealizar = pFldFMinutosParaRealizar || value != field;
             if (pFldFMinutosParaRealizar)
-                m_FMinutosParaRealizar = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(50, ErrorMessage = "A propriedade FGuid da tabela 'GUTAtividades' deve ter no máximo 50 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -169,9 +171,13 @@ public partial class DBGUTAtividades
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

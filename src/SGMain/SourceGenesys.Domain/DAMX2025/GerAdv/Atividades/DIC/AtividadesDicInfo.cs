@@ -11,7 +11,7 @@ public static partial class DBAtividadesDicInfo
     public const string CampoNome = "atvDescricao";
     public const string TablePrefix = "atv";
     public const string Descricao = "atvDescricao"; // LOCALIZACAO 170523
-    public const string GUID = "atvGUID"; // LOCALIZACAO 170523
+    public const string Guid = "atvGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "atvQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "atvDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "atvQuemAtu"; // LOCALIZACAO 170523
@@ -31,35 +31,13 @@ public static partial class DBAtividadesDicInfo
 
     public const string PTabelaNome = "Atividades";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AtvDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "atv"
-    };
-    public static DBInfoSystem AtvGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "atv"
-    };
-    public static DBInfoSystem AtvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "atv"
-    }; // DBI 11 
-    public static DBInfoSystem AtvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "atv"
-    };
-    public static DBInfoSystem AtvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "atv"
-    }; // DBI 11 
-    public static DBInfoSystem AtvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "atv"
-    };
-    public static DBInfoSystem AtvVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "atv"
-    };
+    public static DBInfoSystem AtvDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "atv");
+    public static DBInfoSystem AtvGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "atv");
+    public static DBInfoSystem AtvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "atv"); // DBI 11 
+    public static DBInfoSystem AtvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "atv");
+    public static DBInfoSystem AtvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "atv"); // DBI 11 
+    public static DBInfoSystem AtvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "atv");
+    public static DBInfoSystem AtvVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "atv", isRequired: true);
 
 #endregion
     [Serializable]

@@ -20,11 +20,9 @@ public partial class HorasTrabWhere(IFHorasTrabFactory horastrabFactory) : IHora
         var horastrab = new HorasTrabResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -39,7 +37,14 @@ public partial class HorasTrabWhere(IFHorasTrabFactory horastrabFactory) : IHora
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            horastrab.Data = XData.ToString("dd/MM/yyyy");
+            horastrab.Data_date = XData;
+        }
+
         return horastrab;
     }
 }

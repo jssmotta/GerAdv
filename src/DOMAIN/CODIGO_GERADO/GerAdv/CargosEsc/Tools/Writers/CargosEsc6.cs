@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ICargosEscWriter
 {
     Task<FCargosEsc> WriteAsync(Models.CargosEsc cargosesc, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class CargosEscWriter(IFCargosEscFactory cargosescFactory) : ICargosEscWriter
 {
     private readonly IFCargosEscFactory _cargosescFactory = cargosescFactory ?? throw new ArgumentNullException(nameof(cargosescFactory));
-    public virtual async Task Delete(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(CargosEscResponse cargosesc, int operadorId, MsiSqlConnection? oCnn)
     {
         await _cargosescFactory.DeleteAsync(operadorId, cargosesc.Id, oCnn);
     }
@@ -26,7 +26,7 @@ public class CargosEscWriter(IFCargosEscFactory cargosescFactory) : ICargosEscWr
         dbRec.FPercentual = cargosesc.Percentual;
         dbRec.FNome = cargosesc.Nome;
         dbRec.FClassificacao = cargosesc.Classificacao;
-        dbRec.FGUID = cargosesc.GUID;
+        dbRec.FGuid = cargosesc.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

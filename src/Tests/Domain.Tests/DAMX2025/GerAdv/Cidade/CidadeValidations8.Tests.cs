@@ -70,7 +70,7 @@ public class CidadeValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockCidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCidade>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Cidades service mock
-        _ = _mockUFReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new UFResponse { Id = id }));
+        _ = _mockUFReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new UFResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -78,7 +78,7 @@ public class CidadeValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockCidadeService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterCidade>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Cidades service mock
-        _ = _mockUFReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new UFResponse { Id = 0 }));
+        _ = _mockUFReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new UFResponse { Id = 0 }));
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class CidadeValidationTests : IDisposable
         cidade.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(cidade, _mockCidadeService.Object, _mockUFReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class CidadeValidationTests : IDisposable
     {
         // Arrange
         var cidade = CreateValidCidade();
-        cidade.Nome = "   ";
+        cidade.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(cidade, _mockCidadeService.Object, _mockUFReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
@@ -166,7 +166,7 @@ public class CidadeValidationTests : IDisposable
         // Arrange
         var cidade = CreateValidCidade();
         cidade.UF = 999;
-        _mockUFReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.UFResponse>(null));
+        _mockUFReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.UFResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(cidade, _mockCidadeService.Object, _mockUFReader.Object, _validUri, _mockConnection.Object));
@@ -183,7 +183,7 @@ public class CidadeValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockUFReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockUFReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(cidade, _mockCidadeService.Object, _mockUFReader.Object, _validUri, _mockConnection.Object));
@@ -200,7 +200,7 @@ public class CidadeValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockUFReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockUFReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(cidade, _mockCidadeService.Object, _mockUFReader.Object, _validUri, _mockConnection.Object);

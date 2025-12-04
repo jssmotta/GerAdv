@@ -15,7 +15,7 @@ public static partial class DBUFDicInfo
     public const string Pais = "ufPais"; // LOCALIZACAO 170523
     public const string Top = "ufTop"; // LOCALIZACAO 170523
     public const string Descricao = "ufDescricao"; // LOCALIZACAO 170523
-    public const string GUID = "ufGUID"; // LOCALIZACAO 170523
+    public const string Guid = "ufGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ufQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ufDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ufQuemAtu"; // LOCALIZACAO 170523
@@ -39,52 +39,17 @@ public static partial class DBUFDicInfo
 
     public const string PTabelaNome = "UF";
 #region PropriedadesDaTabela
-    public static DBInfoSystem UfDDD => new(0, PTabelaNome, CampoCodigo, DDD, 10, "DDD", "DDD", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfID => new(0, PTabelaNome, CampoCodigo, ID, 4, "Código", "Código", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfPais => new(0, PTabelaNome, CampoCodigo, Pais, "Pais", "Pais", ETipoDadosSysteminfo.SysteminfoForeingkey, DBPaisesDicInfo.CampoCodigo, DBPaisesDicInfo.TabelaNome, new DBPaisesODicInfo(), false)
-    {
-        Prefixo = "uf"
-    }; // DBI 11 
-    public static DBInfoSystem UfTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "uf"
-    }; // DBI 11 
-    public static DBInfoSystem UfDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "uf"
-    }; // DBI 11 
-    public static DBInfoSystem UfDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "uf"
-    };
-    public static DBInfoSystem UfVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "uf"
-    };
+    public static DBInfoSystem UfDDD => new(0, PTabelaNome, CampoCodigo, DDD, 10, DDD, DDD, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
+    public static DBInfoSystem UfID => new(0, PTabelaNome, CampoCodigo, ID, 4, ID, ID, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
+    public static DBInfoSystem UfPais => new(0, PTabelaNome, CampoCodigo, Pais, Pais, Pais, EDataTypeSystemInfo.SystemInfoForeingkey, DBPaisesDicInfo.CampoCodigo, DBPaisesDicInfo.TabelaNome, new DBPaisesODicInfo(), false, prefixo: "uf"); // DBI 11 
+    public static DBInfoSystem UfTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "uf", isRequired: true);
+    public static DBInfoSystem UfDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "uf");
+    public static DBInfoSystem UfGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "uf");
+    public static DBInfoSystem UfQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "uf"); // DBI 11 
+    public static DBInfoSystem UfDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "uf");
+    public static DBInfoSystem UfQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "uf"); // DBI 11 
+    public static DBInfoSystem UfDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "uf");
+    public static DBInfoSystem UfVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "uf", isRequired: true);
 
 #endregion
     [Serializable]

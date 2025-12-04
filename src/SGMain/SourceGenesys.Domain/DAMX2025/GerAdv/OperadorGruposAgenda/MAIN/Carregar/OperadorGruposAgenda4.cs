@@ -54,6 +54,30 @@ public partial class DBOperadorGruposAgenda
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBOperadorGruposAgendaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBOperadorGruposAgendaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSQLWhere = getValue(DBOperadorGruposAgendaDicInfo.SQLWhere)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposAgendaDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBOperadorGruposAgendaDicInfo.DtAtu));
         }
@@ -73,7 +97,7 @@ public partial class DBOperadorGruposAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposAgendaDicInfo.Operador)))
-                m_FOperador = Convert.ToInt32(getValue(DBOperadorGruposAgendaDicInfo.Operador));
+                FOperador = Convert.ToInt32(getValue(DBOperadorGruposAgendaDicInfo.Operador));
         }
         catch
         {
@@ -82,7 +106,7 @@ public partial class DBOperadorGruposAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposAgendaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBOperadorGruposAgendaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBOperadorGruposAgendaDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +115,7 @@ public partial class DBOperadorGruposAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposAgendaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBOperadorGruposAgendaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBOperadorGruposAgendaDicInfo.QuemCad));
         }
         catch
         {
@@ -100,38 +124,14 @@ public partial class DBOperadorGruposAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposAgendaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBOperadorGruposAgendaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBOperadorGruposAgendaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBOperadorGruposAgendaDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSQLWhere = getValue(DBOperadorGruposAgendaDicInfo.SQLWhere)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBOperadorGruposAgendaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -155,7 +155,7 @@ public partial class DBOperadorGruposAgenda
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -7,29 +7,20 @@ public partial class DBCidade
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFDDD, pFldFTop, pFldFComarca, pFldFCapital, pFldFNome, pFldFUF, pFldFSigla, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FUF;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FDDD, m_FNome, m_FSigla, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FTop, m_FComarca, m_FCapital;
+    private protected bool pFldFDDD, pFldFTop, pFldFComarca, pFldFCapital, pFldFNome, pFldFUF, pFldFSigla, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FDDD da tabela Cidade deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FDDD da tabela 'Cidade' deve ter no máximo 10 caracteres.")]
     public virtual string? FDDD
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDDD ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDDD = pFldFDDD || !(m_FDDD ?? string.Empty).Equals(value);
+            pFldFDDD = pFldFDDD || !(field ?? string.Empty).Equals(value);
             if (pFldFDDD)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FDDD = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
@@ -37,52 +28,52 @@ public partial class DBCidade
     public virtual bool FTop
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTop;
+        get => field;
         set
         {
-            pFldFTop = pFldFTop || value != m_FTop;
+            pFldFTop = pFldFTop || value != field;
             if (pFldFTop)
-                m_FTop = value;
+                field = value;
         }
     }
 
     public virtual bool FComarca
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FComarca;
+        get => field;
         set
         {
-            pFldFComarca = pFldFComarca || value != m_FComarca;
+            pFldFComarca = pFldFComarca || value != field;
             if (pFldFComarca)
-                m_FComarca = value;
+                field = value;
         }
     }
 
     public virtual bool FCapital
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCapital;
+        get => field;
         set
         {
-            pFldFCapital = pFldFCapital || value != m_FCapital;
+            pFldFCapital = pFldFCapital || value != field;
             if (pFldFCapital)
-                m_FCapital = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(40, ErrorMessage = "A propriedade FNome da tabela Cidade deve ter no máximo 40 caracteres.")]
+    [StringLength(40, ErrorMessage = "A propriedade FNome da tabela 'Cidade' deve ter no máximo 40 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 40 ? trimmed.AsSpan(0, 40).ToString() : trimmed;
+                field = trimmed.Length > 40 ? trimmed.AsSpan(0, 40).ToString() : trimmed;
             }
         }
     }
@@ -90,58 +81,58 @@ public partial class DBCidade
     public virtual int FUF
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FUF;
+        get => field;
         set
         {
-            pFldFUF = pFldFUF || value != m_FUF;
+            pFldFUF = pFldFUF || value != field;
             if (pFldFUF)
-                m_FUF = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FSigla da tabela Cidade deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FSigla da tabela 'Cidade' deve ter no máximo 10 caracteres.")]
     public virtual string? FSigla
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSigla ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSigla = pFldFSigla || !(m_FSigla ?? string.Empty).Equals(value);
+            pFldFSigla = pFldFSigla || !(field ?? string.Empty).Equals(value);
             if (pFldFSigla)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSigla = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Cidade deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Cidade' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -151,9 +142,13 @@ public partial class DBCidade
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

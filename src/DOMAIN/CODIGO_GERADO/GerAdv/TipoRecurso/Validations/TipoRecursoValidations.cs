@@ -23,7 +23,7 @@ public class TipoRecursoValidation : ITipoRecursoValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var instanciaExists0 = await instanciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterInstancia { TipoRecurso = id ?? default }, uri);
         if (instanciaExists0 != null && instanciaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Instancia associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Instancia associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class TipoRecursoValidation : ITipoRecursoValidation
     {
         if (reg.Descricao != null && reg.Descricao.Length > DBTipoRecursoDicInfo.TrcDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBTipoRecursoDicInfo.TrcDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTipoRecursoDicInfo.TrcGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTipoRecursoDicInfo.TrcGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,13 +40,15 @@ public class TipoRecursoValidation : ITipoRecursoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {
-            var regJustica = await justicaReader.Read(reg.Justica, oCnn);
+            var regJustica = await justicaReader.ReadAsync(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
@@ -58,7 +58,7 @@ public class TipoRecursoValidation : ITipoRecursoValidation
         // Area
         if (!reg.Area.IsEmptyIDNumber())
         {
-            var regArea = await areaReader.Read(reg.Area, oCnn);
+            var regArea = await areaReader.ReadAsync(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
                 throw new SGValidationException($"Área não encontrado ({regArea?.Id}).");

@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IContatoCRMViewService
 {
+    Task<Filters.FilterContatoCRMView> FilterVoice([FromBody] Filters.FilterContatoCRMView filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ContatoCRMViewResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterContatoCRMView filter, [FromRoute, Required] string uri = "");
     Task<ContatoCRMViewResponse?> AddAndUpdate(Models.ContatoCRMView? regContatoCRMView, [FromRoute, Required] string uri = "");
     Task<ContatoCRMViewResponse?> Validation(Models.ContatoCRMView? regContatoCRMView, [FromRoute, Required] string uri = "");

@@ -54,8 +54,32 @@ public partial class DBProSucumbencia
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProSucumbenciaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBProSucumbenciaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPercentual = getValue(DBProSucumbenciaDicInfo.Percentual)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProSucumbenciaDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProSucumbenciaDicInfo.Data)));
         }
         catch
         {
@@ -82,7 +106,7 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.Instancia)))
-                m_FInstancia = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.Instancia));
+                FInstancia = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.Instancia));
         }
         catch
         {
@@ -91,7 +115,7 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.Processo));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +133,7 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.QuemCad));
         }
         catch
         {
@@ -118,7 +142,7 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia)))
-                m_FTipoOrigemSucumbencia = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia));
+                FTipoOrigemSucumbencia = Convert.ToInt32(getValue(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia));
         }
         catch
         {
@@ -127,7 +151,7 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBProSucumbenciaDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBProSucumbenciaDicInfo.Valor));
         }
         catch
         {
@@ -136,38 +160,14 @@ public partial class DBProSucumbencia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProSucumbenciaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProSucumbenciaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProSucumbenciaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBProSucumbenciaDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPercentual = getValue(DBProSucumbenciaDicInfo.Percentual)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProSucumbenciaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -191,7 +191,7 @@ public partial class DBProSucumbencia
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

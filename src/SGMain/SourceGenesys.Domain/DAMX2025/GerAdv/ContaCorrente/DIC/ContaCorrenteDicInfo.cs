@@ -11,7 +11,6 @@ public static partial class DBContaCorrenteDicInfo
     public const string CampoNome = "ctoData";
     public const string TablePrefix = "cto";
     public const string CIAcordo = "ctoCIAcordo"; // LOCALIZACAO 170523
-    public const string GUID = "ctoGUID"; // LOCALIZACAO 170523
     public const string Quitado = "ctoQuitado"; // LOCALIZACAO 170523
     public const string IDContrato = "ctoIDContrato"; // LOCALIZACAO 170523
     public const string QuitadoID = "ctoQuitadoID"; // LOCALIZACAO 170523
@@ -36,6 +35,7 @@ public static partial class DBContaCorrenteDicInfo
     public const string ParcelaPrincipalID = "ctoParcelaPrincipalID"; // LOCALIZACAO 170523
     public const string Hide = "ctoHide"; // LOCALIZACAO 170523
     public const string DataPgto = "ctoDataPgto"; // LOCALIZACAO 170523
+    public const string Guid = "ctoGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ctoQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ctoDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ctoQuemAtu"; // LOCALIZACAO 170523
@@ -79,138 +79,37 @@ public static partial class DBContaCorrenteDicInfo
 
     public const string PTabelaNome = "ContaCorrente";
 #region PropriedadesDaTabela
-    public static DBInfoSystem CtoCIAcordo => new(0, PTabelaNome, CampoCodigo, CIAcordo, "CIAcordo", "CIAcordo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoQuitado => new(0, PTabelaNome, CampoCodigo, Quitado, "Quitado", "Quitado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoIDContrato => new(0, PTabelaNome, CampoCodigo, IDContrato, "IDContrato", "IDContrato", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoQuitadoID => new(0, PTabelaNome, CampoCodigo, QuitadoID, "QuitadoID", "QuitadoID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoDebitoID => new(0, PTabelaNome, CampoCodigo, DebitoID, "DebitoID", "DebitoID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoLivroCaixaID => new(0, PTabelaNome, CampoCodigo, LivroCaixaID, "LivroCaixaID", "LivroCaixaID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoSucumbencia => new(0, PTabelaNome, CampoCodigo, Sucumbencia, "Sucumbencia", "Sucumbencia", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoDistRegra => new(0, PTabelaNome, CampoCodigo, DistRegra, "DistRegra", "DistRegra", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoDtOriginal => new(0, PTabelaNome, CampoCodigo, DtOriginal, "DtOriginal", "DtOriginal", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoParcelaX => new(0, PTabelaNome, CampoCodigo, ParcelaX, "ParcelaX", "ParcelaX", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "cto"
-    }; // DBI 11 
-    public static DBInfoSystem CtoHistorico => new(0, PTabelaNome, CampoCodigo, Historico, DevourerOne.PMaxSizeCampoMemo, "Historico", "Historico", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoContrato => new(0, PTabelaNome, CampoCodigo, Contrato, "Contrato", "Contrato", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoPago => new(0, PTabelaNome, CampoCodigo, Pago, "Pago", "Pago", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoDistribuir => new(0, PTabelaNome, CampoCodigo, Distribuir, "Distribuir", "Distribuir", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoLC => new(0, PTabelaNome, CampoCodigo, LC, "LC", "LC", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoIDHTrab => new(0, PTabelaNome, CampoCodigo, IDHTrab, "IDHTrab", "IDHTrab", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoNroParcelas => new(0, PTabelaNome, CampoCodigo, NroParcelas, "NroParcelas", "NroParcelas", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoValorPrincipal => new(0, PTabelaNome, CampoCodigo, ValorPrincipal, "ValorPrincipal", "ValorPrincipal", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoParcelaPrincipalID => new(0, PTabelaNome, CampoCodigo, ParcelaPrincipalID, "ParcelaPrincipalID", "ParcelaPrincipalID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoHide => new(0, PTabelaNome, CampoCodigo, Hide, "Hide", "Hide", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoDataPgto => new(0, PTabelaNome, CampoCodigo, DataPgto, "DataPgto", "DataPgto", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cto"
-    }; // DBI 11 
-    public static DBInfoSystem CtoDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cto"
-    }; // DBI 11 
-    public static DBInfoSystem CtoDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "cto"
-    };
-    public static DBInfoSystem CtoVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "cto"
-    };
+    public static DBInfoSystem CtoCIAcordo => new(0, PTabelaNome, CampoCodigo, CIAcordo, CIAcordo, CIAcordo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoQuitado => new(0, PTabelaNome, CampoCodigo, Quitado, Quitado, Quitado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoIDContrato => new(0, PTabelaNome, CampoCodigo, IDContrato, IDContrato, IDContrato, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoQuitadoID => new(0, PTabelaNome, CampoCodigo, QuitadoID, QuitadoID, QuitadoID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoDebitoID => new(0, PTabelaNome, CampoCodigo, DebitoID, DebitoID, DebitoID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoLivroCaixaID => new(0, PTabelaNome, CampoCodigo, LivroCaixaID, LivroCaixaID, LivroCaixaID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoSucumbencia => new(0, PTabelaNome, CampoCodigo, Sucumbencia, Sucumbencia, Sucumbencia, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoDistRegra => new(0, PTabelaNome, CampoCodigo, DistRegra, DistRegra, DistRegra, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoDtOriginal => new(0, PTabelaNome, CampoCodigo, DtOriginal, DtOriginal, DtOriginal, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "cto");
+    public static DBInfoSystem CtoProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoParcelaX => new(0, PTabelaNome, CampoCodigo, ParcelaX, ParcelaX, ParcelaX, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "cto");
+    public static DBInfoSystem CtoData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "cto");
+    public static DBInfoSystem CtoCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "cto"); // DBI 11 
+    public static DBInfoSystem CtoHistorico => new(0, PTabelaNome, CampoCodigo, Historico, DevourerOne.PMaxSizeCampoMemo, Historico, Historico, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "cto");
+    public static DBInfoSystem CtoContrato => new(0, PTabelaNome, CampoCodigo, Contrato, Contrato, Contrato, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoPago => new(0, PTabelaNome, CampoCodigo, Pago, Pago, Pago, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoDistribuir => new(0, PTabelaNome, CampoCodigo, Distribuir, Distribuir, Distribuir, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoLC => new(0, PTabelaNome, CampoCodigo, LC, LC, LC, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto", isRequired: true);
+    public static DBInfoSystem CtoIDHTrab => new(0, PTabelaNome, CampoCodigo, IDHTrab, IDHTrab, IDHTrab, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoNroParcelas => new(0, PTabelaNome, CampoCodigo, NroParcelas, NroParcelas, NroParcelas, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoValorPrincipal => new(0, PTabelaNome, CampoCodigo, ValorPrincipal, ValorPrincipal, ValorPrincipal, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "cto");
+    public static DBInfoSystem CtoParcelaPrincipalID => new(0, PTabelaNome, CampoCodigo, ParcelaPrincipalID, ParcelaPrincipalID, ParcelaPrincipalID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cto");
+    public static DBInfoSystem CtoHide => new(0, PTabelaNome, CampoCodigo, Hide, Hide, Hide, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cto");
+    public static DBInfoSystem CtoDataPgto => new(0, PTabelaNome, CampoCodigo, DataPgto, DataPgto, DataPgto, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "cto");
+    public static DBInfoSystem CtoGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "cto");
+    public static DBInfoSystem CtoQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cto"); // DBI 11 
+    public static DBInfoSystem CtoDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "cto");
+    public static DBInfoSystem CtoQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cto"); // DBI 11 
+    public static DBInfoSystem CtoDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "cto");
+    public static DBInfoSystem CtoVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "cto", isRequired: true);
 
 #endregion
     [Serializable]

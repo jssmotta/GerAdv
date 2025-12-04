@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IAgendaWriter
 {
     Task<FAgenda> WriteAsync(Models.Agenda agenda, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(AgendaResponse agenda, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
 {
     private readonly IFAgendaFactory _agendaFactory = agendaFactory ?? throw new ArgumentNullException(nameof(agendaFactory));
-    public virtual async Task Delete(AgendaResponse agenda, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(AgendaResponse agenda, int operadorId, MsiSqlConnection? oCnn)
     {
         await _agendaFactory.DeleteAsync(operadorId, agenda.Id, oCnn);
     }
@@ -31,15 +31,30 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         dbRec.FOculto = agenda.Oculto;
         dbRec.FCartaPrecatoria = agenda.CartaPrecatoria;
         dbRec.FRevisar = agenda.Revisar;
-        dbRec.FHrFinal = agenda.HrFinal;
+        if (agenda.HrFinal.NotIsEmpty())
+        {
+            dbRec.FHrFinal = TimeOnly.FromDateTime(Convert.ToDateTime(agenda.HrFinal));
+        }
+
         dbRec.FAdvogado = agenda.Advogado;
         dbRec.FEventoGerador = agenda.EventoGerador;
-        if (agenda.EventoData != null)
-            dbRec.FEventoData = agenda.EventoData.ToString();
+        if (agenda.EventoData.NotIsEmpty())
+        {
+            dbRec.FEventoData = DateOnly.FromDateTime(Convert.ToDateTime(agenda.EventoData));
+        }
+
         dbRec.FFuncionario = agenda.Funcionario;
-        dbRec.FData = agenda.Data;
+        if (agenda.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(agenda.Data));
+        }
+
         dbRec.FEventoPrazo = agenda.EventoPrazo;
-        dbRec.FHora = agenda.Hora;
+        if (agenda.Hora.NotIsEmpty())
+        {
+            dbRec.FHora = TimeOnly.FromDateTime(Convert.ToDateTime(agenda.Hora));
+        }
+
         dbRec.FCompromisso = agenda.Compromisso;
         dbRec.FTipoCompromisso = agenda.TipoCompromisso;
         dbRec.FCliente = agenda.Cliente;
@@ -55,16 +70,19 @@ public class AgendaWriter(IFAgendaFactory agendaFactory) : IAgendaWriter
         dbRec.FPreposto = agenda.Preposto;
         dbRec.FQuemID = agenda.QuemID;
         dbRec.FQuemCodigo = agenda.QuemCodigo;
-        dbRec.FGUID = agenda.GUID;
         dbRec.FStatus = agenda.Status;
         dbRec.FValor = agenda.Valor;
         dbRec.FDecisao = agenda.Decisao;
         dbRec.FSempre = agenda.Sempre;
         dbRec.FPrazoDias = agenda.PrazoDias;
         dbRec.FProtocoloIntegrado = agenda.ProtocoloIntegrado;
-        if (agenda.DataInicioPrazo != null)
-            dbRec.FDataInicioPrazo = agenda.DataInicioPrazo.ToString();
+        if (agenda.DataInicioPrazo.NotIsEmpty())
+        {
+            dbRec.FDataInicioPrazo = DateOnly.FromDateTime(Convert.ToDateTime(agenda.DataInicioPrazo));
+        }
+
         dbRec.FUsuarioCiente = agenda.UsuarioCiente;
+        dbRec.FGuid = agenda.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

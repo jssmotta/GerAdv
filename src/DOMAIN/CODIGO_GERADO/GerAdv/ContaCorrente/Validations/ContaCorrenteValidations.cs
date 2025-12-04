@@ -26,8 +26,6 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
 
     private bool ValidSizes(Models.ContaCorrente reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > DBContaCorrenteDicInfo.CtoGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBContaCorrenteDicInfo.CtoGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -37,6 +35,8 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -46,6 +46,15 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
             {
                 if (dataAntiga < new DateTime(1900, 1, 1))
                     throw new SGValidationException("DtOriginal não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
             }
         }
 
@@ -61,7 +70,7 @@ public class ContaCorrenteValidation : IContaCorrenteValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

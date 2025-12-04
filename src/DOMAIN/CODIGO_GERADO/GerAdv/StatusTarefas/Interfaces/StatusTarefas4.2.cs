@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IStatusTarefasReader
 {
-    Task<StatusTarefasResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.StatusTarefas?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<StatusTarefasResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.StatusTarefas?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     StatusTarefasResponse? Read(FStatusTarefas dbRec, MsiSqlConnection? oCnn);
     StatusTarefasResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     StatusTarefasResponse? Read(FStatusTarefas dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     StatusTarefasResponseAll? ReadAll(FStatusTarefas dbRec, IDataRecord dr);
     StatusTarefasResponseAll? ReadAll(SG.GerAdv.DBStatusTarefas dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<StatusTarefasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<StatusTarefasResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

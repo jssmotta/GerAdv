@@ -22,7 +22,7 @@ public class DBGUTTipoUpdate : IDisposable
         var guttipo = new DBGUTTipo();
         // Assert
         guttipo.Should().NotBeNull();
-        guttipo.ITabelaName().Should().Be("GUTTipo");
+        guttipo.ITableName().Should().Be("GUTTipo");
         guttipo.ID.Should().Be(0);
     }
 
@@ -33,10 +33,10 @@ public class DBGUTTipoUpdate : IDisposable
         var guttipo = new DBGUTTipo
         {
             FNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
         // Assert - All properties should be set guttipo.FNome.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        guttipo.FGUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        guttipo.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -46,11 +46,27 @@ public class DBGUTTipoUpdate : IDisposable
         var guttipo = new DBGUTTipo();
         var longString = new string ('X', 300);
         guttipo.FNome = longString; // MAX: 150
-        guttipo.FGUID = longString; // MAX: 50
+        guttipo.FGuid = longString; // MAX: 50
         // Assert - All properties should be set guttipo.FNome.Should().HaveLength(150);
-        guttipo.FGUID.Should().HaveLength(50);
+        guttipo.FGuid.Should().HaveLength(50);
     }
 
+#region Testes de Guid
+    [Fact]
+    public void Guid_DefaultValue_ShouldBeEmpty()
+    {
+        Assert.Equal(string.Empty, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_SetValidGuid_ShouldStore()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
+    }
+
+#endregion
     [Theory]
     [InlineData("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
@@ -148,7 +164,7 @@ public class DBGUTTipoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -162,7 +178,7 @@ public class DBGUTTipoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -178,7 +194,7 @@ public class DBGUTTipoUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -193,7 +209,7 @@ public class DBGUTTipoUpdate : IDisposable
         _instance.FNome = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -207,7 +223,7 @@ public class DBGUTTipoUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -221,7 +237,7 @@ public class DBGUTTipoUpdate : IDisposable
         _instance.FNome = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -235,7 +251,7 @@ public class DBGUTTipoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -261,7 +277,7 @@ public class DBGUTTipoUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -275,26 +291,10 @@ public class DBGUTTipoUpdate : IDisposable
         _instance.FNome = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
-    [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
-    {
-        Assert.Equal(string.Empty, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
-    }
-
-#endregion
     [Fact]
     public void TabelaNome_Property_ShouldReturnCorrectTableName()
     {

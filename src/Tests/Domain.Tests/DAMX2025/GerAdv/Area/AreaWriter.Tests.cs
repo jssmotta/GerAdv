@@ -74,9 +74,9 @@ public class AreaWriterTests
         var result = await _areaWriter.WriteAsync(area, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFArea.Object);
+        _mockFArea.VerifySet(x => x.FGuid = area.Guid, Times.Once);
         _mockFArea.VerifySet(x => x.FDescricao = area.Descricao, Times.Once);
         _mockFArea.VerifySet(x => x.FTop = area.Top, Times.Once);
-        _mockFArea.VerifySet(x => x.FGUID = area.GUID, Times.Once);
         _mockFArea.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class AreaWriterTests
         var operadorId = 456;
         _mockAreaFactory.Setup(x => x.DeleteAsync(operadorId, areaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _areaWriter.Delete(areaResponse, operadorId, _mockConnection.Object);
+        await _areaWriter.DeleteAsync(areaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockAreaFactory.Verify(x => x.DeleteAsync(operadorId, areaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class AreaWriterTests
         var operadorId = 111;
         _mockAreaFactory.Setup(x => x.DeleteAsync(operadorId, areaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _areaWriter.Delete(areaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _areaWriter.DeleteAsync(areaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class AreaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockAreaFactory.Setup(x => x.DeleteAsync(operadorId, areaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _areaWriter.Delete(areaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _areaWriter.DeleteAsync(areaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class AreaWriterTests
         return new Models.Area
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Top = false,
-            GUID = Guid.NewGuid().ToString()
+            Top = false
         };
     }
 #endregion

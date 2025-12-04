@@ -11,7 +11,6 @@ public static partial class DBEnderecosDicInfo
     public const string CampoNome = "endDescricao";
     public const string TablePrefix = "end";
     public const string TopIndex = "endTopIndex"; // LOCALIZACAO 170523
-    public const string GUID = "endGUID"; // LOCALIZACAO 170523
     public const string Descricao = "endDescricao"; // LOCALIZACAO 170523
     public const string Contato = "endContato"; // LOCALIZACAO 170523
     public const string DtNasc = "endDtNasc"; // LOCALIZACAO 170523
@@ -34,6 +33,7 @@ public static partial class DBEnderecosDicInfo
     public const string Etiqueta = "endEtiqueta"; // LOCALIZACAO 170523
     public const string Ani = "endAni"; // LOCALIZACAO 170523
     public const string Bold = "endBold"; // LOCALIZACAO 170523
+    public const string Guid = "endGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "endQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "endDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "endQuemAtu"; // LOCALIZACAO 170523
@@ -75,129 +75,35 @@ public static partial class DBEnderecosDicInfo
 
     public const string PTabelaNome = "Enderecos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem EndTopIndex => new(0, PTabelaNome, CampoCodigo, TopIndex, "TopIndex", "TopIndex", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndContato => new(0, PTabelaNome, CampoCodigo, Contato, DevourerOne.PMaxSizeCampoMemo, "Contato", "Contato", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", ETipoDadosSysteminfo.SysteminfoDataNascimento)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 30, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndPrivativo => new(0, PTabelaNome, CampoCodigo, Privativo, "Privativo", "Privativo", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndAddContato => new(0, PTabelaNome, CampoCodigo, AddContato, "AddContato", "AddContato", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndOAB => new(0, PTabelaNome, CampoCodigo, OAB, 20, "OAB", "OAB", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, "OBS", "OBS", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndTratamento => new(0, PTabelaNome, CampoCodigo, Tratamento, 20, "Tratamento", "Tratamento", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "end"
-    }; // DBI 11 
-    public static DBInfoSystem EndSite => new(0, PTabelaNome, CampoCodigo, Site, 200, "Site", "Site", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndEMail => new(0, PTabelaNome, CampoCodigo, EMail, 255, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndQuem => new(0, PTabelaNome, CampoCodigo, Quem, "Quem", "Quem", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndQuemIndicou => new(0, PTabelaNome, CampoCodigo, QuemIndicou, 150, "QuemIndicou", "QuemIndicou", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndReportECBOnly => new(0, PTabelaNome, CampoCodigo, ReportECBOnly, "ReportECBOnly", "ReportECBOnly", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "end"
-    }; // DBI 11 
-    public static DBInfoSystem EndDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "end"
-    }; // DBI 11 
-    public static DBInfoSystem EndDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "end"
-    };
-    public static DBInfoSystem EndVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "end"
-    };
+    public static DBInfoSystem EndTopIndex => new(0, PTabelaNome, CampoCodigo, TopIndex, TopIndex, TopIndex, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "end", isRequired: true);
+    public static DBInfoSystem EndDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndContato => new(0, PTabelaNome, CampoCodigo, Contato, DevourerOne.PMaxSizeCampoMemo, Contato, Contato, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, DtNasc, DtNasc, EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "end");
+    public static DBInfoSystem EndEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 30, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndPrivativo => new(0, PTabelaNome, CampoCodigo, Privativo, Privativo, Privativo, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "end", isRequired: true);
+    public static DBInfoSystem EndAddContato => new(0, PTabelaNome, CampoCodigo, AddContato, AddContato, AddContato, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "end", isRequired: true);
+    public static DBInfoSystem EndCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndOAB => new(0, PTabelaNome, CampoCodigo, OAB, 20, OAB, OAB, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, OBS, OBS, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndTratamento => new(0, PTabelaNome, CampoCodigo, Tratamento, 20, Tratamento, Tratamento, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "end"); // DBI 11 
+    public static DBInfoSystem EndSite => new(0, PTabelaNome, CampoCodigo, Site, 200, Site, Site, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndEMail => new(0, PTabelaNome, CampoCodigo, EMail, 255, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndQuem => new(0, PTabelaNome, CampoCodigo, Quem, Quem, Quem, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "end");
+    public static DBInfoSystem EndQuemIndicou => new(0, PTabelaNome, CampoCodigo, QuemIndicou, 150, QuemIndicou, QuemIndicou, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndReportECBOnly => new(0, PTabelaNome, CampoCodigo, ReportECBOnly, ReportECBOnly, ReportECBOnly, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "end");
+    public static DBInfoSystem EndEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "end", isRequired: true);
+    public static DBInfoSystem EndAni => new(0, PTabelaNome, CampoCodigo, Ani, Ani, Ani, EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "end", isRequired: true);
+    public static DBInfoSystem EndBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "end", isRequired: true);
+    public static DBInfoSystem EndGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "end");
+    public static DBInfoSystem EndQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "end"); // DBI 11 
+    public static DBInfoSystem EndDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "end");
+    public static DBInfoSystem EndQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "end"); // DBI 11 
+    public static DBInfoSystem EndDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "end");
+    public static DBInfoSystem EndVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "end", isRequired: true);
 
 #endregion
     [Serializable]

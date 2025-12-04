@@ -118,7 +118,7 @@ public class NEPalavrasChavesWriterTests
         var operadorId = 456;
         _mockNEPalavrasChavesFactory.Setup(x => x.DeleteAsync(operadorId, nepalavraschavesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _nepalavraschavesWriter.Delete(nepalavraschavesResponse, operadorId, _mockConnection.Object);
+        await _nepalavraschavesWriter.DeleteAsync(nepalavraschavesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockNEPalavrasChavesFactory.Verify(x => x.DeleteAsync(operadorId, nepalavraschavesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -134,7 +134,7 @@ public class NEPalavrasChavesWriterTests
         var operadorId = 111;
         _mockNEPalavrasChavesFactory.Setup(x => x.DeleteAsync(operadorId, nepalavraschavesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _nepalavraschavesWriter.Delete(nepalavraschavesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _nepalavraschavesWriter.DeleteAsync(nepalavraschavesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -151,7 +151,7 @@ public class NEPalavrasChavesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockNEPalavrasChavesFactory.Setup(x => x.DeleteAsync(operadorId, nepalavraschavesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _nepalavraschavesWriter.Delete(nepalavraschavesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _nepalavraschavesWriter.DeleteAsync(nepalavraschavesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

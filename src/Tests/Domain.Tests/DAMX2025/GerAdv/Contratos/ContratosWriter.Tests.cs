@@ -74,6 +74,7 @@ public class ContratosWriterTests
         var result = await _contratosWriter.WriteAsync(contratos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFContratos.Object);
+        _mockFContratos.VerifySet(x => x.FGuid = contratos.Guid, Times.Once);
         _mockFContratos.VerifySet(x => x.FProcesso = contratos.Processo, Times.Once);
         _mockFContratos.VerifySet(x => x.FCliente = contratos.Cliente, Times.Once);
         _mockFContratos.VerifySet(x => x.FAdvogado = contratos.Advogado, Times.Once);
@@ -102,7 +103,6 @@ public class ContratosWriterTests
         _mockFContratos.VerifySet(x => x.FAvulso = contratos.Avulso, Times.Once);
         _mockFContratos.VerifySet(x => x.FSuspenso = contratos.Suspenso, Times.Once);
         _mockFContratos.VerifySet(x => x.FMulta = contratos.Multa, Times.Once);
-        _mockFContratos.VerifySet(x => x.FGUID = contratos.GUID, Times.Once);
         _mockFContratos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -176,7 +176,7 @@ public class ContratosWriterTests
         var operadorId = 456;
         _mockContratosFactory.Setup(x => x.DeleteAsync(operadorId, contratosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _contratosWriter.Delete(contratosResponse, operadorId, _mockConnection.Object);
+        await _contratosWriter.DeleteAsync(contratosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockContratosFactory.Verify(x => x.DeleteAsync(operadorId, contratosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -192,7 +192,7 @@ public class ContratosWriterTests
         var operadorId = 111;
         _mockContratosFactory.Setup(x => x.DeleteAsync(operadorId, contratosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _contratosWriter.Delete(contratosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _contratosWriter.DeleteAsync(contratosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -209,7 +209,7 @@ public class ContratosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockContratosFactory.Setup(x => x.DeleteAsync(operadorId, contratosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contratosWriter.Delete(contratosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contratosWriter.DeleteAsync(contratosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -239,6 +239,7 @@ public class ContratosWriterTests
         return new Models.Contratos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             Cliente = 1,
             Advogado = 1,
@@ -266,8 +267,7 @@ public class ContratosWriterTests
             ChaveContrato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Avulso = false,
             Suspenso = false,
-            Multa = "AAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Multa = "AAAAAAAA"
         };
     }
 #endregion

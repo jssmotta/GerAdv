@@ -46,107 +46,37 @@ public static partial class DBProValoresDicInfo
         12 => ValorJurosCorrigido,
         13 => ValorFinal,
         14 => DataUltimaCorrecao,
-        15 => Guid,
-        16 => QuemCad,
-        17 => DtCad,
-        18 => QuemAtu,
-        19 => DtAtu,
-        20 => Visto,
+        15 => QuemCad,
+        16 => DtCad,
+        17 => QuemAtu,
+        18 => DtAtu,
+        19 => Visto,
         _ => string.Empty
     };
     public static string TabelaNome => PTabelaNome;
 
     public const string PTabelaNome = "ProValores";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PrvProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvTipoValorProcesso => new(0, PTabelaNome, CampoCodigo, TipoValorProcesso, "TipoValorProcesso", "TipoValorProcesso", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvIndice => new(0, PTabelaNome, CampoCodigo, Indice, 20, "Indice", "Indice", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvIgnorar => new(0, PTabelaNome, CampoCodigo, Ignorar, "Ignorar", "Ignorar", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvValorOriginal => new(0, PTabelaNome, CampoCodigo, ValorOriginal, "ValorOriginal", "ValorOriginal", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvPercMulta => new(0, PTabelaNome, CampoCodigo, PercMulta, "PercMulta", "PercMulta", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvValorMulta => new(0, PTabelaNome, CampoCodigo, ValorMulta, "ValorMulta", "ValorMulta", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvPercJuros => new(0, PTabelaNome, CampoCodigo, PercJuros, "PercJuros", "PercJuros", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvValorOriginalCorrigidoIndice => new(0, PTabelaNome, CampoCodigo, ValorOriginalCorrigidoIndice, "ValorOriginalCorrigidoIndice", "ValorOriginalCorrigidoIndice", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvValorMultaCorrigido => new(0, PTabelaNome, CampoCodigo, ValorMultaCorrigido, "ValorMultaCorrigido", "ValorMultaCorrigido", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvValorJurosCorrigido => new(0, PTabelaNome, CampoCodigo, ValorJurosCorrigido, "ValorJurosCorrigido", "ValorJurosCorrigido", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvValorFinal => new(0, PTabelaNome, CampoCodigo, ValorFinal, "ValorFinal", "ValorFinal", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvDataUltimaCorrecao => new(0, PTabelaNome, CampoCodigo, DataUltimaCorrecao, "DataUltimaCorrecao", "DataUltimaCorrecao", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    }; // DBI 11 
-    public static DBInfoSystem PrvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "prv"
-    }; // DBI 11 
-    public static DBInfoSystem PrvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "prv"
-    };
-    public static DBInfoSystem PrvVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "prv"
-    };
+    public static DBInfoSystem PrvProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvTipoValorProcesso => new(0, PTabelaNome, CampoCodigo, TipoValorProcesso, TipoValorProcesso, TipoValorProcesso, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvIndice => new(0, PTabelaNome, CampoCodigo, Indice, 20, Indice, Indice, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvIgnorar => new(0, PTabelaNome, CampoCodigo, Ignorar, Ignorar, Ignorar, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvValorOriginal => new(0, PTabelaNome, CampoCodigo, ValorOriginal, ValorOriginal, ValorOriginal, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvPercMulta => new(0, PTabelaNome, CampoCodigo, PercMulta, PercMulta, PercMulta, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvValorMulta => new(0, PTabelaNome, CampoCodigo, ValorMulta, ValorMulta, ValorMulta, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvPercJuros => new(0, PTabelaNome, CampoCodigo, PercJuros, PercJuros, PercJuros, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvValorOriginalCorrigidoIndice => new(0, PTabelaNome, CampoCodigo, ValorOriginalCorrigidoIndice, ValorOriginalCorrigidoIndice, ValorOriginalCorrigidoIndice, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvValorMultaCorrigido => new(0, PTabelaNome, CampoCodigo, ValorMultaCorrigido, ValorMultaCorrigido, ValorMultaCorrigido, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvValorJurosCorrigido => new(0, PTabelaNome, CampoCodigo, ValorJurosCorrigido, ValorJurosCorrigido, ValorJurosCorrigido, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvValorFinal => new(0, PTabelaNome, CampoCodigo, ValorFinal, ValorFinal, ValorFinal, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "prv");
+    public static DBInfoSystem PrvDataUltimaCorrecao => new(0, PTabelaNome, CampoCodigo, DataUltimaCorrecao, DataUltimaCorrecao, DataUltimaCorrecao, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "prv");
+    public static DBInfoSystem PrvGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "prv");
+    public static DBInfoSystem PrvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "prv", isRequired: true); // DBI 11 
+    public static DBInfoSystem PrvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "prv", isRequired: true);
+    public static DBInfoSystem PrvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "prv"); // DBI 11 
+    public static DBInfoSystem PrvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "prv");
+    public static DBInfoSystem PrvVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "prv", isRequired: true);
 
 #endregion
     [Serializable]
@@ -166,12 +96,11 @@ public static partial class DBProValoresDicInfo
         PrvValorJurosCorrigido = 12,
         PrvValorFinal = 13,
         PrvDataUltimaCorrecao = 14,
-        PrvGuid = 15,
-        PrvQuemCad = 16,
-        PrvDtCad = 17,
-        PrvQuemAtu = 18,
-        PrvDtAtu = 19,
-        PrvVisto = 20
+        PrvQuemCad = 15,
+        PrvDtCad = 16,
+        PrvQuemAtu = 17,
+        PrvDtAtu = 18,
+        PrvVisto = 19
     }
 
     public static DBInfoSystem? GetInfoSystemByEnum(NomesCamposTabela idTable) => idTable switch
@@ -190,7 +119,6 @@ public static partial class DBProValoresDicInfo
         NomesCamposTabela.PrvValorJurosCorrigido => PrvValorJurosCorrigido,
         NomesCamposTabela.PrvValorFinal => PrvValorFinal,
         NomesCamposTabela.PrvDataUltimaCorrecao => PrvDataUltimaCorrecao,
-        NomesCamposTabela.PrvGuid => PrvGuid,
         NomesCamposTabela.PrvQuemCad => PrvQuemCad,
         NomesCamposTabela.PrvDtCad => PrvDtCad,
         NomesCamposTabela.PrvQuemAtu => PrvQuemAtu,

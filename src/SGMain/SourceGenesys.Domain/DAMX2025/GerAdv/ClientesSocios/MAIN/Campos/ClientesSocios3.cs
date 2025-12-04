@@ -7,85 +7,56 @@ public partial class DBClientesSocios
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFSomenteRepresentante, pFldFGUID, pFldFIdade, pFldFIsRepresentanteLegal, pFldFQualificacao, pFldFSexo, pFldFDtNasc, pFldFNome, pFldFSite, pFldFRepresentanteLegal, pFldFCliente, pFldFEndereco, pFldFBairro, pFldFCEP, pFldFCidade, pFldFRG, pFldFCPF, pFldFFone, pFldFParticipacao, pFldFCargo, pFldFEMail, pFldFObs, pFldFCNH, pFldFDataContrato, pFldFCNPJ, pFldFInscEst, pFldFSocioEmpresaAdminNome, pFldFEnderecoSocio, pFldFBairroSocio, pFldFCEPSocio, pFldFCidadeSocio, pFldFRGDataExp, pFldFSocioEmpresaAdminSomente, pFldFTipo, pFldFFax, pFldFClass, pFldFEtiqueta, pFldFAni, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FIdade, m_FCliente, m_FCidade, m_FCidadeSocio;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FGUID, m_FQualificacao, m_FNome, m_FSite, m_FRepresentanteLegal, m_FEndereco, m_FBairro, m_FCEP, m_FRG, m_FCPF, m_FFone, m_FParticipacao, m_FCargo, m_FEMail, m_FObs, m_FCNH, m_FCNPJ, m_FInscEst, m_FSocioEmpresaAdminNome, m_FEnderecoSocio, m_FBairroSocio, m_FCEPSocio, m_FFax, m_FClass;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDtNasc, m_FDataContrato, m_FRGDataExp;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FSomenteRepresentante, m_FIsRepresentanteLegal, m_FSexo, m_FSocioEmpresaAdminSomente, m_FTipo, m_FEtiqueta, m_FAni, m_FBold;
+    private protected bool pFldFSomenteRepresentante, pFldFIdade, pFldFIsRepresentanteLegal, pFldFQualificacao, pFldFSexo, pFldFDtNasc, pFldFNome, pFldFSite, pFldFRepresentanteLegal, pFldFCliente, pFldFEndereco, pFldFBairro, pFldFCEP, pFldFCidade, pFldFRG, pFldFCPF, pFldFFone, pFldFParticipacao, pFldFCargo, pFldFEMail, pFldFObs, pFldFCNH, pFldFDataContrato, pFldFCNPJ, pFldFInscEst, pFldFSocioEmpresaAdminNome, pFldFEnderecoSocio, pFldFBairroSocio, pFldFCEPSocio, pFldFCidadeSocio, pFldFRGDataExp, pFldFSocioEmpresaAdminSomente, pFldFTipo, pFldFFax, pFldFClass, pFldFEtiqueta, pFldFAni, pFldFBold, pFldFGuid;
     public virtual bool FSomenteRepresentante
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSomenteRepresentante;
+        get => field;
         set
         {
-            pFldFSomenteRepresentante = pFldFSomenteRepresentante || value != m_FSomenteRepresentante;
+            pFldFSomenteRepresentante = pFldFSomenteRepresentante || value != field;
             if (pFldFSomenteRepresentante)
-                m_FSomenteRepresentante = value;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FGUID da tabela ClientesSocios deve ter no máximo 150 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
-            }
+                field = value;
         }
     }
 
     public virtual int FIdade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIdade;
+        get => field;
         set
         {
-            pFldFIdade = pFldFIdade || value != m_FIdade;
+            pFldFIdade = pFldFIdade || value != field;
             if (pFldFIdade)
-                m_FIdade = value;
+                field = value;
         }
     }
 
     public virtual bool FIsRepresentanteLegal
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIsRepresentanteLegal;
+        get => field;
         set
         {
-            pFldFIsRepresentanteLegal = pFldFIsRepresentanteLegal || value != m_FIsRepresentanteLegal;
+            pFldFIsRepresentanteLegal = pFldFIsRepresentanteLegal || value != field;
             if (pFldFIsRepresentanteLegal)
-                m_FIsRepresentanteLegal = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FQualificacao da tabela ClientesSocios deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FQualificacao da tabela 'ClientesSocios' deve ter no máximo 100 caracteres.")]
     public virtual string? FQualificacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FQualificacao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFQualificacao = pFldFQualificacao || !(m_FQualificacao ?? string.Empty).Equals(value);
+            pFldFQualificacao = pFldFQualificacao || !(field ?? string.Empty).Equals(value);
             if (pFldFQualificacao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FQualificacao = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
@@ -93,74 +64,88 @@ public partial class DBClientesSocios
     public virtual bool FSexo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSexo;
+        get => field;
         set
         {
-            pFldFSexo = pFldFSexo || value != m_FSexo;
+            pFldFSexo = pFldFSexo || value != field;
             if (pFldFSexo)
-                m_FSexo = value;
+                field = value;
         }
     }
 
-    public virtual string? FDtNasc
+    public virtual DateOnly? FDtNasc
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDtNasc is null || m_FDtNasc == DevourerOne.DDataZerada ? string.Empty : m_FDtNasc.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDtNasc, m_FDtNasc, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDtNasc = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDtNasc, m_FDtNasc) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDtNasc = true;
+                field = value;
+            }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela ClientesSocios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela 'ClientesSocios' deve ter no máximo 50 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FSite da tabela ClientesSocios deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FSite da tabela 'ClientesSocios' deve ter no máximo 150 caracteres.")]
     public virtual string? FSite
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSite ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSite = pFldFSite || !(m_FSite ?? string.Empty).Equals(value);
+            pFldFSite = pFldFSite || !(field ?? string.Empty).Equals(value);
             if (pFldFSite)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSite = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FRepresentanteLegal da tabela ClientesSocios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FRepresentanteLegal da tabela 'ClientesSocios' deve ter no máximo 50 caracteres.")]
     public virtual string? FRepresentanteLegal
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRepresentanteLegal ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFRepresentanteLegal = pFldFRepresentanteLegal || !(m_FRepresentanteLegal ?? string.Empty).Equals(value);
+            pFldFRepresentanteLegal = pFldFRepresentanteLegal || !(field ?? string.Empty).Equals(value);
             if (pFldFRepresentanteLegal)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FRepresentanteLegal = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -168,62 +153,62 @@ public partial class DBClientesSocios
     public virtual int FCliente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCliente;
+        get => field;
         set
         {
-            pFldFCliente = pFldFCliente || value != m_FCliente;
+            pFldFCliente = pFldFCliente || value != field;
             if (pFldFCliente)
-                m_FCliente = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela ClientesSocios deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela 'ClientesSocios' deve ter no máximo 80 caracteres.")]
     public virtual string? FEndereco
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEndereco ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
+            pFldFEndereco = pFldFEndereco || !(field ?? string.Empty).Equals(value);
             if (pFldFEndereco)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEndereco = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela ClientesSocios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela 'ClientesSocios' deve ter no máximo 50 caracteres.")]
     public virtual string? FBairro
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBairro ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFBairro = pFldFBairro || !(m_FBairro ?? string.Empty).Equals(value);
+            pFldFBairro = pFldFBairro || !(field ?? string.Empty).Equals(value);
             if (pFldFBairro)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FBairro = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela ClientesSocios deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela 'ClientesSocios' deve ter no máximo 10 caracteres.")]
     public virtual string? FCEP
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCEP ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
+            pFldFCEP = pFldFCEP || !(field ?? string.Empty).Equals(value);
             if (pFldFCEP)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
@@ -231,41 +216,41 @@ public partial class DBClientesSocios
     public virtual int FCidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidade;
+        get => field;
         set
         {
-            pFldFCidade = pFldFCidade || value != m_FCidade;
+            pFldFCidade = pFldFCidade || value != field;
             if (pFldFCidade)
-                m_FCidade = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela ClientesSocios deve ter no máximo 30 caracteres.")]
+    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela 'ClientesSocios' deve ter no máximo 30 caracteres.")]
     public virtual string? FRG
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRG ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFRG = pFldFRG || !(m_FRG ?? string.Empty).Equals(value);
+            pFldFRG = pFldFRG || !(field ?? string.Empty).Equals(value);
             if (pFldFRG)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FRG = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+                field = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela ClientesSocios deve ter no máximo 11 caracteres.")]
+    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela 'ClientesSocios' deve ter no máximo 11 caracteres.")]
     public virtual string? FCPF
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCPF ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCPF = pFldFCPF || !(m_FCPF ?? string.Empty).Equals(value);
+            pFldFCPF = pFldFCPF || !(field ?? string.Empty).Equals(value);
             if (pFldFCPF)
             {
                 var trimmed = (value?.Trim() ?? string.Empty).ClearInputCpf();
@@ -276,9 +261,7 @@ public partial class DBClientesSocios
                 }
 
                 if (valueCpf.Length == 0 || valueCpf.IsValidCpf())
-                    m_FCPF = valueCpf;
-                else
-                    throw new ArgumentException("CPF inválido ou não informado corretamente.", nameof(value));
+                    field = valueCpf;
             }
         }
     }
@@ -287,65 +270,62 @@ public partial class DBClientesSocios
     public virtual string? FFone
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFone ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFone = pFldFFone || !(m_FFone ?? string.Empty).Equals(value);
+            pFldFFone = pFldFFone || !(field ?? string.Empty).Equals(value);
             if (pFldFFone)
-                m_FFone = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FParticipacao da tabela ClientesSocios deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FParticipacao da tabela 'ClientesSocios' deve ter no máximo 10 caracteres.")]
     public virtual string? FParticipacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FParticipacao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFParticipacao = pFldFParticipacao || !(m_FParticipacao ?? string.Empty).Equals(value);
+            pFldFParticipacao = pFldFParticipacao || !(field ?? string.Empty).Equals(value);
             if (pFldFParticipacao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FParticipacao = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FCargo da tabela ClientesSocios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FCargo da tabela 'ClientesSocios' deve ter no máximo 50 caracteres.")]
     public virtual string? FCargo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCargo ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCargo = pFldFCargo || !(m_FCargo ?? string.Empty).Equals(value);
+            pFldFCargo = pFldFCargo || !(field ?? string.Empty).Equals(value);
             if (pFldFCargo)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCargo = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(60, ErrorMessage = "A propriedade FEMail da tabela ClientesSocios deve ter no máximo 60 caracteres.")]
+    [StringLength(60, ErrorMessage = "A propriedade FEMail da tabela 'ClientesSocios' deve ter no máximo 60 caracteres.")]
     public virtual string? FEMail
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEMail ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
+            pFldFEMail = pFldFEMail || !(field ?? string.Empty).Equals(value);
             if (pFldFEMail)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEMail = trimmed.Length > 60 ? trimmed.AsSpan(0, 60).ToString() : trimmed;
-                if (m_FEMail.IsValidEmail())
-                    return;
-                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+                field = trimmed.Length > 60 ? trimmed.AsSpan(0, 60).ToString() : trimmed;
             }
         }
     }
@@ -354,142 +334,156 @@ public partial class DBClientesSocios
     public virtual string? FObs
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObs ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObs = pFldFObs || !(m_FObs ?? string.Empty).Equals(value);
+            pFldFObs = pFldFObs || !(field ?? string.Empty).Equals(value);
             if (pFldFObs)
-                m_FObs = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FCNH da tabela ClientesSocios deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FCNH da tabela 'ClientesSocios' deve ter no máximo 100 caracteres.")]
     public virtual string? FCNH
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCNH ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCNH = pFldFCNH || !(m_FCNH ?? string.Empty).Equals(value);
+            pFldFCNH = pFldFCNH || !(field ?? string.Empty).Equals(value);
             if (pFldFCNH)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCNH = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
-    public virtual string? FDataContrato
+    public virtual DateOnly? FDataContrato
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataContrato is null || m_FDataContrato == DevourerOne.DDataZerada ? string.Empty : m_FDataContrato.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataContrato, m_FDataContrato, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataContrato = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataContrato, m_FDataContrato) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataContrato = true;
+                field = value;
+            }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(14, ErrorMessage = "A propriedade FCNPJ da tabela ClientesSocios deve ter no máximo 14 caracteres.")]
+    [StringLength(14, ErrorMessage = "A propriedade FCNPJ da tabela 'ClientesSocios' deve ter no máximo 14 caracteres.")]
     public virtual string? FCNPJ
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCNPJ ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCNPJ = pFldFCNPJ || !(m_FCNPJ ?? string.Empty).Equals(value);
+            pFldFCNPJ = pFldFCNPJ || !(field ?? string.Empty).Equals(value);
             if (pFldFCNPJ)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCNPJ = trimmed.Length > 14 ? trimmed.AsSpan(0, 14).ToString() : trimmed;
+                field = trimmed.Length > 14 ? trimmed.AsSpan(0, 14).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(15, ErrorMessage = "A propriedade FInscEst da tabela ClientesSocios deve ter no máximo 15 caracteres.")]
+    [StringLength(15, ErrorMessage = "A propriedade FInscEst da tabela 'ClientesSocios' deve ter no máximo 15 caracteres.")]
     public virtual string? FInscEst
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInscEst ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFInscEst = pFldFInscEst || !(m_FInscEst ?? string.Empty).Equals(value);
+            pFldFInscEst = pFldFInscEst || !(field ?? string.Empty).Equals(value);
             if (pFldFInscEst)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FInscEst = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
+                field = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FSocioEmpresaAdminNome da tabela ClientesSocios deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FSocioEmpresaAdminNome da tabela 'ClientesSocios' deve ter no máximo 80 caracteres.")]
     public virtual string? FSocioEmpresaAdminNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSocioEmpresaAdminNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSocioEmpresaAdminNome = pFldFSocioEmpresaAdminNome || !(m_FSocioEmpresaAdminNome ?? string.Empty).Equals(value);
+            pFldFSocioEmpresaAdminNome = pFldFSocioEmpresaAdminNome || !(field ?? string.Empty).Equals(value);
             if (pFldFSocioEmpresaAdminNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSocioEmpresaAdminNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FEnderecoSocio da tabela ClientesSocios deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FEnderecoSocio da tabela 'ClientesSocios' deve ter no máximo 80 caracteres.")]
     public virtual string? FEnderecoSocio
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEnderecoSocio ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEnderecoSocio = pFldFEnderecoSocio || !(m_FEnderecoSocio ?? string.Empty).Equals(value);
+            pFldFEnderecoSocio = pFldFEnderecoSocio || !(field ?? string.Empty).Equals(value);
             if (pFldFEnderecoSocio)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEnderecoSocio = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FBairroSocio da tabela ClientesSocios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FBairroSocio da tabela 'ClientesSocios' deve ter no máximo 50 caracteres.")]
     public virtual string? FBairroSocio
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBairroSocio ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFBairroSocio = pFldFBairroSocio || !(m_FBairroSocio ?? string.Empty).Equals(value);
+            pFldFBairroSocio = pFldFBairroSocio || !(field ?? string.Empty).Equals(value);
             if (pFldFBairroSocio)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FBairroSocio = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FCEPSocio da tabela ClientesSocios deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FCEPSocio da tabela 'ClientesSocios' deve ter no máximo 10 caracteres.")]
     public virtual string? FCEPSocio
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCEPSocio ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCEPSocio = pFldFCEPSocio || !(m_FCEPSocio ?? string.Empty).Equals(value);
+            pFldFCEPSocio = pFldFCEPSocio || !(field ?? string.Empty).Equals(value);
             if (pFldFCEPSocio)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCEPSocio = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
@@ -497,81 +491,95 @@ public partial class DBClientesSocios
     public virtual int FCidadeSocio
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidadeSocio;
+        get => field;
         set
         {
-            pFldFCidadeSocio = pFldFCidadeSocio || value != m_FCidadeSocio;
+            pFldFCidadeSocio = pFldFCidadeSocio || value != field;
             if (pFldFCidadeSocio)
-                m_FCidadeSocio = value;
+                field = value;
         }
     }
 
-    public virtual string? FRGDataExp
+    public virtual DateOnly? FRGDataExp
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRGDataExp is null || m_FRGDataExp == DevourerOne.DDataZerada ? string.Empty : m_FRGDataExp.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFRGDataExp, m_FRGDataExp, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFRGDataExp = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFRGDataExp, m_FRGDataExp) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFRGDataExp = true;
+                field = value;
+            }
         }
     }
 
     public virtual bool FSocioEmpresaAdminSomente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSocioEmpresaAdminSomente;
+        get => field;
         set
         {
-            pFldFSocioEmpresaAdminSomente = pFldFSocioEmpresaAdminSomente || value != m_FSocioEmpresaAdminSomente;
+            pFldFSocioEmpresaAdminSomente = pFldFSocioEmpresaAdminSomente || value != field;
             if (pFldFSocioEmpresaAdminSomente)
-                m_FSocioEmpresaAdminSomente = value;
+                field = value;
         }
     }
 
     public virtual bool FTipo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipo;
+        get => field;
         set
         {
-            pFldFTipo = pFldFTipo || value != m_FTipo;
+            pFldFTipo = pFldFTipo || value != field;
             if (pFldFTipo)
-                m_FTipo = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FFax da tabela ClientesSocios deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FFax da tabela 'ClientesSocios' deve ter no máximo 2048 caracteres.")]
     public virtual string? FFax
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFax ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFax = pFldFFax || !(m_FFax ?? string.Empty).Equals(value);
+            pFldFFax = pFldFFax || !(field ?? string.Empty).Equals(value);
             if (pFldFFax)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FFax = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(1, ErrorMessage = "A propriedade FClass da tabela ClientesSocios deve ter no máximo 1 caracteres.")]
+    [StringLength(1, ErrorMessage = "A propriedade FClass da tabela 'ClientesSocios' deve ter no máximo 1 caracteres.")]
     public virtual string? FClass
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FClass ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFClass = pFldFClass || !(m_FClass ?? string.Empty).Equals(value);
+            pFldFClass = pFldFClass || !(field ?? string.Empty).Equals(value);
             if (pFldFClass)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FClass = trimmed.Length > 1 ? trimmed.AsSpan(0, 1).ToString() : trimmed;
+                field = trimmed.Length > 1 ? trimmed.AsSpan(0, 1).ToString() : trimmed;
             }
         }
     }
@@ -579,48 +587,65 @@ public partial class DBClientesSocios
     public virtual bool FEtiqueta
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEtiqueta;
+        get => field;
         set
         {
-            pFldFEtiqueta = pFldFEtiqueta || value != m_FEtiqueta;
+            pFldFEtiqueta = pFldFEtiqueta || value != field;
             if (pFldFEtiqueta)
-                m_FEtiqueta = value;
+                field = value;
         }
     }
 
     public virtual bool FAni
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAni;
+        get => field;
         set
         {
-            pFldFAni = pFldFAni || value != m_FAni;
+            pFldFAni = pFldFAni || value != field;
             if (pFldFAni)
-                m_FAni = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(150, ErrorMessage = "A propriedade FGuid da tabela 'ClientesSocios' deve ter no máximo 150 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -630,9 +655,13 @@ public partial class DBClientesSocios
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

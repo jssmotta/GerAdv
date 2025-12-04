@@ -7,77 +7,85 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterAgendaRelatorioWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de AgendaRelatorio padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterAgendaRelatorio Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterAgendaRelatorio
 {
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("vqadata")]
+    [Description("Data")]
     public string? vqaData { get; set; } = string.Empty;
 
     [JsonPropertyName("vqadata_end")]
+    [Description("Data final para intervalo")]
     public string? vqaData_end { get; set; } = string.Empty;
 
     [JsonPropertyName("vqaprocesso")]
+    [Description("Processo -2147483648 para nada ou id")]
     public int vqaProcesso { get; set; } = int.MinValue;
 
     [JsonPropertyName("vqaprocesso_end")]
+    [Description("Processo -2147483648 para nada ou id para final do intervalo")]
     public int vqaProcesso_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("xxxparanome")]
+    [Description("ParaNome")]
     public string? xxxParaNome { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxparanome_end")]
-    public string? xxxParaNome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxparapessoas")]
+    [Description("ParaPessoas")]
     public string? xxxParaPessoas { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxparapessoas_end")]
-    public string? xxxParaPessoas_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxboxaudiencia")]
+    [Description("BoxAudiencia")]
     public string? xxxBoxAudiencia { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxboxaudiencia_end")]
-    public string? xxxBoxAudiencia_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxboxaudienciamobile")]
+    [Description("BoxAudienciaMobile")]
     public string? xxxBoxAudienciaMobile { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxboxaudienciamobile_end")]
-    public string? xxxBoxAudienciaMobile_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxnomeadvogado")]
+    [Description("NomeAdvogado")]
     public string? xxxNomeAdvogado { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxnomeadvogado_end")]
-    public string? xxxNomeAdvogado_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxnomeforo")]
+    [Description("NomeForo")]
     public string? xxxNomeForo { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxnomeforo_end")]
-    public string? xxxNomeForo_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxnomejustica")]
+    [Description("NomeJustica")]
     public string? xxxNomeJustica { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxnomejustica_end")]
-    public string? xxxNomeJustica_end { get; set; } = string.Empty;
-
     [JsonPropertyName("xxxnomearea")]
+    [Description("NomeArea")]
     public string? xxxNomeArea { get; set; } = string.Empty;
 
-    [JsonPropertyName("xxxnomearea_end")]
-    public string? xxxNomeArea_end { get; set; } = string.Empty;
-
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

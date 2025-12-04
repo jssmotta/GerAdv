@@ -22,7 +22,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         var tipoorigemsucumbencia = new DBTipoOrigemSucumbencia();
         // Assert
         tipoorigemsucumbencia.Should().NotBeNull();
-        tipoorigemsucumbencia.ITabelaName().Should().Be("TipoOrigemSucumbencia");
+        tipoorigemsucumbencia.ITableName().Should().Be("TipoOrigemSucumbencia");
         tipoorigemsucumbencia.ID.Should().Be(0);
     }
 
@@ -144,7 +144,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -158,7 +158,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -174,7 +174,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -189,7 +189,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         _instance.FNome = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -203,7 +203,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -217,7 +217,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         _instance.FNome = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -231,7 +231,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -257,7 +257,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -271,7 +271,7 @@ public class DBTipoOrigemSucumbenciaUpdate : IDisposable
         _instance.FNome = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

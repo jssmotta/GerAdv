@@ -37,8 +37,21 @@ public class DBGUTPeriodicidadeTests : IDisposable
         dt.Columns.Add("pcgVisto", typeof(bool));
         dt.Columns.Add("pcgNome", typeof(string));
         dt.Columns.Add("pcgIntervaloDias", typeof(int));
-        dt.Columns.Add("pcgGUID", typeof(string));
+        dt.Columns.Add("pcgGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["pcgCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBGUTPeriodicidade(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -59,7 +72,7 @@ public class DBGUTPeriodicidadeTests : IDisposable
     {
         var instance = new DBGUTPeriodicidade();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("GUTPeriodicidade", instance.ITabelaName());
+        Assert.Equal("GUTPeriodicidade", instance.ITableName());
         Assert.Equal("pcg", instance.Prefixo);
     }
 
@@ -77,29 +90,16 @@ public class DBGUTPeriodicidadeTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["pcgCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBGUTPeriodicidade(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("GUTPeriodicidade", cadastro.ITabelaName());
-        Assert.Equal("pcgCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("pcgNome", cadastro.ICampoNome());
-        Assert.Equal("pcg", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("GUTPeriodicidade", cadastro.ITableName());
+        Assert.Equal("pcgCodigo", cadastro.IFieldId());
+        Assert.Equal("pcgNome", cadastro.IFieldNameDescription());
+        Assert.Equal("pcg", cadastro.IPrefix());
     }
 
 #endregion
@@ -159,9 +159,9 @@ public class DBGUTPeriodicidadeTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -206,18 +206,18 @@ public class DBGUTPeriodicidadeTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 50 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 50);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 50);
     }
 
     public virtual void Dispose()

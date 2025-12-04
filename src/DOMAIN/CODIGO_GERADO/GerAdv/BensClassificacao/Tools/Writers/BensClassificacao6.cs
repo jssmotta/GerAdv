@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IBensClassificacaoWriter
 {
     Task<FBensClassificacao> WriteAsync(Models.BensClassificacao bensclassificacao, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class BensClassificacaoWriter(IFBensClassificacaoFactory bensclassificacaoFactory) : IBensClassificacaoWriter
 {
     private readonly IFBensClassificacaoFactory _bensclassificacaoFactory = bensclassificacaoFactory ?? throw new ArgumentNullException(nameof(bensclassificacaoFactory));
-    public virtual async Task Delete(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(BensClassificacaoResponse bensclassificacao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _bensclassificacaoFactory.DeleteAsync(operadorId, bensclassificacao.Id, oCnn);
     }
@@ -24,7 +24,8 @@ public class BensClassificacaoWriter(IFBensClassificacaoFactory bensclassificaca
     {
         using var dbRec = await (bensclassificacao.Id.IsEmptyIDNumber() ? _bensclassificacaoFactory.CreateAsync() : _bensclassificacaoFactory.CreateFromIdAsync(bensclassificacao.Id, oCnn));
         dbRec.FNome = bensclassificacao.Nome;
-        dbRec.FGUID = bensclassificacao.GUID;
+        dbRec.FBold = bensclassificacao.Bold;
+        dbRec.FGuid = bensclassificacao.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

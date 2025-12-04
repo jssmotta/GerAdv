@@ -7,6 +7,7 @@
 using MenphisSI.GerAdv.Models.Response.All;
 using MenphisSI.GerAdv.Readers;
 using System.Data;
+using Xunit.Abstractions;
 
 namespace MenphisSI.GerAdv.Tests.Readers;
 /// <summary>
@@ -15,16 +16,20 @@ namespace MenphisSI.GerAdv.Tests.Readers;
 /// </summary>
 public class GUTPeriodicidadeStatusReaderTests : IDisposable
 {
+    private readonly ITestOutputHelper _output;
     private readonly Mock<IFGUTPeriodicidadeStatusFactory> _mockGUTPeriodicidadeStatusFactory;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IDataRecord> _mockDataRecord;
     private readonly GUTPeriodicidadeStatusReader _gutperiodicidadestatusReader;
-    public GUTPeriodicidadeStatusReaderTests()
+    private readonly Mock<IConnectionService> _mockConnectionService;
+    public GUTPeriodicidadeStatusReaderTests(ITestOutputHelper output)
     {
+        _output = output;
         _mockGUTPeriodicidadeStatusFactory = new Mock<IFGUTPeriodicidadeStatusFactory>();
         _mockConnection = new Mock<MsiSqlConnection>();
         _mockDataRecord = new Mock<IDataRecord>();
-        _gutperiodicidadestatusReader = new GUTPeriodicidadeStatusReader(_mockGUTPeriodicidadeStatusFactory.Object);
+        _mockConnectionService = new Mock<IConnectionService>();
+        _gutperiodicidadestatusReader = new GUTPeriodicidadeStatusReader(_mockGUTPeriodicidadeStatusFactory.Object, _mockConnectionService.Object);
     }
 
 #region Constructor Tests
@@ -39,40 +44,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
     public void Constructor_WithNullFactory_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new GUTPeriodicidadeStatusReader(null !));
-    }
-
-#endregion
-#region Listar Tests
-    [Fact]
-    public async Task Listar_WithValidParameters_ShouldCallListarTabela()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "pgsCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // Since this calls external dependencies and database connections,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _gutperiodicidadestatusReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
-    [Fact]
-    public async Task Listar_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri";
-        var cWhere = "pgsCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = new CancellationToken(true); // Already cancelled
-        // Act & Assert
-        // Even with cancellation, this should throw an exception due to invalid URI
-        await Assert.ThrowsAsync<Exception>(() => _gutperiodicidadestatusReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
+        Assert.Throws<ArgumentNullException>(() => new GUTPeriodicidadeStatusReader(null !, null !));
     }
 
 #endregion
@@ -85,15 +57,15 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var expectedGUTPeriodicidadeStatus = new FGUTPeriodicidadeStatus
         {
             ID = id,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedGUTPeriodicidadeStatus);
         // Act
-        var result = await _gutperiodicidadestatusReader.Read(id, _mockConnection.Object);
+        var result = await _gutperiodicidadestatusReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -107,7 +79,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFGUTPeriodicidadeStatus);
         // Act
-        var result = await _gutperiodicidadestatusReader.Read(id, _mockConnection.Object);
+        var result = await _gutperiodicidadestatusReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -123,7 +95,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFGUTPeriodicidadeStatus);
         // Act
-        var result = await _gutperiodicidadestatusReader.Read(id, _mockConnection.Object);
+        var result = await _gutperiodicidadestatusReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -138,15 +110,15 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var expectedFGUTPeriodicidadeStatus = new FGUTPeriodicidadeStatus
         {
             ID = id,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFGUTPeriodicidadeStatus);
         // Act
-        var result = await _gutperiodicidadestatusReader.ReadM(id, _mockConnection.Object);
+        var result = await _gutperiodicidadestatusReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -157,15 +129,15 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var emptyFGUTPeriodicidadeStatus = new FGUTPeriodicidadeStatus
         {
             ID = 0,
-            FGUID = null
+            FGuid = null
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFGUTPeriodicidadeStatus);
         // Act
-        var result = await _gutperiodicidadestatusReader.ReadM(id, _mockConnection.Object);
+        var result = await _gutperiodicidadestatusReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(0);
-        result?.GUID.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -177,14 +149,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -193,7 +165,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Arrange
         FGUTPeriodicidadeStatus? dbRec = null;
         // Act
-        var result = _gutperiodicidadestatusReader.Read(dbRec, _mockConnection.Object);
+        var result = _gutperiodicidadestatusReader.Read(dbRec!, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -212,7 +184,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var expectedFGUTPeriodicidadeStatus = new FGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(expectedFGUTPeriodicidadeStatus);
         // Act
@@ -220,7 +192,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -252,14 +224,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -268,7 +240,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Arrange
         FGUTPeriodicidadeStatus? dbRec = null;
         // Act
-        var result = _gutperiodicidadestatusReader.Read(dbRec);
+        var result = _gutperiodicidadestatusReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -280,14 +252,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = null
+            FGuid = null
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -299,14 +271,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new DBGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -315,7 +287,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Arrange
         DBGUTPeriodicidadeStatus? dbRec = null;
         // Act
-        var result = _gutperiodicidadestatusReader.Read(dbRec);
+        var result = _gutperiodicidadestatusReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -327,14 +299,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new DBGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = null // This should result in empty string in response
+            FGuid = null // This should result in empty string in response
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -346,14 +318,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _gutperiodicidadestatusReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -362,7 +334,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Arrange
         FGUTPeriodicidadeStatus? dbRec = null;
         // Act
-        var result = _gutperiodicidadestatusReader.ReadAll(dbRec, _mockDataRecord.Object);
+        var result = _gutperiodicidadestatusReader.ReadAll(dbRec!, _mockDataRecord.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -374,14 +346,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = null
+            FGuid = null
         };
         // Act
         var result = _gutperiodicidadestatusReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -393,14 +365,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new DBGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _gutperiodicidadestatusReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -409,7 +381,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Arrange
         DBGUTPeriodicidadeStatus? dbRec = null;
         // Act
-        var result = _gutperiodicidadestatusReader.ReadAll(dbRec, null);
+        var result = _gutperiodicidadestatusReader.ReadAll(dbRec!, null);
         // Assert
         result.Should().BeNull();
     }
@@ -421,14 +393,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new DBGUTPeriodicidadeStatus
         {
             ID = 123,
-            FGUID = null // This should result in empty string in response
+            FGuid = null // This should result in empty string in response
         };
         // Act
         var result = _gutperiodicidadestatusReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.GUID.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -441,7 +413,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutperiodicidadestatusReader.Read(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutperiodicidadestatusReader.ReadAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -453,7 +425,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutperiodicidadestatusReader.ReadM(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutperiodicidadestatusReader.ReadMAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -485,7 +457,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = id,
-            FGUID = nome
+            FGuid = nome
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec);
@@ -499,7 +471,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         {
             result.Should().NotBeNull();
             result?.Id.Should().Be(id);
-            result?.GUID.Should().Be(nome);
+            result?.Guid.Should().Be(nome);
         }
     }
 
@@ -513,14 +485,14 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = id,
-            FGUID = nome
+            FGuid = nome
         };
         // Act
         var result = _gutperiodicidadestatusReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.GUID.Should().Be(nome);
+        result?.Guid.Should().Be(nome);
     }
 
 #endregion
@@ -533,31 +505,16 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var expectedFGUTPeriodicidadeStatus = new FGUTPeriodicidadeStatus
         {
             ID = id,
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockGUTPeriodicidadeStatusFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFGUTPeriodicidadeStatus);
         // Act & Assert
         // Test only the methods that don't depend on external URI connections
-        var readTask = _gutperiodicidadestatusReader.Read(id, _mockConnection.Object);
-        var readMTask = _gutperiodicidadestatusReader.ReadM(id, _mockConnection.Object);
+        var readTask = _gutperiodicidadestatusReader.ReadAsync(id, _mockConnection.Object);
+        var readMTask = _gutperiodicidadestatusReader.ReadMAsync(id, _mockConnection.Object);
         await Task.WhenAll(readTask, readMTask);
         // If we reach here, async methods completed without deadlock
         Assert.True(true);
-    }
-
-    [Fact]
-    public async Task Listar_WithInvalidUri_ShouldThrowException()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri"; // Invalid URI
-        var cWhere = "";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<Exception>(() => _gutperiodicidadestatusReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
     }
 
 #endregion
@@ -572,7 +529,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // depending on the implementation
         try
         {
-            await _gutperiodicidadestatusReader.Read(id, null !);
+            await _gutperiodicidadestatusReader.ReadAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -588,7 +545,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         // Act & Assert
         try
         {
-            await _gutperiodicidadestatusReader.ReadM(id, null !);
+            await _gutperiodicidadestatusReader.ReadMAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -623,7 +580,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = testId,
-            FGUID = testNome
+            FGuid = testNome
         };
         // Act
         var result = _gutperiodicidadestatusReader.Read(dbRec);
@@ -631,7 +588,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<GUTPeriodicidadeStatusResponse>();
         result!.Id.Should().Be(testId);
-        result.GUID.Should().Be(testNome);
+        result.Guid.Should().Be(testNome);
     }
 
     [Fact]
@@ -643,7 +600,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         var dbRec = new FGUTPeriodicidadeStatus
         {
             ID = testId,
-            FGUID = testNome
+            FGuid = testNome
         };
         // Act
         var result = _gutperiodicidadestatusReader.ReadAll(dbRec, _mockDataRecord.Object);
@@ -651,7 +608,7 @@ public class GUTPeriodicidadeStatusReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<GUTPeriodicidadeStatusResponseAll>();
         result!.Id.Should().Be(testId);
-        result.GUID.Should().Be(testNome);
+        result.Guid.Should().Be(testNome);
     }
 
 #endregion

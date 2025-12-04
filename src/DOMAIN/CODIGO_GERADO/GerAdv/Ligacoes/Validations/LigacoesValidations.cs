@@ -36,8 +36,6 @@ public class LigacoesValidation : ILigacoesValidation
             throw new SGValidationException($"Para deve ter no máximo {DBLigacoesDicInfo.LigPara.FTamanho} caracteres.");
         if (reg.LigarPara != null && reg.LigarPara.Length > DBLigacoesDicInfo.LigLigarPara.FTamanho)
             throw new SGValidationException($"LigarPara deve ter no máximo {DBLigacoesDicInfo.LigLigarPara.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBLigacoesDicInfo.LigGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBLigacoesDicInfo.LigGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,6 +45,8 @@ public class LigacoesValidation : ILigacoesValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -68,10 +68,37 @@ public class LigacoesValidation : ILigacoesValidation
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(reg.HoraFinal))
+        {
+            if (DateTime.TryParse(reg.HoraFinal, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraFinal não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Hora))
+        {
+            if (DateTime.TryParse(reg.Hora, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Hora não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
@@ -81,7 +108,7 @@ public class LigacoesValidation : ILigacoesValidation
         // Ramal
         if (!reg.Ramal.IsEmptyIDNumber())
         {
-            var regRamal = await ramalReader.Read(reg.Ramal, oCnn);
+            var regRamal = await ramalReader.ReadAsync(reg.Ramal, oCnn);
             if (regRamal == null || regRamal.Id != reg.Ramal)
             {
                 throw new SGValidationException($"Ramal não encontrado ({regRamal?.Id}).");

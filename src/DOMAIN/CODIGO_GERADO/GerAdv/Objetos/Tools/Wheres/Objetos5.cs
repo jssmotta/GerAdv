@@ -23,7 +23,8 @@ public partial class ObjetosWhere(IFObjetosFactory objetosFactory) : IObjetosWhe
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return objetos;
     }

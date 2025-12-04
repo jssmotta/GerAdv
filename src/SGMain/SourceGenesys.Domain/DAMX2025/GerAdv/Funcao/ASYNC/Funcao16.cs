@@ -31,7 +31,7 @@ public partial class DBFuncao
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,7 +138,7 @@ public partial class DBFuncao
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFDescricao)
-            updateTool.Fields(DBFuncaoDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBFuncaoDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
     }
 
 #endif
@@ -150,20 +150,20 @@ public partial class DBFuncao
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBFuncaoDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBFuncaoDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBFuncaoDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBFuncaoDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBFuncaoDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBFuncaoDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBFuncaoDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBFuncaoDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBFuncaoDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBFuncaoDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

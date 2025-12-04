@@ -22,12 +22,14 @@ public partial class TribunalWhere(IFTribunalFactory tribunalFactory) : ITribuna
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Area = dbRec.FArea,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Instancia = dbRec.FInstancia,
             Sigla = dbRec.FSigla ?? string.Empty,
             Web = dbRec.FWeb ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tribunal;
     }

@@ -31,7 +31,7 @@ public partial class DBNECompromissos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,17 +134,19 @@ public partial class DBNECompromissos
 
 #if (!NOTSTORED_NECompromissos)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFPalavraChave || pFldFProvisionar || pFldFTipoCompromisso || pFldFTextoCompromisso;
+    private bool HasAnyFieldChanged() => pFldFPalavraChave || pFldFProvisionar || pFldFTipoCompromisso || pFldFTextoCompromisso || pFldFBold;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFPalavraChave)
-            updateTool.Fields(DBNECompromissosDicInfo.PalavraChave, m_FPalavraChave, ETiposCampos.FNumber);
+            updateTool.Fields(DBNECompromissosDicInfo.PalavraChave, FPalavraChave, EGenericTypeFields.FNumber);
         if (pFldFProvisionar || updateTool.Insert)
-            updateTool.Fields(DBNECompromissosDicInfo.Provisionar, m_FProvisionar, ETiposCampos.FBoolean);
+            updateTool.Fields(DBNECompromissosDicInfo.Provisionar, FProvisionar, EGenericTypeFields.FBoolean);
         if (pFldFTipoCompromisso)
-            updateTool.Fields(DBNECompromissosDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumber);
+            updateTool.Fields(DBNECompromissosDicInfo.TipoCompromisso, FTipoCompromisso, EGenericTypeFields.FNumber);
         if (pFldFTextoCompromisso)
-            updateTool.Fields(DBNECompromissosDicInfo.TextoCompromisso, m_FTextoCompromisso, ETiposCampos.FString);
+            updateTool.Fields(DBNECompromissosDicInfo.TextoCompromisso, FTextoCompromisso, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBNECompromissosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
     }
 
 #endif
@@ -156,20 +158,20 @@ public partial class DBNECompromissos
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBNECompromissosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBNECompromissosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBNECompromissosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBNECompromissosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBNECompromissosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBNECompromissosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBNECompromissosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBNECompromissosDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBNECompromissosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBNECompromissosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

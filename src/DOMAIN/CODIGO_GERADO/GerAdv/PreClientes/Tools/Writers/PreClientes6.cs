@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IPreClientesWriter
 {
     Task<FPreClientes> WriteAsync(Models.PreClientes preclientes, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(PreClientesResponse preclientes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreClientesWriter
 {
     private readonly IFPreClientesFactory _preclientesFactory = preclientesFactory ?? throw new ArgumentNullException(nameof(preclientesFactory));
-    public virtual async Task Delete(PreClientesResponse preclientes, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(PreClientesResponse preclientes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _preclientesFactory.DeleteAsync(operadorId, preclientes.Id, oCnn);
     }
@@ -32,8 +32,11 @@ public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreCl
         dbRec.FNomeFantasia = preclientes.NomeFantasia;
         dbRec.FClass = preclientes.Class;
         dbRec.FTipo = preclientes.Tipo;
-        if (preclientes.DtNasc != null)
-            dbRec.FDtNasc = preclientes.DtNasc.ToString();
+        if (preclientes.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(preclientes.DtNasc));
+        }
+
         dbRec.FInscEst = preclientes.InscEst;
         dbRec.FQualificacao = preclientes.Qualificacao;
         dbRec.FSexo = preclientes.Sexo;
@@ -49,7 +52,11 @@ public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreCl
         dbRec.FCEP = preclientes.CEP.ClearInputCep();
         dbRec.FFax = preclientes.Fax;
         dbRec.FFone = preclientes.Fone;
-        dbRec.FData = preclientes.Data;
+        if (preclientes.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(preclientes.Data));
+        }
+
         dbRec.FHomePage = preclientes.HomePage;
         dbRec.FEMail = preclientes.EMail;
         dbRec.FAssistido = preclientes.Assistido;
@@ -57,6 +64,9 @@ public class PreClientesWriter(IFPreClientesFactory preclientesFactory) : IPreCl
         dbRec.FAssEndereco = preclientes.AssEndereco;
         dbRec.FCNH = preclientes.CNH;
         dbRec.FAssCPF = preclientes.AssCPF;
+        dbRec.FEtiqueta = preclientes.Etiqueta;
+        dbRec.FAni = preclientes.Ani;
+        dbRec.FBold = preclientes.Bold;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

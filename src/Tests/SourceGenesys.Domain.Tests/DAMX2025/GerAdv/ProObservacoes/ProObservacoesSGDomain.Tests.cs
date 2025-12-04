@@ -38,9 +38,22 @@ public class DBProObservacoesTests : IDisposable
         dt.Columns.Add("pobProcesso", typeof(int));
         dt.Columns.Add("pobNome", typeof(string));
         dt.Columns.Add("pobObservacoes", typeof(string));
-        dt.Columns.Add("pobData", typeof(string));
-        dt.Columns.Add("pobGUID", typeof(string));
+        dt.Columns.Add("pobData", typeof(DateTime));
+        dt.Columns.Add("pobGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["pobCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProObservacoes(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -61,7 +74,7 @@ public class DBProObservacoesTests : IDisposable
     {
         var instance = new DBProObservacoes();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProObservacoes", instance.ITabelaName());
+        Assert.Equal("ProObservacoes", instance.ITableName());
         Assert.Equal("pob", instance.Prefixo);
     }
 
@@ -79,29 +92,16 @@ public class DBProObservacoesTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["pobCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProObservacoes(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProObservacoes", cadastro.ITabelaName());
-        Assert.Equal("pobCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("pobNome", cadastro.ICampoNome());
-        Assert.Equal("pob", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProObservacoes", cadastro.ITableName());
+        Assert.Equal("pobCodigo", cadastro.IFieldId());
+        Assert.Equal("pobNome", cadastro.IFieldNameDescription());
+        Assert.Equal("pob", cadastro.IPrefix());
     }
 
 #endregion
@@ -161,9 +161,9 @@ public class DBProObservacoesTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -215,21 +215,38 @@ public class DBProObservacoesTests : IDisposable
     }
 
     [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBProObservacoes();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

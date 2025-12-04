@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import RamalInc from '../Crud/Inc/Ramal';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface RamalIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const RamalIncContainer: React.FC<RamalIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <RamalInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <RamalInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default RamalIncContainer;

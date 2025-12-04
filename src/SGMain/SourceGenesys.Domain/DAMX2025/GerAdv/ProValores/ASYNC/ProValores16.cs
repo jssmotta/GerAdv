@@ -14,6 +14,14 @@ public partial class DBProValores
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProValores
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,35 +146,35 @@ public partial class DBProValores
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBProValoresDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProValoresDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFTipoValorProcesso)
-            updateTool.Fields(DBProValoresDicInfo.TipoValorProcesso, m_FTipoValorProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProValoresDicInfo.TipoValorProcesso, FTipoValorProcesso, EGenericTypeFields.FNumber);
         if (pFldFIndice)
-            updateTool.Fields(DBProValoresDicInfo.Indice, m_FIndice, ETiposCampos.FString);
+            updateTool.Fields(DBProValoresDicInfo.Indice, FIndice, EGenericTypeFields.FString);
         if (pFldFIgnorar || updateTool.Insert)
-            updateTool.Fields(DBProValoresDicInfo.Ignorar, m_FIgnorar, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProValoresDicInfo.Ignorar, FIgnorar, EGenericTypeFields.FBoolean);
         if (pFldFData)
-            updateTool.Fields(DBProValoresDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBProValoresDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFValorOriginal)
-            updateTool.Fields(DBProValoresDicInfo.ValorOriginal, m_FValorOriginal, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.ValorOriginal, FValorOriginal, EGenericTypeFields.FDecimal);
         if (pFldFPercMulta)
-            updateTool.Fields(DBProValoresDicInfo.PercMulta, m_FPercMulta, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.PercMulta, FPercMulta, EGenericTypeFields.FDecimal);
         if (pFldFValorMulta)
-            updateTool.Fields(DBProValoresDicInfo.ValorMulta, m_FValorMulta, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.ValorMulta, FValorMulta, EGenericTypeFields.FDecimal);
         if (pFldFPercJuros)
-            updateTool.Fields(DBProValoresDicInfo.PercJuros, m_FPercJuros, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.PercJuros, FPercJuros, EGenericTypeFields.FDecimal);
         if (pFldFValorOriginalCorrigidoIndice)
-            updateTool.Fields(DBProValoresDicInfo.ValorOriginalCorrigidoIndice, m_FValorOriginalCorrigidoIndice, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.ValorOriginalCorrigidoIndice, FValorOriginalCorrigidoIndice, EGenericTypeFields.FDecimal);
         if (pFldFValorMultaCorrigido)
-            updateTool.Fields(DBProValoresDicInfo.ValorMultaCorrigido, m_FValorMultaCorrigido, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.ValorMultaCorrigido, FValorMultaCorrigido, EGenericTypeFields.FDecimal);
         if (pFldFValorJurosCorrigido)
-            updateTool.Fields(DBProValoresDicInfo.ValorJurosCorrigido, m_FValorJurosCorrigido, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.ValorJurosCorrigido, FValorJurosCorrigido, EGenericTypeFields.FDecimal);
         if (pFldFValorFinal)
-            updateTool.Fields(DBProValoresDicInfo.ValorFinal, m_FValorFinal, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProValoresDicInfo.ValorFinal, FValorFinal, EGenericTypeFields.FDecimal);
         if (pFldFDataUltimaCorrecao)
-            updateTool.Fields(DBProValoresDicInfo.DataUltimaCorrecao, m_FDataUltimaCorrecao, ETiposCampos.FDate);
+            updateTool.Fields(DBProValoresDicInfo.DataUltimaCorrecao, FDataUltimaCorrecao, EGenericTypeFields.FDate);
         if (pFldFGuid)
-            updateTool.Fields(DBProValoresDicInfo.Guid, m_FGuid, ETiposCampos.FString);
+            updateTool.Fields(DBProValoresDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -178,20 +186,23 @@ public partial class DBProValores
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProValoresDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProValoresDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProValoresDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProValoresDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProValoresDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProValoresDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProValoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProValoresDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProValoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProValoresDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBProValoresDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

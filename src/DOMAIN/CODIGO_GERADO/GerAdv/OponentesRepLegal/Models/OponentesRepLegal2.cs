@@ -96,6 +96,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
+
+        /// <summary>
+        /// Bold - oprBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
     }
 }
 
@@ -190,6 +196,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
+
+        /// <summary>
+        /// Bold - oprBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
 
         [JsonPropertyName("nomeoponentes")]
         public string NomeOponentes { get; set; } = string.Empty;

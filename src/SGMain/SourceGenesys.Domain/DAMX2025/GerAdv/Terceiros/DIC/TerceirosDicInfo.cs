@@ -21,11 +21,11 @@ public static partial class DBTerceirosDicInfo
     public const string Fax = "terFax"; // LOCALIZACAO 170523
     public const string OBS = "terOBS"; // LOCALIZACAO 170523
     public const string EMail = "terEMail"; // LOCALIZACAO 170523
-    public const string GUID = "terGUID"; // LOCALIZACAO 170523
     public const string Class = "terClass"; // LOCALIZACAO 170523
     public const string VaraForoComarca = "terVaraForoComarca"; // LOCALIZACAO 170523
     public const string Sexo = "terSexo"; // LOCALIZACAO 170523
     public const string Bold = "terBold"; // LOCALIZACAO 170523
+    public const string Guid = "terGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "terQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "terDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "terQuemAtu"; // LOCALIZACAO 170523
@@ -59,92 +59,27 @@ public static partial class DBTerceirosDicInfo
 
     public const string PTabelaNome = "Terceiros";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TerProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerSituacao => new(0, PTabelaNome, CampoCodigo, Situacao, "Situação", "Situação", ETipoDadosSysteminfo.SysteminfoForeingkey, DBPosicaoOutrasPartesDicInfo.CampoCodigo, DBPosicaoOutrasPartesDicInfo.TabelaNome, new DBPosicaoOutrasPartesODicInfo(), false)
-    {
-        Prefixo = "ter"
-    }; // DBI 11 
-    public static DBInfoSystem TerCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "ter"
-    }; // DBI 11 
-    public static DBInfoSystem TerEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, "OBS", "OBS", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerVaraForoComarca => new(0, PTabelaNome, CampoCodigo, VaraForoComarca, 255, "VaraForoComarca", "VaraForoComarca", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ter"
-    }; // DBI 11 
-    public static DBInfoSystem TerDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ter"
-    }; // DBI 11 
-    public static DBInfoSystem TerDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ter"
-    };
-    public static DBInfoSystem TerVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "ter"
-    };
+    public static DBInfoSystem TerProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ter");
+    public static DBInfoSystem TerNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "ter");
+    public static DBInfoSystem TerSituacao => new(0, PTabelaNome, CampoCodigo, Situacao, Situacao, Situacao, EDataTypeSystemInfo.SystemInfoForeingkey, DBPosicaoOutrasPartesDicInfo.CampoCodigo, DBPosicaoOutrasPartesDicInfo.TabelaNome, new DBPosicaoOutrasPartesODicInfo(), false, prefixo: "ter"); // DBI 11 
+    public static DBInfoSystem TerCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "ter"); // DBI 11 
+    public static DBInfoSystem TerEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, OBS, OBS, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerVaraForoComarca => new(0, PTabelaNome, CampoCodigo, VaraForoComarca, 255, VaraForoComarca, VaraForoComarca, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "ter");
+    public static DBInfoSystem TerBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "ter", isRequired: true);
+    public static DBInfoSystem TerGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ter");
+    public static DBInfoSystem TerQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ter"); // DBI 11 
+    public static DBInfoSystem TerDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ter");
+    public static DBInfoSystem TerQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ter"); // DBI 11 
+    public static DBInfoSystem TerDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ter");
+    public static DBInfoSystem TerVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ter", isRequired: true);
 
 #endregion
     [Serializable]

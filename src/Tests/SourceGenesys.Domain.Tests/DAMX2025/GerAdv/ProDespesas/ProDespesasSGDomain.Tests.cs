@@ -35,11 +35,10 @@ public class DBProDespesasTests : IDisposable
         dt.Columns.Add("desQuemAtu", typeof(int));
         dt.Columns.Add("desDtAtu", typeof(DateTime));
         dt.Columns.Add("desVisto", typeof(bool));
-        dt.Columns.Add("desGUID", typeof(string));
         dt.Columns.Add("desLigacaoID", typeof(int));
         dt.Columns.Add("desCliente", typeof(int));
         dt.Columns.Add("desCorrigido", typeof(string));
-        dt.Columns.Add("desData", typeof(string));
+        dt.Columns.Add("desData", typeof(DateTime));
         dt.Columns.Add("desValorOriginal", typeof(decimal));
         dt.Columns.Add("desProcesso", typeof(int));
         dt.Columns.Add("desQuitado", typeof(int));
@@ -48,7 +47,21 @@ public class DBProDespesasTests : IDisposable
         dt.Columns.Add("desTipo", typeof(string));
         dt.Columns.Add("desHistorico", typeof(string));
         dt.Columns.Add("desLivroCaixa", typeof(string));
+        dt.Columns.Add("desGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["desCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProDespesas(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -69,7 +82,7 @@ public class DBProDespesasTests : IDisposable
     {
         var instance = new DBProDespesas();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProDespesas", instance.ITabelaName());
+        Assert.Equal("ProDespesas", instance.ITableName());
         Assert.Equal("des", instance.Prefixo);
     }
 
@@ -87,29 +100,16 @@ public class DBProDespesasTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["desCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProDespesas(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProDespesas", cadastro.ITabelaName());
-        Assert.Equal("desCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("desData", cadastro.ICampoNome());
-        Assert.Equal("des", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProDespesas", cadastro.ITableName());
+        Assert.Equal("desCodigo", cadastro.IFieldId());
+        Assert.Equal("desData", cadastro.IFieldNameDescription());
+        Assert.Equal("des", cadastro.IPrefix());
     }
 
 #endregion
@@ -169,30 +169,12 @@ public class DBProDespesasTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -245,6 +227,23 @@ public class DBProDespesasTests : IDisposable
     {
         var instance = new DBProDespesas();
         Assert.False(instance.FCorrigido);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBProDespesas();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]
@@ -350,6 +349,24 @@ public class DBProDespesasTests : IDisposable
     {
         var instance = new DBProDespesas();
         Assert.False(instance.FLivroCaixa);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

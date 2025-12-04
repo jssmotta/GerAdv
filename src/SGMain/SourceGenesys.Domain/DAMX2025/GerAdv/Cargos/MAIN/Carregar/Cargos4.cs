@@ -54,6 +54,14 @@ public partial class DBCargos
         // Checkpoint Carregar 
         try
         {
+            FNome = getValue(DBCargosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBCargosDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBCargosDicInfo.DtAtu));
         }
@@ -73,7 +81,7 @@ public partial class DBCargos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBCargosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBCargosDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBCargos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBCargosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBCargosDicInfo.QuemCad));
         }
         catch
         {
@@ -91,22 +99,14 @@ public partial class DBCargos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBCargosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBCargosDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBCargosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -130,7 +130,7 @@ public partial class DBCargos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

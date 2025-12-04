@@ -6,13 +6,17 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFactory agendaFactory, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IAgendaService, IDisposable
+public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFactory agendaFactory, IAgendaReader reader, IAgendaValidation validation, IAgendaWriter writer, ICidadeReader cidadeReader, IAdvogadosReader advogadosReader, IFuncionariosReader funcionariosReader, ITipoCompromissoReader tipocompromissoReader, IClientesReader clientesReader, IAreaReader areaReader, IJusticaReader justicaReader, IOperadorReader operadorReader, IPrepostosReader prepostosReader, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterAgenda> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IAgendaService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterAgenda> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFAgendaFactory agendaFactory = agendaFactory;
     private readonly IAgendaReader reader = reader;
     private readonly IAgendaValidation validation = validation;
@@ -26,54 +30,73 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
     private readonly IJusticaReader justicaReader = justicaReader;
     private readonly IOperadorReader operadorReader = operadorReader;
     private readonly IPrepostosReader prepostosReader = prepostosReader;
-    public async Task<IEnumerable<AgendaResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<AgendaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
     {
-        max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Agenda: URI inválida");
         }
 
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
-            LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
-        };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-Agenda-Filter-{max}-{keyCache}";
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
-        return result;
-    }
-
-    public async Task<IEnumerable<AgendaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgenda filtro, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new DatabaseConnectionException();
-        }
-
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
-        var cacheKey = $"{uri}-{max}Agenda-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroAgenda(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterAgenda>.GetFilterHash(filtro);
+            var keyCache = await reader.ReadStringAuditorAsync(max, uri, where, parameters, oCnn);
+            var cacheKey = $"{uri}-{max}Agenda-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"Agenda - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterAgenda> FilterVoice([FromBody] Filters.FilterAgenda filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("Agenda: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterAgenda? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterAgenda();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterAgenda();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"Agenda - error on creating filter.");
+        }
     }
 
     public async Task<AgendaResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
@@ -89,10 +112,11 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
             var result = await _cache.GetOrCreateAsync($"{uri}-Agenda-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
@@ -102,7 +126,29 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
     }
 
-    private async Task<AgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<AgendaResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
+    public async Task<AuditorResponse?> GetAuditor([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        ThrowIfDisposed();
+        AuditorResponse? result = null;
+        if (id < 1)
+        {
+            return result;
+        }
+
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
+        try
+        {
+            result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            return result;
+        }
+        catch (Exception)
+        {
+            throw new Exception($"Agenda - {uri}-: GetAuditor");
+        }
+    }
+
     public async Task<AgendaResponse?> AddAndUpdate([FromBody] Models.Agenda? regAgenda, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -111,12 +157,13 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Agenda: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -152,12 +199,13 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Agenda: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -185,7 +233,7 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             return new AgendaResponse();
         }
 
-        return await reader.Read(regAgenda.Id, oCnn);
+        return await reader.ReadAsync(regAgenda.Id, oCnn);
     }
 
     public async Task<AgendaResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
@@ -196,13 +244,14 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
         }
 
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("Agenda: URI inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -225,12 +274,12 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var agenda = await reader.Read(id ?? default, oCnn);
+        var agenda = await reader.ReadAsync(id ?? default, oCnn);
         try
         {
             if (agenda != null)
             {
-                await writer.Delete(agenda, nOperador, oCnn);
+                await writer.DeleteAsync(agenda, nOperador, oCnn);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
@@ -265,9 +314,6 @@ public partial class AgendaService(IOptions<AppSettings> appSettings, IFAgendaFa
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

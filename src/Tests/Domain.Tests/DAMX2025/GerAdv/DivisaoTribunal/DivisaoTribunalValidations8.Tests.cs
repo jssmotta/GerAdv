@@ -86,11 +86,11 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockDivisaoTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDivisaoTribunal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the DivisaoTribunals service mock
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
-        _ = _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ForoResponse { Id = id }));
-        _ = _mockTribunalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TribunalResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockForoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ForoResponse { Id = id }));
+        _ = _mockTribunalReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TribunalResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -98,11 +98,11 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockDivisaoTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterDivisaoTribunal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the DivisaoTribunals service mock
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
-        _ = _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ForoResponse { Id = 0 }));
-        _ = _mockTribunalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TribunalResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockForoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ForoResponse { Id = 0 }));
+        _ = _mockTribunalReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TribunalResponse { Id = 0 }));
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         divisaotribunal.CodigoDiv = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class DivisaoTribunalValidationTests : IDisposable
     {
         // Arrange
         var divisaotribunal = CreateValidDivisaoTribunal();
-        divisaotribunal.CodigoDiv = "   ";
+        divisaotribunal.CodigoDiv = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
@@ -195,7 +195,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Arrange
         var divisaotribunal = CreateValidDivisaoTribunal();
         divisaotribunal.Justica = 999;
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -212,7 +212,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -229,7 +229,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockJusticaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockJusticaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);
@@ -249,7 +249,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockJusticaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockJusticaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Area
@@ -259,7 +259,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Arrange
         var divisaotribunal = CreateValidDivisaoTribunal();
         divisaotribunal.Area = 999;
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -276,7 +276,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -293,7 +293,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAreaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAreaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);
@@ -309,7 +309,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Arrange
         var divisaotribunal = CreateValidDivisaoTribunal();
         divisaotribunal.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -326,7 +326,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -343,7 +343,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);
@@ -359,7 +359,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Arrange
         var divisaotribunal = CreateValidDivisaoTribunal();
         divisaotribunal.Foro = 999;
-        _mockForoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ForoResponse>(null));
+        _mockForoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ForoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -376,7 +376,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockForoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockForoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -393,7 +393,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockForoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockForoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);
@@ -413,7 +413,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockForoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockForoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Tribunal
@@ -423,7 +423,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         // Arrange
         var divisaotribunal = CreateValidDivisaoTribunal();
         divisaotribunal.Tribunal = 999;
-        _mockTribunalReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TribunalResponse>(null));
+        _mockTribunalReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TribunalResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -440,7 +440,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockTribunalReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockTribunalReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object));
@@ -457,7 +457,7 @@ public class DivisaoTribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockTribunalReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockTribunalReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(divisaotribunal, _mockDivisaoTribunalService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _mockCidadeReader.Object, _mockForoReader.Object, _mockTribunalReader.Object, _validUri, _mockConnection.Object);

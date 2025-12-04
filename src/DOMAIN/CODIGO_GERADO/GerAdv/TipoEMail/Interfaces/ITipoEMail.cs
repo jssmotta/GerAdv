@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoEMailService
 {
+    Task<Filters.FilterTipoEMail> FilterVoice([FromBody] Filters.FilterTipoEMail filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<TipoEMailResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoEMail filter, [FromRoute, Required] string uri = "");
     Task<TipoEMailResponse?> AddAndUpdate(Models.TipoEMail? regTipoEMail, [FromRoute, Required] string uri = "");
     Task<TipoEMailResponse?> Validation(Models.TipoEMail? regTipoEMail, [FromRoute, Required] string uri = "");

@@ -23,12 +23,6 @@ public partial class FTipoEMailFactory : IFTipoEMailFactory, IDisposable
         return FTipoEMail.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FTipoEMail> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FTipoEMail().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FTipoEMail> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FTipoEMailFactory : IFTipoEMailFactory, IDisposable
         return FTipoEMail.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FTipoEMail> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FTipoEMail().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FTipoEMailFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -42,11 +42,27 @@ public class PontoVirtualAcessosValidation : IPontoVirtualAcessosValidation
             throw new SGValidationException("Operador é obrigatório.");
         if (reg.DataHora.IsEmpty())
             throw new SGValidationException("DataHora é obrigatório.");
+        if (!DateTime.TryParse(reg.DataHora, out _))
+        {
+            throw new SGValidationException($"DataHora inválida: {reg.DataHora}");
+        }
+
+        if (reg.DataHora.IsEmpty())
+            throw new SGValidationException("DataHora é obrigatório.");
         if (reg.Origem.IsEmpty())
             throw new SGValidationException("Origem é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.DataHora))
+        {
+            if (DateTime.TryParse(reg.DataHora, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("DataHora não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Operador
         {
-            var regOperador = await operadorReader.Read(reg.Operador, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");

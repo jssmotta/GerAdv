@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBContratos : VAuditor, ICadastros
+public partial class DBContratos : VAuditor, ICrud
 {
 #region TableDefinition_Contratos
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBContratos : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBContratos : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -48,7 +48,7 @@ public partial class DBContratos : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFProcesso || pFldFCliente || pFldFAdvogado || pFldFDia || pFldFValor || pFldFDataInicio || pFldFDataTermino || pFldFOcultarRelatorio || pFldFPercEscritorio || pFldFValorConsultoria || pFldFGUID || pFldFTipoCobranca || pFldFProtestar || pFldFJuros || pFldFValorRealizavel || pFldFDOCUMENTO || pFldFEMail1 || pFldFEMail2 || pFldFEMail3 || pFldFPessoa1 || pFldFPessoa2 || pFldFPessoa3 || pFldFOBS || pFldFClienteContrato || pFldFIdExtrangeiro || pFldFChaveContrato || pFldFAvulso || pFldFSuspenso || pFldFMulta || pFldFBold))
+            if (!(pFldFProcesso || pFldFCliente || pFldFAdvogado || pFldFDia || pFldFValor || pFldFDataInicio || pFldFDataTermino || pFldFOcultarRelatorio || pFldFPercEscritorio || pFldFValorConsultoria || pFldFTipoCobranca || pFldFProtestar || pFldFJuros || pFldFValorRealizavel || pFldFDOCUMENTO || pFldFEMail1 || pFldFEMail2 || pFldFEMail3 || pFldFPessoa1 || pFldFPessoa2 || pFldFPessoa3 || pFldFOBS || pFldFClienteContrato || pFldFIdExtrangeiro || pFldFChaveContrato || pFldFAvulso || pFldFSuspenso || pFldFMulta || pFldFBold || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -72,72 +72,71 @@ public partial class DBContratos : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFProcesso)
-            clsW.Fields(DBContratosDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFCliente)
-            clsW.Fields(DBContratosDicInfo.Cliente, m_FCliente, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.Cliente, FCliente, EGenericTypeFields.FNumberNull);
         if (pFldFAdvogado)
-            clsW.Fields(DBContratosDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumberNull);
         if (pFldFDia)
-            clsW.Fields(DBContratosDicInfo.Dia, m_FDia, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.Dia, FDia, EGenericTypeFields.FNumberNull);
         if (pFldFValor)
-            clsW.Fields(DBContratosDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            clsW.Fields(DBContratosDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFDataInicio)
-            clsW.Fields(DBContratosDicInfo.DataInicio, m_FDataInicio, ETiposCampos.FDate);
+            clsW.Fields(DBContratosDicInfo.DataInicio, FDataInicio, EGenericTypeFields.FDate);
         if (pFldFDataTermino)
-            clsW.Fields(DBContratosDicInfo.DataTermino, m_FDataTermino, ETiposCampos.FDate);
+            clsW.Fields(DBContratosDicInfo.DataTermino, FDataTermino, EGenericTypeFields.FDate);
         if (pFldFOcultarRelatorio || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContratosDicInfo.OcultarRelatorio, m_FOcultarRelatorio, ETiposCampos.FBoolean);
+            clsW.Fields(DBContratosDicInfo.OcultarRelatorio, FOcultarRelatorio, EGenericTypeFields.FBoolean);
         if (pFldFPercEscritorio)
-            clsW.Fields(DBContratosDicInfo.PercEscritorio, m_FPercEscritorio, ETiposCampos.FDecimal);
+            clsW.Fields(DBContratosDicInfo.PercEscritorio, FPercEscritorio, EGenericTypeFields.FDecimal);
         if (pFldFValorConsultoria)
-            clsW.Fields(DBContratosDicInfo.ValorConsultoria, m_FValorConsultoria, ETiposCampos.FDecimal);
-        if (pFldFGUID)
-            clsW.Fields(DBContratosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.ValorConsultoria, FValorConsultoria, EGenericTypeFields.FDecimal);
         if (pFldFTipoCobranca)
-            clsW.Fields(DBContratosDicInfo.TipoCobranca, m_FTipoCobranca, ETiposCampos.FNumber);
+            clsW.Fields(DBContratosDicInfo.TipoCobranca, FTipoCobranca, EGenericTypeFields.FNumber);
         if (pFldFProtestar)
-            clsW.Fields(DBContratosDicInfo.Protestar, m_FProtestar, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.Protestar, FProtestar, EGenericTypeFields.FString);
         if (pFldFJuros)
-            clsW.Fields(DBContratosDicInfo.Juros, m_FJuros, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.Juros, FJuros, EGenericTypeFields.FString);
         if (pFldFValorRealizavel)
-            clsW.Fields(DBContratosDicInfo.ValorRealizavel, m_FValorRealizavel, ETiposCampos.FDecimal);
+            clsW.Fields(DBContratosDicInfo.ValorRealizavel, FValorRealizavel, EGenericTypeFields.FDecimal);
         if (pFldFDOCUMENTO)
-            clsW.Fields(DBContratosDicInfo.DOCUMENTO, m_FDOCUMENTO, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.DOCUMENTO, FDOCUMENTO, EGenericTypeFields.FString);
         if (pFldFEMail1)
-            clsW.Fields(DBContratosDicInfo.EMail1, m_FEMail1, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.EMail1, FEMail1, EGenericTypeFields.FString);
         if (pFldFEMail2)
-            clsW.Fields(DBContratosDicInfo.EMail2, m_FEMail2, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.EMail2, FEMail2, EGenericTypeFields.FString);
         if (pFldFEMail3)
-            clsW.Fields(DBContratosDicInfo.EMail3, m_FEMail3, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.EMail3, FEMail3, EGenericTypeFields.FString);
         if (pFldFPessoa1)
-            clsW.Fields(DBContratosDicInfo.Pessoa1, m_FPessoa1, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.Pessoa1, FPessoa1, EGenericTypeFields.FString);
         if (pFldFPessoa2)
-            clsW.Fields(DBContratosDicInfo.Pessoa2, m_FPessoa2, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.Pessoa2, FPessoa2, EGenericTypeFields.FString);
         if (pFldFPessoa3)
-            clsW.Fields(DBContratosDicInfo.Pessoa3, m_FPessoa3, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.Pessoa3, FPessoa3, EGenericTypeFields.FString);
         if (pFldFOBS)
-            clsW.Fields(DBContratosDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFClienteContrato)
-            clsW.Fields(DBContratosDicInfo.ClienteContrato, m_FClienteContrato, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.ClienteContrato, FClienteContrato, EGenericTypeFields.FNumberNull);
         if (pFldFIdExtrangeiro)
-            clsW.Fields(DBContratosDicInfo.IdExtrangeiro, m_FIdExtrangeiro, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.IdExtrangeiro, FIdExtrangeiro, EGenericTypeFields.FNumberNull);
         if (pFldFChaveContrato)
-            clsW.Fields(DBContratosDicInfo.ChaveContrato, m_FChaveContrato, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.ChaveContrato, FChaveContrato, EGenericTypeFields.FString);
         if (pFldFAvulso || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContratosDicInfo.Avulso, m_FAvulso, ETiposCampos.FBoolean);
+            clsW.Fields(DBContratosDicInfo.Avulso, FAvulso, EGenericTypeFields.FBoolean);
         if (pFldFSuspenso || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContratosDicInfo.Suspenso, m_FSuspenso, ETiposCampos.FBoolean);
+            clsW.Fields(DBContratosDicInfo.Suspenso, FSuspenso, EGenericTypeFields.FBoolean);
         if (pFldFMulta)
-            clsW.Fields(DBContratosDicInfo.Multa, m_FMulta, ETiposCampos.FString);
+            clsW.Fields(DBContratosDicInfo.Multa, FMulta, EGenericTypeFields.FString);
         if (pFldFBold || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContratosDicInfo.Bold, m_FBold, ETiposCampos.FBoolean);
+            clsW.Fields(DBContratosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            clsW.Fields(DBContratosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Contratos)
         if (clsW.HasUpdates)
         {
@@ -152,15 +151,15 @@ public partial class DBContratos : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBContratosDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBContratosDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBContratosDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBContratosDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContratosDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBContratosDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBContratosDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContratosDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBContratosDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

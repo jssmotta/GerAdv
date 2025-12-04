@@ -7,35 +7,53 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterContatoCRMViewWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de ContatoCRMView padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterContatoCRMView Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterContatoCRMView
 {
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("cguid")]
+    [Description("CGUID")]
     public string? CGUID { get; set; } = string.Empty;
 
-    [JsonPropertyName("cguid_end")]
-    public string? CGUID_end { get; set; } = string.Empty;
-
     [JsonPropertyName("data")]
+    [Description("Data")]
     public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
+    [Description("Data final para intervalo")]
     public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("ip")]
+    [Description("IP")]
     public string? IP { get; set; } = string.Empty;
 
-    [JsonPropertyName("ip_end")]
-    public string? IP_end { get; set; } = string.Empty;
-
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

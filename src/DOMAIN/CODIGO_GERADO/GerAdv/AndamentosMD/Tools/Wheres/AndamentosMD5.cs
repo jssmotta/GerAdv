@@ -20,12 +20,12 @@ public partial class AndamentosMDWhere(IFAndamentosMDFactory andamentosmdFactory
         var andamentosmd = new AndamentosMDResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
             Andamento = dbRec.FAndamento,
             PathFull = dbRec.FPathFull ?? string.Empty,
             UNC = dbRec.FUNC ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return andamentosmd;
     }

@@ -7,98 +7,141 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterAgendaSemanaWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de AgendaSemana padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterAgendaSemana Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterAgendaSemana
 {
+    [JsonPropertyName("filterFuncionarios")]
+    [Description("Filtro para a tabela Funcionarios")]
+    public FilterFuncionarios? FilterFuncionarios { get; set; } = new();
+
+    [JsonPropertyName("filterAdvogados")]
+    [Description("Filtro para a tabela Advogados")]
+    public FilterAdvogados? FilterAdvogados { get; set; } = new();
+
+    [JsonPropertyName("filterTipoCompromisso")]
+    [Description("Filtro para a tabela TipoCompromisso")]
+    public FilterTipoCompromisso? FilterTipoCompromisso { get; set; } = new();
+
+    [JsonPropertyName("filterClientes")]
+    [Description("Filtro para a tabela Clientes")]
+    public FilterClientes? FilterClientes { get; set; } = new();
+
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("paranome")]
+    [Description("ParaNome")]
     public string? ParaNome { get; set; } = string.Empty;
 
-    [JsonPropertyName("paranome_end")]
-    public string? ParaNome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("data")]
+    [Description("Data")]
     public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
+    [Description("Data final para intervalo")]
     public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("funcionario")]
+    [Description("Colaborador -2147483648 para nada ou id")]
     public int Funcionario { get; set; } = int.MinValue;
 
     [JsonPropertyName("funcionario_end")]
+    [Description("Colaborador -2147483648 para nada ou id para final do intervalo")]
     public int Funcionario_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("advogado")]
+    [Description("Advogado -2147483648 para nada ou id")]
     public int Advogado { get; set; } = int.MinValue;
 
     [JsonPropertyName("advogado_end")]
+    [Description("Advogado -2147483648 para nada ou id para final do intervalo")]
     public int Advogado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("hora")]
+    [Description("Hora")]
     public string? Hora { get; set; } = string.Empty;
 
     [JsonPropertyName("hora_end")]
+    [Description("Hora final para intervalo")]
     public string? Hora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("tipocompromisso")]
+    [Description("TipoCompromisso -2147483648 para nada ou id")]
     public int TipoCompromisso { get; set; } = int.MinValue;
 
     [JsonPropertyName("tipocompromisso_end")]
+    [Description("TipoCompromisso -2147483648 para nada ou id para final do intervalo")]
     public int TipoCompromisso_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("compromisso")]
+    [Description("Compromisso")]
     public string? Compromisso { get; set; } = string.Empty;
 
-    [JsonPropertyName("compromisso_end")]
-    public string? Compromisso_end { get; set; } = string.Empty;
-
     [JsonPropertyName("concluido")]
+    [Description("Concluido -2147483648 para nada; 0 para não, 1 para sim")]
     public int Concluido { get; set; } = int.MinValue;
 
     [JsonPropertyName("liberado")]
+    [Description("Liberado -2147483648 para nada; 0 para não, 1 para sim")]
     public int Liberado { get; set; } = int.MinValue;
 
     [JsonPropertyName("importante")]
+    [Description("Importante -2147483648 para nada; 0 para não, 1 para sim")]
     public int Importante { get; set; } = int.MinValue;
 
     [JsonPropertyName("horafinal")]
+    [Description("HoraFinal")]
     public string? HoraFinal { get; set; } = string.Empty;
 
     [JsonPropertyName("horafinal_end")]
+    [Description("HoraFinal final para intervalo")]
     public string? HoraFinal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("nome")]
+    [Description("Nome")]
     public string? Nome { get; set; } = string.Empty;
 
-    [JsonPropertyName("nome_end")]
-    public string? Nome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("cliente")]
+    [Description("Cliente -2147483648 para nada ou id")]
     public int Cliente { get; set; } = int.MinValue;
 
     [JsonPropertyName("cliente_end")]
+    [Description("Cliente -2147483648 para nada ou id para final do intervalo")]
     public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("nomecliente")]
+    [Description("NomeCliente")]
     public string? NomeCliente { get; set; } = string.Empty;
 
-    [JsonPropertyName("nomecliente_end")]
-    public string? NomeCliente_end { get; set; } = string.Empty;
-
     [JsonPropertyName("tipo")]
+    [Description("Tipo")]
     public string? Tipo { get; set; } = string.Empty;
 
-    [JsonPropertyName("tipo_end")]
-    public string? Tipo_end { get; set; } = string.Empty;
-
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

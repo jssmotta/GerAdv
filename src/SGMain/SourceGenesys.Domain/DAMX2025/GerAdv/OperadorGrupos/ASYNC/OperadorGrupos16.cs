@@ -31,7 +31,7 @@ public partial class DBOperadorGrupos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,7 +138,7 @@ public partial class DBOperadorGrupos
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBOperadorGruposDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorGruposDicInfo.Nome, FNome, EGenericTypeFields.FString);
     }
 
 #endif
@@ -150,20 +150,20 @@ public partial class DBOperadorGrupos
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBOperadorGruposDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorGruposDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBOperadorGruposDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBOperadorGruposDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBOperadorGruposDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorGruposDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBOperadorGruposDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBOperadorGruposDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadorGruposDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBOperadorGruposDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

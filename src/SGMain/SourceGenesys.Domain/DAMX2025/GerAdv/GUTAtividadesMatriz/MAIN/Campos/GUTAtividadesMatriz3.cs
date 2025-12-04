@@ -7,63 +7,57 @@ public partial class DBGUTAtividadesMatriz
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFGUTMatriz, pFldFGUTAtividade, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FGUTMatriz, m_FGUTAtividade;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FGUID;
+    private protected bool pFldFGUTMatriz, pFldFGUTAtividade, pFldFGuid;
     public virtual int FGUTMatriz
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUTMatriz;
+        get => field;
         set
         {
-            pFldFGUTMatriz = pFldFGUTMatriz || value != m_FGUTMatriz;
+            pFldFGUTMatriz = pFldFGUTMatriz || value != field;
             if (pFldFGUTMatriz)
-                m_FGUTMatriz = value;
+                field = value;
         }
     }
 
     public virtual int FGUTAtividade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUTAtividade;
+        get => field;
         set
         {
-            pFldFGUTAtividade = pFldFGUTAtividade || value != m_FGUTAtividade;
+            pFldFGUTAtividade = pFldFGUTAtividade || value != field;
             if (pFldFGUTAtividade)
-                m_FGUTAtividade = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FGUID da tabela GUTAtividadesMatriz deve ter no máximo 50 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(50, ErrorMessage = "A propriedade FGuid da tabela 'GUTAtividadesMatriz' deve ter no máximo 50 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -73,9 +67,13 @@ public partial class DBGUTAtividadesMatriz
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

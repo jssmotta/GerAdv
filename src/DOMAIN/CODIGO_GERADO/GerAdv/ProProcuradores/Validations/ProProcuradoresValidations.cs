@@ -28,8 +28,6 @@ public class ProProcuradoresValidation : IProProcuradoresValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBProProcuradoresDicInfo.PapNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBProProcuradoresDicInfo.PapNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProProcuradoresDicInfo.PapGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProProcuradoresDicInfo.PapGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,13 +37,24 @@ public class ProProcuradoresValidation : IProProcuradoresValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {
-            var regAdvogados = await advogadosReader.Read(reg.Advogado, oCnn);
+            var regAdvogados = await advogadosReader.ReadAsync(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");

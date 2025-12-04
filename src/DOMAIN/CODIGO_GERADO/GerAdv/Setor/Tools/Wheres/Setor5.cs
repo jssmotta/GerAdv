@@ -21,7 +21,7 @@ public partial class SetorWhere(IFSetorFactory setorFactory) : ISetorWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return setor;
     }

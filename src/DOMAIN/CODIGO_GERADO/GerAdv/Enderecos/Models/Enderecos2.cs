@@ -26,13 +26,7 @@ namespace MenphisSI.GerAdv.Models
         public bool TopIndex { get; set; }
 
         /// <summary>
-        /// GUID - endGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Descricao - endDescricao - tamanho máximo: 50 
+        /// Descrições - endDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -141,6 +135,30 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("reportecbonly")]
         public bool ReportECBOnly { get; set; }
+
+        /// <summary>
+        /// Etiqueta - endEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - endAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - endBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - endGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -165,13 +183,7 @@ namespace MenphisSI.GerAdv.Models.All
         public bool TopIndex { get; set; }
 
         /// <summary>
-        /// GUID - endGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Descricao - endDescricao - tamanho máximo: 50 
+        /// Descrições - endDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -280,6 +292,30 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("reportecbonly")]
         public bool ReportECBOnly { get; set; }
+
+        /// <summary>
+        /// Etiqueta - endEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - endAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - endBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - endGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

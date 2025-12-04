@@ -31,7 +31,7 @@ public partial class DBViaRecebimento
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,7 +138,7 @@ public partial class DBViaRecebimento
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBViaRecebimentoDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBViaRecebimentoDicInfo.Nome, FNome, EGenericTypeFields.FString);
     }
 
 #endif
@@ -150,7 +150,7 @@ public partial class DBViaRecebimento
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

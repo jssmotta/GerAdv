@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ProSucumbenciaGridAdapter } from '@/app/GerAdv_TS/ProSucumbencia/Adapter/ProSucumbenciaGridAdapter';
 import ProSucumbenciaGridContainer from '@/app/GerAdv_TS/ProSucumbencia/Components/ProSucumbenciaGridContainer';
+
 const ProSucumbenciaPage: React.FC = () => {
-  const ProSucumbenciaGrid = new ProSucumbenciaGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Pro Sucumbencia' />
-    <ProSucumbenciaGridContainer grid={ProSucumbenciaGrid} />
-  </PageLayout>
-);
+    const ProSucumbenciaGrid = new ProSucumbenciaGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ProSucumbenciaGridContainer grid={ProSucumbenciaGrid} />
+        </PageLayout>
+    );
 };
+
 export default ProSucumbenciaPage;

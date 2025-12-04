@@ -39,7 +39,7 @@ public class NECompromissosValidation : INECompromissosValidation
         // TipoCompromisso
         if (!reg.TipoCompromisso.IsEmptyIDNumber())
         {
-            var regTipoCompromisso = await tipocompromissoReader.Read(reg.TipoCompromisso, oCnn);
+            var regTipoCompromisso = await tipocompromissoReader.ReadAsync(reg.TipoCompromisso, oCnn);
             if (regTipoCompromisso == null || regTipoCompromisso.Id != reg.TipoCompromisso)
             {
                 throw new SGValidationException($"Tipo Compromisso não encontrado ({regTipoCompromisso?.Id}).");

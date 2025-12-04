@@ -26,26 +26,10 @@ public static partial class DBPontoVirtualAcessosDicInfo
 
     public const string PTabelaNome = "PontoVirtualAcessos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PvaOperador => new(0, PTabelaNome, CampoCodigo, Operador, "Operador", "Operador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "pva"
-    }; // DBI 11 
-    public static DBInfoSystem PvaDataHora => new(0, PTabelaNome, CampoCodigo, DataHora, "DataHora", "DataHora", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        IsRequired = true,
-        Prefixo = "pva"
-    };
-    public static DBInfoSystem PvaTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "pva"
-    };
-    public static DBInfoSystem PvaOrigem => new(0, PTabelaNome, CampoCodigo, Origem, 150, "Origem", "Origem", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "pva"
-    };
+    public static DBInfoSystem PvaOperador => new(0, PTabelaNome, CampoCodigo, Operador, Operador, Operador, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pva", isRequired: true); // DBI 11 
+    public static DBInfoSystem PvaDataHora => new(0, PTabelaNome, CampoCodigo, DataHora, DataHora, DataHora, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "pva", isRequired: true);
+    public static DBInfoSystem PvaTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "pva", isRequired: true);
+    public static DBInfoSystem PvaOrigem => new(0, PTabelaNome, CampoCodigo, Origem, 150, Origem, Origem, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "pva", isRequired: true);
 
 #endregion
     [Serializable]

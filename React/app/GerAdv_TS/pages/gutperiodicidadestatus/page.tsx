@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { GUTPeriodicidadeStatusGridAdapter } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Adapter/GUTPeriodicidadeStatusGridAdapter';
 import GUTPeriodicidadeStatusGridContainer from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Components/GUTPeriodicidadeStatusGridContainer';
+
 const GUTPeriodicidadeStatusPage: React.FC = () => {
-  const GUTPeriodicidadeStatusGrid = new GUTPeriodicidadeStatusGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='G U T Periodicidade Status' />
-    <GUTPeriodicidadeStatusGridContainer grid={GUTPeriodicidadeStatusGrid} />
-  </PageLayout>
-);
+    const GUTPeriodicidadeStatusGrid = new GUTPeriodicidadeStatusGridAdapter();
+
+    return (
+        <PageLayout>            
+            <GUTPeriodicidadeStatusGridContainer grid={GUTPeriodicidadeStatusGrid} />
+        </PageLayout>
+    );
 };
+
 export default GUTPeriodicidadeStatusPage;

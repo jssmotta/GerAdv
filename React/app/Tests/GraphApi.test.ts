@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { GraphApiError } from '../GerAdv_TS/Graph/Apis/ApiGraph';
+import { GraphApiError } from '@/app/GerAdv_TS/Graph/Apis/ApiGraph';
 import { GraphApi } from '@/app/GerAdv_TS/Graph/Apis/ApiGraph';
-import { FilterGraph } from '../GerAdv_TS/Graph/Filters/Graph';
-import { IGraph } from '../GerAdv_TS/Graph/Interfaces/interface.Graph';
-import { GraphTestEmpty } from '../GerAdv_TS/Models/Graph';
+import { FilterGraph } from '@/app/GerAdv_TS/Graph/Filters/Graph';
+import { IGraph } from '@/app/GerAdv_TS/Graph/Interfaces/interface.Graph';
+import { GraphTestEmpty } from '@/app/GerAdv_TS/Models/Graph';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('GraphApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterGraph = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,9 @@ describe('GraphApi', () => {
   describe('addAndUpdate', () => {
     const mockGraph: IGraph = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+tabela: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+tabelaid: 1
     };
 
     it('should add new graph successfully', async () => {
@@ -487,7 +476,7 @@ describe('GraphApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterGraph = { funcionario: 1 };
+      const mockFilter: FilterGraph = { : 1 };
       
       const result = graphApi.useFilter(mockFilter);
       

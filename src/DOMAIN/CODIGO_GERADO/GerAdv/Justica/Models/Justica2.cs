@@ -14,16 +14,22 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// GUID - jusGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Nome - jusNome - tamanho máximo: 50 
+        /// jusNome - jusNome - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// jusBold - jusBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// jusGuid - jusGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -36,15 +42,21 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// GUID - jusGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Nome - jusNome - tamanho máximo: 50 
+        /// jusNome - jusNome - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// jusBold - jusBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// jusGuid - jusGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

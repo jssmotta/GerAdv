@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IGUTMatrizWriter
 {
     Task<FGUTMatriz> WriteAsync(Models.GUTMatriz gutmatriz, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GUTMatrizWriter(IFGUTMatrizFactory gutmatrizFactory) : IGUTMatrizWriter
 {
     private readonly IFGUTMatrizFactory _gutmatrizFactory = gutmatrizFactory ?? throw new ArgumentNullException(nameof(gutmatrizFactory));
-    public virtual async Task Delete(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(GUTMatrizResponse gutmatriz, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gutmatrizFactory.DeleteAsync(operadorId, gutmatriz.Id, oCnn);
     }

@@ -9,6 +9,7 @@ export interface IRito {
  
 	descricao: string,
 	top: boolean,
+	bold: boolean,
 }
 
 export interface IRitoFormProps {

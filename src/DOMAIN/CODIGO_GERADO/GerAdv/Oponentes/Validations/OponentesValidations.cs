@@ -23,10 +23,10 @@ public class OponentesValidation : IOponentesValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var gruposempresasExists0 = await gruposempresasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGruposEmpresas { Oponente = id ?? default }, uri);
         if (gruposempresasExists0 != null && gruposempresasExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Grupos Empresas associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Grupos Empresas associados a ele.");
         var oponentesreplegalExists1 = await oponentesreplegalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOponentesRepLegal { Oponente = id ?? default }, uri);
         if (oponentesreplegalExists1 != null && oponentesreplegalExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Oponentes Rep Legal associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Oponentes Rep Legal associados a ele.");
         return true;
     }
 
@@ -58,8 +58,6 @@ public class OponentesValidation : IOponentesValidation
             throw new SGValidationException($"InscEst deve ter no máximo {DBOponentesDicInfo.OpoInscEst.FTamanho} caracteres.");
         if (reg.Class != null && reg.Class.Length > DBOponentesDicInfo.OpoClass.FTamanho)
             throw new SGValidationException($"Class deve ter no máximo {DBOponentesDicInfo.OpoClass.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBOponentesDicInfo.OpoGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBOponentesDicInfo.OpoGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -69,14 +67,16 @@ public class OponentesValidation : IOponentesValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -89,14 +89,14 @@ public class OponentesValidation : IOponentesValidation
             }
         }
 
-        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Oponentes com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

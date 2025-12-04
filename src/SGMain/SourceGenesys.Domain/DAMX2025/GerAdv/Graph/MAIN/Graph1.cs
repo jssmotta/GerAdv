@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBGraph : VAuditor, ICadastros
+public partial class DBGraph : VAuditor, ICrud
 {
 #region TableDefinition_Graph
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBGraph : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBGraph : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -48,7 +48,7 @@ public partial class DBGraph : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFTabela || pFldFTabelaId || pFldFImagem || pFldFGUID))
+            if (!(pFldFTabela || pFldFTabelaId || pFldFImagem || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -73,20 +73,19 @@ public partial class DBGraph : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFTabela)
-            clsW.Fields(DBGraphDicInfo.Tabela, m_FTabela, ETiposCampos.FString);
+            clsW.Fields(DBGraphDicInfo.Tabela, FTabela, EGenericTypeFields.FString);
         if (pFldFTabelaId)
-            clsW.Fields(DBGraphDicInfo.TabelaId, m_FTabelaId, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGraphDicInfo.TabelaId, FTabelaId, EGenericTypeFields.FNumberNull);
         if (pFldFImagem)
-            clsW.Fields(DBGraphDicInfo.Imagem, m_FImagem, ETiposCampos.FByteArray);
-        if (pFldFGUID)
-            clsW.Fields(DBGraphDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBGraphDicInfo.Imagem, FImagem, EGenericTypeFields.FByteArray);
+        if (pFldFGuid)
+            clsW.Fields(DBGraphDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Graph)
         if (clsW.HasUpdates)
         {
@@ -101,15 +100,15 @@ public partial class DBGraph : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBGraphDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGraphDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBGraphDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBGraphDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBGraphDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGraphDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBGraphDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBGraphDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBGraphDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBGraphDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

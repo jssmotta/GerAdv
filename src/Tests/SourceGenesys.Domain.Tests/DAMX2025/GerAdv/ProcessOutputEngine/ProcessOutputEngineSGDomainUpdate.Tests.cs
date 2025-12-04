@@ -22,7 +22,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         var processoutputengine = new DBProcessOutputEngine();
         // Assert
         processoutputengine.Should().NotBeNull();
-        processoutputengine.ITabelaName().Should().Be("ProcessOutputEngine");
+        processoutputengine.ITableName().Should().Be("ProcessOutputEngine");
         processoutputengine.ID.Should().Be(0);
     }
 
@@ -38,7 +38,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
             FCampo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FValor = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FOutput = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
         // Assert - All properties should be set processoutputengine.FNome.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         processoutputengine.FDatabase.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -46,7 +46,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         processoutputengine.FCampo.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         processoutputengine.FValor.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         processoutputengine.FOutput.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        processoutputengine.FGUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        processoutputengine.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -60,15 +60,31 @@ public class DBProcessOutputEngineUpdate : IDisposable
         processoutputengine.FTabela = longString; // MAX: 255
         processoutputengine.FCampo = longString; // MAX: 255
         processoutputengine.FValor = longString; // MAX: 255
-        processoutputengine.FGUID = longString; // MAX: 100
+        processoutputengine.FGuid = longString; // MAX: 100
         // Assert - All properties should be set processoutputengine.FNome.Should().HaveLength(255);
         processoutputengine.FDatabase.Should().HaveLength(255);
         processoutputengine.FTabela.Should().HaveLength(255);
         processoutputengine.FCampo.Should().HaveLength(255);
         processoutputengine.FValor.Should().HaveLength(255);
-        processoutputengine.FGUID.Should().HaveLength(100);
+        processoutputengine.FGuid.Should().HaveLength(100);
     }
 
+#region Testes de Guid
+    [Fact]
+    public void Guid_DefaultValue_ShouldBeEmpty()
+    {
+        Assert.Equal(string.Empty, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_SetValidGuid_ShouldStore()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
+    }
+
+#endregion
     [Theory]
     [InlineData("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
@@ -166,7 +182,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -180,7 +196,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -196,7 +212,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -211,7 +227,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FNome = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -225,7 +241,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -239,7 +255,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FNome = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -253,7 +269,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -279,7 +295,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -293,7 +309,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FNome = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -371,7 +387,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDatabase);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -385,7 +401,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDatabase);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -401,7 +417,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FDatabase);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -416,7 +432,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FDatabase = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -430,7 +446,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FDatabase = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -444,7 +460,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FDatabase = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -458,7 +474,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDatabase);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -484,7 +500,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FDatabase = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -498,7 +514,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FDatabase = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -576,7 +592,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FTabela);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -590,7 +606,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FTabela);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -606,7 +622,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FTabela);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -621,7 +637,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FTabela = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -635,7 +651,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FTabela = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -649,7 +665,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FTabela = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -663,7 +679,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FTabela);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -689,7 +705,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FTabela = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -703,7 +719,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FTabela = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -781,7 +797,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FCampo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -795,7 +811,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FCampo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -811,7 +827,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FCampo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -826,7 +842,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FCampo = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -840,7 +856,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FCampo = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -854,7 +870,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FCampo = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -868,7 +884,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FCampo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -894,7 +910,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FCampo = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -908,7 +924,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FCampo = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -986,7 +1002,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FValor);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1000,7 +1016,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FValor);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1016,7 +1032,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FValor);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1031,7 +1047,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FValor = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1045,7 +1061,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FValor = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1059,7 +1075,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FValor = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1073,7 +1089,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FValor);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1099,7 +1115,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FValor = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1113,7 +1129,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FValor = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1179,7 +1195,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOutput);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1193,7 +1209,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOutput);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1209,7 +1225,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FOutput);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1224,7 +1240,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FOutput = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1238,7 +1254,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FOutput = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1252,7 +1268,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FOutput = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1266,7 +1282,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOutput);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1292,7 +1308,7 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FOutput = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1306,26 +1322,10 @@ public class DBProcessOutputEngineUpdate : IDisposable
         _instance.FOutput = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
-    [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
-    {
-        Assert.Equal(string.Empty, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
-    }
-
-#endregion
     [Fact]
     public void TabelaNome_Property_ShouldReturnCorrectTableName()
     {

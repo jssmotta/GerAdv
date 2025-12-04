@@ -31,7 +31,7 @@ public partial class DBProcessosObsReport
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,13 +138,13 @@ public partial class DBProcessosObsReport
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFData)
-            updateTool.Fields(DBProcessosObsReportDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBProcessosObsReportDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFProcesso)
-            updateTool.Fields(DBProcessosObsReportDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessosObsReportDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFObservacao)
-            updateTool.Fields(DBProcessosObsReportDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            updateTool.Fields(DBProcessosObsReportDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFHistorico)
-            updateTool.Fields(DBProcessosObsReportDicInfo.Historico, m_FHistorico, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessosObsReportDicInfo.Historico, FHistorico, EGenericTypeFields.FNumber);
     }
 
 #endif
@@ -156,20 +156,20 @@ public partial class DBProcessosObsReport
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProcessosObsReportDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessosObsReportDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProcessosObsReportDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProcessosObsReportDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProcessosObsReportDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessosObsReportDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProcessosObsReportDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProcessosObsReportDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProcessosObsReportDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProcessosObsReportDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

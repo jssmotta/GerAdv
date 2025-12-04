@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import StatusAndamentoInc from '../Crud/Inc/StatusAndamento';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface StatusAndamentoIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const StatusAndamentoIncContainer: React.FC<StatusAndamentoIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <StatusAndamentoInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <StatusAndamentoInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default StatusAndamentoIncContainer;

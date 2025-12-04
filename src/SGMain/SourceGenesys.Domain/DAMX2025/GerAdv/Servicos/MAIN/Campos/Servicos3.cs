@@ -7,38 +7,32 @@ public partial class DBServicos
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFCobrar, pFldFDescricao, pFldFBasico, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FDescricao, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FCobrar, m_FBasico;
+    private protected bool pFldFCobrar, pFldFDescricao, pFldFBasico, pFldFGuid;
     public virtual bool FCobrar
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCobrar;
+        get => field;
         set
         {
-            pFldFCobrar = pFldFCobrar || value != m_FCobrar;
+            pFldFCobrar = pFldFCobrar || value != field;
             if (pFldFCobrar)
-                m_FCobrar = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(200, ErrorMessage = "A propriedade FDescricao da tabela Servicos deve ter no máximo 200 caracteres.")]
+    [StringLength(200, ErrorMessage = "A propriedade FDescricao da tabela 'Servicos' deve ter no máximo 200 caracteres.")]
     public virtual string? FDescricao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDescricao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
+            pFldFDescricao = pFldFDescricao || !(field ?? string.Empty).Equals(value);
             if (pFldFDescricao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FDescricao = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+                field = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
             }
         }
     }
@@ -46,41 +40,41 @@ public partial class DBServicos
     public virtual bool FBasico
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBasico;
+        get => field;
         set
         {
-            pFldFBasico = pFldFBasico || value != m_FBasico;
+            pFldFBasico = pFldFBasico || value != field;
             if (pFldFBasico)
-                m_FBasico = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Servicos deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Servicos' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -90,9 +84,13 @@ public partial class DBServicos
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

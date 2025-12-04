@@ -54,6 +54,22 @@ public partial class DBPaises
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBPaisesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBPaisesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPaisesDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBPaisesDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBPaises
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPaisesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBPaisesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBPaisesDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBPaises
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPaisesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBPaisesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBPaisesDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBPaises
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPaisesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBPaisesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBPaisesDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBPaisesDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBPaisesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBPaises
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -23,12 +23,6 @@ public partial class FNENotasFactory : IFNENotasFactory, IDisposable
         return FNENotas.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FNENotas> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FNENotas().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FNENotas> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FNENotasFactory : IFNENotasFactory, IDisposable
         return FNENotas.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FNENotas> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FNENotas().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FNENotasFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

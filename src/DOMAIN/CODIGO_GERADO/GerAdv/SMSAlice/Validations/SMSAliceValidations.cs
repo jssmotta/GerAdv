@@ -28,8 +28,6 @@ public class SMSAliceValidation : ISMSAliceValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBSMSAliceDicInfo.SmaNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBSMSAliceDicInfo.SmaNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBSMSAliceDicInfo.SmaGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBSMSAliceDicInfo.SmaGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class SMSAliceValidation : ISMSAliceValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         if (await IsDuplicado(reg, service, uri))
             throw new SGValidationException($"S M S Alice '{reg.Nome}' Nome e/ou Operador");
         var validSizes = ValidSizes(reg);
@@ -48,11 +48,9 @@ public class SMSAliceValidation : ISMSAliceValidation
             throw new SGValidationException("Operador é obrigatório.");
         if (reg.TipoEMail == 0)
             throw new SGValidationException("TipoEMail é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         // Operador
         {
-            var regOperador = await operadorReader.Read(reg.Operador, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");
@@ -61,7 +59,7 @@ public class SMSAliceValidation : ISMSAliceValidation
 
         // TipoEMail
         {
-            var regTipoEMail = await tipoemailReader.Read(reg.TipoEMail, oCnn);
+            var regTipoEMail = await tipoemailReader.ReadAsync(reg.TipoEMail, oCnn);
             if (regTipoEMail == null || regTipoEMail.Id != reg.TipoEMail)
             {
                 throw new SGValidationException($"Tipo E Mail não encontrado ({regTipoEMail?.Id}).");

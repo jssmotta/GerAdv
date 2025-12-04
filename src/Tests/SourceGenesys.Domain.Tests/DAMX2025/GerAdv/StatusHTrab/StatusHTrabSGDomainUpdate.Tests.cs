@@ -22,7 +22,7 @@ public class DBStatusHTrabUpdate : IDisposable
         var statushtrab = new DBStatusHTrab();
         // Assert
         statushtrab.Should().NotBeNull();
-        statushtrab.ITabelaName().Should().Be("StatusHTrab");
+        statushtrab.ITableName().Should().Be("StatusHTrab");
         statushtrab.ID.Should().Be(0);
     }
 
@@ -121,7 +121,7 @@ public class DBStatusHTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -135,7 +135,7 @@ public class DBStatusHTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -151,7 +151,7 @@ public class DBStatusHTrabUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -166,7 +166,7 @@ public class DBStatusHTrabUpdate : IDisposable
         _instance.FDescricao = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -180,7 +180,7 @@ public class DBStatusHTrabUpdate : IDisposable
         _instance.FDescricao = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -194,7 +194,7 @@ public class DBStatusHTrabUpdate : IDisposable
         _instance.FDescricao = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -208,7 +208,7 @@ public class DBStatusHTrabUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -234,7 +234,7 @@ public class DBStatusHTrabUpdate : IDisposable
         _instance.FDescricao = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -248,7 +248,7 @@ public class DBStatusHTrabUpdate : IDisposable
         _instance.FDescricao = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

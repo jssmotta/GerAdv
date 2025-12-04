@@ -74,6 +74,7 @@ public class AgendaWriterTests
         var result = await _agendaWriter.WriteAsync(agenda, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFAgenda.Object);
+        _mockFAgenda.VerifySet(x => x.FGuid = agenda.Guid, Times.Once);
         _mockFAgenda.VerifySet(x => x.FIDCOB = agenda.IDCOB, Times.Once);
         _mockFAgenda.VerifySet(x => x.FClienteAvisado = agenda.ClienteAvisado, Times.Once);
         _mockFAgenda.VerifySet(x => x.FRevisarP2 = agenda.RevisarP2, Times.Once);
@@ -82,14 +83,14 @@ public class AgendaWriterTests
         _mockFAgenda.VerifySet(x => x.FOculto = agenda.Oculto, Times.Once);
         _mockFAgenda.VerifySet(x => x.FCartaPrecatoria = agenda.CartaPrecatoria, Times.Once);
         _mockFAgenda.VerifySet(x => x.FRevisar = agenda.Revisar, Times.Once);
-        _mockFAgenda.VerifySet(x => x.FHrFinal = agenda.HrFinal, Times.Once);
+        _mockFAgenda.VerifySet(x => x.FHrFinal = agenda.HrFinal.ToString(), Times.Once);
         _mockFAgenda.VerifySet(x => x.FAdvogado = agenda.Advogado, Times.Once);
         _mockFAgenda.VerifySet(x => x.FEventoGerador = agenda.EventoGerador, Times.Once);
         _mockFAgenda.VerifySet(x => x.FEventoData = agenda.EventoData.ToString(), Times.Once);
         _mockFAgenda.VerifySet(x => x.FFuncionario = agenda.Funcionario, Times.Once);
-        _mockFAgenda.VerifySet(x => x.FData = agenda.Data, Times.Once);
+        _mockFAgenda.VerifySet(x => x.FData = agenda.Data.ToString(), Times.Once);
         _mockFAgenda.VerifySet(x => x.FEventoPrazo = agenda.EventoPrazo, Times.Once);
-        _mockFAgenda.VerifySet(x => x.FHora = agenda.Hora, Times.Once);
+        _mockFAgenda.VerifySet(x => x.FHora = agenda.Hora.ToString(), Times.Once);
         _mockFAgenda.VerifySet(x => x.FCompromisso = agenda.Compromisso, Times.Once);
         _mockFAgenda.VerifySet(x => x.FTipoCompromisso = agenda.TipoCompromisso, Times.Once);
         _mockFAgenda.VerifySet(x => x.FCliente = agenda.Cliente, Times.Once);
@@ -113,8 +114,22 @@ public class AgendaWriterTests
         _mockFAgenda.VerifySet(x => x.FProtocoloIntegrado = agenda.ProtocoloIntegrado, Times.Once);
         _mockFAgenda.VerifySet(x => x.FDataInicioPrazo = agenda.DataInicioPrazo.ToString(), Times.Once);
         _mockFAgenda.VerifySet(x => x.FUsuarioCiente = agenda.UsuarioCiente, Times.Once);
-        _mockFAgenda.VerifySet(x => x.FGUID = agenda.GUID, Times.Once);
         _mockFAgenda.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullHrFinal_ShouldNotSetFHrFinal()
+    {
+        // Arrange
+        var agenda = CreateValidAgendaModel();
+        agenda.HrFinal = null;
+        var auditorQuem = 123;
+        _mockAgendaFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFAgenda.Object);
+        _mockFAgenda.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _agendaWriter.WriteAsync(agenda, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFAgenda.VerifySet(x => x.FHrFinal = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -130,6 +145,36 @@ public class AgendaWriterTests
         await _agendaWriter.WriteAsync(agenda, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFAgenda.VerifySet(x => x.FEventoData = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var agenda = CreateValidAgendaModel();
+        agenda.Data = null;
+        var auditorQuem = 123;
+        _mockAgendaFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFAgenda.Object);
+        _mockFAgenda.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _agendaWriter.WriteAsync(agenda, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFAgenda.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullHora_ShouldNotSetFHora()
+    {
+        // Arrange
+        var agenda = CreateValidAgendaModel();
+        agenda.Hora = null;
+        var auditorQuem = 123;
+        _mockAgendaFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFAgenda.Object);
+        _mockFAgenda.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _agendaWriter.WriteAsync(agenda, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFAgenda.VerifySet(x => x.FHora = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -187,7 +232,7 @@ public class AgendaWriterTests
         var operadorId = 456;
         _mockAgendaFactory.Setup(x => x.DeleteAsync(operadorId, agendaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _agendaWriter.Delete(agendaResponse, operadorId, _mockConnection.Object);
+        await _agendaWriter.DeleteAsync(agendaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockAgendaFactory.Verify(x => x.DeleteAsync(operadorId, agendaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -203,7 +248,7 @@ public class AgendaWriterTests
         var operadorId = 111;
         _mockAgendaFactory.Setup(x => x.DeleteAsync(operadorId, agendaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _agendaWriter.Delete(agendaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _agendaWriter.DeleteAsync(agendaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -220,7 +265,7 @@ public class AgendaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockAgendaFactory.Setup(x => x.DeleteAsync(operadorId, agendaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _agendaWriter.Delete(agendaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _agendaWriter.DeleteAsync(agendaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -250,6 +295,7 @@ public class AgendaWriterTests
         return new Models.Agenda
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             IDCOB = 1,
             ClienteAvisado = false,
             RevisarP2 = false,
@@ -258,14 +304,14 @@ public class AgendaWriterTests
             Oculto = 1,
             CartaPrecatoria = 1,
             Revisar = false,
-            HrFinal = "27/05/2022",
+            HrFinal = "24/04/1975",
             Advogado = 1,
             EventoGerador = 1,
             EventoData = "24/04/1975",
             Funcionario = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             EventoPrazo = 1,
-            Hora = "27/05/2022",
+            Hora = "04:04",
             Compromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             TipoCompromisso = 1,
             Cliente = 1,
@@ -288,8 +334,7 @@ public class AgendaWriterTests
             PrazoDias = 1,
             ProtocoloIntegrado = 1,
             DataInicioPrazo = "24/04/1975",
-            UsuarioCiente = false,
-            GUID = Guid.NewGuid().ToString()
+            UsuarioCiente = false
         };
     }
 #endregion

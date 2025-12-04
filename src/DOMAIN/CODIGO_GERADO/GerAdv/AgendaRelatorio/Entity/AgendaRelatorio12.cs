@@ -29,13 +29,6 @@ public partial class FAgendaRelatorio : MenphisSI.SG.GerAdv.DBAgendaRelatorio, I
     {
     }
 
-    public async Task<FAgendaRelatorio> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fAgendaRelatorio = new FAgendaRelatorio();
-        await fAgendaRelatorio.CarregarAsync(id, oCnn);
-        return fAgendaRelatorio;
-    }
-
     private FAgendaRelatorio(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -62,7 +55,7 @@ public partial class FAgendaRelatorio : MenphisSI.SG.GerAdv.DBAgendaRelatorio, I
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
@@ -70,7 +63,7 @@ public partial class FAgendaRelatorio : MenphisSI.SG.GerAdv.DBAgendaRelatorio, I
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

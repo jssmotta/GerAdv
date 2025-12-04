@@ -54,8 +54,64 @@ public partial class DBBensMateriais
         // Checkpoint Carregar 
         try
         {
+            FComprador = getValue(DBBensMateriaisDicInfo.Comprador)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBBensMateriaisDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNFNRO = getValue(DBBensMateriaisDicInfo.NFNRO)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBBensMateriaisDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeVendedor = getValue(DBBensMateriaisDicInfo.NomeVendedor)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNroSerieProduto = getValue(DBBensMateriaisDicInfo.NroSerieProduto)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacoes = getValue(DBBensMateriaisDicInfo.Observacoes)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.BensClassificacao)))
-                m_FBensClassificacao = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.BensClassificacao));
+                FBensClassificacao = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.BensClassificacao));
         }
         catch
         {
@@ -64,7 +120,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBBensMateriaisDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBBensMateriaisDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +129,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.Cidade));
         }
         catch
         {
@@ -82,7 +138,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.DataCompra)))
-                m_FDataCompra = Convert.ToDateTime(getValue(DBBensMateriaisDicInfo.DataCompra));
+                FDataCompra = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBBensMateriaisDicInfo.DataCompra)));
         }
         catch
         {
@@ -91,7 +147,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.DataFimDaGarantia)))
-                m_FDataFimDaGarantia = Convert.ToDateTime(getValue(DBBensMateriaisDicInfo.DataFimDaGarantia));
+                FDataFimDaGarantia = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBBensMateriaisDicInfo.DataFimDaGarantia)));
         }
         catch
         {
@@ -100,7 +156,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)))
-                m_FDataTerminoDaGarantiaDaLoja = Convert.ToDateTime(getValue(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja));
+                FDataTerminoDaGarantiaDaLoja = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja)));
         }
         catch
         {
@@ -127,7 +183,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.Fornecedor)))
-                m_FFornecedor = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.Fornecedor));
+                FFornecedor = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.Fornecedor));
         }
         catch
         {
@@ -136,7 +192,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.GarantiaLoja)))
-                m_FGarantiaLoja = Convert.ToBoolean(getValue(DBBensMateriaisDicInfo.GarantiaLoja));
+                FGarantiaLoja = Convert.ToBoolean(getValue(DBBensMateriaisDicInfo.GarantiaLoja));
         }
         catch
         {
@@ -145,7 +201,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.QuemAtu));
         }
         catch
         {
@@ -154,7 +210,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBBensMateriaisDicInfo.QuemCad));
         }
         catch
         {
@@ -163,7 +219,7 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.ValorBem)))
-                m_FValorBem = Convert.ToDecimal(getValue(DBBensMateriaisDicInfo.ValorBem));
+                FValorBem = Convert.ToDecimal(getValue(DBBensMateriaisDicInfo.ValorBem));
         }
         catch
         {
@@ -172,70 +228,14 @@ public partial class DBBensMateriais
         try
         {
             if (!DBNull.Value.Equals(getValue(DBBensMateriaisDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBBensMateriaisDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FComprador = getValue(DBBensMateriaisDicInfo.Comprador)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBBensMateriaisDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNFNRO = getValue(DBBensMateriaisDicInfo.NFNRO)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBBensMateriaisDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeVendedor = getValue(DBBensMateriaisDicInfo.NomeVendedor)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNroSerieProduto = getValue(DBBensMateriaisDicInfo.NroSerieProduto)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacoes = getValue(DBBensMateriaisDicInfo.Observacoes)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBBensMateriaisDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -259,7 +259,7 @@ public partial class DBBensMateriais
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

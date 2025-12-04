@@ -12,7 +12,7 @@ import TipoCompromissoWindow from '../Crud/Grids/TipoCompromissoWindow';
 import { ITipoCompromisso } from '../Interfaces/interface.TipoCompromisso';
 import { pencilIcon, plusIcon, xIcon } from '@progress/kendo-svg-icons';
 import { SvgIcon } from '@progress/kendo-react-common';
-import { ActionAdicionar, ActionEditar } from '@/app/tools/crud';
+import { ActionAdicionar, ActionEditar, CRUD_CONSTANTS } from '@/app/tools/crud';
 import { TipoCompromissoService } from '../Services/TipoCompromisso.service';
 const TipoCompromissoComboBox: React.FC<DadosSelectProps> = ({
   name, 
@@ -55,7 +55,7 @@ const fetchDados = async () => {
 React.useEffect(() => {
   fetchDados();
 }, []);
-// useEffect para lidar com valores iniciais num�ricos (igual ao InputTipoCompromissoMDS)
+
 useEffect(() => {
   if (typeof value === 'number' && !isNaN(value) && value > 0) {
     const fetchData = async () => {
@@ -260,8 +260,7 @@ return (
   .tipocompromissoInput .k-input, 
   .tipocompromissoInput .k-input-inner {
     border: none !important;
-    border-radius: 0 !important;
-    border-bottom: 1px solid #ccc !important;
+    border-radius: 0 !important;    
     box-shadow: none !important;
     background-color: transparent !important;
     transition: border-color 0.3s ease;
@@ -272,8 +271,7 @@ return (
     opacity: 1 !important;
     z-index: 99999 !important;
     position: absolute !important;
-    background: white !important;
-    border: 1px solid #ccc !important;
+    background: white !important;    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
     max-height: 300px !important;
     overflow-y: auto !important;
@@ -342,7 +340,7 @@ return (
     selectedTipoCompromisso={editRecord || addRecord || TipoCompromissoEmpty()}
     />
     )}
-    <div className={`${cssDado} inputCombobox input-container`}>
+    <div className={`${cssDado} input-msi-combobox input-container`}>
       <div className='comboboxLabel'>
         <span className='k-floating-label'>{label}</span>
         </div>

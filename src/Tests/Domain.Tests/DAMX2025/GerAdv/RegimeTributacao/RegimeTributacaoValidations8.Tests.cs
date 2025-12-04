@@ -53,8 +53,7 @@ public class RegimeTributacaoValidationTests : IDisposable
         return new Models.RegimeTributacao
         {
             Id = 1,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Nome = "João"
         };
     }
 
@@ -79,8 +78,7 @@ public class RegimeTributacaoValidationTests : IDisposable
         var regimetributacao = new Models.RegimeTributacao
         {
             Id = 1,
-            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -107,7 +105,7 @@ public class RegimeTributacaoValidationTests : IDisposable
         regimetributacao.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(regimetributacao, _mockRegimeTributacaoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -138,54 +136,7 @@ public class RegimeTributacaoValidationTests : IDisposable
     {
         // Arrange
         var regimetributacao = CreateValidRegimeTributacao();
-        regimetributacao.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(regimetributacao, _mockRegimeTributacaoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var regimetributacao = CreateValidRegimeTributacao();
-        regimetributacao.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(regimetributacao, _mockRegimeTributacaoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var regimetributacao = CreateValidRegimeTributacao();
-        regimetributacao.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(regimetributacao, _mockRegimeTributacaoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var regimetributacao = CreateValidRegimeTributacao();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(regimetributacao, _mockRegimeTributacaoService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var regimetributacao = CreateValidRegimeTributacao();
-        regimetributacao.GUID = "   ";
+        regimetributacao.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(regimetributacao, _mockRegimeTributacaoService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

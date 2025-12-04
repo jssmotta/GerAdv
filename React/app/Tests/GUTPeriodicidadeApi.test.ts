@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { GUTPeriodicidadeApiError } from '../GerAdv_TS/GUTPeriodicidade/Apis/ApiGUTPeriodicidade';
+import { GUTPeriodicidadeApiError } from '@/app/GerAdv_TS/GUTPeriodicidade/Apis/ApiGUTPeriodicidade';
 import { GUTPeriodicidadeApi } from '@/app/GerAdv_TS/GUTPeriodicidade/Apis/ApiGUTPeriodicidade';
-import { FilterGUTPeriodicidade } from '../GerAdv_TS/GUTPeriodicidade/Filters/GUTPeriodicidade';
-import { IGUTPeriodicidade } from '../GerAdv_TS/GUTPeriodicidade/Interfaces/interface.GUTPeriodicidade';
-import { GUTPeriodicidadeTestEmpty } from '../GerAdv_TS/Models/GUTPeriodicidade';
+import { FilterGUTPeriodicidade } from '@/app/GerAdv_TS/GUTPeriodicidade/Filters/GUTPeriodicidade';
+import { IGUTPeriodicidade } from '@/app/GerAdv_TS/GUTPeriodicidade/Interfaces/interface.GUTPeriodicidade';
+import { GUTPeriodicidadeTestEmpty } from '@/app/GerAdv_TS/Models/GUTPeriodicidade';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('GUTPeriodicidadeApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterGUTPeriodicidade = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,9 @@ describe('GUTPeriodicidadeApi', () => {
   describe('addAndUpdate', () => {
     const mockGUTPeriodicidade: IGUTPeriodicidade = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+intervalodias: 0
     };
 
     it('should add new gutperiodicidade successfully', async () => {
@@ -487,7 +476,7 @@ describe('GUTPeriodicidadeApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterGUTPeriodicidade = { funcionario: 1 };
+      const mockFilter: FilterGUTPeriodicidade = { : 1 };
       
       const result = gutperiodicidadeApi.useFilter(mockFilter);
       

@@ -74,10 +74,10 @@ public class ServicosWriterTests
         var result = await _servicosWriter.WriteAsync(servicos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFServicos.Object);
+        _mockFServicos.VerifySet(x => x.FGuid = servicos.Guid, Times.Once);
         _mockFServicos.VerifySet(x => x.FCobrar = servicos.Cobrar, Times.Once);
         _mockFServicos.VerifySet(x => x.FDescricao = servicos.Descricao, Times.Once);
         _mockFServicos.VerifySet(x => x.FBasico = servicos.Basico, Times.Once);
-        _mockFServicos.VerifySet(x => x.FGUID = servicos.GUID, Times.Once);
         _mockFServicos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class ServicosWriterTests
         var operadorId = 456;
         _mockServicosFactory.Setup(x => x.DeleteAsync(operadorId, servicosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _servicosWriter.Delete(servicosResponse, operadorId, _mockConnection.Object);
+        await _servicosWriter.DeleteAsync(servicosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockServicosFactory.Verify(x => x.DeleteAsync(operadorId, servicosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class ServicosWriterTests
         var operadorId = 111;
         _mockServicosFactory.Setup(x => x.DeleteAsync(operadorId, servicosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _servicosWriter.Delete(servicosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _servicosWriter.DeleteAsync(servicosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class ServicosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockServicosFactory.Setup(x => x.DeleteAsync(operadorId, servicosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _servicosWriter.Delete(servicosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _servicosWriter.DeleteAsync(servicosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class ServicosWriterTests
         return new Models.Servicos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Cobrar = false,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Basico = false,
-            GUID = Guid.NewGuid().ToString()
+            Basico = false
         };
     }
 #endregion

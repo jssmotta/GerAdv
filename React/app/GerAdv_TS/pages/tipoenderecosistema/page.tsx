@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { TipoEnderecoSistemaGridAdapter } from '@/app/GerAdv_TS/TipoEnderecoSistema/Adapter/TipoEnderecoSistemaGridAdapter';
 import TipoEnderecoSistemaGridContainer from '@/app/GerAdv_TS/TipoEnderecoSistema/Components/TipoEnderecoSistemaGridContainer';
+
 const TipoEnderecoSistemaPage: React.FC = () => {
-  const TipoEnderecoSistemaGrid = new TipoEnderecoSistemaGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Tipo Endereco Sistema' />
-    <TipoEnderecoSistemaGridContainer grid={TipoEnderecoSistemaGrid} />
-  </PageLayout>
-);
+    const TipoEnderecoSistemaGrid = new TipoEnderecoSistemaGridAdapter();
+
+    return (
+        <PageLayout>            
+            <TipoEnderecoSistemaGridContainer grid={TipoEnderecoSistemaGrid} />
+        </PageLayout>
+    );
 };
+
 export default TipoEnderecoSistemaPage;

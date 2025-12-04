@@ -28,8 +28,6 @@ public class EMPClassRiscosValidation : IEMPClassRiscosValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBEMPClassRiscosDicInfo.EcrNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBEMPClassRiscosDicInfo.EcrNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBEMPClassRiscosDicInfo.EcrGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBEMPClassRiscosDicInfo.EcrGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class EMPClassRiscosValidation : IEMPClassRiscosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

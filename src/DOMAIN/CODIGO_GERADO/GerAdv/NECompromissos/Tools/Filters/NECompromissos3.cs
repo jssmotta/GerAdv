@@ -7,38 +7,105 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterNECompromissosWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de NECompromissos padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterNECompromissos Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterNECompromissos
 {
+    [JsonPropertyName("filterTipoCompromisso")]
+    [Description("Filtro para a tabela TipoCompromisso")]
+    public FilterTipoCompromisso? FilterTipoCompromisso { get; set; } = new();
+
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("palavrachave")]
+    [Description("PalavraChave -2147483648 para nada ou id")]
     public int PalavraChave { get; set; } = int.MinValue;
 
     [JsonPropertyName("palavrachave_end")]
+    [Description("PalavraChave -2147483648 para nada ou id para final do intervalo")]
     public int PalavraChave_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("provisionar")]
+    [Description("Provisionar -2147483648 para nada; 0 para não, 1 para sim")]
     public int Provisionar { get; set; } = int.MinValue;
 
     [JsonPropertyName("tipocompromisso")]
+    [Description("TipoCompromisso -2147483648 para nada ou id")]
     public int TipoCompromisso { get; set; } = int.MinValue;
 
     [JsonPropertyName("tipocompromisso_end")]
+    [Description("TipoCompromisso -2147483648 para nada ou id para final do intervalo")]
     public int TipoCompromisso_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("textocompromisso")]
+    [Description("TextoCompromisso")]
     public string? TextoCompromisso { get; set; } = string.Empty;
 
-    [JsonPropertyName("textocompromisso_end")]
-    public string? TextoCompromisso_end { get; set; } = string.Empty;
+    [JsonPropertyName("bold")]
+    [Description("Bold -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Bold { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quemcad")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id")]
+    public int QuemCad { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quemcad_end")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id para final do intervalo")]
+    public int QuemCad_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtcad")]
+    [Description("Data de Cadastro")]
+    public string? DtCad { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtcad_end")]
+    [Description("Data de Cadastro final para intervalo")]
+    public string? DtCad_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("quematu")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id")]
+    public int QuemAtu { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quematu_end")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id para final do intervalo")]
+    public int QuemAtu_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtatu")]
+    [Description("Data de Atualização")]
+    public string? DtAtu { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtatu_end")]
+    [Description("Data de Atualização final para intervalo")]
+    public string? DtAtu_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("visto")]
+    [Description("Visto -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Visto { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

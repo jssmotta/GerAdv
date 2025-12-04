@@ -38,8 +38,21 @@ public class DBCargosEscTests : IDisposable
         dt.Columns.Add("cgePercentual", typeof(decimal));
         dt.Columns.Add("cgeNome", typeof(string));
         dt.Columns.Add("cgeClassificacao", typeof(int));
-        dt.Columns.Add("cgeGUID", typeof(string));
+        dt.Columns.Add("cgeGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["cgeCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBCargosEsc(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +73,7 @@ public class DBCargosEscTests : IDisposable
     {
         var instance = new DBCargosEsc();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("CargosEsc", instance.ITabelaName());
+        Assert.Equal("CargosEsc", instance.ITableName());
         Assert.Equal("cge", instance.Prefixo);
     }
 
@@ -78,29 +91,16 @@ public class DBCargosEscTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["cgeCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBCargosEsc(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("CargosEsc", cadastro.ITabelaName());
-        Assert.Equal("cgeCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("cgeNome", cadastro.ICampoNome());
-        Assert.Equal("cge", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("CargosEsc", cadastro.ITableName());
+        Assert.Equal("cgeCodigo", cadastro.IFieldId());
+        Assert.Equal("cgeNome", cadastro.IFieldNameDescription());
+        Assert.Equal("cge", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,9 +160,9 @@ public class DBCargosEscTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -207,18 +207,18 @@ public class DBCargosEscTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

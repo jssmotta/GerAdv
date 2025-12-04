@@ -43,6 +43,19 @@ public class DBAgendaRelatorioTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["vqaCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBAgendaRelatorio(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(0, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -61,7 +74,7 @@ public class DBAgendaRelatorioTests : IDisposable
     {
         var instance = new DBAgendaRelatorio();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("AgendaRelatorio", instance.ITabelaName());
+        Assert.Equal("AgendaRelatorio", instance.ITableName());
         Assert.Equal("", instance.Prefixo);
     }
 
@@ -76,19 +89,6 @@ public class DBAgendaRelatorioTests : IDisposable
     public void Constructor_WithNullSqlDataReader_ShouldNotThrow()
     {
         var instance = new DBAgendaRelatorio((SqlDataReader)null);
-        Assert.Equal(0, instance.ID);
-    }
-
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["vqaCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBAgendaRelatorio(_testDataTable.Rows[0]);
-        // Assert
         Assert.Equal(0, instance.ID);
     }
 
@@ -149,9 +149,9 @@ public class DBAgendaRelatorioTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnTrue()
+    public void IsStoredProcedureOrView_ShouldReturnTrue()
     {
-        Assert.True(_instance.IIsStoredProcedureOrView());
+        Assert.True(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

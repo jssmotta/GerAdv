@@ -54,8 +54,16 @@ public partial class DBNEPalavrasChaves
         // Checkpoint Carregar 
         try
         {
+            FNome = getValue(DBNEPalavrasChavesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBNEPalavrasChavesDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBNEPalavrasChavesDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBNEPalavrasChaves
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBNEPalavrasChavesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBNEPalavrasChavesDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBNEPalavrasChaves
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBNEPalavrasChavesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBNEPalavrasChavesDicInfo.QuemCad));
         }
         catch
         {
@@ -100,22 +108,14 @@ public partial class DBNEPalavrasChaves
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNEPalavrasChavesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBNEPalavrasChavesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBNEPalavrasChavesDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBNEPalavrasChavesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -139,7 +139,7 @@ public partial class DBNEPalavrasChaves
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

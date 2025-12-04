@@ -11,8 +11,8 @@ public static partial class DBPosicaoOutrasPartesDicInfo
     public const string CampoNome = "posDescricao";
     public const string TablePrefix = "pos";
     public const string Descricao = "posDescricao"; // LOCALIZACAO 170523
-    public const string GUID = "posGUID"; // LOCALIZACAO 170523
     public const string Bold = "posBold"; // LOCALIZACAO 170523
+    public const string Guid = "posGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "posQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "posDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "posQuemAtu"; // LOCALIZACAO 170523
@@ -33,41 +33,14 @@ public static partial class DBPosicaoOutrasPartesDicInfo
 
     public const string PTabelaNome = "PosicaoOutrasPartes";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PosDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 30, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "pos"
-    };
-    public static DBInfoSystem PosGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "pos"
-    };
-    public static DBInfoSystem PosBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "pos"
-    };
-    public static DBInfoSystem PosQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pos"
-    }; // DBI 11 
-    public static DBInfoSystem PosDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "pos"
-    };
-    public static DBInfoSystem PosQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pos"
-    }; // DBI 11 
-    public static DBInfoSystem PosDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pos"
-    };
-    public static DBInfoSystem PosVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pos"
-    };
+    public static DBInfoSystem PosDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 30, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "pos", isRequired: true);
+    public static DBInfoSystem PosBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "pos", isRequired: true);
+    public static DBInfoSystem PosGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pos");
+    public static DBInfoSystem PosQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pos"); // DBI 11 
+    public static DBInfoSystem PosDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pos");
+    public static DBInfoSystem PosQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pos"); // DBI 11 
+    public static DBInfoSystem PosDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pos");
+    public static DBInfoSystem PosVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pos", isRequired: true);
 
 #endregion
     [Serializable]

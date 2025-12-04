@@ -15,8 +15,8 @@ public static partial class DBPenhoraDicInfo
     public const string Descricao = "phrDescricao"; // LOCALIZACAO 170523
     public const string DataPenhora = "phrDataPenhora"; // LOCALIZACAO 170523
     public const string PenhoraStatus = "phrPenhoraStatus"; // LOCALIZACAO 170523
-    public const string GUID = "phrGUID"; // LOCALIZACAO 170523
     public const string Master = "phrMaster"; // LOCALIZACAO 170523
+    public const string Guid = "phrGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "phrQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "phrDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "phrQuemAtu"; // LOCALIZACAO 170523
@@ -41,55 +41,18 @@ public static partial class DBPenhoraDicInfo
 
     public const string PTabelaNome = "Penhora";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PhrProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, DevourerOne.PMaxSizeCampoMemo, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrDataPenhora => new(0, PTabelaNome, CampoCodigo, DataPenhora, "DataPenhora", "DataPenhora", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrPenhoraStatus => new(0, PTabelaNome, CampoCodigo, PenhoraStatus, "PenhoraStatus", "PenhoraStatus", ETipoDadosSysteminfo.SysteminfoForeingkey, DBPenhoraStatusDicInfo.CampoCodigo, DBPenhoraStatusDicInfo.TabelaNome, new DBPenhoraStatusODicInfo(), false)
-    {
-        Prefixo = "phr"
-    }; // DBI 11 
-    public static DBInfoSystem PhrGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrMaster => new(0, PTabelaNome, CampoCodigo, Master, "Master", "Master", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "phr"
-    }; // DBI 11 
-    public static DBInfoSystem PhrDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "phr"
-    }; // DBI 11 
-    public static DBInfoSystem PhrDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "phr"
-    };
-    public static DBInfoSystem PhrVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "phr"
-    };
+    public static DBInfoSystem PhrProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "phr");
+    public static DBInfoSystem PhrNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "phr");
+    public static DBInfoSystem PhrDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, DevourerOne.PMaxSizeCampoMemo, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "phr");
+    public static DBInfoSystem PhrDataPenhora => new(0, PTabelaNome, CampoCodigo, DataPenhora, DataPenhora, DataPenhora, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "phr");
+    public static DBInfoSystem PhrPenhoraStatus => new(0, PTabelaNome, CampoCodigo, PenhoraStatus, PenhoraStatus, PenhoraStatus, EDataTypeSystemInfo.SystemInfoForeingkey, DBPenhoraStatusDicInfo.CampoCodigo, DBPenhoraStatusDicInfo.TabelaNome, new DBPenhoraStatusODicInfo(), false, prefixo: "phr"); // DBI 11 
+    public static DBInfoSystem PhrMaster => new(0, PTabelaNome, CampoCodigo, Master, Master, Master, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "phr");
+    public static DBInfoSystem PhrGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "phr");
+    public static DBInfoSystem PhrQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "phr"); // DBI 11 
+    public static DBInfoSystem PhrDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "phr");
+    public static DBInfoSystem PhrQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "phr"); // DBI 11 
+    public static DBInfoSystem PhrDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "phr");
+    public static DBInfoSystem PhrVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "phr", isRequired: true);
 
 #endregion
     [Serializable]

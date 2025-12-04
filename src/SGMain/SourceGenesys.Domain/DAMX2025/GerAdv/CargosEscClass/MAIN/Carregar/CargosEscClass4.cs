@@ -54,6 +54,22 @@ public partial class DBCargosEscClass
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBCargosEscClassDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBCargosEscClassDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBCargosEscClassDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBCargosEscClassDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBCargosEscClass
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscClassDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBCargosEscClassDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBCargosEscClassDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBCargosEscClass
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscClassDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBCargosEscClassDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBCargosEscClassDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBCargosEscClass
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscClassDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBCargosEscClassDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBCargosEscClassDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBCargosEscClassDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBCargosEscClassDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBCargosEscClass
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

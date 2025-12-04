@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IContatoCRMViewWriter
 {
     Task<FContatoCRMView> WriteAsync(Models.ContatoCRMView contatocrmview, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ContatoCRMViewWriter(IFContatoCRMViewFactory contatocrmviewFactory) : IContatoCRMViewWriter
 {
     private readonly IFContatoCRMViewFactory _contatocrmviewFactory = contatocrmviewFactory ?? throw new ArgumentNullException(nameof(contatocrmviewFactory));
-    public virtual async Task Delete(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ContatoCRMViewResponse contatocrmview, int operadorId, MsiSqlConnection? oCnn)
     {
         await _contatocrmviewFactory.DeleteAsync(operadorId, contatocrmview.Id, oCnn);
     }
@@ -24,7 +24,11 @@ public class ContatoCRMViewWriter(IFContatoCRMViewFactory contatocrmviewFactory)
     {
         using var dbRec = await (contatocrmview.Id.IsEmptyIDNumber() ? _contatocrmviewFactory.CreateAsync() : _contatocrmviewFactory.CreateFromIdAsync(contatocrmview.Id, oCnn));
         dbRec.FCGUID = contatocrmview.CGUID;
-        dbRec.FData = contatocrmview.Data;
+        if (contatocrmview.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(contatocrmview.Data));
+        }
+
         dbRec.FIP = contatocrmview.IP;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);

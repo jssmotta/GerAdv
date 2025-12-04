@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IModelosDocumentosWriter
 {
     Task<FModelosDocumentos> WriteAsync(Models.ModelosDocumentos modelosdocumentos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ModelosDocumentosWriter(IFModelosDocumentosFactory modelosdocumentosFactory) : IModelosDocumentosWriter
 {
     private readonly IFModelosDocumentosFactory _modelosdocumentosFactory = modelosdocumentosFactory ?? throw new ArgumentNullException(nameof(modelosdocumentosFactory));
-    public virtual async Task Delete(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ModelosDocumentosResponse modelosdocumentos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _modelosdocumentosFactory.DeleteAsync(operadorId, modelosdocumentos.Id, oCnn);
     }
@@ -39,7 +39,7 @@ public class ModelosDocumentosWriter(IFModelosDocumentosFactory modelosdocumento
         dbRec.FTestemunhas = modelosdocumentos.Testemunhas;
         dbRec.FTipoModeloDocumento = modelosdocumentos.TipoModeloDocumento;
         dbRec.FCSS = modelosdocumentos.CSS;
-        dbRec.FGUID = modelosdocumentos.GUID;
+        dbRec.FGuid = modelosdocumentos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

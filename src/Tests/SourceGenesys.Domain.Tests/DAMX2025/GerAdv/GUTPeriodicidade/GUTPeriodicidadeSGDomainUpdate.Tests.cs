@@ -22,7 +22,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         var gutperiodicidade = new DBGUTPeriodicidade();
         // Assert
         gutperiodicidade.Should().NotBeNull();
-        gutperiodicidade.ITabelaName().Should().Be("GUTPeriodicidade");
+        gutperiodicidade.ITableName().Should().Be("GUTPeriodicidade");
         gutperiodicidade.ID.Should().Be(0);
     }
 
@@ -33,10 +33,10 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         var gutperiodicidade = new DBGUTPeriodicidade
         {
             FNome = "AAAAAAAAAAAAAAAAAAAA",
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
         // Assert - All properties should be set gutperiodicidade.FNome.Should().Be( "AAAAAAAAAAAAAAAAAAAA");
-        gutperiodicidade.FGUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        gutperiodicidade.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -46,11 +46,27 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         var gutperiodicidade = new DBGUTPeriodicidade();
         var longString = new string ('X', 300);
         gutperiodicidade.FNome = longString; // MAX: 20
-        gutperiodicidade.FGUID = longString; // MAX: 50
+        gutperiodicidade.FGuid = longString; // MAX: 50
         // Assert - All properties should be set gutperiodicidade.FNome.Should().HaveLength(20);
-        gutperiodicidade.FGUID.Should().HaveLength(50);
+        gutperiodicidade.FGuid.Should().HaveLength(50);
     }
 
+#region Testes de Guid
+    [Fact]
+    public void Guid_DefaultValue_ShouldBeEmpty()
+    {
+        Assert.Equal(string.Empty, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_SetValidGuid_ShouldStore()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
+    }
+
+#endregion
     [Theory]
     [InlineData("AAAAAAAAAAAAAAAAAA")]
     [InlineData("BBBBBBBBBBBBBBBBB")]
@@ -148,7 +164,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -162,7 +178,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -178,7 +194,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -193,7 +209,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         _instance.FNome = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -207,7 +223,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -221,7 +237,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         _instance.FNome = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -235,7 +251,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -261,7 +277,7 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -275,26 +291,10 @@ public class DBGUTPeriodicidadeUpdate : IDisposable
         _instance.FNome = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
-    [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
-    {
-        Assert.Equal(string.Empty, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
-    }
-
-#endregion
     [Fact]
     public void TabelaNome_Property_ShouldReturnCorrectTableName()
     {

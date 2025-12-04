@@ -14,6 +14,14 @@ public partial class DBProcessOutPutIDs
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProcessOutPutIDs
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,29 +142,26 @@ public partial class DBProcessOutPutIDs
 
 #if (!NOTSTORED_ProcessOutPutIDs)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBProcessOutPutIDsDicInfo.Nome, m_FNome, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBProcessOutPutIDsDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutPutIDsDicInfo.Nome, FNome, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            updateTool.Fields(DBProcessOutPutIDsDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
 #if (!NOTSTORED_ProcessOutPutIDs)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+        CreateGuid();
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

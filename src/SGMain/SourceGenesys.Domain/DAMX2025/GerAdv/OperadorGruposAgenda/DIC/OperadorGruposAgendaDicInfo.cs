@@ -13,7 +13,7 @@ public static partial class DBOperadorGruposAgendaDicInfo
     public const string SQLWhere = "groSQLWhere"; // LOCALIZACAO 170523
     public const string Nome = "groNome"; // LOCALIZACAO 170523
     public const string Operador = "groOperador"; // LOCALIZACAO 170523
-    public const string GUID = "groGUID"; // LOCALIZACAO 170523
+    public const string Guid = "groGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "groQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "groDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "groQuemAtu"; // LOCALIZACAO 170523
@@ -35,48 +35,15 @@ public static partial class DBOperadorGruposAgendaDicInfo
 
     public const string PTabelaNome = "OperadorGruposAgenda";
 #region PropriedadesDaTabela
-    public static DBInfoSystem GroSQLWhere => new(0, PTabelaNome, CampoCodigo, SQLWhere, DevourerOne.PMaxSizeCampoMemo, "SQLWhere", "SQLWhere", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "gro"
-    };
-    public static DBInfoSystem GroNome => new(0, PTabelaNome, CampoCodigo, Nome, 100, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "gro"
-    };
-    public static DBInfoSystem GroOperador => new(0, PTabelaNome, CampoCodigo, Operador, "Operador", "Operador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "gro"
-    }; // DBI 11 
-    public static DBInfoSystem GroGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "gro"
-    };
-    public static DBInfoSystem GroQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "gro"
-    }; // DBI 11 
-    public static DBInfoSystem GroDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "gro"
-    };
-    public static DBInfoSystem GroQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "gro"
-    }; // DBI 11 
-    public static DBInfoSystem GroDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "gro"
-    };
-    public static DBInfoSystem GroVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "gro"
-    };
+    public static DBInfoSystem GroSQLWhere => new(0, PTabelaNome, CampoCodigo, SQLWhere, DevourerOne.PMaxSizeCampoMemo, SQLWhere, SQLWhere, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "gro", isRequired: true);
+    public static DBInfoSystem GroNome => new(0, PTabelaNome, CampoCodigo, Nome, 100, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "gro", isRequired: true);
+    public static DBInfoSystem GroOperador => new(0, PTabelaNome, CampoCodigo, Operador, Operador, Operador, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gro", isRequired: true); // DBI 11 
+    public static DBInfoSystem GroGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "gro", isRequired: true);
+    public static DBInfoSystem GroQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gro"); // DBI 11 
+    public static DBInfoSystem GroDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "gro", isRequired: true);
+    public static DBInfoSystem GroQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gro"); // DBI 11 
+    public static DBInfoSystem GroDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "gro");
+    public static DBInfoSystem GroVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "gro", isRequired: true);
 
 #endregion
     [Serializable]

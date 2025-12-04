@@ -43,7 +43,6 @@ public class DBAdvogadosTests : IDisposable
         dt.Columns.Add("advCasa", typeof(string));
         dt.Columns.Add("advNomeMae", typeof(string));
         dt.Columns.Add("advEscritorio", typeof(int));
-        dt.Columns.Add("advGUID", typeof(string));
         dt.Columns.Add("advEstagiario", typeof(string));
         dt.Columns.Add("advOAB", typeof(string));
         dt.Columns.Add("advNomeCompleto", typeof(string));
@@ -71,7 +70,24 @@ public class DBAdvogadosTests : IDisposable
         dt.Columns.Add("advParcTop", typeof(string));
         dt.Columns.Add("advClass", typeof(string));
         dt.Columns.Add("advTop", typeof(string));
+        dt.Columns.Add("advEtiqueta", typeof(string));
+        dt.Columns.Add("advAni", typeof(string));
+        dt.Columns.Add("advBold", typeof(string));
+        dt.Columns.Add("advGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["advCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBAdvogados(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -92,7 +108,7 @@ public class DBAdvogadosTests : IDisposable
     {
         var instance = new DBAdvogados();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Advogados", instance.ITabelaName());
+        Assert.Equal("Advogados", instance.ITableName());
         Assert.Equal("adv", instance.Prefixo);
     }
 
@@ -110,29 +126,16 @@ public class DBAdvogadosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["advCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBAdvogados(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Advogados", cadastro.ITabelaName());
-        Assert.Equal("advCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("advNome", cadastro.ICampoNome());
-        Assert.Equal("adv", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Advogados", cadastro.ITableName());
+        Assert.Equal("advCodigo", cadastro.IFieldId());
+        Assert.Equal("advNome", cadastro.IFieldNameDescription());
+        Assert.Equal("adv", cadastro.IPrefix());
     }
 
 #endregion
@@ -192,9 +195,9 @@ public class DBAdvogadosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -322,24 +325,6 @@ public class DBAdvogadosTests : IDisposable
     {
         var instance = new DBAdvogados();
         Assert.Equal(0, instance.FEscritorio);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 150 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 150);
     }
 
     [Theory]
@@ -723,6 +708,24 @@ public class DBAdvogadosTests : IDisposable
     {
         var instance = new DBAdvogados();
         Assert.False(instance.FTop);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 150 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 150);
     }
 
     public virtual void Dispose()

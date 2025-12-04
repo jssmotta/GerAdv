@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IClientesWriter
 {
     Task<FClientes> WriteAsync(Models.Clientes clientes, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ClientesResponse clientes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
 {
     private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException(nameof(clientesFactory));
-    public virtual async Task Delete(ClientesResponse clientes, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ClientesResponse clientes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _clientesFactory.DeleteAsync(operadorId, clientes.Id, oCnn);
     }
@@ -26,9 +26,11 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FEmpresa = clientes.Empresa;
         dbRec.FIcone = clientes.Icone;
         dbRec.FNomeMae = clientes.NomeMae;
-        if (clientes.RGDataExp != null)
-            dbRec.FRGDataExp = clientes.RGDataExp.ToString();
-        dbRec.FGUID = clientes.GUID;
+        if (clientes.RGDataExp.NotIsEmpty())
+        {
+            dbRec.FRGDataExp = DateOnly.FromDateTime(Convert.ToDateTime(clientes.RGDataExp));
+        }
+
         dbRec.FInativo = clientes.Inativo;
         dbRec.FQuemIndicou = clientes.QuemIndicou;
         dbRec.FSendEMail = clientes.SendEMail;
@@ -39,8 +41,11 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FNomeFantasia = clientes.NomeFantasia;
         dbRec.FClass = clientes.Class;
         dbRec.FTipo = clientes.Tipo;
-        if (clientes.DtNasc != null)
-            dbRec.FDtNasc = clientes.DtNasc.ToString();
+        if (clientes.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(clientes.DtNasc));
+        }
+
         dbRec.FInscEst = clientes.InscEst;
         dbRec.FQualificacao = clientes.Qualificacao;
         dbRec.FSexo = clientes.Sexo;
@@ -56,7 +61,11 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FCEP = clientes.CEP.ClearInputCep();
         dbRec.FFax = clientes.Fax;
         dbRec.FFone = clientes.Fone;
-        dbRec.FData = clientes.Data;
+        if (clientes.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(clientes.Data));
+        }
+
         dbRec.FHomePage = clientes.HomePage;
         dbRec.FEMail = clientes.EMail;
         dbRec.FObito = clientes.Obito;
@@ -68,6 +77,10 @@ public class ClientesWriter(IFClientesFactory clientesFactory) : IClientesWriter
         dbRec.FProBono = clientes.ProBono;
         dbRec.FCNH = clientes.CNH;
         dbRec.FPessoaContato = clientes.PessoaContato;
+        dbRec.FEtiqueta = clientes.Etiqueta;
+        dbRec.FAni = clientes.Ani;
+        dbRec.FBold = clientes.Bold;
+        dbRec.FGuid = clientes.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -36,47 +36,15 @@ public static partial class DBProcessosObsReportDicInfo
 
     public const string PTabelaNome = "ProcessosObsReport";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PrrData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "prr"
-    };
-    public static DBInfoSystem PrrProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "prr"
-    };
-    public static DBInfoSystem PrrObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, 2048, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "prr"
-    };
-    public static DBInfoSystem PrrHistorico => new(0, PTabelaNome, CampoCodigo, Historico, "Historico", "Historico", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "prr"
-    };
-    public static DBInfoSystem PrrQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "prr"
-    }; // DBI 11 
-    public static DBInfoSystem PrrDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "prr"
-    };
-    public static DBInfoSystem PrrQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "prr"
-    }; // DBI 11 
-    public static DBInfoSystem PrrDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "prr"
-    };
-    public static DBInfoSystem PrrVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "prr"
-    };
+    public static DBInfoSystem PrrData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "prr", isRequired: true);
+    public static DBInfoSystem PrrProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "prr", isRequired: true);
+    public static DBInfoSystem PrrObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, 2048, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "prr");
+    public static DBInfoSystem PrrHistorico => new(0, PTabelaNome, CampoCodigo, Historico, Historico, Historico, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "prr");
+    public static DBInfoSystem PrrQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "prr", isRequired: true); // DBI 11 
+    public static DBInfoSystem PrrDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "prr", isRequired: true);
+    public static DBInfoSystem PrrQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "prr"); // DBI 11 
+    public static DBInfoSystem PrrDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "prr");
+    public static DBInfoSystem PrrVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "prr", isRequired: true);
 
 #endregion
     [Serializable]

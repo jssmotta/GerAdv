@@ -11,7 +11,7 @@ public static partial class DBSetorDicInfo
     public const string CampoNome = "setDescricao";
     public const string TablePrefix = "set";
     public const string Descricao = "setDescricao"; // LOCALIZACAO 170523
-    public const string GUID = "setGUID"; // LOCALIZACAO 170523
+    public const string Guid = "setGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "setQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "setDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "setQuemAtu"; // LOCALIZACAO 170523
@@ -31,35 +31,13 @@ public static partial class DBSetorDicInfo
 
     public const string PTabelaNome = "Setor";
 #region PropriedadesDaTabela
-    public static DBInfoSystem SetDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "set"
-    };
-    public static DBInfoSystem SetGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "set"
-    };
-    public static DBInfoSystem SetQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "set"
-    }; // DBI 11 
-    public static DBInfoSystem SetDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "set"
-    };
-    public static DBInfoSystem SetQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "set"
-    }; // DBI 11 
-    public static DBInfoSystem SetDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "set"
-    };
-    public static DBInfoSystem SetVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "set"
-    };
+    public static DBInfoSystem SetDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 40, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "set");
+    public static DBInfoSystem SetGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "set");
+    public static DBInfoSystem SetQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "set"); // DBI 11 
+    public static DBInfoSystem SetDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "set");
+    public static DBInfoSystem SetQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "set"); // DBI 11 
+    public static DBInfoSystem SetDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "set");
+    public static DBInfoSystem SetVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "set", isRequired: true);
 
 #endregion
     [Serializable]

@@ -7,39 +7,33 @@ public partial class DBOperadorGruposAgenda
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFSQLWhere, pFldFNome, pFldFOperador, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FOperador;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FSQLWhere, m_FNome, m_FGUID;
+    private protected bool pFldFSQLWhere, pFldFNome, pFldFOperador, pFldFGuid;
     // Tracking Code: 20250503
     public virtual string? FSQLWhere
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSQLWhere ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSQLWhere = pFldFSQLWhere || !(m_FSQLWhere ?? string.Empty).Equals(value);
+            pFldFSQLWhere = pFldFSQLWhere || !(field ?? string.Empty).Equals(value);
             if (pFldFSQLWhere)
-                m_FSQLWhere = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FNome da tabela OperadorGruposAgenda deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FNome da tabela 'OperadorGruposAgenda' deve ter no máximo 100 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
@@ -47,41 +41,41 @@ public partial class DBOperadorGruposAgenda
     public virtual int FOperador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOperador;
+        get => field;
         set
         {
-            pFldFOperador = pFldFOperador || value != m_FOperador;
+            pFldFOperador = pFldFOperador || value != field;
             if (pFldFOperador)
-                m_FOperador = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela OperadorGruposAgenda deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'OperadorGruposAgenda' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -91,9 +85,13 @@ public partial class DBOperadorGruposAgenda
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

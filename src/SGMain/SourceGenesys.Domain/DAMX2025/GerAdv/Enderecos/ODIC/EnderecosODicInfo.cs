@@ -9,25 +9,29 @@ public partial class DBEnderecosODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBEnderecosDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBEnderecosDicInfo.CampoCodigo;
+    public string IFieldId() => DBEnderecosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBEnderecosDicInfo.TablePrefix;
+    public string IPrefix() => DBEnderecosDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBEnderecosDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBEnderecosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,8 +41,8 @@ public partial class DBEnderecosODicInfo : IODicInfo
     public static string TCampoNome => DBEnderecosDicInfo.CampoNome;
     public static string TTabelaNome => DBEnderecosDicInfo.TabelaNome;
     public static string TTablePrefix => DBEnderecosDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndGUID, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndEtiqueta, DBEnderecosDicInfo.EndAni, DBEnderecosDicInfo.EndBold, DBEnderecosDicInfo.EndQuemCad, DBEnderecosDicInfo.EndDtCad, DBEnderecosDicInfo.EndQuemAtu, DBEnderecosDicInfo.EndDtAtu, DBEnderecosDicInfo.EndVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndGUID, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly];
+    public static ImmutableArray<DBInfoSystem> List => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndEtiqueta, DBEnderecosDicInfo.EndAni, DBEnderecosDicInfo.EndBold, DBEnderecosDicInfo.EndGuid, DBEnderecosDicInfo.EndQuemCad, DBEnderecosDicInfo.EndDtCad, DBEnderecosDicInfo.EndQuemAtu, DBEnderecosDicInfo.EndDtAtu, DBEnderecosDicInfo.EndVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEnderecosDicInfo.EndTopIndex, DBEnderecosDicInfo.EndDescricao, DBEnderecosDicInfo.EndContato, DBEnderecosDicInfo.EndDtNasc, DBEnderecosDicInfo.EndEndereco, DBEnderecosDicInfo.EndBairro, DBEnderecosDicInfo.EndPrivativo, DBEnderecosDicInfo.EndAddContato, DBEnderecosDicInfo.EndCEP, DBEnderecosDicInfo.EndOAB, DBEnderecosDicInfo.EndOBS, DBEnderecosDicInfo.EndFone, DBEnderecosDicInfo.EndFax, DBEnderecosDicInfo.EndTratamento, DBEnderecosDicInfo.EndCidade, DBEnderecosDicInfo.EndSite, DBEnderecosDicInfo.EndEMail, DBEnderecosDicInfo.EndQuem, DBEnderecosDicInfo.EndQuemIndicou, DBEnderecosDicInfo.EndReportECBOnly, DBEnderecosDicInfo.EndEtiqueta, DBEnderecosDicInfo.EndAni, DBEnderecosDicInfo.EndBold, DBEnderecosDicInfo.EndGuid];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ImmutableArray<DBInfoSystem> ListPk() => [];

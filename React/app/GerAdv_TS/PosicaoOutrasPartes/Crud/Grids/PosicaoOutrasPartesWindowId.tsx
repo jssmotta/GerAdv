@@ -9,54 +9,61 @@ import { PosicaoOutrasPartesService } from '../../Services/PosicaoOutrasPartes.s
 import { PosicaoOutrasPartesApi } from '../../Apis/ApiPosicaoOutrasPartes';
 import PosicaoOutrasPartesWindow from './PosicaoOutrasPartesWindow';
 import {PosicaoOutrasPartesEmpty } from '@/app/GerAdv_TS/Models/PosicaoOutrasPartes';
-interface PosicaoOutrasPartesWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const PosicaoOutrasPartesWindowId: React.FC<PosicaoOutrasPartesWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const posicaooutraspartesService = useMemo(() => {
-  return new PosicaoOutrasPartesService(
-  new PosicaoOutrasPartesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IPosicaoOutrasPartes | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(PosicaoOutrasPartesEmpty() as IPosicaoOutrasPartes);
-      return;
-    }
-    if (id) {
-      const response = await posicaooutraspartesService.fetchPosicaoOutrasPartesById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <PosicaoOutrasPartesWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedPosicaoOutrasPartes={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface PosicaoOutrasPartesWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const PosicaoOutrasPartesWindowId: React.FC<PosicaoOutrasPartesWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const posicaooutraspartesService = useMemo(() => {
+        return new PosicaoOutrasPartesService(
+            new PosicaoOutrasPartesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IPosicaoOutrasPartes | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(PosicaoOutrasPartesEmpty() as IPosicaoOutrasPartes);
+                return;
+            }
+            if (id) {
+                 const response = await posicaooutraspartesService.fetchPosicaoOutrasPartesById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <PosicaoOutrasPartesWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedPosicaoOutrasPartes={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default PosicaoOutrasPartesWindowId;

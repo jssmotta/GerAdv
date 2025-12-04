@@ -36,10 +36,13 @@ public partial class ColaboradoresWhere(IFColaboradoresFactory colaboradoresFact
             EMail = dbRec.FEMail ?? string.Empty,
             CNH = dbRec.FCNH ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            colaboradores.DtNasc = dbRec.FDtNasc;
+            colaboradores.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             colaboradores.DtNasc_date = XDtNasc;
         }
 

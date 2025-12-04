@@ -14,6 +14,14 @@ public partial class DBInstancia
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBInstancia
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,65 +142,65 @@ public partial class DBInstancia
 
 #if (!NOTSTORED_Instancia)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUID || pFldFLiminarPedida || pFldFObjeto || pFldFStatusResultado || pFldFLiminarPendente || pFldFInterpusemosRecurso || pFldFLiminarConcedida || pFldFLiminarNegada || pFldFProcesso || pFldFData || pFldFLiminarParcial || pFldFLiminarResultado || pFldFNroProcesso || pFldFDivisao || pFldFLiminarCliente || pFldFComarca || pFldFSubDivisao || pFldFPrincipal || pFldFAcao || pFldFForo || pFldFTipoRecurso || pFldFZKey || pFldFZKeyQuem || pFldFZKeyQuando || pFldFNroAntigo || pFldFAccessCode || pFldFJulgador || pFldFZKeyIA;
+    private bool HasAnyFieldChanged() => pFldFLiminarPedida || pFldFObjeto || pFldFStatusResultado || pFldFLiminarPendente || pFldFInterpusemosRecurso || pFldFLiminarConcedida || pFldFLiminarNegada || pFldFProcesso || pFldFData || pFldFLiminarParcial || pFldFLiminarResultado || pFldFNroProcesso || pFldFDivisao || pFldFLiminarCliente || pFldFComarca || pFldFSubDivisao || pFldFPrincipal || pFldFAcao || pFldFForo || pFldFTipoRecurso || pFldFZKey || pFldFZKeyQuem || pFldFZKeyQuando || pFldFNroAntigo || pFldFAccessCode || pFldFJulgador || pFldFZKeyIA || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFGUID)
-            updateTool.Fields(DBInstanciaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFLiminarPedida)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarPedida, m_FLiminarPedida, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarPedida, FLiminarPedida, EGenericTypeFields.FString);
         if (pFldFObjeto)
-            updateTool.Fields(DBInstanciaDicInfo.Objeto, m_FObjeto, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.Objeto, FObjeto, EGenericTypeFields.FString);
         if (pFldFStatusResultado)
-            updateTool.Fields(DBInstanciaDicInfo.StatusResultado, m_FStatusResultado, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.StatusResultado, FStatusResultado, EGenericTypeFields.FNumber);
         if (pFldFLiminarPendente || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarPendente, m_FLiminarPendente, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarPendente, FLiminarPendente, EGenericTypeFields.FBoolean);
         if (pFldFInterpusemosRecurso || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.InterpusemosRecurso, m_FInterpusemosRecurso, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.InterpusemosRecurso, FInterpusemosRecurso, EGenericTypeFields.FBoolean);
         if (pFldFLiminarConcedida || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarConcedida, m_FLiminarConcedida, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarConcedida, FLiminarConcedida, EGenericTypeFields.FBoolean);
         if (pFldFLiminarNegada || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarNegada, m_FLiminarNegada, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarNegada, FLiminarNegada, EGenericTypeFields.FBoolean);
         if (pFldFProcesso)
-            updateTool.Fields(DBInstanciaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBInstanciaDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFLiminarParcial || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarParcial, m_FLiminarParcial, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarParcial, FLiminarParcial, EGenericTypeFields.FBoolean);
         if (pFldFLiminarResultado)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarResultado, m_FLiminarResultado, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarResultado, FLiminarResultado, EGenericTypeFields.FString);
         if (pFldFNroProcesso)
-            updateTool.Fields(DBInstanciaDicInfo.NroProcesso, m_FNroProcesso, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.NroProcesso, FNroProcesso, EGenericTypeFields.FString);
         if (pFldFDivisao)
-            updateTool.Fields(DBInstanciaDicInfo.Divisao, m_FDivisao, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.Divisao, FDivisao, EGenericTypeFields.FNumber);
         if (pFldFLiminarCliente || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.LiminarCliente, m_FLiminarCliente, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.LiminarCliente, FLiminarCliente, EGenericTypeFields.FBoolean);
         if (pFldFComarca)
-            updateTool.Fields(DBInstanciaDicInfo.Comarca, m_FComarca, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.Comarca, FComarca, EGenericTypeFields.FNumber);
         if (pFldFSubDivisao)
-            updateTool.Fields(DBInstanciaDicInfo.SubDivisao, m_FSubDivisao, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.SubDivisao, FSubDivisao, EGenericTypeFields.FNumber);
         if (pFldFPrincipal || updateTool.Insert)
-            updateTool.Fields(DBInstanciaDicInfo.Principal, m_FPrincipal, ETiposCampos.FBoolean);
+            updateTool.Fields(DBInstanciaDicInfo.Principal, FPrincipal, EGenericTypeFields.FBoolean);
         if (pFldFAcao)
-            updateTool.Fields(DBInstanciaDicInfo.Acao, m_FAcao, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.Acao, FAcao, EGenericTypeFields.FNumber);
         if (pFldFForo)
-            updateTool.Fields(DBInstanciaDicInfo.Foro, m_FForo, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.Foro, FForo, EGenericTypeFields.FNumber);
         if (pFldFTipoRecurso)
-            updateTool.Fields(DBInstanciaDicInfo.TipoRecurso, m_FTipoRecurso, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.TipoRecurso, FTipoRecurso, EGenericTypeFields.FNumber);
         if (pFldFZKey)
-            updateTool.Fields(DBInstanciaDicInfo.ZKey, m_FZKey, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.ZKey, FZKey, EGenericTypeFields.FString);
         if (pFldFZKeyQuem)
-            updateTool.Fields(DBInstanciaDicInfo.ZKeyQuem, m_FZKeyQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.ZKeyQuem, FZKeyQuem, EGenericTypeFields.FNumber);
         if (pFldFZKeyQuando)
-            updateTool.Fields(DBInstanciaDicInfo.ZKeyQuando, m_FZKeyQuando, ETiposCampos.FDate);
+            updateTool.Fields(DBInstanciaDicInfo.ZKeyQuando, FZKeyQuando, EGenericTypeFields.FDate);
         if (pFldFNroAntigo)
-            updateTool.Fields(DBInstanciaDicInfo.NroAntigo, m_FNroAntigo, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.NroAntigo, FNroAntigo, EGenericTypeFields.FString);
         if (pFldFAccessCode)
-            updateTool.Fields(DBInstanciaDicInfo.AccessCode, m_FAccessCode, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.AccessCode, FAccessCode, EGenericTypeFields.FString);
         if (pFldFJulgador)
-            updateTool.Fields(DBInstanciaDicInfo.Julgador, m_FJulgador, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.Julgador, FJulgador, EGenericTypeFields.FNumber);
         if (pFldFZKeyIA)
-            updateTool.Fields(DBInstanciaDicInfo.ZKeyIA, m_FZKeyIA, ETiposCampos.FString);
+            updateTool.Fields(DBInstanciaDicInfo.ZKeyIA, FZKeyIA, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            updateTool.Fields(DBInstanciaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -204,24 +212,23 @@ public partial class DBInstancia
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBInstanciaDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBInstanciaDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBInstanciaDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBInstanciaDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBInstanciaDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBInstanciaDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBInstanciaDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBInstanciaDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBInstanciaDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBInstanciaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -74,6 +74,7 @@ public class EscritoriosWriterTests
         var result = await _escritoriosWriter.WriteAsync(escritorios, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFEscritorios.Object);
+        _mockFEscritorios.VerifySet(x => x.FGuid = escritorios.Guid, Times.Once);
         _mockFEscritorios.VerifySet(x => x.FCNPJ = It.IsAny<string>(), Times.Once); // CNPJ é limpo pelo ClearInputCnpj()
         _mockFEscritorios.VerifySet(x => x.FCasa = escritorios.Casa, Times.Once);
         _mockFEscritorios.VerifySet(x => x.FParceria = escritorios.Parceria, Times.Once);
@@ -93,7 +94,6 @@ public class EscritoriosWriterTests
         _mockFEscritorios.VerifySet(x => x.FInscEst = escritorios.InscEst, Times.Once);
         _mockFEscritorios.VerifySet(x => x.FCorrespondente = escritorios.Correspondente, Times.Once);
         _mockFEscritorios.VerifySet(x => x.FTop = escritorios.Top, Times.Once);
-        _mockFEscritorios.VerifySet(x => x.FGUID = escritorios.GUID, Times.Once);
         _mockFEscritorios.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -137,7 +137,7 @@ public class EscritoriosWriterTests
         var operadorId = 456;
         _mockEscritoriosFactory.Setup(x => x.DeleteAsync(operadorId, escritoriosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _escritoriosWriter.Delete(escritoriosResponse, operadorId, _mockConnection.Object);
+        await _escritoriosWriter.DeleteAsync(escritoriosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockEscritoriosFactory.Verify(x => x.DeleteAsync(operadorId, escritoriosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -153,7 +153,7 @@ public class EscritoriosWriterTests
         var operadorId = 111;
         _mockEscritoriosFactory.Setup(x => x.DeleteAsync(operadorId, escritoriosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _escritoriosWriter.Delete(escritoriosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _escritoriosWriter.DeleteAsync(escritoriosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -170,7 +170,7 @@ public class EscritoriosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockEscritoriosFactory.Setup(x => x.DeleteAsync(operadorId, escritoriosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _escritoriosWriter.Delete(escritoriosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _escritoriosWriter.DeleteAsync(escritoriosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -200,6 +200,7 @@ public class EscritoriosWriterTests
         return new Models.Escritorios
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             CNPJ = "93016944000138",
             Casa = false,
             Parceria = false,
@@ -218,8 +219,7 @@ public class EscritoriosWriterTests
             Secretaria = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             InscEst = "AAAAAAAAAAAAA",
             Correspondente = false,
-            Top = false,
-            GUID = Guid.NewGuid().ToString()
+            Top = false
         };
     }
 #endregion

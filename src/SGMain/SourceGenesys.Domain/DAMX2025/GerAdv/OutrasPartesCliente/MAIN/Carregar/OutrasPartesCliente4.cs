@@ -54,8 +54,128 @@ public partial class DBOutrasPartesCliente
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBOutrasPartesClienteDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBOutrasPartesClienteDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBOutrasPartesClienteDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNPJ = getValue(DBOutrasPartesClienteDicInfo.CNPJ)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBOutrasPartesClienteDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBOutrasPartesClienteDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBOutrasPartesClienteDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBOutrasPartesClienteDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBOutrasPartesClienteDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBOutrasPartesClienteDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FInscEst = getValue(DBOutrasPartesClienteDicInfo.InscEst)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBOutrasPartesClienteDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeFantasia = getValue(DBOutrasPartesClienteDicInfo.NomeFantasia)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBOutrasPartesClienteDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBOutrasPartesClienteDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Ani));
         }
         catch
         {
@@ -64,7 +184,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +193,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.Cidade));
         }
         catch
         {
@@ -82,7 +202,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.ClientePrincipal)))
-                m_FClientePrincipal = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.ClientePrincipal));
+                FClientePrincipal = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.ClientePrincipal));
         }
         catch
         {
@@ -109,7 +229,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBOutrasPartesClienteDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBOutrasPartesClienteDicInfo.DtNasc)));
         }
         catch
         {
@@ -118,7 +238,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Etiqueta));
         }
         catch
         {
@@ -127,7 +247,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.QuemAtu));
         }
         catch
         {
@@ -136,7 +256,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBOutrasPartesClienteDicInfo.QuemCad));
         }
         catch
         {
@@ -145,7 +265,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Sexo));
         }
         catch
         {
@@ -154,7 +274,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Terceirizado)))
-                m_FTerceirizado = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Terceirizado));
+                FTerceirizado = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Terceirizado));
         }
         catch
         {
@@ -163,7 +283,7 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Tipo));
         }
         catch
         {
@@ -172,134 +292,14 @@ public partial class DBOutrasPartesCliente
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOutrasPartesClienteDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBOutrasPartesClienteDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBOutrasPartesClienteDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBOutrasPartesClienteDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNPJ = getValue(DBOutrasPartesClienteDicInfo.CNPJ)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBOutrasPartesClienteDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBOutrasPartesClienteDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBOutrasPartesClienteDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBOutrasPartesClienteDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBOutrasPartesClienteDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBOutrasPartesClienteDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FInscEst = getValue(DBOutrasPartesClienteDicInfo.InscEst)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBOutrasPartesClienteDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeFantasia = getValue(DBOutrasPartesClienteDicInfo.NomeFantasia)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBOutrasPartesClienteDicInfo.RG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBOutrasPartesClienteDicInfo.Site)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBOutrasPartesClienteDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -323,7 +323,7 @@ public partial class DBOutrasPartesCliente
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

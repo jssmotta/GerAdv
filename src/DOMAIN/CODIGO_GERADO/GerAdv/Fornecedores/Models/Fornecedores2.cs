@@ -134,10 +134,22 @@ namespace MenphisSI.GerAdv.Models
         public string Contatos { get; set; } = "";
 
         /// <summary>
-        /// GUID - forGUID - tamanho máximo: 100 
+        /// Etiqueta - forEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Bold - forBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - forGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -270,10 +282,22 @@ namespace MenphisSI.GerAdv.Models.All
         public string Contatos { get; set; } = "";
 
         /// <summary>
-        /// GUID - forGUID - tamanho máximo: 100 
+        /// Etiqueta - forEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Bold - forBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - forGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

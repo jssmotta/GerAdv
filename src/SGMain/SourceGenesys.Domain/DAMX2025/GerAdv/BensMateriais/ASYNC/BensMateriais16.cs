@@ -14,6 +14,14 @@ public partial class DBBensMateriais
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBBensMateriais
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,39 +142,41 @@ public partial class DBBensMateriais
 
 #if (!NOTSTORED_BensMateriais)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome || pFldFBensClassificacao || pFldFDataCompra || pFldFDataFimDaGarantia || pFldFNFNRO || pFldFFornecedor || pFldFValorBem || pFldFNroSerieProduto || pFldFComprador || pFldFCidade || pFldFGarantiaLoja || pFldFDataTerminoDaGarantiaDaLoja || pFldFObservacoes || pFldFNomeVendedor || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFBensClassificacao || pFldFDataCompra || pFldFDataFimDaGarantia || pFldFNFNRO || pFldFFornecedor || pFldFValorBem || pFldFNroSerieProduto || pFldFComprador || pFldFCidade || pFldFGarantiaLoja || pFldFDataTerminoDaGarantiaDaLoja || pFldFObservacoes || pFldFNomeVendedor || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBBensMateriaisDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBBensMateriaisDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFBensClassificacao)
-            updateTool.Fields(DBBensMateriaisDicInfo.BensClassificacao, m_FBensClassificacao, ETiposCampos.FNumber);
+            updateTool.Fields(DBBensMateriaisDicInfo.BensClassificacao, FBensClassificacao, EGenericTypeFields.FNumber);
         if (pFldFDataCompra)
-            updateTool.Fields(DBBensMateriaisDicInfo.DataCompra, m_FDataCompra, ETiposCampos.FDate);
+            updateTool.Fields(DBBensMateriaisDicInfo.DataCompra, FDataCompra, EGenericTypeFields.FDate);
         if (pFldFDataFimDaGarantia)
-            updateTool.Fields(DBBensMateriaisDicInfo.DataFimDaGarantia, m_FDataFimDaGarantia, ETiposCampos.FDate);
+            updateTool.Fields(DBBensMateriaisDicInfo.DataFimDaGarantia, FDataFimDaGarantia, EGenericTypeFields.FDate);
         if (pFldFNFNRO)
-            updateTool.Fields(DBBensMateriaisDicInfo.NFNRO, m_FNFNRO, ETiposCampos.FString);
+            updateTool.Fields(DBBensMateriaisDicInfo.NFNRO, FNFNRO, EGenericTypeFields.FString);
         if (pFldFFornecedor)
-            updateTool.Fields(DBBensMateriaisDicInfo.Fornecedor, m_FFornecedor, ETiposCampos.FNumber);
+            updateTool.Fields(DBBensMateriaisDicInfo.Fornecedor, FFornecedor, EGenericTypeFields.FNumber);
         if (pFldFValorBem)
-            updateTool.Fields(DBBensMateriaisDicInfo.ValorBem, m_FValorBem, ETiposCampos.FDecimal);
+            updateTool.Fields(DBBensMateriaisDicInfo.ValorBem, FValorBem, EGenericTypeFields.FDecimal);
         if (pFldFNroSerieProduto)
-            updateTool.Fields(DBBensMateriaisDicInfo.NroSerieProduto, m_FNroSerieProduto, ETiposCampos.FString);
+            updateTool.Fields(DBBensMateriaisDicInfo.NroSerieProduto, FNroSerieProduto, EGenericTypeFields.FString);
         if (pFldFComprador)
-            updateTool.Fields(DBBensMateriaisDicInfo.Comprador, m_FComprador, ETiposCampos.FString);
+            updateTool.Fields(DBBensMateriaisDicInfo.Comprador, FComprador, EGenericTypeFields.FString);
         if (pFldFCidade)
-            updateTool.Fields(DBBensMateriaisDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBBensMateriaisDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFGarantiaLoja || updateTool.Insert)
-            updateTool.Fields(DBBensMateriaisDicInfo.GarantiaLoja, m_FGarantiaLoja, ETiposCampos.FBoolean);
+            updateTool.Fields(DBBensMateriaisDicInfo.GarantiaLoja, FGarantiaLoja, EGenericTypeFields.FBoolean);
         if (pFldFDataTerminoDaGarantiaDaLoja)
-            updateTool.Fields(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja, m_FDataTerminoDaGarantiaDaLoja, ETiposCampos.FDate);
+            updateTool.Fields(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja, FDataTerminoDaGarantiaDaLoja, EGenericTypeFields.FDate);
         if (pFldFObservacoes)
-            updateTool.Fields(DBBensMateriaisDicInfo.Observacoes, m_FObservacoes, ETiposCampos.FString);
+            updateTool.Fields(DBBensMateriaisDicInfo.Observacoes, FObservacoes, EGenericTypeFields.FString);
         if (pFldFNomeVendedor)
-            updateTool.Fields(DBBensMateriaisDicInfo.NomeVendedor, m_FNomeVendedor, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBBensMateriaisDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBBensMateriaisDicInfo.NomeVendedor, FNomeVendedor, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBBensMateriaisDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBBensMateriaisDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -178,24 +188,23 @@ public partial class DBBensMateriais
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBBensMateriaisDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBBensMateriaisDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBBensMateriaisDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBBensMateriaisDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBBensMateriaisDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBBensMateriaisDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBBensMateriaisDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBBensMateriaisDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBBensMateriaisDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBBensMateriaisDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBBensMateriaisDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

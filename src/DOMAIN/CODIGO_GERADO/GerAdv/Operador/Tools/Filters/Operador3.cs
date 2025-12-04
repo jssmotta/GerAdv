@@ -7,185 +7,225 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterOperadorWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de Operador padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterOperador Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterOperador
 {
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("email")]
+    [Description("operEMail")]
     public string? EMail { get; set; } = string.Empty;
 
-    [JsonPropertyName("email_end")]
-    public string? EMail_end { get; set; } = string.Empty;
-
     [JsonPropertyName("pasta")]
+    [Description("operPasta")]
     public string? Pasta { get; set; } = string.Empty;
 
-    [JsonPropertyName("pasta_end")]
-    public string? Pasta_end { get; set; } = string.Empty;
-
     [JsonPropertyName("telefonista")]
+    [Description("operTelefonista -2147483648 para nada; 0 para não, 1 para sim")]
     public int Telefonista { get; set; } = int.MinValue;
 
     [JsonPropertyName("master")]
+    [Description("operMaster -2147483648 para nada; 0 para não, 1 para sim")]
     public int Master { get; set; } = int.MinValue;
 
     [JsonPropertyName("nome")]
+    [Description("operNome")]
     public string? Nome { get; set; } = string.Empty;
 
-    [JsonPropertyName("nome_end")]
-    public string? Nome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("nick")]
+    [Description("operNick")]
     public string? Nick { get; set; } = string.Empty;
 
-    [JsonPropertyName("nick_end")]
-    public string? Nick_end { get; set; } = string.Empty;
-
     [JsonPropertyName("ramal")]
+    [Description("operRamal")]
     public string? Ramal { get; set; } = string.Empty;
 
-    [JsonPropertyName("ramal_end")]
-    public string? Ramal_end { get; set; } = string.Empty;
-
     [JsonPropertyName("cadid")]
+    [Description("operCadID -2147483648 para nada ou id")]
     public int CadID { get; set; } = int.MinValue;
 
     [JsonPropertyName("cadid_end")]
+    [Description("operCadID -2147483648 para nada ou id para final do intervalo")]
     public int CadID_end { get; set; } = int.MinValue;
 
-    [JsonPropertyName("cadcod")]
-    public int CadCod { get; set; } = int.MinValue;
-
-    [JsonPropertyName("cadcod_end")]
-    public int CadCod_end { get; set; } = int.MinValue;
-
     [JsonPropertyName("excluido")]
+    [Description("operExcluido -2147483648 para nada; 0 para não, 1 para sim")]
     public int Excluido { get; set; } = int.MinValue;
 
     [JsonPropertyName("situacao")]
+    [Description("operSituacao -2147483648 para nada; 0 para não, 1 para sim")]
     public int Situacao { get; set; } = int.MinValue;
 
     [JsonPropertyName("computador")]
+    [Description("operComputador -2147483648 para nada ou id")]
     public int Computador { get; set; } = int.MinValue;
 
     [JsonPropertyName("computador_end")]
+    [Description("operComputador -2147483648 para nada ou id para final do intervalo")]
     public int Computador_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("minhadescricao")]
+    [Description("operMinhaDescricao")]
     public string? MinhaDescricao { get; set; } = string.Empty;
 
-    [JsonPropertyName("minhadescricao_end")]
-    public string? MinhaDescricao_end { get; set; } = string.Empty;
-
     [JsonPropertyName("ultimologoff")]
+    [Description("operUltimoLogoff")]
     public string? UltimoLogoff { get; set; } = string.Empty;
 
     [JsonPropertyName("ultimologoff_end")]
+    [Description("operUltimoLogoff final para intervalo")]
     public string? UltimoLogoff_end { get; set; } = string.Empty;
 
     [JsonPropertyName("emailnet")]
+    [Description("operEMailNet")]
     public string? EMailNet { get; set; } = string.Empty;
 
-    [JsonPropertyName("emailnet_end")]
-    public string? EMailNet_end { get; set; } = string.Empty;
-
     [JsonPropertyName("onlineip")]
+    [Description("operOnlineIP")]
     public string? OnlineIP { get; set; } = string.Empty;
 
-    [JsonPropertyName("onlineip_end")]
-    public string? OnlineIP_end { get; set; } = string.Empty;
-
     [JsonPropertyName("online")]
+    [Description("operOnLine -2147483648 para nada; 0 para não, 1 para sim")]
     public int OnLine { get; set; } = int.MinValue;
 
     [JsonPropertyName("sysop")]
+    [Description("operSysOp -2147483648 para nada; 0 para não, 1 para sim")]
     public int SysOp { get; set; } = int.MinValue;
 
     [JsonPropertyName("statusid")]
+    [Description("operStatusId -2147483648 para nada ou id")]
     public int StatusId { get; set; } = int.MinValue;
 
     [JsonPropertyName("statusid_end")]
+    [Description("operStatusId -2147483648 para nada ou id para final do intervalo")]
     public int StatusId_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("statusmessage")]
+    [Description("operStatusMessage")]
     public string? StatusMessage { get; set; } = string.Empty;
 
-    [JsonPropertyName("statusmessage_end")]
-    public string? StatusMessage_end { get; set; } = string.Empty;
-
     [JsonPropertyName("isfinanceiro")]
+    [Description("operIsFinanceiro -2147483648 para nada; 0 para não, 1 para sim")]
     public int IsFinanceiro { get; set; } = int.MinValue;
 
-    [JsonPropertyName("guid")]
-    public string? GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string? GUID_end { get; set; } = string.Empty;
-
     [JsonPropertyName("top")]
+    [Description("operTop -2147483648 para nada; 0 para não, 1 para sim")]
     public int Top { get; set; } = int.MinValue;
 
     [JsonPropertyName("sexo")]
+    [Description("operSexo -2147483648 para nada; 0 para não, 1 para sim")]
     public int Sexo { get; set; } = int.MinValue;
 
     [JsonPropertyName("basico")]
+    [Description("operBasico -2147483648 para nada; 0 para não, 1 para sim")]
     public int Basico { get; set; } = int.MinValue;
 
     [JsonPropertyName("externo")]
+    [Description("operExterno -2147483648 para nada; 0 para não, 1 para sim")]
     public int Externo { get; set; } = int.MinValue;
 
-    [JsonPropertyName("senha256")]
-    public string? Senha256 { get; set; } = string.Empty;
-
-    [JsonPropertyName("senha256_end")]
-    public string? Senha256_end { get; set; } = string.Empty;
-
     [JsonPropertyName("emailconfirmado")]
+    [Description("operEMailConfirmado -2147483648 para nada; 0 para não, 1 para sim")]
     public int EMailConfirmado { get; set; } = int.MinValue;
 
     [JsonPropertyName("datalimitereset")]
+    [Description("operDataLimiteReset")]
     public string? DataLimiteReset { get; set; } = string.Empty;
 
     [JsonPropertyName("datalimitereset_end")]
+    [Description("operDataLimiteReset final para intervalo")]
     public string? DataLimiteReset_end { get; set; } = string.Empty;
 
-    [JsonPropertyName("suportesenha256")]
-    public string? SuporteSenha256 { get; set; } = string.Empty;
-
-    [JsonPropertyName("suportesenha256_end")]
-    public string? SuporteSenha256_end { get; set; } = string.Empty;
-
     [JsonPropertyName("suportemaxage")]
+    [Description("operSuporteMaxAge")]
     public string? SuporteMaxAge { get; set; } = string.Empty;
 
     [JsonPropertyName("suportemaxage_end")]
+    [Description("operSuporteMaxAge final para intervalo")]
     public string? SuporteMaxAge_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suportenomesolicitante")]
+    [Description("operSuporteNomeSolicitante")]
     public string? SuporteNomeSolicitante { get; set; } = string.Empty;
 
-    [JsonPropertyName("suportenomesolicitante_end")]
-    public string? SuporteNomeSolicitante_end { get; set; } = string.Empty;
-
     [JsonPropertyName("suporteultimoacesso")]
+    [Description("operSuporteUltimoAcesso")]
     public string? SuporteUltimoAcesso { get; set; } = string.Empty;
 
     [JsonPropertyName("suporteultimoacesso_end")]
+    [Description("operSuporteUltimoAcesso final para intervalo")]
     public string? SuporteUltimoAcesso_end { get; set; } = string.Empty;
 
     [JsonPropertyName("suporteipultimoacesso")]
+    [Description("operSuporteIpUltimoAcesso")]
     public string? SuporteIpUltimoAcesso { get; set; } = string.Empty;
 
-    [JsonPropertyName("suporteipultimoacesso_end")]
-    public string? SuporteIpUltimoAcesso_end { get; set; } = string.Empty;
+    [JsonPropertyName("guid")]
+    [Description("operGuid")]
+    public string? Guid { get; set; } = string.Empty;
+
+    [JsonPropertyName("quemcad")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id")]
+    public int QuemCad { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quemcad_end")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id para final do intervalo")]
+    public int QuemCad_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtcad")]
+    [Description("Data de Cadastro")]
+    public string? DtCad { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtcad_end")]
+    [Description("Data de Cadastro final para intervalo")]
+    public string? DtCad_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("quematu")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id")]
+    public int QuemAtu { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quematu_end")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id para final do intervalo")]
+    public int QuemAtu_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtatu")]
+    [Description("Data de Atualização")]
+    public string? DtAtu { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtatu_end")]
+    [Description("Data de Atualização final para intervalo")]
+    public string? DtAtu_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("visto")]
+    [Description("Visto -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Visto { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

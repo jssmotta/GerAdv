@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IFornecedoresWriter
 {
     Task<FFornecedores> WriteAsync(Models.Fornecedores fornecedores, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class FornecedoresWriter(IFFornecedoresFactory fornecedoresFactory) : IFornecedoresWriter
 {
     private readonly IFFornecedoresFactory _fornecedoresFactory = fornecedoresFactory ?? throw new ArgumentNullException(nameof(fornecedoresFactory));
-    public virtual async Task Delete(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(FornecedoresResponse fornecedores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _fornecedoresFactory.DeleteAsync(operadorId, fornecedores.Id, oCnn);
     }
@@ -43,7 +43,9 @@ public class FornecedoresWriter(IFFornecedoresFactory fornecedoresFactory) : IFo
         dbRec.FObs = fornecedores.Obs;
         dbRec.FProdutos = fornecedores.Produtos;
         dbRec.FContatos = fornecedores.Contatos;
-        dbRec.FGUID = fornecedores.GUID;
+        dbRec.FEtiqueta = fornecedores.Etiqueta;
+        dbRec.FBold = fornecedores.Bold;
+        dbRec.FGuid = fornecedores.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

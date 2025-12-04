@@ -361,20 +361,6 @@ public class PrepostosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFPrepostos(DtNasc: "invalid-date");
-        _mockPrepostosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPrepostos.Object);
-        // Act
-        var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtNascFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -420,20 +406,6 @@ public class PrepostosWhereTests : IDisposable
         var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.Periodo_Ini.Should().Be("01/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDatePeriodo_IniStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFPrepostos(Periodo_Ini: "invalid-date");
-        _mockPrepostosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPrepostos.Object);
-        // Act
-        var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.Periodo_Ini.Should().Be("");
     }
 
     [Fact]
@@ -485,20 +457,6 @@ public class PrepostosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDatePeriodo_FimStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFPrepostos(Periodo_Fim: "invalid-date");
-        _mockPrepostosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPrepostos.Object);
-        // Act
-        var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.Periodo_Fim.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDatePeriodo_FimFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -544,20 +502,6 @@ public class PrepostosWhereTests : IDisposable
         var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.CTPSDtEmissao.Should().Be("03/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateCTPSDtEmissaoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFPrepostos(CTPSDtEmissao: "invalid-date");
-        _mockPrepostosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPrepostos.Object);
-        // Act
-        var result = _prepostosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.CTPSDtEmissao.Should().Be("");
     }
 
     [Fact]

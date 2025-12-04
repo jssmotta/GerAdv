@@ -10,65 +10,72 @@ import { IProcessosObsReport } from '../../Interfaces/interface.ProcessosObsRepo
 import { useIsMobile } from '@/app/context/MobileContext';
 import { ProcessosObsReportEmpty } from '@/app/GerAdv_TS/Models/ProcessosObsReport';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface ProcessosObsReportWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedProcessosObsReport?: IProcessosObsReport;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedProcessosObsReport?: IProcessosObsReport;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const ProcessosObsReportWindow: React.FC<ProcessosObsReportWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedProcessosObsReport, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedProcessosObsReport,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Processos Obs Report'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedProcessosObsReport?.id ?? 0).toString()}
->
-<ProcessosObsReportInc
-id={selectedProcessosObsReport?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Processos Obs Report'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedProcessosObsReport?.id ?? 0).toString()}
+            >
+                <ProcessosObsReportInc
+                    id={selectedProcessosObsReport?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowProcessosObsReport: React.FC<ProcessosObsReportWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<ProcessosObsReportWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedProcessosObsReport={ProcessosObsReportEmpty()}>
-</ProcessosObsReportWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <ProcessosObsReportWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedProcessosObsReport={ProcessosObsReportEmpty()}>
+        </ProcessosObsReportWindow>
+    )
 };
+
 export default ProcessosObsReportWindow;

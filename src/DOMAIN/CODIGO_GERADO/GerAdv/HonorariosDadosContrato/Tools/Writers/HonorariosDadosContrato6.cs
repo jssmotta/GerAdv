@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IHonorariosDadosContratoWriter
 {
     Task<FHonorariosDadosContrato> WriteAsync(Models.HonorariosDadosContrato honorariosdadoscontrato, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class HonorariosDadosContratoWriter(IFHonorariosDadosContratoFactory honorariosdadoscontratoFactory) : IHonorariosDadosContratoWriter
 {
     private readonly IFHonorariosDadosContratoFactory _honorariosdadoscontratoFactory = honorariosdadoscontratoFactory ?? throw new ArgumentNullException(nameof(honorariosdadoscontratoFactory));
-    public virtual async Task Delete(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(HonorariosDadosContratoResponse honorariosdadoscontrato, int operadorId, MsiSqlConnection? oCnn)
     {
         await _honorariosdadoscontratoFactory.DeleteAsync(operadorId, honorariosdadoscontrato.Id, oCnn);
     }
@@ -32,9 +32,12 @@ public class HonorariosDadosContratoWriter(IFHonorariosDadosContratoFactory hono
         dbRec.FTextoContrato = honorariosdadoscontrato.TextoContrato;
         dbRec.FValorFixo = honorariosdadoscontrato.ValorFixo;
         dbRec.FObservacao = honorariosdadoscontrato.Observacao;
+        if (honorariosdadoscontrato.DataContrato.NotIsEmpty())
+        {
+            dbRec.FDataContrato = DateOnly.FromDateTime(Convert.ToDateTime(honorariosdadoscontrato.DataContrato));
+        }
+
         dbRec.FGuid = honorariosdadoscontrato.Guid;
-        if (honorariosdadoscontrato.DataContrato != null)
-            dbRec.FDataContrato = honorariosdadoscontrato.DataContrato.ToString();
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

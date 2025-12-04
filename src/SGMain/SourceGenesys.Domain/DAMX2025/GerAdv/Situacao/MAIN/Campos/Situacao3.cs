@@ -7,60 +7,37 @@ public partial class DBSituacao
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFParte_Int, pFldFGUID, pFldFParte_Opo, pFldFTop, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FParte_Int, m_FGUID, m_FParte_Opo;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FTop, m_FBold;
+    private protected bool pFldFParte_Int, pFldFParte_Opo, pFldFTop, pFldFBold, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(30, ErrorMessage = "A propriedade FParte_Int da tabela Situacao deve ter no máximo 30 caracteres.")]
+    [StringLength(30, ErrorMessage = "A propriedade FParte_Int da tabela 'Situacao' deve ter no máximo 30 caracteres.")]
     public virtual string? FParte_Int
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FParte_Int ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFParte_Int = pFldFParte_Int || !(m_FParte_Int ?? string.Empty).Equals(value);
+            pFldFParte_Int = pFldFParte_Int || !(field ?? string.Empty).Equals(value);
             if (pFldFParte_Int)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FParte_Int = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+                field = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Situacao deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(30, ErrorMessage = "A propriedade FParte_Opo da tabela Situacao deve ter no máximo 30 caracteres.")]
+    [StringLength(30, ErrorMessage = "A propriedade FParte_Opo da tabela 'Situacao' deve ter no máximo 30 caracteres.")]
     public virtual string? FParte_Opo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FParte_Opo ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFParte_Opo = pFldFParte_Opo || !(m_FParte_Opo ?? string.Empty).Equals(value);
+            pFldFParte_Opo = pFldFParte_Opo || !(field ?? string.Empty).Equals(value);
             if (pFldFParte_Opo)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FParte_Opo = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+                field = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
             }
         }
     }
@@ -68,36 +45,53 @@ public partial class DBSituacao
     public virtual bool FTop
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTop;
+        get => field;
         set
         {
-            pFldFTop = pFldFTop || value != m_FTop;
+            pFldFTop = pFldFTop || value != field;
             if (pFldFTop)
-                m_FTop = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Situacao' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -107,9 +101,13 @@ public partial class DBSituacao
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

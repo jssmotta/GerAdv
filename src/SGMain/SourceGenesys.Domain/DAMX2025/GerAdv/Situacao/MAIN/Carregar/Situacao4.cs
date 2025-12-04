@@ -54,8 +54,32 @@ public partial class DBSituacao
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBSituacaoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FParte_Int = getValue(DBSituacaoDicInfo.Parte_Int)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FParte_Opo = getValue(DBSituacaoDicInfo.Parte_Opo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBSituacaoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBSituacaoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBSituacaoDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +106,7 @@ public partial class DBSituacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSituacaoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBSituacaoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBSituacaoDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +115,7 @@ public partial class DBSituacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSituacaoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBSituacaoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBSituacaoDicInfo.QuemCad));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBSituacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSituacaoDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBSituacaoDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBSituacaoDicInfo.Top));
         }
         catch
         {
@@ -109,38 +133,14 @@ public partial class DBSituacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSituacaoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBSituacaoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBSituacaoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FParte_Int = getValue(DBSituacaoDicInfo.Parte_Int)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FParte_Opo = getValue(DBSituacaoDicInfo.Parte_Opo)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBSituacaoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -164,7 +164,7 @@ public partial class DBSituacao
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

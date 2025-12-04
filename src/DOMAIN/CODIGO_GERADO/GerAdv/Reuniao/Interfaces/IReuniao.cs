@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IReuniaoService
 {
+    Task<Filters.FilterReuniao> FilterVoice([FromBody] Filters.FilterReuniao filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ReuniaoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterReuniao filter, [FromRoute, Required] string uri = "");
     Task<ReuniaoResponse?> AddAndUpdate(Models.Reuniao? regReuniao, [FromRoute, Required] string uri = "");
     Task<ReuniaoResponse?> Validation(Models.Reuniao? regReuniao, [FromRoute, Required] string uri = "");
     Task<ReuniaoResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<ReuniaoResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<ReuniaoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterReuniao? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

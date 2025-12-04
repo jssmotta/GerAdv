@@ -37,6 +37,8 @@ public class TipoStatusBiuValidation : ITipoStatusBiuValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         if (await IsDuplicado(reg, service, uri))
             throw new SGValidationException($"Staus  Usuários '{reg.Nome}'  - Nome");
         var validSizes = ValidSizes(reg);

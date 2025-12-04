@@ -2,12 +2,20 @@
 
 namespace MenphisSI.GerAdv.HealthCheck;
 
-public class HealthCheckNotificadorAniversariantesService([Required] string uri) : IHealthCheck, IDisposable
+public class HealthCheckNotificadorAniversariantesService : IHealthCheck, IDisposable
 {
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private bool _disposed;
-    private readonly string _uri = uri;
+    private readonly string _uri;
+    private readonly EnvioNotificacoesAniversariantes _notificationService;
     private const int PHoraProcessamento = 7;
+
+    public HealthCheckNotificadorAniversariantesService([Required] string uri, EnvioNotificacoesAniversariantes notificationService)
+    {
+        _uri = uri;
+        _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+    }
+
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
@@ -74,10 +82,9 @@ public class HealthCheckNotificadorAniversariantesService([Required] string uri)
         dbOperator.WriteCfgBool(key, true, writeConnection);
 
         // Envia as notificações
-        var notificationService = new EnvioNotificacoesAniversariantes();
-        int sentCount = await notificationService.EnviarEmailsParaAdvogados(uri, oCnn);
+        int sentCount = await _notificationService.EnviarEmailsParaAdvogados(_uri, oCnn);
 #if (!DEBUG)
-        sentCount += await notificationService.EnviarEmailsParaFuncionarios(uri, oCnn);
+        sentCount += await _notificationService.EnviarEmailsParaFuncionarios(_uri, oCnn);
 #endif
         var data = new Dictionary<string, object>
     {

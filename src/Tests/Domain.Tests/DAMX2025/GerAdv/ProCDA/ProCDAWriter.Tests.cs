@@ -74,10 +74,10 @@ public class ProCDAWriterTests
         var result = await _procdaWriter.WriteAsync(procda, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProCDA.Object);
+        _mockFProCDA.VerifySet(x => x.FGuid = procda.Guid, Times.Once);
         _mockFProCDA.VerifySet(x => x.FProcesso = procda.Processo, Times.Once);
         _mockFProCDA.VerifySet(x => x.FNome = procda.Nome, Times.Once);
         _mockFProCDA.VerifySet(x => x.FNroInterno = procda.NroInterno, Times.Once);
-        _mockFProCDA.VerifySet(x => x.FGUID = procda.GUID, Times.Once);
         _mockFProCDA.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class ProCDAWriterTests
         var operadorId = 456;
         _mockProCDAFactory.Setup(x => x.DeleteAsync(operadorId, procdaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _procdaWriter.Delete(procdaResponse, operadorId, _mockConnection.Object);
+        await _procdaWriter.DeleteAsync(procdaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProCDAFactory.Verify(x => x.DeleteAsync(operadorId, procdaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class ProCDAWriterTests
         var operadorId = 111;
         _mockProCDAFactory.Setup(x => x.DeleteAsync(operadorId, procdaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _procdaWriter.Delete(procdaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _procdaWriter.DeleteAsync(procdaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class ProCDAWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProCDAFactory.Setup(x => x.DeleteAsync(operadorId, procdaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _procdaWriter.Delete(procdaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _procdaWriter.DeleteAsync(procdaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class ProCDAWriterTests
         return new Models.ProCDA
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             Nome = "João",
-            NroInterno = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            NroInterno = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

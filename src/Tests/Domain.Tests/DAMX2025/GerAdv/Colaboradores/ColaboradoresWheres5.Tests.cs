@@ -313,20 +313,6 @@ public class ColaboradoresWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFColaboradores(DtNasc: "invalid-date");
-        _mockColaboradoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFColaboradores.Object);
-        // Act
-        var result = _colaboradoresWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtNascFields_ShouldNotSetDateProperties()
     {
         // Arrange

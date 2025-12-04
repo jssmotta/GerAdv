@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITipoEnderecoWriter
 {
     Task<FTipoEndereco> WriteAsync(Models.TipoEndereco tipoendereco, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoEnderecoWriter(IFTipoEnderecoFactory tipoenderecoFactory) : ITipoEnderecoWriter
 {
     private readonly IFTipoEnderecoFactory _tipoenderecoFactory = tipoenderecoFactory ?? throw new ArgumentNullException(nameof(tipoenderecoFactory));
-    public virtual async Task Delete(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TipoEnderecoResponse tipoendereco, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipoenderecoFactory.DeleteAsync(operadorId, tipoendereco.Id, oCnn);
     }
@@ -23,8 +23,8 @@ public class TipoEnderecoWriter(IFTipoEnderecoFactory tipoenderecoFactory) : ITi
     public virtual async Task<FTipoEndereco> WriteAsync(Models.TipoEndereco tipoendereco, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (tipoendereco.Id.IsEmptyIDNumber() ? _tipoenderecoFactory.CreateAsync() : _tipoenderecoFactory.CreateFromIdAsync(tipoendereco.Id, oCnn));
-        dbRec.FGUID = tipoendereco.GUID;
         dbRec.FDescricao = tipoendereco.Descricao;
+        dbRec.FGuid = tipoendereco.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

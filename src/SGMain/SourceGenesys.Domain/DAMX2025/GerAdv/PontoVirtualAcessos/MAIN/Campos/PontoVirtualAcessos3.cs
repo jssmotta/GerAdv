@@ -8,67 +8,63 @@ public partial class DBPontoVirtualAcessos
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFOperador, pFldFDataHora, pFldFTipo, pFldFOrigem;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FOperador;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FOrigem;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDataHora;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FTipo;
     public virtual int FOperador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOperador;
+        get => field;
         set
         {
-            pFldFOperador = pFldFOperador || value != m_FOperador;
+            pFldFOperador = pFldFOperador || value != field;
             if (pFldFOperador)
-                m_FOperador = value;
+                field = value;
         }
     }
 
-    public virtual string? FDataHora
+    public virtual TimeOnly? FDataHora
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataHora is null || m_FDataHora == DevourerOne.DDataZerada ? string.Empty : m_FDataHora.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataHora, m_FDataHora, value)is not (true, var changed, var data))
+            if (!value.HasValue)
+            {
+                pFldFDataHora = pFldFDataHora || field != null;
+                field = null;
                 return;
-            (pFldFDataHora, m_FDataHora) = (changed, data);
+            }
+
+            // Se já tem o mesmo valor, não faz nada
+            if (field.HasValue && field.Value == value.Value)
+                return;
+            pFldFDataHora = true;
+            field = value;
         }
     }
 
     public virtual bool FTipo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipo;
+        get => field;
         set
         {
-            pFldFTipo = pFldFTipo || value != m_FTipo;
+            pFldFTipo = pFldFTipo || value != field;
             if (pFldFTipo)
-                m_FTipo = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FOrigem da tabela PontoVirtualAcessos deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FOrigem da tabela 'PontoVirtualAcessos' deve ter no máximo 150 caracteres.")]
     public virtual string? FOrigem
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOrigem ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOrigem = pFldFOrigem || !(m_FOrigem ?? string.Empty).Equals(value);
+            pFldFOrigem = pFldFOrigem || !(field ?? string.Empty).Equals(value);
             if (pFldFOrigem)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FOrigem = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
@@ -81,13 +77,13 @@ public partial class DBPontoVirtualAcessos
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,9 +93,13 @@ public partial class DBPontoVirtualAcessos
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

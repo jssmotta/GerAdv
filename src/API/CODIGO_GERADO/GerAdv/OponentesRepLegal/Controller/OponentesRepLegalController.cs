@@ -14,6 +14,7 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     private readonly IOponentesRepLegalService _oponentesreplegalService = oponentesreplegalService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterOponentesRepLegal filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterOponentesRepLegal filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("OponentesRepLegal: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _oponentesreplegalService.Filter(max, filtro, uri);
+        //_logger.Info("OponentesRepLegal: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _oponentesreplegalService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterOponentesRepLegalWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("OponentesRepLegal: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _oponentesreplegalService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("OponentesRepLegal: GetById called with id = {0}, {1}", id, uri);
         var result = await _oponentesreplegalService.GetById(id, uri, token);
         if (result == null)
@@ -51,7 +74,42 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
         return Ok(result);
     }
 
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(AuditorResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            //_logger.Info("OponentesRepLegal: GetAuditor called with id = {0}, {1}", id, uri);
+            var result = await _oponentesreplegalService.GetAuditor(id, uri, token);
+            if (result == null)
+            {
+                _logger.Warn("GetAuditor: No OponentesRepLegal found with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "OponentesRepLegal: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            return StatusCode(500, new Error500 { success = false, data = "", message = "Erro 500 Auditor" });
+        }
+    }
+
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterOponentesRepLegal? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +123,8 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(OponentesRepLegalResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(OponentesRepLegalResponse), StatusCodes.Status201Created)]
@@ -107,6 +165,11 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("OponentesRepLegal: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _oponentesreplegalService.Delete(id, uri);
@@ -126,6 +189,7 @@ public partial class OponentesRepLegalController(IOponentesRepLegalService opone
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.OponentesRepLegal regOponentesRepLegal, [FromRoute, Required] string uri)
     {

@@ -54,8 +54,24 @@ public partial class DBCargosEsc
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBCargosEscDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBCargosEscDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBCargosEscDicInfo.Classificacao)))
-                m_FClassificacao = Convert.ToInt32(getValue(DBCargosEscDicInfo.Classificacao));
+                FClassificacao = Convert.ToInt32(getValue(DBCargosEscDicInfo.Classificacao));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBCargosEsc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscDicInfo.Percentual)))
-                m_FPercentual = Convert.ToDecimal(getValue(DBCargosEscDicInfo.Percentual));
+                FPercentual = Convert.ToDecimal(getValue(DBCargosEscDicInfo.Percentual));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBCargosEsc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBCargosEscDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBCargosEscDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBCargosEsc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBCargosEscDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBCargosEscDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBCargosEsc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCargosEscDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBCargosEscDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBCargosEscDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBCargosEscDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBCargosEscDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBCargosEsc
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

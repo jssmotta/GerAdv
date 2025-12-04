@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Reader
+public partial class Diario2Reader(IFDiario2Factory diario2Factory, IConnectionService connection) : IDiario2Reader
 {
     private readonly IFDiario2Factory _diario2Factory = diario2Factory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("diaCodigo, diaData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<Diario2ResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBDiario2.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<Diario2ResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("diaCodigo, diaData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<Diario2ResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBDiario2.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<Diario2ResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<Diario2ResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,26 +48,37 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         return result;
     }
 
-    public async Task<Diario2Response?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<Diario2Response?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _diario2Factory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Diario2?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Diario2?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _diario2Factory.CreateFromIdAsync(id, oCnn);
         var diario2 = new Models.Diario2
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData1))
+        {
+            diario2.Data = XData1.ToString("dd/MM/yyyy");
+            diario2.Data_date = XData1;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora2))
+        {
+            diario2.Hora = XHora2.ToString("HH:mm");
+            diario2.Hora_date = XHora2;
+        }
+
         return diario2;
     }
 
@@ -86,14 +103,25 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2Response
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData1))
+        {
+            diario2.Data = XData1.ToString("dd/MM/yyyy");
+            diario2.Data_date = XData1;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora2))
+        {
+            diario2.Hora = XHora2.ToString("HH:mm");
+            diario2.Hora_date = XHora2;
+        }
+
         return diario2;
     }
 
@@ -107,14 +135,25 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2Response
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData1))
+        {
+            diario2.Data = XData1.ToString("dd/MM/yyyy");
+            diario2.Data_date = XData1;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora2))
+        {
+            diario2.Hora = XHora2.ToString("HH:mm");
+            diario2.Hora_date = XHora2;
+        }
+
         return diario2;
     }
 
@@ -128,14 +167,25 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2ResponseAll
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData1))
+        {
+            diario2.Data = XData1.ToString("dd/MM/yyyy");
+            diario2.Data_date = XData1;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora2))
+        {
+            diario2.Hora = XHora2.ToString("HH:mm");
+            diario2.Hora_date = XHora2;
+        }
+
         try
         {
             diario2.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -165,14 +215,25 @@ public partial class Diario2Reader(IFDiario2Factory diario2Factory) : IDiario2Re
         var diario2 = new Diario2ResponseAll
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData1))
+        {
+            diario2.Data = XData1.ToString("dd/MM/yyyy");
+            diario2.Data_date = XData1;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora2))
+        {
+            diario2.Hora = XHora2.ToString("HH:mm");
+            diario2.Hora_date = XHora2;
+        }
+
         try
         {
             diario2.NomeOperador = dr[DBOperadorDicInfo.CampoNome]?.ToString() ?? string.Empty;

@@ -143,7 +143,7 @@ public class HonorariosDadosContratoWriterTests
         var operadorId = 456;
         _mockHonorariosDadosContratoFactory.Setup(x => x.DeleteAsync(operadorId, honorariosdadoscontratoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _honorariosdadoscontratoWriter.Delete(honorariosdadoscontratoResponse, operadorId, _mockConnection.Object);
+        await _honorariosdadoscontratoWriter.DeleteAsync(honorariosdadoscontratoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockHonorariosDadosContratoFactory.Verify(x => x.DeleteAsync(operadorId, honorariosdadoscontratoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -159,7 +159,7 @@ public class HonorariosDadosContratoWriterTests
         var operadorId = 111;
         _mockHonorariosDadosContratoFactory.Setup(x => x.DeleteAsync(operadorId, honorariosdadoscontratoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _honorariosdadoscontratoWriter.Delete(honorariosdadoscontratoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _honorariosdadoscontratoWriter.DeleteAsync(honorariosdadoscontratoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -176,7 +176,7 @@ public class HonorariosDadosContratoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockHonorariosDadosContratoFactory.Setup(x => x.DeleteAsync(operadorId, honorariosdadoscontratoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _honorariosdadoscontratoWriter.Delete(honorariosdadoscontratoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _honorariosdadoscontratoWriter.DeleteAsync(honorariosdadoscontratoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

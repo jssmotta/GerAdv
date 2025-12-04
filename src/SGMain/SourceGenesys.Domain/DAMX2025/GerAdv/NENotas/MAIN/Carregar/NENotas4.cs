@@ -54,8 +54,24 @@ public partial class DBNENotas
         // Checkpoint Carregar 
         try
         {
+            FNome = getValue(DBNENotasDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNotaPublicada = getValue(DBNENotasDicInfo.NotaPublicada)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Apenso)))
-                m_FApenso = Convert.ToInt32(getValue(DBNENotasDicInfo.Apenso));
+                FApenso = Convert.ToInt32(getValue(DBNENotasDicInfo.Apenso));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBNENotasDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBNENotasDicInfo.Data)));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Instancia)))
-                m_FInstancia = Convert.ToInt32(getValue(DBNENotasDicInfo.Instancia));
+                FInstancia = Convert.ToInt32(getValue(DBNENotasDicInfo.Instancia));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.MovPro)))
-                m_FMovPro = Convert.ToBoolean(getValue(DBNENotasDicInfo.MovPro));
+                FMovPro = Convert.ToBoolean(getValue(DBNENotasDicInfo.MovPro));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.NotaExpedida)))
-                m_FNotaExpedida = Convert.ToBoolean(getValue(DBNENotasDicInfo.NotaExpedida));
+                FNotaExpedida = Convert.ToBoolean(getValue(DBNENotasDicInfo.NotaExpedida));
         }
         catch
         {
@@ -118,7 +134,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.PalavraChave)))
-                m_FPalavraChave = Convert.ToInt32(getValue(DBNENotasDicInfo.PalavraChave));
+                FPalavraChave = Convert.ToInt32(getValue(DBNENotasDicInfo.PalavraChave));
         }
         catch
         {
@@ -127,7 +143,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Precatoria)))
-                m_FPrecatoria = Convert.ToInt32(getValue(DBNENotasDicInfo.Precatoria));
+                FPrecatoria = Convert.ToInt32(getValue(DBNENotasDicInfo.Precatoria));
         }
         catch
         {
@@ -136,7 +152,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBNENotasDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBNENotasDicInfo.Processo));
         }
         catch
         {
@@ -145,7 +161,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBNENotasDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBNENotasDicInfo.QuemAtu));
         }
         catch
         {
@@ -154,7 +170,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBNENotasDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBNENotasDicInfo.QuemCad));
         }
         catch
         {
@@ -163,7 +179,7 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Revisada)))
-                m_FRevisada = Convert.ToBoolean(getValue(DBNENotasDicInfo.Revisada));
+                FRevisada = Convert.ToBoolean(getValue(DBNENotasDicInfo.Revisada));
         }
         catch
         {
@@ -172,30 +188,14 @@ public partial class DBNENotas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNENotasDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBNENotasDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBNENotasDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNotaPublicada = getValue(DBNENotasDicInfo.NotaPublicada)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBNENotasDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -219,7 +219,7 @@ public partial class DBNENotas
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

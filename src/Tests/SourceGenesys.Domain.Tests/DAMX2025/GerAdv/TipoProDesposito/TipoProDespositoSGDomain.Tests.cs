@@ -34,6 +34,19 @@ public class DBTipoProDespositoTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["tpdCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTipoProDesposito(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -52,7 +65,7 @@ public class DBTipoProDespositoTests : IDisposable
     {
         var instance = new DBTipoProDesposito();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("TipoProDesposito", instance.ITabelaName());
+        Assert.Equal("TipoProDesposito", instance.ITableName());
         Assert.Equal("tpd", instance.Prefixo);
     }
 
@@ -70,29 +83,16 @@ public class DBTipoProDespositoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["tpdCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTipoProDesposito(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("TipoProDesposito", cadastro.ITabelaName());
-        Assert.Equal("tpdCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("tpdNome", cadastro.ICampoNome());
-        Assert.Equal("tpd", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("TipoProDesposito", cadastro.ITableName());
+        Assert.Equal("tpdCodigo", cadastro.IFieldId());
+        Assert.Equal("tpdNome", cadastro.IFieldNameDescription());
+        Assert.Equal("tpd", cadastro.IPrefix());
     }
 
 #endregion
@@ -152,9 +152,9 @@ public class DBTipoProDespositoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

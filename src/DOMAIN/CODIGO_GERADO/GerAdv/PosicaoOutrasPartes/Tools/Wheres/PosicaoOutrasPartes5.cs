@@ -21,7 +21,8 @@ public partial class PosicaoOutrasPartesWhere(IFPosicaoOutrasPartesFactory posic
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return posicaooutraspartes;
     }

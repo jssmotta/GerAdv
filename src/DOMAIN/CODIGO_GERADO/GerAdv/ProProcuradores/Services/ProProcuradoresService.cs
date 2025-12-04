@@ -6,66 +6,89 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, IFProProcuradoresFactory proprocuradoresFactory, IProProcuradoresReader reader, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IHttpContextAccessor httpContextAccessor, HybridCache cache, IMemoryCache memory) : IProProcuradoresService, IDisposable
+public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, IFProProcuradoresFactory proprocuradoresFactory, IProProcuradoresReader reader, IProProcuradoresValidation validation, IProProcuradoresWriter writer, IAdvogadosReader advogadosReader, IHttpContextAccessor httpContextAccessor, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterProProcuradores> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IProProcuradoresService, IDisposable
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterProProcuradores> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFProProcuradoresFactory proprocuradoresFactory = proprocuradoresFactory;
     private readonly IProProcuradoresReader reader = reader;
     private readonly IProProcuradoresValidation validation = validation;
     private readonly IProProcuradoresWriter writer = writer;
     private readonly IAdvogadosReader advogadosReader = advogadosReader;
-    public async Task<IEnumerable<ProProcuradoresResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ProProcuradoresResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProProcuradores filtro, [FromRoute, Required] string uri)
     {
-        max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ProProcuradores: URI inválida");
         }
 
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
-            LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
-        };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        var keyCache = await reader.ReadStringAuditor(max, uri, "", [], oCnn);
-        var cacheKey = $"{uri}-ProProcuradores-Filter-{max}-{keyCache}";
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
-        return result;
-    }
-
-    public async Task<IEnumerable<ProProcuradoresResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProProcuradores filtro, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new DatabaseConnectionException();
-        }
-
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var keyCache = await reader.ReadStringAuditor(max, uri, where, parameters, oCnn);
-        var cacheKey = $"{uri}-{max}ProProcuradores-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroProProcuradores(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterProProcuradores>.GetFilterHash(filtro);
+            var keyCache = await reader.ReadStringAuditorAsync(max, uri, where, parameters, oCnn);
+            var cacheKey = $"{uri}-{max}ProProcuradores-Filter-{where.GetHashCode2()}{filterHash}{keyCache}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"ProProcuradores - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterProProcuradores> FilterVoice([FromBody] Filters.FilterProProcuradores filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("ProProcuradores: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterProProcuradores? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterProProcuradores();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterProProcuradores();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"ProProcuradores - error on creating filter.");
+        }
     }
 
     public async Task<ProProcuradoresResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
@@ -81,10 +104,11 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
-            var keyCache = await reader.ReadStringAuditor(id, uri, oCnn);
+            var keyCache = await reader.ReadStringAuditorAsync(id, uri, oCnn);
             var result = await _cache.GetOrCreateAsync($"{uri}-ProProcuradores-GetById-{id}-{keyCache}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
             return result;
         }
@@ -94,7 +118,29 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
     }
 
-    private async Task<ProProcuradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<ProProcuradoresResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
+    public async Task<AuditorResponse?> GetAuditor([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
+    {
+        ThrowIfDisposed();
+        AuditorResponse? result = null;
+        if (id < 1)
+        {
+            return result;
+        }
+
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
+        try
+        {
+            result = await reader.ReadAuditorAsync(id, uri, oCnn);
+            return result;
+        }
+        catch (Exception)
+        {
+            throw new Exception($"ProProcuradores - {uri}-: GetAuditor");
+        }
+    }
+
     public async Task<ProProcuradoresResponse?> AddAndUpdate([FromBody] Models.ProProcuradores? regProProcuradores, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -103,12 +149,13 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ProProcuradores: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -144,12 +191,13 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ProProcuradores: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -177,7 +225,7 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             return new ProProcuradoresResponse();
         }
 
-        return await reader.Read(regProProcuradores.Id, oCnn);
+        return await reader.ReadAsync(regProProcuradores.Id, oCnn);
     }
 
     public async Task<ProProcuradoresResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
@@ -188,13 +236,14 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
         }
 
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ProProcuradores: URI inválida");
         }
 
         var nOperador = UserTools.GetAuthenticatedUserId(_httpContextAccessor);
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -217,12 +266,12 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var proprocuradores = await reader.Read(id ?? default, oCnn);
+        var proprocuradores = await reader.ReadAsync(id ?? default, oCnn);
         try
         {
             if (proprocuradores != null)
             {
-                await writer.Delete(proprocuradores, nOperador, oCnn);
+                await writer.DeleteAsync(proprocuradores, nOperador, oCnn);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
@@ -257,9 +306,6 @@ public partial class ProProcuradoresService(IOptions<AppSettings> appSettings, I
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

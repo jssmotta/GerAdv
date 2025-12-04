@@ -79,7 +79,7 @@ public class ProValoresWriterTests
         _mockFProValores.VerifySet(x => x.FTipoValorProcesso = provalores.TipoValorProcesso, Times.Once);
         _mockFProValores.VerifySet(x => x.FIndice = provalores.Indice, Times.Once);
         _mockFProValores.VerifySet(x => x.FIgnorar = provalores.Ignorar, Times.Once);
-        _mockFProValores.VerifySet(x => x.FData = provalores.Data, Times.Once);
+        _mockFProValores.VerifySet(x => x.FData = provalores.Data.ToString(), Times.Once);
         _mockFProValores.VerifySet(x => x.FValorOriginal = provalores.ValorOriginal, Times.Once);
         _mockFProValores.VerifySet(x => x.FPercMulta = provalores.PercMulta, Times.Once);
         _mockFProValores.VerifySet(x => x.FValorMulta = provalores.ValorMulta, Times.Once);
@@ -90,6 +90,21 @@ public class ProValoresWriterTests
         _mockFProValores.VerifySet(x => x.FValorFinal = provalores.ValorFinal, Times.Once);
         _mockFProValores.VerifySet(x => x.FDataUltimaCorrecao = provalores.DataUltimaCorrecao.ToString(), Times.Once);
         _mockFProValores.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var provalores = CreateValidProValoresModel();
+        provalores.Data = null;
+        var auditorQuem = 123;
+        _mockProValoresFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProValores.Object);
+        _mockFProValores.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _provaloresWriter.WriteAsync(provalores, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProValores.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -147,7 +162,7 @@ public class ProValoresWriterTests
         var operadorId = 456;
         _mockProValoresFactory.Setup(x => x.DeleteAsync(operadorId, provaloresResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _provaloresWriter.Delete(provaloresResponse, operadorId, _mockConnection.Object);
+        await _provaloresWriter.DeleteAsync(provaloresResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProValoresFactory.Verify(x => x.DeleteAsync(operadorId, provaloresResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -163,7 +178,7 @@ public class ProValoresWriterTests
         var operadorId = 111;
         _mockProValoresFactory.Setup(x => x.DeleteAsync(operadorId, provaloresResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _provaloresWriter.Delete(provaloresResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _provaloresWriter.DeleteAsync(provaloresResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -180,7 +195,7 @@ public class ProValoresWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProValoresFactory.Setup(x => x.DeleteAsync(operadorId, provaloresResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _provaloresWriter.Delete(provaloresResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _provaloresWriter.DeleteAsync(provaloresResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -215,7 +230,7 @@ public class ProValoresWriterTests
             TipoValorProcesso = 1,
             Indice = "AAAAAAAAAAAAAAAAAA",
             Ignorar = false,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             ValorOriginal = 1m,
             PercMulta = 1m,
             ValorMulta = 1m,

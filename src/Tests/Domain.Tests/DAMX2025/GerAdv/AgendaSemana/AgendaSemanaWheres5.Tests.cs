@@ -36,7 +36,7 @@ public class AgendaSemanaWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFAgendaSemana(string? ParaNome = "João", string? Data = "27/05/2022", int? Funcionario = 1, int? Advogado = 1, string? Hora = "27/05/2022", int? TipoCompromisso = 1, string? Compromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Concluido = false, bool? Liberado = true, bool? Importante = false, string? HoraFinal = "27/05/2022", string? Nome = "João", int? Cliente = 1, string? NomeCliente = "João", string? Tipo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    private void SetupMockFAgendaSemana(string? ParaNome = "João", string? Data = "24/04/1975", int? Funcionario = 1, int? Advogado = 1, string? Hora = "04:04", int? TipoCompromisso = 1, string? Compromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Concluido = false, bool? Liberado = true, bool? Importante = false, string? HoraFinal = "04:04", string? Nome = "João", int? Cliente = 1, string? NomeCliente = "João", string? Tipo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     {
         _mockFAgendaSemana.Setup(f => f.FParaNome).Returns(ParaNome ?? string.Empty);
         _mockFAgendaSemana.Setup(f => f.FData).Returns(Data ?? string.Empty);
@@ -93,16 +93,16 @@ public class AgendaSemanaWhereTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result.ParaNome.Should().Be("João");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Funcionario.Should().Be(1);
         result.Advogado.Should().Be(1);
-        result.Hora.Should().Be("27/05/2022");
+        result.Hora.Should().Be("04:04");
         result.TipoCompromisso.Should().Be(1);
         result.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.Concluido.Should().Be(false);
         result.Liberado.Should().Be(true);
         result.Importante.Should().Be(false);
-        result.HoraFinal.Should().Be("27/05/2022");
+        result.HoraFinal.Should().Be("04:04");
         result.Nome.Should().Be("João");
         result.Cliente.Should().Be(1);
         result.NomeCliente.Should().Be("João");
@@ -247,7 +247,7 @@ public class AgendaSemanaWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFAgendaSemana(ParaNome: "João", Data: "27/05/2022", Funcionario: 1, Advogado: 1, Hora: "27/05/2022", TipoCompromisso: 1, Compromisso: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Concluido: false, Liberado: true, Importante: false, HoraFinal: "27/05/2022", Nome: "João", Cliente: 1, NomeCliente: "João", Tipo: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        SetupMockFAgendaSemana(ParaNome: "João", Data: "24/04/1975", Funcionario: 1, Advogado: 1, Hora: "04:04", TipoCompromisso: 1, Compromisso: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Concluido: false, Liberado: true, Importante: false, HoraFinal: "04:04", Nome: "João", Cliente: 1, NomeCliente: "João", Tipo: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         _mockAgendaSemanaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAgendaSemana.Object);
         // Act
         var result = _agendasemanaWhere.Read(where, parameters, _mockConnection.Object);
@@ -255,16 +255,16 @@ public class AgendaSemanaWhereTests : IDisposable
         result.Should().NotBeNull();
         // Basic properties        
         result.ParaNome.Should().Be("João");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Funcionario.Should().Be(1);
         result.Advogado.Should().Be(1);
-        result.Hora.Should().Be("27/05/2022");
+        result.Hora.Should().Be("04:04");
         result.TipoCompromisso.Should().Be(1);
         result.Compromisso.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.Concluido.Should().Be(false);
         result.Liberado.Should().Be(true);
         result.Importante.Should().Be(false);
-        result.HoraFinal.Should().Be("27/05/2022");
+        result.HoraFinal.Should().Be("04:04");
         result.Nome.Should().Be("João");
         result.Cliente.Should().Be(1);
         result.NomeCliente.Should().Be("João");
@@ -287,7 +287,55 @@ public class AgendaSemanaWhereTests : IDisposable
         // Assert
         _mockAgendaSemanaFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBAgendaSemanaDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFAgendaSemana(Data: testDate);
+        _mockAgendaSemanaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAgendaSemana.Object);
+        // Act
+        var result = _agendasemanaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFAgendaSemana(Data: null);
+        _mockAgendaSemanaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAgendaSemana.Object);
+        // Act
+        var result = _agendasemanaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFAgendaSemana(Data: dateString);
+        _mockAgendaSemanaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAgendaSemana.Object);
+        // Act
+        var result = _agendasemanaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

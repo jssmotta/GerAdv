@@ -74,6 +74,7 @@ public class DivisaoTribunalWriterTests
         var result = await _divisaotribunalWriter.WriteAsync(divisaotribunal, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFDivisaoTribunal.Object);
+        _mockFDivisaoTribunal.VerifySet(x => x.FGuid = divisaotribunal.Guid, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FNumCodigo = divisaotribunal.NumCodigo, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FJustica = divisaotribunal.Justica, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FNomeEspecial = divisaotribunal.NomeEspecial, Times.Once);
@@ -89,7 +90,6 @@ public class DivisaoTribunalWriterTests
         _mockFDivisaoTribunal.VerifySet(x => x.FObs = divisaotribunal.Obs, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FEMail = divisaotribunal.EMail, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.FAndar = divisaotribunal.Andar, Times.Once);
-        _mockFDivisaoTribunal.VerifySet(x => x.FGUID = divisaotribunal.GUID, Times.Once);
         _mockFDivisaoTribunal.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -133,7 +133,7 @@ public class DivisaoTribunalWriterTests
         var operadorId = 456;
         _mockDivisaoTribunalFactory.Setup(x => x.DeleteAsync(operadorId, divisaotribunalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _divisaotribunalWriter.Delete(divisaotribunalResponse, operadorId, _mockConnection.Object);
+        await _divisaotribunalWriter.DeleteAsync(divisaotribunalResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockDivisaoTribunalFactory.Verify(x => x.DeleteAsync(operadorId, divisaotribunalResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -149,7 +149,7 @@ public class DivisaoTribunalWriterTests
         var operadorId = 111;
         _mockDivisaoTribunalFactory.Setup(x => x.DeleteAsync(operadorId, divisaotribunalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _divisaotribunalWriter.Delete(divisaotribunalResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _divisaotribunalWriter.DeleteAsync(divisaotribunalResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -166,7 +166,7 @@ public class DivisaoTribunalWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockDivisaoTribunalFactory.Setup(x => x.DeleteAsync(operadorId, divisaotribunalResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _divisaotribunalWriter.Delete(divisaotribunalResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _divisaotribunalWriter.DeleteAsync(divisaotribunalResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -196,6 +196,7 @@ public class DivisaoTribunalWriterTests
         return new Models.DivisaoTribunal
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             NumCodigo = 1,
             Justica = 1,
             NomeEspecial = "João",
@@ -210,8 +211,7 @@ public class DivisaoTribunalWriterTests
             CEP = "01234-567",
             Obs = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             EMail = "test@email.com",
-            Andar = "AAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Andar = "AAAAAAAAAA"
         };
     }
 #endregion

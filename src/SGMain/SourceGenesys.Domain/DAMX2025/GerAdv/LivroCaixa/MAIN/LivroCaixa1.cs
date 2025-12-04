@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBLivroCaixa : VAuditor, ICadastros
+public partial class DBLivroCaixa : VAuditor, ICrud
 {
 #region TableDefinition_LivroCaixa
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBLivroCaixa : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBLivroCaixa : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_LivroCaixa
@@ -93,31 +93,31 @@ public partial class DBLivroCaixa : VAuditor, ICadastros
         }
 
         if (pFldFIDDes)
-            clsW.Fields(DBLivroCaixaDicInfo.IDDes, m_FIDDes, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.IDDes, FIDDes, EGenericTypeFields.FNumberNull);
         if (pFldFPessoal)
-            clsW.Fields(DBLivroCaixaDicInfo.Pessoal, m_FPessoal, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.Pessoal, FPessoal, EGenericTypeFields.FNumberNull);
         if (pFldFAjuste || ID.IsEmptyIDNumber())
-            clsW.Fields(DBLivroCaixaDicInfo.Ajuste, m_FAjuste, ETiposCampos.FBoolean);
+            clsW.Fields(DBLivroCaixaDicInfo.Ajuste, FAjuste, EGenericTypeFields.FBoolean);
         if (pFldFIDHon)
-            clsW.Fields(DBLivroCaixaDicInfo.IDHon, m_FIDHon, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.IDHon, FIDHon, EGenericTypeFields.FNumberNull);
         if (pFldFIDHonParc)
-            clsW.Fields(DBLivroCaixaDicInfo.IDHonParc, m_FIDHonParc, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.IDHonParc, FIDHonParc, EGenericTypeFields.FNumberNull);
         if (pFldFIDHonSuc || ID.IsEmptyIDNumber())
-            clsW.Fields(DBLivroCaixaDicInfo.IDHonSuc, m_FIDHonSuc, ETiposCampos.FBoolean);
+            clsW.Fields(DBLivroCaixaDicInfo.IDHonSuc, FIDHonSuc, EGenericTypeFields.FBoolean);
         if (pFldFData)
-            clsW.Fields(DBLivroCaixaDicInfo.Data, m_FData, ETiposCampos.FDate);
+            clsW.Fields(DBLivroCaixaDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFProcesso)
-            clsW.Fields(DBLivroCaixaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFValor)
-            clsW.Fields(DBLivroCaixaDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            clsW.Fields(DBLivroCaixaDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFTipo || ID.IsEmptyIDNumber())
-            clsW.Fields(DBLivroCaixaDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
+            clsW.Fields(DBLivroCaixaDicInfo.Tipo, FTipo, EGenericTypeFields.FBoolean);
         if (pFldFHistorico)
-            clsW.Fields(DBLivroCaixaDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
+            clsW.Fields(DBLivroCaixaDicInfo.Historico, FHistorico, EGenericTypeFields.FString);
         if (pFldFPrevisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBLivroCaixaDicInfo.Previsto, m_FPrevisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBLivroCaixaDicInfo.Previsto, FPrevisto, EGenericTypeFields.FBoolean);
         if (pFldFGrupo)
-            clsW.Fields(DBLivroCaixaDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.Grupo, FGrupo, EGenericTypeFields.FNumberNull);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_LivroCaixa)
         if (clsW.HasUpdates)
         {
@@ -132,15 +132,15 @@ public partial class DBLivroCaixa : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBLivroCaixaDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBLivroCaixaDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBLivroCaixaDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBLivroCaixaDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBLivroCaixaDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBLivroCaixaDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBLivroCaixaDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBLivroCaixaDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBLivroCaixaDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -164,7 +164,7 @@ public partial class DBLivroCaixa : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

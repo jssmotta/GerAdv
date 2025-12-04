@@ -7,26 +7,20 @@ public partial class DBModelosDocumentos
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFNome, pFldFRemuneracao, pFldFAssinatura, pFldFHeader, pFldFFooter, pFldFExtra1, pFldFExtra2, pFldFExtra3, pFldFOutorgante, pFldFOutorgados, pFldFPoderes, pFldFObjeto, pFldFTitulo, pFldFTestemunhas, pFldFTipoModeloDocumento, pFldFCSS, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FTipoModeloDocumento;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FRemuneracao, m_FAssinatura, m_FHeader, m_FFooter, m_FExtra1, m_FExtra2, m_FExtra3, m_FOutorgante, m_FOutorgados, m_FPoderes, m_FObjeto, m_FTitulo, m_FTestemunhas, m_FCSS, m_FGUID;
+    private protected bool pFldFNome, pFldFRemuneracao, pFldFAssinatura, pFldFHeader, pFldFFooter, pFldFExtra1, pFldFExtra2, pFldFExtra3, pFldFOutorgante, pFldFOutorgados, pFldFPoderes, pFldFObjeto, pFldFTitulo, pFldFTestemunhas, pFldFTipoModeloDocumento, pFldFCSS, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela ModelosDocumentos deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela 'ModelosDocumentos' deve ter no máximo 50 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -35,12 +29,12 @@ public partial class DBModelosDocumentos
     public virtual string? FRemuneracao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRemuneracao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFRemuneracao = pFldFRemuneracao || !(m_FRemuneracao ?? string.Empty).Equals(value);
+            pFldFRemuneracao = pFldFRemuneracao || !(field ?? string.Empty).Equals(value);
             if (pFldFRemuneracao)
-                m_FRemuneracao = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -48,12 +42,12 @@ public partial class DBModelosDocumentos
     public virtual string? FAssinatura
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAssinatura ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFAssinatura = pFldFAssinatura || !(m_FAssinatura ?? string.Empty).Equals(value);
+            pFldFAssinatura = pFldFAssinatura || !(field ?? string.Empty).Equals(value);
             if (pFldFAssinatura)
-                m_FAssinatura = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -61,12 +55,12 @@ public partial class DBModelosDocumentos
     public virtual string? FHeader
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FHeader ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFHeader = pFldFHeader || !(m_FHeader ?? string.Empty).Equals(value);
+            pFldFHeader = pFldFHeader || !(field ?? string.Empty).Equals(value);
             if (pFldFHeader)
-                m_FHeader = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -74,12 +68,12 @@ public partial class DBModelosDocumentos
     public virtual string? FFooter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFooter ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFooter = pFldFFooter || !(m_FFooter ?? string.Empty).Equals(value);
+            pFldFFooter = pFldFFooter || !(field ?? string.Empty).Equals(value);
             if (pFldFFooter)
-                m_FFooter = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -87,12 +81,12 @@ public partial class DBModelosDocumentos
     public virtual string? FExtra1
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FExtra1 ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFExtra1 = pFldFExtra1 || !(m_FExtra1 ?? string.Empty).Equals(value);
+            pFldFExtra1 = pFldFExtra1 || !(field ?? string.Empty).Equals(value);
             if (pFldFExtra1)
-                m_FExtra1 = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -100,12 +94,12 @@ public partial class DBModelosDocumentos
     public virtual string? FExtra2
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FExtra2 ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFExtra2 = pFldFExtra2 || !(m_FExtra2 ?? string.Empty).Equals(value);
+            pFldFExtra2 = pFldFExtra2 || !(field ?? string.Empty).Equals(value);
             if (pFldFExtra2)
-                m_FExtra2 = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -113,12 +107,12 @@ public partial class DBModelosDocumentos
     public virtual string? FExtra3
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FExtra3 ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFExtra3 = pFldFExtra3 || !(m_FExtra3 ?? string.Empty).Equals(value);
+            pFldFExtra3 = pFldFExtra3 || !(field ?? string.Empty).Equals(value);
             if (pFldFExtra3)
-                m_FExtra3 = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -126,12 +120,12 @@ public partial class DBModelosDocumentos
     public virtual string? FOutorgante
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOutorgante ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOutorgante = pFldFOutorgante || !(m_FOutorgante ?? string.Empty).Equals(value);
+            pFldFOutorgante = pFldFOutorgante || !(field ?? string.Empty).Equals(value);
             if (pFldFOutorgante)
-                m_FOutorgante = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -139,12 +133,12 @@ public partial class DBModelosDocumentos
     public virtual string? FOutorgados
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOutorgados ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOutorgados = pFldFOutorgados || !(m_FOutorgados ?? string.Empty).Equals(value);
+            pFldFOutorgados = pFldFOutorgados || !(field ?? string.Empty).Equals(value);
             if (pFldFOutorgados)
-                m_FOutorgados = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -152,12 +146,12 @@ public partial class DBModelosDocumentos
     public virtual string? FPoderes
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPoderes ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFPoderes = pFldFPoderes || !(m_FPoderes ?? string.Empty).Equals(value);
+            pFldFPoderes = pFldFPoderes || !(field ?? string.Empty).Equals(value);
             if (pFldFPoderes)
-                m_FPoderes = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -165,28 +159,28 @@ public partial class DBModelosDocumentos
     public virtual string? FObjeto
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObjeto ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObjeto = pFldFObjeto || !(m_FObjeto ?? string.Empty).Equals(value);
+            pFldFObjeto = pFldFObjeto || !(field ?? string.Empty).Equals(value);
             if (pFldFObjeto)
-                m_FObjeto = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2000, ErrorMessage = "A propriedade FTitulo da tabela ModelosDocumentos deve ter no máximo 2000 caracteres.")]
+    [StringLength(2000, ErrorMessage = "A propriedade FTitulo da tabela 'ModelosDocumentos' deve ter no máximo 2000 caracteres.")]
     public virtual string? FTitulo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTitulo ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFTitulo = pFldFTitulo || !(m_FTitulo ?? string.Empty).Equals(value);
+            pFldFTitulo = pFldFTitulo || !(field ?? string.Empty).Equals(value);
             if (pFldFTitulo)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FTitulo = trimmed.Length > 2000 ? trimmed.AsSpan(0, 2000).ToString() : trimmed;
+                field = trimmed.Length > 2000 ? trimmed.AsSpan(0, 2000).ToString() : trimmed;
             }
         }
     }
@@ -195,24 +189,24 @@ public partial class DBModelosDocumentos
     public virtual string? FTestemunhas
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTestemunhas ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFTestemunhas = pFldFTestemunhas || !(m_FTestemunhas ?? string.Empty).Equals(value);
+            pFldFTestemunhas = pFldFTestemunhas || !(field ?? string.Empty).Equals(value);
             if (pFldFTestemunhas)
-                m_FTestemunhas = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual int FTipoModeloDocumento
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipoModeloDocumento;
+        get => field;
         set
         {
-            pFldFTipoModeloDocumento = pFldFTipoModeloDocumento || value != m_FTipoModeloDocumento;
+            pFldFTipoModeloDocumento = pFldFTipoModeloDocumento || value != field;
             if (pFldFTipoModeloDocumento)
-                m_FTipoModeloDocumento = value;
+                field = value;
         }
     }
 
@@ -220,41 +214,41 @@ public partial class DBModelosDocumentos
     public virtual string? FCSS
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCSS ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCSS = pFldFCSS || !(m_FCSS ?? string.Empty).Equals(value);
+            pFldFCSS = pFldFCSS || !(field ?? string.Empty).Equals(value);
             if (pFldFCSS)
-                m_FCSS = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela ModelosDocumentos deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'ModelosDocumentos' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -264,9 +258,13 @@ public partial class DBModelosDocumentos
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

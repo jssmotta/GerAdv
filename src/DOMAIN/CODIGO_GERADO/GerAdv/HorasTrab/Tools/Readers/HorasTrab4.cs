@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHorasTrabReader
+public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory, IConnectionService connection) : IHorasTrabReader
 {
     private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("htbCodigo, htbData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<HorasTrabResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBHorasTrab.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<HorasTrabResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("htbCodigo, htbData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<HorasTrabResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBHorasTrab.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<HorasTrabResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<HorasTrabResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,23 +48,21 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         return result;
     }
 
-    public async Task<HorasTrabResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<HorasTrabResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _horastrabFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.HorasTrab?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.HorasTrab?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _horastrabFactory.CreateFromIdAsync(id, oCnn);
         var horastrab = new Models.HorasTrab
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -73,7 +77,14 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
+        {
+            horastrab.Data = XData4.ToString("dd/MM/yyyy");
+            horastrab.Data_date = XData4;
+        }
+
         return horastrab;
     }
 
@@ -98,11 +109,9 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -117,7 +126,14 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
+        {
+            horastrab.Data = XData4.ToString("dd/MM/yyyy");
+            horastrab.Data_date = XData4;
+        }
+
         return horastrab;
     }
 
@@ -131,11 +147,9 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -150,7 +164,14 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
+        {
+            horastrab.Data = XData4.ToString("dd/MM/yyyy");
+            horastrab.Data_date = XData4;
+        }
+
         return horastrab;
     }
 
@@ -164,11 +185,9 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -183,7 +202,14 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
+        {
+            horastrab.Data = XData4.ToString("dd/MM/yyyy");
+            horastrab.Data_date = XData4;
+        }
+
         try
         {
             horastrab.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;
@@ -229,11 +255,9 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
         var horastrab = new HorasTrabResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             IDContatoCRM = dbRec.FIDContatoCRM,
             Honorario = dbRec.FHonorario,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Status = dbRec.FStatus,
             Processo = dbRec.FProcesso,
@@ -248,7 +272,14 @@ public partial class HorasTrabReader(IFHorasTrabFactory horastrabFactory) : IHor
             AnexoComp = dbRec.FAnexoComp ?? string.Empty,
             AnexoUNC = dbRec.FAnexoUNC ?? string.Empty,
             Servico = dbRec.FServico,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
+        {
+            horastrab.Data = XData4.ToString("dd/MM/yyyy");
+            horastrab.Data_date = XData4;
+        }
+
         try
         {
             horastrab.NomeClientes = dr[DBClientesDicInfo.CampoNome]?.ToString() ?? string.Empty;

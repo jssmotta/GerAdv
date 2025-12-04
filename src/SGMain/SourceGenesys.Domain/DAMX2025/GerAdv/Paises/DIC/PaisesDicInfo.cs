@@ -11,7 +11,7 @@ public static partial class DBPaisesDicInfo
     public const string CampoNome = "paiNome";
     public const string TablePrefix = "pai";
     public const string Nome = "paiNome"; // LOCALIZACAO 170523
-    public const string GUID = "paiGUID"; // LOCALIZACAO 170523
+    public const string Guid = "paiGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "paiQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "paiDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "paiQuemAtu"; // LOCALIZACAO 170523
@@ -31,35 +31,13 @@ public static partial class DBPaisesDicInfo
 
     public const string PTabelaNome = "Paises";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PaiNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pai"
-    };
-    public static DBInfoSystem PaiGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "pai"
-    };
-    public static DBInfoSystem PaiQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pai"
-    }; // DBI 11 
-    public static DBInfoSystem PaiDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "pai"
-    };
-    public static DBInfoSystem PaiQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pai"
-    }; // DBI 11 
-    public static DBInfoSystem PaiDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pai"
-    };
-    public static DBInfoSystem PaiVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pai"
-    };
+    public static DBInfoSystem PaiNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "pai");
+    public static DBInfoSystem PaiGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pai");
+    public static DBInfoSystem PaiQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pai"); // DBI 11 
+    public static DBInfoSystem PaiDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pai");
+    public static DBInfoSystem PaiQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pai"); // DBI 11 
+    public static DBInfoSystem PaiDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pai");
+    public static DBInfoSystem PaiVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pai", isRequired: true);
 
 #endregion
     [Serializable]

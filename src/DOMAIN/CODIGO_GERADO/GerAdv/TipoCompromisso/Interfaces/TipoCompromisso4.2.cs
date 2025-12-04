@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITipoCompromissoReader
 {
-    Task<TipoCompromissoResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.TipoCompromisso?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<TipoCompromissoResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.TipoCompromisso?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     TipoCompromissoResponse? Read(FTipoCompromisso dbRec, MsiSqlConnection? oCnn);
     TipoCompromissoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoCompromissoResponse? Read(FTipoCompromisso dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoCompromissoResponseAll? ReadAll(FTipoCompromisso dbRec, IDataRecord dr);
     TipoCompromissoResponseAll? ReadAll(SG.GerAdv.DBTipoCompromisso dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<TipoCompromissoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoCompromissoResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

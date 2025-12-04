@@ -14,7 +14,7 @@ public static partial class DBProObservacoesDicInfo
     public const string Nome = "pobNome"; // LOCALIZACAO 170523
     public const string Observacoes = "pobObservacoes"; // LOCALIZACAO 170523
     public const string Data = "pobData"; // LOCALIZACAO 170523
-    public const string GUID = "pobGUID"; // LOCALIZACAO 170523
+    public const string Guid = "pobGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "pobQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "pobDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "pobQuemAtu"; // LOCALIZACAO 170523
@@ -37,47 +37,16 @@ public static partial class DBProObservacoesDicInfo
 
     public const string PTabelaNome = "ProObservacoes";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PobProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobObservacoes => new(0, PTabelaNome, CampoCodigo, Observacoes, DevourerOne.PMaxSizeCampoMemo, "Observacoes", "Observacoes", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pob"
-    }; // DBI 11 
-    public static DBInfoSystem PobDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pob"
-    }; // DBI 11 
-    public static DBInfoSystem PobDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pob"
-    };
-    public static DBInfoSystem PobVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pob"
-    };
+    public static DBInfoSystem PobProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "pob");
+    public static DBInfoSystem PobNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "pob");
+    public static DBInfoSystem PobObservacoes => new(0, PTabelaNome, CampoCodigo, Observacoes, DevourerOne.PMaxSizeCampoMemo, Observacoes, Observacoes, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "pob");
+    public static DBInfoSystem PobData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "pob");
+    public static DBInfoSystem PobGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pob");
+    public static DBInfoSystem PobQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pob"); // DBI 11 
+    public static DBInfoSystem PobDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pob");
+    public static DBInfoSystem PobQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pob"); // DBI 11 
+    public static DBInfoSystem PobDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pob");
+    public static DBInfoSystem PobVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pob", isRequired: true);
 
 #endregion
     [Serializable]

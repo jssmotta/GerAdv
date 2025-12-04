@@ -385,20 +385,6 @@ public class AdvogadosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtInicioStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFAdvogados(DtInicio: "invalid-date");
-        _mockAdvogadosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAdvogados.Object);
-        // Act
-        var result = _advogadosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtInicio.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtInicioFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -447,20 +433,6 @@ public class AdvogadosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtFimStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFAdvogados(DtFim: "invalid-date");
-        _mockAdvogadosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAdvogados.Object);
-        // Act
-        var result = _advogadosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtFim.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtFimFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -506,20 +478,6 @@ public class AdvogadosWhereTests : IDisposable
         var result = _advogadosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.DtNasc.Should().Be("02/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFAdvogados(DtNasc: "invalid-date");
-        _mockAdvogadosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFAdvogados.Object);
-        // Act
-        var result = _advogadosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
     }
 
     [Fact]

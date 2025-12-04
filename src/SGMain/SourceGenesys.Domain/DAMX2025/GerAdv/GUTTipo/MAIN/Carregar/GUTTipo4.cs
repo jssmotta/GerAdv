@@ -54,6 +54,22 @@ public partial class DBGUTTipo
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBGUTTipoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBGUTTipoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGUTTipoDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBGUTTipoDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBGUTTipo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTTipoDicInfo.Ordem)))
-                m_FOrdem = Convert.ToInt32(getValue(DBGUTTipoDicInfo.Ordem));
+                FOrdem = Convert.ToInt32(getValue(DBGUTTipoDicInfo.Ordem));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBGUTTipo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTTipoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGUTTipoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGUTTipoDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBGUTTipo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTTipoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGUTTipoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGUTTipoDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBGUTTipo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTTipoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGUTTipoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGUTTipoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBGUTTipoDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGUTTipoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBGUTTipo
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

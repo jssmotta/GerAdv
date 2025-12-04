@@ -23,11 +23,17 @@ public partial class ProProcuradoresWhere(IFProProcuradoresFactory proprocurador
             Advogado = dbRec.FAdvogado,
             Nome = dbRec.FNome ?? string.Empty,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Substabelecimento = dbRec.FSubstabelecimento,
             Procuracao = dbRec.FProcuracao,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            proprocuradores.Data = XData.ToString("dd/MM/yyyy");
+            proprocuradores.Data_date = XData;
+        }
+
         return proprocuradores;
     }
 }

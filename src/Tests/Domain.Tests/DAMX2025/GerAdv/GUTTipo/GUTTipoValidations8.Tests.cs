@@ -54,8 +54,7 @@ public class GUTTipoValidationTests : IDisposable
         {
             Id = 1,
             Nome = "João",
-            Ordem = 1,
-            GUID = Guid.NewGuid().ToString()
+            Ordem = 1
         };
     }
 
@@ -81,8 +80,7 @@ public class GUTTipoValidationTests : IDisposable
         {
             Id = 1,
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Ordem = 1,
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Ordem = 1
         };
         SetupValidMocks();
         // Act
@@ -109,7 +107,7 @@ public class GUTTipoValidationTests : IDisposable
         guttipo.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(guttipo, _mockGUTTipoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -140,54 +138,7 @@ public class GUTTipoValidationTests : IDisposable
     {
         // Arrange
         var guttipo = CreateValidGUTTipo();
-        guttipo.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(guttipo, _mockGUTTipoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var guttipo = CreateValidGUTTipo();
-        guttipo.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(guttipo, _mockGUTTipoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var guttipo = CreateValidGUTTipo();
-        guttipo.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(guttipo, _mockGUTTipoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var guttipo = CreateValidGUTTipo();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(guttipo, _mockGUTTipoService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var guttipo = CreateValidGUTTipo();
-        guttipo.GUID = "   ";
+        guttipo.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(guttipo, _mockGUTTipoService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

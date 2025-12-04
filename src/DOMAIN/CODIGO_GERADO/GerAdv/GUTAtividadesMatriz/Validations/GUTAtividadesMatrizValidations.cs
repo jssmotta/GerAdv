@@ -26,8 +26,6 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
 
     private bool ValidSizes(Models.GUTAtividadesMatriz reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > DBGUTAtividadesMatrizDicInfo.AmgGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBGUTAtividadesMatrizDicInfo.AmgGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,11 +40,9 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
             throw new SGValidationException("GUTMatriz é obrigatório.");
         if (reg.GUTAtividade == 0)
             throw new SGValidationException("GUTAtividade é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         // GUTMatriz
         {
-            var regGUTMatriz = await gutmatrizReader.Read(reg.GUTMatriz, oCnn);
+            var regGUTMatriz = await gutmatrizReader.ReadAsync(reg.GUTMatriz, oCnn);
             if (regGUTMatriz == null || regGUTMatriz.Id != reg.GUTMatriz)
             {
                 throw new SGValidationException($"G U T Matriz não encontrado ({regGUTMatriz?.Id}).");
@@ -55,7 +51,7 @@ public class GUTAtividadesMatrizValidation : IGUTAtividadesMatrizValidation
 
         // GUTAtividades
         {
-            var regGUTAtividades = await gutatividadesReader.Read(reg.GUTAtividade, oCnn);
+            var regGUTAtividades = await gutatividadesReader.ReadAsync(reg.GUTAtividade, oCnn);
             if (regGUTAtividades == null || regGUTAtividades.Id != reg.GUTAtividade)
             {
                 throw new SGValidationException($"G U T Atividades não encontrado ({regGUTAtividades?.Id}).");

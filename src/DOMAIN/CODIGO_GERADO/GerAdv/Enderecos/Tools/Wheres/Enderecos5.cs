@@ -21,7 +21,6 @@ public partial class EnderecosWhere(IFEnderecosFactory enderecosFactory) : IEnde
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -40,10 +39,14 @@ public partial class EnderecosWhere(IFEnderecosFactory enderecosFactory) : IEnde
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            enderecos.DtNasc = dbRec.FDtNasc;
+            enderecos.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             enderecos.DtNasc_date = XDtNasc;
         }
 

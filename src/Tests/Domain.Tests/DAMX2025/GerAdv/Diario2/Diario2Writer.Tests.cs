@@ -74,14 +74,44 @@ public class Diario2WriterTests
         var result = await _diario2Writer.WriteAsync(diario2, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFDiario2.Object);
-        _mockFDiario2.VerifySet(x => x.FData = diario2.Data, Times.Once);
-        _mockFDiario2.VerifySet(x => x.FHora = diario2.Hora, Times.Once);
+        _mockFDiario2.VerifySet(x => x.FGuid = diario2.Guid, Times.Once);
+        _mockFDiario2.VerifySet(x => x.FData = diario2.Data.ToString(), Times.Once);
+        _mockFDiario2.VerifySet(x => x.FHora = diario2.Hora.ToString(), Times.Once);
         _mockFDiario2.VerifySet(x => x.FOperador = diario2.Operador, Times.Once);
         _mockFDiario2.VerifySet(x => x.FNome = diario2.Nome, Times.Once);
         _mockFDiario2.VerifySet(x => x.FOcorrencia = diario2.Ocorrencia, Times.Once);
         _mockFDiario2.VerifySet(x => x.FCliente = diario2.Cliente, Times.Once);
-        _mockFDiario2.VerifySet(x => x.FGUID = diario2.GUID, Times.Once);
         _mockFDiario2.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var diario2 = CreateValidDiario2Model();
+        diario2.Data = null;
+        var auditorQuem = 123;
+        _mockDiario2Factory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFDiario2.Object);
+        _mockFDiario2.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _diario2Writer.WriteAsync(diario2, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFDiario2.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullHora_ShouldNotSetFHora()
+    {
+        // Arrange
+        var diario2 = CreateValidDiario2Model();
+        diario2.Hora = null;
+        var auditorQuem = 123;
+        _mockDiario2Factory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFDiario2.Object);
+        _mockFDiario2.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _diario2Writer.WriteAsync(diario2, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFDiario2.VerifySet(x => x.FHora = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -124,7 +154,7 @@ public class Diario2WriterTests
         var operadorId = 456;
         _mockDiario2Factory.Setup(x => x.DeleteAsync(operadorId, diario2Response.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _diario2Writer.Delete(diario2Response, operadorId, _mockConnection.Object);
+        await _diario2Writer.DeleteAsync(diario2Response, operadorId, _mockConnection.Object);
         // Assert
         _mockDiario2Factory.Verify(x => x.DeleteAsync(operadorId, diario2Response.Id, _mockConnection.Object), Times.Once);
     }
@@ -140,7 +170,7 @@ public class Diario2WriterTests
         var operadorId = 111;
         _mockDiario2Factory.Setup(x => x.DeleteAsync(operadorId, diario2Response.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _diario2Writer.Delete(diario2Response, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _diario2Writer.DeleteAsync(diario2Response, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -157,7 +187,7 @@ public class Diario2WriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockDiario2Factory.Setup(x => x.DeleteAsync(operadorId, diario2Response.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _diario2Writer.Delete(diario2Response, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _diario2Writer.DeleteAsync(diario2Response, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -187,13 +217,13 @@ public class Diario2WriterTests
         return new Models.Diario2
         {
             Id = 0,
-            Data = "27/05/2022",
-            Hora = "27/05/2022",
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Data = "24/04/1975",
+            Hora = "04:04",
             Operador = 1,
             Nome = "João",
             Ocorrencia = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Cliente = 1,
-            GUID = Guid.NewGuid().ToString()
+            Cliente = 1
         };
     }
 #endregion

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBProValores : VAuditor, ICadastros
+public partial class DBProValores : VAuditor, ICrud
 {
 #region TableDefinition_ProValores
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBProValores : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBProValores : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_ProValores
@@ -92,42 +92,41 @@ public partial class DBProValores : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGuid))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGuid = Guid.NewGuid().ToString();
-            pFldFGuid = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFProcesso)
-            clsW.Fields(DBProValoresDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProValoresDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFTipoValorProcesso)
-            clsW.Fields(DBProValoresDicInfo.TipoValorProcesso, m_FTipoValorProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProValoresDicInfo.TipoValorProcesso, FTipoValorProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFIndice)
-            clsW.Fields(DBProValoresDicInfo.Indice, m_FIndice, ETiposCampos.FString);
+            clsW.Fields(DBProValoresDicInfo.Indice, FIndice, EGenericTypeFields.FString);
         if (pFldFIgnorar || ID.IsEmptyIDNumber())
-            clsW.Fields(DBProValoresDicInfo.Ignorar, m_FIgnorar, ETiposCampos.FBoolean);
+            clsW.Fields(DBProValoresDicInfo.Ignorar, FIgnorar, EGenericTypeFields.FBoolean);
         if (pFldFData)
-            clsW.Fields(DBProValoresDicInfo.Data, m_FData, ETiposCampos.FDate);
+            clsW.Fields(DBProValoresDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFValorOriginal)
-            clsW.Fields(DBProValoresDicInfo.ValorOriginal, m_FValorOriginal, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.ValorOriginal, FValorOriginal, EGenericTypeFields.FDecimal);
         if (pFldFPercMulta)
-            clsW.Fields(DBProValoresDicInfo.PercMulta, m_FPercMulta, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.PercMulta, FPercMulta, EGenericTypeFields.FDecimal);
         if (pFldFValorMulta)
-            clsW.Fields(DBProValoresDicInfo.ValorMulta, m_FValorMulta, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.ValorMulta, FValorMulta, EGenericTypeFields.FDecimal);
         if (pFldFPercJuros)
-            clsW.Fields(DBProValoresDicInfo.PercJuros, m_FPercJuros, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.PercJuros, FPercJuros, EGenericTypeFields.FDecimal);
         if (pFldFValorOriginalCorrigidoIndice)
-            clsW.Fields(DBProValoresDicInfo.ValorOriginalCorrigidoIndice, m_FValorOriginalCorrigidoIndice, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.ValorOriginalCorrigidoIndice, FValorOriginalCorrigidoIndice, EGenericTypeFields.FDecimal);
         if (pFldFValorMultaCorrigido)
-            clsW.Fields(DBProValoresDicInfo.ValorMultaCorrigido, m_FValorMultaCorrigido, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.ValorMultaCorrigido, FValorMultaCorrigido, EGenericTypeFields.FDecimal);
         if (pFldFValorJurosCorrigido)
-            clsW.Fields(DBProValoresDicInfo.ValorJurosCorrigido, m_FValorJurosCorrigido, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.ValorJurosCorrigido, FValorJurosCorrigido, EGenericTypeFields.FDecimal);
         if (pFldFValorFinal)
-            clsW.Fields(DBProValoresDicInfo.ValorFinal, m_FValorFinal, ETiposCampos.FDecimal);
+            clsW.Fields(DBProValoresDicInfo.ValorFinal, FValorFinal, EGenericTypeFields.FDecimal);
         if (pFldFDataUltimaCorrecao)
-            clsW.Fields(DBProValoresDicInfo.DataUltimaCorrecao, m_FDataUltimaCorrecao, ETiposCampos.FDate);
+            clsW.Fields(DBProValoresDicInfo.DataUltimaCorrecao, FDataUltimaCorrecao, EGenericTypeFields.FDate);
         if (pFldFGuid)
-            clsW.Fields(DBProValoresDicInfo.Guid, m_FGuid, ETiposCampos.FString);
+            clsW.Fields(DBProValoresDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_ProValores)
         if (clsW.HasUpdates)
         {
@@ -142,15 +141,15 @@ public partial class DBProValores : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBProValoresDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProValoresDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBProValoresDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBProValoresDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBProValoresDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProValoresDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBProValoresDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBProValoresDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBProValoresDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBProValoresDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -174,7 +173,7 @@ public partial class DBProValores : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

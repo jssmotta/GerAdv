@@ -23,12 +23,6 @@ public partial class FBensClassificacaoFactory : IFBensClassificacaoFactory, IDi
         return FBensClassificacao.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FBensClassificacao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FBensClassificacao().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FBensClassificacao> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FBensClassificacaoFactory : IFBensClassificacaoFactory, IDi
         return FBensClassificacao.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FBensClassificacao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FBensClassificacao().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FBensClassificacaoFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

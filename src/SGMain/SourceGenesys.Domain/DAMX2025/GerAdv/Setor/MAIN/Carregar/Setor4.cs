@@ -54,6 +54,22 @@ public partial class DBSetor
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBSetorDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBSetorDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBSetorDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBSetorDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBSetor
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSetorDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBSetorDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBSetorDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBSetor
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSetorDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBSetorDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBSetorDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBSetor
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSetorDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBSetorDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBSetorDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBSetorDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBSetorDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBSetor
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

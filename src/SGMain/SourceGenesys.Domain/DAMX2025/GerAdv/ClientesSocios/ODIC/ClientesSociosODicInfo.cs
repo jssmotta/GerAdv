@@ -9,25 +9,29 @@ public partial class DBClientesSociosODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBClientesSociosDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBClientesSociosDicInfo.CampoCodigo;
+    public string IFieldId() => DBClientesSociosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBClientesSociosDicInfo.TablePrefix;
+    public string IPrefix() => DBClientesSociosDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBClientesSociosDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBClientesSociosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBClientesSociosODicInfo : IODicInfo
     public static string TCampoNome => DBClientesSociosDicInfo.CampoNome;
     public static string TTabelaNome => DBClientesSociosDicInfo.TabelaNome;
     public static string TTablePrefix => DBClientesSociosDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBClientesSociosDicInfo.CscSomenteRepresentante, DBClientesSociosDicInfo.CscGUID, DBClientesSociosDicInfo.CscIdade, DBClientesSociosDicInfo.CscIsRepresentanteLegal, DBClientesSociosDicInfo.CscQualificacao, DBClientesSociosDicInfo.CscSexo, DBClientesSociosDicInfo.CscDtNasc, DBClientesSociosDicInfo.CscNome, DBClientesSociosDicInfo.CscSite, DBClientesSociosDicInfo.CscRepresentanteLegal, DBClientesSociosDicInfo.CscCliente, DBClientesSociosDicInfo.CscEndereco, DBClientesSociosDicInfo.CscBairro, DBClientesSociosDicInfo.CscCEP, DBClientesSociosDicInfo.CscCidade, DBClientesSociosDicInfo.CscRG, DBClientesSociosDicInfo.CscCPF, DBClientesSociosDicInfo.CscFone, DBClientesSociosDicInfo.CscParticipacao, DBClientesSociosDicInfo.CscCargo, DBClientesSociosDicInfo.CscEMail, DBClientesSociosDicInfo.CscObs, DBClientesSociosDicInfo.CscCNH, DBClientesSociosDicInfo.CscDataContrato, DBClientesSociosDicInfo.CscCNPJ, DBClientesSociosDicInfo.CscInscEst, DBClientesSociosDicInfo.CscSocioEmpresaAdminNome, DBClientesSociosDicInfo.CscEnderecoSocio, DBClientesSociosDicInfo.CscBairroSocio, DBClientesSociosDicInfo.CscCEPSocio, DBClientesSociosDicInfo.CscCidadeSocio, DBClientesSociosDicInfo.CscRGDataExp, DBClientesSociosDicInfo.CscSocioEmpresaAdminSomente, DBClientesSociosDicInfo.CscTipo, DBClientesSociosDicInfo.CscFax, DBClientesSociosDicInfo.CscClass, DBClientesSociosDicInfo.CscEtiqueta, DBClientesSociosDicInfo.CscAni, DBClientesSociosDicInfo.CscBold, DBClientesSociosDicInfo.CscQuemCad, DBClientesSociosDicInfo.CscDtCad, DBClientesSociosDicInfo.CscQuemAtu, DBClientesSociosDicInfo.CscDtAtu, DBClientesSociosDicInfo.CscVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBClientesSociosDicInfo.CscSomenteRepresentante, DBClientesSociosDicInfo.CscGUID, DBClientesSociosDicInfo.CscIdade, DBClientesSociosDicInfo.CscIsRepresentanteLegal, DBClientesSociosDicInfo.CscQualificacao, DBClientesSociosDicInfo.CscSexo, DBClientesSociosDicInfo.CscDtNasc, DBClientesSociosDicInfo.CscNome, DBClientesSociosDicInfo.CscSite, DBClientesSociosDicInfo.CscRepresentanteLegal, DBClientesSociosDicInfo.CscCliente, DBClientesSociosDicInfo.CscEndereco, DBClientesSociosDicInfo.CscBairro, DBClientesSociosDicInfo.CscCEP, DBClientesSociosDicInfo.CscCidade, DBClientesSociosDicInfo.CscRG, DBClientesSociosDicInfo.CscCPF, DBClientesSociosDicInfo.CscFone, DBClientesSociosDicInfo.CscParticipacao, DBClientesSociosDicInfo.CscCargo, DBClientesSociosDicInfo.CscEMail, DBClientesSociosDicInfo.CscObs, DBClientesSociosDicInfo.CscCNH, DBClientesSociosDicInfo.CscDataContrato, DBClientesSociosDicInfo.CscCNPJ, DBClientesSociosDicInfo.CscInscEst, DBClientesSociosDicInfo.CscSocioEmpresaAdminNome, DBClientesSociosDicInfo.CscEnderecoSocio, DBClientesSociosDicInfo.CscBairroSocio, DBClientesSociosDicInfo.CscCEPSocio, DBClientesSociosDicInfo.CscCidadeSocio, DBClientesSociosDicInfo.CscRGDataExp, DBClientesSociosDicInfo.CscSocioEmpresaAdminSomente, DBClientesSociosDicInfo.CscTipo, DBClientesSociosDicInfo.CscFax, DBClientesSociosDicInfo.CscClass];
+    public static ImmutableArray<DBInfoSystem> List => [DBClientesSociosDicInfo.CscSomenteRepresentante, DBClientesSociosDicInfo.CscIdade, DBClientesSociosDicInfo.CscIsRepresentanteLegal, DBClientesSociosDicInfo.CscQualificacao, DBClientesSociosDicInfo.CscSexo, DBClientesSociosDicInfo.CscDtNasc, DBClientesSociosDicInfo.CscNome, DBClientesSociosDicInfo.CscSite, DBClientesSociosDicInfo.CscRepresentanteLegal, DBClientesSociosDicInfo.CscCliente, DBClientesSociosDicInfo.CscEndereco, DBClientesSociosDicInfo.CscBairro, DBClientesSociosDicInfo.CscCEP, DBClientesSociosDicInfo.CscCidade, DBClientesSociosDicInfo.CscRG, DBClientesSociosDicInfo.CscCPF, DBClientesSociosDicInfo.CscFone, DBClientesSociosDicInfo.CscParticipacao, DBClientesSociosDicInfo.CscCargo, DBClientesSociosDicInfo.CscEMail, DBClientesSociosDicInfo.CscObs, DBClientesSociosDicInfo.CscCNH, DBClientesSociosDicInfo.CscDataContrato, DBClientesSociosDicInfo.CscCNPJ, DBClientesSociosDicInfo.CscInscEst, DBClientesSociosDicInfo.CscSocioEmpresaAdminNome, DBClientesSociosDicInfo.CscEnderecoSocio, DBClientesSociosDicInfo.CscBairroSocio, DBClientesSociosDicInfo.CscCEPSocio, DBClientesSociosDicInfo.CscCidadeSocio, DBClientesSociosDicInfo.CscRGDataExp, DBClientesSociosDicInfo.CscSocioEmpresaAdminSomente, DBClientesSociosDicInfo.CscTipo, DBClientesSociosDicInfo.CscFax, DBClientesSociosDicInfo.CscClass, DBClientesSociosDicInfo.CscEtiqueta, DBClientesSociosDicInfo.CscAni, DBClientesSociosDicInfo.CscBold, DBClientesSociosDicInfo.CscGuid, DBClientesSociosDicInfo.CscQuemCad, DBClientesSociosDicInfo.CscDtCad, DBClientesSociosDicInfo.CscQuemAtu, DBClientesSociosDicInfo.CscDtAtu, DBClientesSociosDicInfo.CscVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBClientesSociosDicInfo.CscSomenteRepresentante, DBClientesSociosDicInfo.CscIdade, DBClientesSociosDicInfo.CscIsRepresentanteLegal, DBClientesSociosDicInfo.CscQualificacao, DBClientesSociosDicInfo.CscSexo, DBClientesSociosDicInfo.CscDtNasc, DBClientesSociosDicInfo.CscNome, DBClientesSociosDicInfo.CscSite, DBClientesSociosDicInfo.CscRepresentanteLegal, DBClientesSociosDicInfo.CscCliente, DBClientesSociosDicInfo.CscEndereco, DBClientesSociosDicInfo.CscBairro, DBClientesSociosDicInfo.CscCEP, DBClientesSociosDicInfo.CscCidade, DBClientesSociosDicInfo.CscRG, DBClientesSociosDicInfo.CscCPF, DBClientesSociosDicInfo.CscFone, DBClientesSociosDicInfo.CscParticipacao, DBClientesSociosDicInfo.CscCargo, DBClientesSociosDicInfo.CscEMail, DBClientesSociosDicInfo.CscObs, DBClientesSociosDicInfo.CscCNH, DBClientesSociosDicInfo.CscDataContrato, DBClientesSociosDicInfo.CscCNPJ, DBClientesSociosDicInfo.CscInscEst, DBClientesSociosDicInfo.CscSocioEmpresaAdminNome, DBClientesSociosDicInfo.CscEnderecoSocio, DBClientesSociosDicInfo.CscBairroSocio, DBClientesSociosDicInfo.CscCEPSocio, DBClientesSociosDicInfo.CscCidadeSocio, DBClientesSociosDicInfo.CscRGDataExp, DBClientesSociosDicInfo.CscSocioEmpresaAdminSomente, DBClientesSociosDicInfo.CscTipo, DBClientesSociosDicInfo.CscFax, DBClientesSociosDicInfo.CscClass, DBClientesSociosDicInfo.CscEtiqueta, DBClientesSociosDicInfo.CscAni, DBClientesSociosDicInfo.CscBold, DBClientesSociosDicInfo.CscGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["cscCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBClientesSociosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["cscCliente", "cscCodigo", "cscNome"]);
         var result = campos.Where(campo => !campo.Equals(DBClientesSociosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

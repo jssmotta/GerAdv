@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { FuncaoGridAdapter } from '@/app/GerAdv_TS/Funcao/Adapter/FuncaoGridAdapter';
 import FuncaoGridContainer from '@/app/GerAdv_TS/Funcao/Components/FuncaoGridContainer';
+
 const FuncaoPage: React.FC = () => {
-  const FuncaoGrid = new FuncaoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Função' />
-    <FuncaoGridContainer grid={FuncaoGrid} />
-  </PageLayout>
-);
+    const FuncaoGrid = new FuncaoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <FuncaoGridContainer grid={FuncaoGrid} />
+        </PageLayout>
+    );
 };
+
 export default FuncaoPage;

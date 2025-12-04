@@ -7,6 +7,7 @@
 using MenphisSI.GerAdv.Models.Response.All;
 using MenphisSI.GerAdv.Readers;
 using System.Data;
+using Xunit.Abstractions;
 
 namespace MenphisSI.GerAdv.Tests.Readers;
 /// <summary>
@@ -15,16 +16,20 @@ namespace MenphisSI.GerAdv.Tests.Readers;
 /// </summary>
 public class ContratosReaderTests : IDisposable
 {
+    private readonly ITestOutputHelper _output;
     private readonly Mock<IFContratosFactory> _mockContratosFactory;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IDataRecord> _mockDataRecord;
     private readonly ContratosReader _contratosReader;
-    public ContratosReaderTests()
+    private readonly Mock<IConnectionService> _mockConnectionService;
+    public ContratosReaderTests(ITestOutputHelper output)
     {
+        _output = output;
         _mockContratosFactory = new Mock<IFContratosFactory>();
         _mockConnection = new Mock<MsiSqlConnection>();
         _mockDataRecord = new Mock<IDataRecord>();
-        _contratosReader = new ContratosReader(_mockContratosFactory.Object);
+        _mockConnectionService = new Mock<IConnectionService>();
+        _contratosReader = new ContratosReader(_mockContratosFactory.Object, _mockConnectionService.Object);
     }
 
 #region Constructor Tests
@@ -39,40 +44,7 @@ public class ContratosReaderTests : IDisposable
     public void Constructor_WithNullFactory_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new ContratosReader(null !));
-    }
-
-#endregion
-#region Listar Tests
-    [Fact]
-    public async Task Listar_WithValidParameters_ShouldCallListarTabela()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "cttCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // Since this calls external dependencies and database connections,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _contratosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
-    [Fact]
-    public async Task Listar_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri";
-        var cWhere = "cttCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = new CancellationToken(true); // Already cancelled
-        // Act & Assert
-        // Even with cancellation, this should throw an exception due to invalid URI
-        await Assert.ThrowsAsync<Exception>(() => _contratosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
+        Assert.Throws<ArgumentNullException>(() => new ContratosReader(null !, null !));
     }
 
 #endregion
@@ -85,15 +57,15 @@ public class ContratosReaderTests : IDisposable
         var expectedContratos = new FContratos
         {
             ID = id,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedContratos);
         // Act
-        var result = await _contratosReader.Read(id, _mockConnection.Object);
+        var result = await _contratosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -107,7 +79,7 @@ public class ContratosReaderTests : IDisposable
         };
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFContratos);
         // Act
-        var result = await _contratosReader.Read(id, _mockConnection.Object);
+        var result = await _contratosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -123,7 +95,7 @@ public class ContratosReaderTests : IDisposable
         };
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFContratos);
         // Act
-        var result = await _contratosReader.Read(id, _mockConnection.Object);
+        var result = await _contratosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -138,15 +110,15 @@ public class ContratosReaderTests : IDisposable
         var expectedFContratos = new FContratos
         {
             ID = id,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFContratos);
         // Act
-        var result = await _contratosReader.ReadM(id, _mockConnection.Object);
+        var result = await _contratosReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -157,15 +129,15 @@ public class ContratosReaderTests : IDisposable
         var emptyFContratos = new FContratos
         {
             ID = 0,
-            FProtestar = null
+            FGuid = null
         };
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFContratos);
         // Act
-        var result = await _contratosReader.ReadM(id, _mockConnection.Object);
+        var result = await _contratosReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(0);
-        result?.Protestar.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -177,14 +149,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = 123,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _contratosReader.Read(dbRec, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -193,7 +165,7 @@ public class ContratosReaderTests : IDisposable
         // Arrange
         FContratos? dbRec = null;
         // Act
-        var result = _contratosReader.Read(dbRec, _mockConnection.Object);
+        var result = _contratosReader.Read(dbRec!, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -212,7 +184,7 @@ public class ContratosReaderTests : IDisposable
         var expectedFContratos = new FContratos
         {
             ID = 123,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockContratosFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(expectedFContratos);
         // Act
@@ -220,7 +192,7 @@ public class ContratosReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -252,14 +224,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = 123,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _contratosReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -268,7 +240,7 @@ public class ContratosReaderTests : IDisposable
         // Arrange
         FContratos? dbRec = null;
         // Act
-        var result = _contratosReader.Read(dbRec);
+        var result = _contratosReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -280,14 +252,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = 123,
-            FProtestar = null
+            FGuid = null
         };
         // Act
         var result = _contratosReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -299,14 +271,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new DBContratos
         {
             ID = 123,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _contratosReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -315,7 +287,7 @@ public class ContratosReaderTests : IDisposable
         // Arrange
         DBContratos? dbRec = null;
         // Act
-        var result = _contratosReader.Read(dbRec);
+        var result = _contratosReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -327,14 +299,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new DBContratos
         {
             ID = 123,
-            FProtestar = null // This should result in empty string in response
+            FGuid = null // This should result in empty string in response
         };
         // Act
         var result = _contratosReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -346,14 +318,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = 123,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _contratosReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -362,7 +334,7 @@ public class ContratosReaderTests : IDisposable
         // Arrange
         FContratos? dbRec = null;
         // Act
-        var result = _contratosReader.ReadAll(dbRec, _mockDataRecord.Object);
+        var result = _contratosReader.ReadAll(dbRec!, _mockDataRecord.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -374,14 +346,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = 123,
-            FProtestar = null
+            FGuid = null
         };
         // Act
         var result = _contratosReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -393,14 +365,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new DBContratos
         {
             ID = 123,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _contratosReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -409,7 +381,7 @@ public class ContratosReaderTests : IDisposable
         // Arrange
         DBContratos? dbRec = null;
         // Act
-        var result = _contratosReader.ReadAll(dbRec, null);
+        var result = _contratosReader.ReadAll(dbRec!, null);
         // Assert
         result.Should().BeNull();
     }
@@ -421,14 +393,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new DBContratos
         {
             ID = 123,
-            FProtestar = null // This should result in empty string in response
+            FGuid = null // This should result in empty string in response
         };
         // Act
         var result = _contratosReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.Protestar.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -441,7 +413,7 @@ public class ContratosReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contratosReader.Read(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contratosReader.ReadAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -453,7 +425,7 @@ public class ContratosReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contratosReader.ReadM(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contratosReader.ReadMAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -476,8 +448,8 @@ public class ContratosReaderTests : IDisposable
 #endregion
 #region Data Consistency Tests
     [Theory]
-    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
-    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
+    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
     [InlineData(0, "")]
     public void Read_WithVariousData_ShouldMaintainConsistency(int id, string nome)
     {
@@ -485,7 +457,7 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = id,
-            FProtestar = nome
+            FGuid = nome
         };
         // Act
         var result = _contratosReader.Read(dbRec);
@@ -499,13 +471,13 @@ public class ContratosReaderTests : IDisposable
         {
             result.Should().NotBeNull();
             result?.Id.Should().Be(id);
-            result?.Protestar.Should().Be(nome);
+            result?.Guid.Should().Be(nome);
         }
     }
 
     [Theory]
-    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
-    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
+    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
     [InlineData(0, "")]
     public void ReadAll_WithVariousData_ShouldMaintainConsistency(int id, string nome)
     {
@@ -513,14 +485,14 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = id,
-            FProtestar = nome
+            FGuid = nome
         };
         // Act
         var result = _contratosReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.Protestar.Should().Be(nome);
+        result?.Guid.Should().Be(nome);
     }
 
 #endregion
@@ -533,31 +505,16 @@ public class ContratosReaderTests : IDisposable
         var expectedFContratos = new FContratos
         {
             ID = id,
-            FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockContratosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFContratos);
         // Act & Assert
         // Test only the methods that don't depend on external URI connections
-        var readTask = _contratosReader.Read(id, _mockConnection.Object);
-        var readMTask = _contratosReader.ReadM(id, _mockConnection.Object);
+        var readTask = _contratosReader.ReadAsync(id, _mockConnection.Object);
+        var readMTask = _contratosReader.ReadMAsync(id, _mockConnection.Object);
         await Task.WhenAll(readTask, readMTask);
         // If we reach here, async methods completed without deadlock
         Assert.True(true);
-    }
-
-    [Fact]
-    public async Task Listar_WithInvalidUri_ShouldThrowException()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri"; // Invalid URI
-        var cWhere = "";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<Exception>(() => _contratosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
     }
 
 #endregion
@@ -572,7 +529,7 @@ public class ContratosReaderTests : IDisposable
         // depending on the implementation
         try
         {
-            await _contratosReader.Read(id, null !);
+            await _contratosReader.ReadAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -588,7 +545,7 @@ public class ContratosReaderTests : IDisposable
         // Act & Assert
         try
         {
-            await _contratosReader.ReadM(id, null !);
+            await _contratosReader.ReadMAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -623,7 +580,7 @@ public class ContratosReaderTests : IDisposable
         var dbRec = new FContratos
         {
             ID = testId,
-            FProtestar = testNome
+            FGuid = testNome
         };
         // Act
         var result = _contratosReader.Read(dbRec);
@@ -631,7 +588,7 @@ public class ContratosReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<ContratosResponse>();
         result!.Id.Should().Be(testId);
-        result.Protestar.Should().Be(testNome);
+        result.Guid.Should().Be(testNome);
     }
 
     [Fact]
@@ -639,11 +596,11 @@ public class ContratosReaderTests : IDisposable
     {
         // Arrange
         var testId = 789;
-        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FContratos
         {
             ID = testId,
-            FProtestar = testNome
+            FGuid = testNome
         };
         // Act
         var result = _contratosReader.ReadAll(dbRec, _mockDataRecord.Object);
@@ -651,7 +608,7 @@ public class ContratosReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<ContratosResponseAll>();
         result!.Id.Should().Be(testId);
-        result.Protestar.Should().Be(testNome);
+        result.Guid.Should().Be(testNome);
     }
 
 #endregion

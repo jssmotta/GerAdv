@@ -23,7 +23,7 @@ public partial class ServicosWhere(IFServicosFactory servicosFactory) : IServico
             Cobrar = dbRec.FCobrar,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Basico = dbRec.FBasico,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return servicos;
     }

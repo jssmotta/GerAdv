@@ -36,7 +36,7 @@ public class FuncionariosWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFFuncionarios(string? EMailPro = "test@email.com", int? Cargo = 1, string? Nome = "João", int? Funcao = 1, bool? Sexo = false, string? Registro = "AAAAAAAAAAAAAAAAAA", string? CPF = "544.506.718-13", string? RG = "12.345.678-9", bool? Tipo = true, string? Observacao = "Observação teste", string? Endereco = "Rua das Flores, 123", string? Bairro = "Centro", int? Cidade = 1, string? CEP = "01234-567", string? Contato = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Fax = "(11) 88888-9999", string? Fone = "(11) 99999-9999", string? EMail = "test@email.com", string? Periodo_Ini = "24/04/1975", string? Periodo_Fim = "24/04/1975", string? CTPSNumero = "AAAAAAAAAAAAA", string? CTPSSerie = "AAAAAAAA", string? PIS = "AAAAAAAAAAAAAAAAAA", decimal? Salario = 1m, string? CTPSDtEmissao = "24/04/1975", string? DtNasc = "24/04/1975", string? Data = "27/05/2022", bool? LiberaAgenda = false, string? Pasta = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Class = "A")
+    private void SetupMockFFuncionarios(string? EMailPro = "test@email.com", int? Cargo = 1, string? Nome = "João", int? Funcao = 1, bool? Sexo = false, string? Registro = "AAAAAAAAAAAAAAAAAA", string? CPF = "544.506.718-13", string? RG = "12.345.678-9", bool? Tipo = true, string? Observacao = "Observação teste", string? Endereco = "Rua das Flores, 123", string? Bairro = "Centro", int? Cidade = 1, string? CEP = "01234-567", string? Contato = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Fax = "(11) 88888-9999", string? Fone = "(11) 99999-9999", string? EMail = "test@email.com", string? Periodo_Ini = "24/04/1975", string? Periodo_Fim = "24/04/1975", string? CTPSNumero = "AAAAAAAAAAAAA", string? CTPSSerie = "AAAAAAAA", string? PIS = "AAAAAAAAAAAAAAAAAA", decimal? Salario = 1m, string? CTPSDtEmissao = "24/04/1975", string? DtNasc = "24/04/1975", string? Data = "24/04/1975", bool? LiberaAgenda = false, string? Pasta = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Class = "A")
     {
         _mockFFuncionarios.Setup(f => f.FEMailPro).Returns(EMailPro ?? string.Empty);
         _mockFFuncionarios.Setup(f => f.FCargo).Returns(Cargo ?? 0);
@@ -133,7 +133,7 @@ public class FuncionariosWhereTests : IDisposable
         result.Salario.Should().Be(1m);
         result.CTPSDtEmissao.Should().Be("24/04/1975");
         result.DtNasc.Should().Be("24/04/1975");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.LiberaAgenda.Should().Be(false);
         result.Pasta.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Class.Should().Be("A");
@@ -292,7 +292,7 @@ public class FuncionariosWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFFuncionarios(EMailPro: "test@email.com", Cargo: 1, Nome: "João", Funcao: 1, Sexo: false, Registro: "AAAAAAAAAAAAAAAAAA", CPF: "544.506.718-13", RG: "12.345.678-9", Tipo: true, Observacao: "Observação teste", Endereco: "Rua das Flores, 123", Bairro: "Centro", Cidade: 1, CEP: "01234-567", Contato: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Fax: "(11) 88888-9999", Fone: "(11) 99999-9999", EMail: "test@email.com", Periodo_Ini: "24/04/1975", Periodo_Fim: "24/04/1975", CTPSNumero: "AAAAAAAAAAAAA", CTPSSerie: "AAAAAAAA", PIS: "AAAAAAAAAAAAAAAAAA", Salario: 1m, CTPSDtEmissao: "24/04/1975", DtNasc: "24/04/1975", Data: "27/05/2022", LiberaAgenda: false, Pasta: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Class: "A");
+        SetupMockFFuncionarios(EMailPro: "test@email.com", Cargo: 1, Nome: "João", Funcao: 1, Sexo: false, Registro: "AAAAAAAAAAAAAAAAAA", CPF: "544.506.718-13", RG: "12.345.678-9", Tipo: true, Observacao: "Observação teste", Endereco: "Rua das Flores, 123", Bairro: "Centro", Cidade: 1, CEP: "01234-567", Contato: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Fax: "(11) 88888-9999", Fone: "(11) 99999-9999", EMail: "test@email.com", Periodo_Ini: "24/04/1975", Periodo_Fim: "24/04/1975", CTPSNumero: "AAAAAAAAAAAAA", CTPSSerie: "AAAAAAAA", PIS: "AAAAAAAAAAAAAAAAAA", Salario: 1m, CTPSDtEmissao: "24/04/1975", DtNasc: "24/04/1975", Data: "24/04/1975", LiberaAgenda: false, Pasta: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Class: "A");
         _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
         // Act
         var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
@@ -325,7 +325,7 @@ public class FuncionariosWhereTests : IDisposable
         result.Salario.Should().Be(1m);
         result.CTPSDtEmissao.Should().Be("24/04/1975");
         result.DtNasc.Should().Be("24/04/1975");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.LiberaAgenda.Should().Be(false);
         result.Pasta.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Class.Should().Be("A");
@@ -362,20 +362,6 @@ public class FuncionariosWhereTests : IDisposable
         var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.Periodo_Ini.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDatePeriodo_IniStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFFuncionarios(Periodo_Ini: "invalid-date");
-        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
-        // Act
-        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.Periodo_Ini.Should().Be("");
     }
 
     [Fact]
@@ -427,20 +413,6 @@ public class FuncionariosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDatePeriodo_FimStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFFuncionarios(Periodo_Fim: "invalid-date");
-        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
-        // Act
-        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.Periodo_Fim.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDatePeriodo_FimFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -486,20 +458,6 @@ public class FuncionariosWhereTests : IDisposable
         var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.CTPSDtEmissao.Should().Be("02/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateCTPSDtEmissaoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFFuncionarios(CTPSDtEmissao: "invalid-date");
-        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
-        // Act
-        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.CTPSDtEmissao.Should().Be("");
     }
 
     [Fact]
@@ -551,20 +509,6 @@ public class FuncionariosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFFuncionarios(DtNasc: "invalid-date");
-        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
-        // Act
-        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtNascFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -595,6 +539,54 @@ public class FuncionariosWhereTests : IDisposable
         var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.DtNasc.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "04/01/2025";
+        SetupMockFFuncionarios(Data: testDate);
+        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
+        // Act
+        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("04/01/2025");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFFuncionarios(Data: null);
+        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
+        // Act
+        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("04/01/2025")]
+    [InlineData("2025/01/05T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/06T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFFuncionarios(Data: dateString);
+        _mockFuncionariosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFFuncionarios.Object);
+        // Act
+        var result = _funcionariosWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
     }
 #endregion
 #endregion

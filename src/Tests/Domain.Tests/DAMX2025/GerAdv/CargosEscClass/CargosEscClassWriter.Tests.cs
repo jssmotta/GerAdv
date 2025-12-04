@@ -74,8 +74,8 @@ public class CargosEscClassWriterTests
         var result = await _cargosescclassWriter.WriteAsync(cargosescclass, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFCargosEscClass.Object);
+        _mockFCargosEscClass.VerifySet(x => x.FGuid = cargosescclass.Guid, Times.Once);
         _mockFCargosEscClass.VerifySet(x => x.FNome = cargosescclass.Nome, Times.Once);
-        _mockFCargosEscClass.VerifySet(x => x.FGUID = cargosescclass.GUID, Times.Once);
         _mockFCargosEscClass.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class CargosEscClassWriterTests
         var operadorId = 456;
         _mockCargosEscClassFactory.Setup(x => x.DeleteAsync(operadorId, cargosescclassResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _cargosescclassWriter.Delete(cargosescclassResponse, operadorId, _mockConnection.Object);
+        await _cargosescclassWriter.DeleteAsync(cargosescclassResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockCargosEscClassFactory.Verify(x => x.DeleteAsync(operadorId, cargosescclassResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class CargosEscClassWriterTests
         var operadorId = 111;
         _mockCargosEscClassFactory.Setup(x => x.DeleteAsync(operadorId, cargosescclassResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _cargosescclassWriter.Delete(cargosescclassResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _cargosescclassWriter.DeleteAsync(cargosescclassResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class CargosEscClassWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockCargosEscClassFactory.Setup(x => x.DeleteAsync(operadorId, cargosescclassResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _cargosescclassWriter.Delete(cargosescclassResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _cargosescclassWriter.DeleteAsync(cargosescclassResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class CargosEscClassWriterTests
         return new Models.CargosEscClass
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

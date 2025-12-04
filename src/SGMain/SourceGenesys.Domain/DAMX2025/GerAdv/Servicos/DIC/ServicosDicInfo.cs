@@ -13,7 +13,7 @@ public static partial class DBServicosDicInfo
     public const string Cobrar = "serCobrar"; // LOCALIZACAO 170523
     public const string Descricao = "serDescricao"; // LOCALIZACAO 170523
     public const string Basico = "serBasico"; // LOCALIZACAO 170523
-    public const string GUID = "serGUID"; // LOCALIZACAO 170523
+    public const string Guid = "serGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "serQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "serDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "serQuemAtu"; // LOCALIZACAO 170523
@@ -35,44 +35,15 @@ public static partial class DBServicosDicInfo
 
     public const string PTabelaNome = "Servicos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem SerCobrar => new(0, PTabelaNome, CampoCodigo, Cobrar, "Cobrar", "Cobrar", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ser"
-    };
-    public static DBInfoSystem SerDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 200, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ser"
-    };
-    public static DBInfoSystem SerBasico => new(0, PTabelaNome, CampoCodigo, Basico, "Basico", "Basico", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ser"
-    };
-    public static DBInfoSystem SerGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ser"
-    };
-    public static DBInfoSystem SerQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ser"
-    }; // DBI 11 
-    public static DBInfoSystem SerDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ser"
-    };
-    public static DBInfoSystem SerQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ser"
-    }; // DBI 11 
-    public static DBInfoSystem SerDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ser"
-    };
-    public static DBInfoSystem SerVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        Prefixo = "ser"
-    };
+    public static DBInfoSystem SerCobrar => new(0, PTabelaNome, CampoCodigo, Cobrar, Cobrar, Cobrar, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ser", isRequired: true);
+    public static DBInfoSystem SerDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 200, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ser");
+    public static DBInfoSystem SerBasico => new(0, PTabelaNome, CampoCodigo, Basico, Basico, Basico, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ser", isRequired: true);
+    public static DBInfoSystem SerGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ser");
+    public static DBInfoSystem SerQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ser"); // DBI 11 
+    public static DBInfoSystem SerDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ser");
+    public static DBInfoSystem SerQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ser"); // DBI 11 
+    public static DBInfoSystem SerDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ser");
+    public static DBInfoSystem SerVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ser");
 
 #endregion
     [Serializable]

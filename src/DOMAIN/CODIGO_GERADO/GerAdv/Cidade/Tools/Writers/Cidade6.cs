@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ICidadeWriter
 {
     Task<FCidade> WriteAsync(Models.Cidade cidade, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(CidadeResponse cidade, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(CidadeResponse cidade, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class CidadeWriter(IFCidadeFactory cidadeFactory) : ICidadeWriter
 {
     private readonly IFCidadeFactory _cidadeFactory = cidadeFactory ?? throw new ArgumentNullException(nameof(cidadeFactory));
-    public virtual async Task Delete(CidadeResponse cidade, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(CidadeResponse cidade, int operadorId, MsiSqlConnection? oCnn)
     {
         await _cidadeFactory.DeleteAsync(operadorId, cidade.Id, oCnn);
     }
@@ -30,7 +30,7 @@ public class CidadeWriter(IFCidadeFactory cidadeFactory) : ICidadeWriter
         dbRec.FNome = cidade.Nome;
         dbRec.FUF = cidade.UF;
         dbRec.FSigla = cidade.Sigla;
-        dbRec.FGUID = cidade.GUID;
+        dbRec.FGuid = cidade.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

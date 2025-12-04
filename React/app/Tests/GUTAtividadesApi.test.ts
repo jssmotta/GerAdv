@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { GUTAtividadesApiError } from '../GerAdv_TS/GUTAtividades/Apis/ApiGUTAtividades';
+import { GUTAtividadesApiError } from '@/app/GerAdv_TS/GUTAtividades/Apis/ApiGUTAtividades';
 import { GUTAtividadesApi } from '@/app/GerAdv_TS/GUTAtividades/Apis/ApiGUTAtividades';
-import { FilterGUTAtividades } from '../GerAdv_TS/GUTAtividades/Filters/GUTAtividades';
-import { IGUTAtividades } from '../GerAdv_TS/GUTAtividades/Interfaces/interface.GUTAtividades';
-import { GUTAtividadesTestEmpty } from '../GerAdv_TS/Models/GUTAtividades';
+import { FilterGUTAtividades } from '@/app/GerAdv_TS/GUTAtividades/Filters/GUTAtividades';
+import { IGUTAtividades } from '@/app/GerAdv_TS/GUTAtividades/Interfaces/interface.GUTAtividades';
+import { GUTAtividadesTestEmpty } from '@/app/GerAdv_TS/Models/GUTAtividades';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('GUTAtividadesApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterGUTAtividades = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,16 @@ describe('GUTAtividadesApi', () => {
   describe('addAndUpdate', () => {
     const mockGUTAtividades: IGUTAtividades = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+observacao: 'Observação teste',
+gutgrupo: 0,
+gutperiodicidade: 1,
+operador: 0,
+concluido: false,
+dataconcluido: '24/04/1975',
+diasparainiciar: 0,
+minutospararealizar: 0
     };
 
     it('should add new gutatividades successfully', async () => {
@@ -487,7 +483,7 @@ describe('GUTAtividadesApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterGUTAtividades = { funcionario: 1 };
+      const mockFilter: FilterGUTAtividades = { : 1 };
       
       const result = gutatividadesApi.useFilter(mockFilter);
       

@@ -54,8 +54,24 @@ public partial class DBProProcuradores
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProProcuradoresDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBProProcuradoresDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Advogado)))
-                m_FAdvogado = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.Advogado));
+                FAdvogado = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.Advogado));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +89,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProProcuradoresDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProProcuradoresDicInfo.Data)));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.Processo));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Procuracao)))
-                m_FProcuracao = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Procuracao));
+                FProcuracao = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Procuracao));
         }
         catch
         {
@@ -118,7 +134,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.QuemAtu));
         }
         catch
         {
@@ -127,7 +143,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProProcuradoresDicInfo.QuemCad));
         }
         catch
         {
@@ -136,7 +152,7 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Substabelecimento)))
-                m_FSubstabelecimento = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Substabelecimento));
+                FSubstabelecimento = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Substabelecimento));
         }
         catch
         {
@@ -145,30 +161,14 @@ public partial class DBProProcuradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProProcuradoresDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProProcuradoresDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBProProcuradoresDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProProcuradoresDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -192,7 +192,7 @@ public partial class DBProProcuradores
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

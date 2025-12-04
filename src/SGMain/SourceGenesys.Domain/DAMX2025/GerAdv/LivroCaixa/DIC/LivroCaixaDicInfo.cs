@@ -54,83 +54,24 @@ public static partial class DBLivroCaixaDicInfo
 
     public const string PTabelaNome = "LivroCaixa";
 #region PropriedadesDaTabela
-    public static DBInfoSystem LivIDDes => new(0, PTabelaNome, CampoCodigo, IDDes, "IDDes", "IDDes", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivPessoal => new(0, PTabelaNome, CampoCodigo, Pessoal, "Pessoal", "Pessoal", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivAjuste => new(0, PTabelaNome, CampoCodigo, Ajuste, "Ajuste", "Ajuste", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivIDHon => new(0, PTabelaNome, CampoCodigo, IDHon, "IDHon", "IDHon", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivIDHonParc => new(0, PTabelaNome, CampoCodigo, IDHonParc, "IDHonParc", "IDHonParc", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivIDHonSuc => new(0, PTabelaNome, CampoCodigo, IDHonSuc, "IDHonSuc", "IDHonSuc", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivHistorico => new(0, PTabelaNome, CampoCodigo, Historico, 255, "Historico", "Historico", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivPrevisto => new(0, PTabelaNome, CampoCodigo, Previsto, "Previsto", "Previsto", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivGrupo => new(0, PTabelaNome, CampoCodigo, Grupo, "Grupo", "Grupo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "liv"
-    }; // DBI 11 
-    public static DBInfoSystem LivDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "liv"
-    }; // DBI 11 
-    public static DBInfoSystem LivDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "liv"
-    };
-    public static DBInfoSystem LivVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "liv"
-    };
+    public static DBInfoSystem LivIDDes => new(0, PTabelaNome, CampoCodigo, IDDes, IDDes, IDDes, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "liv");
+    public static DBInfoSystem LivPessoal => new(0, PTabelaNome, CampoCodigo, Pessoal, Pessoal, Pessoal, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "liv");
+    public static DBInfoSystem LivAjuste => new(0, PTabelaNome, CampoCodigo, Ajuste, Ajuste, Ajuste, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "liv", isRequired: true);
+    public static DBInfoSystem LivIDHon => new(0, PTabelaNome, CampoCodigo, IDHon, IDHon, IDHon, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "liv");
+    public static DBInfoSystem LivIDHonParc => new(0, PTabelaNome, CampoCodigo, IDHonParc, IDHonParc, IDHonParc, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "liv");
+    public static DBInfoSystem LivIDHonSuc => new(0, PTabelaNome, CampoCodigo, IDHonSuc, IDHonSuc, IDHonSuc, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "liv", isRequired: true);
+    public static DBInfoSystem LivData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "liv");
+    public static DBInfoSystem LivProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "liv");
+    public static DBInfoSystem LivValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "liv");
+    public static DBInfoSystem LivTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "liv", isRequired: true);
+    public static DBInfoSystem LivHistorico => new(0, PTabelaNome, CampoCodigo, Historico, 255, Historico, Historico, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "liv");
+    public static DBInfoSystem LivPrevisto => new(0, PTabelaNome, CampoCodigo, Previsto, Previsto, Previsto, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "liv", isRequired: true);
+    public static DBInfoSystem LivGrupo => new(0, PTabelaNome, CampoCodigo, Grupo, Grupo, Grupo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "liv");
+    public static DBInfoSystem LivQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "liv"); // DBI 11 
+    public static DBInfoSystem LivDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "liv");
+    public static DBInfoSystem LivQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "liv"); // DBI 11 
+    public static DBInfoSystem LivDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "liv");
+    public static DBInfoSystem LivVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "liv", isRequired: true);
 
 #endregion
     [Serializable]

@@ -10,7 +10,6 @@ public static partial class DBHorasTrabDicInfo
     public const string CampoCodigo = "htbCodigo";
     public const string CampoNome = "htbData";
     public const string TablePrefix = "htb";
-    public const string GUID = "htbGUID"; // LOCALIZACAO 170523
     public const string IDContatoCRM = "htbIDContatoCRM"; // LOCALIZACAO 170523
     public const string Honorario = "htbHonorario"; // LOCALIZACAO 170523
     public const string IDAgenda = "htbIDAgenda"; // LOCALIZACAO 170523
@@ -29,6 +28,7 @@ public static partial class DBHorasTrabDicInfo
     public const string AnexoComp = "htbAnexoComp"; // LOCALIZACAO 170523
     public const string AnexoUNC = "htbAnexoUNC"; // LOCALIZACAO 170523
     public const string Servico = "htbServico"; // LOCALIZACAO 170523
+    public const string Guid = "htbGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "htbQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "htbDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "htbQuemAtu"; // LOCALIZACAO 170523
@@ -65,104 +65,30 @@ public static partial class DBHorasTrabDicInfo
 
     public const string PTabelaNome = "HorasTrab";
 #region PropriedadesDaTabela
-    public static DBInfoSystem HtbGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbIDContatoCRM => new(0, PTabelaNome, CampoCodigo, IDContatoCRM, "IDContatoCRM", "IDContatoCRM", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbHonorario => new(0, PTabelaNome, CampoCodigo, Honorario, "Honorario", "Honorario", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbIDAgenda => new(0, PTabelaNome, CampoCodigo, IDAgenda, "IDAgenda", "IDAgenda", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "htb"
-    }; // DBI 11 
-    public static DBInfoSystem HtbStatus => new(0, PTabelaNome, CampoCodigo, Status, "Status", "Status", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, "Advogado", "Advogado", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false)
-    {
-        Prefixo = "htb"
-    }; // DBI 11 
-    public static DBInfoSystem HtbFuncionario => new(0, PTabelaNome, CampoCodigo, Funcionario, "Colaborador", "Colaborador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBFuncionariosDicInfo.CampoCodigo, DBFuncionariosDicInfo.TabelaNome, new DBFuncionariosODicInfo(), false)
-    {
-        Prefixo = "htb"
-    }; // DBI 11 
-    public static DBInfoSystem HtbHrIni => new(0, PTabelaNome, CampoCodigo, HrIni, 5, "HrIni", "HrIni", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbHrFim => new(0, PTabelaNome, CampoCodigo, HrFim, 5, "HrFim", "HrFim", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbTempo => new(0, PTabelaNome, CampoCodigo, Tempo, "Tempo", "Tempo", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, "OBS", "OBS", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbAnexo => new(0, PTabelaNome, CampoCodigo, Anexo, 255, "Anexo", "Anexo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbAnexoComp => new(0, PTabelaNome, CampoCodigo, AnexoComp, 50, "AnexoComp", "AnexoComp", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbAnexoUNC => new(0, PTabelaNome, CampoCodigo, AnexoUNC, 255, "AnexoUNC", "AnexoUNC", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbServico => new(0, PTabelaNome, CampoCodigo, Servico, "Servico", "Servico", ETipoDadosSysteminfo.SysteminfoForeingkey, DBServicosDicInfo.CampoCodigo, DBServicosDicInfo.TabelaNome, new DBServicosODicInfo(), false)
-    {
-        Prefixo = "htb"
-    }; // DBI 11 
-    public static DBInfoSystem HtbQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "htb"
-    }; // DBI 11 
-    public static DBInfoSystem HtbDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "htb"
-    }; // DBI 11 
-    public static DBInfoSystem HtbDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "htb"
-    };
-    public static DBInfoSystem HtbVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "htb"
-    };
+    public static DBInfoSystem HtbIDContatoCRM => new(0, PTabelaNome, CampoCodigo, IDContatoCRM, IDContatoCRM, IDContatoCRM, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "htb");
+    public static DBInfoSystem HtbHonorario => new(0, PTabelaNome, CampoCodigo, Honorario, Honorario, Honorario, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "htb", isRequired: true);
+    public static DBInfoSystem HtbIDAgenda => new(0, PTabelaNome, CampoCodigo, IDAgenda, IDAgenda, IDAgenda, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "htb");
+    public static DBInfoSystem HtbData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "htb");
+    public static DBInfoSystem HtbCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "htb"); // DBI 11 
+    public static DBInfoSystem HtbStatus => new(0, PTabelaNome, CampoCodigo, Status, Status, Status, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "htb");
+    public static DBInfoSystem HtbProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "htb");
+    public static DBInfoSystem HtbAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, Advogado, Advogado, EDataTypeSystemInfo.SystemInfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false, prefixo: "htb"); // DBI 11 
+    public static DBInfoSystem HtbFuncionario => new(0, PTabelaNome, CampoCodigo, Funcionario, Funcionario, Funcionario, EDataTypeSystemInfo.SystemInfoForeingkey, DBFuncionariosDicInfo.CampoCodigo, DBFuncionariosDicInfo.TabelaNome, new DBFuncionariosODicInfo(), false, prefixo: "htb"); // DBI 11 
+    public static DBInfoSystem HtbHrIni => new(0, PTabelaNome, CampoCodigo, HrIni, 5, HrIni, HrIni, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbHrFim => new(0, PTabelaNome, CampoCodigo, HrFim, 5, HrFim, HrFim, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbTempo => new(0, PTabelaNome, CampoCodigo, Tempo, Tempo, Tempo, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "htb");
+    public static DBInfoSystem HtbValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "htb");
+    public static DBInfoSystem HtbOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, OBS, OBS, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbAnexo => new(0, PTabelaNome, CampoCodigo, Anexo, 255, Anexo, Anexo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbAnexoComp => new(0, PTabelaNome, CampoCodigo, AnexoComp, 50, AnexoComp, AnexoComp, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbAnexoUNC => new(0, PTabelaNome, CampoCodigo, AnexoUNC, 255, AnexoUNC, AnexoUNC, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbServico => new(0, PTabelaNome, CampoCodigo, Servico, Servico, Servico, EDataTypeSystemInfo.SystemInfoForeingkey, DBServicosDicInfo.CampoCodigo, DBServicosDicInfo.TabelaNome, new DBServicosODicInfo(), false, prefixo: "htb"); // DBI 11 
+    public static DBInfoSystem HtbGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "htb");
+    public static DBInfoSystem HtbQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "htb"); // DBI 11 
+    public static DBInfoSystem HtbDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "htb");
+    public static DBInfoSystem HtbQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "htb"); // DBI 11 
+    public static DBInfoSystem HtbDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "htb");
+    public static DBInfoSystem HtbVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "htb", isRequired: true);
 
 #endregion
     [Serializable]

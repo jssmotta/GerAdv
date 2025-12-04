@@ -7,6 +7,7 @@
 using MenphisSI.GerAdv.Models.Response.All;
 using MenphisSI.GerAdv.Readers;
 using System.Data;
+using Xunit.Abstractions;
 
 namespace MenphisSI.GerAdv.Tests.Readers;
 /// <summary>
@@ -15,16 +16,20 @@ namespace MenphisSI.GerAdv.Tests.Readers;
 /// </summary>
 public class NECompromissosReaderTests : IDisposable
 {
+    private readonly ITestOutputHelper _output;
     private readonly Mock<IFNECompromissosFactory> _mockNECompromissosFactory;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IDataRecord> _mockDataRecord;
     private readonly NECompromissosReader _necompromissosReader;
-    public NECompromissosReaderTests()
+    private readonly Mock<IConnectionService> _mockConnectionService;
+    public NECompromissosReaderTests(ITestOutputHelper output)
     {
+        _output = output;
         _mockNECompromissosFactory = new Mock<IFNECompromissosFactory>();
         _mockConnection = new Mock<MsiSqlConnection>();
         _mockDataRecord = new Mock<IDataRecord>();
-        _necompromissosReader = new NECompromissosReader(_mockNECompromissosFactory.Object);
+        _mockConnectionService = new Mock<IConnectionService>();
+        _necompromissosReader = new NECompromissosReader(_mockNECompromissosFactory.Object, _mockConnectionService.Object);
     }
 
 #region Constructor Tests
@@ -39,40 +44,7 @@ public class NECompromissosReaderTests : IDisposable
     public void Constructor_WithNullFactory_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new NECompromissosReader(null !));
-    }
-
-#endregion
-#region Listar Tests
-    [Fact]
-    public async Task Listar_WithValidParameters_ShouldCallListarTabela()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "ncpCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // Since this calls external dependencies and database connections,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _necompromissosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
-    [Fact]
-    public async Task Listar_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri";
-        var cWhere = "ncpCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = new CancellationToken(true); // Already cancelled
-        // Act & Assert
-        // Even with cancellation, this should throw an exception due to invalid URI
-        await Assert.ThrowsAsync<Exception>(() => _necompromissosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
+        Assert.Throws<ArgumentNullException>(() => new NECompromissosReader(null !, null !));
     }
 
 #endregion
@@ -89,7 +61,7 @@ public class NECompromissosReaderTests : IDisposable
         };
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedNECompromissos);
         // Act
-        var result = await _necompromissosReader.Read(id, _mockConnection.Object);
+        var result = await _necompromissosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
@@ -107,7 +79,7 @@ public class NECompromissosReaderTests : IDisposable
         };
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFNECompromissos);
         // Act
-        var result = await _necompromissosReader.Read(id, _mockConnection.Object);
+        var result = await _necompromissosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -123,7 +95,7 @@ public class NECompromissosReaderTests : IDisposable
         };
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFNECompromissos);
         // Act
-        var result = await _necompromissosReader.Read(id, _mockConnection.Object);
+        var result = await _necompromissosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -142,7 +114,7 @@ public class NECompromissosReaderTests : IDisposable
         };
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFNECompromissos);
         // Act
-        var result = await _necompromissosReader.ReadM(id, _mockConnection.Object);
+        var result = await _necompromissosReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
@@ -161,7 +133,7 @@ public class NECompromissosReaderTests : IDisposable
         };
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFNECompromissos);
         // Act
-        var result = await _necompromissosReader.ReadM(id, _mockConnection.Object);
+        var result = await _necompromissosReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(0);
@@ -193,7 +165,7 @@ public class NECompromissosReaderTests : IDisposable
         // Arrange
         FNECompromissos? dbRec = null;
         // Act
-        var result = _necompromissosReader.Read(dbRec, _mockConnection.Object);
+        var result = _necompromissosReader.Read(dbRec!, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -268,7 +240,7 @@ public class NECompromissosReaderTests : IDisposable
         // Arrange
         FNECompromissos? dbRec = null;
         // Act
-        var result = _necompromissosReader.Read(dbRec);
+        var result = _necompromissosReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -315,7 +287,7 @@ public class NECompromissosReaderTests : IDisposable
         // Arrange
         DBNECompromissos? dbRec = null;
         // Act
-        var result = _necompromissosReader.Read(dbRec);
+        var result = _necompromissosReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -362,7 +334,7 @@ public class NECompromissosReaderTests : IDisposable
         // Arrange
         FNECompromissos? dbRec = null;
         // Act
-        var result = _necompromissosReader.ReadAll(dbRec, _mockDataRecord.Object);
+        var result = _necompromissosReader.ReadAll(dbRec!, _mockDataRecord.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -409,7 +381,7 @@ public class NECompromissosReaderTests : IDisposable
         // Arrange
         DBNECompromissos? dbRec = null;
         // Act
-        var result = _necompromissosReader.ReadAll(dbRec, null);
+        var result = _necompromissosReader.ReadAll(dbRec!, null);
         // Assert
         result.Should().BeNull();
     }
@@ -441,7 +413,7 @@ public class NECompromissosReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _necompromissosReader.Read(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _necompromissosReader.ReadAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -453,7 +425,7 @@ public class NECompromissosReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _necompromissosReader.ReadM(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _necompromissosReader.ReadMAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -538,26 +510,11 @@ public class NECompromissosReaderTests : IDisposable
         _mockNECompromissosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFNECompromissos);
         // Act & Assert
         // Test only the methods that don't depend on external URI connections
-        var readTask = _necompromissosReader.Read(id, _mockConnection.Object);
-        var readMTask = _necompromissosReader.ReadM(id, _mockConnection.Object);
+        var readTask = _necompromissosReader.ReadAsync(id, _mockConnection.Object);
+        var readMTask = _necompromissosReader.ReadMAsync(id, _mockConnection.Object);
         await Task.WhenAll(readTask, readMTask);
         // If we reach here, async methods completed without deadlock
         Assert.True(true);
-    }
-
-    [Fact]
-    public async Task Listar_WithInvalidUri_ShouldThrowException()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri"; // Invalid URI
-        var cWhere = "";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<Exception>(() => _necompromissosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
     }
 
 #endregion
@@ -572,7 +529,7 @@ public class NECompromissosReaderTests : IDisposable
         // depending on the implementation
         try
         {
-            await _necompromissosReader.Read(id, null !);
+            await _necompromissosReader.ReadAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -588,7 +545,7 @@ public class NECompromissosReaderTests : IDisposable
         // Act & Assert
         try
         {
-            await _necompromissosReader.ReadM(id, null !);
+            await _necompromissosReader.ReadMAsync(id, null !);
         }
         catch (Exception ex)
         {

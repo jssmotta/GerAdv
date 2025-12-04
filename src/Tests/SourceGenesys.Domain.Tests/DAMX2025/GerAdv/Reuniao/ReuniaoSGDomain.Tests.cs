@@ -37,17 +37,31 @@ public class DBReuniaoTests : IDisposable
         dt.Columns.Add("renVisto", typeof(bool));
         dt.Columns.Add("renCliente", typeof(int));
         dt.Columns.Add("renIDAgenda", typeof(int));
-        dt.Columns.Add("renData", typeof(string));
+        dt.Columns.Add("renData", typeof(DateTime));
         dt.Columns.Add("renPauta", typeof(string));
         dt.Columns.Add("renATA", typeof(string));
         dt.Columns.Add("renHoraInicial", typeof(DateTime));
-        dt.Columns.Add("renHoraFinal", typeof(string));
+        dt.Columns.Add("renHoraFinal", typeof(DateTime));
         dt.Columns.Add("renExterna", typeof(string));
         dt.Columns.Add("renHoraSaida", typeof(DateTime));
         dt.Columns.Add("renHoraRetorno", typeof(DateTime));
         dt.Columns.Add("renPrincipaisDecisoes", typeof(string));
-        dt.Columns.Add("renGUID", typeof(string));
+        dt.Columns.Add("renBold", typeof(string));
+        dt.Columns.Add("renGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["renCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBReuniao(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -68,7 +82,7 @@ public class DBReuniaoTests : IDisposable
     {
         var instance = new DBReuniao();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Reuniao", instance.ITabelaName());
+        Assert.Equal("Reuniao", instance.ITableName());
         Assert.Equal("ren", instance.Prefixo);
     }
 
@@ -86,29 +100,16 @@ public class DBReuniaoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["renCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBReuniao(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Reuniao", cadastro.ITabelaName());
-        Assert.Equal("renCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("renData", cadastro.ICampoNome());
-        Assert.Equal("ren", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Reuniao", cadastro.ITableName());
+        Assert.Equal("renCodigo", cadastro.IFieldId());
+        Assert.Equal("renData", cadastro.IFieldNameDescription());
+        Assert.Equal("ren", cadastro.IPrefix());
     }
 
 #endregion
@@ -168,9 +169,9 @@ public class DBReuniaoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -213,6 +214,23 @@ public class DBReuniaoTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBReuniao();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
@@ -247,6 +265,23 @@ public class DBReuniaoTests : IDisposable
     {
         var instance = new DBReuniao();
         Assert.Equal(string.Empty, instance.FHoraInicial);
+    }
+
+    [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HoraFinal_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHoraFinal = dateString;
+        Assert.Equal(expected, _instance.FHoraFinal);
+    }
+
+    [Fact]
+    public void HoraFinal_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBReuniao();
+        Assert.Equal(string.Empty, instance.FHoraFinal);
     }
 
     [Theory]
@@ -313,18 +348,18 @@ public class DBReuniaoTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

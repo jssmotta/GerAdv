@@ -41,7 +41,7 @@ public class DBLivroCaixaTests : IDisposable
         dt.Columns.Add("livIDHon", typeof(int));
         dt.Columns.Add("livIDHonParc", typeof(int));
         dt.Columns.Add("livIDHonSuc", typeof(string));
-        dt.Columns.Add("livData", typeof(string));
+        dt.Columns.Add("livData", typeof(DateTime));
         dt.Columns.Add("livProcesso", typeof(int));
         dt.Columns.Add("livValor", typeof(decimal));
         dt.Columns.Add("livTipo", typeof(string));
@@ -49,6 +49,19 @@ public class DBLivroCaixaTests : IDisposable
         dt.Columns.Add("livPrevisto", typeof(string));
         dt.Columns.Add("livGrupo", typeof(int));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["livCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBLivroCaixa(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -69,7 +82,7 @@ public class DBLivroCaixaTests : IDisposable
     {
         var instance = new DBLivroCaixa();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("LivroCaixa", instance.ITabelaName());
+        Assert.Equal("LivroCaixa", instance.ITableName());
         Assert.Equal("liv", instance.Prefixo);
     }
 
@@ -87,29 +100,16 @@ public class DBLivroCaixaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["livCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBLivroCaixa(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("LivroCaixa", cadastro.ITabelaName());
-        Assert.Equal("livCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("livData", cadastro.ICampoNome());
-        Assert.Equal("liv", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("LivroCaixa", cadastro.ITableName());
+        Assert.Equal("livCodigo", cadastro.IFieldId());
+        Assert.Equal("livData", cadastro.IFieldNameDescription());
+        Assert.Equal("liv", cadastro.IPrefix());
     }
 
 #endregion
@@ -169,9 +169,9 @@ public class DBLivroCaixaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -281,6 +281,23 @@ public class DBLivroCaixaTests : IDisposable
     {
         var instance = new DBLivroCaixa();
         Assert.False(instance.FIDHonSuc);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBLivroCaixa();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]

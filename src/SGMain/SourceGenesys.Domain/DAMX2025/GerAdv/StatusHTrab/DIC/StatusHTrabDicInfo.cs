@@ -22,14 +22,8 @@ public static partial class DBStatusHTrabDicInfo
 
     public const string PTabelaNome = "StatusHTrab";
 #region PropriedadesDaTabela
-    public static DBInfoSystem ShtDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "sht"
-    };
-    public static DBInfoSystem ShtResID => new(0, PTabelaNome, CampoCodigo, ResID, "ResID", "ResID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "sht"
-    };
+    public static DBInfoSystem ShtDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "sht");
+    public static DBInfoSystem ShtResID => new(0, PTabelaNome, CampoCodigo, ResID, ResID, ResID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "sht");
 
 #endregion
     [Serializable]

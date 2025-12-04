@@ -26,8 +26,6 @@ public class ProValoresValidation : IProValoresValidation
 
     private bool ValidSizes(Models.ProValores reg)
     {
-        if (reg.Guid != null && reg.Guid.Length > DBProValoresDicInfo.PrvGuid.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProValoresDicInfo.PrvGuid.FTamanho} caracteres.");
         if (reg.Indice != null && reg.Indice.Length > DBProValoresDicInfo.PrvIndice.FTamanho)
             throw new SGValidationException($"Indice deve ter no máximo {DBProValoresDicInfo.PrvIndice.FTamanho} caracteres.");
         return true;
@@ -39,6 +37,8 @@ public class ProValoresValidation : IProValoresValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -50,8 +50,24 @@ public class ProValoresValidation : IProValoresValidation
             throw new SGValidationException("Indice é obrigatório.");
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
+        if (!DateTime.TryParse(reg.Data, out _))
+        {
+            throw new SGValidationException($"Data inválida: {reg.Data}");
+        }
+
+        if (reg.Data.IsEmpty())
+            throw new SGValidationException("Data é obrigatório.");
         if (reg.ValorOriginal.IsEmpty())
             throw new SGValidationException("ValorOriginal é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.DataUltimaCorrecao))
         {
             if (DateTime.TryParse(reg.DataUltimaCorrecao, out DateTime dataAntiga))

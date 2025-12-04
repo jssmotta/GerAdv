@@ -36,8 +36,6 @@ public class BensMateriaisValidation : IBensMateriaisValidation
             throw new SGValidationException($"Comprador deve ter no máximo {DBBensMateriaisDicInfo.BmtComprador.FTamanho} caracteres.");
         if (reg.NomeVendedor != null && reg.NomeVendedor.Length > DBBensMateriaisDicInfo.BmtNomeVendedor.FTamanho)
             throw new SGValidationException($"NomeVendedor deve ter no máximo {DBBensMateriaisDicInfo.BmtNomeVendedor.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBBensMateriaisDicInfo.BmtGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBBensMateriaisDicInfo.BmtGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,6 +45,8 @@ public class BensMateriaisValidation : IBensMateriaisValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -80,7 +80,7 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         // BensClassificacao
         if (!reg.BensClassificacao.IsEmptyIDNumber())
         {
-            var regBensClassificacao = await bensclassificacaoReader.Read(reg.BensClassificacao, oCnn);
+            var regBensClassificacao = await bensclassificacaoReader.ReadAsync(reg.BensClassificacao, oCnn);
             if (regBensClassificacao == null || regBensClassificacao.Id != reg.BensClassificacao)
             {
                 throw new SGValidationException($"Bens Classificacao não encontrado ({regBensClassificacao?.Id}).");
@@ -90,7 +90,7 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         // Fornecedores
         if (!reg.Fornecedor.IsEmptyIDNumber())
         {
-            var regFornecedores = await fornecedoresReader.Read(reg.Fornecedor, oCnn);
+            var regFornecedores = await fornecedoresReader.ReadAsync(reg.Fornecedor, oCnn);
             if (regFornecedores == null || regFornecedores.Id != reg.Fornecedor)
             {
                 throw new SGValidationException($"Fornecedor não encontrado ({regFornecedores?.Id}).");
@@ -100,7 +100,7 @@ public class BensMateriaisValidation : IBensMateriaisValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

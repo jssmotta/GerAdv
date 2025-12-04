@@ -10,65 +10,72 @@ import { ITipoOrigemSucumbencia } from '../../Interfaces/interface.TipoOrigemSuc
 import { useIsMobile } from '@/app/context/MobileContext';
 import { TipoOrigemSucumbenciaEmpty } from '@/app/GerAdv_TS/Models/TipoOrigemSucumbencia';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface TipoOrigemSucumbenciaWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedTipoOrigemSucumbencia?: ITipoOrigemSucumbencia;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedTipoOrigemSucumbencia?: ITipoOrigemSucumbencia;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const TipoOrigemSucumbenciaWindow: React.FC<TipoOrigemSucumbenciaWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedTipoOrigemSucumbencia, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedTipoOrigemSucumbencia,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Tipo Origem Sucumbencia'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedTipoOrigemSucumbencia?.id ?? 0).toString()}
->
-<TipoOrigemSucumbenciaInc
-id={selectedTipoOrigemSucumbencia?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Tipo Origem Sucumbencia'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedTipoOrigemSucumbencia?.id ?? 0).toString()}
+            >
+                <TipoOrigemSucumbenciaInc
+                    id={selectedTipoOrigemSucumbencia?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowTipoOrigemSucumbencia: React.FC<TipoOrigemSucumbenciaWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<TipoOrigemSucumbenciaWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedTipoOrigemSucumbencia={TipoOrigemSucumbenciaEmpty()}>
-</TipoOrigemSucumbenciaWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <TipoOrigemSucumbenciaWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedTipoOrigemSucumbencia={TipoOrigemSucumbenciaEmpty()}>
+        </TipoOrigemSucumbenciaWindow>
+    )
 };
+
 export default TipoOrigemSucumbenciaWindow;

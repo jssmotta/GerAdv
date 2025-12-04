@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ContratosApiError } from '../GerAdv_TS/Contratos/Apis/ApiContratos';
+import { ContratosApiError } from '@/app/GerAdv_TS/Contratos/Apis/ApiContratos';
 import { ContratosApi } from '@/app/GerAdv_TS/Contratos/Apis/ApiContratos';
-import { FilterContratos } from '../GerAdv_TS/Contratos/Filters/Contratos';
-import { IContratos } from '../GerAdv_TS/Contratos/Interfaces/interface.Contratos';
-import { ContratosTestEmpty } from '../GerAdv_TS/Models/Contratos';
+import { FilterContratos } from '@/app/GerAdv_TS/Contratos/Filters/Contratos';
+import { IContratos } from '@/app/GerAdv_TS/Contratos/Interfaces/interface.Contratos';
+import { ContratosTestEmpty } from '@/app/GerAdv_TS/Models/Contratos';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ContratosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterContratos = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,35 @@ describe('ContratosApi', () => {
   describe('addAndUpdate', () => {
     const mockContratos: IContratos = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+cliente: 0,
+advogado: 0,
+dia: 0,
+valor: 1m,
+datainicio: '24/04/1975',
+datatermino: '24/04/1975',
+ocultarrelatorio: false,
+percescritorio: 1m,
+valorconsultoria: 1m,
+tipocobranca: 0,
+protestar: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+juros: 'AAA',
+valorrealizavel: 1m,
+documento: 'AAAAAAAAAAAAA',
+email1: 'test@email.com',
+email2: 'test@email.com',
+email3: 'test@email.com',
+pessoa1: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+pessoa2: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+pessoa3: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+clientecontrato: 0,
+idextrangeiro: 0,
+chavecontrato: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+avulso: true,
+suspenso: false,
+multa: 'AAAAAAAA'
     };
 
     it('should add new contratos successfully', async () => {
@@ -487,7 +502,7 @@ describe('ContratosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterContratos = { funcionario: 1 };
+      const mockFilter: FilterContratos = { : 1 };
       
       const result = contratosApi.useFilter(mockFilter);
       

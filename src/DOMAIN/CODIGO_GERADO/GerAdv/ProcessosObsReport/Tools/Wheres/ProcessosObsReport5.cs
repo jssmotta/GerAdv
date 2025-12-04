@@ -20,11 +20,16 @@ public partial class ProcessosObsReportWhere(IFProcessosObsReportFactory process
         var processosobsreport = new ProcessosObsReportResponse
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Observacao = dbRec.FObservacao ?? string.Empty,
             Historico = dbRec.FHistorico,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            processosobsreport.Data = XData.ToString("dd/MM/yyyy");
+            processosobsreport.Data_date = XData;
+        }
+
         return processosobsreport;
     }
 }

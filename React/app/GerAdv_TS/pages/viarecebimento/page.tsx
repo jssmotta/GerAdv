@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ViaRecebimentoGridAdapter } from '@/app/GerAdv_TS/ViaRecebimento/Adapter/ViaRecebimentoGridAdapter';
 import ViaRecebimentoGridContainer from '@/app/GerAdv_TS/ViaRecebimento/Components/ViaRecebimentoGridContainer';
+
 const ViaRecebimentoPage: React.FC = () => {
-  const ViaRecebimentoGrid = new ViaRecebimentoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Via Recebimento' />
-    <ViaRecebimentoGridContainer grid={ViaRecebimentoGrid} />
-  </PageLayout>
-);
+    const ViaRecebimentoGrid = new ViaRecebimentoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ViaRecebimentoGridContainer grid={ViaRecebimentoGrid} />
+        </PageLayout>
+    );
 };
+
 export default ViaRecebimentoPage;

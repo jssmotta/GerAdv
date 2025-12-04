@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IStatusTarefasService
 {
+    Task<Filters.FilterStatusTarefas> FilterVoice([FromBody] Filters.FilterStatusTarefas filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<StatusTarefasResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterStatusTarefas filter, [FromRoute, Required] string uri = "");
     Task<StatusTarefasResponse?> AddAndUpdate(Models.StatusTarefas? regStatusTarefas, [FromRoute, Required] string uri = "");
     Task<StatusTarefasResponse?> Validation(Models.StatusTarefas? regStatusTarefas, [FromRoute, Required] string uri = "");
     Task<StatusTarefasResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<StatusTarefasResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<StatusTarefasResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterStatusTarefas? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

@@ -44,9 +44,22 @@ public class DBHonorariosDadosContratoTests : IDisposable
         dt.Columns.Add("hdcTextoContrato", typeof(string));
         dt.Columns.Add("hdcValorFixo", typeof(decimal));
         dt.Columns.Add("hdcObservacao", typeof(string));
-        dt.Columns.Add("hdcGuid", typeof(string));
         dt.Columns.Add("hdcDataContrato", typeof(DateTime));
+        dt.Columns.Add("hdcGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["hdcCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBHonorariosDadosContrato(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -67,7 +80,7 @@ public class DBHonorariosDadosContratoTests : IDisposable
     {
         var instance = new DBHonorariosDadosContrato();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("HonorariosDadosContrato", instance.ITabelaName());
+        Assert.Equal("HonorariosDadosContrato", instance.ITableName());
         Assert.Equal("hdc", instance.Prefixo);
     }
 
@@ -85,29 +98,16 @@ public class DBHonorariosDadosContratoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["hdcCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBHonorariosDadosContrato(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("HonorariosDadosContrato", cadastro.ITabelaName());
-        Assert.Equal("hdcCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("", cadastro.ICampoNome());
-        Assert.Equal("hdc", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("HonorariosDadosContrato", cadastro.ITableName());
+        Assert.Equal("hdcCodigo", cadastro.IFieldId());
+        Assert.Equal("", cadastro.IFieldNameDescription());
+        Assert.Equal("hdc", cadastro.IPrefix());
     }
 
 #endregion
@@ -167,9 +167,9 @@ public class DBHonorariosDadosContratoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -290,6 +290,23 @@ public class DBHonorariosDadosContratoTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void DataContrato_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FDataContrato = dateString;
+        Assert.Equal(dateString, _instance.FDataContrato);
+    }
+
+    [Fact]
+    public void DataContrato_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBHonorariosDadosContrato();
+        Assert.Equal(string.Empty, instance.FDataContrato);
+    }
+
+    [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
@@ -305,23 +322,6 @@ public class DBHonorariosDadosContratoTests : IDisposable
         var longString = new string ('A', 150 + 10);
         _instance.FGuid = longString;
         Assert.True(_instance.FGuid.Length <= 150);
-    }
-
-    [Theory]
-    [InlineData("01/01/2000")]
-    [InlineData("31/12/2023")]
-    [InlineData("15/08/2024")]
-    public void DataContrato_ShouldFormatDateCorrectly(string dateString)
-    {
-        _instance.FDataContrato = dateString;
-        Assert.Equal(dateString, _instance.FDataContrato);
-    }
-
-    [Fact]
-    public void DataContrato_EmptyDate_ShouldReturnEmptyString()
-    {
-        var instance = new DBHonorariosDadosContrato();
-        Assert.Equal(string.Empty, instance.FDataContrato);
     }
 
     public virtual void Dispose()

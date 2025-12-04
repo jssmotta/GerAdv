@@ -14,6 +14,7 @@ public partial class TipoOrigemSucumbenciaController(ITipoOrigemSucumbenciaServi
     private readonly ITipoOrigemSucumbenciaService _tipoorigemsucumbenciaService = tipoorigemsucumbenciaService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class TipoOrigemSucumbenciaController(ITipoOrigemSucumbenciaServi
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoOrigemSucumbencia filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoOrigemSucumbencia filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoOrigemSucumbencia: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _tipoorigemsucumbenciaService.Filter(max, filtro, uri);
+        //_logger.Info("TipoOrigemSucumbencia: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _tipoorigemsucumbenciaService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterTipoOrigemSucumbenciaWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("TipoOrigemSucumbencia: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _tipoorigemsucumbenciaService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoOrigemSucumbencia: GetById called with id = {0}, {1}", id, uri);
         var result = await _tipoorigemsucumbenciaService.GetById(id, uri, token);
         if (result == null)
@@ -52,6 +75,7 @@ public partial class TipoOrigemSucumbenciaController(ITipoOrigemSucumbenciaServi
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoOrigemSucumbencia? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +89,8 @@ public partial class TipoOrigemSucumbenciaController(ITipoOrigemSucumbenciaServi
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(TipoOrigemSucumbenciaResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(TipoOrigemSucumbenciaResponse), StatusCodes.Status201Created)]
@@ -107,6 +131,11 @@ public partial class TipoOrigemSucumbenciaController(ITipoOrigemSucumbenciaServi
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("TipoOrigemSucumbencia: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipoorigemsucumbenciaService.Delete(id, uri);
@@ -126,6 +155,7 @@ public partial class TipoOrigemSucumbenciaController(ITipoOrigemSucumbenciaServi
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoOrigemSucumbencia regTipoOrigemSucumbencia, [FromRoute, Required] string uri)
     {

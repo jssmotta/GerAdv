@@ -32,15 +32,54 @@ public partial class CargosReader
         return query;
     }
 
-    public async Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn)
+    public async Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
+    {
+        if (oCnn is null)
+        {
+            return null;
+        }
+
+        string query = $@"{ConfiguracoesDBT.SQLNoCount}
+SELECT TOP (1) 
+	FORMAT(carDtCad, 'dd/MM/yyyy HH:mm:ss') as DtCad,
+    FORMAT(carDtAtu, 'dd/MM/yyyy HH:mm:ss') as DtAtu,
+	c.operNome as QuemCad,
+	u.operNome as QuemAtu,
+    carVisto as Visto
+FROM {oCnn.UseDbo}.Cargos dbq WITH (INDEX = idx_Cargos_AuditorDtAtu)
+LEFT JOIN Operador c on c.operCodigo = dbq.carQuemCad
+LEFT JOIN Operador u on u.operCodigo = dbq.carQuemAtu
+WHERE [carCodigo] = @id
+OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
+        cmd.Parameters.AddWithValue("@id", id);
+        var dr = await cmd.ExecuteReaderAsync();
+        if (await dr.ReadAsync())
+        {
+            var auditor = new AuditorResponse
+            {
+                TableName = DBCargos.PTabelaNome,
+                DataHoraCadastro = dr[0] == DBNull.Value ? string.Empty : dr.GetString(0),
+                DataHoraAlteracao = dr[1] == DBNull.Value ? string.Empty : dr.GetString(1),
+                NomeQuemCadastrou = dr[2] == DBNull.Value ? string.Empty : dr.GetString(2),
+                NomeQuemAlterou = dr[3] == DBNull.Value ? string.Empty : dr.GetString(3),
+                Checked = dr[4] == DBNull.Value ? false : dr.GetBoolean(4)
+            };
+            return auditor;
+        }
+
+        return null;
+    }
+
+    public async Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
         string query = $@"{ConfiguracoesDBT.SQLNoCount}
 SELECT TOP (1) 
     FORMAT(carDtAtu, 'yyyy-MM-dd-HH-mm-ss')
-FROM {oCnn.UseDbo}.Cargos WITH (NOLOCK, INDEX = idx_Cargos_AuditorDtAtu)
-WHERE carCodigo = @id
+FROM {oCnn.UseDbo}.Cargos WITH (INDEX = idx_Cargos_AuditorDtAtu)
+WHERE [carCodigo] = @id
 OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         using var cmd = new SqlCommand(query, oCnn.InnerConnection);
         cmd.Parameters.AddWithValue("@id", id);
@@ -48,42 +87,37 @@ OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         return dataFormatada;
     }
 
-    public async Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
+    public async Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
-        string query = $@"{ConfiguracoesDBT.SQLNoCount}
-SELECT TOP ({max}) 
-    FORMAT(
-        CASE 
-            WHEN carDtAtu IS NULL THEN carDtCad 
-            WHEN carDtAtu > carDtCad THEN carDtAtu 
-            ELSE carDtCad 
-        END, 'yyyy-MM-dd-HH-mm-ss') AS data
-FROM {oCnn.UseDbo}.Cargos
-        {(cWhere.Trim().Equals("") ? "" : $" WHERE {cWhere}")}
-ORDER BY 
-    CASE 
-        WHEN carDtAtu IS NULL THEN carDtCad 
-        WHEN carDtAtu > carDtCad THEN carDtAtu 
-        ELSE carDtCad 
-    END DESC;";
+        var query = BuildSqlQuery(@" FORMAT(
+                CASE 
+                    WHEN carDtAtu IS NULL THEN carDtCad 
+                    WHEN carDtAtu > carDtCad THEN carDtAtu 
+                    ELSE carDtCad 
+                END, 'yyyy-MM-dd-HH-mm-ss') AS data", cWhere, @"CASE 
+                WHEN carDtAtu IS NULL THEN carDtCad 
+                WHEN carDtAtu > carDtCad THEN carDtAtu 
+                ELSE carDtCad 
+            END DESC", max, oCnn);
         using var cmd = new SqlCommand(query, oCnn.InnerConnection);
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
         var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
         return dataFormatada;

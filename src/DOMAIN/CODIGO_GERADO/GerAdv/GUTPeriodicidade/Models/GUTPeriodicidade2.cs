@@ -26,10 +26,10 @@ namespace MenphisSI.GerAdv.Models
         public int IntervaloDias { get; set; }
 
         /// <summary>
-        /// GUID - pcgGUID - tamanho máximo: 50 
+        /// GUID - pcgGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -54,9 +54,9 @@ namespace MenphisSI.GerAdv.Models.All
         public int IntervaloDias { get; set; }
 
         /// <summary>
-        /// GUID - pcgGUID - tamanho máximo: 50 
+        /// GUID - pcgGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

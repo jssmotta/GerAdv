@@ -54,8 +54,88 @@ public partial class DBDivisaoTribunal
         // Checkpoint Carregar 
         try
         {
+            FAndar = getValue(DBDivisaoTribunalDicInfo.Andar)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBDivisaoTribunalDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCodigoDiv = getValue(DBDivisaoTribunalDicInfo.CodigoDiv)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBDivisaoTribunalDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBDivisaoTribunalDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBDivisaoTribunalDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBDivisaoTribunalDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBDivisaoTribunalDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeEspecial = getValue(DBDivisaoTribunalDicInfo.NomeEspecial)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObs = getValue(DBDivisaoTribunalDicInfo.Obs)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Area));
         }
         catch
         {
@@ -64,7 +144,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBDivisaoTribunalDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBDivisaoTribunalDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +153,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Cidade));
         }
         catch
         {
@@ -100,7 +180,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBDivisaoTribunalDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBDivisaoTribunalDicInfo.Etiqueta));
         }
         catch
         {
@@ -109,7 +189,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Foro)))
-                m_FForo = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Foro));
+                FForo = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Foro));
         }
         catch
         {
@@ -118,7 +198,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Justica));
         }
         catch
         {
@@ -127,7 +207,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.NumCodigo)))
-                m_FNumCodigo = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.NumCodigo));
+                FNumCodigo = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.NumCodigo));
         }
         catch
         {
@@ -136,7 +216,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.QuemAtu));
         }
         catch
         {
@@ -145,7 +225,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.QuemCad));
         }
         catch
         {
@@ -154,7 +234,7 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Tribunal)))
-                m_FTribunal = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Tribunal));
+                FTribunal = Convert.ToInt32(getValue(DBDivisaoTribunalDicInfo.Tribunal));
         }
         catch
         {
@@ -163,94 +243,14 @@ public partial class DBDivisaoTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDivisaoTribunalDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBDivisaoTribunalDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAndar = getValue(DBDivisaoTribunalDicInfo.Andar)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBDivisaoTribunalDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCodigoDiv = getValue(DBDivisaoTribunalDicInfo.CodigoDiv)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBDivisaoTribunalDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBDivisaoTribunalDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBDivisaoTribunalDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBDivisaoTribunalDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBDivisaoTribunalDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeEspecial = getValue(DBDivisaoTribunalDicInfo.NomeEspecial)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObs = getValue(DBDivisaoTribunalDicInfo.Obs)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBDivisaoTribunalDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -274,7 +274,7 @@ public partial class DBDivisaoTribunal
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

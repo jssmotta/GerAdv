@@ -76,7 +76,7 @@ public class RitoWriterTests
         result.Should().Be(_mockFRito.Object);
         _mockFRito.VerifySet(x => x.FDescricao = rito.Descricao, Times.Once);
         _mockFRito.VerifySet(x => x.FTop = rito.Top, Times.Once);
-        _mockFRito.VerifySet(x => x.FGUID = rito.GUID, Times.Once);
+        _mockFRito.VerifySet(x => x.FGuid = rito.Guid, Times.Once);
         _mockFRito.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class RitoWriterTests
         var operadorId = 456;
         _mockRitoFactory.Setup(x => x.DeleteAsync(operadorId, ritoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _ritoWriter.Delete(ritoResponse, operadorId, _mockConnection.Object);
+        await _ritoWriter.DeleteAsync(ritoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockRitoFactory.Verify(x => x.DeleteAsync(operadorId, ritoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class RitoWriterTests
         var operadorId = 111;
         _mockRitoFactory.Setup(x => x.DeleteAsync(operadorId, ritoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _ritoWriter.Delete(ritoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _ritoWriter.DeleteAsync(ritoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class RitoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockRitoFactory.Setup(x => x.DeleteAsync(operadorId, ritoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ritoWriter.Delete(ritoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ritoWriter.DeleteAsync(ritoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -185,7 +185,7 @@ public class RitoWriterTests
             Id = 0,
             Descricao = "AAAAAAAAAAAAAAAAAA",
             Top = false,
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

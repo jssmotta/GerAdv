@@ -26,8 +26,6 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
 
     private bool ValidSizes(Models.GUTPeriodicidadeStatus reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > DBGUTPeriodicidadeStatusDicInfo.PgsGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBGUTPeriodicidadeStatusDicInfo.PgsGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -49,8 +47,6 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
 
         if (reg.DataRealizado.IsEmpty())
             throw new SGValidationException("DataRealizado é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         if (!string.IsNullOrWhiteSpace(reg.DataRealizado))
         {
             if (DateTime.TryParse(reg.DataRealizado, out DateTime dataAntiga))
@@ -62,7 +58,7 @@ public class GUTPeriodicidadeStatusValidation : IGUTPeriodicidadeStatusValidatio
 
         // GUTAtividades
         {
-            var regGUTAtividades = await gutatividadesReader.Read(reg.GUTAtividade, oCnn);
+            var regGUTAtividades = await gutatividadesReader.ReadAsync(reg.GUTAtividade, oCnn);
             if (regGUTAtividades == null || regGUTAtividades.Id != reg.GUTAtividade)
             {
                 throw new SGValidationException($"G U T Atividades não encontrado ({regGUTAtividades?.Id}).");

@@ -9,25 +9,29 @@ public partial class DBFornecedoresODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBFornecedoresDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBFornecedoresDicInfo.CampoCodigo;
+    public string IFieldId() => DBFornecedoresDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBFornecedoresDicInfo.TablePrefix;
+    public string IPrefix() => DBFornecedoresDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBFornecedoresDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBFornecedoresDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBFornecedoresODicInfo : IODicInfo
     public static string TCampoNome => DBFornecedoresDicInfo.CampoNome;
     public static string TTabelaNome => DBFornecedoresDicInfo.TabelaNome;
     public static string TTablePrefix => DBFornecedoresDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBFornecedoresDicInfo.ForGrupo, DBFornecedoresDicInfo.ForNome, DBFornecedoresDicInfo.ForSubGrupo, DBFornecedoresDicInfo.ForTipo, DBFornecedoresDicInfo.ForSexo, DBFornecedoresDicInfo.ForCNPJ, DBFornecedoresDicInfo.ForInscEst, DBFornecedoresDicInfo.ForCPF, DBFornecedoresDicInfo.ForRG, DBFornecedoresDicInfo.ForEndereco, DBFornecedoresDicInfo.ForBairro, DBFornecedoresDicInfo.ForCEP, DBFornecedoresDicInfo.ForCidade, DBFornecedoresDicInfo.ForFone, DBFornecedoresDicInfo.ForFax, DBFornecedoresDicInfo.ForEmail, DBFornecedoresDicInfo.ForSite, DBFornecedoresDicInfo.ForObs, DBFornecedoresDicInfo.ForProdutos, DBFornecedoresDicInfo.ForContatos, DBFornecedoresDicInfo.ForGUID, DBFornecedoresDicInfo.ForEtiqueta, DBFornecedoresDicInfo.ForBold, DBFornecedoresDicInfo.ForQuemCad, DBFornecedoresDicInfo.ForDtCad, DBFornecedoresDicInfo.ForQuemAtu, DBFornecedoresDicInfo.ForDtAtu, DBFornecedoresDicInfo.ForVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBFornecedoresDicInfo.ForGrupo, DBFornecedoresDicInfo.ForNome, DBFornecedoresDicInfo.ForSubGrupo, DBFornecedoresDicInfo.ForTipo, DBFornecedoresDicInfo.ForSexo, DBFornecedoresDicInfo.ForCNPJ, DBFornecedoresDicInfo.ForInscEst, DBFornecedoresDicInfo.ForCPF, DBFornecedoresDicInfo.ForRG, DBFornecedoresDicInfo.ForEndereco, DBFornecedoresDicInfo.ForBairro, DBFornecedoresDicInfo.ForCEP, DBFornecedoresDicInfo.ForCidade, DBFornecedoresDicInfo.ForFone, DBFornecedoresDicInfo.ForFax, DBFornecedoresDicInfo.ForEmail, DBFornecedoresDicInfo.ForSite, DBFornecedoresDicInfo.ForObs, DBFornecedoresDicInfo.ForProdutos, DBFornecedoresDicInfo.ForContatos, DBFornecedoresDicInfo.ForGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBFornecedoresDicInfo.ForGrupo, DBFornecedoresDicInfo.ForNome, DBFornecedoresDicInfo.ForSubGrupo, DBFornecedoresDicInfo.ForTipo, DBFornecedoresDicInfo.ForSexo, DBFornecedoresDicInfo.ForCNPJ, DBFornecedoresDicInfo.ForInscEst, DBFornecedoresDicInfo.ForCPF, DBFornecedoresDicInfo.ForRG, DBFornecedoresDicInfo.ForEndereco, DBFornecedoresDicInfo.ForBairro, DBFornecedoresDicInfo.ForCEP, DBFornecedoresDicInfo.ForCidade, DBFornecedoresDicInfo.ForFone, DBFornecedoresDicInfo.ForFax, DBFornecedoresDicInfo.ForEmail, DBFornecedoresDicInfo.ForSite, DBFornecedoresDicInfo.ForObs, DBFornecedoresDicInfo.ForProdutos, DBFornecedoresDicInfo.ForContatos, DBFornecedoresDicInfo.ForEtiqueta, DBFornecedoresDicInfo.ForBold, DBFornecedoresDicInfo.ForGuid, DBFornecedoresDicInfo.ForQuemCad, DBFornecedoresDicInfo.ForDtCad, DBFornecedoresDicInfo.ForQuemAtu, DBFornecedoresDicInfo.ForDtAtu, DBFornecedoresDicInfo.ForVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBFornecedoresDicInfo.ForGrupo, DBFornecedoresDicInfo.ForNome, DBFornecedoresDicInfo.ForSubGrupo, DBFornecedoresDicInfo.ForTipo, DBFornecedoresDicInfo.ForSexo, DBFornecedoresDicInfo.ForCNPJ, DBFornecedoresDicInfo.ForInscEst, DBFornecedoresDicInfo.ForCPF, DBFornecedoresDicInfo.ForRG, DBFornecedoresDicInfo.ForEndereco, DBFornecedoresDicInfo.ForBairro, DBFornecedoresDicInfo.ForCEP, DBFornecedoresDicInfo.ForCidade, DBFornecedoresDicInfo.ForFone, DBFornecedoresDicInfo.ForFax, DBFornecedoresDicInfo.ForEmail, DBFornecedoresDicInfo.ForSite, DBFornecedoresDicInfo.ForObs, DBFornecedoresDicInfo.ForProdutos, DBFornecedoresDicInfo.ForContatos, DBFornecedoresDicInfo.ForEtiqueta, DBFornecedoresDicInfo.ForBold, DBFornecedoresDicInfo.ForGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["forCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBFornecedoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["forCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBFornecedoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

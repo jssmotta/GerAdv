@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoProDespositoService
 {
+    Task<Filters.FilterTipoProDesposito> FilterVoice([FromBody] Filters.FilterTipoProDesposito filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<TipoProDespositoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoProDesposito filter, [FromRoute, Required] string uri = "");
     Task<TipoProDespositoResponse?> AddAndUpdate(Models.TipoProDesposito? regTipoProDesposito, [FromRoute, Required] string uri = "");
     Task<TipoProDespositoResponse?> Validation(Models.TipoProDesposito? regTipoProDesposito, [FromRoute, Required] string uri = "");

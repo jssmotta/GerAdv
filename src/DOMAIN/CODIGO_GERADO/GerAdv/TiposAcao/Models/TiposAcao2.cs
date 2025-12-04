@@ -26,10 +26,16 @@ namespace MenphisSI.GerAdv.Models
         public bool Inativo { get; set; }
 
         /// <summary>
-        /// GUID - tacGUID - tamanho máximo: 100 
+        /// Bold - tacBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - tacGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -54,9 +60,15 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Inativo { get; set; }
 
         /// <summary>
-        /// GUID - tacGUID - tamanho máximo: 100 
+        /// Bold - tacBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - tacGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

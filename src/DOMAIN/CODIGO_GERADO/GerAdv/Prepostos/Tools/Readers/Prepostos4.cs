@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPrepostosReader
+public partial class PrepostosReader(IFPrepostosFactory prepostosFactory, IConnectionService connection) : IPrepostosReader
 {
     private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("preCodigo, preNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<PrepostosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBPrepostos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<PrepostosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("preCodigo, preNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<PrepostosResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBPrepostos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<PrepostosResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<PrepostosResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,19 +48,18 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         return result;
     }
 
-    public async Task<PrepostosResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<PrepostosResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _prepostosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Prepostos?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Prepostos?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _prepostosFactory.CreateFromIdAsync(id, oCnn);
         var prepostos = new Models.Prepostos
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -80,29 +85,33 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            prepostos.DtNasc = dbRec.FDtNasc;
-            prepostos.DtNasc_date = XDtNasc;
+            prepostos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            prepostos.DtNasc_date = XDtNasc4;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini?.ToString(), out DateTime XPeriodo_Ini10))
         {
-            prepostos.Periodo_Ini = dbRec.FPeriodo_Ini;
-            prepostos.Periodo_Ini_date = XPeriodo_Ini;
+            prepostos.Periodo_Ini = XPeriodo_Ini10.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Ini_date = XPeriodo_Ini10;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim?.ToString(), out DateTime XPeriodo_Fim11))
         {
-            prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
-            prepostos.Periodo_Fim_date = XPeriodo_Fim;
+            prepostos.Periodo_Fim = XPeriodo_Fim11.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Fim_date = XPeriodo_Fim11;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao?.ToString(), out DateTime XCTPSDtEmissao15))
         {
-            prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
-            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao;
+            prepostos.CTPSDtEmissao = XCTPSDtEmissao15.ToString("dd/MM/yyyy");
+            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao15;
         }
 
         return prepostos;
@@ -129,7 +138,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -155,29 +163,33 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            prepostos.DtNasc = dbRec.FDtNasc;
-            prepostos.DtNasc_date = XDtNasc;
+            prepostos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            prepostos.DtNasc_date = XDtNasc4;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini?.ToString(), out DateTime XPeriodo_Ini10))
         {
-            prepostos.Periodo_Ini = dbRec.FPeriodo_Ini;
-            prepostos.Periodo_Ini_date = XPeriodo_Ini;
+            prepostos.Periodo_Ini = XPeriodo_Ini10.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Ini_date = XPeriodo_Ini10;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim?.ToString(), out DateTime XPeriodo_Fim11))
         {
-            prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
-            prepostos.Periodo_Fim_date = XPeriodo_Fim;
+            prepostos.Periodo_Fim = XPeriodo_Fim11.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Fim_date = XPeriodo_Fim11;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao?.ToString(), out DateTime XCTPSDtEmissao15))
         {
-            prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
-            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao;
+            prepostos.CTPSDtEmissao = XCTPSDtEmissao15.ToString("dd/MM/yyyy");
+            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao15;
         }
 
         return prepostos;
@@ -193,7 +205,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -219,29 +230,33 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            prepostos.DtNasc = dbRec.FDtNasc;
-            prepostos.DtNasc_date = XDtNasc;
+            prepostos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            prepostos.DtNasc_date = XDtNasc4;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini?.ToString(), out DateTime XPeriodo_Ini10))
         {
-            prepostos.Periodo_Ini = dbRec.FPeriodo_Ini;
-            prepostos.Periodo_Ini_date = XPeriodo_Ini;
+            prepostos.Periodo_Ini = XPeriodo_Ini10.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Ini_date = XPeriodo_Ini10;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim?.ToString(), out DateTime XPeriodo_Fim11))
         {
-            prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
-            prepostos.Periodo_Fim_date = XPeriodo_Fim;
+            prepostos.Periodo_Fim = XPeriodo_Fim11.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Fim_date = XPeriodo_Fim11;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao?.ToString(), out DateTime XCTPSDtEmissao15))
         {
-            prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
-            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao;
+            prepostos.CTPSDtEmissao = XCTPSDtEmissao15.ToString("dd/MM/yyyy");
+            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao15;
         }
 
         return prepostos;
@@ -257,7 +272,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -283,29 +297,33 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            prepostos.DtNasc = dbRec.FDtNasc;
-            prepostos.DtNasc_date = XDtNasc;
+            prepostos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            prepostos.DtNasc_date = XDtNasc4;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini?.ToString(), out DateTime XPeriodo_Ini10))
         {
-            prepostos.Periodo_Ini = dbRec.FPeriodo_Ini;
-            prepostos.Periodo_Ini_date = XPeriodo_Ini;
+            prepostos.Periodo_Ini = XPeriodo_Ini10.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Ini_date = XPeriodo_Ini10;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim?.ToString(), out DateTime XPeriodo_Fim11))
         {
-            prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
-            prepostos.Periodo_Fim_date = XPeriodo_Fim;
+            prepostos.Periodo_Fim = XPeriodo_Fim11.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Fim_date = XPeriodo_Fim11;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao?.ToString(), out DateTime XCTPSDtEmissao15))
         {
-            prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
-            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao;
+            prepostos.CTPSDtEmissao = XCTPSDtEmissao15.ToString("dd/MM/yyyy");
+            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao15;
         }
 
         try
@@ -345,7 +363,6 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
         var prepostos = new PrepostosResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -371,29 +388,33 @@ public partial class PrepostosReader(IFPrepostosFactory prepostosFactory) : IPre
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            prepostos.DtNasc = dbRec.FDtNasc;
-            prepostos.DtNasc_date = XDtNasc;
+            prepostos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            prepostos.DtNasc_date = XDtNasc4;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini?.ToString(), out DateTime XPeriodo_Ini10))
         {
-            prepostos.Periodo_Ini = dbRec.FPeriodo_Ini;
-            prepostos.Periodo_Ini_date = XPeriodo_Ini;
+            prepostos.Periodo_Ini = XPeriodo_Ini10.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Ini_date = XPeriodo_Ini10;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim?.ToString(), out DateTime XPeriodo_Fim11))
         {
-            prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
-            prepostos.Periodo_Fim_date = XPeriodo_Fim;
+            prepostos.Periodo_Fim = XPeriodo_Fim11.ToString("dd/MM/yyyy");
+            prepostos.Periodo_Fim_date = XPeriodo_Fim11;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao?.ToString(), out DateTime XCTPSDtEmissao15))
         {
-            prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
-            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao;
+            prepostos.CTPSDtEmissao = XCTPSDtEmissao15.ToString("dd/MM/yyyy");
+            prepostos.CTPSDtEmissao_date = XCTPSDtEmissao15;
         }
 
         try

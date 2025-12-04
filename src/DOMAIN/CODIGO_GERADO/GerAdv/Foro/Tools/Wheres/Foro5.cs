@@ -33,6 +33,8 @@ public partial class ForoWhere(IFForoFactory foroFactory) : IForoWhere
             OBS = dbRec.FOBS ?? string.Empty,
             UnicoConfirmado = dbRec.FUnicoConfirmado,
             Web = dbRec.FWeb ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Bold = dbRec.FBold,
         };
         return foro;
     }

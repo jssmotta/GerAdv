@@ -10,12 +10,12 @@ public static partial class DBAndamentosMDDicInfo
     public const string CampoCodigo = "amdCodigo";
     public const string CampoNome = "amdNome";
     public const string TablePrefix = "amd";
-    public const string GUID = "amdGUID"; // LOCALIZACAO 170523
     public const string Nome = "amdNome"; // LOCALIZACAO 170523
     public const string Processo = "amdProcesso"; // LOCALIZACAO 170523
     public const string Andamento = "amdAndamento"; // LOCALIZACAO 170523
     public const string PathFull = "amdPathFull"; // LOCALIZACAO 170523
     public const string UNC = "amdUNC"; // LOCALIZACAO 170523
+    public const string Guid = "amdGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "amdQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "amdDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "amdQuemAtu"; // LOCALIZACAO 170523
@@ -39,51 +39,17 @@ public static partial class DBAndamentosMDDicInfo
 
     public const string PTabelaNome = "AndamentosMD";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AmdGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdAndamento => new(0, PTabelaNome, CampoCodigo, Andamento, "Andamento", "Andamento", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdPathFull => new(0, PTabelaNome, CampoCodigo, PathFull, DevourerOne.PMaxSizeCampoMemo, "PathFull", "PathFull", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdUNC => new(0, PTabelaNome, CampoCodigo, UNC, DevourerOne.PMaxSizeCampoMemo, "UNC", "UNC", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "amd"
-    }; // DBI 11 
-    public static DBInfoSystem AmdDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "amd"
-    }; // DBI 11 
-    public static DBInfoSystem AmdDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "amd"
-    };
-    public static DBInfoSystem AmdVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "amd"
-    };
+    public static DBInfoSystem AmdNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "amd");
+    public static DBInfoSystem AmdProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "amd");
+    public static DBInfoSystem AmdAndamento => new(0, PTabelaNome, CampoCodigo, Andamento, Andamento, Andamento, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "amd");
+    public static DBInfoSystem AmdPathFull => new(0, PTabelaNome, CampoCodigo, PathFull, DevourerOne.PMaxSizeCampoMemo, PathFull, PathFull, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "amd");
+    public static DBInfoSystem AmdUNC => new(0, PTabelaNome, CampoCodigo, UNC, DevourerOne.PMaxSizeCampoMemo, UNC, UNC, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "amd");
+    public static DBInfoSystem AmdGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "amd");
+    public static DBInfoSystem AmdQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "amd"); // DBI 11 
+    public static DBInfoSystem AmdDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "amd");
+    public static DBInfoSystem AmdQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "amd"); // DBI 11 
+    public static DBInfoSystem AmdDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "amd");
+    public static DBInfoSystem AmdVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "amd", isRequired: true);
 
 #endregion
     [Serializable]

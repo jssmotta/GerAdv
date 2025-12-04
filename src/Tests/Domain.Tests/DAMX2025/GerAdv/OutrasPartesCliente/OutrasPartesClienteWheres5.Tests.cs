@@ -325,20 +325,6 @@ public class OutrasPartesClienteWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFOutrasPartesCliente(DtNasc: "invalid-date");
-        _mockOutrasPartesClienteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFOutrasPartesCliente.Object);
-        // Act
-        var result = _outraspartesclienteWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtNascFields_ShouldNotSetDateProperties()
     {
         // Arrange

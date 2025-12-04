@@ -25,6 +25,9 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Resumo - prsResumo  
         /// </summary>
@@ -32,16 +35,22 @@ namespace MenphisSI.GerAdv.Models
         public string Resumo { get; set; } = "";
 
         /// <summary>
-        /// GUID - prsGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// TipoResumo - prsTipoResumo  
         /// </summary>
         [JsonPropertyName("tiporesumo")]
         public int TipoResumo { get; set; }
+
+        /// <summary>
+        /// Bold - prsBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - prsGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -65,6 +74,9 @@ namespace MenphisSI.GerAdv.Models.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Resumo - prsResumo  
         /// </summary>
@@ -72,15 +84,21 @@ namespace MenphisSI.GerAdv.Models.All
         public string Resumo { get; set; } = "";
 
         /// <summary>
-        /// GUID - prsGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// TipoResumo - prsTipoResumo  
         /// </summary>
         [JsonPropertyName("tiporesumo")]
         public int TipoResumo { get; set; }
+
+        /// <summary>
+        /// Bold - prsBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - prsGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

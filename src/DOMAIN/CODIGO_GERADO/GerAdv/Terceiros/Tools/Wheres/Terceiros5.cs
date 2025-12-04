@@ -31,10 +31,11 @@ public partial class TerceirosWhere(IFTerceirosFactory terceirosFactory) : ITerc
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return terceiros;
     }

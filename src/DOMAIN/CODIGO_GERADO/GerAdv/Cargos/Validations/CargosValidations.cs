@@ -23,13 +23,13 @@ public class CargosValidation : ICargosValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Cargo = id ?? default }, uri);
         if (advogadosExists0 != null && advogadosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Advogados associados a ele.");
         var colaboradoresExists1 = await colaboradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterColaboradores { Cargo = id ?? default }, uri);
         if (colaboradoresExists1 != null && colaboradoresExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaboradores associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Colaboradores associados a ele.");
         var funcionariosExists2 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Cargo = id ?? default }, uri);
         if (funcionariosExists2 != null && funcionariosExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Colaborador associados a ele.");
         return true;
     }
 
@@ -46,6 +46,8 @@ public class CargosValidation : ICargosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

@@ -38,8 +38,6 @@ public class TerceirosValidation : ITerceirosValidation
             throw new SGValidationException($"Class deve ter no máximo {DBTerceirosDicInfo.TerClass.FTamanho} caracteres.");
         if (reg.VaraForoComarca != null && reg.VaraForoComarca.Length > DBTerceirosDicInfo.TerVaraForoComarca.FTamanho)
             throw new SGValidationException($"VaraForoComarca deve ter no máximo {DBTerceirosDicInfo.TerVaraForoComarca.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTerceirosDicInfo.TerGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTerceirosDicInfo.TerGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -49,6 +47,8 @@ public class TerceirosValidation : ITerceirosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -57,7 +57,7 @@ public class TerceirosValidation : ITerceirosValidation
         // PosicaoOutrasPartes
         if (!reg.Situacao.IsEmptyIDNumber())
         {
-            var regPosicaoOutrasPartes = await posicaooutraspartesReader.Read(reg.Situacao, oCnn);
+            var regPosicaoOutrasPartes = await posicaooutraspartesReader.ReadAsync(reg.Situacao, oCnn);
             if (regPosicaoOutrasPartes == null || regPosicaoOutrasPartes.Id != reg.Situacao)
             {
                 throw new SGValidationException($"Posicao Outras Partes não encontrado ({regPosicaoOutrasPartes?.Id}).");
@@ -67,7 +67,7 @@ public class TerceirosValidation : ITerceirosValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

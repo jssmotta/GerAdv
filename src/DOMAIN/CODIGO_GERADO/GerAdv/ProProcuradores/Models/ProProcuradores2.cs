@@ -37,6 +37,9 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Substabelecimento - papSubstabelecimento  
         /// </summary>
@@ -50,10 +53,16 @@ namespace MenphisSI.GerAdv.Models
         public bool Procuracao { get; set; }
 
         /// <summary>
-        /// GUID - papGUID - tamanho máximo: 100 
+        /// Bold - papBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - papGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -89,6 +98,9 @@ namespace MenphisSI.GerAdv.Models.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Substabelecimento - papSubstabelecimento  
         /// </summary>
@@ -102,10 +114,16 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Procuracao { get; set; }
 
         /// <summary>
-        /// GUID - papGUID - tamanho máximo: 100 
+        /// Bold - papBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - papGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeadvogados")]
         public string NomeAdvogados { get; set; } = string.Empty;

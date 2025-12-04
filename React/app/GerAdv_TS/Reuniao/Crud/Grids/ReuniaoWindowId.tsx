@@ -9,54 +9,61 @@ import { ReuniaoService } from '../../Services/Reuniao.service';
 import { ReuniaoApi } from '../../Apis/ApiReuniao';
 import ReuniaoWindow from './ReuniaoWindow';
 import {ReuniaoEmpty } from '@/app/GerAdv_TS/Models/Reuniao';
-interface ReuniaoWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ReuniaoWindowId: React.FC<ReuniaoWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const reuniaoService = useMemo(() => {
-  return new ReuniaoService(
-  new ReuniaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IReuniao | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ReuniaoEmpty() as IReuniao);
-      return;
-    }
-    if (id) {
-      const response = await reuniaoService.fetchReuniaoById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ReuniaoWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedReuniao={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ReuniaoWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ReuniaoWindowId: React.FC<ReuniaoWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const reuniaoService = useMemo(() => {
+        return new ReuniaoService(
+            new ReuniaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IReuniao | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ReuniaoEmpty() as IReuniao);
+                return;
+            }
+            if (id) {
+                 const response = await reuniaoService.fetchReuniaoById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ReuniaoWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedReuniao={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ReuniaoWindowId;

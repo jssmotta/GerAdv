@@ -14,6 +14,14 @@ public partial class DBReuniao
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBReuniao
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,33 +142,35 @@ public partial class DBReuniao
 
 #if (!NOTSTORED_Reuniao)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFCliente || pFldFIDAgenda || pFldFData || pFldFPauta || pFldFATA || pFldFHoraInicial || pFldFHoraFinal || pFldFExterna || pFldFHoraSaida || pFldFHoraRetorno || pFldFPrincipaisDecisoes || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFCliente || pFldFIDAgenda || pFldFData || pFldFPauta || pFldFATA || pFldFHoraInicial || pFldFHoraFinal || pFldFExterna || pFldFHoraSaida || pFldFHoraRetorno || pFldFPrincipaisDecisoes || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFCliente)
-            updateTool.Fields(DBReuniaoDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBReuniaoDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFIDAgenda)
-            updateTool.Fields(DBReuniaoDicInfo.IDAgenda, m_FIDAgenda, ETiposCampos.FNumber);
+            updateTool.Fields(DBReuniaoDicInfo.IDAgenda, FIDAgenda, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBReuniaoDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBReuniaoDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFPauta)
-            updateTool.Fields(DBReuniaoDicInfo.Pauta, m_FPauta, ETiposCampos.FString);
+            updateTool.Fields(DBReuniaoDicInfo.Pauta, FPauta, EGenericTypeFields.FString);
         if (pFldFATA)
-            updateTool.Fields(DBReuniaoDicInfo.ATA, m_FATA, ETiposCampos.FString);
+            updateTool.Fields(DBReuniaoDicInfo.ATA, FATA, EGenericTypeFields.FString);
         if (pFldFHoraInicial)
-            updateTool.Fields(DBReuniaoDicInfo.HoraInicial, m_FHoraInicial, ETiposCampos.FDate);
+            updateTool.Fields(DBReuniaoDicInfo.HoraInicial, FHoraInicial, EGenericTypeFields.FDate);
         if (pFldFHoraFinal)
-            updateTool.Fields(DBReuniaoDicInfo.HoraFinal, m_FHoraFinal, ETiposCampos.FString);
+            updateTool.Fields(DBReuniaoDicInfo.HoraFinal, FHoraFinal, EGenericTypeFields.FDate);
         if (pFldFExterna || updateTool.Insert)
-            updateTool.Fields(DBReuniaoDicInfo.Externa, m_FExterna, ETiposCampos.FBoolean);
+            updateTool.Fields(DBReuniaoDicInfo.Externa, FExterna, EGenericTypeFields.FBoolean);
         if (pFldFHoraSaida)
-            updateTool.Fields(DBReuniaoDicInfo.HoraSaida, m_FHoraSaida, ETiposCampos.FDate);
+            updateTool.Fields(DBReuniaoDicInfo.HoraSaida, FHoraSaida, EGenericTypeFields.FDate);
         if (pFldFHoraRetorno)
-            updateTool.Fields(DBReuniaoDicInfo.HoraRetorno, m_FHoraRetorno, ETiposCampos.FDate);
+            updateTool.Fields(DBReuniaoDicInfo.HoraRetorno, FHoraRetorno, EGenericTypeFields.FDate);
         if (pFldFPrincipaisDecisoes)
-            updateTool.Fields(DBReuniaoDicInfo.PrincipaisDecisoes, m_FPrincipaisDecisoes, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBReuniaoDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBReuniaoDicInfo.PrincipaisDecisoes, FPrincipaisDecisoes, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBReuniaoDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBReuniaoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -172,24 +182,23 @@ public partial class DBReuniao
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBReuniaoDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBReuniaoDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBReuniaoDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBReuniaoDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBReuniaoDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBReuniaoDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBReuniaoDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBReuniaoDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBReuniaoDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBReuniaoDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBReuniaoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

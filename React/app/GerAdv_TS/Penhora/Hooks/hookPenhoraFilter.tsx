@@ -9,182 +9,330 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterPenhora } from '@/app/GerAdv_TS/Penhora/Filters/Penhora';
+import FilterDialogButton from '@/app/components/Cruds/FilterDialogButton';
+import {usePenhoraStatusFilter} from '@/app/GerAdv_TS/PenhoraStatus/Hooks/hookPenhoraStatusFilter';
 import PenhoraStatusComboBox from '@/app/GerAdv_TS/PenhoraStatus/ComboBox/PenhoraStatus';
+import InputGuid from '@/app/components/Inputs/InputGuid'
+
+
 interface UsePenhoraFilterProps {
-  handleFetchWithFilter: (filtro?: FilterPenhora | undefined | null) => Promise<void>;
+    handleFetchWithFilter: (filtro?: FilterPenhora | undefined | null) => Promise<void>;
 }
+
 interface UsePenhoraFilterReturn {
-  // Estados
-  showSearch: boolean;
-  windowFilter: FilterPenhora;
-  setWindowFilter: React.Dispatch<React.SetStateAction<FilterPenhora>>;
-  // Handlers do Dialog
-  handleSearch: () => void;
-  handleCloseSearch: () => void;
-  handleConfirmSearch: (filter: FilterPenhora) => Promise<void>;
-  // Render function
-  renderInputFilters: (handlers: FilterHandlers<FilterPenhora>) => React.ReactNode;
-  // Utilitários
-  clearFilter: () => void;
-  hasActiveFilter: boolean;
+    // Estados
+    showSearch: boolean;
+    windowFilter: FilterPenhora;
+    setWindowFilter: React.Dispatch<React.SetStateAction<FilterPenhora>>;
+
+    // Handlers do Dialog
+    handleSearch: () => void;
+    handleCloseSearch: () => void;
+    handleConfirmSearch: (filter: FilterPenhora) => Promise<void>;
+
+    // Render function
+    renderInputFilters: (handlers: FilterHandlers<FilterPenhora>) => React.ReactNode;
+
+    // Utilitários
+    clearFilter: () => void;
+    hasActiveFilter: boolean;
 }
+
 export const usePenhoraFilter = ({ handleFetchWithFilter }: UsePenhoraFilterProps): UsePenhoraFilterReturn => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [windowFilter, setWindowFilter] = useState<FilterPenhora>({} as FilterPenhora);
-  // Handlers do Dialog
-  const handleSearch = () => {
-    setShowSearch(true);
-    const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterPenhora;
-    setWindowFilter(filterWildechar);
-  };
-  const handleCloseSearch = () => {
-    setShowSearch(false);
-  };
-  const handleConfirmSearch = async (filter: FilterPenhora) => {
-    await handleFetchWithFilter(filter);
-  };
-  // Função para limpar filtros
-  const clearFilter = () => {
-    setWindowFilter({});
-    sessionStorage.removeItem(btoa('PenhoraFilter'));
-    handleFetchWithFilter({});
-  };
-  // Verificar se há filtros ativos
-  const hasActiveFilter = Object.values(windowFilter).some(value =>
-    value !== undefined && value !== null && value !== '' && value !== -2147483648
-  );
-  // Função para renderizar os campos de filtro
-  const renderInputFilters = (handlers: FilterHandlers<FilterPenhora>) => (
-  <>
-  <InputInput
-  type='text'
-  id='processo'
-  name='processo'
-  value={handlers.windowFilter?.processo ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Processo'
-  label='Processo (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='processo_end'
-  name='processo_end'
-  value={handlers.windowFilter?.processo_end ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Processo final'
-  label='Processo final'
-  disabled={handlers.windowFilter?.processo ? false: true}
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='nome'
-  name='nome'
-  value={handlers.windowFilter?.nome ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Nome'
-  label='Nome'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='descricao'
-  name='descricao'
-  value={handlers.windowFilter?.descricao ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Descricao'
-  label='Descricao'
-  className='inputIncNome inputSearch'
-  />
-  <InputDate
-  type='text'
-  id='datapenhora'
-  label='DataPenhora (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
-  name='datapenhora'
-  value={handlers.windowFilter?.datapenhora ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('datapenhora', value)}
-  />
-  <InputDate
-  type='text'
-  id='datapenhora_end'
-  label='DataPenhora (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='datapenhora_end'
-  value={handlers.windowFilter?.datapenhora_end ?? ''}
-  disabled={handlers.windowFilter?.datapenhora ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('datapenhora_end', value)}
-  />
-  <PenhoraStatusComboBox
-  name='penhorastatus'
-  dataForm={null}
-  value={handlers.windowFilter?.penhorastatus}
-  setValue={(e:any) => handlers.handleComboChange(e, 'penhorastatus')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Penhora Status'
-  />
-  <InputInput
-  type='text'
-  id='master'
-  name='master'
-  value={handlers.windowFilter?.master ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Master'
-  label='Master (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='master_end'
-  name='master_end'
-  value={handlers.windowFilter?.master_end ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Master final'
-  label='Master final'
-  disabled={handlers.windowFilter?.master ? false: true}
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro'
-  name='codigo_filtro'
-  value={handlers.windowFilter?.codigo_filtro ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código do cadastro'
-  label='Código (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro_end'
-  name='codigo_filtro_end'
-  value={handlers.windowFilter?.codigo_filtro_end ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código final do cadastro'
-  label='Código final'
-  disabled={handlers.windowFilter?.codigo_filtro ? false: true}
-  className='inputIncNome inputSearch'
-  />
-</>
-);
-return {
-  // Estados
-  showSearch, 
-  windowFilter, 
-  setWindowFilter, 
-  // Handlers
-  handleSearch, 
-  handleCloseSearch, 
-  handleConfirmSearch, 
-  // Render function
-  renderInputFilters, 
-  // Utilitários
-  clearFilter, 
-  hasActiveFilter
-};
+    const [showSearch, setShowSearch] = useState(false);
+    const [windowFilter, setWindowFilter] = useState<FilterPenhora>({} as FilterPenhora);
+
+    // Handlers do Dialog
+    const handleSearch = () => {
+        setShowSearch(true);
+        const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterPenhora;
+        setWindowFilter(filterWildechar);
+    };
+
+    const handleCloseSearch = () => {
+        setShowSearch(false);
+    };
+
+    const handleConfirmSearch = async (filter: FilterPenhora) => {
+        await handleFetchWithFilter(filter);
+    };
+
+    // Função para limpar filtros
+    const clearFilter = () => {
+        setWindowFilter({} as FilterPenhora);
+        sessionStorage.removeItem(btoa('PenhoraFilter'));
+        handleFetchWithFilter({} as FilterPenhora);
+    };
+
+    // Verificar se há filtros ativos
+    const hasActiveFilter = Object.values(windowFilter).some(value =>
+        value !== undefined && value !== null && value !== '' && value !== -2147483648
+    );
+
+    // Função para renderizar os campos de filtro
+    const renderInputFilters = (handlers: FilterHandlers<FilterPenhora>) => (        
+        <>
+        <InputInput
+                type='text'
+                id='processo'
+                name='processo'
+                value={handlers.windowFilter?.processo ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Processo'
+                label='Processo (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='processo_end'
+                name='processo_end'
+                value={handlers.windowFilter?.processo_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Processo final'
+                label='Processo final'
+                disabled={handlers.windowFilter?.processo ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='nome'
+                name='nome'
+                value={handlers.windowFilter?.nome ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Nome'
+                label='Nome'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='descricao'
+                name='descricao'
+                value={handlers.windowFilter?.descricao ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Descricao'
+                label='Descricao'
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='datapenhora'
+                label='DataPenhora (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='datapenhora'
+                value={handlers.windowFilter?.datapenhora ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('datapenhora', value)}
+            />
+<InputDate
+                type='text'
+                id='datapenhora_end'
+                label='DataPenhora (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='datapenhora_end'
+                value={handlers.windowFilter?.datapenhora_end ?? ''}
+                disabled={handlers.windowFilter?.datapenhora ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('datapenhora_end', value)}
+            />
+<PenhoraStatusComboBox
+                name='penhorastatus'
+                dataForm={null}
+                value={handlers.windowFilter?.penhorastatus}
+                setValue={(e:any) => handlers.handleComboChange(e, 'penhorastatus')}
+                className='inputSearch inputSearchComboboxTab'
+                label='Penhora Status'
+            />
+<InputInput
+                type='text'
+                id='master'
+                name='master'
+                value={handlers.windowFilter?.master ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Master'
+                label='Master (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='master_end'
+                name='master_end'
+                value={handlers.windowFilter?.master_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Master final'
+                label='Master final'
+                disabled={handlers.windowFilter?.master ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad'
+                name='quemcad'
+                value={handlers.windowFilter?.quemcad ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro'
+                label='Usuário de Cadastro (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad_end'
+                name='quemcad_end'
+                value={handlers.windowFilter?.quemcad_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro final'
+                label='Usuário de Cadastro final'
+                disabled={handlers.windowFilter?.quemcad ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtcad'
+                label='Data de Cadastro (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad'
+                value={handlers.windowFilter?.dtcad ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtcad', value)}
+            />
+<InputDate
+                type='text'
+                id='dtcad_end'
+                label='Data de Cadastro (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad_end'
+                value={handlers.windowFilter?.dtcad_end ?? ''}
+                disabled={handlers.windowFilter?.dtcad ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtcad_end', value)}
+            />
+<InputInput
+                type='text'
+                id='quematu'
+                name='quematu'
+                value={handlers.windowFilter?.quematu ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização'
+                label='Usuário de Atualização (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quematu_end'
+                name='quematu_end'
+                value={handlers.windowFilter?.quematu_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização final'
+                label='Usuário de Atualização final'
+                disabled={handlers.windowFilter?.quematu ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtatu'
+                label='Data de Atualização (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu'
+                value={handlers.windowFilter?.dtatu ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtatu', value)}
+            />
+<InputDate
+                type='text'
+                id='dtatu_end'
+                label='Data de Atualização (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu_end'
+                value={handlers.windowFilter?.dtatu_end ?? ''}
+                disabled={handlers.windowFilter?.dtatu ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtatu_end', value)}
+            />
+<InputComboFilterYesNo
+                type='text'
+                id='visto'
+                name='visto'
+                value={handlers.windowFilter?.visto ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Visto'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputGuid
+                type='text'
+                id='guid'
+                name='guid'
+                value={handlers.windowFilter?.guid ?? ''}
+                 onChange={(value: string) =>
+          handlers.handleInputChange({ target: { name: 'guid', value } } as any)
+        }
+                placeholder='Informe GUID'
+                label='GUID'
+                className='input-default-main inputSearch'
+                />
+ <FilterDialogButton
+        // passa o objeto nested (pode ser undefined => cast para objeto vazio)
+        filter={handlers.windowFilter.filterPenhoraStatus ?? ({} as any) as any}
+        setFilter={(f: any) =>
+          handlers.setWindowFilter((prev) => ({ ...prev, filterPenhoraStatus: f }))
+        }
+        // ao confirmar, NÃO precisa fazer nada - o setFilter já atualizou
+        onConfirm={async (f: any) => {          
+        }}
+        title='Filtrar Penhora Status'
+        buttonText='Penhora Status'
+        renderInputFilters={renderPenhoraStatusInputs} 
+
+      />
+
+<InputInput
+                type='text'
+                id='codigo_filtro'
+                name='codigo_filtro'
+                value={handlers.windowFilter?.codigo_filtro ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código do cadastro'
+                label='Código (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='codigo_filtro_end'
+                name='codigo_filtro_end'
+                value={handlers.windowFilter?.codigo_filtro_end ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código final do cadastro'
+                label='Código final'
+                disabled={handlers.windowFilter?.codigo_filtro ? false : true}
+                className='input-default-main inputSearch'
+                />
+
+        </>        
+    );
+
+
+    const { renderInputFilters: renderPenhoraStatusInputs } = usePenhoraStatusFilter({
+    handleFetchWithFilter: async () => {},
+  });
+
+
+
+    return {
+        // Estados
+        showSearch,
+        windowFilter,
+        setWindowFilter,
+
+        // Handlers
+        handleSearch,
+        handleCloseSearch,
+        handleConfirmSearch,
+
+        // Render function
+        renderInputFilters,
+
+        // Utilitários
+        clearFilter,
+        hasActiveFilter
+    };
 };

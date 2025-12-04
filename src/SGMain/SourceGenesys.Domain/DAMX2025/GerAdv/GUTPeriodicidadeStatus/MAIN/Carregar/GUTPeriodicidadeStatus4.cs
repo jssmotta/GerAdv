@@ -54,8 +54,16 @@ public partial class DBGUTPeriodicidadeStatus
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBGUTPeriodicidadeStatusDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)))
-                m_FDataRealizado = Convert.ToDateTime(getValue(DBGUTPeriodicidadeStatusDicInfo.DataRealizado));
+                FDataRealizado = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBGUTPeriodicidadeStatusDicInfo.DataRealizado)));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBGUTPeriodicidadeStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade)))
-                m_FGUTAtividade = Convert.ToInt32(getValue(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade));
+                FGUTAtividade = Convert.ToInt32(getValue(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBGUTPeriodicidadeStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeStatusDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGUTPeriodicidadeStatusDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGUTPeriodicidadeStatusDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +108,7 @@ public partial class DBGUTPeriodicidadeStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeStatusDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGUTPeriodicidadeStatusDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGUTPeriodicidadeStatusDicInfo.QuemCad));
         }
         catch
         {
@@ -109,22 +117,14 @@ public partial class DBGUTPeriodicidadeStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeStatusDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGUTPeriodicidadeStatusDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGUTPeriodicidadeStatusDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGUTPeriodicidadeStatusDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -148,7 +148,7 @@ public partial class DBGUTPeriodicidadeStatus
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

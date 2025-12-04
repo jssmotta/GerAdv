@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProDespesasApiError } from '../GerAdv_TS/ProDespesas/Apis/ApiProDespesas';
+import { ProDespesasApiError } from '@/app/GerAdv_TS/ProDespesas/Apis/ApiProDespesas';
 import { ProDespesasApi } from '@/app/GerAdv_TS/ProDespesas/Apis/ApiProDespesas';
-import { FilterProDespesas } from '../GerAdv_TS/ProDespesas/Filters/ProDespesas';
-import { IProDespesas } from '../GerAdv_TS/ProDespesas/Interfaces/interface.ProDespesas';
-import { ProDespesasTestEmpty } from '../GerAdv_TS/Models/ProDespesas';
+import { FilterProDespesas } from '@/app/GerAdv_TS/ProDespesas/Filters/ProDespesas';
+import { IProDespesas } from '@/app/GerAdv_TS/ProDespesas/Interfaces/interface.ProDespesas';
+import { ProDespesasTestEmpty } from '@/app/GerAdv_TS/Models/ProDespesas';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProDespesasApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProDespesas = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,19 @@ describe('ProDespesasApi', () => {
   describe('addAndUpdate', () => {
     const mockProDespesas: IProDespesas = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+ligacaoid: 0,
+cliente: 0,
+corrigido: false,
+data: '24/04/1975',
+valororiginal: 1m,
+processo: 0,
+quitado: 0,
+datacorrecao: '24/04/1975',
+valor: 1m,
+tipo: true,
+historico: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+livrocaixa: false
     };
 
     it('should add new prodespesas successfully', async () => {
@@ -487,7 +486,7 @@ describe('ProDespesasApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProDespesas = { funcionario: 1 };
+      const mockFilter: FilterProDespesas = { : 1 };
       
       const result = prodespesasApi.useFilter(mockFilter);
       

@@ -9,54 +9,61 @@ import { PrepostosService } from '../../Services/Prepostos.service';
 import { PrepostosApi } from '../../Apis/ApiPrepostos';
 import PrepostosWindow from './PrepostosWindow';
 import {PrepostosEmpty } from '@/app/GerAdv_TS/Models/Prepostos';
-interface PrepostosWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const PrepostosWindowId: React.FC<PrepostosWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const prepostosService = useMemo(() => {
-  return new PrepostosService(
-  new PrepostosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IPrepostos | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(PrepostosEmpty() as IPrepostos);
-      return;
-    }
-    if (id) {
-      const response = await prepostosService.fetchPrepostosById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <PrepostosWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedPrepostos={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface PrepostosWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const PrepostosWindowId: React.FC<PrepostosWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const prepostosService = useMemo(() => {
+        return new PrepostosService(
+            new PrepostosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IPrepostos | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(PrepostosEmpty() as IPrepostos);
+                return;
+            }
+            if (id) {
+                 const response = await prepostosService.fetchPrepostosById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <PrepostosWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedPrepostos={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default PrepostosWindowId;

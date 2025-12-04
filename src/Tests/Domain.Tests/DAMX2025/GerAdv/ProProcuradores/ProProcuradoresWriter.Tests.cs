@@ -74,14 +74,29 @@ public class ProProcuradoresWriterTests
         var result = await _proprocuradoresWriter.WriteAsync(proprocuradores, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProProcuradores.Object);
+        _mockFProProcuradores.VerifySet(x => x.FGuid = proprocuradores.Guid, Times.Once);
         _mockFProProcuradores.VerifySet(x => x.FAdvogado = proprocuradores.Advogado, Times.Once);
         _mockFProProcuradores.VerifySet(x => x.FNome = proprocuradores.Nome, Times.Once);
         _mockFProProcuradores.VerifySet(x => x.FProcesso = proprocuradores.Processo, Times.Once);
-        _mockFProProcuradores.VerifySet(x => x.FData = proprocuradores.Data, Times.Once);
+        _mockFProProcuradores.VerifySet(x => x.FData = proprocuradores.Data.ToString(), Times.Once);
         _mockFProProcuradores.VerifySet(x => x.FSubstabelecimento = proprocuradores.Substabelecimento, Times.Once);
         _mockFProProcuradores.VerifySet(x => x.FProcuracao = proprocuradores.Procuracao, Times.Once);
-        _mockFProProcuradores.VerifySet(x => x.FGUID = proprocuradores.GUID, Times.Once);
         _mockFProProcuradores.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var proprocuradores = CreateValidProProcuradoresModel();
+        proprocuradores.Data = null;
+        var auditorQuem = 123;
+        _mockProProcuradoresFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProProcuradores.Object);
+        _mockFProProcuradores.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _proprocuradoresWriter.WriteAsync(proprocuradores, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProProcuradores.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -124,7 +139,7 @@ public class ProProcuradoresWriterTests
         var operadorId = 456;
         _mockProProcuradoresFactory.Setup(x => x.DeleteAsync(operadorId, proprocuradoresResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _proprocuradoresWriter.Delete(proprocuradoresResponse, operadorId, _mockConnection.Object);
+        await _proprocuradoresWriter.DeleteAsync(proprocuradoresResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProProcuradoresFactory.Verify(x => x.DeleteAsync(operadorId, proprocuradoresResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -140,7 +155,7 @@ public class ProProcuradoresWriterTests
         var operadorId = 111;
         _mockProProcuradoresFactory.Setup(x => x.DeleteAsync(operadorId, proprocuradoresResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _proprocuradoresWriter.Delete(proprocuradoresResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _proprocuradoresWriter.DeleteAsync(proprocuradoresResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -157,7 +172,7 @@ public class ProProcuradoresWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProProcuradoresFactory.Setup(x => x.DeleteAsync(operadorId, proprocuradoresResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _proprocuradoresWriter.Delete(proprocuradoresResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _proprocuradoresWriter.DeleteAsync(proprocuradoresResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -187,13 +202,13 @@ public class ProProcuradoresWriterTests
         return new Models.ProProcuradores
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Advogado = 1,
             Nome = "João",
             Processo = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Substabelecimento = false,
-            Procuracao = false,
-            GUID = Guid.NewGuid().ToString()
+            Procuracao = false
         };
     }
 #endregion

@@ -13,11 +13,11 @@ public static partial class DBDiario2DicInfo
     public const string Data = "diaData"; // LOCALIZACAO 170523
     public const string Hora = "diaHora"; // LOCALIZACAO 170523
     public const string Operador = "diaOperador"; // LOCALIZACAO 170523
-    public const string GUID = "diaGUID"; // LOCALIZACAO 170523
     public const string Nome = "diaNome"; // LOCALIZACAO 170523
     public const string Ocorrencia = "diaOcorrencia"; // LOCALIZACAO 170523
     public const string Cliente = "diaCliente"; // LOCALIZACAO 170523
     public const string Bold = "diaBold"; // LOCALIZACAO 170523
+    public const string Guid = "diaGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "diaQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "diaDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "diaQuemAtu"; // LOCALIZACAO 170523
@@ -43,68 +43,19 @@ public static partial class DBDiario2DicInfo
 
     public const string PTabelaNome = "Diario2";
 #region PropriedadesDaTabela
-    public static DBInfoSystem DiaData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaHora => new(0, PTabelaNome, CampoCodigo, Hora, "Hora", "Hora", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaOperador => new(0, PTabelaNome, CampoCodigo, Operador, "Operador", "Operador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    }; // DBI 11 
-    public static DBInfoSystem DiaGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaOcorrencia => new(0, PTabelaNome, CampoCodigo, Ocorrencia, 2048, "Ocorrencia", "Ocorrencia", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "dia"
-    }; // DBI 11 
-    public static DBInfoSystem DiaBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    }; // DBI 11 
-    public static DBInfoSystem DiaDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "dia"
-    }; // DBI 11 
-    public static DBInfoSystem DiaDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "dia"
-    };
-    public static DBInfoSystem DiaVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "dia"
-    };
+    public static DBInfoSystem DiaData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaHora => new(0, PTabelaNome, CampoCodigo, Hora, Hora, Hora, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaOperador => new(0, PTabelaNome, CampoCodigo, Operador, Operador, Operador, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "dia", isRequired: true); // DBI 11 
+    public static DBInfoSystem DiaNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaOcorrencia => new(0, PTabelaNome, CampoCodigo, Ocorrencia, 2048, Ocorrencia, Ocorrencia, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "dia"); // DBI 11 
+    public static DBInfoSystem DiaBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "dia", isRequired: true); // DBI 11 
+    public static DBInfoSystem DiaDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "dia", isRequired: true);
+    public static DBInfoSystem DiaQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "dia"); // DBI 11 
+    public static DBInfoSystem DiaDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "dia");
+    public static DBInfoSystem DiaVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "dia", isRequired: true);
 
 #endregion
     [Serializable]

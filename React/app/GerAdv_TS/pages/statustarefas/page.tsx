@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { StatusTarefasGridAdapter } from '@/app/GerAdv_TS/StatusTarefas/Adapter/StatusTarefasGridAdapter';
 import StatusTarefasGridContainer from '@/app/GerAdv_TS/StatusTarefas/Components/StatusTarefasGridContainer';
+
 const StatusTarefasPage: React.FC = () => {
-  const StatusTarefasGrid = new StatusTarefasGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Status Tarefas' />
-    <StatusTarefasGridContainer grid={StatusTarefasGrid} />
-  </PageLayout>
-);
+    const StatusTarefasGrid = new StatusTarefasGridAdapter();
+
+    return (
+        <PageLayout>            
+            <StatusTarefasGridContainer grid={StatusTarefasGrid} />
+        </PageLayout>
+    );
 };
+
 export default StatusTarefasPage;

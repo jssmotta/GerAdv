@@ -54,8 +54,24 @@ public partial class DBDocumentos
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBDocumentosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBDocumentosDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBDocumentosDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBDocumentosDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBDocumentosDicInfo.Data)));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDocumentosDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBDocumentosDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBDocumentosDicInfo.Processo));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDocumentosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBDocumentosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBDocumentosDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDocumentosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBDocumentosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBDocumentosDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDocumentosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBDocumentosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBDocumentosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBDocumentosDicInfo.Observacao)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBDocumentosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBDocumentos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

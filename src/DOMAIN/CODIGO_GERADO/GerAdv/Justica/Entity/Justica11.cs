@@ -23,12 +23,6 @@ public partial class FJusticaFactory : IFJusticaFactory, IDisposable
         return FJustica.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FJustica> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FJustica().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FJustica> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FJusticaFactory : IFJusticaFactory, IDisposable
         return FJustica.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FJustica> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FJustica().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FJusticaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

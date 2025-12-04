@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IFaseService
 {
+    Task<Filters.FilterFase> FilterVoice([FromBody] Filters.FilterFase filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<FaseResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterFase filter, [FromRoute, Required] string uri = "");
     Task<FaseResponse?> AddAndUpdate(Models.Fase? regFase, [FromRoute, Required] string uri = "");
     Task<FaseResponse?> Validation(Models.Fase? regFase, [FromRoute, Required] string uri = "");
     Task<FaseResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<FaseResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<FaseResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterFase? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

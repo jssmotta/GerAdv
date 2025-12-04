@@ -38,8 +38,21 @@ public class DBGraphTests : IDisposable
         dt.Columns.Add("gphTabela", typeof(string));
         dt.Columns.Add("gphTabelaId", typeof(int));
         dt.Columns.Add("gphImagem", typeof(string));
-        dt.Columns.Add("gphGUID", typeof(string));
+        dt.Columns.Add("gphGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["gphCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBGraph(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +73,7 @@ public class DBGraphTests : IDisposable
     {
         var instance = new DBGraph();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Graph", instance.ITabelaName());
+        Assert.Equal("Graph", instance.ITableName());
         Assert.Equal("gph", instance.Prefixo);
     }
 
@@ -78,29 +91,16 @@ public class DBGraphTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["gphCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBGraph(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Graph", cadastro.ITabelaName());
-        Assert.Equal("gphCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("", cadastro.ICampoNome());
-        Assert.Equal("gph", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Graph", cadastro.ITableName());
+        Assert.Equal("gphCodigo", cadastro.IFieldId());
+        Assert.Equal("", cadastro.IFieldNameDescription());
+        Assert.Equal("gph", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,9 +160,9 @@ public class DBGraphTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -207,18 +207,18 @@ public class DBGraphTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 150 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 150);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 150);
     }
 
     public virtual void Dispose()

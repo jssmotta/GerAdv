@@ -32,10 +32,10 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// GUID - smaGUID - tamanho máximo: 100 
+        /// GUID - smaGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -66,10 +66,10 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// GUID - smaGUID - tamanho máximo: 100 
+        /// GUID - smaGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

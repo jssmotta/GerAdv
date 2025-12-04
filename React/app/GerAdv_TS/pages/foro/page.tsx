@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ForoGridAdapter } from '@/app/GerAdv_TS/Foro/Adapter/ForoGridAdapter';
 import ForoGridContainer from '@/app/GerAdv_TS/Foro/Components/ForoGridContainer';
+
 const ForoPage: React.FC = () => {
-  const ForoGrid = new ForoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Foro' />
-    <ForoGridContainer grid={ForoGrid} />
-  </PageLayout>
-);
+    const ForoGrid = new ForoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ForoGridContainer grid={ForoGrid} />
+        </PageLayout>
+    );
 };
+
 export default ForoPage;

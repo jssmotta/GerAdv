@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IParceriaProcWriter
 {
     Task<FParceriaProc> WriteAsync(Models.ParceriaProc parceriaproc, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ParceriaProcResponse parceriaproc, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ParceriaProcResponse parceriaproc, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ParceriaProcWriter(IFParceriaProcFactory parceriaprocFactory) : IParceriaProcWriter
 {
     private readonly IFParceriaProcFactory _parceriaprocFactory = parceriaprocFactory ?? throw new ArgumentNullException(nameof(parceriaprocFactory));
-    public virtual async Task Delete(ParceriaProcResponse parceriaproc, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ParceriaProcResponse parceriaproc, int operadorId, MsiSqlConnection? oCnn)
     {
         await _parceriaprocFactory.DeleteAsync(operadorId, parceriaproc.Id, oCnn);
     }
@@ -24,8 +24,8 @@ public class ParceriaProcWriter(IFParceriaProcFactory parceriaprocFactory) : IPa
     {
         using var dbRec = await (parceriaproc.Id.IsEmptyIDNumber() ? _parceriaprocFactory.CreateAsync() : _parceriaprocFactory.CreateFromIdAsync(parceriaproc.Id, oCnn));
         dbRec.FAdvogado = parceriaproc.Advogado;
-        dbRec.FGUID = parceriaproc.GUID;
         dbRec.FProcesso = parceriaproc.Processo;
+        dbRec.FGuid = parceriaproc.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

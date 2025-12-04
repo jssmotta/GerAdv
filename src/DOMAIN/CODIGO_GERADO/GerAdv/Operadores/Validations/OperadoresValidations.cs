@@ -37,6 +37,8 @@ public class OperadoresValidation : IOperadoresValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -45,7 +47,7 @@ public class OperadoresValidation : IOperadoresValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

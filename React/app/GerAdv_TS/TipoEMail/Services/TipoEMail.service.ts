@@ -7,6 +7,8 @@ import { TipoEMailApi, TipoEMailApiError } from '../Apis/ApiTipoEMail';
 import { FilterTipoEMail } from '../Filters/TipoEMail';
 import { ITipoEMail } from '../Interfaces/interface.TipoEMail';
 import { TipoEMailEmpty } from '../../Models/TipoEMail';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
+import { AxiosResponse } from 'axios';
 
 export class TipoEMailValidator {
   static validateTipoEMail(tipoemail: ITipoEMail): { isValid: boolean; errors: string[] } {
@@ -29,6 +31,7 @@ export interface ITipoEMailService {
   getAll: (filtro?: FilterTipoEMail) => Promise<ITipoEMail[]>;
   deleteTipoEMail: (id: number) => Promise<void>;
   validateTipoEMail: (tipoemail: ITipoEMail) => { isValid: boolean; errors: string[] };
+  filterVoice: (filtro?: FilterTipoEMail, voiceCommand?: ICommandSpeakerRequest) => Promise<AxiosResponse>;
 }
 
 export class TipoEMailService implements ITipoEMailService {
@@ -94,15 +97,24 @@ export class TipoEMailService implements ITipoEMailService {
   ): Promise<ITipoEMail[]> {
     try {
       // Carrega dados offline primeiro
-      const preloadResponse = await this.api.filterPreload(0, filtro ?? {});
-      const offlineData = preloadResponse?.data || [];
+      const preloadResponse = await this.api.filterPreload(0, (filtro ?? {}) as any);
+       // Normaliza offline
+      const offlineRaw = preloadResponse?.data;
+      const offlineData = Array.isArray(offlineRaw)
+        ? offlineRaw
+        : offlineRaw?.data ?? offlineRaw?.items ?? offlineRaw?.rows ?? [];
 
       if (onOnlineData) {
         // Busca dados online em background e envia via callback
-        this.api.filter(0, filtro ?? {})
+        this.api
+          .filter(0, (filtro ?? {}) as any)
           .then(response => {
-            if (response?.data) {
-              onOnlineData(response.data);
+            const raw = response?.data;
+            const onlineData = Array.isArray(raw)
+              ? raw
+              : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+            if (onlineData) {
+              onOnlineData(onlineData);
             }
           })
           .catch(error => {
@@ -114,8 +126,12 @@ export class TipoEMailService implements ITipoEMailService {
       } else {
         // Se não há callback, aguarda dados online e retorna
         try {
-          const onlineResponse = await this.api.filter(0, filtro ?? {});
-          return onlineResponse?.data || offlineData;
+          const onlineResponse = await this.api.filter(0, (filtro ?? {}) as any);
+          const raw = onlineResponse?.data;
+          const onlineData = Array.isArray(raw)
+            ? raw
+            : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+          return onlineData || offlineData;
         } catch (error) {
             if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
                 console.log('Error fetching online TipoEMail');
@@ -147,5 +163,22 @@ export class TipoEMailService implements ITipoEMailService {
 
   validateTipoEMail(tipoemail: ITipoEMail): { isValid: boolean; errors: string[] } {
     return TipoEMailValidator.validateTipoEMail(tipoemail);
+  }
+
+  async filterVoice(filtro?: FilterTipoEMail, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+    try {
+      const response = await this.api.filterVoice(filtro, voiceCommand);
+      return response;
+    } catch (error) {
+      if (error instanceof TipoEMailApiError) {
+        throw error;
+      }
+      throw new TipoEMailApiError(
+        'Erro ao processar filtro de voz',
+        500,
+        'VOICE_FILTER_ERROR',
+        error
+      );
+    }
   }
 }

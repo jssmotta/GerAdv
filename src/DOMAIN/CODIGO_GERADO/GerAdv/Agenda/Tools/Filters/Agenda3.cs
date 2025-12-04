@@ -7,236 +7,385 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterAgendaWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de Agenda padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterAgenda Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterAgenda
 {
+    [JsonPropertyName("filterCidade")]
+    [Description("Filtro para a tabela Cidade")]
+    public FilterCidade? FilterCidade { get; set; } = new();
+
+    [JsonPropertyName("filterAdvogados")]
+    [Description("Filtro para a tabela Advogados")]
+    public FilterAdvogados? FilterAdvogados { get; set; } = new();
+
+    [JsonPropertyName("filterFuncionarios")]
+    [Description("Filtro para a tabela Funcionarios")]
+    public FilterFuncionarios? FilterFuncionarios { get; set; } = new();
+
+    [JsonPropertyName("filterTipoCompromisso")]
+    [Description("Filtro para a tabela TipoCompromisso")]
+    public FilterTipoCompromisso? FilterTipoCompromisso { get; set; } = new();
+
+    [JsonPropertyName("filterClientes")]
+    [Description("Filtro para a tabela Clientes")]
+    public FilterClientes? FilterClientes { get; set; } = new();
+
+    [JsonPropertyName("filterArea")]
+    [Description("Filtro para a tabela Area")]
+    public FilterArea? FilterArea { get; set; } = new();
+
+    [JsonPropertyName("filterJustica")]
+    [Description("Filtro para a tabela Justica")]
+    public FilterJustica? FilterJustica { get; set; } = new();
+
+    [JsonPropertyName("filterOperador")]
+    [Description("Filtro para a tabela Operador")]
+    public FilterOperador? FilterOperador { get; set; } = new();
+
+    [JsonPropertyName("filterPrepostos")]
+    [Description("Filtro para a tabela Prepostos")]
+    public FilterPrepostos? FilterPrepostos { get; set; } = new();
+
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("idcob")]
+    [Description("IDCOB -2147483648 para nada ou id")]
     public int IDCOB { get; set; } = int.MinValue;
 
     [JsonPropertyName("idcob_end")]
+    [Description("IDCOB -2147483648 para nada ou id para final do intervalo")]
     public int IDCOB_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("clienteavisado")]
+    [Description("ClienteAvisado -2147483648 para nada; 0 para não, 1 para sim")]
     public int ClienteAvisado { get; set; } = int.MinValue;
 
     [JsonPropertyName("revisarp2")]
+    [Description("RevisarP2 -2147483648 para nada; 0 para não, 1 para sim")]
     public int RevisarP2 { get; set; } = int.MinValue;
 
     [JsonPropertyName("idne")]
+    [Description("IDNE -2147483648 para nada ou id")]
     public int IDNE { get; set; } = int.MinValue;
 
     [JsonPropertyName("idne_end")]
+    [Description("IDNE -2147483648 para nada ou id para final do intervalo")]
     public int IDNE_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("cidade")]
+    [Description("Cidade -2147483648 para nada ou id")]
     public int Cidade { get; set; } = int.MinValue;
 
     [JsonPropertyName("cidade_end")]
+    [Description("Cidade -2147483648 para nada ou id para final do intervalo")]
     public int Cidade_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("oculto")]
+    [Description("Oculto -2147483648 para nada ou id")]
     public int Oculto { get; set; } = int.MinValue;
 
     [JsonPropertyName("oculto_end")]
+    [Description("Oculto -2147483648 para nada ou id para final do intervalo")]
     public int Oculto_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("cartaprecatoria")]
+    [Description("CartaPrecatoria -2147483648 para nada ou id")]
     public int CartaPrecatoria { get; set; } = int.MinValue;
 
     [JsonPropertyName("cartaprecatoria_end")]
+    [Description("CartaPrecatoria -2147483648 para nada ou id para final do intervalo")]
     public int CartaPrecatoria_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("revisar")]
+    [Description("Revisar -2147483648 para nada; 0 para não, 1 para sim")]
     public int Revisar { get; set; } = int.MinValue;
 
     [JsonPropertyName("hrfinal")]
+    [Description("HrFinal")]
     public string? HrFinal { get; set; } = string.Empty;
 
     [JsonPropertyName("hrfinal_end")]
+    [Description("HrFinal final para intervalo")]
     public string? HrFinal_end { get; set; } = string.Empty;
 
     [JsonPropertyName("advogado")]
+    [Description("Advogado -2147483648 para nada ou id")]
     public int Advogado { get; set; } = int.MinValue;
 
     [JsonPropertyName("advogado_end")]
+    [Description("Advogado -2147483648 para nada ou id para final do intervalo")]
     public int Advogado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("eventogerador")]
+    [Description("EventoGerador -2147483648 para nada ou id")]
     public int EventoGerador { get; set; } = int.MinValue;
 
     [JsonPropertyName("eventogerador_end")]
+    [Description("EventoGerador -2147483648 para nada ou id para final do intervalo")]
     public int EventoGerador_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("eventodata")]
+    [Description("EventoData")]
     public string? EventoData { get; set; } = string.Empty;
 
     [JsonPropertyName("eventodata_end")]
+    [Description("EventoData final para intervalo")]
     public string? EventoData_end { get; set; } = string.Empty;
 
     [JsonPropertyName("funcionario")]
+    [Description("Colaborador -2147483648 para nada ou id")]
     public int Funcionario { get; set; } = int.MinValue;
 
     [JsonPropertyName("funcionario_end")]
+    [Description("Colaborador -2147483648 para nada ou id para final do intervalo")]
     public int Funcionario_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("data")]
+    [Description("Data")]
     public string? Data { get; set; } = string.Empty;
 
     [JsonPropertyName("data_end")]
+    [Description("Data final para intervalo")]
     public string? Data_end { get; set; } = string.Empty;
 
     [JsonPropertyName("eventoprazo")]
+    [Description("EventoPrazo -2147483648 para nada ou id")]
     public int EventoPrazo { get; set; } = int.MinValue;
 
     [JsonPropertyName("eventoprazo_end")]
+    [Description("EventoPrazo -2147483648 para nada ou id para final do intervalo")]
     public int EventoPrazo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("hora")]
+    [Description("Hora")]
     public string? Hora { get; set; } = string.Empty;
 
     [JsonPropertyName("hora_end")]
+    [Description("Hora final para intervalo")]
     public string? Hora_end { get; set; } = string.Empty;
 
     [JsonPropertyName("compromisso")]
+    [Description("Compromisso")]
     public string? Compromisso { get; set; } = string.Empty;
 
-    [JsonPropertyName("compromisso_end")]
-    public string? Compromisso_end { get; set; } = string.Empty;
-
     [JsonPropertyName("tipocompromisso")]
+    [Description("TipoCompromisso -2147483648 para nada ou id")]
     public int TipoCompromisso { get; set; } = int.MinValue;
 
     [JsonPropertyName("tipocompromisso_end")]
+    [Description("TipoCompromisso -2147483648 para nada ou id para final do intervalo")]
     public int TipoCompromisso_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("cliente")]
+    [Description("Cliente -2147483648 para nada ou id")]
     public int Cliente { get; set; } = int.MinValue;
 
     [JsonPropertyName("cliente_end")]
+    [Description("Cliente -2147483648 para nada ou id para final do intervalo")]
     public int Cliente_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("liberado")]
+    [Description("Liberado -2147483648 para nada; 0 para não, 1 para sim")]
     public int Liberado { get; set; } = int.MinValue;
 
     [JsonPropertyName("importante")]
+    [Description("Importante -2147483648 para nada; 0 para não, 1 para sim")]
     public int Importante { get; set; } = int.MinValue;
 
     [JsonPropertyName("concluido")]
+    [Description("Concluido -2147483648 para nada; 0 para não, 1 para sim")]
     public int Concluido { get; set; } = int.MinValue;
 
     [JsonPropertyName("area")]
+    [Description("Áreas -2147483648 para nada ou id")]
     public int Area { get; set; } = int.MinValue;
 
     [JsonPropertyName("area_end")]
+    [Description("Áreas -2147483648 para nada ou id para final do intervalo")]
     public int Area_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("justica")]
+    [Description("Justiças -2147483648 para nada ou id")]
     public int Justica { get; set; } = int.MinValue;
 
     [JsonPropertyName("justica_end")]
+    [Description("Justiças -2147483648 para nada ou id para final do intervalo")]
     public int Justica_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("processo")]
+    [Description("Processo -2147483648 para nada ou id")]
     public int Processo { get; set; } = int.MinValue;
 
     [JsonPropertyName("processo_end")]
+    [Description("Processo -2147483648 para nada ou id para final do intervalo")]
     public int Processo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("idhistorico")]
+    [Description("IDHistorico -2147483648 para nada ou id")]
     public int IDHistorico { get; set; } = int.MinValue;
 
     [JsonPropertyName("idhistorico_end")]
+    [Description("IDHistorico -2147483648 para nada ou id para final do intervalo")]
     public int IDHistorico_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("idinsprocesso")]
+    [Description("IDInsProcesso -2147483648 para nada ou id")]
     public int IDInsProcesso { get; set; } = int.MinValue;
 
     [JsonPropertyName("idinsprocesso_end")]
+    [Description("IDInsProcesso -2147483648 para nada ou id para final do intervalo")]
     public int IDInsProcesso_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("usuario")]
+    [Description("Usuario -2147483648 para nada ou id")]
     public int Usuario { get; set; } = int.MinValue;
 
     [JsonPropertyName("usuario_end")]
+    [Description("Usuario -2147483648 para nada ou id para final do intervalo")]
     public int Usuario_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("preposto")]
+    [Description("Preposto -2147483648 para nada ou id")]
     public int Preposto { get; set; } = int.MinValue;
 
     [JsonPropertyName("preposto_end")]
+    [Description("Preposto -2147483648 para nada ou id para final do intervalo")]
     public int Preposto_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("quemid")]
+    [Description("QuemID -2147483648 para nada ou id")]
     public int QuemID { get; set; } = int.MinValue;
 
     [JsonPropertyName("quemid_end")]
+    [Description("QuemID -2147483648 para nada ou id para final do intervalo")]
     public int QuemID_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("quemcodigo")]
+    [Description("QuemCodigo -2147483648 para nada ou id")]
     public int QuemCodigo { get; set; } = int.MinValue;
 
     [JsonPropertyName("quemcodigo_end")]
+    [Description("QuemCodigo -2147483648 para nada ou id para final do intervalo")]
     public int QuemCodigo_end { get; set; } = int.MinValue;
 
-    [JsonPropertyName("guid")]
-    public string? GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string? GUID_end { get; set; } = string.Empty;
-
     [JsonPropertyName("status")]
+    [Description("Status")]
     public string? Status { get; set; } = string.Empty;
 
-    [JsonPropertyName("status_end")]
-    public string? Status_end { get; set; } = string.Empty;
-
     [JsonPropertyName("valor")]
-    public decimal Valor { get; set; } = decimal.MinValue;
+    [Description("Valor")]
+    public decimal Valor { get; set; } = int.MinValue;
 
     [JsonPropertyName("valor_end")]
-    public decimal Valor_end { get; set; } = decimal.MinValue;
+    [Description("Valor final para o intervalo")]
+    public decimal Valor_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("decisao")]
+    [Description("Decisao")]
     public string? Decisao { get; set; } = string.Empty;
 
-    [JsonPropertyName("decisao_end")]
-    public string? Decisao_end { get; set; } = string.Empty;
-
     [JsonPropertyName("sempre")]
+    [Description("Sempre -2147483648 para nada ou id")]
     public int Sempre { get; set; } = int.MinValue;
 
     [JsonPropertyName("sempre_end")]
+    [Description("Sempre -2147483648 para nada ou id para final do intervalo")]
     public int Sempre_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("prazodias")]
+    [Description("PrazoDias -2147483648 para nada ou id")]
     public int PrazoDias { get; set; } = int.MinValue;
 
     [JsonPropertyName("prazodias_end")]
+    [Description("PrazoDias -2147483648 para nada ou id para final do intervalo")]
     public int PrazoDias_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("protocolointegrado")]
+    [Description("ProtocoloIntegrado -2147483648 para nada ou id")]
     public int ProtocoloIntegrado { get; set; } = int.MinValue;
 
     [JsonPropertyName("protocolointegrado_end")]
+    [Description("ProtocoloIntegrado -2147483648 para nada ou id para final do intervalo")]
     public int ProtocoloIntegrado_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("datainicioprazo")]
+    [Description("DataInicioPrazo")]
     public string? DataInicioPrazo { get; set; } = string.Empty;
 
     [JsonPropertyName("datainicioprazo_end")]
+    [Description("DataInicioPrazo final para intervalo")]
     public string? DataInicioPrazo_end { get; set; } = string.Empty;
 
     [JsonPropertyName("usuariociente")]
+    [Description("UsuarioCiente -2147483648 para nada; 0 para não, 1 para sim")]
     public int UsuarioCiente { get; set; } = int.MinValue;
 
+    [JsonPropertyName("guid")]
+    [Description("GUID")]
+    public string? Guid { get; set; } = string.Empty;
+
+    [JsonPropertyName("quemcad")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id")]
+    public int QuemCad { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quemcad_end")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id para final do intervalo")]
+    public int QuemCad_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtcad")]
+    [Description("Data de Cadastro")]
+    public string? DtCad { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtcad_end")]
+    [Description("Data de Cadastro final para intervalo")]
+    public string? DtCad_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("quematu")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id")]
+    public int QuemAtu { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quematu_end")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id para final do intervalo")]
+    public int QuemAtu_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtatu")]
+    [Description("Data de Atualização")]
+    public string? DtAtu { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtatu_end")]
+    [Description("Data de Atualização final para intervalo")]
+    public string? DtAtu_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("visto")]
+    [Description("Visto -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Visto { get; set; } = int.MinValue;
+
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

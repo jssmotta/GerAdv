@@ -118,7 +118,7 @@ public class EventoPrazoAgendaWriterTests
         var operadorId = 456;
         _mockEventoPrazoAgendaFactory.Setup(x => x.DeleteAsync(operadorId, eventoprazoagendaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _eventoprazoagendaWriter.Delete(eventoprazoagendaResponse, operadorId, _mockConnection.Object);
+        await _eventoprazoagendaWriter.DeleteAsync(eventoprazoagendaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockEventoPrazoAgendaFactory.Verify(x => x.DeleteAsync(operadorId, eventoprazoagendaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -134,7 +134,7 @@ public class EventoPrazoAgendaWriterTests
         var operadorId = 111;
         _mockEventoPrazoAgendaFactory.Setup(x => x.DeleteAsync(operadorId, eventoprazoagendaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _eventoprazoagendaWriter.Delete(eventoprazoagendaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _eventoprazoagendaWriter.DeleteAsync(eventoprazoagendaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -151,7 +151,7 @@ public class EventoPrazoAgendaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockEventoPrazoAgendaFactory.Setup(x => x.DeleteAsync(operadorId, eventoprazoagendaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _eventoprazoagendaWriter.Delete(eventoprazoagendaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _eventoprazoagendaWriter.DeleteAsync(eventoprazoagendaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

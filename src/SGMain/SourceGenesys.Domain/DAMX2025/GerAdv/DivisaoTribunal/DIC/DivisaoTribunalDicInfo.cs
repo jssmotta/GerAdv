@@ -10,7 +10,6 @@ public static partial class DBDivisaoTribunalDicInfo
     public const string CampoCodigo = "divCodigo";
     public const string CampoNome = "";
     public const string TablePrefix = "div";
-    public const string GUID = "divGUID"; // LOCALIZACAO 170523
     public const string NumCodigo = "divNumCodigo"; // LOCALIZACAO 170523
     public const string Justica = "divJustica"; // LOCALIZACAO 170523
     public const string NomeEspecial = "divNomeEspecial"; // LOCALIZACAO 170523
@@ -28,6 +27,7 @@ public static partial class DBDivisaoTribunalDicInfo
     public const string Andar = "divAndar"; // LOCALIZACAO 170523
     public const string Etiqueta = "divEtiqueta"; // LOCALIZACAO 170523
     public const string Bold = "divBold"; // LOCALIZACAO 170523
+    public const string Guid = "divGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "divQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "divDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "divQuemAtu"; // LOCALIZACAO 170523
@@ -63,105 +63,29 @@ public static partial class DBDivisaoTribunalDicInfo
 
     public const string PTabelaNome = "DivisaoTribunal";
 #region PropriedadesDaTabela
-    public static DBInfoSystem DivGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivNumCodigo => new(0, PTabelaNome, CampoCodigo, NumCodigo, "NumCodigo", "NumCodigo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", ETipoDadosSysteminfo.SysteminfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false)
-    {
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivNomeEspecial => new(0, PTabelaNome, CampoCodigo, NomeEspecial, 255, "NomeEspecial", "NomeEspecial", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivForo => new(0, PTabelaNome, CampoCodigo, Foro, "Foro", "Foro", ETipoDadosSysteminfo.SysteminfoForeingkey, DBForoDicInfo.CampoCodigo, DBForoDicInfo.TabelaNome, new DBForoODicInfo(), false)
-    {
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivTribunal => new(0, PTabelaNome, CampoCodigo, Tribunal, "Tribunal", "Tribunal", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTribunalDicInfo.CampoCodigo, DBTribunalDicInfo.TabelaNome, new DBTribunalODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivCodigoDiv => new(0, PTabelaNome, CampoCodigo, CodigoDiv, 5, "CodigoDiv", "CodigoDiv", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 40, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivObs => new(0, PTabelaNome, CampoCodigo, Obs, DevourerOne.PMaxSizeCampoMemo, "Obs", "Obs", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivAndar => new(0, PTabelaNome, CampoCodigo, Andar, 12, "Andar", "Andar", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "div"
-    }; // DBI 11 
-    public static DBInfoSystem DivDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "div"
-    };
-    public static DBInfoSystem DivVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "div"
-    };
+    public static DBInfoSystem DivNumCodigo => new(0, PTabelaNome, CampoCodigo, NumCodigo, NumCodigo, NumCodigo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "div");
+    public static DBInfoSystem DivJustica => new(0, PTabelaNome, CampoCodigo, Justica, Justica, Justica, EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "div"); // DBI 11 
+    public static DBInfoSystem DivNomeEspecial => new(0, PTabelaNome, CampoCodigo, NomeEspecial, 255, NomeEspecial, NomeEspecial, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivArea => new(0, PTabelaNome, CampoCodigo, Area, Area, Area, EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "div", isRequired: true); // DBI 11 
+    public static DBInfoSystem DivCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "div", isRequired: true); // DBI 11 
+    public static DBInfoSystem DivForo => new(0, PTabelaNome, CampoCodigo, Foro, Foro, Foro, EDataTypeSystemInfo.SystemInfoForeingkey, DBForoDicInfo.CampoCodigo, DBForoDicInfo.TabelaNome, new DBForoODicInfo(), false, prefixo: "div"); // DBI 11 
+    public static DBInfoSystem DivTribunal => new(0, PTabelaNome, CampoCodigo, Tribunal, Tribunal, Tribunal, EDataTypeSystemInfo.SystemInfoForeingkey, DBTribunalDicInfo.CampoCodigo, DBTribunalDicInfo.TabelaNome, new DBTribunalODicInfo(), false, prefixo: "div", isRequired: true); // DBI 11 
+    public static DBInfoSystem DivCodigoDiv => new(0, PTabelaNome, CampoCodigo, CodigoDiv, 5, CodigoDiv, CodigoDiv, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "div", isRequired: true);
+    public static DBInfoSystem DivEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 40, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivObs => new(0, PTabelaNome, CampoCodigo, Obs, DevourerOne.PMaxSizeCampoMemo, Obs, Obs, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivAndar => new(0, PTabelaNome, CampoCodigo, Andar, 12, Andar, Andar, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "div", isRequired: true);
+    public static DBInfoSystem DivBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "div", isRequired: true);
+    public static DBInfoSystem DivGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "div");
+    public static DBInfoSystem DivQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "div"); // DBI 11 
+    public static DBInfoSystem DivDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "div");
+    public static DBInfoSystem DivQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "div"); // DBI 11 
+    public static DBInfoSystem DivDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "div");
+    public static DBInfoSystem DivVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "div", isRequired: true);
 
 #endregion
     [Serializable]

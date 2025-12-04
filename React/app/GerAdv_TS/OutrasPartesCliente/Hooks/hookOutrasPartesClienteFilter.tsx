@@ -9,308 +9,465 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterOutrasPartesCliente } from '@/app/GerAdv_TS/OutrasPartesCliente/Filters/OutrasPartesCliente';
+import FilterDialogButton from '@/app/components/Cruds/FilterDialogButton';
+import {useCidadeFilter} from '@/app/GerAdv_TS/Cidade/Hooks/hookCidadeFilter';
 import CidadeComboBox from '@/app/GerAdv_TS/Cidade/ComboBox/Cidade';
+import InputGuid from '@/app/components/Inputs/InputGuid'
+
+
 interface UseOutrasPartesClienteFilterProps {
-  handleFetchWithFilter: (filtro?: FilterOutrasPartesCliente | undefined | null) => Promise<void>;
+    handleFetchWithFilter: (filtro?: FilterOutrasPartesCliente | undefined | null) => Promise<void>;
 }
+
 interface UseOutrasPartesClienteFilterReturn {
-  // Estados
-  showSearch: boolean;
-  windowFilter: FilterOutrasPartesCliente;
-  setWindowFilter: React.Dispatch<React.SetStateAction<FilterOutrasPartesCliente>>;
-  // Handlers do Dialog
-  handleSearch: () => void;
-  handleCloseSearch: () => void;
-  handleConfirmSearch: (filter: FilterOutrasPartesCliente) => Promise<void>;
-  // Render function
-  renderInputFilters: (handlers: FilterHandlers<FilterOutrasPartesCliente>) => React.ReactNode;
-  // Utilitários
-  clearFilter: () => void;
-  hasActiveFilter: boolean;
+    // Estados
+    showSearch: boolean;
+    windowFilter: FilterOutrasPartesCliente;
+    setWindowFilter: React.Dispatch<React.SetStateAction<FilterOutrasPartesCliente>>;
+
+    // Handlers do Dialog
+    handleSearch: () => void;
+    handleCloseSearch: () => void;
+    handleConfirmSearch: (filter: FilterOutrasPartesCliente) => Promise<void>;
+
+    // Render function
+    renderInputFilters: (handlers: FilterHandlers<FilterOutrasPartesCliente>) => React.ReactNode;
+
+    // Utilitários
+    clearFilter: () => void;
+    hasActiveFilter: boolean;
 }
+
 export const useOutrasPartesClienteFilter = ({ handleFetchWithFilter }: UseOutrasPartesClienteFilterProps): UseOutrasPartesClienteFilterReturn => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [windowFilter, setWindowFilter] = useState<FilterOutrasPartesCliente>({} as FilterOutrasPartesCliente);
-  // Handlers do Dialog
-  const handleSearch = () => {
-    setShowSearch(true);
-    const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterOutrasPartesCliente;
-    setWindowFilter(filterWildechar);
-  };
-  const handleCloseSearch = () => {
-    setShowSearch(false);
-  };
-  const handleConfirmSearch = async (filter: FilterOutrasPartesCliente) => {
-    await handleFetchWithFilter(filter);
-  };
-  // Função para limpar filtros
-  const clearFilter = () => {
-    setWindowFilter({});
-    sessionStorage.removeItem(btoa('OutrasPartesClienteFilter'));
-    handleFetchWithFilter({});
-  };
-  // Verificar se há filtros ativos
-  const hasActiveFilter = Object.values(windowFilter).some(value =>
-    value !== undefined && value !== null && value !== '' && value !== -2147483648
-  );
-  // Função para renderizar os campos de filtro
-  const renderInputFilters = (handlers: FilterHandlers<FilterOutrasPartesCliente>) => (
-  <>
-  <InputInput
-  type='text'
-  id='nome'
-  name='nome'
-  value={handlers.windowFilter?.nome ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Nome'
-  label='Nome'
-  className='inputIncNome inputSearch'
-  />
-  <InputComboFilterYesNo
-  type='text'
-  id='terceirizado'
-  name='terceirizado'
-  value={handlers.windowFilter?.terceirizado ?? -2147483648}
-  onChange={handlers.handleInputChange}
-  label='Terceirizado'
-  className='inputSearch inputSearchCheckbox'
-  />
-  <InputInput
-  type='text'
-  id='clienteprincipal'
-  name='clienteprincipal'
-  value={handlers.windowFilter?.clienteprincipal ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe ClientePrincipal'
-  label='ClientePrincipal (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='clienteprincipal_end'
-  name='clienteprincipal_end'
-  value={handlers.windowFilter?.clienteprincipal_end ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe ClientePrincipal final'
-  label='ClientePrincipal final'
-  disabled={handlers.windowFilter?.clienteprincipal ? false: true}
-  className='inputIncNome inputSearch'
-  />
-  <InputComboFilterYesNo
-  type='text'
-  id='tipo'
-  name='tipo'
-  value={handlers.windowFilter?.tipo ?? -2147483648}
-  onChange={handlers.handleInputChange}
-  label='Tipo'
-  className='inputSearch inputSearchCheckbox'
-  />
-  <InputComboFilterYesNo
-  type='text'
-  id='sexo'
-  name='sexo'
-  value={handlers.windowFilter?.sexo ?? -2147483648}
-  onChange={handlers.handleInputChange}
-  label='Sexo'
-  className='inputSearch inputSearchCheckbox'
-  />
-  <InputDate
-  type='text'
-  id='dtnasc'
-  label='DtNasc (igual ou início)'
-  dataForm={null}
-  className='inputSearch'
-  name='dtnasc'
-  value={handlers.windowFilter?.dtnasc ?? ''}
-  onChange={(value: string) => handlers.handleDateChange('dtnasc', value)}
-  />
-  <InputDate
-  type='text'
-  id='dtnasc_end'
-  label='DtNasc (final)'
-  dataForm={null}
-  className='inputSearch'
-  name='dtnasc_end'
-  value={handlers.windowFilter?.dtnasc_end ?? ''}
-  disabled={handlers.windowFilter?.dtnasc ? false: true}
-  onChange={(value: string) => handlers.handleDateChange('dtnasc_end', value)}
-  />
-  <InputInput
-  type='text'
-  id='cpf'
-  name='cpf'
-  value={handlers.windowFilter?.cpf ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe CPF'
-  label='CPF'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='rg'
-  name='rg'
-  value={handlers.windowFilter?.rg ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe RG'
-  label='RG'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='cnpj'
-  name='cnpj'
-  value={handlers.windowFilter?.cnpj ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe CNPJ'
-  label='CNPJ'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='inscest'
-  name='inscest'
-  value={handlers.windowFilter?.inscest ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe InscEst'
-  label='InscEst'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='nomefantasia'
-  name='nomefantasia'
-  value={handlers.windowFilter?.nomefantasia ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe NomeFantasia'
-  label='NomeFantasia'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='endereco'
-  name='endereco'
-  value={handlers.windowFilter?.endereco ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Endereco'
-  label='Endereco'
-  className='inputIncNome inputSearch'
-  />
-  <CidadeComboBox
-  name='cidade'
-  dataForm={null}
-  value={handlers.windowFilter?.cidade}
-  setValue={(e:any) => handlers.handleComboChange(e, 'cidade')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Cidade'
-  />
-  <InputInput
-  type='text'
-  id='cep'
-  name='cep'
-  value={handlers.windowFilter?.cep ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe CEP'
-  label='CEP'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='bairro'
-  name='bairro'
-  value={handlers.windowFilter?.bairro ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Bairro'
-  label='Bairro'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='fone'
-  name='fone'
-  value={handlers.windowFilter?.fone ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Fone'
-  label='Fone'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='fax'
-  name='fax'
-  value={handlers.windowFilter?.fax ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Fax'
-  label='Fax'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='email'
-  name='email'
-  value={handlers.windowFilter?.email ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe EMail'
-  label='EMail'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='site'
-  name='site'
-  value={handlers.windowFilter?.site ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Site'
-  label='Site'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='class'
-  name='class'
-  value={handlers.windowFilter?.class ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Class'
-  label='Class'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro'
-  name='codigo_filtro'
-  value={handlers.windowFilter?.codigo_filtro ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código do cadastro'
-  label='Código (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro_end'
-  name='codigo_filtro_end'
-  value={handlers.windowFilter?.codigo_filtro_end ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código final do cadastro'
-  label='Código final'
-  disabled={handlers.windowFilter?.codigo_filtro ? false: true}
-  className='inputIncNome inputSearch'
-  />
-</>
-);
-return {
-  // Estados
-  showSearch, 
-  windowFilter, 
-  setWindowFilter, 
-  // Handlers
-  handleSearch, 
-  handleCloseSearch, 
-  handleConfirmSearch, 
-  // Render function
-  renderInputFilters, 
-  // Utilitários
-  clearFilter, 
-  hasActiveFilter
-};
+    const [showSearch, setShowSearch] = useState(false);
+    const [windowFilter, setWindowFilter] = useState<FilterOutrasPartesCliente>({} as FilterOutrasPartesCliente);
+
+    // Handlers do Dialog
+    const handleSearch = () => {
+        setShowSearch(true);
+        const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterOutrasPartesCliente;
+        setWindowFilter(filterWildechar);
+    };
+
+    const handleCloseSearch = () => {
+        setShowSearch(false);
+    };
+
+    const handleConfirmSearch = async (filter: FilterOutrasPartesCliente) => {
+        await handleFetchWithFilter(filter);
+    };
+
+    // Função para limpar filtros
+    const clearFilter = () => {
+        setWindowFilter({} as FilterOutrasPartesCliente);
+        sessionStorage.removeItem(btoa('OutrasPartesClienteFilter'));
+        handleFetchWithFilter({} as FilterOutrasPartesCliente);
+    };
+
+    // Verificar se há filtros ativos
+    const hasActiveFilter = Object.values(windowFilter).some(value =>
+        value !== undefined && value !== null && value !== '' && value !== -2147483648
+    );
+
+    // Função para renderizar os campos de filtro
+    const renderInputFilters = (handlers: FilterHandlers<FilterOutrasPartesCliente>) => (        
+        <>
+        <InputInput
+                type='text'
+                id='nome'
+                name='nome'
+                value={handlers.windowFilter?.nome ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Nome'
+                label='Nome'
+                className='input-default-main inputSearch'
+                />
+<InputComboFilterYesNo
+                type='text'
+                id='terceirizado'
+                name='terceirizado'
+                value={handlers.windowFilter?.terceirizado ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Terceirizado'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputInput
+                type='text'
+                id='clienteprincipal'
+                name='clienteprincipal'
+                value={handlers.windowFilter?.clienteprincipal ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe ClientePrincipal'
+                label='ClientePrincipal (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='clienteprincipal_end'
+                name='clienteprincipal_end'
+                value={handlers.windowFilter?.clienteprincipal_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe ClientePrincipal final'
+                label='ClientePrincipal final'
+                disabled={handlers.windowFilter?.clienteprincipal ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputComboFilterYesNo
+                type='text'
+                id='tipo'
+                name='tipo'
+                value={handlers.windowFilter?.tipo ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Tipo'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputComboFilterYesNo
+                type='text'
+                id='sexo'
+                name='sexo'
+                value={handlers.windowFilter?.sexo ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Sexo'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputDate
+                type='text'
+                id='dtnasc'
+                label='DtNasc (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtnasc'
+                value={handlers.windowFilter?.dtnasc ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtnasc', value)}
+            />
+<InputDate
+                type='text'
+                id='dtnasc_end'
+                label='DtNasc (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtnasc_end'
+                value={handlers.windowFilter?.dtnasc_end ?? ''}
+                disabled={handlers.windowFilter?.dtnasc ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtnasc_end', value)}
+            />
+<InputInput
+                type='text'
+                id='cpf'
+                name='cpf'
+                value={handlers.windowFilter?.cpf ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe CPF'
+                label='CPF'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='rg'
+                name='rg'
+                value={handlers.windowFilter?.rg ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe RG'
+                label='RG'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='cnpj'
+                name='cnpj'
+                value={handlers.windowFilter?.cnpj ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe CNPJ'
+                label='CNPJ'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='inscest'
+                name='inscest'
+                value={handlers.windowFilter?.inscest ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe InscEst'
+                label='InscEst'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='nomefantasia'
+                name='nomefantasia'
+                value={handlers.windowFilter?.nomefantasia ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe NomeFantasia'
+                label='NomeFantasia'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='endereco'
+                name='endereco'
+                value={handlers.windowFilter?.endereco ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Endereco'
+                label='Endereco'
+                className='input-default-main inputSearch'
+                />
+<CidadeComboBox
+                name='cidade'
+                dataForm={null}
+                value={handlers.windowFilter?.cidade}
+                setValue={(e:any) => handlers.handleComboChange(e, 'cidade')}
+                className='inputSearch inputSearchComboboxTab'
+                label='Cidade'
+            />
+<InputInput
+                type='text'
+                id='cep'
+                name='cep'
+                value={handlers.windowFilter?.cep ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe CEP'
+                label='CEP'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='bairro'
+                name='bairro'
+                value={handlers.windowFilter?.bairro ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Bairro'
+                label='Bairro'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='fone'
+                name='fone'
+                value={handlers.windowFilter?.fone ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Fone'
+                label='Fone'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='fax'
+                name='fax'
+                value={handlers.windowFilter?.fax ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Fax'
+                label='Fax'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='email'
+                name='email'
+                value={handlers.windowFilter?.email ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe EMail'
+                label='EMail'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='site'
+                name='site'
+                value={handlers.windowFilter?.site ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Site'
+                label='Site'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='class'
+                name='class'
+                value={handlers.windowFilter?.class ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Class'
+                label='Class'
+                className='input-default-main inputSearch'
+                />
+<InputComboFilterYesNo
+                type='text'
+                id='ani'
+                name='ani'
+                value={handlers.windowFilter?.ani ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Ani'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputInput
+                type='text'
+                id='quemcad'
+                name='quemcad'
+                value={handlers.windowFilter?.quemcad ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro'
+                label='Usuário de Cadastro (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad_end'
+                name='quemcad_end'
+                value={handlers.windowFilter?.quemcad_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro final'
+                label='Usuário de Cadastro final'
+                disabled={handlers.windowFilter?.quemcad ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtcad'
+                label='Data de Cadastro (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad'
+                value={handlers.windowFilter?.dtcad ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtcad', value)}
+            />
+<InputDate
+                type='text'
+                id='dtcad_end'
+                label='Data de Cadastro (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad_end'
+                value={handlers.windowFilter?.dtcad_end ?? ''}
+                disabled={handlers.windowFilter?.dtcad ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtcad_end', value)}
+            />
+<InputInput
+                type='text'
+                id='quematu'
+                name='quematu'
+                value={handlers.windowFilter?.quematu ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização'
+                label='Usuário de Atualização (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quematu_end'
+                name='quematu_end'
+                value={handlers.windowFilter?.quematu_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização final'
+                label='Usuário de Atualização final'
+                disabled={handlers.windowFilter?.quematu ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtatu'
+                label='Data de Atualização (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu'
+                value={handlers.windowFilter?.dtatu ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtatu', value)}
+            />
+<InputDate
+                type='text'
+                id='dtatu_end'
+                label='Data de Atualização (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu_end'
+                value={handlers.windowFilter?.dtatu_end ?? ''}
+                disabled={handlers.windowFilter?.dtatu ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtatu_end', value)}
+            />
+<InputComboFilterYesNo
+                type='text'
+                id='visto'
+                name='visto'
+                value={handlers.windowFilter?.visto ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Visto'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputGuid
+                type='text'
+                id='guid'
+                name='guid'
+                value={handlers.windowFilter?.guid ?? ''}
+                 onChange={(value: string) =>
+          handlers.handleInputChange({ target: { name: 'guid', value } } as any)
+        }
+                placeholder='Informe GUID'
+                label='GUID'
+                className='input-default-main inputSearch'
+                />
+ <FilterDialogButton
+        // passa o objeto nested (pode ser undefined => cast para objeto vazio)
+        filter={handlers.windowFilter.filterCidade ?? ({} as any) as any}
+        setFilter={(f: any) =>
+          handlers.setWindowFilter((prev) => ({ ...prev, filterCidade: f }))
+        }
+        // ao confirmar, NÃO precisa fazer nada - o setFilter já atualizou
+        onConfirm={async (f: any) => {          
+        }}
+        title='Filtrar Cidade'
+        buttonText='Cidade'
+        renderInputFilters={renderCidadeInputs} 
+
+      />
+
+<InputInput
+                type='text'
+                id='codigo_filtro'
+                name='codigo_filtro'
+                value={handlers.windowFilter?.codigo_filtro ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código do cadastro'
+                label='Código (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='codigo_filtro_end'
+                name='codigo_filtro_end'
+                value={handlers.windowFilter?.codigo_filtro_end ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código final do cadastro'
+                label='Código final'
+                disabled={handlers.windowFilter?.codigo_filtro ? false : true}
+                className='input-default-main inputSearch'
+                />
+
+        </>        
+    );
+
+
+    const { renderInputFilters: renderCidadeInputs } = useCidadeFilter({
+    handleFetchWithFilter: async () => {},
+  });
+
+
+
+    return {
+        // Estados
+        showSearch,
+        windowFilter,
+        setWindowFilter,
+
+        // Handlers
+        handleSearch,
+        handleCloseSearch,
+        handleConfirmSearch,
+
+        // Render function
+        renderInputFilters,
+
+        // Utilitários
+        clearFilter,
+        hasActiveFilter
+    };
 };

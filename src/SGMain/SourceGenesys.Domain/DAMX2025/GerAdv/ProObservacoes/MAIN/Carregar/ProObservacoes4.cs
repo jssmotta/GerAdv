@@ -54,8 +54,32 @@ public partial class DBProObservacoes
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProObservacoesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBProObservacoesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacoes = getValue(DBProObservacoesDicInfo.Observacoes)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProObservacoesDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProObservacoesDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProObservacoesDicInfo.Data)));
         }
         catch
         {
@@ -82,7 +106,7 @@ public partial class DBProObservacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProObservacoesDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProObservacoesDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProObservacoesDicInfo.Processo));
         }
         catch
         {
@@ -91,7 +115,7 @@ public partial class DBProObservacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProObservacoesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProObservacoesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProObservacoesDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBProObservacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProObservacoesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProObservacoesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProObservacoesDicInfo.QuemCad));
         }
         catch
         {
@@ -109,38 +133,14 @@ public partial class DBProObservacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProObservacoesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProObservacoesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProObservacoesDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBProObservacoesDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacoes = getValue(DBProObservacoesDicInfo.Observacoes)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProObservacoesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -164,7 +164,7 @@ public partial class DBProObservacoes
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

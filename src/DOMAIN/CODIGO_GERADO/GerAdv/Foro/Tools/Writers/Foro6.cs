@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IForoWriter
 {
     Task<FForo> WriteAsync(Models.Foro foro, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ForoResponse foro, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ForoResponse foro, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ForoWriter(IFForoFactory foroFactory) : IForoWriter
 {
     private readonly IFForoFactory _foroFactory = foroFactory ?? throw new ArgumentNullException(nameof(foroFactory));
-    public virtual async Task Delete(ForoResponse foro, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ForoResponse foro, int operadorId, MsiSqlConnection? oCnn)
     {
         await _foroFactory.DeleteAsync(operadorId, foro.Id, oCnn);
     }
@@ -36,6 +36,8 @@ public class ForoWriter(IFForoFactory foroFactory) : IForoWriter
         dbRec.FOBS = foro.OBS;
         dbRec.FUnicoConfirmado = foro.UnicoConfirmado;
         dbRec.FWeb = foro.Web;
+        dbRec.FEtiqueta = foro.Etiqueta;
+        dbRec.FBold = foro.Bold;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

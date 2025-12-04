@@ -73,8 +73,8 @@ public class GruposEmpresasValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGruposEmpresasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGruposEmpresas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GruposEmpresass service mock
-        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = id }));
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockOponentesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OponentesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -82,8 +82,8 @@ public class GruposEmpresasValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGruposEmpresasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGruposEmpresas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GruposEmpresass service mock
-        _ = _mockOponentesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OponentesResponse { Id = 0 }));
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockOponentesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OponentesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class GruposEmpresasValidationTests : IDisposable
         // Arrange
         var gruposempresas = CreateValidGruposEmpresas();
         gruposempresas.Oponente = 999;
-        _mockOponentesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OponentesResponse>(null));
+        _mockOponentesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OponentesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -180,7 +180,7 @@ public class GruposEmpresasValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockOponentesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockOponentesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -197,7 +197,7 @@ public class GruposEmpresasValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockOponentesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockOponentesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
@@ -217,7 +217,7 @@ public class GruposEmpresasValidationTests : IDisposable
         var result = await _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockOponentesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockOponentesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Clientes
@@ -227,7 +227,7 @@ public class GruposEmpresasValidationTests : IDisposable
         // Arrange
         var gruposempresas = CreateValidGruposEmpresas();
         gruposempresas.Cliente = 999;
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -244,7 +244,7 @@ public class GruposEmpresasValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -261,7 +261,7 @@ public class GruposEmpresasValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockClientesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockClientesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
@@ -281,7 +281,7 @@ public class GruposEmpresasValidationTests : IDisposable
         var result = await _validation.ValidateReg(gruposempresas, _mockGruposEmpresasService.Object, _mockOponentesReader.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockClientesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockClientesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

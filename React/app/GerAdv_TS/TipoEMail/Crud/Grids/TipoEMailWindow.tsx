@@ -10,65 +10,72 @@ import { ITipoEMail } from '../../Interfaces/interface.TipoEMail';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { TipoEMailEmpty } from '@/app/GerAdv_TS/Models/TipoEMail';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface TipoEMailWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedTipoEMail?: ITipoEMail;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedTipoEMail?: ITipoEMail;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const TipoEMailWindow: React.FC<TipoEMailWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedTipoEMail, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedTipoEMail,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Tipo E Mail'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedTipoEMail?.id ?? 0).toString()}
->
-<TipoEMailInc
-id={selectedTipoEMail?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Tipo E Mail'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedTipoEMail?.id ?? 0).toString()}
+            >
+                <TipoEMailInc
+                    id={selectedTipoEMail?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowTipoEMail: React.FC<TipoEMailWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<TipoEMailWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedTipoEMail={TipoEMailEmpty()}>
-</TipoEMailWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <TipoEMailWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedTipoEMail={TipoEMailEmpty()}>
+        </TipoEMailWindow>
+    )
 };
+
 export default TipoEMailWindow;

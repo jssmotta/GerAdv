@@ -13,7 +13,7 @@ public static partial class DBGraphDicInfo
     public const string Tabela = "gphTabela"; // LOCALIZACAO 170523
     public const string TabelaId = "gphTabelaId"; // LOCALIZACAO 170523
     public const string Imagem = "gphImagem"; // LOCALIZACAO 170523
-    public const string GUID = "gphGUID"; // LOCALIZACAO 170523
+    public const string Guid = "gphGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "gphQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "gphDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "gphQuemAtu"; // LOCALIZACAO 170523
@@ -35,49 +35,15 @@ public static partial class DBGraphDicInfo
 
     public const string PTabelaNome = "Graph";
 #region PropriedadesDaTabela
-    public static DBInfoSystem GphTabela => new(0, PTabelaNome, CampoCodigo, Tabela, 80, "Tabela", "Tabela", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    };
-    public static DBInfoSystem GphTabelaId => new(0, PTabelaNome, CampoCodigo, TabelaId, "TabelaId", "TabelaId", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    };
-    public static DBInfoSystem GphImagem => new(0, PTabelaNome, CampoCodigo, Imagem, "Imagem", "Imagem", ETipoDadosSysteminfo.SysteminfoByteArrayImagem)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    };
-    public static DBInfoSystem GphGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    };
-    public static DBInfoSystem GphQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    }; // DBI 11 
-    public static DBInfoSystem GphDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    };
-    public static DBInfoSystem GphQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "gph"
-    }; // DBI 11 
-    public static DBInfoSystem GphDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "gph"
-    };
-    public static DBInfoSystem GphVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "gph"
-    };
+    public static DBInfoSystem GphTabela => new(0, PTabelaNome, CampoCodigo, Tabela, 80, Tabela, Tabela, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "gph", isRequired: true);
+    public static DBInfoSystem GphTabelaId => new(0, PTabelaNome, CampoCodigo, TabelaId, TabelaId, TabelaId, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "gph", isRequired: true);
+    public static DBInfoSystem GphImagem => new(0, PTabelaNome, CampoCodigo, Imagem, Imagem, Imagem, EDataTypeSystemInfo.SystemInfoByteArrayImagem, prefixo: "gph", isRequired: true);
+    public static DBInfoSystem GphGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "gph", isRequired: true);
+    public static DBInfoSystem GphQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gph", isRequired: true); // DBI 11 
+    public static DBInfoSystem GphDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "gph", isRequired: true);
+    public static DBInfoSystem GphQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gph"); // DBI 11 
+    public static DBInfoSystem GphDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "gph");
+    public static DBInfoSystem GphVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "gph", isRequired: true);
 
 #endregion
     [Serializable]

@@ -9,25 +9,29 @@ public partial class DBFaseODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBFaseDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBFaseDicInfo.CampoCodigo;
+    public string IFieldId() => DBFaseDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBFaseDicInfo.TablePrefix;
+    public string IPrefix() => DBFaseDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBFaseDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBFaseDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBFaseODicInfo : IODicInfo
     public static string TCampoNome => DBFaseDicInfo.CampoNome;
     public static string TTabelaNome => DBFaseDicInfo.TabelaNome;
     public static string TTablePrefix => DBFaseDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasGUID, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea, DBFaseDicInfo.FasQuemCad, DBFaseDicInfo.FasDtCad, DBFaseDicInfo.FasQuemAtu, DBFaseDicInfo.FasDtAtu, DBFaseDicInfo.FasVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasGUID, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea];
+    public static ImmutableArray<DBInfoSystem> List => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea, DBFaseDicInfo.FasGuid, DBFaseDicInfo.FasQuemCad, DBFaseDicInfo.FasDtCad, DBFaseDicInfo.FasQuemAtu, DBFaseDicInfo.FasDtAtu, DBFaseDicInfo.FasVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBFaseDicInfo.FasDescricao, DBFaseDicInfo.FasJustica, DBFaseDicInfo.FasArea, DBFaseDicInfo.FasGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["fasCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBFaseDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["fasCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBFaseDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

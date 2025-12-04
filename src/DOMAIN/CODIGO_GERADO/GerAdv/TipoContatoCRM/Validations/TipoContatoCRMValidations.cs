@@ -28,8 +28,6 @@ public class TipoContatoCRMValidation : ITipoContatoCRMValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBTipoContatoCRMDicInfo.TccNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBTipoContatoCRMDicInfo.TccNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTipoContatoCRMDicInfo.TccGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTipoContatoCRMDicInfo.TccGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class TipoContatoCRMValidation : ITipoContatoCRMValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

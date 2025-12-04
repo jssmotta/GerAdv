@@ -74,6 +74,7 @@ public class PrepostosWriterTests
         var result = await _prepostosWriter.WriteAsync(prepostos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFPrepostos.Object);
+        _mockFPrepostos.VerifySet(x => x.FGuid = prepostos.Guid, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FNome = prepostos.Nome, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FFuncao = prepostos.Funcao, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FSetor = prepostos.Setor, Times.Once);
@@ -103,7 +104,6 @@ public class PrepostosWriterTests
         _mockFPrepostos.VerifySet(x => x.FPai = prepostos.Pai, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FMae = prepostos.Mae, Times.Once);
         _mockFPrepostos.VerifySet(x => x.FClass = prepostos.Class, Times.Once);
-        _mockFPrepostos.VerifySet(x => x.FGUID = prepostos.GUID, Times.Once);
         _mockFPrepostos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -207,7 +207,7 @@ public class PrepostosWriterTests
         var operadorId = 456;
         _mockPrepostosFactory.Setup(x => x.DeleteAsync(operadorId, prepostosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _prepostosWriter.Delete(prepostosResponse, operadorId, _mockConnection.Object);
+        await _prepostosWriter.DeleteAsync(prepostosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockPrepostosFactory.Verify(x => x.DeleteAsync(operadorId, prepostosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -223,7 +223,7 @@ public class PrepostosWriterTests
         var operadorId = 111;
         _mockPrepostosFactory.Setup(x => x.DeleteAsync(operadorId, prepostosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _prepostosWriter.Delete(prepostosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _prepostosWriter.DeleteAsync(prepostosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -240,7 +240,7 @@ public class PrepostosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockPrepostosFactory.Setup(x => x.DeleteAsync(operadorId, prepostosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _prepostosWriter.Delete(prepostosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _prepostosWriter.DeleteAsync(prepostosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -270,6 +270,7 @@ public class PrepostosWriterTests
         return new Models.Prepostos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
             Funcao = 1,
             Setor = 1,
@@ -298,8 +299,7 @@ public class PrepostosWriterTests
             EMail = "test@email.com",
             Pai = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Mae = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Class = "A",
-            GUID = Guid.NewGuid().ToString()
+            Class = "A"
         };
     }
 #endregion

@@ -5,110 +5,45 @@ namespace MenphisSI.SG.GerAdv;
 // ReSharper disable once InconsistentNaming 1
 public partial class DBAgendaSemana
 {
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FFuncionario, m_FAdvogado, m_FTipoCompromisso, m_FCliente;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FParaNome, m_FCompromisso, m_FNome, m_FNomeCliente, m_FTipo;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData, m_FHora, m_FHoraFinal;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FConcluido, m_FLiberado, m_FImportante;
     // Tracking Code: 20250503
-    [StringLength(60, ErrorMessage = "A propriedade FParaNome da tabela AgendaSemana deve ter no máximo 60 caracteres.")]
+    [StringLength(60, ErrorMessage = "A propriedade FParaNome da tabela 'AgendaSemana' deve ter no máximo 60 caracteres.")]
     public virtual string? FParaNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FParaNome ?? string.Empty; set => m_FParaNome = value.trim().Length > 60 ? value.trim().Substring(0, 60) : value.trim(); }
-
-    public virtual string? FData
-    {
-        get => $"{m_FData:dd/MM/yyyy HH:mm:ss}";
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-                return;
-            if (DateTime.TryParseExact(value, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) || DateTime.TryParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
-            {
-                m_FData = dt;
-            }
-            else
-            {
-                throw new FormatException($"String '{value}' was not recognized as a valid DateTime.");
-            }
-        }
-    }
-
+        get => field ?? string.Empty; set => field = value.trim().Length > 60 ? value.trim().Substring(0, 60) : value.trim(); }
+    public virtual DateOnly? FData { get; set; }
     public virtual int FFuncionario {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFuncionario; set => m_FFuncionario = value; }
+        get => field; set => field = value; }
     public virtual int FAdvogado {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAdvogado; set => m_FAdvogado = value; }
-
-    public virtual string? FHora
-    {
-        get => $"{m_FHora:HH:mm}";
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-                return;
-            if (DateTime.TryParseExact(value, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) || DateTime.TryParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
-            {
-                m_FHora = dt;
-            }
-            else
-            {
-                throw new FormatException($"String '{value}' was not recognized as a valid DateTime.");
-            }
-        }
-    }
-
+        get => field; set => field = value; }
+    public virtual TimeOnly? FHora { get; set; }
     public virtual int FTipoCompromisso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipoCompromisso; set => m_FTipoCompromisso = value; }
+        get => field; set => field = value; }
     // Tracking Code: 20250503
     public virtual string? FCompromisso {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCompromisso ?? string.Empty; set => m_FCompromisso = value.trim(); }
+        get => field ?? string.Empty; set => field = value.trim(); }
     public virtual bool FConcluido {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FConcluido; set => m_FConcluido = value; }
+        get => field; set => field = value; }
     public virtual bool FLiberado {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiberado; set => m_FLiberado = value; }
+        get => field; set => field = value; }
     public virtual bool FImportante {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FImportante; set => m_FImportante = value; }
-
-    public virtual string? FHoraFinal
-    {
-        get => $"{m_FHoraFinal:HH:mm}";
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-                return;
-            if (DateTime.TryParseExact(value, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) || DateTime.TryParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
-            {
-                m_FHoraFinal = dt;
-            }
-            else
-            {
-                throw new FormatException($"String '{value}' was not recognized as a valid DateTime.");
-            }
-        }
-    }
+        get => field; set => field = value; }
+    public virtual TimeOnly? FHoraFinal { get; set; }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela AgendaSemana deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela 'AgendaSemana' deve ter no máximo 80 caracteres.")]
     public virtual string? FNome {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty; set => m_FNome = value.trim().Length > 80 ? value.trim().Substring(0, 80) : value.trim(); }
+        get => field ?? string.Empty; set => field = value.trim().Length > 80 ? value.trim().Substring(0, 80) : value.trim(); }
     public virtual int FCliente {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCliente; set => m_FCliente = value; }
+        get => field; set => field = value; }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FNomeCliente da tabela AgendaSemana deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FNomeCliente da tabela 'AgendaSemana' deve ter no máximo 80 caracteres.")]
     public virtual string? FNomeCliente {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNomeCliente ?? string.Empty; set => m_FNomeCliente = value.trim().Length > 80 ? value.trim().Substring(0, 80) : value.trim(); }
+        get => field ?? string.Empty; set => field = value.trim().Length > 80 ? value.trim().Substring(0, 80) : value.trim(); }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FTipo da tabela AgendaSemana deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FTipo da tabela 'AgendaSemana' deve ter no máximo 100 caracteres.")]
     public virtual string? FTipo {[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipo ?? string.Empty; set => m_FTipo = value.trim().Length > 100 ? value.trim().Substring(0, 100) : value.trim(); }
+        get => field ?? string.Empty; set => field = value.trim().Length > 100 ? value.trim().Substring(0, 100) : value.trim(); }
 
     public int IQuemCad() => 0;
     public int IQuemAtu() => 0;
@@ -118,13 +53,13 @@ public partial class DBAgendaSemana
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -134,9 +69,13 @@ public partial class DBAgendaSemana
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => true;
+    public bool IsStoredProcedureOrView() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => true;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

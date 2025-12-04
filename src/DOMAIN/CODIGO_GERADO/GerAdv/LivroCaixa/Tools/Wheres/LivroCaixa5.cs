@@ -26,7 +26,6 @@ public partial class LivroCaixaWhere(IFLivroCaixaFactory livrocaixaFactory) : IL
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -34,6 +33,12 @@ public partial class LivroCaixaWhere(IFLivroCaixaFactory livrocaixaFactory) : IL
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            livrocaixa.Data = XData.ToString("dd/MM/yyyy");
+            livrocaixa.Data_date = XData;
+        }
+
         return livrocaixa;
     }
 }

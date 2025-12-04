@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProObservacoesApiError } from '../GerAdv_TS/ProObservacoes/Apis/ApiProObservacoes';
+import { ProObservacoesApiError } from '@/app/GerAdv_TS/ProObservacoes/Apis/ApiProObservacoes';
 import { ProObservacoesApi } from '@/app/GerAdv_TS/ProObservacoes/Apis/ApiProObservacoes';
-import { FilterProObservacoes } from '../GerAdv_TS/ProObservacoes/Filters/ProObservacoes';
-import { IProObservacoes } from '../GerAdv_TS/ProObservacoes/Interfaces/interface.ProObservacoes';
-import { ProObservacoesTestEmpty } from '../GerAdv_TS/Models/ProObservacoes';
+import { FilterProObservacoes } from '@/app/GerAdv_TS/ProObservacoes/Filters/ProObservacoes';
+import { IProObservacoes } from '@/app/GerAdv_TS/ProObservacoes/Interfaces/interface.ProObservacoes';
+import { ProObservacoesTestEmpty } from '@/app/GerAdv_TS/Models/ProObservacoes';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProObservacoesApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProObservacoes = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,11 @@ describe('ProObservacoesApi', () => {
   describe('addAndUpdate', () => {
     const mockProObservacoes: IProObservacoes = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+nome: 'João',
+observacoes: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+data: '24/04/1975'
     };
 
     it('should add new proobservacoes successfully', async () => {
@@ -487,7 +478,7 @@ describe('ProObservacoesApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProObservacoes = { funcionario: 1 };
+      const mockFilter: FilterProObservacoes = { : 1 };
       
       const result = proobservacoesApi.useFilter(mockFilter);
       

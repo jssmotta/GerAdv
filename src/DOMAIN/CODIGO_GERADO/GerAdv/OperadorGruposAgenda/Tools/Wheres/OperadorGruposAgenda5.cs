@@ -23,7 +23,7 @@ public partial class OperadorGruposAgendaWhere(IFOperadorGruposAgendaFactory ope
             SQLWhere = dbRec.FSQLWhere ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return operadorgruposagenda;
     }

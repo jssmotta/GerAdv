@@ -10,6 +10,7 @@ export interface ISituacao {
 	parte_int: string,
 	parte_opo: string,
 	top: boolean,
+	bold: boolean,
 }
 
 export interface ISituacaoFormProps {

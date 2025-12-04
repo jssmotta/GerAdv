@@ -31,7 +31,7 @@ public partial class DBEventoPrazoAgenda
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,11 +134,13 @@ public partial class DBEventoPrazoAgenda
 
 #if (!NOTSTORED_EventoPrazoAgenda)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFBold;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBEventoPrazoAgendaDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBEventoPrazoAgendaDicInfo.Nome, FNome, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBEventoPrazoAgendaDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
     }
 
 #endif
@@ -150,20 +152,20 @@ public partial class DBEventoPrazoAgenda
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBEventoPrazoAgendaDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEventoPrazoAgendaDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBEventoPrazoAgendaDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBEventoPrazoAgendaDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBEventoPrazoAgendaDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEventoPrazoAgendaDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBEventoPrazoAgendaDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBEventoPrazoAgendaDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEventoPrazoAgendaDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBEventoPrazoAgendaDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

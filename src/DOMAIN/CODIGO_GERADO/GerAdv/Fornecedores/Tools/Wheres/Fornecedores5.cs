@@ -40,7 +40,9 @@ public partial class FornecedoresWhere(IFFornecedoresFactory fornecedoresFactory
             Obs = dbRec.FObs ?? string.Empty,
             Produtos = dbRec.FProdutos ?? string.Empty,
             Contatos = dbRec.FContatos ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return fornecedores;
     }

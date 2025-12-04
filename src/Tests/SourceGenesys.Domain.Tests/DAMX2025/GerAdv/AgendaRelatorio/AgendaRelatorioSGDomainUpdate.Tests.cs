@@ -22,7 +22,7 @@ public class DBAgendaRelatorioUpdate : IDisposable
         var agendarelatorio = new DBAgendaRelatorio();
         // Assert
         agendarelatorio.Should().NotBeNull();
-        agendarelatorio.ITabelaName().Should().Be("AgendaRelatorio");
+        agendarelatorio.ITableName().Should().Be("AgendaRelatorio");
         agendarelatorio.ID.Should().Be(0);
     }
 

@@ -14,6 +14,7 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     private readonly IPontoVirtualAcessosService _pontovirtualacessosService = pontovirtualacessosService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterPontoVirtualAcessos filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterPontoVirtualAcessos filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("PontoVirtualAcessos: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _pontovirtualacessosService.Filter(max, filtro, uri);
+        //_logger.Info("PontoVirtualAcessos: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _pontovirtualacessosService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterPontoVirtualAcessosWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("PontoVirtualAcessos: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _pontovirtualacessosService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("PontoVirtualAcessos: GetById called with id = {0}, {1}", id, uri);
         var result = await _pontovirtualacessosService.GetById(id, uri, token);
         if (result == null)
@@ -51,8 +74,8 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(PontoVirtualAcessosResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(PontoVirtualAcessosResponse), StatusCodes.Status201Created)]
@@ -93,6 +116,11 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("PontoVirtualAcessos: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _pontovirtualacessosService.Delete(id, uri);
@@ -112,6 +140,7 @@ public partial class PontoVirtualAcessosController(IPontoVirtualAcessosService p
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.PontoVirtualAcessos regPontoVirtualAcessos, [FromRoute, Required] string uri)
     {

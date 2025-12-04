@@ -36,7 +36,7 @@ public class PreClientesWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFPreClientes(bool? Inativo = false, string? QuemIndicou = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Nome = "João", int? Adv = 1, int? IDRep = 1, bool? Juridica = true, string? NomeFantasia = "João", string? Class = "A", bool? Tipo = false, string? DtNasc = "24/04/1975", string? InscEst = "AAAAAAAAAAAAA", string? Qualificacao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? Sexo = true, int? Idade = 1, string? CNPJ = "93016944000138", string? CPF = "544.506.718-13", string? RG = "12.345.678-9", bool? TipoCaptacao = false, string? Observacao = "Observação teste", string? Endereco = "Rua das Flores, 123", string? Bairro = "Centro", int? Cidade = 1, string? CEP = "01234-567", string? Fax = "(11) 88888-9999", string? Fone = "(11) 99999-9999", string? Data = "27/05/2022", string? HomePage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? EMail = "test@email.com", string? Assistido = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? AssRG = "12.345.678-9", string? AssCPF = "544.506.718-13", string? AssEndereco = "Rua das Flores, 123", string? CNH = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    private void SetupMockFPreClientes(bool? Inativo = false, string? QuemIndicou = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Nome = "João", int? Adv = 1, int? IDRep = 1, bool? Juridica = true, string? NomeFantasia = "João", string? Class = "A", bool? Tipo = false, string? DtNasc = "24/04/1975", string? InscEst = "AAAAAAAAAAAAA", string? Qualificacao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? Sexo = true, int? Idade = 1, string? CNPJ = "93016944000138", string? CPF = "544.506.718-13", string? RG = "12.345.678-9", bool? TipoCaptacao = false, string? Observacao = "Observação teste", string? Endereco = "Rua das Flores, 123", string? Bairro = "Centro", int? Cidade = 1, string? CEP = "01234-567", string? Fax = "(11) 88888-9999", string? Fone = "(11) 99999-9999", string? Data = "24/04/1975", string? HomePage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? EMail = "test@email.com", string? Assistido = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? AssRG = "12.345.678-9", string? AssCPF = "544.506.718-13", string? AssEndereco = "Rua das Flores, 123", string? CNH = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     {
         _mockFPreClientes.Setup(f => f.FInativo).Returns(Inativo ?? false);
         _mockFPreClientes.Setup(f => f.FQuemIndicou).Returns(QuemIndicou ?? string.Empty);
@@ -135,7 +135,7 @@ public class PreClientesWhereTests : IDisposable
         result.CEP.Should().Be("01234-567");
         result.Fax.Should().Be("(11) 88888-9999");
         result.Fone.Should().Be("(11) 99999-9999");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.HomePage.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.EMail.Should().Be("test@email.com");
         result.Assistido.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -301,7 +301,7 @@ public class PreClientesWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFPreClientes(Inativo: false, QuemIndicou: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Nome: "João", Adv: 1, IDRep: 1, Juridica: true, NomeFantasia: "João", Class: "A", Tipo: false, DtNasc: "24/04/1975", InscEst: "AAAAAAAAAAAAA", Qualificacao: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Sexo: true, Idade: 1, CNPJ: "93016944000138", CPF: "544.506.718-13", RG: "12.345.678-9", TipoCaptacao: false, Observacao: "Observação teste", Endereco: "Rua das Flores, 123", Bairro: "Centro", Cidade: 1, CEP: "01234-567", Fax: "(11) 88888-9999", Fone: "(11) 99999-9999", Data: "27/05/2022", HomePage: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", EMail: "test@email.com", Assistido: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", AssRG: "12.345.678-9", AssCPF: "544.506.718-13", AssEndereco: "Rua das Flores, 123", CNH: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        SetupMockFPreClientes(Inativo: false, QuemIndicou: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Nome: "João", Adv: 1, IDRep: 1, Juridica: true, NomeFantasia: "João", Class: "A", Tipo: false, DtNasc: "24/04/1975", InscEst: "AAAAAAAAAAAAA", Qualificacao: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Sexo: true, Idade: 1, CNPJ: "93016944000138", CPF: "544.506.718-13", RG: "12.345.678-9", TipoCaptacao: false, Observacao: "Observação teste", Endereco: "Rua das Flores, 123", Bairro: "Centro", Cidade: 1, CEP: "01234-567", Fax: "(11) 88888-9999", Fone: "(11) 99999-9999", Data: "24/04/1975", HomePage: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", EMail: "test@email.com", Assistido: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", AssRG: "12.345.678-9", AssCPF: "544.506.718-13", AssEndereco: "Rua das Flores, 123", CNH: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         _mockPreClientesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPreClientes.Object);
         // Act
         var result = _preclientesWhere.Read(where, parameters, _mockConnection.Object);
@@ -333,7 +333,7 @@ public class PreClientesWhereTests : IDisposable
         result.CEP.Should().Be("01234-567");
         result.Fax.Should().Be("(11) 88888-9999");
         result.Fone.Should().Be("(11) 99999-9999");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.HomePage.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.EMail.Should().Be("test@email.com");
         result.Assistido.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -377,20 +377,6 @@ public class PreClientesWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFPreClientes(DtNasc: "invalid-date");
-        _mockPreClientesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPreClientes.Object);
-        // Act
-        var result = _preclientesWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtNascFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -421,6 +407,54 @@ public class PreClientesWhereTests : IDisposable
         var result = _preclientesWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.DtNasc.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "01/01/2025";
+        SetupMockFPreClientes(Data: testDate);
+        _mockPreClientesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPreClientes.Object);
+        // Act
+        var result = _preclientesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("01/01/2025");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFPreClientes(Data: null);
+        _mockPreClientesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPreClientes.Object);
+        // Act
+        var result = _preclientesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("01/01/2025")]
+    [InlineData("2025/01/02T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/03T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFPreClientes(Data: dateString);
+        _mockPreClientesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPreClientes.Object);
+        // Act
+        var result = _preclientesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
     }
 #endregion
 #endregion

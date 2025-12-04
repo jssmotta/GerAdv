@@ -7,65 +7,137 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterTribunalWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de Tribunal padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterTribunal Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterTribunal
 {
+    [JsonPropertyName("filterArea")]
+    [Description("Filtro para a tabela Area")]
+    public FilterArea? FilterArea { get; set; } = new();
+
+    [JsonPropertyName("filterJustica")]
+    [Description("Filtro para a tabela Justica")]
+    public FilterJustica? FilterJustica { get; set; } = new();
+
+    [JsonPropertyName("filterInstancia")]
+    [Description("Filtro para a tabela Instancia")]
+    public FilterInstancia? FilterInstancia { get; set; } = new();
+
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("nome")]
+    [Description("triNome")]
     public string? Nome { get; set; } = string.Empty;
 
-    [JsonPropertyName("nome_end")]
-    public string? Nome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("area")]
+    [Description("triArea -2147483648 para nada ou id")]
     public int Area { get; set; } = int.MinValue;
 
     [JsonPropertyName("area_end")]
+    [Description("triArea -2147483648 para nada ou id para final do intervalo")]
     public int Area_end { get; set; } = int.MinValue;
 
-    [JsonPropertyName("guid")]
-    public string? GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string? GUID_end { get; set; } = string.Empty;
-
     [JsonPropertyName("justica")]
+    [Description("triJustica -2147483648 para nada ou id")]
     public int Justica { get; set; } = int.MinValue;
 
     [JsonPropertyName("justica_end")]
+    [Description("triJustica -2147483648 para nada ou id para final do intervalo")]
     public int Justica_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("descricao")]
+    [Description("triDescricao")]
     public string? Descricao { get; set; } = string.Empty;
 
-    [JsonPropertyName("descricao_end")]
-    public string? Descricao_end { get; set; } = string.Empty;
-
     [JsonPropertyName("instancia")]
+    [Description("triInstancia -2147483648 para nada ou id")]
     public int Instancia { get; set; } = int.MinValue;
 
     [JsonPropertyName("instancia_end")]
+    [Description("triInstancia -2147483648 para nada ou id para final do intervalo")]
     public int Instancia_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("sigla")]
+    [Description("triSigla")]
     public string? Sigla { get; set; } = string.Empty;
 
-    [JsonPropertyName("sigla_end")]
-    public string? Sigla_end { get; set; } = string.Empty;
-
     [JsonPropertyName("web")]
+    [Description("triWeb")]
     public string? Web { get; set; } = string.Empty;
 
-    [JsonPropertyName("web_end")]
-    public string? Web_end { get; set; } = string.Empty;
+    [JsonPropertyName("etiqueta")]
+    [Description("triEtiqueta -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Etiqueta { get; set; } = int.MinValue;
+
+    [JsonPropertyName("bold")]
+    [Description("triBold -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Bold { get; set; } = int.MinValue;
+
+    [JsonPropertyName("guid")]
+    [Description("triGuid")]
+    public string? Guid { get; set; } = string.Empty;
+
+    [JsonPropertyName("quemcad")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id")]
+    public int QuemCad { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quemcad_end")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id para final do intervalo")]
+    public int QuemCad_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtcad")]
+    [Description("Data de Cadastro")]
+    public string? DtCad { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtcad_end")]
+    [Description("Data de Cadastro final para intervalo")]
+    public string? DtCad_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("quematu")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id")]
+    public int QuemAtu { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quematu_end")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id para final do intervalo")]
+    public int QuemAtu_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtatu")]
+    [Description("Data de Atualização")]
+    public string? DtAtu { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtatu_end")]
+    [Description("Data de Atualização final para intervalo")]
+    public string? DtAtu_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("visto")]
+    [Description("Visto -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Visto { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

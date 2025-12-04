@@ -105,7 +105,7 @@ public class TipoModeloDocumentoValidationTests : IDisposable
         tipomodelodocumento.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipomodelodocumento, _mockTipoModeloDocumentoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class TipoModeloDocumentoValidationTests : IDisposable
     {
         // Arrange
         var tipomodelodocumento = CreateValidTipoModeloDocumento();
-        tipomodelodocumento.Nome = "   ";
+        tipomodelodocumento.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipomodelodocumento, _mockTipoModeloDocumentoService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

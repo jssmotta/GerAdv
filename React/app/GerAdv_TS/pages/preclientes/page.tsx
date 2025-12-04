@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { PreClientesGridAdapter } from '@/app/GerAdv_TS/PreClientes/Adapter/PreClientesGridAdapter';
 import PreClientesGridContainer from '@/app/GerAdv_TS/PreClientes/Components/PreClientesGridContainer';
+
 const PreClientesPage: React.FC = () => {
-  const PreClientesGrid = new PreClientesGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Pre Clientes' />
-    <PreClientesGridContainer grid={PreClientesGrid} />
-  </PageLayout>
-);
+    const PreClientesGrid = new PreClientesGridAdapter();
+
+    return (
+        <PageLayout>            
+            <PreClientesGridContainer grid={PreClientesGrid} />
+        </PageLayout>
+    );
 };
+
 export default PreClientesPage;

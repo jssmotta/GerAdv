@@ -23,7 +23,7 @@ public partial class SMSAliceWhere(IFSMSAliceFactory smsaliceFactory) : ISMSAlic
             Operador = dbRec.FOperador,
             Nome = dbRec.FNome ?? string.Empty,
             TipoEMail = dbRec.FTipoEMail,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return smsalice;
     }

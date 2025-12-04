@@ -10,65 +10,72 @@ import { IProResumos } from '../../Interfaces/interface.ProResumos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { ProResumosEmpty } from '@/app/GerAdv_TS/Models/ProResumos';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface ProResumosWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedProResumos?: IProResumos;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedProResumos?: IProResumos;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const ProResumosWindow: React.FC<ProResumosWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedProResumos, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedProResumos,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Pro Resumos'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedProResumos?.id ?? 0).toString()}
->
-<ProResumosInc
-id={selectedProResumos?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Pro Resumos'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedProResumos?.id ?? 0).toString()}
+            >
+                <ProResumosInc
+                    id={selectedProResumos?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowProResumos: React.FC<ProResumosWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<ProResumosWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedProResumos={ProResumosEmpty()}>
-</ProResumosWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <ProResumosWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedProResumos={ProResumosEmpty()}>
+        </ProResumosWindow>
+    )
 };
+
 export default ProResumosWindow;

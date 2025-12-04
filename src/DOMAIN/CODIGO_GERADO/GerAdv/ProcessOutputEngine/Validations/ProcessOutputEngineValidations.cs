@@ -36,8 +36,6 @@ public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
             throw new SGValidationException($"Campo deve ter no máximo {DBProcessOutputEngineDicInfo.PoeCampo.FTamanho} caracteres.");
         if (reg.Valor != null && reg.Valor.Length > DBProcessOutputEngineDicInfo.PoeValor.FTamanho)
             throw new SGValidationException($"Valor deve ter no máximo {DBProcessOutputEngineDicInfo.PoeValor.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProcessOutputEngineDicInfo.PoeGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProcessOutputEngineDicInfo.PoeGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,6 +45,8 @@ public class ProcessOutputEngineValidation : IProcessOutputEngineValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

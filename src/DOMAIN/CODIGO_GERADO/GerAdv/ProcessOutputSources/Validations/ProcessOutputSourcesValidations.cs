@@ -28,8 +28,6 @@ public class ProcessOutputSourcesValidation : IProcessOutputSourcesValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBProcessOutputSourcesDicInfo.PosNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBProcessOutputSourcesDicInfo.PosNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProcessOutputSourcesDicInfo.PosGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProcessOutputSourcesDicInfo.PosGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class ProcessOutputSourcesValidation : IProcessOutputSourcesValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

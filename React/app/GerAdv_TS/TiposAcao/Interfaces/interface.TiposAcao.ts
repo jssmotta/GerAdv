@@ -9,6 +9,7 @@ export interface ITiposAcao {
  
 	nome: string,
 	inativo: boolean,
+	bold: boolean,
 }
 
 export interface ITiposAcaoFormProps {

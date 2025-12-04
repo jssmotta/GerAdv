@@ -20,10 +20,7 @@ public static partial class DBViaRecebimentoDicInfo
 
     public const string PTabelaNome = "ViaRecebimento";
 #region PropriedadesDaTabela
-    public static DBInfoSystem VrbNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "vrb"
-    };
+    public static DBInfoSystem VrbNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "vrb");
 
 #endregion
     [Serializable]

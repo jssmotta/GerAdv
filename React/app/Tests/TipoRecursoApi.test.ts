@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { TipoRecursoApiError } from '../GerAdv_TS/TipoRecurso/Apis/ApiTipoRecurso';
+import { TipoRecursoApiError } from '@/app/GerAdv_TS/TipoRecurso/Apis/ApiTipoRecurso';
 import { TipoRecursoApi } from '@/app/GerAdv_TS/TipoRecurso/Apis/ApiTipoRecurso';
-import { FilterTipoRecurso } from '../GerAdv_TS/TipoRecurso/Filters/TipoRecurso';
-import { ITipoRecurso } from '../GerAdv_TS/TipoRecurso/Interfaces/interface.TipoRecurso';
-import { TipoRecursoTestEmpty } from '../GerAdv_TS/Models/TipoRecurso';
+import { FilterTipoRecurso } from '@/app/GerAdv_TS/TipoRecurso/Filters/TipoRecurso';
+import { ITipoRecurso } from '@/app/GerAdv_TS/TipoRecurso/Interfaces/interface.TipoRecurso';
+import { TipoRecursoTestEmpty } from '@/app/GerAdv_TS/Models/TipoRecurso';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('TipoRecursoApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterTipoRecurso = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('TipoRecursoApi', () => {
   describe('addAndUpdate', () => {
     const mockTipoRecurso: ITipoRecurso = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+justica: 0,
+area: 0,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new tiporecurso successfully', async () => {
@@ -487,7 +477,7 @@ describe('TipoRecursoApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterTipoRecurso = { funcionario: 1 };
+      const mockFilter: FilterTipoRecurso = { : 1 };
       
       const result = tiporecursoApi.useFilter(mockFilter);
       

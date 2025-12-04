@@ -7,120 +7,95 @@ public partial class DBDiario2
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFData, pFldFHora, pFldFOperador, pFldFGUID, pFldFNome, pFldFOcorrencia, pFldFCliente, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FOperador, m_FCliente;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FGUID, m_FNome, m_FOcorrencia;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData, m_FHora;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FBold;
-    public virtual string? FData
+    private protected bool pFldFData, pFldFHora, pFldFOperador, pFldFNome, pFldFOcorrencia, pFldFCliente, pFldFBold, pFldFGuid;
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
-    public virtual string? FHora
+    public virtual TimeOnly? FHora
     {
-        // fdDate2 TRACE CODE
-        get => $"{m_FHora:HH:mm}";
+        get;
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (!value.HasValue)
             {
-                pFldFHora = pFldFHora || m_FHora != null;
-                m_FHora = null;
+                pFldFHora = pFldFHora || field != null;
+                field = null;
                 return;
             }
 
-            if (value.IsEquals(DevourerOne.PNow))
-            {
-                pFldFHora = true;
-                m_FHora = DevourerOne.DateTimeUtc;
-            }
-            else
-            {
-                if (value.IsEquals($"{m_FHora:HH:mm}"))
-                    return;
-                if (!DateTime.TryParse(value, out var dateTime))
-                    return;
-                pFldFHora = true;
-                m_FHora = dateTime;
-            }
+            // Se já tem o mesmo valor, não faz nada
+            if (field.HasValue && field.Value == value.Value)
+                return;
+            pFldFHora = true;
+            field = value;
         }
     }
 
     public virtual int FOperador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOperador;
+        get => field;
         set
         {
-            pFldFOperador = pFldFOperador || value != m_FOperador;
+            pFldFOperador = pFldFOperador || value != field;
             if (pFldFOperador)
-                m_FOperador = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FGUID da tabela Diario2 deve ter no máximo 150 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FNome da tabela Diario2 deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FNome da tabela 'Diario2' deve ter no máximo 150 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FOcorrencia da tabela Diario2 deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FOcorrencia da tabela 'Diario2' deve ter no máximo 2048 caracteres.")]
     public virtual string? FOcorrencia
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOcorrencia ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOcorrencia = pFldFOcorrencia || !(m_FOcorrencia ?? string.Empty).Equals(value);
+            pFldFOcorrencia = pFldFOcorrencia || !(field ?? string.Empty).Equals(value);
             if (pFldFOcorrencia)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FOcorrencia = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
             }
         }
     }
@@ -128,36 +103,53 @@ public partial class DBDiario2
     public virtual int FCliente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCliente;
+        get => field;
         set
         {
-            pFldFCliente = pFldFCliente || value != m_FCliente;
+            pFldFCliente = pFldFCliente || value != field;
             if (pFldFCliente)
-                m_FCliente = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(150, ErrorMessage = "A propriedade FGuid da tabela 'Diario2' deve ter no máximo 150 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -167,9 +159,13 @@ public partial class DBDiario2
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

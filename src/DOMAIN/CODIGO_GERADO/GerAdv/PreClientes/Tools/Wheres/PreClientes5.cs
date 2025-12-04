@@ -44,7 +44,6 @@ public partial class PreClientesWhere(IFPreClientesFactory preclientesFactory) :
             CEP = dbRec.FCEP ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Assistido = dbRec.FAssistido ?? string.Empty,
@@ -52,11 +51,20 @@ public partial class PreClientesWhere(IFPreClientesFactory preclientesFactory) :
             AssEndereco = dbRec.FAssEndereco ?? string.Empty,
             CNH = dbRec.FCNH ?? string.Empty,
             AssCPF = dbRec.FAssCPF ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            preclientes.DtNasc = dbRec.FDtNasc;
+            preclientes.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             preclientes.DtNasc_date = XDtNasc;
+        }
+
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            preclientes.Data = XData.ToString("dd/MM/yyyy");
+            preclientes.Data_date = XData;
         }
 
         return preclientes;

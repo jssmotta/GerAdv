@@ -28,8 +28,6 @@ public class GraphValidation : IGraphValidation
     {
         if (reg.Tabela != null && reg.Tabela.Length > DBGraphDicInfo.GphTabela.FTamanho)
             throw new SGValidationException($"Tabela deve ter no máximo {DBGraphDicInfo.GphTabela.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBGraphDicInfo.GphGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBGraphDicInfo.GphGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -44,8 +42,6 @@ public class GraphValidation : IGraphValidation
             throw new SGValidationException("Tabela é obrigatório.");
         if (reg.TabelaId == 0)
             throw new SGValidationException("TabelaId é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         await Task.Delay(0);
         return true;
     }

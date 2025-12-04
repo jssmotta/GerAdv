@@ -35,11 +35,24 @@ public class DBDocumentosTests : IDisposable
         dt.Columns.Add("docQuemAtu", typeof(int));
         dt.Columns.Add("docDtAtu", typeof(DateTime));
         dt.Columns.Add("docVisto", typeof(bool));
-        dt.Columns.Add("docGUID", typeof(string));
         dt.Columns.Add("docProcesso", typeof(int));
-        dt.Columns.Add("docData", typeof(string));
+        dt.Columns.Add("docData", typeof(DateTime));
         dt.Columns.Add("docObservacao", typeof(string));
+        dt.Columns.Add("docGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["docCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBDocumentos(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +73,7 @@ public class DBDocumentosTests : IDisposable
     {
         var instance = new DBDocumentos();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Documentos", instance.ITabelaName());
+        Assert.Equal("Documentos", instance.ITableName());
         Assert.Equal("doc", instance.Prefixo);
     }
 
@@ -78,29 +91,16 @@ public class DBDocumentosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["docCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBDocumentos(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Documentos", cadastro.ITabelaName());
-        Assert.Equal("docCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("docData", cadastro.ICampoNome());
-        Assert.Equal("doc", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Documentos", cadastro.ITableName());
+        Assert.Equal("docCodigo", cadastro.IFieldId());
+        Assert.Equal("docData", cadastro.IFieldNameDescription());
+        Assert.Equal("doc", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,30 +160,12 @@ public class DBDocumentosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -204,6 +186,23 @@ public class DBDocumentosTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBDocumentos();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
@@ -211,6 +210,24 @@ public class DBDocumentosTests : IDisposable
     {
         _instance.FObservacao = input;
         Assert.Equal(expected, _instance.FObservacao);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

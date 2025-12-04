@@ -68,110 +68,31 @@ public static partial class DBColaboradoresDicInfo
 
     public const string PTabelaNome = "Colaboradores";
 #region PropriedadesDaTabela
-    public static DBInfoSystem ColCargo => new(0, PTabelaNome, CampoCodigo, Cargo, "Cargo", "Cargo", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false)
-    {
-        Prefixo = "col"
-    }; // DBI 11 
-    public static DBInfoSystem ColCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "col"
-    }; // DBI 11 
-    public static DBInfoSystem ColSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", ETipoDadosSysteminfo.SysteminfoDataNascimento)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColIdade => new(0, PTabelaNome, CampoCodigo, Idade, "Idade", "Idade", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "col"
-    }; // DBI 11 
-    public static DBInfoSystem ColFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColCNH => new(0, PTabelaNome, CampoCodigo, CNH, 100, "CNH", "CNH", ETipoDadosSysteminfo.SysteminfoTextCnh, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "col"
-    }; // DBI 11 
-    public static DBInfoSystem ColDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "col"
-    }; // DBI 11 
-    public static DBInfoSystem ColDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "col"
-    };
-    public static DBInfoSystem ColVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "col"
-    };
+    public static DBInfoSystem ColCargo => new(0, PTabelaNome, CampoCodigo, Cargo, Cargo, Cargo, EDataTypeSystemInfo.SystemInfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false, prefixo: "col"); // DBI 11 
+    public static DBInfoSystem ColCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "col"); // DBI 11 
+    public static DBInfoSystem ColSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "col", isRequired: true);
+    public static DBInfoSystem ColNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "col");
+    public static DBInfoSystem ColCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColRG => new(0, PTabelaNome, CampoCodigo, RG, 30, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, DtNasc, DtNasc, EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "col");
+    public static DBInfoSystem ColIdade => new(0, PTabelaNome, CampoCodigo, Idade, Idade, Idade, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "col");
+    public static DBInfoSystem ColEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "col"); // DBI 11 
+    public static DBInfoSystem ColFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColCNH => new(0, PTabelaNome, CampoCodigo, CNH, 100, CNH, CNH, EDataTypeSystemInfo.SystemInfoTextCnh, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "col");
+    public static DBInfoSystem ColEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "col", isRequired: true);
+    public static DBInfoSystem ColAni => new(0, PTabelaNome, CampoCodigo, Ani, Ani, Ani, EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "col");
+    public static DBInfoSystem ColBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "col", isRequired: true);
+    public static DBInfoSystem ColQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "col"); // DBI 11 
+    public static DBInfoSystem ColDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "col");
+    public static DBInfoSystem ColQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "col"); // DBI 11 
+    public static DBInfoSystem ColDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "col");
+    public static DBInfoSystem ColVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "col", isRequired: true);
 
 #endregion
     [Serializable]

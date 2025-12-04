@@ -5,10 +5,11 @@
 'use client';
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
-  Grid, 
-  GridColumn, 
-  GridSortChangeEvent, 
-  GridColumnReorderEvent, 
+  Grid,
+  GridColumn,
+  GridSortChangeEvent,
+  GridColumnReorderEvent,
+  GridToolbar,
 } from '@progress/kendo-react-grid';
 import { useRouter } from 'next/navigation';
 import { useSystemContext } from '@/app/context/SystemContext';
@@ -23,183 +24,200 @@ import { getExportColumnsPdf, useExportToPdf } from '@/app/hooks/useExportToPdf'
 import { orderBy } from '@progress/kendo-data-query';
 import { ExportButtons } from '@/app/components/Cruds/ExportButtons';
 import { useTribunalGrid } from '../../Hooks/hookTribunalGrid';
+import { useIOSScrollFallback } from '@/app/tools/iosScrollFallback';
+import '@/app/styles/grid-desktop-performance.css';
+import { PageTitle } from '@/app/components/PageTitle';
+
 interface TribunalGridProps {
   data: ITribunal[];
   onRowClick: (tribunal: ITribunal) => void;
   onDeleteClick: (e: any) => void;
+  toolbar: React.ReactNode;
   setSelectedId: (id: number | null) => void;
 }
+
 export const TribunalGridDesktopComponent = React.memo(({
-  data, 
-  onRowClick, 
-  onDeleteClick, 
-  setSelectedId, 
-
+  data,
+  onRowClick,
+  onDeleteClick,
+  setSelectedId,
+  toolbar,
+  
 }: TribunalGridProps) => {
+  
+  const router = useRouter();
+  const { systemContext } = useSystemContext();
+  const defaultHiddenColumns = [''];
 
-const router = useRouter();
-const { systemContext } = useSystemContext();
-const defaultHiddenColumns = [''];
-// ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['nome',
-'descricaoarea',
-'nomejustica',
-'nroprocessoinstancia']);
-// Carregar ordem salva do localStorage na inicialização
-useEffect(() => {
-  try {
-    const savedOrder = localStorage.getItem(btoa('tribunal-columns-order'));
-    if (savedOrder) {
-      const parsedOrder = JSON.parse(savedOrder);
-      if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
-        setColumnsOrder(parsedOrder);
+  // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
+  const [columnsOrder, setColumnsOrder] = useState<string[]>(['nome']);
+
+  // Carregar ordem salva do localStorage na inicialização
+  useEffect(() => {
+    try {
+      const savedOrder = localStorage.getItem(btoa('tribunal-columns-order'));
+      if (savedOrder) {
+        const parsedOrder = JSON.parse(savedOrder);
+        if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
+          setColumnsOrder(parsedOrder);
+        }
       }
+    } catch (error) {
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.warn('Não foi possível carregar a ordem das colunas:', error);
     }
-  } catch (error) {
-  console.warn('Não foi possível carregar a ordem das colunas:', error);
-}
-}, []);
+  }, []);
 
-const openSearchCellDivisaoTribunal = (id: number) => {
-  router.push(`/pages/divisaotribunal/?tribunal=${id}`);
+ 
+
+   
+const openSearchCellDivisaoTribunal = (id: number) => {     
+    router.push(`/pages/divisaotribunal/?tribunal=${id}`);    
 };
+
 const SearchFromCellDivisaoTribunal = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellDivisaoTribunal(props.dataItem.id)}><span title='Pesquisar relacionados em Divisao Tribunal'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
+    return (
+      <>
+        <td>
+            <div onClick={() => openSearchCellDivisaoTribunal(props.dataItem.id)}><span title='Pesquisar relacionados em Divisao Tribunal'><SvgIcon icon={searchIcon} /></span></div>
+        </td>
+      </>
+    );
 };
-// ===== USO DO HOOK CENTRALIZADO =====
-const {
-  filteredData, 
-  sort, 
-  handleSortChange, 
-  page, 
-  handlePageChange, 
-  handleFilterChange, 
-  handleRowClick: hookHandleRowClick, 
-  RowNumberCell, 
-  DeleteRow, 
-} = useTribunalGrid({
-data, 
-onRowClick, 
-onDeleteClick, 
-setSelectedId, 
-initialTake: 10, 
-useCustomSort: true, 
-});
-// ===== ORDENAÇÃO CUSTOMIZADA PARA DESKTOP =====
-const sortedData = useMemo(() => orderBy(filteredData, sort), [filteredData, sort]);
-const handleSortChangeCustom = useCallback((event: GridSortChangeEvent) => {
-  handleSortChange(event);
-}, [handleSortChange]);
+
+  // ===== USO DO HOOK CENTRALIZADO =====
+  const {
+    filteredData,
+    sort,
+    handleSortChange,
+    page,
+    handlePageChange,
+    handleFilterChange,
+    handleRowClick: hookHandleRowClick,
+    RowNumberCell,
+    DeleteRow,
+  } = useTribunalGrid({
+    data,
+    onRowClick,
+    onDeleteClick,
+    setSelectedId,
+    initialTake: CRUD_CONSTANTS.PAGINATION.DEFAULT_TAKE,
+    useCustomSort: true,
+  });
+
+  // ===== ORDENAÇÃO CUSTOMIZADA PARA DESKTOP =====
+  const sortedData = useMemo(() => orderBy(filteredData, sort), [filteredData, sort]);
+
+  const handleSortChangeCustom = useCallback((event: GridSortChangeEvent) => {
+    handleSortChange(event);
+  }, [handleSortChange]);
+
 // ===== HANDLER PARA REORDENAÇÃO DE COLUNAS =====
 const handleColumnReorder = useCallback((event: GridColumnReorderEvent) => {
   if (event.columns) {
     const newOrder = event.columns
-    .filter((col: any) => col.field && columnsOrder.includes(col.field))
-    .map((col: any) => col.field);
+      .filter((col: any) => col.field && columnsOrder.includes(col.field))
+      .map((col: any) => col.field);
     setColumnsOrder(prevOrder => {
       if (newOrder.length > 0 && JSON.stringify(newOrder) !== JSON.stringify(prevOrder)) {
         // Salvar no localStorage
         try {
           localStorage.setItem(btoa('tribunal-columns-order'), JSON.stringify(newOrder));
         } catch (error) {
-        console.warn('Não foi possível salvar a ordem das colunas:', error);
+          console.warn('Não foi possível salvar a ordem das colunas:', error);
+        }
+        return newOrder;
       }
-      return newOrder;
-    }
-    return prevOrder;
-  });
-}
+      return prevOrder;
+    });
+  }
 }, []);
-// ===== COMPONENTES ESPECÍFICOS DO DESKTOP =====
-const EditRow = useCallback((e: any) => {
-  return (
-  <td>
-    <span onClick={() => hookHandleRowClick(e)} title='Editar item'>
-      <SvgIcon icon={pencilIcon} />
-    </span>
-  </td>
-);
-}, [hookHandleRowClick]);
-// ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
-const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
 
-  'nome': (
-  <GridColumn
-  key='nome'
-  field='nome'
-  title='Nome'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.12 */
-  'descricaoarea': (
-  <GridColumn
-  key='descricaoarea'
-  field='descricaoarea'
-  title='Área'
-  sortable={false} filterable={false}
-  />
-  ), /* Track G.04 */
-  'nomejustica': (
-  <GridColumn
-  key='nomejustica'
-  field='nomejustica'
-  title='Justiça'
-  sortable={false} filterable={false}
-  />
-  ), /* Track G.04 */
-  'nroprocessoinstancia': (
-  <GridColumn
-  key='nroprocessoinstancia'
-  field='nroprocessoinstancia'
-  title='Instancia'
-  sortable={false} filterable={false}
-  />
-  ), /* Track G.04 */
-  'id_edit_DivisaoTribunal': (
-  <GridColumn
-  key='DivisaoTribunal'
-  field='DivisaoTribunal'
-  title='Divisao Tribunal'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellDivisaoTribunal }}
-  />
-  ), /* Track G.03 */
-  // ← Colunas aqui
+  // ===== COMPONENTES ESPECÍFICOS DO DESKTOP =====
+  const EditRow = useCallback((e: any) => {
+    return (
+      <td>
+        <span onClick={() => hookHandleRowClick(e)} title='Editar item'>
+          <SvgIcon icon={pencilIcon} />
+        </span>
+      </td>
+    );
+  }, [hookHandleRowClick]); 
+
+  // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
+const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
+  
+                        'nome': (
+                                <GridColumn 
+                                  key='nome'
+                                  field='nome' 
+                                  title='' 
+                                  sortable={true} 
+                                  filterable={true}  
+                                />
+                              ), /* Track G.12 */
+
+
+
+
+                        'id_edit_DivisaoTribunal': (
+                                <GridColumn 
+                                  key='DivisaoTribunal'
+                                  field='DivisaoTribunal' 
+                                  title='Divisao Tribunal' 
+                                  width={'65px'}
+                                  sortable={false} 
+                                  filterable={false}  
+                                  cells={{ data: SearchFromCellDivisaoTribunal }}
+                                />
+                              ), /* Track G.03 */
+
+
+ // ← Colunas aqui
 }), []);
-// ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
-const baseGridColumns = useMemo(() => [
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_DivisaoTribunal'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Divisao Tribunal'
-  cells={{ data: SearchFromCellDivisaoTribunal }}
-  />, 
-  ], [RowNumberCell, EditRow, DeleteRow]);
-  // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
-  const {
-    columnsState, 
-    initialized, 
-    handleColumnsStateChange
-  } = useHiddenColumns({
-  gridColumns: baseGridColumns, 
+
+	// ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
+	const baseGridColumns = useMemo(() => [
+		<GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+
+<GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
+ <GridColumn
+        field='id_edit_DivisaoTribunal'
+        filterable={false}
+        sortable={false}
+        width={'65px'}
+        title='Divisao Tribunal'
+        cells={{ data: SearchFromCellDivisaoTribunal }}
+      />,
+
+	], [RowNumberCell, EditRow, DeleteRow]);
+
+// ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
+const {
+  columnsState,
+  initialized,
+  handleColumnsStateChange
+} = useHiddenColumns({
+  gridColumns: baseGridColumns,
   columnMap: basicColumnMap, // ← Usar basicColumnMap ao invés de columnMap
-  systemContextId: systemContext?.Id, 
+  systemContextId: systemContext?.Id,
   tableName: 'tribunal',
   defaultHiddenColumns
 });
+
+   // ===== APLICAR SCROLL FALLBACK PARA DESKTOP =====
+    useEffect(() => {
+      const cleanup = useIOSScrollFallback({
+        scrollSelector:
+          '.grid-desktop-crud.grid-desktop-clientes .k-grid-content',
+        waitForDOM: true,
+        retryDelay: 100,
+        debug: process.env.NEXT_PUBLIC_SHOW_LOG === '1',
+      });
+
+      return cleanup;
+    }, []);
+
 // ===== Helper para verificar se coluna está visível (APÓS INICIALIZAÇÃO DO HOOK) =====
 const isColumnVisible = useCallback((field: string) => {
   if (!columnsState) {
@@ -207,127 +225,147 @@ const isColumnVisible = useCallback((field: string) => {
     return !defaultHiddenColumns.includes(field);
   }
   const columnState = columnsState.find(state => state.field === field);
-  return columnState ? !columnState.hidden: true;
+  return columnState ? !columnState.hidden : true;
 }, [columnsState, defaultHiddenColumns]);
-// ===== FUNÇÃO PARA RESETAR ORDEM =====
-const resetColumnsOrder = useCallback(() => {
-  const defaultOrder = ['nome', 'precomeia', 'precointeira'];
-  setColumnsOrder(defaultOrder);
-  localStorage.removeItem(btoa('tribunal-columns-order'));
-}, []);
-// ===== CONFIGURAÇÃO DE COLUNAS FINAIS (REORDENADAS + OCULTAS) =====
-const finalGridColumns = useMemo(() => {
-  // Montar array de colunas na ordem especificada
-  const finalColumns = [
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_DivisaoTribunal'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Divisao Tribunal'
-  cells={{ data: SearchFromCellDivisaoTribunal }}
-  />, 
 
-  // Colunas reordenáveis na ordem especificada
+  // ===== FUNÇÃO PARA RESETAR ORDEM =====
+  const resetColumnsOrder = useCallback(() => {
+    const defaultOrder = ['nome', 'precomeia', 'precointeira'];
+    setColumnsOrder(defaultOrder);
+    localStorage.removeItem(btoa('tribunal-columns-order'));
+  }, []);
+
+  // ===== CONFIGURAÇÃO DE COLUNAS FINAIS (REORDENADAS + OCULTAS) =====
+  const finalGridColumns = useMemo(() => {        
+
+    // Montar array de colunas na ordem especificada
+    const finalColumns = [
+
+      <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+
+<GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
+ <GridColumn
+        field='id_edit_DivisaoTribunal'
+        filterable={false}
+        sortable={false}
+        width={'65px'}
+        title='Divisao Tribunal'
+        cells={{ data: SearchFromCellDivisaoTribunal }}
+      />,
+
+      
+   // Colunas reordenáveis na ordem especificada
   ...columnsOrder.map(field => basicColumnMap[field]).filter(Boolean).map(column => {
     const props = (column as React.ReactElement<any>).props;
     return React.cloneElement(column, { ...props, hidden: !isColumnVisible(props.field) });
   }), 
-  // Colunas fixas do final (SEM hidden: !isColumnVisible)
-  <GridColumn
-  field='id_edit_row'
-  width={'55px'}
-  title='Editar registro'
-  sortable={false}
-  filterable={false}
-  cells={{ data: EditRow }}
-  reorderable={false}
-  />, 
-  <GridColumn
-  key='delete'
-  field='id_delete_row'
-  width={'55px'}
-  title='Excluir registro'
-  sortable={false}
-  filterable={false}
-  cells={{ data: DeleteRow }}
-  reorderable={false}
-  />
-];
 
-return finalColumns;
-}, [columnsOrder, isColumnVisible, RowNumberCell, EditRow, DeleteRow, basicColumnMap]);
+       // Colunas fixas do final (SEM hidden: !isColumnVisible)
+        <GridColumn
+          field='id_edit_row'
+          width={'55px'}
+          title='Editar registro'
+          sortable={false} 
+          filterable={false}
+          cells={{ data: EditRow }}
+          reorderable={false} 
+        />,
+        <GridColumn
+          key='delete'
+          field='id_delete_row'
+          width={'55px'}
+          title='Excluir registro'
+          sortable={false} 
+          filterable={false}
+          cells={{ data: DeleteRow }}
+          reorderable={false} 
+        />
+    ];
+    
+    return finalColumns;
+  }, [columnsOrder, isColumnVisible, RowNumberCell, EditRow, DeleteRow, basicColumnMap]);
+
 // ===== MENU DE COLUNAS SEPARADO (NÃO PASSADO PARA O GRID) =====
 const columnMenuComponent = GridColumnMenu({
   columnsState, 
   onColumnsStateChange: handleColumnsStateChange
 });
-// ===== CONFIGURAÇÕES DE EXPORTAÇÃO =====
-const exportColumns = getExportColumns(finalGridColumns, columnsState, ['id', 'index']);
-const { exportToExcel } = useExportToExcel({
-  filename: 'planilha-tribunal',
-  columns: exportColumns, 
-  sheetName: 'Tribunal'
-});
-const handleExportFiltered = useCallback(() => {
-  exportToExcel(filteredData, {
-    customFilename: `excel-Tribunal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
-  });
-}, [exportToExcel, filteredData]);
-const exportColumnsPdf = getExportColumnsPdf(finalGridColumns, columnsState, ['id', 'index']);
-const { exportToPdf } = useExportToPdf({
-  filename: 'pdf-tribunal',
-  columns: exportColumnsPdf, 
-  title: 'Tribunal'
-});
-const handleExportFilteredPdf = useCallback(() => {
-  exportToPdf(filteredData, {
-    customFilename: `pdf-Tribunal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
-  });
-}, [exportToPdf, filteredData]);
-// ===== DADOS PAGINADOS =====
-const paginatedSortedData = useMemo(() => {
-  if (!sortedData || sortedData.length === 0) {
-    return [];
-  }
-  return sortedData.slice(page.skip, page.skip + page.take);
-}, [sortedData, page.skip, page.take]);
-// ===== RENDER =====
-return (
-<>
-{initialized && (
-  <Grid
-  key={`tribunal-grid-${JSON.stringify(columnsOrder)}-${JSON.stringify(columnsState)}`}
-  columnMenu={columnMenuComponent}
-  className='grid-desktop-crud grid-desktop-tribunal'
-  data={paginatedSortedData}
-  skip={page.skip}
-  take={page.take}
-  total={sortedData.length}
-  pageable={{
-    pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES), 
-    buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT, 
-  }}
-  onPageChange={handlePageChange}
-  rowReorderable={true}
-  sortable={true}
-  sort={sort}
-  onSortChange={handleSortChangeCustom}
-  resizable={true}
-  reorderable={true}
-  onColumnReorder={handleColumnReorder}
-  filterable={true}
-  onFilterChange={handleFilterChange}
-  onRowDoubleClick={(e) => hookHandleRowClick(e)}
->
-{finalGridColumns}
-</Grid>
-)}
-<div style={{ marginTop: '10px' }}>
 
-</div>
-</>
-);
+  // ===== CONFIGURAÇÕES DE EXPORTAÇÃO =====
+  const exportColumns = getExportColumns(finalGridColumns, columnsState, ['id', 'index']);
+  const { exportToExcel } = useExportToExcel({
+    filename: 'planilha-tribunal',
+    columns: exportColumns,
+    sheetName: 'Tribunal'
+  });
+
+  const handleExportFiltered = useCallback(() => {
+    exportToExcel(filteredData, {
+      customFilename: `excel-Tribunal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
+    });
+  }, [exportToExcel, filteredData]);
+
+  const exportColumnsPdf = getExportColumnsPdf(finalGridColumns, columnsState, ['id', 'index']);
+  const { exportToPdf } = useExportToPdf({
+    filename: 'pdf-tribunal',
+    columns: exportColumnsPdf,
+    title: 'Tribunal'
+  });
+
+  const handleExportFilteredPdf = useCallback(() => {
+    exportToPdf(filteredData, {
+      customFilename: `pdf-Tribunal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
+    });
+  }, [exportToPdf, filteredData]);
+
+  // ===== DADOS PAGINADOS =====
+  const paginatedSortedData = useMemo(() => {
+    if (!sortedData || sortedData.length === 0) {
+      return [];
+    }
+    return sortedData.slice(page.skip, page.skip + page.take);
+  }, [sortedData, page.skip, page.take]);
+
+  // ===== RENDER =====
+  return (
+    <>
+      {initialized && (
+        <Grid
+          key={`tribunal-grid-${JSON.stringify(columnsOrder)}-${JSON.stringify(columnsState)}`}
+          columnMenu={columnMenuComponent}
+          className='grid-desktop-crud grid-desktop-tribunal'
+          data={paginatedSortedData}
+          skip={page.skip}
+          take={page.take}
+          total={sortedData.length}
+          pageable={{
+            pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES),
+            buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT,
+          }}
+          onPageChange={handlePageChange}
+          rowReorderable={true}
+          sortable={true}
+          sort={sort}
+          onSortChange={handleSortChangeCustom}
+          resizable={true}
+          reorderable={true}
+          onColumnReorder={handleColumnReorder}
+          filterable={true}
+          onFilterChange={handleFilterChange}
+          onRowDoubleClick={(e) => hookHandleRowClick(e)}
+          scrollable='scrollable'
+        >
+            <GridToolbar>
+              {toolbar}
+              <PageTitle title='Tribunal' />
+            </GridToolbar>
+          {finalGridColumns}
+        </Grid>
+      )}
+
+       <div style={{ marginTop: '10px' }}> 
+		  
+        </div>
+    </>
+  );
 });

@@ -29,13 +29,6 @@ public partial class FNECompromissos : MenphisSI.SG.GerAdv.DBNECompromissos, IDB
     {
     }
 
-    public async Task<FNECompromissos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fNECompromissos = new FNECompromissos();
-        await fNECompromissos.CarregarAsync(id, oCnn);
-        return fNECompromissos;
-    }
-
     private FNECompromissos(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -44,6 +37,13 @@ public partial class FNECompromissos : MenphisSI.SG.GerAdv.DBNECompromissos, IDB
     public static FNECompromissos CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FNECompromissos(parameters, oCnn, fullSql, sqlWhere, join);
+    }
+
+    public async Task<FNECompromissos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        var fNECompromissos = new FNECompromissos();
+        await fNECompromissos.CarregarAsync(id, oCnn);
+        return fNECompromissos;
     }
 
     // Initialize method to load data with parameters after DI construction
@@ -55,14 +55,14 @@ public partial class FNECompromissos : MenphisSI.SG.GerAdv.DBNECompromissos, IDB
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
             using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}] COLLATE SQL_Latin1_General_CP1_CI_AI like @CampoNome", oCnn?.InnerConnection);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

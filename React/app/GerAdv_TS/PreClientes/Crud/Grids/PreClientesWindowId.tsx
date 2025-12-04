@@ -9,54 +9,61 @@ import { PreClientesService } from '../../Services/PreClientes.service';
 import { PreClientesApi } from '../../Apis/ApiPreClientes';
 import PreClientesWindow from './PreClientesWindow';
 import {PreClientesEmpty } from '@/app/GerAdv_TS/Models/PreClientes';
-interface PreClientesWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const PreClientesWindowId: React.FC<PreClientesWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const preclientesService = useMemo(() => {
-  return new PreClientesService(
-  new PreClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IPreClientes | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(PreClientesEmpty() as IPreClientes);
-      return;
-    }
-    if (id) {
-      const response = await preclientesService.fetchPreClientesById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <PreClientesWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedPreClientes={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface PreClientesWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const PreClientesWindowId: React.FC<PreClientesWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const preclientesService = useMemo(() => {
+        return new PreClientesService(
+            new PreClientesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IPreClientes | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(PreClientesEmpty() as IPreClientes);
+                return;
+            }
+            if (id) {
+                 const response = await preclientesService.fetchPreClientesById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <PreClientesWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedPreClientes={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default PreClientesWindowId;

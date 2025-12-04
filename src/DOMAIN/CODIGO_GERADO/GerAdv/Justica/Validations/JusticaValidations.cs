@@ -23,34 +23,32 @@ public class JusticaValidation : IJusticaValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var acaoExists0 = await acaoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAcao { Justica = id ?? default }, uri);
         if (acaoExists0 != null && acaoExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Acao associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Acao associados a ele.");
         var agendaExists1 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Justica = id ?? default }, uri);
         if (agendaExists1 != null && agendaExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Compromisso associados a ele.");
         var divisaotribunalExists2 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Justica = id ?? default }, uri);
         if (divisaotribunalExists2 != null && divisaotribunalExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Divisao Tribunal associados a ele.");
         var faseExists3 = await faseService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFase { Justica = id ?? default }, uri);
         if (faseExists3 != null && faseExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Fase associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Fase associados a ele.");
         var objetosExists4 = await objetosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterObjetos { Justica = id ?? default }, uri);
         if (objetosExists4 != null && objetosExists4.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Objetos associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Objetos associados a ele.");
         var tiporecursoExists5 = await tiporecursoService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTipoRecurso { Justica = id ?? default }, uri);
         if (tiporecursoExists5 != null && tiporecursoExists5.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tipo Recurso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Tipo Recurso associados a ele.");
         var tribunalExists6 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Justica = id ?? default }, uri);
         if (tribunalExists6 != null && tribunalExists6.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Tribunal associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Justica reg)
     {
         if (reg.Nome != null && reg.Nome.Length > DBJusticaDicInfo.JusNome.FTamanho)
-            throw new SGValidationException($"Nome deve ter no máximo {DBJusticaDicInfo.JusNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBJusticaDicInfo.JusGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBJusticaDicInfo.JusGUID.FTamanho} caracteres.");
+            throw new SGValidationException($"nome deve ter no máximo {DBJusticaDicInfo.JusNome.FTamanho} caracteres.");
         return true;
     }
 
@@ -60,6 +58,8 @@ public class JusticaValidation : IJusticaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

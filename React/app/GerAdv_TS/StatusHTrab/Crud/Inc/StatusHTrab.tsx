@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IStatusHTrabFormProps } from '../../Interfaces/interface.StatusHTrab';
 import { StatusHTrabService } from '../../Services/StatusHTrab.service';
 import { useStatusHTrabForm, useValidationsStatusHTrab } from '../../Hooks/hookStatusHTrab';
-import { StatusHTrabEmpty } from '../../../Models/StatusHTrab';
+import { StatusHTrabEmpty } from '../../../Models/StatusHTrab'; 
 import { StatusHTrabForm } from '../Forms/StatusHTrab';
+ 
 
 const StatusHTrabInc: React.FC<IStatusHTrabFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const statushtrabService = new StatusHTrabService(
-  new StatusHTrabApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadStatusHTrab } = useStatusHTrabForm(
-StatusHTrabEmpty(), 
-statushtrabService
-);
-useEffect(() => {
-  loadStatusHTrab(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedStatusHTrab = await statushtrabService.saveStatusHTrab(data);
-    if (savedStatusHTrab.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedStatusHTrab);
+  const statushtrabService = new StatusHTrabService(
+    new StatusHTrabApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadStatusHTrab } = useStatusHTrabForm(
+    StatusHTrabEmpty(),
+    statushtrabService
+  );
+
+  useEffect(() => {
+    loadStatusHTrab(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedStatusHTrab = await statushtrabService.saveStatusHTrab(data);
+
+      if (savedStatusHTrab.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedStatusHTrab);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadStatusHTrab(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <StatusHTrabForm
+        statushtrabData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadStatusHTrab(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<StatusHTrabForm
-statushtrabData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default StatusHTrabInc;

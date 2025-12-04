@@ -54,8 +54,48 @@ public partial class DBGruposEmpresas
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBGruposEmpresasDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBGruposEmpresasDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBGruposEmpresasDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FIcone = getValue(DBGruposEmpresasDicInfo.Icone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacoes = getValue(DBGruposEmpresasDicInfo.Observacoes)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.Cliente));
         }
         catch
         {
@@ -64,7 +104,7 @@ public partial class DBGruposEmpresas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.DespesaUnificada)))
-                m_FDespesaUnificada = Convert.ToBoolean(getValue(DBGruposEmpresasDicInfo.DespesaUnificada));
+                FDespesaUnificada = Convert.ToBoolean(getValue(DBGruposEmpresasDicInfo.DespesaUnificada));
         }
         catch
         {
@@ -91,7 +131,7 @@ public partial class DBGruposEmpresas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.Inativo)))
-                m_FInativo = Convert.ToBoolean(getValue(DBGruposEmpresasDicInfo.Inativo));
+                FInativo = Convert.ToBoolean(getValue(DBGruposEmpresasDicInfo.Inativo));
         }
         catch
         {
@@ -100,7 +140,7 @@ public partial class DBGruposEmpresas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.Oponente)))
-                m_FOponente = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.Oponente));
+                FOponente = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.Oponente));
         }
         catch
         {
@@ -109,7 +149,7 @@ public partial class DBGruposEmpresas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.QuemAtu));
         }
         catch
         {
@@ -118,7 +158,7 @@ public partial class DBGruposEmpresas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGruposEmpresasDicInfo.QuemCad));
         }
         catch
         {
@@ -127,54 +167,14 @@ public partial class DBGruposEmpresas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGruposEmpresasDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGruposEmpresasDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBGruposEmpresasDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBGruposEmpresasDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGruposEmpresasDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FIcone = getValue(DBGruposEmpresasDicInfo.Icone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacoes = getValue(DBGruposEmpresasDicInfo.Observacoes)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGruposEmpresasDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -198,7 +198,7 @@ public partial class DBGruposEmpresas
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

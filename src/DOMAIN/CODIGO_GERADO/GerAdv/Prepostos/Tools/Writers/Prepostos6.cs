@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IPrepostosWriter
 {
     Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(PrepostosResponse prepostos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PrepostosWriter(IFPrepostosFactory prepostosFactory) : IPrepostosWriter
 {
     private readonly IFPrepostosFactory _prepostosFactory = prepostosFactory ?? throw new ArgumentNullException(nameof(prepostosFactory));
-    public virtual async Task Delete(PrepostosResponse prepostos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(PrepostosResponse prepostos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _prepostosFactory.DeleteAsync(operadorId, prepostos.Id, oCnn);
     }
@@ -23,26 +23,37 @@ public class PrepostosWriter(IFPrepostosFactory prepostosFactory) : IPrepostosWr
     public virtual async Task<FPrepostos> WriteAsync(Models.Prepostos prepostos, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (prepostos.Id.IsEmptyIDNumber() ? _prepostosFactory.CreateAsync() : _prepostosFactory.CreateFromIdAsync(prepostos.Id, oCnn));
-        dbRec.FGUID = prepostos.GUID;
         dbRec.FNome = prepostos.Nome;
         dbRec.FFuncao = prepostos.Funcao;
         dbRec.FSetor = prepostos.Setor;
-        if (prepostos.DtNasc != null)
-            dbRec.FDtNasc = prepostos.DtNasc.ToString();
+        if (prepostos.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(prepostos.DtNasc));
+        }
+
         dbRec.FQualificacao = prepostos.Qualificacao;
         dbRec.FSexo = prepostos.Sexo;
         dbRec.FIdade = prepostos.Idade;
         dbRec.FCPF = prepostos.CPF.ClearInputCpf();
         dbRec.FRG = prepostos.RG;
-        if (prepostos.Periodo_Ini != null)
-            dbRec.FPeriodo_Ini = prepostos.Periodo_Ini.ToString();
-        if (prepostos.Periodo_Fim != null)
-            dbRec.FPeriodo_Fim = prepostos.Periodo_Fim.ToString();
+        if (prepostos.Periodo_Ini.NotIsEmpty())
+        {
+            dbRec.FPeriodo_Ini = DateOnly.FromDateTime(Convert.ToDateTime(prepostos.Periodo_Ini));
+        }
+
+        if (prepostos.Periodo_Fim.NotIsEmpty())
+        {
+            dbRec.FPeriodo_Fim = DateOnly.FromDateTime(Convert.ToDateTime(prepostos.Periodo_Fim));
+        }
+
         dbRec.FRegistro = prepostos.Registro;
         dbRec.FCTPSNumero = prepostos.CTPSNumero;
         dbRec.FCTPSSerie = prepostos.CTPSSerie;
-        if (prepostos.CTPSDtEmissao != null)
-            dbRec.FCTPSDtEmissao = prepostos.CTPSDtEmissao.ToString();
+        if (prepostos.CTPSDtEmissao.NotIsEmpty())
+        {
+            dbRec.FCTPSDtEmissao = DateOnly.FromDateTime(Convert.ToDateTime(prepostos.CTPSDtEmissao));
+        }
+
         dbRec.FPIS = prepostos.PIS;
         dbRec.FSalario = prepostos.Salario;
         dbRec.FLiberaAgenda = prepostos.LiberaAgenda;
@@ -57,6 +68,10 @@ public class PrepostosWriter(IFPrepostosFactory prepostosFactory) : IPrepostosWr
         dbRec.FPai = prepostos.Pai;
         dbRec.FMae = prepostos.Mae;
         dbRec.FClass = prepostos.Class;
+        dbRec.FEtiqueta = prepostos.Etiqueta;
+        dbRec.FAni = prepostos.Ani;
+        dbRec.FBold = prepostos.Bold;
+        dbRec.FGuid = prepostos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

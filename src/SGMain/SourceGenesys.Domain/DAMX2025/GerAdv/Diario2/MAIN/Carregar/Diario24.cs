@@ -54,8 +54,32 @@ public partial class DBDiario2
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBDiario2DicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBDiario2DicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOcorrencia = getValue(DBDiario2DicInfo.Ocorrencia)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBDiario2DicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBDiario2DicInfo.Bold));
         }
         catch
         {
@@ -64,7 +88,7 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBDiario2DicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBDiario2DicInfo.Cliente));
         }
         catch
         {
@@ -73,7 +97,7 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBDiario2DicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBDiario2DicInfo.Data)));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.Hora)))
-                m_FHora = Convert.ToDateTime(getValue(DBDiario2DicInfo.Hora));
+                FHora = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBDiario2DicInfo.Hora)));
         }
         catch
         {
@@ -109,7 +133,7 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.Operador)))
-                m_FOperador = Convert.ToInt32(getValue(DBDiario2DicInfo.Operador));
+                FOperador = Convert.ToInt32(getValue(DBDiario2DicInfo.Operador));
         }
         catch
         {
@@ -118,7 +142,7 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBDiario2DicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBDiario2DicInfo.QuemAtu));
         }
         catch
         {
@@ -127,7 +151,7 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBDiario2DicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBDiario2DicInfo.QuemCad));
         }
         catch
         {
@@ -136,38 +160,14 @@ public partial class DBDiario2
         try
         {
             if (!DBNull.Value.Equals(getValue(DBDiario2DicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBDiario2DicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBDiario2DicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBDiario2DicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOcorrencia = getValue(DBDiario2DicInfo.Ocorrencia)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBDiario2DicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -191,7 +191,7 @@ public partial class DBDiario2
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

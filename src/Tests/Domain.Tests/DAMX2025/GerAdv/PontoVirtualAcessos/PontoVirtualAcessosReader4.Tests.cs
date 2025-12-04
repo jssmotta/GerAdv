@@ -7,6 +7,7 @@
 using MenphisSI.GerAdv.Models.Response.All;
 using MenphisSI.GerAdv.Readers;
 using System.Data;
+using Xunit.Abstractions;
 
 namespace MenphisSI.GerAdv.Tests.Readers;
 /// <summary>
@@ -15,16 +16,20 @@ namespace MenphisSI.GerAdv.Tests.Readers;
 /// </summary>
 public class PontoVirtualAcessosReaderTests : IDisposable
 {
+    private readonly ITestOutputHelper _output;
     private readonly Mock<IFPontoVirtualAcessosFactory> _mockPontoVirtualAcessosFactory;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IDataRecord> _mockDataRecord;
     private readonly PontoVirtualAcessosReader _pontovirtualacessosReader;
-    public PontoVirtualAcessosReaderTests()
+    private readonly Mock<IConnectionService> _mockConnectionService;
+    public PontoVirtualAcessosReaderTests(ITestOutputHelper output)
     {
+        _output = output;
         _mockPontoVirtualAcessosFactory = new Mock<IFPontoVirtualAcessosFactory>();
         _mockConnection = new Mock<MsiSqlConnection>();
         _mockDataRecord = new Mock<IDataRecord>();
-        _pontovirtualacessosReader = new PontoVirtualAcessosReader(_mockPontoVirtualAcessosFactory.Object);
+        _mockConnectionService = new Mock<IConnectionService>();
+        _pontovirtualacessosReader = new PontoVirtualAcessosReader(_mockPontoVirtualAcessosFactory.Object, _mockConnectionService.Object);
     }
 
 #region Constructor Tests
@@ -39,40 +44,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
     public void Constructor_WithNullFactory_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new PontoVirtualAcessosReader(null !));
-    }
-
-#endregion
-#region Listar Tests
-    [Fact]
-    public async Task Listar_WithValidParameters_ShouldCallListarTabela()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "pvaCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // Since this calls external dependencies and database connections,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _pontovirtualacessosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
-    [Fact]
-    public async Task Listar_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri";
-        var cWhere = "pvaCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = new CancellationToken(true); // Already cancelled
-        // Act & Assert
-        // Even with cancellation, this should throw an exception due to invalid URI
-        await Assert.ThrowsAsync<Exception>(() => _pontovirtualacessosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
+        Assert.Throws<ArgumentNullException>(() => new PontoVirtualAcessosReader(null !, null !));
     }
 
 #endregion
@@ -89,7 +61,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         };
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedPontoVirtualAcessos);
         // Act
-        var result = await _pontovirtualacessosReader.Read(id, _mockConnection.Object);
+        var result = await _pontovirtualacessosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
@@ -107,7 +79,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         };
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFPontoVirtualAcessos);
         // Act
-        var result = await _pontovirtualacessosReader.Read(id, _mockConnection.Object);
+        var result = await _pontovirtualacessosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -123,7 +95,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         };
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFPontoVirtualAcessos);
         // Act
-        var result = await _pontovirtualacessosReader.Read(id, _mockConnection.Object);
+        var result = await _pontovirtualacessosReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -142,7 +114,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         };
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFPontoVirtualAcessos);
         // Act
-        var result = await _pontovirtualacessosReader.ReadM(id, _mockConnection.Object);
+        var result = await _pontovirtualacessosReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
@@ -161,7 +133,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         };
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFPontoVirtualAcessos);
         // Act
-        var result = await _pontovirtualacessosReader.ReadM(id, _mockConnection.Object);
+        var result = await _pontovirtualacessosReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(0);
@@ -193,7 +165,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // Arrange
         FPontoVirtualAcessos? dbRec = null;
         // Act
-        var result = _pontovirtualacessosReader.Read(dbRec, _mockConnection.Object);
+        var result = _pontovirtualacessosReader.Read(dbRec!, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -268,7 +240,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // Arrange
         FPontoVirtualAcessos? dbRec = null;
         // Act
-        var result = _pontovirtualacessosReader.Read(dbRec);
+        var result = _pontovirtualacessosReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -315,7 +287,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // Arrange
         DBPontoVirtualAcessos? dbRec = null;
         // Act
-        var result = _pontovirtualacessosReader.Read(dbRec);
+        var result = _pontovirtualacessosReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -362,7 +334,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // Arrange
         FPontoVirtualAcessos? dbRec = null;
         // Act
-        var result = _pontovirtualacessosReader.ReadAll(dbRec, _mockDataRecord.Object);
+        var result = _pontovirtualacessosReader.ReadAll(dbRec!, _mockDataRecord.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -409,7 +381,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // Arrange
         DBPontoVirtualAcessos? dbRec = null;
         // Act
-        var result = _pontovirtualacessosReader.ReadAll(dbRec, null);
+        var result = _pontovirtualacessosReader.ReadAll(dbRec!, null);
         // Assert
         result.Should().BeNull();
     }
@@ -441,7 +413,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _pontovirtualacessosReader.Read(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _pontovirtualacessosReader.ReadAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -453,7 +425,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _pontovirtualacessosReader.ReadM(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _pontovirtualacessosReader.ReadMAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -538,26 +510,11 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         _mockPontoVirtualAcessosFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFPontoVirtualAcessos);
         // Act & Assert
         // Test only the methods that don't depend on external URI connections
-        var readTask = _pontovirtualacessosReader.Read(id, _mockConnection.Object);
-        var readMTask = _pontovirtualacessosReader.ReadM(id, _mockConnection.Object);
+        var readTask = _pontovirtualacessosReader.ReadAsync(id, _mockConnection.Object);
+        var readMTask = _pontovirtualacessosReader.ReadMAsync(id, _mockConnection.Object);
         await Task.WhenAll(readTask, readMTask);
         // If we reach here, async methods completed without deadlock
         Assert.True(true);
-    }
-
-    [Fact]
-    public async Task Listar_WithInvalidUri_ShouldThrowException()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri"; // Invalid URI
-        var cWhere = "";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<Exception>(() => _pontovirtualacessosReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
     }
 
 #endregion
@@ -572,7 +529,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // depending on the implementation
         try
         {
-            await _pontovirtualacessosReader.Read(id, null !);
+            await _pontovirtualacessosReader.ReadAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -588,7 +545,7 @@ public class PontoVirtualAcessosReaderTests : IDisposable
         // Act & Assert
         try
         {
-            await _pontovirtualacessosReader.ReadM(id, null !);
+            await _pontovirtualacessosReader.ReadMAsync(id, null !);
         }
         catch (Exception ex)
         {

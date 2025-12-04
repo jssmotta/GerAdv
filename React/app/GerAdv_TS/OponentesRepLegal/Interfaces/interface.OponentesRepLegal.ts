@@ -21,6 +21,7 @@ export interface IOponentesRepLegal {
 	email: string,
 	site: string,
 	observacao: string,
+	bold: boolean,
 }
 
 export interface IOponentesRepLegalFormProps {

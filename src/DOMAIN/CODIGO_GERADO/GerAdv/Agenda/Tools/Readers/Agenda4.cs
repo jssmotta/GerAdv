@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
+public partial class AgendaReader(IFAgendaFactory agendaFactory, IConnectionService connection) : IAgendaReader
 {
     private readonly IFAgendaFactory _agendaFactory = agendaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ageCodigo, ageData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<AgendaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAgenda.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<AgendaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("ageCodigo, ageData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<AgendaResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBAgenda.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<AgendaResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<AgendaResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
         return result;
     }
 
-    public async Task<AgendaResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<AgendaResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _agendaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Agenda?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Agenda?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _agendaFactory.CreateFromIdAsync(id, oCnn);
         var agenda = new Models.Agenda
@@ -62,13 +68,10 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
-            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
-            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
-            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -84,7 +87,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -92,17 +94,36 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
+        if (DateTime.TryParse(dbRec.FHrFinal?.ToString(), out DateTime XHrFinal9))
         {
-            agenda.EventoData = dbRec.FEventoData;
-            agenda.EventoData_date = XEventoData;
+            agenda.HrFinal = XHrFinal9.ToString("HH:mm");
+            agenda.HrFinal_date = XHrFinal9;
         }
 
-        if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
+        if (DateTime.TryParse(dbRec.FEventoData?.ToString(), out DateTime XEventoData12))
         {
-            agenda.DataInicioPrazo = dbRec.FDataInicioPrazo;
-            agenda.DataInicioPrazo_date = XDataInicioPrazo;
+            agenda.EventoData = XEventoData12.ToString("dd/MM/yyyy");
+            agenda.EventoData_date = XEventoData12;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData14))
+        {
+            agenda.Data = XData14.ToString("dd/MM/yyyy");
+            agenda.Data_date = XData14;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora16))
+        {
+            agenda.Hora = XHora16.ToString("HH:mm");
+            agenda.Hora_date = XHora16;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataInicioPrazo?.ToString(), out DateTime XDataInicioPrazo38))
+        {
+            agenda.DataInicioPrazo = XDataInicioPrazo38.ToString("dd/MM/yyyy");
+            agenda.DataInicioPrazo_date = XDataInicioPrazo38;
         }
 
         return agenda;
@@ -137,13 +158,10 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
-            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
-            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
-            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -159,7 +177,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -167,17 +184,36 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
+        if (DateTime.TryParse(dbRec.FHrFinal?.ToString(), out DateTime XHrFinal9))
         {
-            agenda.EventoData = dbRec.FEventoData;
-            agenda.EventoData_date = XEventoData;
+            agenda.HrFinal = XHrFinal9.ToString("HH:mm");
+            agenda.HrFinal_date = XHrFinal9;
         }
 
-        if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
+        if (DateTime.TryParse(dbRec.FEventoData?.ToString(), out DateTime XEventoData12))
         {
-            agenda.DataInicioPrazo = dbRec.FDataInicioPrazo;
-            agenda.DataInicioPrazo_date = XDataInicioPrazo;
+            agenda.EventoData = XEventoData12.ToString("dd/MM/yyyy");
+            agenda.EventoData_date = XEventoData12;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData14))
+        {
+            agenda.Data = XData14.ToString("dd/MM/yyyy");
+            agenda.Data_date = XData14;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora16))
+        {
+            agenda.Hora = XHora16.ToString("HH:mm");
+            agenda.Hora_date = XHora16;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataInicioPrazo?.ToString(), out DateTime XDataInicioPrazo38))
+        {
+            agenda.DataInicioPrazo = XDataInicioPrazo38.ToString("dd/MM/yyyy");
+            agenda.DataInicioPrazo_date = XDataInicioPrazo38;
         }
 
         return agenda;
@@ -201,13 +237,10 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
-            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
-            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
-            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -223,7 +256,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -231,17 +263,36 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
+        if (DateTime.TryParse(dbRec.FHrFinal?.ToString(), out DateTime XHrFinal9))
         {
-            agenda.EventoData = dbRec.FEventoData;
-            agenda.EventoData_date = XEventoData;
+            agenda.HrFinal = XHrFinal9.ToString("HH:mm");
+            agenda.HrFinal_date = XHrFinal9;
         }
 
-        if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
+        if (DateTime.TryParse(dbRec.FEventoData?.ToString(), out DateTime XEventoData12))
         {
-            agenda.DataInicioPrazo = dbRec.FDataInicioPrazo;
-            agenda.DataInicioPrazo_date = XDataInicioPrazo;
+            agenda.EventoData = XEventoData12.ToString("dd/MM/yyyy");
+            agenda.EventoData_date = XEventoData12;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData14))
+        {
+            agenda.Data = XData14.ToString("dd/MM/yyyy");
+            agenda.Data_date = XData14;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora16))
+        {
+            agenda.Hora = XHora16.ToString("HH:mm");
+            agenda.Hora_date = XHora16;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataInicioPrazo?.ToString(), out DateTime XDataInicioPrazo38))
+        {
+            agenda.DataInicioPrazo = XDataInicioPrazo38.ToString("dd/MM/yyyy");
+            agenda.DataInicioPrazo_date = XDataInicioPrazo38;
         }
 
         return agenda;
@@ -265,13 +316,10 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
-            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
-            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
-            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -287,7 +335,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -295,17 +342,36 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
+        if (DateTime.TryParse(dbRec.FHrFinal?.ToString(), out DateTime XHrFinal9))
         {
-            agenda.EventoData = dbRec.FEventoData;
-            agenda.EventoData_date = XEventoData;
+            agenda.HrFinal = XHrFinal9.ToString("HH:mm");
+            agenda.HrFinal_date = XHrFinal9;
         }
 
-        if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
+        if (DateTime.TryParse(dbRec.FEventoData?.ToString(), out DateTime XEventoData12))
         {
-            agenda.DataInicioPrazo = dbRec.FDataInicioPrazo;
-            agenda.DataInicioPrazo_date = XDataInicioPrazo;
+            agenda.EventoData = XEventoData12.ToString("dd/MM/yyyy");
+            agenda.EventoData_date = XEventoData12;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData14))
+        {
+            agenda.Data = XData14.ToString("dd/MM/yyyy");
+            agenda.Data_date = XData14;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora16))
+        {
+            agenda.Hora = XHora16.ToString("HH:mm");
+            agenda.Hora_date = XHora16;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataInicioPrazo?.ToString(), out DateTime XDataInicioPrazo38))
+        {
+            agenda.DataInicioPrazo = XDataInicioPrazo38.ToString("dd/MM/yyyy");
+            agenda.DataInicioPrazo_date = XDataInicioPrazo38;
         }
 
         try
@@ -401,13 +467,10 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
-            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
-            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
-            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -423,7 +486,6 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -431,17 +493,36 @@ public partial class AgendaReader(IFAgendaFactory agendaFactory) : IAgendaReader
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
+        if (DateTime.TryParse(dbRec.FHrFinal?.ToString(), out DateTime XHrFinal9))
         {
-            agenda.EventoData = dbRec.FEventoData;
-            agenda.EventoData_date = XEventoData;
+            agenda.HrFinal = XHrFinal9.ToString("HH:mm");
+            agenda.HrFinal_date = XHrFinal9;
         }
 
-        if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
+        if (DateTime.TryParse(dbRec.FEventoData?.ToString(), out DateTime XEventoData12))
         {
-            agenda.DataInicioPrazo = dbRec.FDataInicioPrazo;
-            agenda.DataInicioPrazo_date = XDataInicioPrazo;
+            agenda.EventoData = XEventoData12.ToString("dd/MM/yyyy");
+            agenda.EventoData_date = XEventoData12;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData14))
+        {
+            agenda.Data = XData14.ToString("dd/MM/yyyy");
+            agenda.Data_date = XData14;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora16))
+        {
+            agenda.Hora = XHora16.ToString("HH:mm");
+            agenda.Hora_date = XHora16;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataInicioPrazo?.ToString(), out DateTime XDataInicioPrazo38))
+        {
+            agenda.DataInicioPrazo = XDataInicioPrazo38.ToString("dd/MM/yyyy");
+            agenda.DataInicioPrazo_date = XDataInicioPrazo38;
         }
 
         try

@@ -2,12 +2,15 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 import { IGridComponent } from '@/app/interfaces/IGridComponent';
+
 interface GridContainerProps {
-  grid: IGridComponent;
+    grid: IGridComponent;
 }
+
 const ServicosGridContainer: React.FC<GridContainerProps> = ({ grid }) => (
-<div className='grid-container'>
-  {grid.render()}
-</div>
+    <div className='grid-container'>
+        {grid.render()}
+    </div>
 );
+
 export default ServicosGridContainer;

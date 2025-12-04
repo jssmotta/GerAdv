@@ -14,28 +14,28 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Justica - fasJustica  
+        /// Justiças - fasJustica  
         /// </summary>
         [JsonPropertyName("justica")]
         public int Justica { get; set; }
 
         /// <summary>
-        /// Area - fasArea  
+        /// Áreas - fasArea  
         /// </summary>
         [JsonPropertyName("area")]
         public int Area { get; set; }
 
         /// <summary>
-        /// Descricao - fasDescricao - tamanho máximo: 50 
+        /// Descrições - fasDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// GUID - fasGUID - tamanho máximo: 100 
+        /// GUID - fasGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -48,28 +48,28 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Justica - fasJustica  
+        /// Justiças - fasJustica  
         /// </summary>
         [JsonPropertyName("justica")]
         public int Justica { get; set; }
 
         /// <summary>
-        /// Area - fasArea  
+        /// Áreas - fasArea  
         /// </summary>
         [JsonPropertyName("area")]
         public int Area { get; set; }
 
         /// <summary>
-        /// Descricao - fasDescricao - tamanho máximo: 50 
+        /// Descrições - fasDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// GUID - fasGUID - tamanho máximo: 100 
+        /// GUID - fasGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;

@@ -28,8 +28,6 @@ public class FaseValidation : IFaseValidation
     {
         if (reg.Descricao != null && reg.Descricao.Length > DBFaseDicInfo.FasDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBFaseDicInfo.FasDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBFaseDicInfo.FasGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBFaseDicInfo.FasGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class FaseValidation : IFaseValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -47,7 +47,7 @@ public class FaseValidation : IFaseValidation
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {
-            var regJustica = await justicaReader.Read(reg.Justica, oCnn);
+            var regJustica = await justicaReader.ReadAsync(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
@@ -56,7 +56,7 @@ public class FaseValidation : IFaseValidation
 
         // Area
         {
-            var regArea = await areaReader.Read(reg.Area, oCnn);
+            var regArea = await areaReader.ReadAsync(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
                 throw new SGValidationException($"Área não encontrado ({regArea?.Id}).");

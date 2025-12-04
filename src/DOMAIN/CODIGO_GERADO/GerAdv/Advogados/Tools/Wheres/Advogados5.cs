@@ -28,7 +28,6 @@ public partial class AdvogadosWhere(IFAdvogadosFactory advogadosFactory) : IAdvo
             Casa = dbRec.FCasa,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
             Escritorio = dbRec.FEscritorio,
-            GUID = dbRec.FGUID ?? string.Empty,
             Estagiario = dbRec.FEstagiario,
             OAB = dbRec.FOAB ?? string.Empty,
             NomeCompleto = dbRec.FNomeCompleto ?? string.Empty,
@@ -53,22 +52,26 @@ public partial class AdvogadosWhere(IFAdvogadosFactory advogadosFactory) : IAdvo
             ParcTop = dbRec.FParcTop,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtInicio, out DateTime XDtInicio))
+        if (DateTime.TryParse(dbRec.FDtInicio.ToString(), out DateTime XDtInicio))
         {
-            advogados.DtInicio = dbRec.FDtInicio;
+            advogados.DtInicio = XDtInicio.ToString("dd/MM/yyyy");
             advogados.DtInicio_date = XDtInicio;
         }
 
-        if (DateTime.TryParse(dbRec.FDtFim, out DateTime XDtFim))
+        if (DateTime.TryParse(dbRec.FDtFim.ToString(), out DateTime XDtFim))
         {
-            advogados.DtFim = dbRec.FDtFim;
+            advogados.DtFim = XDtFim.ToString("dd/MM/yyyy");
             advogados.DtFim_date = XDtFim;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            advogados.DtNasc = dbRec.FDtNasc;
+            advogados.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             advogados.DtNasc_date = XDtNasc;
         }
 

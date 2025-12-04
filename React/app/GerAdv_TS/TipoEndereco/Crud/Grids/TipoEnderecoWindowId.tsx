@@ -9,54 +9,61 @@ import { TipoEnderecoService } from '../../Services/TipoEndereco.service';
 import { TipoEnderecoApi } from '../../Apis/ApiTipoEndereco';
 import TipoEnderecoWindow from './TipoEnderecoWindow';
 import {TipoEnderecoEmpty } from '@/app/GerAdv_TS/Models/TipoEndereco';
-interface TipoEnderecoWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const TipoEnderecoWindowId: React.FC<TipoEnderecoWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const tipoenderecoService = useMemo(() => {
-  return new TipoEnderecoService(
-  new TipoEnderecoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ITipoEndereco | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(TipoEnderecoEmpty() as ITipoEndereco);
-      return;
-    }
-    if (id) {
-      const response = await tipoenderecoService.fetchTipoEnderecoById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <TipoEnderecoWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedTipoEndereco={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface TipoEnderecoWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const TipoEnderecoWindowId: React.FC<TipoEnderecoWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const tipoenderecoService = useMemo(() => {
+        return new TipoEnderecoService(
+            new TipoEnderecoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ITipoEndereco | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(TipoEnderecoEmpty() as ITipoEndereco);
+                return;
+            }
+            if (id) {
+                 const response = await tipoenderecoService.fetchTipoEnderecoById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <TipoEnderecoWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedTipoEndereco={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default TipoEnderecoWindowId;

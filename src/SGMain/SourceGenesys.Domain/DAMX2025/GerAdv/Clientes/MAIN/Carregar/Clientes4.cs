@@ -54,8 +54,200 @@ public partial class DBClientes
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBClientesDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBClientesDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBClientesDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNH = getValue(DBClientesDicInfo.CNH)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNPJ = getValue(DBClientesDicInfo.CNPJ)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBClientesDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBClientesDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBClientesDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBClientesDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBClientesDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBClientesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHomePage = getValue(DBClientesDicInfo.HomePage)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FIcone = getValue(DBClientesDicInfo.Icone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FInscEst = getValue(DBClientesDicInfo.InscEst)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBClientesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeFantasia = getValue(DBClientesDicInfo.NomeFantasia)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeMae = getValue(DBClientesDicInfo.NomeMae)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomePai = getValue(DBClientesDicInfo.NomePai)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBClientesDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPessoaContato = getValue(DBClientesDicInfo.PessoaContato)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQualificacao = getValue(DBClientesDicInfo.Qualificacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQuemIndicou = getValue(DBClientesDicInfo.QuemIndicou)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBClientesDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRGOExpeditor = getValue(DBClientesDicInfo.RGOExpeditor)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Adv)))
-                m_FAdv = Convert.ToInt32(getValue(DBClientesDicInfo.Adv));
+                FAdv = Convert.ToInt32(getValue(DBClientesDicInfo.Adv));
         }
         catch
         {
@@ -64,7 +256,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBClientesDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBClientesDicInfo.Ani));
         }
         catch
         {
@@ -73,7 +265,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBClientesDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBClientesDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +274,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBClientesDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBClientesDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +283,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBClientesDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBClientesDicInfo.Data)));
         }
         catch
         {
@@ -118,7 +310,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBClientesDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBClientesDicInfo.DtNasc)));
         }
         catch
         {
@@ -127,7 +319,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Empresa)))
-                m_FEmpresa = Convert.ToInt32(getValue(DBClientesDicInfo.Empresa));
+                FEmpresa = Convert.ToInt32(getValue(DBClientesDicInfo.Empresa));
         }
         catch
         {
@@ -136,7 +328,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.EnquadramentoEmpresa)))
-                m_FEnquadramentoEmpresa = Convert.ToInt32(getValue(DBClientesDicInfo.EnquadramentoEmpresa));
+                FEnquadramentoEmpresa = Convert.ToInt32(getValue(DBClientesDicInfo.EnquadramentoEmpresa));
         }
         catch
         {
@@ -145,7 +337,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBClientesDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBClientesDicInfo.Etiqueta));
         }
         catch
         {
@@ -154,7 +346,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Idade)))
-                m_FIdade = Convert.ToInt32(getValue(DBClientesDicInfo.Idade));
+                FIdade = Convert.ToInt32(getValue(DBClientesDicInfo.Idade));
         }
         catch
         {
@@ -163,7 +355,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.IDRep)))
-                m_FIDRep = Convert.ToInt32(getValue(DBClientesDicInfo.IDRep));
+                FIDRep = Convert.ToInt32(getValue(DBClientesDicInfo.IDRep));
         }
         catch
         {
@@ -172,7 +364,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Inativo)))
-                m_FInativo = Convert.ToBoolean(getValue(DBClientesDicInfo.Inativo));
+                FInativo = Convert.ToBoolean(getValue(DBClientesDicInfo.Inativo));
         }
         catch
         {
@@ -181,7 +373,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Juridica)))
-                m_FJuridica = Convert.ToBoolean(getValue(DBClientesDicInfo.Juridica));
+                FJuridica = Convert.ToBoolean(getValue(DBClientesDicInfo.Juridica));
         }
         catch
         {
@@ -190,7 +382,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Obito)))
-                m_FObito = Convert.ToBoolean(getValue(DBClientesDicInfo.Obito));
+                FObito = Convert.ToBoolean(getValue(DBClientesDicInfo.Obito));
         }
         catch
         {
@@ -199,7 +391,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.ProBono)))
-                m_FProBono = Convert.ToBoolean(getValue(DBClientesDicInfo.ProBono));
+                FProBono = Convert.ToBoolean(getValue(DBClientesDicInfo.ProBono));
         }
         catch
         {
@@ -208,7 +400,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBClientesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBClientesDicInfo.QuemAtu));
         }
         catch
         {
@@ -217,7 +409,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBClientesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBClientesDicInfo.QuemCad));
         }
         catch
         {
@@ -226,7 +418,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.RegimeTributacao)))
-                m_FRegimeTributacao = Convert.ToInt32(getValue(DBClientesDicInfo.RegimeTributacao));
+                FRegimeTributacao = Convert.ToInt32(getValue(DBClientesDicInfo.RegimeTributacao));
         }
         catch
         {
@@ -235,7 +427,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.ReportECBOnly)))
-                m_FReportECBOnly = Convert.ToBoolean(getValue(DBClientesDicInfo.ReportECBOnly));
+                FReportECBOnly = Convert.ToBoolean(getValue(DBClientesDicInfo.ReportECBOnly));
         }
         catch
         {
@@ -244,7 +436,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.RGDataExp)))
-                m_FRGDataExp = Convert.ToDateTime(getValue(DBClientesDicInfo.RGDataExp));
+                FRGDataExp = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBClientesDicInfo.RGDataExp)));
         }
         catch
         {
@@ -253,7 +445,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.SendEMail)))
-                m_FSendEMail = Convert.ToBoolean(getValue(DBClientesDicInfo.SendEMail));
+                FSendEMail = Convert.ToBoolean(getValue(DBClientesDicInfo.SendEMail));
         }
         catch
         {
@@ -262,7 +454,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBClientesDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBClientesDicInfo.Sexo));
         }
         catch
         {
@@ -271,7 +463,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBClientesDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBClientesDicInfo.Tipo));
         }
         catch
         {
@@ -280,7 +472,7 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.TipoCaptacao)))
-                m_FTipoCaptacao = Convert.ToBoolean(getValue(DBClientesDicInfo.TipoCaptacao));
+                FTipoCaptacao = Convert.ToBoolean(getValue(DBClientesDicInfo.TipoCaptacao));
         }
         catch
         {
@@ -289,206 +481,14 @@ public partial class DBClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBClientesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBClientesDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBClientesDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBClientesDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNH = getValue(DBClientesDicInfo.CNH)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNPJ = getValue(DBClientesDicInfo.CNPJ)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBClientesDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBClientesDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBClientesDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBClientesDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBClientesDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBClientesDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHomePage = getValue(DBClientesDicInfo.HomePage)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FIcone = getValue(DBClientesDicInfo.Icone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FInscEst = getValue(DBClientesDicInfo.InscEst)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBClientesDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeFantasia = getValue(DBClientesDicInfo.NomeFantasia)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeMae = getValue(DBClientesDicInfo.NomeMae)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomePai = getValue(DBClientesDicInfo.NomePai)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBClientesDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPessoaContato = getValue(DBClientesDicInfo.PessoaContato)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQualificacao = getValue(DBClientesDicInfo.Qualificacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQuemIndicou = getValue(DBClientesDicInfo.QuemIndicou)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBClientesDicInfo.RG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRGOExpeditor = getValue(DBClientesDicInfo.RGOExpeditor)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBClientesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -512,7 +512,7 @@ public partial class DBClientes
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

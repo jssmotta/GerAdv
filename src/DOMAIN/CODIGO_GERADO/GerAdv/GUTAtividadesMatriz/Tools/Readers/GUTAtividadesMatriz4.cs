@@ -2,36 +2,42 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory gutatividadesmatrizFactory) : IGUTAtividadesMatrizReader
+public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory gutatividadesmatrizFactory, IConnectionService connection) : IGUTAtividadesMatrizReader
 {
     private readonly IFGUTAtividadesMatrizFactory _gutatividadesmatrizFactory = gutatividadesmatrizFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGUTAtividadesMatriz.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBGUTAtividadesMatriz.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<GUTAtividadesMatrizResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<GUTAtividadesMatrizResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -41,13 +47,13 @@ public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory guta
         return result;
     }
 
-    public async Task<GUTAtividadesMatrizResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<GUTAtividadesMatrizResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gutatividadesmatrizFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.GUTAtividadesMatriz?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.GUTAtividadesMatriz?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gutatividadesmatrizFactory.CreateFromIdAsync(id, oCnn);
         var gutatividadesmatriz = new Models.GUTAtividadesMatriz
@@ -55,7 +61,7 @@ public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory guta
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return gutatividadesmatriz;
     }
@@ -83,7 +89,7 @@ public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory guta
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return gutatividadesmatriz;
     }
@@ -100,7 +106,7 @@ public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory guta
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return gutatividadesmatriz;
     }
@@ -117,7 +123,7 @@ public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory guta
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {
@@ -150,7 +156,7 @@ public partial class GUTAtividadesMatrizReader(IFGUTAtividadesMatrizFactory guta
             Id = dbRec.ID,
             GUTMatriz = dbRec.FGUTMatriz,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {

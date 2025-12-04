@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import SituacaoInc from '../Crud/Inc/Situacao';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface SituacaoIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const SituacaoIncContainer: React.FC<SituacaoIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <SituacaoInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <SituacaoInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default SituacaoIncContainer;

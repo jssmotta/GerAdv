@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProProcuradoresWriter
 {
     Task<FProProcuradores> WriteAsync(Models.ProProcuradores proprocuradores, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProProcuradoresWriter(IFProProcuradoresFactory proprocuradoresFactory) : IProProcuradoresWriter
 {
     private readonly IFProProcuradoresFactory _proprocuradoresFactory = proprocuradoresFactory ?? throw new ArgumentNullException(nameof(proprocuradoresFactory));
-    public virtual async Task Delete(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProProcuradoresResponse proprocuradores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _proprocuradoresFactory.DeleteAsync(operadorId, proprocuradores.Id, oCnn);
     }
@@ -26,10 +26,15 @@ public class ProProcuradoresWriter(IFProProcuradoresFactory proprocuradoresFacto
         dbRec.FAdvogado = proprocuradores.Advogado;
         dbRec.FNome = proprocuradores.Nome;
         dbRec.FProcesso = proprocuradores.Processo;
-        dbRec.FData = proprocuradores.Data;
+        if (proprocuradores.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(proprocuradores.Data));
+        }
+
         dbRec.FSubstabelecimento = proprocuradores.Substabelecimento;
         dbRec.FProcuracao = proprocuradores.Procuracao;
-        dbRec.FGUID = proprocuradores.GUID;
+        dbRec.FBold = proprocuradores.Bold;
+        dbRec.FGuid = proprocuradores.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

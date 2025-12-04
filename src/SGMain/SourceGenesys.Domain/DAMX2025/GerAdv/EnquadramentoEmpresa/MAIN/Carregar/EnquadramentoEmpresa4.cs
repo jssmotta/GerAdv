@@ -54,6 +54,22 @@ public partial class DBEnquadramentoEmpresa
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBEnquadramentoEmpresaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBEnquadramentoEmpresaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBEnquadramentoEmpresaDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBEnquadramentoEmpresaDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBEnquadramentoEmpresa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnquadramentoEmpresaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBEnquadramentoEmpresaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBEnquadramentoEmpresaDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBEnquadramentoEmpresa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnquadramentoEmpresaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBEnquadramentoEmpresaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBEnquadramentoEmpresaDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBEnquadramentoEmpresa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnquadramentoEmpresaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBEnquadramentoEmpresaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBEnquadramentoEmpresaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBEnquadramentoEmpresaDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBEnquadramentoEmpresaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBEnquadramentoEmpresa
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

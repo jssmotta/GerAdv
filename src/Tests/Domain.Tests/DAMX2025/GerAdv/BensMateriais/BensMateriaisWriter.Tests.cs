@@ -74,6 +74,7 @@ public class BensMateriaisWriterTests
         var result = await _bensmateriaisWriter.WriteAsync(bensmateriais, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFBensMateriais.Object);
+        _mockFBensMateriais.VerifySet(x => x.FGuid = bensmateriais.Guid, Times.Once);
         _mockFBensMateriais.VerifySet(x => x.FNome = bensmateriais.Nome, Times.Once);
         _mockFBensMateriais.VerifySet(x => x.FBensClassificacao = bensmateriais.BensClassificacao, Times.Once);
         _mockFBensMateriais.VerifySet(x => x.FDataCompra = bensmateriais.DataCompra.ToString(), Times.Once);
@@ -88,7 +89,6 @@ public class BensMateriaisWriterTests
         _mockFBensMateriais.VerifySet(x => x.FDataTerminoDaGarantiaDaLoja = bensmateriais.DataTerminoDaGarantiaDaLoja.ToString(), Times.Once);
         _mockFBensMateriais.VerifySet(x => x.FObservacoes = bensmateriais.Observacoes, Times.Once);
         _mockFBensMateriais.VerifySet(x => x.FNomeVendedor = bensmateriais.NomeVendedor, Times.Once);
-        _mockFBensMateriais.VerifySet(x => x.FGUID = bensmateriais.GUID, Times.Once);
         _mockFBensMateriais.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -177,7 +177,7 @@ public class BensMateriaisWriterTests
         var operadorId = 456;
         _mockBensMateriaisFactory.Setup(x => x.DeleteAsync(operadorId, bensmateriaisResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _bensmateriaisWriter.Delete(bensmateriaisResponse, operadorId, _mockConnection.Object);
+        await _bensmateriaisWriter.DeleteAsync(bensmateriaisResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockBensMateriaisFactory.Verify(x => x.DeleteAsync(operadorId, bensmateriaisResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -193,7 +193,7 @@ public class BensMateriaisWriterTests
         var operadorId = 111;
         _mockBensMateriaisFactory.Setup(x => x.DeleteAsync(operadorId, bensmateriaisResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _bensmateriaisWriter.Delete(bensmateriaisResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _bensmateriaisWriter.DeleteAsync(bensmateriaisResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -210,7 +210,7 @@ public class BensMateriaisWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockBensMateriaisFactory.Setup(x => x.DeleteAsync(operadorId, bensmateriaisResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _bensmateriaisWriter.Delete(bensmateriaisResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _bensmateriaisWriter.DeleteAsync(bensmateriaisResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -240,6 +240,7 @@ public class BensMateriaisWriterTests
         return new Models.BensMateriais
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
             BensClassificacao = 1,
             DataCompra = "24/04/1975",
@@ -253,8 +254,7 @@ public class BensMateriaisWriterTests
             GarantiaLoja = false,
             DataTerminoDaGarantiaDaLoja = "24/04/1975",
             Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            NomeVendedor = "João",
-            GUID = Guid.NewGuid().ToString()
+            NomeVendedor = "João"
         };
     }
 #endregion

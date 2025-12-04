@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { OperadorEMailPopupApiError } from '../GerAdv_TS/OperadorEMailPopup/Apis/ApiOperadorEMailPopup';
+import { OperadorEMailPopupApiError } from '@/app/GerAdv_TS/OperadorEMailPopup/Apis/ApiOperadorEMailPopup';
 import { OperadorEMailPopupApi } from '@/app/GerAdv_TS/OperadorEMailPopup/Apis/ApiOperadorEMailPopup';
-import { FilterOperadorEMailPopup } from '../GerAdv_TS/OperadorEMailPopup/Filters/OperadorEMailPopup';
-import { IOperadorEMailPopup } from '../GerAdv_TS/OperadorEMailPopup/Interfaces/interface.OperadorEMailPopup';
-import { OperadorEMailPopupTestEmpty } from '../GerAdv_TS/Models/OperadorEMailPopup';
+import { FilterOperadorEMailPopup } from '@/app/GerAdv_TS/OperadorEMailPopup/Filters/OperadorEMailPopup';
+import { IOperadorEMailPopup } from '@/app/GerAdv_TS/OperadorEMailPopup/Interfaces/interface.OperadorEMailPopup';
+import { OperadorEMailPopupTestEmpty } from '@/app/GerAdv_TS/Models/OperadorEMailPopup';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('OperadorEMailPopupApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterOperadorEMailPopup = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,17 @@ describe('OperadorEMailPopupApi', () => {
   describe('addAndUpdate', () => {
     const mockOperadorEMailPopup: IOperadorEMailPopup = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+operador: 0,
+nome: 'João',
+smtp: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+pop3: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+autenticacao: false,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+usuario: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+portasmtp: 0,
+portapop3: 0,
+assinatura: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
     };
 
     it('should add new operadoremailpopup successfully', async () => {
@@ -487,7 +484,7 @@ describe('OperadorEMailPopupApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterOperadorEMailPopup = { funcionario: 1 };
+      const mockFilter: FilterOperadorEMailPopup = { : 1 };
       
       const result = operadoremailpopupApi.useFilter(mockFilter);
       

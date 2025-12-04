@@ -8,52 +8,57 @@ public partial class DBProcessosObsReport
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFData, pFldFProcesso, pFldFObservacao, pFldFHistorico;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FProcesso, m_FHistorico;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FObservacao;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData;
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FObservacao da tabela ProcessosObsReport deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FObservacao da tabela 'ProcessosObsReport' deve ter no máximo 2048 caracteres.")]
     public virtual string? FObservacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObservacao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObservacao = pFldFObservacao || !(m_FObservacao ?? string.Empty).Equals(value);
+            pFldFObservacao = pFldFObservacao || !(field ?? string.Empty).Equals(value);
             if (pFldFObservacao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FObservacao = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
             }
         }
     }
@@ -61,36 +66,40 @@ public partial class DBProcessosObsReport
     public virtual int FHistorico
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FHistorico;
+        get => field;
         set
         {
-            pFldFHistorico = pFldFHistorico || value != m_FHistorico;
+            pFldFHistorico = pFldFHistorico || value != field;
             if (pFldFHistorico)
-                m_FHistorico = value;
+                field = value;
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IdIsIdentity() => false;
+    public bool IdIsIdentity() => true;
 #pragma warning disable CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

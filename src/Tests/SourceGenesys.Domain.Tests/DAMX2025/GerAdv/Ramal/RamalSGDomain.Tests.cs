@@ -40,6 +40,19 @@ public class DBRamalTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ramCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBRamal(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -58,7 +71,7 @@ public class DBRamalTests : IDisposable
     {
         var instance = new DBRamal();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Ramal", instance.ITabelaName());
+        Assert.Equal("Ramal", instance.ITableName());
         Assert.Equal("ram", instance.Prefixo);
     }
 
@@ -76,29 +89,16 @@ public class DBRamalTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ramCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBRamal(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Ramal", cadastro.ITabelaName());
-        Assert.Equal("ramCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ramNome", cadastro.ICampoNome());
-        Assert.Equal("ram", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Ramal", cadastro.ITableName());
+        Assert.Equal("ramCodigo", cadastro.IFieldId());
+        Assert.Equal("ramNome", cadastro.IFieldNameDescription());
+        Assert.Equal("ram", cadastro.IPrefix());
     }
 
 #endregion
@@ -158,9 +158,9 @@ public class DBRamalTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

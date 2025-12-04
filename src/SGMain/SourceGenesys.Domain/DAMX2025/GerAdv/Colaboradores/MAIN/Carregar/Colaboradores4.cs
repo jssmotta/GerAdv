@@ -54,8 +54,96 @@ public partial class DBColaboradores
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBColaboradoresDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBColaboradoresDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBColaboradoresDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNH = getValue(DBColaboradoresDicInfo.CNH)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBColaboradoresDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBColaboradoresDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBColaboradoresDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBColaboradoresDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBColaboradoresDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBColaboradoresDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBColaboradoresDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Ani));
         }
         catch
         {
@@ -64,7 +152,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +161,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Cargo)))
-                m_FCargo = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Cargo));
+                FCargo = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Cargo));
         }
         catch
         {
@@ -82,7 +170,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +179,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Cliente));
         }
         catch
         {
@@ -118,7 +206,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBColaboradoresDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBColaboradoresDicInfo.DtNasc)));
         }
         catch
         {
@@ -127,7 +215,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Etiqueta));
         }
         catch
         {
@@ -136,7 +224,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Idade)))
-                m_FIdade = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Idade));
+                FIdade = Convert.ToInt32(getValue(DBColaboradoresDicInfo.Idade));
         }
         catch
         {
@@ -145,7 +233,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBColaboradoresDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBColaboradoresDicInfo.QuemAtu));
         }
         catch
         {
@@ -154,7 +242,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBColaboradoresDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBColaboradoresDicInfo.QuemCad));
         }
         catch
         {
@@ -163,7 +251,7 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Sexo));
         }
         catch
         {
@@ -172,102 +260,14 @@ public partial class DBColaboradores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBColaboradoresDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBColaboradoresDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBColaboradoresDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBColaboradoresDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNH = getValue(DBColaboradoresDicInfo.CNH)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBColaboradoresDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBColaboradoresDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBColaboradoresDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBColaboradoresDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBColaboradoresDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBColaboradoresDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBColaboradoresDicInfo.RG)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBColaboradoresDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -291,7 +291,7 @@ public partial class DBColaboradores
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -80,12 +80,18 @@ public class OperadorWriterTests
         _mockFOperador.VerifySet(x => x.FMaster = operador.Master, Times.Once);
         _mockFOperador.VerifySet(x => x.FNome = operador.Nome, Times.Once);
         _mockFOperador.VerifySet(x => x.FNick = operador.Nick, Times.Once);
+        _mockFOperador.VerifySet(x => x.FRamal = operador.Ramal, Times.Once);
         _mockFOperador.VerifySet(x => x.FExcluido = operador.Excluido, Times.Once);
         _mockFOperador.VerifySet(x => x.FSituacao = operador.Situacao, Times.Once);
+        _mockFOperador.VerifySet(x => x.FComputador = operador.Computador, Times.Once);
         _mockFOperador.VerifySet(x => x.FMinhaDescricao = operador.MinhaDescricao, Times.Once);
+        _mockFOperador.VerifySet(x => x.FUltimoLogoff = operador.UltimoLogoff.ToString(), Times.Once);
         _mockFOperador.VerifySet(x => x.FEMailNet = operador.EMailNet, Times.Once);
+        _mockFOperador.VerifySet(x => x.FOnlineIP = operador.OnlineIP, Times.Once);
         _mockFOperador.VerifySet(x => x.FOnLine = operador.OnLine, Times.Once);
         _mockFOperador.VerifySet(x => x.FSysOp = operador.SysOp, Times.Once);
+        _mockFOperador.VerifySet(x => x.FStatusId = operador.StatusId, Times.Once);
+        _mockFOperador.VerifySet(x => x.FStatusMessage = operador.StatusMessage, Times.Once);
         _mockFOperador.VerifySet(x => x.FIsFinanceiro = operador.IsFinanceiro, Times.Once);
         _mockFOperador.VerifySet(x => x.FTop = operador.Top, Times.Once);
         _mockFOperador.VerifySet(x => x.FSexo = operador.Sexo, Times.Once);
@@ -93,8 +99,27 @@ public class OperadorWriterTests
         _mockFOperador.VerifySet(x => x.FExterno = operador.Externo, Times.Once);
         _mockFOperador.VerifySet(x => x.FEMailConfirmado = operador.EMailConfirmado, Times.Once);
         _mockFOperador.VerifySet(x => x.FDataLimiteReset = operador.DataLimiteReset.ToString(), Times.Once);
-        _mockFOperador.VerifySet(x => x.FGUID = operador.GUID, Times.Once);
+        _mockFOperador.VerifySet(x => x.FSuporteMaxAge = operador.SuporteMaxAge.ToString(), Times.Once);
+        _mockFOperador.VerifySet(x => x.FSuporteNomeSolicitante = operador.SuporteNomeSolicitante, Times.Once);
+        _mockFOperador.VerifySet(x => x.FSuporteUltimoAcesso = operador.SuporteUltimoAcesso.ToString(), Times.Once);
+        _mockFOperador.VerifySet(x => x.FSuporteIpUltimoAcesso = operador.SuporteIpUltimoAcesso, Times.Once);
+        _mockFOperador.VerifySet(x => x.FGuid = operador.Guid, Times.Once);
         _mockFOperador.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullUltimoLogoff_ShouldNotSetFUltimoLogoff()
+    {
+        // Arrange
+        var operador = CreateValidOperadorModel();
+        operador.UltimoLogoff = null;
+        var auditorQuem = 123;
+        _mockOperadorFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFOperador.Object);
+        _mockFOperador.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _operadorWriter.WriteAsync(operador, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFOperador.VerifySet(x => x.FUltimoLogoff = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -110,6 +135,36 @@ public class OperadorWriterTests
         await _operadorWriter.WriteAsync(operador, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFOperador.VerifySet(x => x.FDataLimiteReset = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullSuporteMaxAge_ShouldNotSetFSuporteMaxAge()
+    {
+        // Arrange
+        var operador = CreateValidOperadorModel();
+        operador.SuporteMaxAge = null;
+        var auditorQuem = 123;
+        _mockOperadorFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFOperador.Object);
+        _mockFOperador.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _operadorWriter.WriteAsync(operador, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFOperador.VerifySet(x => x.FSuporteMaxAge = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullSuporteUltimoAcesso_ShouldNotSetFSuporteUltimoAcesso()
+    {
+        // Arrange
+        var operador = CreateValidOperadorModel();
+        operador.SuporteUltimoAcesso = null;
+        var auditorQuem = 123;
+        _mockOperadorFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFOperador.Object);
+        _mockFOperador.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _operadorWriter.WriteAsync(operador, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFOperador.VerifySet(x => x.FSuporteUltimoAcesso = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -152,7 +207,7 @@ public class OperadorWriterTests
         var operadorId = 456;
         _mockOperadorFactory.Setup(x => x.DeleteAsync(operadorId, operadorResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _operadorWriter.Delete(operadorResponse, operadorId, _mockConnection.Object);
+        await _operadorWriter.DeleteAsync(operadorResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockOperadorFactory.Verify(x => x.DeleteAsync(operadorId, operadorResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -168,7 +223,7 @@ public class OperadorWriterTests
         var operadorId = 111;
         _mockOperadorFactory.Setup(x => x.DeleteAsync(operadorId, operadorResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _operadorWriter.Delete(operadorResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _operadorWriter.DeleteAsync(operadorResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -185,7 +240,7 @@ public class OperadorWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockOperadorFactory.Setup(x => x.DeleteAsync(operadorId, operadorResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _operadorWriter.Delete(operadorResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _operadorWriter.DeleteAsync(operadorResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -221,12 +276,18 @@ public class OperadorWriterTests
             Master = false,
             Nome = "João",
             Nick = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Ramal = "AAAAAAAAAAAAAAAAAA",
             Excluido = false,
             Situacao = false,
+            Computador = 1,
             MinhaDescricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            UltimoLogoff = "24/04/1975",
             EMailNet = "test@email.com",
+            OnlineIP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             OnLine = false,
             SysOp = false,
+            StatusId = 1,
+            StatusMessage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             IsFinanceiro = false,
             Top = false,
             Sexo = false,
@@ -234,7 +295,11 @@ public class OperadorWriterTests
             Externo = false,
             EMailConfirmado = false,
             DataLimiteReset = "24/04/1975",
-            GUID = Guid.NewGuid().ToString()
+            SuporteMaxAge = "24/04/1975",
+            SuporteNomeSolicitante = "João",
+            SuporteUltimoAcesso = "24/04/1975",
+            SuporteIpUltimoAcesso = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

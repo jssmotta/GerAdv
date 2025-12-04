@@ -9,25 +9,29 @@ public partial class DBEscritoriosODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBEscritoriosDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBEscritoriosDicInfo.CampoCodigo;
+    public string IFieldId() => DBEscritoriosDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBEscritoriosDicInfo.TablePrefix;
+    public string IPrefix() => DBEscritoriosDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBEscritoriosDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBEscritoriosDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBEscritoriosODicInfo : IODicInfo
     public static string TCampoNome => DBEscritoriosDicInfo.CampoNome;
     public static string TTabelaNome => DBEscritoriosDicInfo.TabelaNome;
     public static string TTablePrefix => DBEscritoriosDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBEscritoriosDicInfo.EscGUID, DBEscritoriosDicInfo.EscCNPJ, DBEscritoriosDicInfo.EscCasa, DBEscritoriosDicInfo.EscParceria, DBEscritoriosDicInfo.EscNome, DBEscritoriosDicInfo.EscOAB, DBEscritoriosDicInfo.EscEndereco, DBEscritoriosDicInfo.EscCidade, DBEscritoriosDicInfo.EscBairro, DBEscritoriosDicInfo.EscCEP, DBEscritoriosDicInfo.EscFone, DBEscritoriosDicInfo.EscFax, DBEscritoriosDicInfo.EscSite, DBEscritoriosDicInfo.EscEMail, DBEscritoriosDicInfo.EscOBS, DBEscritoriosDicInfo.EscAdvResponsavel, DBEscritoriosDicInfo.EscSecretaria, DBEscritoriosDicInfo.EscInscEst, DBEscritoriosDicInfo.EscCorrespondente, DBEscritoriosDicInfo.EscTop, DBEscritoriosDicInfo.EscEtiqueta, DBEscritoriosDicInfo.EscBold, DBEscritoriosDicInfo.EscQuemCad, DBEscritoriosDicInfo.EscDtCad, DBEscritoriosDicInfo.EscQuemAtu, DBEscritoriosDicInfo.EscDtAtu, DBEscritoriosDicInfo.EscVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEscritoriosDicInfo.EscGUID, DBEscritoriosDicInfo.EscCNPJ, DBEscritoriosDicInfo.EscCasa, DBEscritoriosDicInfo.EscParceria, DBEscritoriosDicInfo.EscNome, DBEscritoriosDicInfo.EscOAB, DBEscritoriosDicInfo.EscEndereco, DBEscritoriosDicInfo.EscCidade, DBEscritoriosDicInfo.EscBairro, DBEscritoriosDicInfo.EscCEP, DBEscritoriosDicInfo.EscFone, DBEscritoriosDicInfo.EscFax, DBEscritoriosDicInfo.EscSite, DBEscritoriosDicInfo.EscEMail, DBEscritoriosDicInfo.EscOBS, DBEscritoriosDicInfo.EscAdvResponsavel, DBEscritoriosDicInfo.EscSecretaria, DBEscritoriosDicInfo.EscInscEst, DBEscritoriosDicInfo.EscCorrespondente, DBEscritoriosDicInfo.EscTop];
+    public static ImmutableArray<DBInfoSystem> List => [DBEscritoriosDicInfo.EscCNPJ, DBEscritoriosDicInfo.EscCasa, DBEscritoriosDicInfo.EscParceria, DBEscritoriosDicInfo.EscNome, DBEscritoriosDicInfo.EscOAB, DBEscritoriosDicInfo.EscEndereco, DBEscritoriosDicInfo.EscCidade, DBEscritoriosDicInfo.EscBairro, DBEscritoriosDicInfo.EscCEP, DBEscritoriosDicInfo.EscFone, DBEscritoriosDicInfo.EscFax, DBEscritoriosDicInfo.EscSite, DBEscritoriosDicInfo.EscEMail, DBEscritoriosDicInfo.EscOBS, DBEscritoriosDicInfo.EscAdvResponsavel, DBEscritoriosDicInfo.EscSecretaria, DBEscritoriosDicInfo.EscInscEst, DBEscritoriosDicInfo.EscCorrespondente, DBEscritoriosDicInfo.EscTop, DBEscritoriosDicInfo.EscEtiqueta, DBEscritoriosDicInfo.EscBold, DBEscritoriosDicInfo.EscGuid, DBEscritoriosDicInfo.EscQuemCad, DBEscritoriosDicInfo.EscDtCad, DBEscritoriosDicInfo.EscQuemAtu, DBEscritoriosDicInfo.EscDtAtu, DBEscritoriosDicInfo.EscVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBEscritoriosDicInfo.EscCNPJ, DBEscritoriosDicInfo.EscCasa, DBEscritoriosDicInfo.EscParceria, DBEscritoriosDicInfo.EscNome, DBEscritoriosDicInfo.EscOAB, DBEscritoriosDicInfo.EscEndereco, DBEscritoriosDicInfo.EscCidade, DBEscritoriosDicInfo.EscBairro, DBEscritoriosDicInfo.EscCEP, DBEscritoriosDicInfo.EscFone, DBEscritoriosDicInfo.EscFax, DBEscritoriosDicInfo.EscSite, DBEscritoriosDicInfo.EscEMail, DBEscritoriosDicInfo.EscOBS, DBEscritoriosDicInfo.EscAdvResponsavel, DBEscritoriosDicInfo.EscSecretaria, DBEscritoriosDicInfo.EscInscEst, DBEscritoriosDicInfo.EscCorrespondente, DBEscritoriosDicInfo.EscTop, DBEscritoriosDicInfo.EscEtiqueta, DBEscritoriosDicInfo.EscBold, DBEscritoriosDicInfo.EscGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["escCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBEscritoriosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["escCodigo", "escNome"]);
         var result = campos.Where(campo => !campo.Equals(DBEscritoriosDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

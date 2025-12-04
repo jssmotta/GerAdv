@@ -74,13 +74,13 @@ public class PenhoraWriterTests
         var result = await _penhoraWriter.WriteAsync(penhora, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFPenhora.Object);
+        _mockFPenhora.VerifySet(x => x.FGuid = penhora.Guid, Times.Once);
         _mockFPenhora.VerifySet(x => x.FProcesso = penhora.Processo, Times.Once);
         _mockFPenhora.VerifySet(x => x.FNome = penhora.Nome, Times.Once);
         _mockFPenhora.VerifySet(x => x.FDescricao = penhora.Descricao, Times.Once);
         _mockFPenhora.VerifySet(x => x.FDataPenhora = penhora.DataPenhora.ToString(), Times.Once);
         _mockFPenhora.VerifySet(x => x.FPenhoraStatus = penhora.PenhoraStatus, Times.Once);
         _mockFPenhora.VerifySet(x => x.FMaster = penhora.Master, Times.Once);
-        _mockFPenhora.VerifySet(x => x.FGUID = penhora.GUID, Times.Once);
         _mockFPenhora.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -139,7 +139,7 @@ public class PenhoraWriterTests
         var operadorId = 456;
         _mockPenhoraFactory.Setup(x => x.DeleteAsync(operadorId, penhoraResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _penhoraWriter.Delete(penhoraResponse, operadorId, _mockConnection.Object);
+        await _penhoraWriter.DeleteAsync(penhoraResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockPenhoraFactory.Verify(x => x.DeleteAsync(operadorId, penhoraResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -155,7 +155,7 @@ public class PenhoraWriterTests
         var operadorId = 111;
         _mockPenhoraFactory.Setup(x => x.DeleteAsync(operadorId, penhoraResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _penhoraWriter.Delete(penhoraResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _penhoraWriter.DeleteAsync(penhoraResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -172,7 +172,7 @@ public class PenhoraWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockPenhoraFactory.Setup(x => x.DeleteAsync(operadorId, penhoraResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _penhoraWriter.Delete(penhoraResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _penhoraWriter.DeleteAsync(penhoraResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -202,13 +202,13 @@ public class PenhoraWriterTests
         return new Models.Penhora
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             Nome = "João",
             Descricao = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             DataPenhora = "04:04",
             PenhoraStatus = 1,
-            Master = 1,
-            GUID = Guid.NewGuid().ToString()
+            Master = 1
         };
     }
 #endregion

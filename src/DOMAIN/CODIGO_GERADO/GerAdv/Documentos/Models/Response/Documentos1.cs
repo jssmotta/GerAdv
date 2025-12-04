@@ -14,12 +14,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// GUID - docGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Processo - docProcesso  
         /// </summary>
         [JsonPropertyName("processo")]
@@ -31,11 +25,20 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Observacao - docObservacao  
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
+
+        /// <summary>
+        /// GUID - docGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -48,12 +51,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// GUID - docGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Processo - docProcesso  
         /// </summary>
         [JsonPropertyName("processo")]
@@ -65,10 +62,19 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Observacao - docObservacao  
         /// </summary>
         [JsonPropertyName("observacao")]
         public string Observacao { get; set; } = "";
+
+        /// <summary>
+        /// GUID - docGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

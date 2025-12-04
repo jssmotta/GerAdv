@@ -74,8 +74,8 @@ public class BensClassificacaoWriterTests
         var result = await _bensclassificacaoWriter.WriteAsync(bensclassificacao, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFBensClassificacao.Object);
+        _mockFBensClassificacao.VerifySet(x => x.FGuid = bensclassificacao.Guid, Times.Once);
         _mockFBensClassificacao.VerifySet(x => x.FNome = bensclassificacao.Nome, Times.Once);
-        _mockFBensClassificacao.VerifySet(x => x.FGUID = bensclassificacao.GUID, Times.Once);
         _mockFBensClassificacao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class BensClassificacaoWriterTests
         var operadorId = 456;
         _mockBensClassificacaoFactory.Setup(x => x.DeleteAsync(operadorId, bensclassificacaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _bensclassificacaoWriter.Delete(bensclassificacaoResponse, operadorId, _mockConnection.Object);
+        await _bensclassificacaoWriter.DeleteAsync(bensclassificacaoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockBensClassificacaoFactory.Verify(x => x.DeleteAsync(operadorId, bensclassificacaoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class BensClassificacaoWriterTests
         var operadorId = 111;
         _mockBensClassificacaoFactory.Setup(x => x.DeleteAsync(operadorId, bensclassificacaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _bensclassificacaoWriter.Delete(bensclassificacaoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _bensclassificacaoWriter.DeleteAsync(bensclassificacaoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class BensClassificacaoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockBensClassificacaoFactory.Setup(x => x.DeleteAsync(operadorId, bensclassificacaoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _bensclassificacaoWriter.Delete(bensclassificacaoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _bensclassificacaoWriter.DeleteAsync(bensclassificacaoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class BensClassificacaoWriterTests
         return new Models.BensClassificacao
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

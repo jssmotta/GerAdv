@@ -23,7 +23,7 @@ public class EscritoriosValidation : IEscritoriosValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var advogadosExists0 = await advogadosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAdvogados { Escritorio = id ?? default }, uri);
         if (advogadosExists0 != null && advogadosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Advogados associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Advogados associados a ele.");
         return true;
     }
 
@@ -49,8 +49,6 @@ public class EscritoriosValidation : IEscritoriosValidation
             throw new SGValidationException($"Secretaria deve ter no máximo {DBEscritoriosDicInfo.EscSecretaria.FTamanho} caracteres.");
         if (reg.InscEst != null && reg.InscEst.Length > DBEscritoriosDicInfo.EscInscEst.FTamanho)
             throw new SGValidationException($"InscEst deve ter no máximo {DBEscritoriosDicInfo.EscInscEst.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBEscritoriosDicInfo.EscGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBEscritoriosDicInfo.EscGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -60,19 +58,21 @@ public class EscritoriosValidation : IEscritoriosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
-        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Escritorios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

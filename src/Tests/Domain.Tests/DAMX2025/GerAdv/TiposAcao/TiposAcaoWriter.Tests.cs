@@ -74,9 +74,9 @@ public class TiposAcaoWriterTests
         var result = await _tiposacaoWriter.WriteAsync(tiposacao, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTiposAcao.Object);
+        _mockFTiposAcao.VerifySet(x => x.FGuid = tiposacao.Guid, Times.Once);
         _mockFTiposAcao.VerifySet(x => x.FNome = tiposacao.Nome, Times.Once);
         _mockFTiposAcao.VerifySet(x => x.FInativo = tiposacao.Inativo, Times.Once);
-        _mockFTiposAcao.VerifySet(x => x.FGUID = tiposacao.GUID, Times.Once);
         _mockFTiposAcao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class TiposAcaoWriterTests
         var operadorId = 456;
         _mockTiposAcaoFactory.Setup(x => x.DeleteAsync(operadorId, tiposacaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tiposacaoWriter.Delete(tiposacaoResponse, operadorId, _mockConnection.Object);
+        await _tiposacaoWriter.DeleteAsync(tiposacaoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTiposAcaoFactory.Verify(x => x.DeleteAsync(operadorId, tiposacaoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class TiposAcaoWriterTests
         var operadorId = 111;
         _mockTiposAcaoFactory.Setup(x => x.DeleteAsync(operadorId, tiposacaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tiposacaoWriter.Delete(tiposacaoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tiposacaoWriter.DeleteAsync(tiposacaoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class TiposAcaoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTiposAcaoFactory.Setup(x => x.DeleteAsync(operadorId, tiposacaoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tiposacaoWriter.Delete(tiposacaoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tiposacaoWriter.DeleteAsync(tiposacaoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class TiposAcaoWriterTests
         return new Models.TiposAcao
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
-            Inativo = false,
-            GUID = Guid.NewGuid().ToString()
+            Inativo = false
         };
     }
 #endregion

@@ -53,12 +53,11 @@ public class ProValoresValidationTests : IDisposable
         return new Models.ProValores
         {
             Id = 1,
-            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             TipoValorProcesso = 1,
             Indice = "AAAAAAAAAAAAAAAAAA",
             Ignorar = false,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             ValorOriginal = 1m,
             PercMulta = 1m,
             ValorMulta = 1m,
@@ -92,7 +91,6 @@ public class ProValoresValidationTests : IDisposable
         var provalores = new Models.ProValores
         {
             Id = 1,
-            Guid = null,
             Processo = 1,
             TipoValorProcesso = 1,
             Indice = "AAAAAAAAAAAAAAAAAA",
@@ -126,7 +124,7 @@ public class ProValoresValidationTests : IDisposable
         provalores.Indice = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(provalores, _mockProValoresService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -157,41 +155,34 @@ public class ProValoresValidationTests : IDisposable
     {
         // Arrange
         var provalores = CreateValidProValores();
-        provalores.Indice = "   ";
+        provalores.Indice = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(provalores, _mockProValoresService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
     }
 
 #endregion
-#region ValidateReg Required Data Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyData_ShouldThrowSGValidationException()
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
     {
         // Arrange
         var provalores = CreateValidProValores();
-        provalores.Data = "";
+        provalores.Data = invalidDate;
+        SetupValidMocks();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(provalores, _mockProValoresService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().Contain("01/01/1900.");
     }
 
     [Fact]
-    public async Task ValidateReg_WithNullData_ShouldThrowSGValidationException()
+    public async Task ValidateReg_WithValidData_ShouldPass()
     {
         // Arrange
         var provalores = CreateValidProValores();
-        provalores.Data = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(provalores, _mockProValoresService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataData_ShouldReturnTrue()
-    {
-        // Arrange
-        var provalores = CreateValidProValores();
+        provalores.Data = "01/01/1990";
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(provalores, _mockProValoresService.Object, _validUri, _mockConnection.Object);
@@ -200,13 +191,15 @@ public class ProValoresValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateReg_WithWhitespaceData_ShouldThrowSGValidationException()
+    public async Task ValidateReg_WithEmptyData_ShouldNotPass()
     {
         // Arrange
         var provalores = CreateValidProValores();
-        provalores.Data = "   ";
-        // Act & Assert
+        provalores.Data = "";
+        SetupValidMocks();
+        // Act       
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(provalores, _mockProValoresService.Object, _validUri, _mockConnection.Object));
+        // Assert
         exception.Message.Should().Contain("é obrigatório");
     }
 

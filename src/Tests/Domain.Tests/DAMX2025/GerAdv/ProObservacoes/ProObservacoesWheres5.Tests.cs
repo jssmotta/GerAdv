@@ -36,7 +36,7 @@ public class ProObservacoesWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProObservacoes(int? Processo = 1, string? Nome = "João", string? Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Data = "27/05/2022")
+    private void SetupMockFProObservacoes(int? Processo = 1, string? Nome = "João", string? Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Data = "24/04/1975")
     {
         _mockFProObservacoes.Setup(f => f.FProcesso).Returns(Processo ?? 0);
         _mockFProObservacoes.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
@@ -84,7 +84,7 @@ public class ProObservacoesWhereTests : IDisposable
         result.Processo.Should().Be(1);
         result.Nome.Should().Be("João");
         result.Observacoes.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
     }
 
 #endregion
@@ -214,7 +214,7 @@ public class ProObservacoesWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProObservacoes(Processo: 1, Nome: "João", Observacoes: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Data: "27/05/2022");
+        SetupMockFProObservacoes(Processo: 1, Nome: "João", Observacoes: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Data: "24/04/1975");
         _mockProObservacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProObservacoes.Object);
         // Act
         var result = _proobservacoesWhere.Read(where, parameters, _mockConnection.Object);
@@ -224,7 +224,7 @@ public class ProObservacoesWhereTests : IDisposable
         result.Processo.Should().Be(1);
         result.Nome.Should().Be("João");
         result.Observacoes.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
     }
 
     [Fact]
@@ -243,7 +243,55 @@ public class ProObservacoesWhereTests : IDisposable
         // Assert
         _mockProObservacoesFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBProObservacoesDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFProObservacoes(Data: testDate);
+        _mockProObservacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProObservacoes.Object);
+        // Act
+        var result = _proobservacoesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFProObservacoes(Data: null);
+        _mockProObservacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProObservacoes.Object);
+        // Act
+        var result = _proobservacoesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFProObservacoes(Data: dateString);
+        _mockProObservacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProObservacoes.Object);
+        // Act
+        var result = _proobservacoesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

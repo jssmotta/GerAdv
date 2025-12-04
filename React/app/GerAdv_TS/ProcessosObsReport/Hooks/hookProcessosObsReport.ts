@@ -18,12 +18,11 @@ export const useProcessosObsReportForm = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = useCallback((e: any) => {
-    const { name, value, type, checked } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));    
+ const handleChange = useCallback((e: any) => {
+    // Lazy require to avoid circular import surprises in SSR environments.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { genericHandleChange } = require('../../../tools/formUtils');
+    if (genericHandleChange) genericHandleChange(e, setData);
   }, []);
 
   const loadProcessosObsReport = useCallback(async (id: number) => {
@@ -171,7 +170,10 @@ export function useValidationsProcessosObsReport() {
     
       try {
    
-        if (data.data.length <= 0) { 
+        if (data.data.includes('%')) { 
+                          return { isValid: false, message: `Remova o caracter '%' inválido!` };
+                      } 
+if (data.data.length <= 0) { 
                                              return { isValid: false, message: 'O campo Data não pode ficar vazio.' };
                                          } 
 if (data.observacao.length > 2048) { 

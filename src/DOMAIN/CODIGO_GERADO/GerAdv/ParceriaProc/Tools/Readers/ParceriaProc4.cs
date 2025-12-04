@@ -2,36 +2,42 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactory) : IParceriaProcReader
+public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactory, IConnectionService connection) : IParceriaProcReader
 {
     private readonly IFParceriaProcFactory _parceriaprocFactory = parceriaprocFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<ParceriaProcResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBParceriaProc.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ParceriaProcResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<ParceriaProcResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBParceriaProc.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ParceriaProcResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ParceriaProcResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -41,21 +47,21 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         return result;
     }
 
-    public async Task<ParceriaProcResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ParceriaProcResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _parceriaprocFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ParceriaProc?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.ParceriaProc?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _parceriaprocFactory.CreateFromIdAsync(id, oCnn);
         var parceriaproc = new Models.ParceriaProc
         {
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
-            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return parceriaproc;
     }
@@ -82,8 +88,8 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         {
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
-            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return parceriaproc;
     }
@@ -99,8 +105,8 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         {
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
-            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return parceriaproc;
     }
@@ -116,8 +122,8 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         {
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
-            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {
@@ -141,8 +147,8 @@ public partial class ParceriaProcReader(IFParceriaProcFactory parceriaprocFactor
         {
             Id = dbRec.ID,
             Advogado = dbRec.FAdvogado,
-            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {

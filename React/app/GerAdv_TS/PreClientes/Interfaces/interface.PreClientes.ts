@@ -40,6 +40,9 @@ export interface IPreClientes {
 	assendereco: string,
 	cnh: string,
 	asscpf: string,
+	etiqueta: boolean,
+	ani: boolean,
+	bold: boolean,
 }
 
 export interface IPreClientesFormProps {

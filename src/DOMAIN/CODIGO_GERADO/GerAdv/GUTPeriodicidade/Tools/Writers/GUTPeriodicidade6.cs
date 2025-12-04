@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IGUTPeriodicidadeWriter
 {
     Task<FGUTPeriodicidade> WriteAsync(Models.GUTPeriodicidade gutperiodicidade, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(GUTPeriodicidadeResponse gutperiodicidade, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(GUTPeriodicidadeResponse gutperiodicidade, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GUTPeriodicidadeWriter(IFGUTPeriodicidadeFactory gutperiodicidadeFactory) : IGUTPeriodicidadeWriter
 {
     private readonly IFGUTPeriodicidadeFactory _gutperiodicidadeFactory = gutperiodicidadeFactory ?? throw new ArgumentNullException(nameof(gutperiodicidadeFactory));
-    public virtual async Task Delete(GUTPeriodicidadeResponse gutperiodicidade, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(GUTPeriodicidadeResponse gutperiodicidade, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gutperiodicidadeFactory.DeleteAsync(operadorId, gutperiodicidade.Id, oCnn);
     }
@@ -25,7 +25,7 @@ public class GUTPeriodicidadeWriter(IFGUTPeriodicidadeFactory gutperiodicidadeFa
         using var dbRec = await (gutperiodicidade.Id.IsEmptyIDNumber() ? _gutperiodicidadeFactory.CreateAsync() : _gutperiodicidadeFactory.CreateFromIdAsync(gutperiodicidade.Id, oCnn));
         dbRec.FNome = gutperiodicidade.Nome;
         dbRec.FIntervaloDias = gutperiodicidade.IntervaloDias;
-        dbRec.FGUID = gutperiodicidade.GUID;
+        dbRec.FGuid = gutperiodicidade.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

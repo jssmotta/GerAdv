@@ -24,12 +24,12 @@ public partial class PenhoraWhere(IFPenhoraFactory penhoraFactory) : IPenhoraWhe
             Nome = dbRec.FNome ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             PenhoraStatus = dbRec.FPenhoraStatus,
-            GUID = dbRec.FGUID ?? string.Empty,
             Master = dbRec.FMaster,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataPenhora, out DateTime XDataPenhora))
+        if (DateTime.TryParse(dbRec.FDataPenhora.ToString(), out DateTime XDataPenhora))
         {
-            penhora.DataPenhora = dbRec.FDataPenhora;
+            penhora.DataPenhora = XDataPenhora.ToString("dd/MM/yyyy");
             penhora.DataPenhora_date = XDataPenhora;
         }
 

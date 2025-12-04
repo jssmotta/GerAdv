@@ -117,7 +117,7 @@ public class TipoEMailWriterTests
         var operadorId = 456;
         _mockTipoEMailFactory.Setup(x => x.DeleteAsync(operadorId, tipoemailResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipoemailWriter.Delete(tipoemailResponse, operadorId, _mockConnection.Object);
+        await _tipoemailWriter.DeleteAsync(tipoemailResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoEMailFactory.Verify(x => x.DeleteAsync(operadorId, tipoemailResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -133,7 +133,7 @@ public class TipoEMailWriterTests
         var operadorId = 111;
         _mockTipoEMailFactory.Setup(x => x.DeleteAsync(operadorId, tipoemailResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipoemailWriter.Delete(tipoemailResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipoemailWriter.DeleteAsync(tipoemailResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -150,7 +150,7 @@ public class TipoEMailWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoEMailFactory.Setup(x => x.DeleteAsync(operadorId, tipoemailResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoemailWriter.Delete(tipoemailResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoemailWriter.DeleteAsync(tipoemailResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

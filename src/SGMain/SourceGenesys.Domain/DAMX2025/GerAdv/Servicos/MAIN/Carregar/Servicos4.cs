@@ -54,8 +54,24 @@ public partial class DBServicos
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBServicosDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBServicosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBServicosDicInfo.Basico)))
-                m_FBasico = Convert.ToBoolean(getValue(DBServicosDicInfo.Basico));
+                FBasico = Convert.ToBoolean(getValue(DBServicosDicInfo.Basico));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBServicos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBServicosDicInfo.Cobrar)))
-                m_FCobrar = Convert.ToBoolean(getValue(DBServicosDicInfo.Cobrar));
+                FCobrar = Convert.ToBoolean(getValue(DBServicosDicInfo.Cobrar));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBServicos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBServicosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBServicosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBServicosDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBServicos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBServicosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBServicosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBServicosDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBServicos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBServicosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBServicosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBServicosDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBServicosDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBServicosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBServicos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

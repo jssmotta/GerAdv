@@ -54,6 +54,22 @@ public partial class DBPenhoraStatus
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBPenhoraStatusDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBPenhoraStatusDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPenhoraStatusDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBPenhoraStatusDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBPenhoraStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraStatusDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBPenhoraStatusDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBPenhoraStatusDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBPenhoraStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraStatusDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBPenhoraStatusDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBPenhoraStatusDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBPenhoraStatus
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraStatusDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBPenhoraStatusDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBPenhoraStatusDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBPenhoraStatusDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBPenhoraStatusDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBPenhoraStatus
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

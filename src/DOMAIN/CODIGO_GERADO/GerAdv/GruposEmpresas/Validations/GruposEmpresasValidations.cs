@@ -30,8 +30,6 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
             throw new SGValidationException($"Descricao deve ter no máximo {DBGruposEmpresasDicInfo.GrpDescricao.FTamanho} caracteres.");
         if (reg.Icone != null && reg.Icone.Length > DBGruposEmpresasDicInfo.GrpIcone.FTamanho)
             throw new SGValidationException($"Icone deve ter no máximo {DBGruposEmpresasDicInfo.GrpIcone.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBGruposEmpresasDicInfo.GrpGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBGruposEmpresasDicInfo.GrpGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,6 +39,8 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -49,7 +49,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         // Oponentes
         if (!reg.Oponente.IsEmptyIDNumber())
         {
-            var regOponentes = await oponentesReader.Read(reg.Oponente, oCnn);
+            var regOponentes = await oponentesReader.ReadAsync(reg.Oponente, oCnn);
             if (regOponentes == null || regOponentes.Id != reg.Oponente)
             {
                 throw new SGValidationException($"Oponentes não encontrado ({regOponentes?.Id}).");
@@ -59,7 +59,7 @@ public class GruposEmpresasValidation : IGruposEmpresasValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

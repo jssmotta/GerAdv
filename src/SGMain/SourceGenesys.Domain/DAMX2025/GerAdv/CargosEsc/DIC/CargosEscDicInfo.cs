@@ -13,7 +13,7 @@ public static partial class DBCargosEscDicInfo
     public const string Percentual = "cgePercentual"; // LOCALIZACAO 170523
     public const string Nome = "cgeNome"; // LOCALIZACAO 170523
     public const string Classificacao = "cgeClassificacao"; // LOCALIZACAO 170523
-    public const string GUID = "cgeGUID"; // LOCALIZACAO 170523
+    public const string Guid = "cgeGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "cgeQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "cgeDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "cgeQuemAtu"; // LOCALIZACAO 170523
@@ -35,43 +35,15 @@ public static partial class DBCargosEscDicInfo
 
     public const string PTabelaNome = "CargosEsc";
 #region PropriedadesDaTabela
-    public static DBInfoSystem CgePercentual => new(0, PTabelaNome, CampoCodigo, Percentual, "Percentual", "Percentual", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "cge"
-    };
-    public static DBInfoSystem CgeNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "cge"
-    };
-    public static DBInfoSystem CgeClassificacao => new(0, PTabelaNome, CampoCodigo, Classificacao, "Classificacao", "Classificacao", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "cge"
-    };
-    public static DBInfoSystem CgeGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "cge"
-    };
-    public static DBInfoSystem CgeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cge"
-    }; // DBI 11 
-    public static DBInfoSystem CgeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "cge"
-    };
-    public static DBInfoSystem CgeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cge"
-    }; // DBI 11 
-    public static DBInfoSystem CgeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "cge"
-    };
-    public static DBInfoSystem CgeVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "cge"
-    };
+    public static DBInfoSystem CgePercentual => new(0, PTabelaNome, CampoCodigo, Percentual, Percentual, Percentual, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "cge");
+    public static DBInfoSystem CgeNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "cge");
+    public static DBInfoSystem CgeClassificacao => new(0, PTabelaNome, CampoCodigo, Classificacao, Classificacao, Classificacao, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "cge");
+    public static DBInfoSystem CgeGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "cge");
+    public static DBInfoSystem CgeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cge"); // DBI 11 
+    public static DBInfoSystem CgeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "cge");
+    public static DBInfoSystem CgeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cge"); // DBI 11 
+    public static DBInfoSystem CgeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "cge");
+    public static DBInfoSystem CgeVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "cge", isRequired: true);
 
 #endregion
     [Serializable]

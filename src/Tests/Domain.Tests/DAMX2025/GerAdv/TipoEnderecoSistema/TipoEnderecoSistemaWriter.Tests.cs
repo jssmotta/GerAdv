@@ -74,8 +74,8 @@ public class TipoEnderecoSistemaWriterTests
         var result = await _tipoenderecosistemaWriter.WriteAsync(tipoenderecosistema, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoEnderecoSistema.Object);
+        _mockFTipoEnderecoSistema.VerifySet(x => x.FGuid = tipoenderecosistema.Guid, Times.Once);
         _mockFTipoEnderecoSistema.VerifySet(x => x.FNome = tipoenderecosistema.Nome, Times.Once);
-        _mockFTipoEnderecoSistema.VerifySet(x => x.FGUID = tipoenderecosistema.GUID, Times.Once);
         _mockFTipoEnderecoSistema.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class TipoEnderecoSistemaWriterTests
         var operadorId = 456;
         _mockTipoEnderecoSistemaFactory.Setup(x => x.DeleteAsync(operadorId, tipoenderecosistemaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipoenderecosistemaWriter.Delete(tipoenderecosistemaResponse, operadorId, _mockConnection.Object);
+        await _tipoenderecosistemaWriter.DeleteAsync(tipoenderecosistemaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoEnderecoSistemaFactory.Verify(x => x.DeleteAsync(operadorId, tipoenderecosistemaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class TipoEnderecoSistemaWriterTests
         var operadorId = 111;
         _mockTipoEnderecoSistemaFactory.Setup(x => x.DeleteAsync(operadorId, tipoenderecosistemaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipoenderecosistemaWriter.Delete(tipoenderecosistemaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipoenderecosistemaWriter.DeleteAsync(tipoenderecosistemaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class TipoEnderecoSistemaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoEnderecoSistemaFactory.Setup(x => x.DeleteAsync(operadorId, tipoenderecosistemaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoenderecosistemaWriter.Delete(tipoenderecosistemaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoenderecosistemaWriter.DeleteAsync(tipoenderecosistemaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class TipoEnderecoSistemaWriterTests
         return new Models.TipoEnderecoSistema
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

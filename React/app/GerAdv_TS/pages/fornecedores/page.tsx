@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { FornecedoresGridAdapter } from '@/app/GerAdv_TS/Fornecedores/Adapter/FornecedoresGridAdapter';
 import FornecedoresGridContainer from '@/app/GerAdv_TS/Fornecedores/Components/FornecedoresGridContainer';
+
 const FornecedoresPage: React.FC = () => {
-  const FornecedoresGrid = new FornecedoresGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Fornecedores' />
-    <FornecedoresGridContainer grid={FornecedoresGrid} />
-  </PageLayout>
-);
+    const FornecedoresGrid = new FornecedoresGridAdapter();
+
+    return (
+        <PageLayout>            
+            <FornecedoresGridContainer grid={FornecedoresGrid} />
+        </PageLayout>
+    );
 };
+
 export default FornecedoresPage;

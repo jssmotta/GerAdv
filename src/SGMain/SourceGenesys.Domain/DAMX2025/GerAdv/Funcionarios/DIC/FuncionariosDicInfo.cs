@@ -10,7 +10,6 @@ public static partial class DBFuncionariosDicInfo
     public const string CampoCodigo = "funCodigo";
     public const string CampoNome = "funNome";
     public const string TablePrefix = "fun";
-    public const string GUID = "funGUID"; // LOCALIZACAO 170523
     public const string EMailPro = "funEMailPro"; // LOCALIZACAO 170523
     public const string Cargo = "funCargo"; // LOCALIZACAO 170523
     public const string Nome = "funNome"; // LOCALIZACAO 170523
@@ -44,6 +43,7 @@ public static partial class DBFuncionariosDicInfo
     public const string Etiqueta = "funEtiqueta"; // LOCALIZACAO 170523
     public const string Ani = "funAni"; // LOCALIZACAO 170523
     public const string Bold = "funBold"; // LOCALIZACAO 170523
+    public const string Guid = "funGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "funQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "funDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "funQuemAtu"; // LOCALIZACAO 170523
@@ -95,169 +95,45 @@ public static partial class DBFuncionariosDicInfo
 
     public const string PTabelaNome = "Funcionarios";
 #region PropriedadesDaTabela
-    public static DBInfoSystem FunGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunEMailPro => new(0, PTabelaNome, CampoCodigo, EMailPro, 255, "EMailPro", "EMailPro", ETipoDadosSysteminfo.SysteminfoTextEmailPro, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunCargo => new(0, PTabelaNome, CampoCodigo, Cargo, "Cargo", "Cargo", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false)
-    {
-        Prefixo = "fun"
-    }; // DBI 11 
-    public static DBInfoSystem FunNome => new(0, PTabelaNome, CampoCodigo, Nome, 60, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunFuncao => new(0, PTabelaNome, CampoCodigo, Funcao, "Função", "Função", ETipoDadosSysteminfo.SysteminfoForeingkey, DBFuncaoDicInfo.CampoCodigo, DBFuncaoDicInfo.TabelaNome, new DBFuncaoODicInfo(), false)
-    {
-        Prefixo = "fun"
-    }; // DBI 11 
-    public static DBInfoSystem FunSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunRegistro => new(0, PTabelaNome, CampoCodigo, Registro, 20, "Registro", "Registro", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "fun"
-    }; // DBI 11 
-    public static DBInfoSystem FunCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunContato => new(0, PTabelaNome, CampoCodigo, Contato, DevourerOne.PMaxSizeCampoMemo, "Contato", "Contato", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunEMail => new(0, PTabelaNome, CampoCodigo, EMail, 60, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunPeriodo_Ini => new(0, PTabelaNome, CampoCodigo, Periodo_Ini, "Periodo_Ini", "Periodo_Ini", ETipoDadosSysteminfo.SysteminfoDataInicio)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunPeriodo_Fim => new(0, PTabelaNome, CampoCodigo, Periodo_Fim, "Periodo_Fim", "Periodo_Fim", ETipoDadosSysteminfo.SysteminfoDataTermino)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunCTPSNumero => new(0, PTabelaNome, CampoCodigo, CTPSNumero, 15, "CTPSNumero", "CTPSNumero", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunCTPSSerie => new(0, PTabelaNome, CampoCodigo, CTPSSerie, 10, "CTPSSerie", "CTPSSerie", ETipoDadosSysteminfo.SysteminfoTextCtpsserie, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunPIS => new(0, PTabelaNome, CampoCodigo, PIS, 20, "PIS", "PIS", ETipoDadosSysteminfo.SysteminfoTextPis, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunSalario => new(0, PTabelaNome, CampoCodigo, Salario, "Salario", "Salario", ETipoDadosSysteminfo.SysteminfoDoubleSalario)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunCTPSDtEmissao => new(0, PTabelaNome, CampoCodigo, CTPSDtEmissao, "CTPSDtEmissao", "CTPSDtEmissao", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", ETipoDadosSysteminfo.SysteminfoDataNascimento)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunLiberaAgenda => new(0, PTabelaNome, CampoCodigo, LiberaAgenda, "LiberaAgenda", "LiberaAgenda", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunPasta => new(0, PTabelaNome, CampoCodigo, Pasta, 200, "Pasta", "Pasta", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "fun"
-    }; // DBI 11 
-    public static DBInfoSystem FunDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "fun"
-    }; // DBI 11 
-    public static DBInfoSystem FunDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "fun"
-    };
-    public static DBInfoSystem FunVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "fun"
-    };
+    public static DBInfoSystem FunEMailPro => new(0, PTabelaNome, CampoCodigo, EMailPro, 255, EMailPro, EMailPro, EDataTypeSystemInfo.SystemInfoTextEmailPro, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunCargo => new(0, PTabelaNome, CampoCodigo, Cargo, Cargo, Cargo, EDataTypeSystemInfo.SystemInfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false, prefixo: "fun"); // DBI 11 
+    public static DBInfoSystem FunNome => new(0, PTabelaNome, CampoCodigo, Nome, 60, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "fun");
+    public static DBInfoSystem FunFuncao => new(0, PTabelaNome, CampoCodigo, Funcao, Funcao, Funcao, EDataTypeSystemInfo.SystemInfoForeingkey, DBFuncaoDicInfo.CampoCodigo, DBFuncaoDicInfo.TabelaNome, new DBFuncaoODicInfo(), false, prefixo: "fun"); // DBI 11 
+    public static DBInfoSystem FunSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "fun", isRequired: true);
+    public static DBInfoSystem FunRegistro => new(0, PTabelaNome, CampoCodigo, Registro, 20, Registro, Registro, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunRG => new(0, PTabelaNome, CampoCodigo, RG, 30, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "fun", isRequired: true);
+    public static DBInfoSystem FunObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "fun"); // DBI 11 
+    public static DBInfoSystem FunCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunContato => new(0, PTabelaNome, CampoCodigo, Contato, DevourerOne.PMaxSizeCampoMemo, Contato, Contato, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunEMail => new(0, PTabelaNome, CampoCodigo, EMail, 60, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunPeriodo_Ini => new(0, PTabelaNome, CampoCodigo, Periodo_Ini, Periodo_Ini, Periodo_Ini, EDataTypeSystemInfo.SystemInfoDateStart, prefixo: "fun");
+    public static DBInfoSystem FunPeriodo_Fim => new(0, PTabelaNome, CampoCodigo, Periodo_Fim, Periodo_Fim, Periodo_Fim, EDataTypeSystemInfo.SystemInfoDateEnds, prefixo: "fun");
+    public static DBInfoSystem FunCTPSNumero => new(0, PTabelaNome, CampoCodigo, CTPSNumero, 15, CTPSNumero, CTPSNumero, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunCTPSSerie => new(0, PTabelaNome, CampoCodigo, CTPSSerie, 10, CTPSSerie, CTPSSerie, EDataTypeSystemInfo.SystemInfoTextCtpsSerie, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunPIS => new(0, PTabelaNome, CampoCodigo, PIS, 20, PIS, PIS, EDataTypeSystemInfo.SystemInfoTextPis, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunSalario => new(0, PTabelaNome, CampoCodigo, Salario, Salario, Salario, EDataTypeSystemInfo.SystemInfoNumberSalary, prefixo: "fun");
+    public static DBInfoSystem FunCTPSDtEmissao => new(0, PTabelaNome, CampoCodigo, CTPSDtEmissao, CTPSDtEmissao, CTPSDtEmissao, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "fun");
+    public static DBInfoSystem FunDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, DtNasc, DtNasc, EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "fun");
+    public static DBInfoSystem FunData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "fun");
+    public static DBInfoSystem FunLiberaAgenda => new(0, PTabelaNome, CampoCodigo, LiberaAgenda, LiberaAgenda, LiberaAgenda, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "fun", isRequired: true);
+    public static DBInfoSystem FunPasta => new(0, PTabelaNome, CampoCodigo, Pasta, 200, Pasta, Pasta, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "fun", isRequired: true);
+    public static DBInfoSystem FunAni => new(0, PTabelaNome, CampoCodigo, Ani, Ani, Ani, EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "fun", isRequired: true);
+    public static DBInfoSystem FunBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "fun", isRequired: true);
+    public static DBInfoSystem FunGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "fun");
+    public static DBInfoSystem FunQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 
+    public static DBInfoSystem FunDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "fun");
+    public static DBInfoSystem FunQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "fun"); // DBI 11 
+    public static DBInfoSystem FunDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "fun");
+    public static DBInfoSystem FunVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "fun", isRequired: true);
 
 #endregion
     [Serializable]

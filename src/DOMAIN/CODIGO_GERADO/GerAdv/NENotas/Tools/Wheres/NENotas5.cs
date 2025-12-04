@@ -29,9 +29,14 @@ public partial class NENotasWhere(IFNENotasFactory nenotasFactory) : INENotasWhe
             Revisada = dbRec.FRevisada,
             Processo = dbRec.FProcesso,
             PalavraChave = dbRec.FPalavraChave,
-            Data = dbRec.FData ?? string.Empty,
             NotaPublicada = dbRec.FNotaPublicada ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            nenotas.Data = XData.ToString("dd/MM/yyyy");
+            nenotas.Data_date = XData;
+        }
+
         return nenotas;
     }
 }

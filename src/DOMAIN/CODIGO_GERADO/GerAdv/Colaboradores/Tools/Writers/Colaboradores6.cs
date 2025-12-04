@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IColaboradoresWriter
 {
     Task<FColaboradores> WriteAsync(Models.Colaboradores colaboradores, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : IColaboradoresWriter
 {
     private readonly IFColaboradoresFactory _colaboradoresFactory = colaboradoresFactory ?? throw new ArgumentNullException(nameof(colaboradoresFactory));
-    public virtual async Task Delete(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ColaboradoresResponse colaboradores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _colaboradoresFactory.DeleteAsync(operadorId, colaboradores.Id, oCnn);
     }
@@ -29,8 +29,11 @@ public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : 
         dbRec.FNome = colaboradores.Nome;
         dbRec.FCPF = colaboradores.CPF.ClearInputCpf();
         dbRec.FRG = colaboradores.RG;
-        if (colaboradores.DtNasc != null)
-            dbRec.FDtNasc = colaboradores.DtNasc.ToString();
+        if (colaboradores.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(colaboradores.DtNasc));
+        }
+
         dbRec.FIdade = colaboradores.Idade;
         dbRec.FEndereco = colaboradores.Endereco;
         dbRec.FBairro = colaboradores.Bairro;
@@ -41,6 +44,9 @@ public class ColaboradoresWriter(IFColaboradoresFactory colaboradoresFactory) : 
         dbRec.FEMail = colaboradores.EMail;
         dbRec.FCNH = colaboradores.CNH;
         dbRec.FClass = colaboradores.Class;
+        dbRec.FEtiqueta = colaboradores.Etiqueta;
+        dbRec.FAni = colaboradores.Ani;
+        dbRec.FBold = colaboradores.Bold;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

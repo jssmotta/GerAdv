@@ -4,12 +4,14 @@
 'use client';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import useSWR from 'swr';
-import { FilterParceriaProc } from '../Filters/ParceriaProc'
+import { FilterParceriaProc, FilterParceriaProcDefaults } from '../Filters/ParceriaProc'
+import { IFilterParceriaProcWithVoiceRequest } from '../Interfaces/interface.CommandSpeaker';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
 import { ParceriaProc } from '../../Models/ParceriaProc';
 import { IParceriaProc } from '../Interfaces/interface.ParceriaProc';
 import { decodeBase64Token, fetcher } from '@/app/tools/Fetcher';
 import { INotificationService, INotifySystemEntity, NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
-import { CRUD_CONSTANTS, decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
+import { CRUD_CONSTANTS, decodeDataFromStorage, encodeDataForStorage, uniqueKeyDay } from '@/app/tools/crud';
 
 
 export class ParceriaProcApiError extends Error {
@@ -110,7 +112,7 @@ export class ParceriaProcApi {
 
    
         public async getAll(max: number = CRUD_CONSTANTS.DEFAULT_MAX_RECORDS): Promise<AxiosResponse> {
-        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc_last_getAll_${max}`);
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${uniqueKeyDay()}_lst_getAll_${max}`);
         try {
             const response = await axios.get(`${this.baseUrl}/GetAll?max=${max}`, this.getHeaders());
             
@@ -145,7 +147,7 @@ export class ParceriaProcApi {
     }
     
         public async getById(id: number): Promise<AxiosResponse> {
-        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc_last_getById_${id}`);
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${uniqueKeyDay()}_lst_getById_${id}`);
         try {
             const response = await axios.get(`${this.baseUrl}/GetById/${id}`, this.getHeaders());
             
@@ -178,25 +180,32 @@ export class ParceriaProcApi {
             this.handleApiError(error, `Erro ao buscar Parceria Proc com ID ${id}`);
         }
     }
- public async filterPreload(max: number, filtro: FilterParceriaProc): Promise<AxiosResponse> {
-                        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${max}_last_filter_data_${JSON.stringify(filtro)}`);
-                        const offlineData = localStorage.getItem(storageKey);        
-                        const decoded = offlineData ? decodeDataFromStorage(offlineData) : [];
+ public async filterPreload(max: number, filtro?: FilterParceriaProc): Promise<AxiosResponse> {
 
-                        return {
-                            data: decoded,
-                            status: 200,
-                            statusText: 'OK (offline)',
-                            headers: {},
-                            config: {},
-                        } as AxiosResponse;        
-                    }
+        const _filtro = filtro || new FilterParceriaProcDefaults();
+        const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`);
+        const offlineData = localStorage.getItem(storageKey);        
+        const decoded = offlineData ? decodeDataFromStorage(offlineData) : [];
+
+        return {
+            data: decoded,
+            status: 200,
+            statusText: 'OK (offline)',
+            headers: {},
+            config: {},
+        } as AxiosResponse;        
+    }
 
 
-            public async filter(max: number, filtro: FilterParceriaProc): Promise<AxiosResponse> {
-                const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${max}_last_filter_data_${JSON.stringify(filtro)}`);
+
+            public async filter(max: number, filtro?: FilterParceriaProc): Promise<AxiosResponse> {
+
+                const _max = max || CRUD_CONSTANTS.DEFAULT_MAX_RECORDS;
+                const _filtro = filtro || new FilterParceriaProcDefaults();
+ 
+                const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${max}-${uniqueKeyDay()}_lst_filter_data_${JSON.stringify(_filtro)}`);
                 try {
-                    const response = await axios.post(`${this.baseUrl}/Filter?max=${max}`, filtro, this.getHeaders());
+                    const response = await axios.post(`${this.baseUrl}/Filter?max=${_max}`, _filtro, this.getHeaders());
                     
                 Promise.resolve().then(() => {
                     try {
@@ -226,6 +235,49 @@ export class ParceriaProcApi {
                     }
 
                     this.handleApiError(error, 'Erro ao filtrar ParceriaProc');
+                }
+            }
+
+
+            public async filterVoice(filtro?: FilterParceriaProc, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+
+                const _filtro = filtro || new FilterParceriaProcDefaults();
+
+                // Create request object according to new backend structure
+                const request: IFilterParceriaProcWithVoiceRequest = {filter: _filtro, voiceCommand: voiceCommand };
+
+                const storageKey = btoa(`${process.env.NEXT_PUBLIC_APP_ID}-${this.uri}-ParceriaProc-${uniqueKeyDay()}-fltVoice-last_filter_data_${JSON.stringify(request)}`);
+                try {
+                    const response = await axios.post(`${this.baseUrl}/FilterVoice`, request, this.getHeaders());
+                    
+                Promise.resolve().then(() => {
+                    try {
+                        const encoded = encodeDataForStorage(response.data);
+                        localStorage.setItem(storageKey, encoded);
+                    } catch (error) {   
+                        if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+                            console.log('Erro ao salvar dados filtrados no localStorage');
+                    }
+                });
+        
+                    return response;
+                } catch (error: any) {
+                    const offlineData = localStorage.getItem(storageKey);
+                    if (offlineData) {
+                        const decoded = decodeDataFromStorage(offlineData);
+                        this.notificationService.notify(
+                            this.createNotificationOffLiveEntity(0, NotifySystemActions.INFO)
+                        );
+                        return {
+                            data: decoded,
+                            status: 200,
+                            statusText: 'OK (offline)',
+                            headers: {},
+                            config: {},
+                        } as AxiosResponse;
+                    }
+
+                    this.handleApiError(error, 'Erro ao gerar voice filter ParceriaProc');
                 }
             }
 
@@ -310,9 +362,14 @@ export class ParceriaProcApi {
 
 
 
-    public useFilter(filtro: FilterParceriaProc) {
-       const url = `${this.baseUrl}/Filter`;
-       const key = `${url}::${this.authorization}::${JSON.stringify(filtro)}`;
+
+    public useFilter(filtro: FilterParceriaProc, voiceCommand?: ICommandSpeakerRequest) {
+    const request: IFilterParceriaProcWithVoiceRequest = {filter: filtro || new FilterParceriaProcDefaults(),
+      voiceCommand: voiceCommand
+    };
+    
+    const url = `${this.baseUrl}/Filter/${this.uri}`;
+    const key = `${url}::${this.authorization}::${JSON.stringify(request)}`;
     
         return useSWR<ParceriaProc[]>(key, fetcher, {
           revalidateOnFocus: false,

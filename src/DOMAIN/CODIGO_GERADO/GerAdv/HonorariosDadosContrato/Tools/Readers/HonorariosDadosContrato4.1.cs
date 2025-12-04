@@ -27,6 +27,11 @@ public partial class HonorariosDadosContratoReader
 [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBHonorariosDadosContrato.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBHonorariosDadosContratoDicInfo.PTabelaNome}].[{DBHonorariosDadosContratoDicInfo.Cliente}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Cidade}]
+LEFT JOIN {DBUFDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}]=[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.UF}]
+LEFT JOIN {DBPaisesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPaisesDicInfo.PTabelaNome}].[{DBPaisesDicInfo.CampoCodigo}]=[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}]
+LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
+LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
  
                    {cWhere}
                    {orderQuery}
@@ -34,15 +39,54 @@ public partial class HonorariosDadosContratoReader
         return query;
     }
 
-    public async Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn)
+    public async Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
+    {
+        if (oCnn is null)
+        {
+            return null;
+        }
+
+        string query = $@"{ConfiguracoesDBT.SQLNoCount}
+SELECT TOP (1) 
+	FORMAT(hdcDtCad, 'dd/MM/yyyy HH:mm:ss') as DtCad,
+    FORMAT(hdcDtAtu, 'dd/MM/yyyy HH:mm:ss') as DtAtu,
+	c.operNome as QuemCad,
+	u.operNome as QuemAtu,
+    hdcVisto as Visto
+FROM {oCnn.UseDbo}.HonorariosDadosContrato dbq WITH (INDEX = idx_HonorariosDadosContrato_AuditorDtAtu)
+LEFT JOIN Operador c on c.operCodigo = dbq.hdcQuemCad
+LEFT JOIN Operador u on u.operCodigo = dbq.hdcQuemAtu
+WHERE [hdcCodigo] = @id
+OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
+        cmd.Parameters.AddWithValue("@id", id);
+        var dr = await cmd.ExecuteReaderAsync();
+        if (await dr.ReadAsync())
+        {
+            var auditor = new AuditorResponse
+            {
+                TableName = DBHonorariosDadosContrato.PTabelaNome,
+                DataHoraCadastro = dr[0] == DBNull.Value ? string.Empty : dr.GetString(0),
+                DataHoraAlteracao = dr[1] == DBNull.Value ? string.Empty : dr.GetString(1),
+                NomeQuemCadastrou = dr[2] == DBNull.Value ? string.Empty : dr.GetString(2),
+                NomeQuemAlterou = dr[3] == DBNull.Value ? string.Empty : dr.GetString(3),
+                Checked = dr[4] == DBNull.Value ? false : dr.GetBoolean(4)
+            };
+            return auditor;
+        }
+
+        return null;
+    }
+
+    public async Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
         string query = $@"{ConfiguracoesDBT.SQLNoCount}
 SELECT TOP (1) 
     FORMAT(hdcDtAtu, 'yyyy-MM-dd-HH-mm-ss')
-FROM {oCnn.UseDbo}.HonorariosDadosContrato WITH (NOLOCK, INDEX = idx_HonorariosDadosContrato_AuditorDtAtu)
-WHERE hdcCodigo = @id
+FROM {oCnn.UseDbo}.HonorariosDadosContrato WITH (INDEX = idx_HonorariosDadosContrato_AuditorDtAtu)
+WHERE [hdcCodigo] = @id
 OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         using var cmd = new SqlCommand(query, oCnn.InnerConnection);
         cmd.Parameters.AddWithValue("@id", id);
@@ -50,42 +94,37 @@ OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         return dataFormatada;
     }
 
-    public async Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
+    public async Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
-        string query = $@"{ConfiguracoesDBT.SQLNoCount}
-SELECT TOP ({max}) 
-    FORMAT(
-        CASE 
-            WHEN hdcDtAtu IS NULL THEN hdcDtCad 
-            WHEN hdcDtAtu > hdcDtCad THEN hdcDtAtu 
-            ELSE hdcDtCad 
-        END, 'yyyy-MM-dd-HH-mm-ss') AS data
-FROM {oCnn.UseDbo}.HonorariosDadosContrato
-        {(cWhere.Trim().Equals("") ? "" : $" WHERE {cWhere}")}
-ORDER BY 
-    CASE 
-        WHEN hdcDtAtu IS NULL THEN hdcDtCad 
-        WHEN hdcDtAtu > hdcDtCad THEN hdcDtAtu 
-        ELSE hdcDtCad 
-    END DESC;";
+        var query = BuildSqlQuery(@" FORMAT(
+                CASE 
+                    WHEN hdcDtAtu IS NULL THEN hdcDtCad 
+                    WHEN hdcDtAtu > hdcDtCad THEN hdcDtAtu 
+                    ELSE hdcDtCad 
+                END, 'yyyy-MM-dd-HH-mm-ss') AS data", cWhere, @"CASE 
+                WHEN hdcDtAtu IS NULL THEN hdcDtCad 
+                WHEN hdcDtAtu > hdcDtCad THEN hdcDtAtu 
+                ELSE hdcDtCad 
+            END DESC", max, oCnn);
         using var cmd = new SqlCommand(query, oCnn.InnerConnection);
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
         var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
         return dataFormatada;

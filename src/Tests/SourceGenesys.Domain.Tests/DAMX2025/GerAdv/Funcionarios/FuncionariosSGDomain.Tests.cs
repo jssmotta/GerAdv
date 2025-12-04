@@ -35,7 +35,6 @@ public class DBFuncionariosTests : IDisposable
         dt.Columns.Add("funQuemAtu", typeof(int));
         dt.Columns.Add("funDtAtu", typeof(DateTime));
         dt.Columns.Add("funVisto", typeof(bool));
-        dt.Columns.Add("funGUID", typeof(string));
         dt.Columns.Add("funEMailPro", typeof(string));
         dt.Columns.Add("funCargo", typeof(int));
         dt.Columns.Add("funNome", typeof(string));
@@ -62,11 +61,28 @@ public class DBFuncionariosTests : IDisposable
         dt.Columns.Add("funSalario", typeof(decimal));
         dt.Columns.Add("funCTPSDtEmissao", typeof(DateTime));
         dt.Columns.Add("funDtNasc", typeof(DateTime));
-        dt.Columns.Add("funData", typeof(string));
+        dt.Columns.Add("funData", typeof(DateTime));
         dt.Columns.Add("funLiberaAgenda", typeof(string));
         dt.Columns.Add("funPasta", typeof(string));
         dt.Columns.Add("funClass", typeof(string));
+        dt.Columns.Add("funEtiqueta", typeof(string));
+        dt.Columns.Add("funAni", typeof(string));
+        dt.Columns.Add("funBold", typeof(string));
+        dt.Columns.Add("funGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["funCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBFuncionarios(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -87,7 +103,7 @@ public class DBFuncionariosTests : IDisposable
     {
         var instance = new DBFuncionarios();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Funcionarios", instance.ITabelaName());
+        Assert.Equal("Funcionarios", instance.ITableName());
         Assert.Equal("fun", instance.Prefixo);
     }
 
@@ -105,29 +121,16 @@ public class DBFuncionariosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["funCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBFuncionarios(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Funcionarios", cadastro.ITabelaName());
-        Assert.Equal("funCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("funNome", cadastro.ICampoNome());
-        Assert.Equal("fun", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Funcionarios", cadastro.ITableName());
+        Assert.Equal("funCodigo", cadastro.IFieldId());
+        Assert.Equal("funNome", cadastro.IFieldNameDescription());
+        Assert.Equal("fun", cadastro.IPrefix());
     }
 
 #endregion
@@ -187,30 +190,12 @@ public class DBFuncionariosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 150 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 150);
-    }
-
     [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
@@ -571,6 +556,23 @@ public class DBFuncionariosTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBFuncionarios();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void LiberaAgenda_ShouldAcceptBooleanValues(bool value)
@@ -620,6 +622,24 @@ public class DBFuncionariosTests : IDisposable
         var longString = new string ('A', 1 + 10);
         _instance.FClass = longString;
         Assert.True(_instance.FClass.Length <= 1);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 150 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 150);
     }
 
     public virtual void Dispose()

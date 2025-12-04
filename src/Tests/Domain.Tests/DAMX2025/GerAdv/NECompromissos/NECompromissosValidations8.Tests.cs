@@ -67,7 +67,7 @@ public class NECompromissosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockNECompromissosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNECompromissos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NECompromissoss service mock
-        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = id }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoCompromissoResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -75,7 +75,7 @@ public class NECompromissosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockNECompromissosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNECompromissos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NECompromissoss service mock
-        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = 0 }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoCompromissoResponse { Id = 0 }));
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public class NECompromissosValidationTests : IDisposable
         // Arrange
         var necompromissos = CreateValidNECompromissos();
         necompromissos.TipoCompromisso = 999;
-        _mockTipoCompromissoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoCompromissoResponse>(null));
+        _mockTipoCompromissoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoCompromissoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(necompromissos, _mockNECompromissosService.Object, _mockTipoCompromissoReader.Object, _validUri, _mockConnection.Object));
@@ -128,7 +128,7 @@ public class NECompromissosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockTipoCompromissoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockTipoCompromissoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(necompromissos, _mockNECompromissosService.Object, _mockTipoCompromissoReader.Object, _validUri, _mockConnection.Object));
@@ -145,7 +145,7 @@ public class NECompromissosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockTipoCompromissoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockTipoCompromissoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(necompromissos, _mockNECompromissosService.Object, _mockTipoCompromissoReader.Object, _validUri, _mockConnection.Object);
@@ -165,7 +165,7 @@ public class NECompromissosValidationTests : IDisposable
         var result = await _validation.ValidateReg(necompromissos, _mockNECompromissosService.Object, _mockTipoCompromissoReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockTipoCompromissoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockTipoCompromissoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

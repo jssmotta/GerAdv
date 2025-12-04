@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import TerceirosInc from '../Crud/Inc/Terceiros';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface TerceirosIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const TerceirosIncContainer: React.FC<TerceirosIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <TerceirosInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <TerceirosInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default TerceirosIncContainer;

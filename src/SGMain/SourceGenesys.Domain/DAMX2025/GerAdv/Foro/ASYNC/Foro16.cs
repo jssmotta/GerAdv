@@ -31,7 +31,7 @@ public partial class DBForo
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,35 +134,39 @@ public partial class DBForo
 
 #if (!NOTSTORED_Foro)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFEMail || pFldFNome || pFldFUnico || pFldFCidade || pFldFSite || pFldFEndereco || pFldFBairro || pFldFFone || pFldFFax || pFldFCEP || pFldFOBS || pFldFUnicoConfirmado || pFldFWeb;
+    private bool HasAnyFieldChanged() => pFldFEMail || pFldFNome || pFldFUnico || pFldFCidade || pFldFSite || pFldFEndereco || pFldFBairro || pFldFFone || pFldFFax || pFldFCEP || pFldFOBS || pFldFUnicoConfirmado || pFldFWeb || pFldFEtiqueta || pFldFBold;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFEMail)
-            updateTool.Fields(DBForoDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFNome)
-            updateTool.Fields(DBForoDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFUnico || updateTool.Insert)
-            updateTool.Fields(DBForoDicInfo.Unico, m_FUnico, ETiposCampos.FBoolean);
+            updateTool.Fields(DBForoDicInfo.Unico, FUnico, EGenericTypeFields.FBoolean);
         if (pFldFCidade)
-            updateTool.Fields(DBForoDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBForoDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFSite)
-            updateTool.Fields(DBForoDicInfo.Site, m_FSite, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Site, FSite, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            updateTool.Fields(DBForoDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            updateTool.Fields(DBForoDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBForoDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            updateTool.Fields(DBForoDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFCEP)
-            updateTool.Fields(DBForoDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFOBS)
-            updateTool.Fields(DBForoDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFUnicoConfirmado || updateTool.Insert)
-            updateTool.Fields(DBForoDicInfo.UnicoConfirmado, m_FUnicoConfirmado, ETiposCampos.FBoolean);
+            updateTool.Fields(DBForoDicInfo.UnicoConfirmado, FUnicoConfirmado, EGenericTypeFields.FBoolean);
         if (pFldFWeb)
-            updateTool.Fields(DBForoDicInfo.Web, m_FWeb, ETiposCampos.FString);
+            updateTool.Fields(DBForoDicInfo.Web, FWeb, EGenericTypeFields.FString);
+        if (pFldFEtiqueta || updateTool.Insert)
+            updateTool.Fields(DBForoDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBForoDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
     }
 
 #endif
@@ -174,20 +178,20 @@ public partial class DBForo
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBForoDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBForoDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBForoDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBForoDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBForoDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBForoDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBForoDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBForoDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBForoDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBForoDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -4,10 +4,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IGUTPeriodicidadeStatusService
 {
+    Task<Filters.FilterGUTPeriodicidadeStatus> FilterVoice([FromBody] Filters.FilterGUTPeriodicidadeStatus filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidadeStatus filter, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeStatusResponse?> AddAndUpdate(Models.GUTPeriodicidadeStatus? regGUTPeriodicidadeStatus, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeStatusResponse?> Validation(Models.GUTPeriodicidadeStatus? regGUTPeriodicidadeStatus, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeStatusResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<GUTPeriodicidadeStatusResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

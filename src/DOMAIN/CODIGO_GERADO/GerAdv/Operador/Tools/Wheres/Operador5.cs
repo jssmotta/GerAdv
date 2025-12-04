@@ -40,7 +40,6 @@ public partial class OperadorWhere(IFOperadorFactory operadorFactory) : IOperado
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -48,28 +47,29 @@ public partial class OperadorWhere(IFOperadorFactory operadorFactory) : IOperado
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
+        if (DateTime.TryParse(dbRec.FUltimoLogoff.ToString(), out DateTime XUltimoLogoff))
         {
-            operador.UltimoLogoff = dbRec.FUltimoLogoff;
+            operador.UltimoLogoff = XUltimoLogoff.ToString("dd/MM/yyyy");
             operador.UltimoLogoff_date = XUltimoLogoff;
         }
 
-        if (DateTime.TryParse(dbRec.FDataLimiteReset, out DateTime XDataLimiteReset))
+        if (DateTime.TryParse(dbRec.FDataLimiteReset.ToString(), out DateTime XDataLimiteReset))
         {
-            operador.DataLimiteReset = dbRec.FDataLimiteReset;
+            operador.DataLimiteReset = XDataLimiteReset.ToString("dd/MM/yyyy");
             operador.DataLimiteReset_date = XDataLimiteReset;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge.ToString(), out DateTime XSuporteMaxAge))
         {
-            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
+            operador.SuporteMaxAge = XSuporteMaxAge.ToString("dd/MM/yyyy");
             operador.SuporteMaxAge_date = XSuporteMaxAge;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out DateTime XSuporteUltimoAcesso))
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso.ToString(), out DateTime XSuporteUltimoAcesso))
         {
-            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
+            operador.SuporteUltimoAcesso = XSuporteUltimoAcesso.ToString("dd/MM/yyyy");
             operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso;
         }
 

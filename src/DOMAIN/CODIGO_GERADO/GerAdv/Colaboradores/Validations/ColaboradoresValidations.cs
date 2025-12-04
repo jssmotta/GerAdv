@@ -51,6 +51,8 @@ public class ColaboradoresValidation : IColaboradoresValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -67,9 +69,9 @@ public class ColaboradoresValidation : IColaboradoresValidation
             }
         }
 
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -85,7 +87,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
         // Cargos
         if (!reg.Cargo.IsEmptyIDNumber())
         {
-            var regCargos = await cargosReader.Read(reg.Cargo, oCnn);
+            var regCargos = await cargosReader.ReadAsync(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
             {
                 throw new SGValidationException($"Cargo não encontrado ({regCargos?.Id}).");
@@ -95,7 +97,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
@@ -105,7 +107,7 @@ public class ColaboradoresValidation : IColaboradoresValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

@@ -26,12 +26,6 @@ namespace MenphisSI.GerAdv.Models
         public int EMPFuncao { get; set; }
 
         /// <summary>
-        /// GUID - opoGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// CTPSNumero - opoCTPSNumero - tamanho máximo: 15 
         /// </summary>
         [JsonPropertyName("ctpsnumero")]
@@ -180,6 +174,24 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// Etiqueta - opoEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Bold - opoBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - opoGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -204,12 +216,6 @@ namespace MenphisSI.GerAdv.Models.All
         public int EMPFuncao { get; set; }
 
         /// <summary>
-        /// GUID - opoGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// CTPSNumero - opoCTPSNumero - tamanho máximo: 15 
         /// </summary>
         [JsonPropertyName("ctpsnumero")]
@@ -358,6 +364,24 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// Etiqueta - opoEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Bold - opoBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - opoGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

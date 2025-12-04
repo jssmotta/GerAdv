@@ -7,6 +7,7 @@
 using MenphisSI.GerAdv.Models.Response.All;
 using MenphisSI.GerAdv.Readers;
 using System.Data;
+using Xunit.Abstractions;
 
 namespace MenphisSI.GerAdv.Tests.Readers;
 /// <summary>
@@ -15,16 +16,20 @@ namespace MenphisSI.GerAdv.Tests.Readers;
 /// </summary>
 public class DivisaoTribunalReaderTests : IDisposable
 {
+    private readonly ITestOutputHelper _output;
     private readonly Mock<IFDivisaoTribunalFactory> _mockDivisaoTribunalFactory;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IDataRecord> _mockDataRecord;
     private readonly DivisaoTribunalReader _divisaotribunalReader;
-    public DivisaoTribunalReaderTests()
+    private readonly Mock<IConnectionService> _mockConnectionService;
+    public DivisaoTribunalReaderTests(ITestOutputHelper output)
     {
+        _output = output;
         _mockDivisaoTribunalFactory = new Mock<IFDivisaoTribunalFactory>();
         _mockConnection = new Mock<MsiSqlConnection>();
         _mockDataRecord = new Mock<IDataRecord>();
-        _divisaotribunalReader = new DivisaoTribunalReader(_mockDivisaoTribunalFactory.Object);
+        _mockConnectionService = new Mock<IConnectionService>();
+        _divisaotribunalReader = new DivisaoTribunalReader(_mockDivisaoTribunalFactory.Object, _mockConnectionService.Object);
     }
 
 #region Constructor Tests
@@ -39,40 +44,7 @@ public class DivisaoTribunalReaderTests : IDisposable
     public void Constructor_WithNullFactory_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new DivisaoTribunalReader(null !));
-    }
-
-#endregion
-#region Listar Tests
-    [Fact]
-    public async Task Listar_WithValidParameters_ShouldCallListarTabela()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "divCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // Since this calls external dependencies and database connections,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _divisaotribunalReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
-    [Fact]
-    public async Task Listar_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri";
-        var cWhere = "divCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = new CancellationToken(true); // Already cancelled
-        // Act & Assert
-        // Even with cancellation, this should throw an exception due to invalid URI
-        await Assert.ThrowsAsync<Exception>(() => _divisaotribunalReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
+        Assert.Throws<ArgumentNullException>(() => new DivisaoTribunalReader(null !, null !));
     }
 
 #endregion
@@ -85,15 +57,15 @@ public class DivisaoTribunalReaderTests : IDisposable
         var expectedDivisaoTribunal = new FDivisaoTribunal
         {
             ID = id,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedDivisaoTribunal);
         // Act
-        var result = await _divisaotribunalReader.Read(id, _mockConnection.Object);
+        var result = await _divisaotribunalReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -107,7 +79,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFDivisaoTribunal);
         // Act
-        var result = await _divisaotribunalReader.Read(id, _mockConnection.Object);
+        var result = await _divisaotribunalReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -123,7 +95,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFDivisaoTribunal);
         // Act
-        var result = await _divisaotribunalReader.Read(id, _mockConnection.Object);
+        var result = await _divisaotribunalReader.ReadAsync(id, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -138,15 +110,15 @@ public class DivisaoTribunalReaderTests : IDisposable
         var expectedFDivisaoTribunal = new FDivisaoTribunal
         {
             ID = id,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFDivisaoTribunal);
         // Act
-        var result = await _divisaotribunalReader.ReadM(id, _mockConnection.Object);
+        var result = await _divisaotribunalReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -157,15 +129,15 @@ public class DivisaoTribunalReaderTests : IDisposable
         var emptyFDivisaoTribunal = new FDivisaoTribunal
         {
             ID = 0,
-            FNomeEspecial = null
+            FGuid = null
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(emptyFDivisaoTribunal);
         // Act
-        var result = await _divisaotribunalReader.ReadM(id, _mockConnection.Object);
+        var result = await _divisaotribunalReader.ReadMAsync(id, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(0);
-        result?.NomeEspecial.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -177,14 +149,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -193,7 +165,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Arrange
         FDivisaoTribunal? dbRec = null;
         // Act
-        var result = _divisaotribunalReader.Read(dbRec, _mockConnection.Object);
+        var result = _divisaotribunalReader.Read(dbRec!, _mockConnection.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -212,7 +184,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         var expectedFDivisaoTribunal = new FDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromParameters(parameters, _mockConnection.Object, "", where, "")).Returns(expectedFDivisaoTribunal);
         // Act
@@ -220,7 +192,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -252,14 +224,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -268,7 +240,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Arrange
         FDivisaoTribunal? dbRec = null;
         // Act
-        var result = _divisaotribunalReader.Read(dbRec);
+        var result = _divisaotribunalReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -280,14 +252,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = null
+            FGuid = null
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -299,14 +271,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new DBDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -315,7 +287,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Arrange
         DBDivisaoTribunal? dbRec = null;
         // Act
-        var result = _divisaotribunalReader.Read(dbRec);
+        var result = _divisaotribunalReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -327,14 +299,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new DBDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = null // This should result in empty string in response
+            FGuid = null // This should result in empty string in response
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -346,14 +318,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _divisaotribunalReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -362,7 +334,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Arrange
         FDivisaoTribunal? dbRec = null;
         // Act
-        var result = _divisaotribunalReader.ReadAll(dbRec, _mockDataRecord.Object);
+        var result = _divisaotribunalReader.ReadAll(dbRec!, _mockDataRecord.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -374,14 +346,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = null
+            FGuid = null
         };
         // Act
         var result = _divisaotribunalReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -393,14 +365,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new DBDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         // Act
         var result = _divisaotribunalReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        result?.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -409,7 +381,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Arrange
         DBDivisaoTribunal? dbRec = null;
         // Act
-        var result = _divisaotribunalReader.ReadAll(dbRec, null);
+        var result = _divisaotribunalReader.ReadAll(dbRec!, null);
         // Assert
         result.Should().BeNull();
     }
@@ -421,14 +393,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new DBDivisaoTribunal
         {
             ID = 123,
-            FNomeEspecial = null // This should result in empty string in response
+            FGuid = null // This should result in empty string in response
         };
         // Act
         var result = _divisaotribunalReader.ReadAll(dbRec, null);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(123);
-        result?.NomeEspecial.Should().Be(string.Empty);
+        result?.Guid.Should().Be(string.Empty);
     }
 
 #endregion
@@ -441,7 +413,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _divisaotribunalReader.Read(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _divisaotribunalReader.ReadAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -453,7 +425,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         var expectedException = new InvalidOperationException("Factory error");
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _divisaotribunalReader.ReadM(id, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _divisaotribunalReader.ReadMAsync(id, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -476,8 +448,8 @@ public class DivisaoTribunalReaderTests : IDisposable
 #endregion
 #region Data Consistency Tests
     [Theory]
-    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
-    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
+    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
     [InlineData(0, "")]
     public void Read_WithVariousData_ShouldMaintainConsistency(int id, string nome)
     {
@@ -485,7 +457,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = id,
-            FNomeEspecial = nome
+            FGuid = nome
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec);
@@ -499,13 +471,13 @@ public class DivisaoTribunalReaderTests : IDisposable
         {
             result.Should().NotBeNull();
             result?.Id.Should().Be(id);
-            result?.NomeEspecial.Should().Be(nome);
+            result?.Guid.Should().Be(nome);
         }
     }
 
     [Theory]
-    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
-    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
+    [InlineData(1, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
+    [InlineData(999, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
     [InlineData(0, "")]
     public void ReadAll_WithVariousData_ShouldMaintainConsistency(int id, string nome)
     {
@@ -513,14 +485,14 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = id,
-            FNomeEspecial = nome
+            FGuid = nome
         };
         // Act
         var result = _divisaotribunalReader.ReadAll(dbRec, _mockDataRecord.Object);
         // Assert
         result.Should().NotBeNull();
         result?.Id.Should().Be(id);
-        result?.NomeEspecial.Should().Be(nome);
+        result?.Guid.Should().Be(nome);
     }
 
 #endregion
@@ -533,31 +505,16 @@ public class DivisaoTribunalReaderTests : IDisposable
         var expectedFDivisaoTribunal = new FDivisaoTribunal
         {
             ID = id,
-            FNomeEspecial = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         _mockDivisaoTribunalFactory.Setup(x => x.CreateFromIdAsync(id, _mockConnection.Object)).ReturnsAsync(expectedFDivisaoTribunal);
         // Act & Assert
         // Test only the methods that don't depend on external URI connections
-        var readTask = _divisaotribunalReader.Read(id, _mockConnection.Object);
-        var readMTask = _divisaotribunalReader.ReadM(id, _mockConnection.Object);
+        var readTask = _divisaotribunalReader.ReadAsync(id, _mockConnection.Object);
+        var readMTask = _divisaotribunalReader.ReadMAsync(id, _mockConnection.Object);
         await Task.WhenAll(readTask, readMTask);
         // If we reach here, async methods completed without deadlock
         Assert.True(true);
-    }
-
-    [Fact]
-    public async Task Listar_WithInvalidUri_ShouldThrowException()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri"; // Invalid URI
-        var cWhere = "";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<Exception>(() => _divisaotribunalReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
     }
 
 #endregion
@@ -572,7 +529,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // depending on the implementation
         try
         {
-            await _divisaotribunalReader.Read(id, null !);
+            await _divisaotribunalReader.ReadAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -588,7 +545,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         // Act & Assert
         try
         {
-            await _divisaotribunalReader.ReadM(id, null !);
+            await _divisaotribunalReader.ReadMAsync(id, null !);
         }
         catch (Exception ex)
         {
@@ -623,7 +580,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         var dbRec = new FDivisaoTribunal
         {
             ID = testId,
-            FNomeEspecial = testNome
+            FGuid = testNome
         };
         // Act
         var result = _divisaotribunalReader.Read(dbRec);
@@ -631,7 +588,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<DivisaoTribunalResponse>();
         result!.Id.Should().Be(testId);
-        result.NomeEspecial.Should().Be(testNome);
+        result.Guid.Should().Be(testNome);
     }
 
     [Fact]
@@ -639,11 +596,11 @@ public class DivisaoTribunalReaderTests : IDisposable
     {
         // Arrange
         var testId = 789;
-        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        var testNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         var dbRec = new FDivisaoTribunal
         {
             ID = testId,
-            FNomeEspecial = testNome
+            FGuid = testNome
         };
         // Act
         var result = _divisaotribunalReader.ReadAll(dbRec, _mockDataRecord.Object);
@@ -651,7 +608,7 @@ public class DivisaoTribunalReaderTests : IDisposable
         result.Should().NotBeNull();
         result.Should().BeOfType<DivisaoTribunalResponseAll>();
         result!.Id.Should().Be(testId);
-        result.NomeEspecial.Should().Be(testNome);
+        result.Guid.Should().Be(testNome);
     }
 
 #endregion

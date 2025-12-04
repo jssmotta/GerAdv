@@ -24,8 +24,8 @@ public static partial class DBBensMateriaisDicInfo
     public const string DataTerminoDaGarantiaDaLoja = "bmtDataTerminoDaGarantiaDaLoja"; // LOCALIZACAO 170523
     public const string Observacoes = "bmtObservacoes"; // LOCALIZACAO 170523
     public const string NomeVendedor = "bmtNomeVendedor"; // LOCALIZACAO 170523
-    public const string GUID = "bmtGUID"; // LOCALIZACAO 170523
     public const string Bold = "bmtBold"; // LOCALIZACAO 170523
+    public const string Guid = "bmtGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "bmtQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "bmtDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "bmtQuemAtu"; // LOCALIZACAO 170523
@@ -59,93 +59,27 @@ public static partial class DBBensMateriaisDicInfo
 
     public const string PTabelaNome = "BensMateriais";
 #region PropriedadesDaTabela
-    public static DBInfoSystem BmtNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtBensClassificacao => new(0, PTabelaNome, CampoCodigo, BensClassificacao, "BensClassificacao", "BensClassificacao", ETipoDadosSysteminfo.SysteminfoForeingkey, DBBensClassificacaoDicInfo.CampoCodigo, DBBensClassificacaoDicInfo.TabelaNome, new DBBensClassificacaoODicInfo(), false)
-    {
-        Prefixo = "bmt"
-    }; // DBI 11 
-    public static DBInfoSystem BmtDataCompra => new(0, PTabelaNome, CampoCodigo, DataCompra, "DataCompra", "DataCompra", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtDataFimDaGarantia => new(0, PTabelaNome, CampoCodigo, DataFimDaGarantia, "DataFimDaGarantia", "DataFimDaGarantia", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtNFNRO => new(0, PTabelaNome, CampoCodigo, NFNRO, 255, "NFNRO", "NFNRO", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtFornecedor => new(0, PTabelaNome, CampoCodigo, Fornecedor, "Fornecedor", "Fornecedor", ETipoDadosSysteminfo.SysteminfoForeingkey, DBFornecedoresDicInfo.CampoCodigo, DBFornecedoresDicInfo.TabelaNome, new DBFornecedoresODicInfo(), false)
-    {
-        Prefixo = "bmt"
-    }; // DBI 11 
-    public static DBInfoSystem BmtValorBem => new(0, PTabelaNome, CampoCodigo, ValorBem, "ValorBem", "ValorBem", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtNroSerieProduto => new(0, PTabelaNome, CampoCodigo, NroSerieProduto, 100, "NroSerieProduto", "NroSerieProduto", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtComprador => new(0, PTabelaNome, CampoCodigo, Comprador, 100, "Comprador", "Comprador", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "bmt"
-    }; // DBI 11 
-    public static DBInfoSystem BmtGarantiaLoja => new(0, PTabelaNome, CampoCodigo, GarantiaLoja, "GarantiaLoja", "GarantiaLoja", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtDataTerminoDaGarantiaDaLoja => new(0, PTabelaNome, CampoCodigo, DataTerminoDaGarantiaDaLoja, "DataTerminoDaGarantiaDaLoja", "DataTerminoDaGarantiaDaLoja", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtObservacoes => new(0, PTabelaNome, CampoCodigo, Observacoes, DevourerOne.PMaxSizeCampoMemo, "Observacoes", "Observacoes", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtNomeVendedor => new(0, PTabelaNome, CampoCodigo, NomeVendedor, 255, "NomeVendedor", "NomeVendedor", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "bmt"
-    }; // DBI 11 
-    public static DBInfoSystem BmtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "bmt"
-    }; // DBI 11 
-    public static DBInfoSystem BmtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "bmt"
-    };
-    public static DBInfoSystem BmtVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "bmt"
-    };
+    public static DBInfoSystem BmtNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "bmt");
+    public static DBInfoSystem BmtBensClassificacao => new(0, PTabelaNome, CampoCodigo, BensClassificacao, BensClassificacao, BensClassificacao, EDataTypeSystemInfo.SystemInfoForeingkey, DBBensClassificacaoDicInfo.CampoCodigo, DBBensClassificacaoDicInfo.TabelaNome, new DBBensClassificacaoODicInfo(), false, prefixo: "bmt"); // DBI 11 
+    public static DBInfoSystem BmtDataCompra => new(0, PTabelaNome, CampoCodigo, DataCompra, DataCompra, DataCompra, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "bmt");
+    public static DBInfoSystem BmtDataFimDaGarantia => new(0, PTabelaNome, CampoCodigo, DataFimDaGarantia, DataFimDaGarantia, DataFimDaGarantia, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "bmt");
+    public static DBInfoSystem BmtNFNRO => new(0, PTabelaNome, CampoCodigo, NFNRO, 255, NFNRO, NFNRO, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "bmt");
+    public static DBInfoSystem BmtFornecedor => new(0, PTabelaNome, CampoCodigo, Fornecedor, Fornecedor, Fornecedor, EDataTypeSystemInfo.SystemInfoForeingkey, DBFornecedoresDicInfo.CampoCodigo, DBFornecedoresDicInfo.TabelaNome, new DBFornecedoresODicInfo(), false, prefixo: "bmt"); // DBI 11 
+    public static DBInfoSystem BmtValorBem => new(0, PTabelaNome, CampoCodigo, ValorBem, ValorBem, ValorBem, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "bmt");
+    public static DBInfoSystem BmtNroSerieProduto => new(0, PTabelaNome, CampoCodigo, NroSerieProduto, 100, NroSerieProduto, NroSerieProduto, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "bmt");
+    public static DBInfoSystem BmtComprador => new(0, PTabelaNome, CampoCodigo, Comprador, 100, Comprador, Comprador, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "bmt");
+    public static DBInfoSystem BmtCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "bmt"); // DBI 11 
+    public static DBInfoSystem BmtGarantiaLoja => new(0, PTabelaNome, CampoCodigo, GarantiaLoja, GarantiaLoja, GarantiaLoja, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "bmt", isRequired: true);
+    public static DBInfoSystem BmtDataTerminoDaGarantiaDaLoja => new(0, PTabelaNome, CampoCodigo, DataTerminoDaGarantiaDaLoja, DataTerminoDaGarantiaDaLoja, DataTerminoDaGarantiaDaLoja, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "bmt");
+    public static DBInfoSystem BmtObservacoes => new(0, PTabelaNome, CampoCodigo, Observacoes, DevourerOne.PMaxSizeCampoMemo, Observacoes, Observacoes, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "bmt");
+    public static DBInfoSystem BmtNomeVendedor => new(0, PTabelaNome, CampoCodigo, NomeVendedor, 255, NomeVendedor, NomeVendedor, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "bmt");
+    public static DBInfoSystem BmtBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "bmt", isRequired: true);
+    public static DBInfoSystem BmtGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "bmt");
+    public static DBInfoSystem BmtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "bmt"); // DBI 11 
+    public static DBInfoSystem BmtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "bmt");
+    public static DBInfoSystem BmtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "bmt"); // DBI 11 
+    public static DBInfoSystem BmtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "bmt");
+    public static DBInfoSystem BmtVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "bmt", isRequired: true);
 
 #endregion
     [Serializable]

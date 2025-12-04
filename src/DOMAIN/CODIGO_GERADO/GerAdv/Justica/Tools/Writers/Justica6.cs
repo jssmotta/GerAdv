@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IJusticaWriter
 {
     Task<FJustica> WriteAsync(Models.Justica justica, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(JusticaResponse justica, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(JusticaResponse justica, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class JusticaWriter(IFJusticaFactory justicaFactory) : IJusticaWriter
 {
     private readonly IFJusticaFactory _justicaFactory = justicaFactory ?? throw new ArgumentNullException(nameof(justicaFactory));
-    public virtual async Task Delete(JusticaResponse justica, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(JusticaResponse justica, int operadorId, MsiSqlConnection? oCnn)
     {
         await _justicaFactory.DeleteAsync(operadorId, justica.Id, oCnn);
     }
@@ -23,8 +23,9 @@ public class JusticaWriter(IFJusticaFactory justicaFactory) : IJusticaWriter
     public virtual async Task<FJustica> WriteAsync(Models.Justica justica, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (justica.Id.IsEmptyIDNumber() ? _justicaFactory.CreateAsync() : _justicaFactory.CreateFromIdAsync(justica.Id, oCnn));
-        dbRec.FGUID = justica.GUID;
         dbRec.FNome = justica.Nome;
+        dbRec.FBold = justica.Bold;
+        dbRec.FGuid = justica.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

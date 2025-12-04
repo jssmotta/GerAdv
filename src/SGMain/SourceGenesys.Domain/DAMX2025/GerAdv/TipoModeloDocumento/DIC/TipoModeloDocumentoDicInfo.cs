@@ -11,7 +11,7 @@ public static partial class DBTipoModeloDocumentoDicInfo
     public const string CampoNome = "tpdNome";
     public const string TablePrefix = "tpd";
     public const string Nome = "tpdNome"; // LOCALIZACAO 170523
-    public const string GUID = "tpdGUID"; // LOCALIZACAO 170523
+    public const string Guid = "tpdGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "tpdQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "tpdDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "tpdQuemAtu"; // LOCALIZACAO 170523
@@ -31,38 +31,13 @@ public static partial class DBTipoModeloDocumentoDicInfo
 
     public const string PTabelaNome = "TipoModeloDocumento";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TpdNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "tpd"
-    };
-    public static DBInfoSystem TpdGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "tpd"
-    };
-    public static DBInfoSystem TpdQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "tpd"
-    }; // DBI 11 
-    public static DBInfoSystem TpdDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "tpd"
-    };
-    public static DBInfoSystem TpdQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tpd"
-    }; // DBI 11 
-    public static DBInfoSystem TpdDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "tpd"
-    };
-    public static DBInfoSystem TpdVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "tpd"
-    };
+    public static DBInfoSystem TpdNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tpd", isRequired: true);
+    public static DBInfoSystem TpdGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tpd");
+    public static DBInfoSystem TpdQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tpd", isRequired: true); // DBI 11 
+    public static DBInfoSystem TpdDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tpd", isRequired: true);
+    public static DBInfoSystem TpdQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tpd"); // DBI 11 
+    public static DBInfoSystem TpdDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tpd");
+    public static DBInfoSystem TpdVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tpd", isRequired: true);
 
 #endregion
     [Serializable]

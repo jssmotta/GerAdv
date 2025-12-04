@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IFuncionariosWriter
 {
     Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFuncionariosWriter
 {
     private readonly IFFuncionariosFactory _funcionariosFactory = funcionariosFactory ?? throw new ArgumentNullException(nameof(funcionariosFactory));
-    public virtual async Task Delete(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(FuncionariosResponse funcionarios, int operadorId, MsiSqlConnection? oCnn)
     {
         await _funcionariosFactory.DeleteAsync(operadorId, funcionarios.Id, oCnn);
     }
@@ -23,7 +23,6 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
     public virtual async Task<FFuncionarios> WriteAsync(Models.Funcionarios funcionarios, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (funcionarios.Id.IsEmptyIDNumber() ? _funcionariosFactory.CreateAsync() : _funcionariosFactory.CreateFromIdAsync(funcionarios.Id, oCnn));
-        dbRec.FGUID = funcionarios.GUID;
         dbRec.FEMailPro = funcionarios.EMailPro;
         dbRec.FCargo = funcionarios.Cargo;
         dbRec.FNome = funcionarios.Nome;
@@ -42,22 +41,42 @@ public class FuncionariosWriter(IFFuncionariosFactory funcionariosFactory) : IFu
         dbRec.FFax = funcionarios.Fax;
         dbRec.FFone = funcionarios.Fone;
         dbRec.FEMail = funcionarios.EMail;
-        if (funcionarios.Periodo_Ini != null)
-            dbRec.FPeriodo_Ini = funcionarios.Periodo_Ini.ToString();
-        if (funcionarios.Periodo_Fim != null)
-            dbRec.FPeriodo_Fim = funcionarios.Periodo_Fim.ToString();
+        if (funcionarios.Periodo_Ini.NotIsEmpty())
+        {
+            dbRec.FPeriodo_Ini = DateOnly.FromDateTime(Convert.ToDateTime(funcionarios.Periodo_Ini));
+        }
+
+        if (funcionarios.Periodo_Fim.NotIsEmpty())
+        {
+            dbRec.FPeriodo_Fim = DateOnly.FromDateTime(Convert.ToDateTime(funcionarios.Periodo_Fim));
+        }
+
         dbRec.FCTPSNumero = funcionarios.CTPSNumero;
         dbRec.FCTPSSerie = funcionarios.CTPSSerie;
         dbRec.FPIS = funcionarios.PIS;
         dbRec.FSalario = funcionarios.Salario;
-        if (funcionarios.CTPSDtEmissao != null)
-            dbRec.FCTPSDtEmissao = funcionarios.CTPSDtEmissao.ToString();
-        if (funcionarios.DtNasc != null)
-            dbRec.FDtNasc = funcionarios.DtNasc.ToString();
-        dbRec.FData = funcionarios.Data;
+        if (funcionarios.CTPSDtEmissao.NotIsEmpty())
+        {
+            dbRec.FCTPSDtEmissao = DateOnly.FromDateTime(Convert.ToDateTime(funcionarios.CTPSDtEmissao));
+        }
+
+        if (funcionarios.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(funcionarios.DtNasc));
+        }
+
+        if (funcionarios.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(funcionarios.Data));
+        }
+
         dbRec.FLiberaAgenda = funcionarios.LiberaAgenda;
         dbRec.FPasta = funcionarios.Pasta;
         dbRec.FClass = funcionarios.Class;
+        dbRec.FEtiqueta = funcionarios.Etiqueta;
+        dbRec.FAni = funcionarios.Ani;
+        dbRec.FBold = funcionarios.Bold;
+        dbRec.FGuid = funcionarios.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

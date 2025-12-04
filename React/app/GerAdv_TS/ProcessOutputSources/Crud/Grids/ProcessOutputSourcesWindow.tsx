@@ -10,65 +10,72 @@ import { IProcessOutputSources } from '../../Interfaces/interface.ProcessOutputS
 import { useIsMobile } from '@/app/context/MobileContext';
 import { ProcessOutputSourcesEmpty } from '@/app/GerAdv_TS/Models/ProcessOutputSources';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface ProcessOutputSourcesWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedProcessOutputSources?: IProcessOutputSources;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedProcessOutputSources?: IProcessOutputSources;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const ProcessOutputSourcesWindow: React.FC<ProcessOutputSourcesWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedProcessOutputSources, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedProcessOutputSources,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Process Output Sources'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedProcessOutputSources?.id ?? 0).toString()}
->
-<ProcessOutputSourcesInc
-id={selectedProcessOutputSources?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Process Output Sources'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedProcessOutputSources?.id ?? 0).toString()}
+            >
+                <ProcessOutputSourcesInc
+                    id={selectedProcessOutputSources?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowProcessOutputSources: React.FC<ProcessOutputSourcesWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<ProcessOutputSourcesWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedProcessOutputSources={ProcessOutputSourcesEmpty()}>
-</ProcessOutputSourcesWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <ProcessOutputSourcesWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedProcessOutputSources={ProcessOutputSourcesEmpty()}>
+        </ProcessOutputSourcesWindow>
+    )
 };
+
 export default ProcessOutputSourcesWindow;

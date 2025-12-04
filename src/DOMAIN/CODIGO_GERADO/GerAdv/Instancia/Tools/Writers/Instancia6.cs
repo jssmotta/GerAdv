@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IInstanciaWriter
 {
     Task<FInstancia> WriteAsync(Models.Instancia instancia, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(InstanciaResponse instancia, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(InstanciaResponse instancia, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWriter
 {
     private readonly IFInstanciaFactory _instanciaFactory = instanciaFactory ?? throw new ArgumentNullException(nameof(instanciaFactory));
-    public virtual async Task Delete(InstanciaResponse instancia, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(InstanciaResponse instancia, int operadorId, MsiSqlConnection? oCnn)
     {
         await _instanciaFactory.DeleteAsync(operadorId, instancia.Id, oCnn);
     }
@@ -23,7 +23,6 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
     public virtual async Task<FInstancia> WriteAsync(Models.Instancia instancia, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (instancia.Id.IsEmptyIDNumber() ? _instanciaFactory.CreateAsync() : _instanciaFactory.CreateFromIdAsync(instancia.Id, oCnn));
-        dbRec.FGUID = instancia.GUID;
         dbRec.FLiminarPedida = instancia.LiminarPedida;
         dbRec.FObjeto = instancia.Objeto;
         dbRec.FStatusResultado = instancia.StatusResultado;
@@ -32,7 +31,11 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
         dbRec.FLiminarConcedida = instancia.LiminarConcedida;
         dbRec.FLiminarNegada = instancia.LiminarNegada;
         dbRec.FProcesso = instancia.Processo;
-        dbRec.FData = instancia.Data;
+        if (instancia.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(instancia.Data));
+        }
+
         dbRec.FLiminarParcial = instancia.LiminarParcial;
         dbRec.FLiminarResultado = instancia.LiminarResultado;
         dbRec.FNroProcesso = instancia.NroProcesso;
@@ -46,12 +49,16 @@ public class InstanciaWriter(IFInstanciaFactory instanciaFactory) : IInstanciaWr
         dbRec.FTipoRecurso = instancia.TipoRecurso;
         dbRec.FZKey = instancia.ZKey;
         dbRec.FZKeyQuem = instancia.ZKeyQuem;
-        if (instancia.ZKeyQuando != null)
-            dbRec.FZKeyQuando = instancia.ZKeyQuando.ToString();
+        if (instancia.ZKeyQuando.NotIsEmpty())
+        {
+            dbRec.FZKeyQuando = DateOnly.FromDateTime(Convert.ToDateTime(instancia.ZKeyQuando));
+        }
+
         dbRec.FNroAntigo = instancia.NroAntigo;
         dbRec.FAccessCode = instancia.AccessCode;
         dbRec.FJulgador = instancia.Julgador;
         dbRec.FZKeyIA = instancia.ZKeyIA;
+        dbRec.FGuid = instancia.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

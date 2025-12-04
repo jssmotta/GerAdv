@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) : ITipoRecursoReader
+public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory, IConnectionService connection) : ITipoRecursoReader
 {
     private readonly IFTipoRecursoFactory _tiporecursoFactory = tiporecursoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("trcCodigo, trcDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<TipoRecursoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTipoRecurso.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TipoRecursoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("trcCodigo, trcDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TipoRecursoResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBTipoRecurso.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<TipoRecursoResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TipoRecursoResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,22 +48,22 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         return result;
     }
 
-    public async Task<TipoRecursoResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<TipoRecursoResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tiporecursoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.TipoRecurso?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.TipoRecurso?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _tiporecursoFactory.CreateFromIdAsync(id, oCnn);
         var tiporecurso = new Models.TipoRecurso
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tiporecurso;
     }
@@ -83,10 +89,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tiporecurso;
     }
@@ -101,10 +107,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tiporecurso;
     }
@@ -119,10 +125,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {
@@ -153,10 +159,10 @@ public partial class TipoRecursoReader(IFTipoRecursoFactory tiporecursoFactory) 
         var tiporecurso = new TipoRecursoResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {

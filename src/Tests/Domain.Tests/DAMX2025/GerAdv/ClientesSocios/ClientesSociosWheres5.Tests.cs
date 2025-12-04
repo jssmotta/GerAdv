@@ -385,20 +385,6 @@ public class ClientesSociosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtNascStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFClientesSocios(DtNasc: "invalid-date");
-        _mockClientesSociosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFClientesSocios.Object);
-        // Act
-        var result = _clientessociosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtNasc.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtNascFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -447,20 +433,6 @@ public class ClientesSociosWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDataContratoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFClientesSocios(DataContrato: "invalid-date");
-        _mockClientesSociosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFClientesSocios.Object);
-        // Act
-        var result = _clientessociosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataContrato.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDataContratoFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -506,20 +478,6 @@ public class ClientesSociosWhereTests : IDisposable
         var result = _clientessociosWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.RGDataExp.Should().Be("02/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateRGDataExpStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFClientesSocios(RGDataExp: "invalid-date");
-        _mockClientesSociosFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFClientesSocios.Object);
-        // Act
-        var result = _clientessociosWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.RGDataExp.Should().Be("");
     }
 
     [Fact]

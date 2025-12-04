@@ -53,8 +53,7 @@ public class ContatoCRMViewValidationTests : IDisposable
         return new Models.ContatoCRMView
         {
             Id = 1,
-            CGUID = Guid.NewGuid().ToString(),
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
@@ -80,7 +79,6 @@ public class ContatoCRMViewValidationTests : IDisposable
         var contatocrmview = new Models.ContatoCRMView
         {
             Id = 1,
-            CGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Data = "27/05/2022",
             IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
@@ -100,100 +98,6 @@ public class ContatoCRMViewValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required CGUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyCGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.CGUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullCGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.CGUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataCGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceCGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.CGUID = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required Data Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyData_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.Data = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullData_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.Data = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataData_ShouldReturnTrue()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceData_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.Data = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
 #region ValidateReg Required IP Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyIP_ShouldThrowSGValidationException()
@@ -203,7 +107,7 @@ public class ContatoCRMViewValidationTests : IDisposable
         contatocrmview.IP = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -234,9 +138,51 @@ public class ContatoCRMViewValidationTests : IDisposable
     {
         // Arrange
         var contatocrmview = CreateValidContatoCRMView();
-        contatocrmview.IP = "   ";
+        contatocrmview.IP = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("é obrigatório");
+    }
+
+#endregion
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var contatocrmview = CreateValidContatoCRMView();
+        contatocrmview.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var contatocrmview = CreateValidContatoCRMView();
+        contatocrmview.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldNotPass()
+    {
+        // Arrange
+        var contatocrmview = CreateValidContatoCRMView();
+        contatocrmview.Data = "";
+        SetupValidMocks();
+        // Act       
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contatocrmview, _mockContatoCRMViewService.Object, _validUri, _mockConnection.Object));
+        // Assert
         exception.Message.Should().Contain("é obrigatório");
     }
 

@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { OponentesRepLegalApiError } from '../GerAdv_TS/OponentesRepLegal/Apis/ApiOponentesRepLegal';
+import { OponentesRepLegalApiError } from '@/app/GerAdv_TS/OponentesRepLegal/Apis/ApiOponentesRepLegal';
 import { OponentesRepLegalApi } from '@/app/GerAdv_TS/OponentesRepLegal/Apis/ApiOponentesRepLegal';
-import { FilterOponentesRepLegal } from '../GerAdv_TS/OponentesRepLegal/Filters/OponentesRepLegal';
-import { IOponentesRepLegal } from '../GerAdv_TS/OponentesRepLegal/Interfaces/interface.OponentesRepLegal';
-import { OponentesRepLegalTestEmpty } from '../GerAdv_TS/Models/OponentesRepLegal';
+import { FilterOponentesRepLegal } from '@/app/GerAdv_TS/OponentesRepLegal/Filters/OponentesRepLegal';
+import { IOponentesRepLegal } from '@/app/GerAdv_TS/OponentesRepLegal/Interfaces/interface.OponentesRepLegal';
+import { OponentesRepLegalTestEmpty } from '@/app/GerAdv_TS/Models/OponentesRepLegal';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('OponentesRepLegalApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterOponentesRepLegal = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,21 @@ describe('OponentesRepLegalApi', () => {
   describe('addAndUpdate', () => {
     const mockOponentesRepLegal: IOponentesRepLegal = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+fone: '(11) 99999-9999',
+oponente: 0,
+sexo: false,
+cpf: '544.506.718-13',
+rg: '12.345.678-9',
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+cep: '01234-567',
+cidade: 0,
+fax: '(11) 88888-9999',
+email: 'test@email.com',
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+observacao: 'Observação teste'
     };
 
     it('should add new oponentesreplegal successfully', async () => {
@@ -487,7 +488,7 @@ describe('OponentesRepLegalApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterOponentesRepLegal = { funcionario: 1 };
+      const mockFilter: FilterOponentesRepLegal = { : 1 };
       
       const result = oponentesreplegalApi.useFilter(mockFilter);
       

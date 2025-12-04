@@ -99,7 +99,7 @@ public class PreClientesWriterTests
         _mockFPreClientes.VerifySet(x => x.FCEP = It.IsAny<string>(), Times.Once); // CEP é limpo pelo ClearInputCep()
         _mockFPreClientes.VerifySet(x => x.FFax = preclientes.Fax, Times.Once);
         _mockFPreClientes.VerifySet(x => x.FFone = preclientes.Fone, Times.Once);
-        _mockFPreClientes.VerifySet(x => x.FData = preclientes.Data, Times.Once);
+        _mockFPreClientes.VerifySet(x => x.FData = preclientes.Data.ToString(), Times.Once);
         _mockFPreClientes.VerifySet(x => x.FHomePage = preclientes.HomePage, Times.Once);
         _mockFPreClientes.VerifySet(x => x.FEMail = preclientes.EMail, Times.Once);
         _mockFPreClientes.VerifySet(x => x.FAssistido = preclientes.Assistido, Times.Once);
@@ -123,6 +123,21 @@ public class PreClientesWriterTests
         await _preclientesWriter.WriteAsync(preclientes, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFPreClientes.VerifySet(x => x.FDtNasc = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var preclientes = CreateValidPreClientesModel();
+        preclientes.Data = null;
+        var auditorQuem = 123;
+        _mockPreClientesFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFPreClientes.Object);
+        _mockFPreClientes.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _preclientesWriter.WriteAsync(preclientes, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFPreClientes.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -165,7 +180,7 @@ public class PreClientesWriterTests
         var operadorId = 456;
         _mockPreClientesFactory.Setup(x => x.DeleteAsync(operadorId, preclientesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _preclientesWriter.Delete(preclientesResponse, operadorId, _mockConnection.Object);
+        await _preclientesWriter.DeleteAsync(preclientesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockPreClientesFactory.Verify(x => x.DeleteAsync(operadorId, preclientesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -181,7 +196,7 @@ public class PreClientesWriterTests
         var operadorId = 111;
         _mockPreClientesFactory.Setup(x => x.DeleteAsync(operadorId, preclientesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _preclientesWriter.Delete(preclientesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _preclientesWriter.DeleteAsync(preclientesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -198,7 +213,7 @@ public class PreClientesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockPreClientesFactory.Setup(x => x.DeleteAsync(operadorId, preclientesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _preclientesWriter.Delete(preclientesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _preclientesWriter.DeleteAsync(preclientesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -253,7 +268,7 @@ public class PreClientesWriterTests
             CEP = "01234-567",
             Fax = "(11) 88888-9999",
             Fone = "(11) 99999-9999",
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             HomePage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             EMail = "test@email.com",
             Assistido = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",

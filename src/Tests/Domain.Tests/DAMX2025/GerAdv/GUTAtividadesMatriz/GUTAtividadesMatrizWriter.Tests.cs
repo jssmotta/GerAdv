@@ -74,9 +74,9 @@ public class GUTAtividadesMatrizWriterTests
         var result = await _gutatividadesmatrizWriter.WriteAsync(gutatividadesmatriz, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFGUTAtividadesMatriz.Object);
+        _mockFGUTAtividadesMatriz.VerifySet(x => x.FGuid = gutatividadesmatriz.Guid, Times.Once);
         _mockFGUTAtividadesMatriz.VerifySet(x => x.FGUTMatriz = gutatividadesmatriz.GUTMatriz, Times.Once);
         _mockFGUTAtividadesMatriz.VerifySet(x => x.FGUTAtividade = gutatividadesmatriz.GUTAtividade, Times.Once);
-        _mockFGUTAtividadesMatriz.VerifySet(x => x.FGUID = gutatividadesmatriz.GUID, Times.Once);
         _mockFGUTAtividadesMatriz.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class GUTAtividadesMatrizWriterTests
         var operadorId = 456;
         _mockGUTAtividadesMatrizFactory.Setup(x => x.DeleteAsync(operadorId, gutatividadesmatrizResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _gutatividadesmatrizWriter.Delete(gutatividadesmatrizResponse, operadorId, _mockConnection.Object);
+        await _gutatividadesmatrizWriter.DeleteAsync(gutatividadesmatrizResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGUTAtividadesMatrizFactory.Verify(x => x.DeleteAsync(operadorId, gutatividadesmatrizResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class GUTAtividadesMatrizWriterTests
         var operadorId = 111;
         _mockGUTAtividadesMatrizFactory.Setup(x => x.DeleteAsync(operadorId, gutatividadesmatrizResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _gutatividadesmatrizWriter.Delete(gutatividadesmatrizResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _gutatividadesmatrizWriter.DeleteAsync(gutatividadesmatrizResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class GUTAtividadesMatrizWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGUTAtividadesMatrizFactory.Setup(x => x.DeleteAsync(operadorId, gutatividadesmatrizResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutatividadesmatrizWriter.Delete(gutatividadesmatrizResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutatividadesmatrizWriter.DeleteAsync(gutatividadesmatrizResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class GUTAtividadesMatrizWriterTests
         return new Models.GUTAtividadesMatriz
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             GUTMatriz = 1,
-            GUTAtividade = 1,
-            GUID = Guid.NewGuid().ToString()
+            GUTAtividade = 1
         };
     }
 #endregion

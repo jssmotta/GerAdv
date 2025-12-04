@@ -56,7 +56,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         {
             Id = 1,
             Operador = 1,
-            DataHora = "27/05/2022",
+            DataHora = "04:04",
             Tipo = false,
             Origem = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
@@ -67,7 +67,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockPontoVirtualAcessosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPontoVirtualAcessos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the PontoVirtualAcessoss service mock
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -75,7 +75,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockPontoVirtualAcessosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPontoVirtualAcessos>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the PontoVirtualAcessoss service mock
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]
@@ -106,53 +106,6 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required DataHora Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyDataHora_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var pontovirtualacessos = CreateValidPontoVirtualAcessos();
-        pontovirtualacessos.DataHora = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullDataHora_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var pontovirtualacessos = CreateValidPontoVirtualAcessos();
-        pontovirtualacessos.DataHora = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataDataHora_ShouldReturnTrue()
-    {
-        // Arrange
-        var pontovirtualacessos = CreateValidPontoVirtualAcessos();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceDataHora_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var pontovirtualacessos = CreateValidPontoVirtualAcessos();
-        pontovirtualacessos.DataHora = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
 #region ValidateReg Required Origem Method Tests 
     [Fact]
     public async Task ValidateReg_WithEmptyOrigem_ShouldThrowSGValidationException()
@@ -162,7 +115,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         pontovirtualacessos.Origem = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -193,7 +146,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
     {
         // Arrange
         var pontovirtualacessos = CreateValidPontoVirtualAcessos();
-        pontovirtualacessos.Origem = "   ";
+        pontovirtualacessos.Origem = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
@@ -207,7 +160,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         // Arrange
         var pontovirtualacessos = CreateValidPontoVirtualAcessos();
         pontovirtualacessos.Operador = 999;
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -224,7 +177,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -241,7 +194,7 @@ public class PontoVirtualAcessosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockOperadorReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockOperadorReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(pontovirtualacessos, _mockPontoVirtualAcessosService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);

@@ -44,9 +44,22 @@ public class DBNENotasTests : IDisposable
         dt.Columns.Add("nepRevisada", typeof(string));
         dt.Columns.Add("nepProcesso", typeof(int));
         dt.Columns.Add("nepPalavraChave", typeof(int));
-        dt.Columns.Add("nepData", typeof(string));
+        dt.Columns.Add("nepData", typeof(DateTime));
         dt.Columns.Add("nepNotaPublicada", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["nepCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBNENotas(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -67,7 +80,7 @@ public class DBNENotasTests : IDisposable
     {
         var instance = new DBNENotas();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("NENotas", instance.ITabelaName());
+        Assert.Equal("NENotas", instance.ITableName());
         Assert.Equal("nep", instance.Prefixo);
     }
 
@@ -85,29 +98,16 @@ public class DBNENotasTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["nepCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBNENotas(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("NENotas", cadastro.ITabelaName());
-        Assert.Equal("nepCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("nepNome", cadastro.ICampoNome());
-        Assert.Equal("nep", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("NENotas", cadastro.ITableName());
+        Assert.Equal("nepCodigo", cadastro.IFieldId());
+        Assert.Equal("nepNome", cadastro.IFieldNameDescription());
+        Assert.Equal("nep", cadastro.IPrefix());
     }
 
 #endregion
@@ -167,9 +167,9 @@ public class DBNENotasTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -332,6 +332,23 @@ public class DBNENotasTests : IDisposable
     {
         var instance = new DBNENotas();
         Assert.Equal(0, instance.FPalavraChave);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBNENotas();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]

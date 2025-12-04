@@ -36,7 +36,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProSucumbencia(int? Processo = 1, int? Instancia = 1, string? Data = "27/05/2022", string? Nome = "João", int? TipoOrigemSucumbencia = 1, decimal? Valor = 1m, string? Percentual = "AAA")
+    private void SetupMockFProSucumbencia(int? Processo = 1, int? Instancia = 1, string? Data = "24/04/1975", string? Nome = "João", int? TipoOrigemSucumbencia = 1, decimal? Valor = 1m, string? Percentual = "AAA")
     {
         _mockFProSucumbencia.Setup(f => f.FProcesso).Returns(Processo ?? 0);
         _mockFProSucumbencia.Setup(f => f.FInstancia).Returns(Instancia ?? 0);
@@ -86,7 +86,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         result.Should().NotBeNull();
         result.Processo.Should().Be(1);
         result.Instancia.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Nome.Should().Be("João");
         result.TipoOrigemSucumbencia.Should().Be(1);
         result.Valor.Should().Be(1m);
@@ -223,7 +223,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProSucumbencia(Processo: 1, Instancia: 1, Data: "27/05/2022", Nome: "João", TipoOrigemSucumbencia: 1, Valor: 1m, Percentual: "AAA");
+        SetupMockFProSucumbencia(Processo: 1, Instancia: 1, Data: "24/04/1975", Nome: "João", TipoOrigemSucumbencia: 1, Valor: 1m, Percentual: "AAA");
         _mockProSucumbenciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProSucumbencia.Object);
         // Act
         var result = _prosucumbenciaWhere.Read(where, parameters, _mockConnection.Object);
@@ -232,7 +232,7 @@ public class ProSucumbenciaWhereTests : IDisposable
         // Basic properties        
         result.Processo.Should().Be(1);
         result.Instancia.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Nome.Should().Be("João");
         result.TipoOrigemSucumbencia.Should().Be(1);
         result.Valor.Should().Be(1m);
@@ -255,7 +255,55 @@ public class ProSucumbenciaWhereTests : IDisposable
         // Assert
         _mockProSucumbenciaFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBProSucumbenciaDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFProSucumbencia(Data: testDate);
+        _mockProSucumbenciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProSucumbencia.Object);
+        // Act
+        var result = _prosucumbenciaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFProSucumbencia(Data: null);
+        _mockProSucumbenciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProSucumbencia.Object);
+        // Act
+        var result = _prosucumbenciaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFProSucumbencia(Data: dateString);
+        _mockProSucumbenciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProSucumbencia.Object);
+        // Act
+        var result = _prosucumbenciaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

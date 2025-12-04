@@ -23,7 +23,7 @@ public class ServicosValidation : IServicosValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var horastrabExists0 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Servico = id ?? default }, uri);
         if (horastrabExists0 != null && horastrabExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Horas Trab associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class ServicosValidation : IServicosValidation
     {
         if (reg.Descricao != null && reg.Descricao.Length > DBServicosDicInfo.SerDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBServicosDicInfo.SerDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBServicosDicInfo.SerGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBServicosDicInfo.SerGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,6 +40,8 @@ public class ServicosValidation : IServicosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

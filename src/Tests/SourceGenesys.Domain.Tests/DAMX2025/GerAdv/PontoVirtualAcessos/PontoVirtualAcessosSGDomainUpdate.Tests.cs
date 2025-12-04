@@ -22,7 +22,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         var pontovirtualacessos = new DBPontoVirtualAcessos();
         // Assert
         pontovirtualacessos.Should().NotBeNull();
-        pontovirtualacessos.ITabelaName().Should().Be("PontoVirtualAcessos");
+        pontovirtualacessos.ITableName().Should().Be("PontoVirtualAcessos");
         pontovirtualacessos.ID.Should().Be(0);
     }
 
@@ -121,7 +121,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOrigem);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -135,7 +135,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOrigem);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -151,7 +151,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FOrigem);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -166,7 +166,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         _instance.FOrigem = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -180,7 +180,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         _instance.FOrigem = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -194,7 +194,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         _instance.FOrigem = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -208,7 +208,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOrigem);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -234,7 +234,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         _instance.FOrigem = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -248,7 +248,7 @@ public class DBPontoVirtualAcessosUpdate : IDisposable
         _instance.FOrigem = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

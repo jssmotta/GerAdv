@@ -54,8 +54,80 @@ public partial class DBInstancia
         // Checkpoint Carregar 
         try
         {
+            FAccessCode = getValue(DBInstanciaDicInfo.AccessCode)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBInstanciaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FLiminarPedida = getValue(DBInstanciaDicInfo.LiminarPedida)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FLiminarResultado = getValue(DBInstanciaDicInfo.LiminarResultado)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNroAntigo = getValue(DBInstanciaDicInfo.NroAntigo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNroProcesso = getValue(DBInstanciaDicInfo.NroProcesso)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObjeto = getValue(DBInstanciaDicInfo.Objeto)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FZKey = getValue(DBInstanciaDicInfo.ZKey)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FZKeyIA = getValue(DBInstanciaDicInfo.ZKeyIA)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Acao)))
-                m_FAcao = Convert.ToInt32(getValue(DBInstanciaDicInfo.Acao));
+                FAcao = Convert.ToInt32(getValue(DBInstanciaDicInfo.Acao));
         }
         catch
         {
@@ -64,7 +136,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Comarca)))
-                m_FComarca = Convert.ToInt32(getValue(DBInstanciaDicInfo.Comarca));
+                FComarca = Convert.ToInt32(getValue(DBInstanciaDicInfo.Comarca));
         }
         catch
         {
@@ -73,7 +145,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBInstanciaDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBInstanciaDicInfo.Data)));
         }
         catch
         {
@@ -82,7 +154,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Divisao)))
-                m_FDivisao = Convert.ToInt32(getValue(DBInstanciaDicInfo.Divisao));
+                FDivisao = Convert.ToInt32(getValue(DBInstanciaDicInfo.Divisao));
         }
         catch
         {
@@ -109,7 +181,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Foro)))
-                m_FForo = Convert.ToInt32(getValue(DBInstanciaDicInfo.Foro));
+                FForo = Convert.ToInt32(getValue(DBInstanciaDicInfo.Foro));
         }
         catch
         {
@@ -118,7 +190,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.InterpusemosRecurso)))
-                m_FInterpusemosRecurso = Convert.ToBoolean(getValue(DBInstanciaDicInfo.InterpusemosRecurso));
+                FInterpusemosRecurso = Convert.ToBoolean(getValue(DBInstanciaDicInfo.InterpusemosRecurso));
         }
         catch
         {
@@ -127,7 +199,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Julgador)))
-                m_FJulgador = Convert.ToInt32(getValue(DBInstanciaDicInfo.Julgador));
+                FJulgador = Convert.ToInt32(getValue(DBInstanciaDicInfo.Julgador));
         }
         catch
         {
@@ -136,7 +208,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.LiminarCliente)))
-                m_FLiminarCliente = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarCliente));
+                FLiminarCliente = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarCliente));
         }
         catch
         {
@@ -145,7 +217,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.LiminarConcedida)))
-                m_FLiminarConcedida = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarConcedida));
+                FLiminarConcedida = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarConcedida));
         }
         catch
         {
@@ -154,7 +226,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.LiminarNegada)))
-                m_FLiminarNegada = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarNegada));
+                FLiminarNegada = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarNegada));
         }
         catch
         {
@@ -163,7 +235,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.LiminarParcial)))
-                m_FLiminarParcial = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarParcial));
+                FLiminarParcial = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarParcial));
         }
         catch
         {
@@ -172,7 +244,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.LiminarPendente)))
-                m_FLiminarPendente = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarPendente));
+                FLiminarPendente = Convert.ToBoolean(getValue(DBInstanciaDicInfo.LiminarPendente));
         }
         catch
         {
@@ -181,7 +253,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Principal)))
-                m_FPrincipal = Convert.ToBoolean(getValue(DBInstanciaDicInfo.Principal));
+                FPrincipal = Convert.ToBoolean(getValue(DBInstanciaDicInfo.Principal));
         }
         catch
         {
@@ -190,7 +262,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBInstanciaDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBInstanciaDicInfo.Processo));
         }
         catch
         {
@@ -199,7 +271,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBInstanciaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBInstanciaDicInfo.QuemAtu));
         }
         catch
         {
@@ -208,7 +280,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBInstanciaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBInstanciaDicInfo.QuemCad));
         }
         catch
         {
@@ -217,7 +289,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.StatusResultado)))
-                m_FStatusResultado = Convert.ToInt32(getValue(DBInstanciaDicInfo.StatusResultado));
+                FStatusResultado = Convert.ToInt32(getValue(DBInstanciaDicInfo.StatusResultado));
         }
         catch
         {
@@ -226,7 +298,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.SubDivisao)))
-                m_FSubDivisao = Convert.ToInt32(getValue(DBInstanciaDicInfo.SubDivisao));
+                FSubDivisao = Convert.ToInt32(getValue(DBInstanciaDicInfo.SubDivisao));
         }
         catch
         {
@@ -235,7 +307,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.TipoRecurso)))
-                m_FTipoRecurso = Convert.ToInt32(getValue(DBInstanciaDicInfo.TipoRecurso));
+                FTipoRecurso = Convert.ToInt32(getValue(DBInstanciaDicInfo.TipoRecurso));
         }
         catch
         {
@@ -244,7 +316,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBInstanciaDicInfo.Visto));
+                FVisto = Convert.ToBoolean(getValue(DBInstanciaDicInfo.Visto));
         }
         catch
         {
@@ -253,7 +325,7 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.ZKeyQuando)))
-                m_FZKeyQuando = Convert.ToDateTime(getValue(DBInstanciaDicInfo.ZKeyQuando));
+                FZKeyQuando = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBInstanciaDicInfo.ZKeyQuando)));
         }
         catch
         {
@@ -262,86 +334,14 @@ public partial class DBInstancia
         try
         {
             if (!DBNull.Value.Equals(getValue(DBInstanciaDicInfo.ZKeyQuem)))
-                m_FZKeyQuem = Convert.ToInt32(getValue(DBInstanciaDicInfo.ZKeyQuem));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAccessCode = getValue(DBInstanciaDicInfo.AccessCode)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBInstanciaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FLiminarPedida = getValue(DBInstanciaDicInfo.LiminarPedida)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FLiminarResultado = getValue(DBInstanciaDicInfo.LiminarResultado)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNroAntigo = getValue(DBInstanciaDicInfo.NroAntigo)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNroProcesso = getValue(DBInstanciaDicInfo.NroProcesso)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObjeto = getValue(DBInstanciaDicInfo.Objeto)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FZKey = getValue(DBInstanciaDicInfo.ZKey)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FZKeyIA = getValue(DBInstanciaDicInfo.ZKeyIA)?.ToString() ?? string.Empty;
+                FZKeyQuem = Convert.ToInt32(getValue(DBInstanciaDicInfo.ZKeyQuem));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -365,7 +365,7 @@ public partial class DBInstancia
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

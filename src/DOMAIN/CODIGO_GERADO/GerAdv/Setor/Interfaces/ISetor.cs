@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ISetorService
 {
+    Task<Filters.FilterSetor> FilterVoice([FromBody] Filters.FilterSetor filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<SetorResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterSetor filter, [FromRoute, Required] string uri = "");
     Task<SetorResponse?> AddAndUpdate(Models.Setor? regSetor, [FromRoute, Required] string uri = "");
     Task<SetorResponse?> Validation(Models.Setor? regSetor, [FromRoute, Required] string uri = "");
     Task<SetorResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<SetorResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<SetorResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterSetor? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

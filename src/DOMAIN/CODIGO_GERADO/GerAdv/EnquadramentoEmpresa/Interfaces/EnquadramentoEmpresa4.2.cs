@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IEnquadramentoEmpresaReader
 {
-    Task<EnquadramentoEmpresaResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.EnquadramentoEmpresa?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<EnquadramentoEmpresaResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.EnquadramentoEmpresa?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     EnquadramentoEmpresaResponse? Read(FEnquadramentoEmpresa dbRec, MsiSqlConnection? oCnn);
     EnquadramentoEmpresaResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     EnquadramentoEmpresaResponse? Read(FEnquadramentoEmpresa dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     EnquadramentoEmpresaResponseAll? ReadAll(FEnquadramentoEmpresa dbRec, IDataRecord dr);
     EnquadramentoEmpresaResponseAll? ReadAll(SG.GerAdv.DBEnquadramentoEmpresa dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<EnquadramentoEmpresaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<EnquadramentoEmpresaResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

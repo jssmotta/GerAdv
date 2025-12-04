@@ -23,12 +23,6 @@ public partial class FRitoFactory : IFRitoFactory, IDisposable
         return FRito.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FRito> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FRito().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FRito> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FRitoFactory : IFRitoFactory, IDisposable
         return FRito.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FRito> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FRito().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FRitoFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

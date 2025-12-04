@@ -15,11 +15,11 @@ public static partial class DBGUTAtividadesDicInfo
     public const string GUTGrupo = "agtGUTGrupo"; // LOCALIZACAO 170523
     public const string GUTPeriodicidade = "agtGUTPeriodicidade"; // LOCALIZACAO 170523
     public const string Operador = "agtOperador"; // LOCALIZACAO 170523
-    public const string GUID = "agtGUID"; // LOCALIZACAO 170523
     public const string Concluido = "agtConcluido"; // LOCALIZACAO 170523
     public const string DataConcluido = "agtDataConcluido"; // LOCALIZACAO 170523
     public const string DiasParaIniciar = "agtDiasParaIniciar"; // LOCALIZACAO 170523
     public const string MinutosParaRealizar = "agtMinutosParaRealizar"; // LOCALIZACAO 170523
+    public const string Guid = "agtGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "agtQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "agtDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "agtQuemAtu"; // LOCALIZACAO 170523
@@ -47,72 +47,21 @@ public static partial class DBGUTAtividadesDicInfo
 
     public const string PTabelaNome = "GUTAtividades";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AgtNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtGUTGrupo => new(0, PTabelaNome, CampoCodigo, GUTGrupo, "GUTGrupo", "GUTGrupo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtGUTPeriodicidade => new(0, PTabelaNome, CampoCodigo, GUTPeriodicidade, "GUTPeriodicidade", "GUTPeriodicidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBGUTPeriodicidadeDicInfo.CampoCodigo, DBGUTPeriodicidadeDicInfo.TabelaNome, new DBGUTPeriodicidadeODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "agt"
-    }; // DBI 11 
-    public static DBInfoSystem AgtOperador => new(0, PTabelaNome, CampoCodigo, Operador, "Operador", "Operador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "agt"
-    }; // DBI 11 
-    public static DBInfoSystem AgtGUID => new(0, PTabelaNome, CampoCodigo, GUID, 50, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtConcluido => new(0, PTabelaNome, CampoCodigo, Concluido, "Concluido", "Concluido", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtDataConcluido => new(0, PTabelaNome, CampoCodigo, DataConcluido, "DataConcluido", "DataConcluido", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtDiasParaIniciar => new(0, PTabelaNome, CampoCodigo, DiasParaIniciar, "DiasParaIniciar", "DiasParaIniciar", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtMinutosParaRealizar => new(0, PTabelaNome, CampoCodigo, MinutosParaRealizar, "MinutosParaRealizar", "MinutosParaRealizar", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "agt"
-    }; // DBI 11 
-    public static DBInfoSystem AgtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "agt"
-    }; // DBI 11 
-    public static DBInfoSystem AgtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "agt"
-    };
-    public static DBInfoSystem AgtVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "agt"
-    };
+    public static DBInfoSystem AgtNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "agt", isRequired: true);
+    public static DBInfoSystem AgtObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "agt");
+    public static DBInfoSystem AgtGUTGrupo => new(0, PTabelaNome, CampoCodigo, GUTGrupo, GUTGrupo, GUTGrupo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "agt");
+    public static DBInfoSystem AgtGUTPeriodicidade => new(0, PTabelaNome, CampoCodigo, GUTPeriodicidade, GUTPeriodicidade, GUTPeriodicidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBGUTPeriodicidadeDicInfo.CampoCodigo, DBGUTPeriodicidadeDicInfo.TabelaNome, new DBGUTPeriodicidadeODicInfo(), false, prefixo: "agt", isRequired: true); // DBI 11 
+    public static DBInfoSystem AgtOperador => new(0, PTabelaNome, CampoCodigo, Operador, Operador, Operador, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "agt"); // DBI 11 
+    public static DBInfoSystem AgtConcluido => new(0, PTabelaNome, CampoCodigo, Concluido, Concluido, Concluido, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "agt");
+    public static DBInfoSystem AgtDataConcluido => new(0, PTabelaNome, CampoCodigo, DataConcluido, DataConcluido, DataConcluido, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "agt");
+    public static DBInfoSystem AgtDiasParaIniciar => new(0, PTabelaNome, CampoCodigo, DiasParaIniciar, DiasParaIniciar, DiasParaIniciar, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "agt");
+    public static DBInfoSystem AgtMinutosParaRealizar => new(0, PTabelaNome, CampoCodigo, MinutosParaRealizar, MinutosParaRealizar, MinutosParaRealizar, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "agt");
+    public static DBInfoSystem AgtGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "agt", isRequired: true);
+    public static DBInfoSystem AgtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "agt", isRequired: true); // DBI 11 
+    public static DBInfoSystem AgtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "agt", isRequired: true);
+    public static DBInfoSystem AgtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "agt"); // DBI 11 
+    public static DBInfoSystem AgtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "agt");
+    public static DBInfoSystem AgtVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "agt", isRequired: true);
 
 #endregion
     [Serializable]

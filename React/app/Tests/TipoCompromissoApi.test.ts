@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { TipoCompromissoApiError } from '../GerAdv_TS/TipoCompromisso/Apis/ApiTipoCompromisso';
+import { TipoCompromissoApiError } from '@/app/GerAdv_TS/TipoCompromisso/Apis/ApiTipoCompromisso';
 import { TipoCompromissoApi } from '@/app/GerAdv_TS/TipoCompromisso/Apis/ApiTipoCompromisso';
-import { FilterTipoCompromisso } from '../GerAdv_TS/TipoCompromisso/Filters/TipoCompromisso';
-import { ITipoCompromisso } from '../GerAdv_TS/TipoCompromisso/Interfaces/interface.TipoCompromisso';
-import { TipoCompromissoTestEmpty } from '../GerAdv_TS/Models/TipoCompromisso';
+import { FilterTipoCompromisso } from '@/app/GerAdv_TS/TipoCompromisso/Filters/TipoCompromisso';
+import { ITipoCompromisso } from '@/app/GerAdv_TS/TipoCompromisso/Interfaces/interface.TipoCompromisso';
+import { TipoCompromissoTestEmpty } from '@/app/GerAdv_TS/Models/TipoCompromisso';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('TipoCompromissoApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterTipoCompromisso = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('TipoCompromissoApi', () => {
   describe('addAndUpdate', () => {
     const mockTipoCompromisso: ITipoCompromisso = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+icone: 0,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+financeiro: false
     };
 
     it('should add new tipocompromisso successfully', async () => {
@@ -487,7 +477,7 @@ describe('TipoCompromissoApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterTipoCompromisso = { funcionario: 1 };
+      const mockFilter: FilterTipoCompromisso = { : 1 };
       
       const result = tipocompromissoApi.useFilter(mockFilter);
       

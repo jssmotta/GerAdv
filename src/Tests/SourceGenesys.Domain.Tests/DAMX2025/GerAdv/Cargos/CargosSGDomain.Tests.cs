@@ -39,6 +39,19 @@ public class DBCargosTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["carCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBCargos(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -57,7 +70,7 @@ public class DBCargosTests : IDisposable
     {
         var instance = new DBCargos();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Cargos", instance.ITabelaName());
+        Assert.Equal("Cargos", instance.ITableName());
         Assert.Equal("car", instance.Prefixo);
     }
 
@@ -75,29 +88,16 @@ public class DBCargosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["carCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBCargos(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Cargos", cadastro.ITabelaName());
-        Assert.Equal("carCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("carNome", cadastro.ICampoNome());
-        Assert.Equal("car", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Cargos", cadastro.ITableName());
+        Assert.Equal("carCodigo", cadastro.IFieldId());
+        Assert.Equal("carNome", cadastro.IFieldNameDescription());
+        Assert.Equal("car", cadastro.IPrefix());
     }
 
 #endregion
@@ -157,9 +157,9 @@ public class DBCargosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

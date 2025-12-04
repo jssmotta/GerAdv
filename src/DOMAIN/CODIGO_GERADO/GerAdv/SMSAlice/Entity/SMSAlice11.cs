@@ -23,12 +23,6 @@ public partial class FSMSAliceFactory : IFSMSAliceFactory, IDisposable
         return FSMSAlice.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FSMSAlice> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FSMSAlice().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FSMSAlice> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FSMSAliceFactory : IFSMSAliceFactory, IDisposable
         return FSMSAlice.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FSMSAlice> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FSMSAlice().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FSMSAliceFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

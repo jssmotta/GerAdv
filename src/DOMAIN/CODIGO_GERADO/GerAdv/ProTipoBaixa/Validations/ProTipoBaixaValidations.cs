@@ -28,8 +28,6 @@ public class ProTipoBaixaValidation : IProTipoBaixaValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBProTipoBaixaDicInfo.PtxNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBProTipoBaixaDicInfo.PtxNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProTipoBaixaDicInfo.PtxGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProTipoBaixaDicInfo.PtxGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class ProTipoBaixaValidation : IProTipoBaixaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

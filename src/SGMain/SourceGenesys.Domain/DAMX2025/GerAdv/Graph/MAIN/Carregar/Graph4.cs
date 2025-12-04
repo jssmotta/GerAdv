@@ -54,6 +54,22 @@ public partial class DBGraph
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBGraphDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTabela = getValue(DBGraphDicInfo.Tabela)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBGraphDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBGraph
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.Imagem)))
-                m_FImagem = getValue(DBGraphDicInfo.Imagem) as byte[] ?? [0];
+                FImagem = getValue(DBGraphDicInfo.Imagem) as byte[] ?? [0];
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBGraph
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGraphDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGraphDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBGraph
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGraphDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGraphDicInfo.QuemCad));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBGraph
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.TabelaId)))
-                m_FTabelaId = Convert.ToInt32(getValue(DBGraphDicInfo.TabelaId));
+                FTabelaId = Convert.ToInt32(getValue(DBGraphDicInfo.TabelaId));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBGraph
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGraphDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGraphDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGraphDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTabela = getValue(DBGraphDicInfo.Tabela)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGraphDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBGraph
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

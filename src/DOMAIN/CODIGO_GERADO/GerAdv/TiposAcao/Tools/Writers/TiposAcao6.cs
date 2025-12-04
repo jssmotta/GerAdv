@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITiposAcaoWriter
 {
     Task<FTiposAcao> WriteAsync(Models.TiposAcao tiposacao, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TiposAcaoWriter(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWriter
 {
     private readonly IFTiposAcaoFactory _tiposacaoFactory = tiposacaoFactory ?? throw new ArgumentNullException(nameof(tiposacaoFactory));
-    public virtual async Task Delete(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TiposAcaoResponse tiposacao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tiposacaoFactory.DeleteAsync(operadorId, tiposacao.Id, oCnn);
     }
@@ -25,7 +25,8 @@ public class TiposAcaoWriter(IFTiposAcaoFactory tiposacaoFactory) : ITiposAcaoWr
         using var dbRec = await (tiposacao.Id.IsEmptyIDNumber() ? _tiposacaoFactory.CreateAsync() : _tiposacaoFactory.CreateFromIdAsync(tiposacao.Id, oCnn));
         dbRec.FNome = tiposacao.Nome;
         dbRec.FInativo = tiposacao.Inativo;
-        dbRec.FGUID = tiposacao.GUID;
+        dbRec.FBold = tiposacao.Bold;
+        dbRec.FGuid = tiposacao.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

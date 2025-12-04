@@ -9,25 +9,29 @@ public partial class DBSetorODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBSetorDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBSetorDicInfo.CampoCodigo;
+    public string IFieldId() => DBSetorDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBSetorDicInfo.TablePrefix;
+    public string IPrefix() => DBSetorDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBSetorDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBSetorDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,8 +41,8 @@ public partial class DBSetorODicInfo : IODicInfo
     public static string TCampoNome => DBSetorDicInfo.CampoNome;
     public static string TTabelaNome => DBSetorDicInfo.TabelaNome;
     public static string TTablePrefix => DBSetorDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBSetorDicInfo.SetDescricao, DBSetorDicInfo.SetGUID, DBSetorDicInfo.SetQuemCad, DBSetorDicInfo.SetDtCad, DBSetorDicInfo.SetQuemAtu, DBSetorDicInfo.SetDtAtu, DBSetorDicInfo.SetVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBSetorDicInfo.SetDescricao, DBSetorDicInfo.SetGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBSetorDicInfo.SetDescricao, DBSetorDicInfo.SetGuid, DBSetorDicInfo.SetQuemCad, DBSetorDicInfo.SetDtCad, DBSetorDicInfo.SetQuemAtu, DBSetorDicInfo.SetDtAtu, DBSetorDicInfo.SetVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBSetorDicInfo.SetDescricao, DBSetorDicInfo.SetGuid];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ImmutableArray<DBInfoSystem> ListPk() => [];
@@ -46,6 +50,6 @@ public partial class DBSetorODicInfo : IODicInfo
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["setDescricao"]);
         var result = campos.Where(campo => !campo.Equals(DBSetorDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

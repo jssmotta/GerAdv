@@ -54,8 +54,72 @@ public partial class DBLigacoes
         // Checkpoint Carregar 
         try
         {
+            FAssunto = getValue(DBLigacoesDicInfo.Assunto)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FContato = getValue(DBLigacoesDicInfo.Contato)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBLigacoesDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBLigacoesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FLigarPara = getValue(DBLigacoesDicInfo.LigarPara)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBLigacoesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPara = getValue(DBLigacoesDicInfo.Para)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FStatus = getValue(DBLigacoesDicInfo.Status)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.AgeClienteAvisado)))
-                m_FAgeClienteAvisado = Convert.ToInt32(getValue(DBLigacoesDicInfo.AgeClienteAvisado));
+                FAgeClienteAvisado = Convert.ToInt32(getValue(DBLigacoesDicInfo.AgeClienteAvisado));
         }
         catch
         {
@@ -64,7 +128,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +137,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Celular)))
-                m_FCelular = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Celular));
+                FCelular = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Celular));
         }
         catch
         {
@@ -82,7 +146,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBLigacoesDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBLigacoesDicInfo.Cliente));
         }
         catch
         {
@@ -91,7 +155,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBLigacoesDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBLigacoesDicInfo.Data)));
         }
         catch
         {
@@ -100,7 +164,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.DataRealizada)))
-                m_FDataRealizada = Convert.ToDateTime(getValue(DBLigacoesDicInfo.DataRealizada));
+                FDataRealizada = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBLigacoesDicInfo.DataRealizada)));
         }
         catch
         {
@@ -127,7 +191,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Emotion)))
-                m_FEmotion = Convert.ToInt32(getValue(DBLigacoesDicInfo.Emotion));
+                FEmotion = Convert.ToInt32(getValue(DBLigacoesDicInfo.Emotion));
         }
         catch
         {
@@ -136,7 +200,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Hora)))
-                m_FHora = Convert.ToDateTime(getValue(DBLigacoesDicInfo.Hora));
+                FHora = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBLigacoesDicInfo.Hora)));
         }
         catch
         {
@@ -145,7 +209,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.HoraFinal)))
-                m_FHoraFinal = Convert.ToDateTime(getValue(DBLigacoesDicInfo.HoraFinal));
+                FHoraFinal = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBLigacoesDicInfo.HoraFinal)));
         }
         catch
         {
@@ -154,7 +218,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Particular)))
-                m_FParticular = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Particular));
+                FParticular = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Particular));
         }
         catch
         {
@@ -163,7 +227,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBLigacoesDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBLigacoesDicInfo.Processo));
         }
         catch
         {
@@ -172,7 +236,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemAtu));
         }
         catch
         {
@@ -181,7 +245,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemCad));
         }
         catch
         {
@@ -190,7 +254,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.QuemCodigo)))
-                m_FQuemCodigo = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemCodigo));
+                FQuemCodigo = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemCodigo));
         }
         catch
         {
@@ -199,7 +263,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.QuemID)))
-                m_FQuemID = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemID));
+                FQuemID = Convert.ToInt32(getValue(DBLigacoesDicInfo.QuemID));
         }
         catch
         {
@@ -208,7 +272,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Ramal)))
-                m_FRamal = Convert.ToInt32(getValue(DBLigacoesDicInfo.Ramal));
+                FRamal = Convert.ToInt32(getValue(DBLigacoesDicInfo.Ramal));
         }
         catch
         {
@@ -217,7 +281,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Realizada)))
-                m_FRealizada = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Realizada));
+                FRealizada = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Realizada));
         }
         catch
         {
@@ -226,7 +290,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Solicitante)))
-                m_FSolicitante = Convert.ToInt32(getValue(DBLigacoesDicInfo.Solicitante));
+                FSolicitante = Convert.ToInt32(getValue(DBLigacoesDicInfo.Solicitante));
         }
         catch
         {
@@ -235,7 +299,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.StartScreen)))
-                m_FStartScreen = Convert.ToBoolean(getValue(DBLigacoesDicInfo.StartScreen));
+                FStartScreen = Convert.ToBoolean(getValue(DBLigacoesDicInfo.StartScreen));
         }
         catch
         {
@@ -244,7 +308,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Telefonista)))
-                m_FTelefonista = Convert.ToInt32(getValue(DBLigacoesDicInfo.Telefonista));
+                FTelefonista = Convert.ToInt32(getValue(DBLigacoesDicInfo.Telefonista));
         }
         catch
         {
@@ -253,7 +317,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.UltimoAviso)))
-                m_FUltimoAviso = Convert.ToDateTime(getValue(DBLigacoesDicInfo.UltimoAviso));
+                FUltimoAviso = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBLigacoesDicInfo.UltimoAviso)));
         }
         catch
         {
@@ -262,7 +326,7 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Urgente)))
-                m_FUrgente = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Urgente));
+                FUrgente = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Urgente));
         }
         catch
         {
@@ -271,78 +335,14 @@ public partial class DBLigacoes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLigacoesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssunto = getValue(DBLigacoesDicInfo.Assunto)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FContato = getValue(DBLigacoesDicInfo.Contato)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBLigacoesDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBLigacoesDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FLigarPara = getValue(DBLigacoesDicInfo.LigarPara)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBLigacoesDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPara = getValue(DBLigacoesDicInfo.Para)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FStatus = getValue(DBLigacoesDicInfo.Status)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBLigacoesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -366,7 +366,7 @@ public partial class DBLigacoes
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

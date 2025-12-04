@@ -23,12 +23,6 @@ public partial class FEventoPrazoAgendaFactory : IFEventoPrazoAgendaFactory, IDi
         return FEventoPrazoAgenda.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEventoPrazoAgenda> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FEventoPrazoAgenda().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FEventoPrazoAgenda> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FEventoPrazoAgendaFactory : IFEventoPrazoAgendaFactory, IDi
         return FEventoPrazoAgenda.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FEventoPrazoAgenda> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FEventoPrazoAgenda().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FEventoPrazoAgendaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

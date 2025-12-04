@@ -74,8 +74,8 @@ public class ProTipoBaixaWriterTests
         var result = await _protipobaixaWriter.WriteAsync(protipobaixa, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProTipoBaixa.Object);
+        _mockFProTipoBaixa.VerifySet(x => x.FGuid = protipobaixa.Guid, Times.Once);
         _mockFProTipoBaixa.VerifySet(x => x.FNome = protipobaixa.Nome, Times.Once);
-        _mockFProTipoBaixa.VerifySet(x => x.FGUID = protipobaixa.GUID, Times.Once);
         _mockFProTipoBaixa.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class ProTipoBaixaWriterTests
         var operadorId = 456;
         _mockProTipoBaixaFactory.Setup(x => x.DeleteAsync(operadorId, protipobaixaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _protipobaixaWriter.Delete(protipobaixaResponse, operadorId, _mockConnection.Object);
+        await _protipobaixaWriter.DeleteAsync(protipobaixaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProTipoBaixaFactory.Verify(x => x.DeleteAsync(operadorId, protipobaixaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class ProTipoBaixaWriterTests
         var operadorId = 111;
         _mockProTipoBaixaFactory.Setup(x => x.DeleteAsync(operadorId, protipobaixaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _protipobaixaWriter.Delete(protipobaixaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _protipobaixaWriter.DeleteAsync(protipobaixaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class ProTipoBaixaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProTipoBaixaFactory.Setup(x => x.DeleteAsync(operadorId, protipobaixaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _protipobaixaWriter.Delete(protipobaixaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _protipobaixaWriter.DeleteAsync(protipobaixaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class ProTipoBaixaWriterTests
         return new Models.ProTipoBaixa
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

@@ -11,8 +11,8 @@ public static partial class DBProTipoBaixaDicInfo
     public const string CampoNome = "ptxNome";
     public const string TablePrefix = "ptx";
     public const string Nome = "ptxNome"; // LOCALIZACAO 170523
-    public const string GUID = "ptxGUID"; // LOCALIZACAO 170523
     public const string Bold = "ptxBold"; // LOCALIZACAO 170523
+    public const string Guid = "ptxGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ptxQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ptxDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ptxQuemAtu"; // LOCALIZACAO 170523
@@ -33,40 +33,14 @@ public static partial class DBProTipoBaixaDicInfo
 
     public const string PTabelaNome = "ProTipoBaixa";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PtxNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "ptx"
-    };
-    public static DBInfoSystem PtxGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ptx"
-    };
-    public static DBInfoSystem PtxBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "ptx"
-    };
-    public static DBInfoSystem PtxQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ptx"
-    }; // DBI 11 
-    public static DBInfoSystem PtxDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ptx"
-    };
-    public static DBInfoSystem PtxQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ptx"
-    }; // DBI 11 
-    public static DBInfoSystem PtxDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ptx"
-    };
-    public static DBInfoSystem PtxVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "ptx"
-    };
+    public static DBInfoSystem PtxNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "ptx");
+    public static DBInfoSystem PtxBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "ptx", isRequired: true);
+    public static DBInfoSystem PtxGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ptx");
+    public static DBInfoSystem PtxQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ptx"); // DBI 11 
+    public static DBInfoSystem PtxDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ptx");
+    public static DBInfoSystem PtxQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ptx"); // DBI 11 
+    public static DBInfoSystem PtxDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ptx");
+    public static DBInfoSystem PtxVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ptx", isRequired: true);
 
 #endregion
     [Serializable]

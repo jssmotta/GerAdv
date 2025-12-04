@@ -32,7 +32,7 @@ public partial class DBAgendaSemana
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -165,21 +165,21 @@ public partial class DBAgendaSemana
 
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFParaNome) updateTool.Fields(DBAgendaSemanaDicInfo.ParaNome, m_FParaNome, ETiposCampos.FString);
-if (pFldFData) updateTool.Fields(DBAgendaSemanaDicInfo.Data, m_FData, ETiposCampos.FString);
-if (pFldFFuncionario) updateTool.Fields(DBAgendaSemanaDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumber);
-if (pFldFAdvogado) updateTool.Fields(DBAgendaSemanaDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumber);
-if (pFldFHora) updateTool.Fields(DBAgendaSemanaDicInfo.Hora, m_FHora, ETiposCampos.FString);
-if (pFldFTipoCompromisso) updateTool.Fields(DBAgendaSemanaDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumber);
-if (pFldFCompromisso) updateTool.Fields(DBAgendaSemanaDicInfo.Compromisso, m_FCompromisso, ETiposCampos.FString);
-if (pFldFConcluido || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
-if (pFldFLiberado || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Liberado, m_FLiberado, ETiposCampos.FBoolean);
-if (pFldFImportante || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Importante, m_FImportante, ETiposCampos.FBoolean);
-if (pFldFHoraFinal) updateTool.Fields(DBAgendaSemanaDicInfo.HoraFinal, m_FHoraFinal, ETiposCampos.FString);
-if (pFldFNome) updateTool.Fields(DBAgendaSemanaDicInfo.Nome, m_FNome, ETiposCampos.FString);
-if (pFldFCliente) updateTool.Fields(DBAgendaSemanaDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-if (pFldFNomeCliente) updateTool.Fields(DBAgendaSemanaDicInfo.NomeCliente, m_FNomeCliente, ETiposCampos.FString);
-if (pFldFTipo) updateTool.Fields(DBAgendaSemanaDicInfo.Tipo, m_FTipo, ETiposCampos.FString);
+        if (pFldFParaNome) updateTool.Fields(DBAgendaSemanaDicInfo.ParaNome, FParaNome, EGenericTypeFields.FString);
+if (pFldFData) updateTool.Fields(DBAgendaSemanaDicInfo.Data, FData, EGenericTypeFields.FDate);
+if (pFldFFuncionario) updateTool.Fields(DBAgendaSemanaDicInfo.Funcionario, FFuncionario, EGenericTypeFields.FNumber);
+if (pFldFAdvogado) updateTool.Fields(DBAgendaSemanaDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumber);
+if (pFldFHora) updateTool.Fields(DBAgendaSemanaDicInfo.Hora, FHora, EGenericTypeFields.FDate);
+if (pFldFTipoCompromisso) updateTool.Fields(DBAgendaSemanaDicInfo.TipoCompromisso, FTipoCompromisso, EGenericTypeFields.FNumber);
+if (pFldFCompromisso) updateTool.Fields(DBAgendaSemanaDicInfo.Compromisso, FCompromisso, EGenericTypeFields.FString);
+if (pFldFConcluido || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Concluido, FConcluido, EGenericTypeFields.FBoolean);
+if (pFldFLiberado || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Liberado, FLiberado, EGenericTypeFields.FBoolean);
+if (pFldFImportante || updateTool.Insert) updateTool.Fields(DBAgendaSemanaDicInfo.Importante, FImportante, EGenericTypeFields.FBoolean);
+if (pFldFHoraFinal) updateTool.Fields(DBAgendaSemanaDicInfo.HoraFinal, FHoraFinal, EGenericTypeFields.FDate);
+if (pFldFNome) updateTool.Fields(DBAgendaSemanaDicInfo.Nome, FNome, EGenericTypeFields.FString);
+if (pFldFCliente) updateTool.Fields(DBAgendaSemanaDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
+if (pFldFNomeCliente) updateTool.Fields(DBAgendaSemanaDicInfo.NomeCliente, FNomeCliente, EGenericTypeFields.FString);
+if (pFldFTipo) updateTool.Fields(DBAgendaSemanaDicInfo.Tipo, FTipo, EGenericTypeFields.FString);
 
     }
 
@@ -187,7 +187,7 @@ if (pFldFTipo) updateTool.Fields(DBAgendaSemanaDicInfo.Tipo, m_FTipo, ETiposCamp
 #if (!NOTSTORED_AgendaSemana)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {    
-         
+        
     }
 
     private async Task<int> GravaNewIdAsync(
@@ -197,7 +197,7 @@ if (pFldFTipo) updateTool.Fields(DBAgendaSemanaDicInfo.Tipo, m_FTipo, ETiposCamp
         CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
 
         return result == "OK" ? 0 : -3;

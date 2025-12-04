@@ -12,7 +12,7 @@ public static partial class DBGUTAtividadesMatrizDicInfo
     public const string TablePrefix = "amg";
     public const string GUTMatriz = "amgGUTMatriz"; // LOCALIZACAO 170523
     public const string GUTAtividade = "amgGUTAtividade"; // LOCALIZACAO 170523
-    public const string GUID = "amgGUID"; // LOCALIZACAO 170523
+    public const string Guid = "amgGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "amgQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "amgDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "amgQuemAtu"; // LOCALIZACAO 170523
@@ -33,44 +33,14 @@ public static partial class DBGUTAtividadesMatrizDicInfo
 
     public const string PTabelaNome = "GUTAtividadesMatriz";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AmgGUTMatriz => new(0, PTabelaNome, CampoCodigo, GUTMatriz, "GUTMatriz", "GUTMatriz", ETipoDadosSysteminfo.SysteminfoForeingkey, DBGUTMatrizDicInfo.CampoCodigo, DBGUTMatrizDicInfo.TabelaNome, new DBGUTMatrizODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "amg"
-    }; // DBI 11 
-    public static DBInfoSystem AmgGUTAtividade => new(0, PTabelaNome, CampoCodigo, GUTAtividade, "GUTAtividade", "GUTAtividade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBGUTAtividadesDicInfo.CampoCodigo, DBGUTAtividadesDicInfo.TabelaNome, new DBGUTAtividadesODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "amg"
-    }; // DBI 11 
-    public static DBInfoSystem AmgGUID => new(0, PTabelaNome, CampoCodigo, GUID, 50, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "amg"
-    };
-    public static DBInfoSystem AmgQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "amg"
-    }; // DBI 11 
-    public static DBInfoSystem AmgDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "amg"
-    };
-    public static DBInfoSystem AmgQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "amg"
-    }; // DBI 11 
-    public static DBInfoSystem AmgDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "amg"
-    };
-    public static DBInfoSystem AmgVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "amg"
-    };
+    public static DBInfoSystem AmgGUTMatriz => new(0, PTabelaNome, CampoCodigo, GUTMatriz, GUTMatriz, GUTMatriz, EDataTypeSystemInfo.SystemInfoForeingkey, DBGUTMatrizDicInfo.CampoCodigo, DBGUTMatrizDicInfo.TabelaNome, new DBGUTMatrizODicInfo(), false, prefixo: "amg", isRequired: true); // DBI 11 
+    public static DBInfoSystem AmgGUTAtividade => new(0, PTabelaNome, CampoCodigo, GUTAtividade, GUTAtividade, GUTAtividade, EDataTypeSystemInfo.SystemInfoForeingkey, DBGUTAtividadesDicInfo.CampoCodigo, DBGUTAtividadesDicInfo.TabelaNome, new DBGUTAtividadesODicInfo(), false, prefixo: "amg", isRequired: true); // DBI 11 
+    public static DBInfoSystem AmgGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "amg", isRequired: true);
+    public static DBInfoSystem AmgQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "amg", isRequired: true); // DBI 11 
+    public static DBInfoSystem AmgDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "amg", isRequired: true);
+    public static DBInfoSystem AmgQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "amg"); // DBI 11 
+    public static DBInfoSystem AmgDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "amg");
+    public static DBInfoSystem AmgVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "amg", isRequired: true);
 
 #endregion
     [Serializable]

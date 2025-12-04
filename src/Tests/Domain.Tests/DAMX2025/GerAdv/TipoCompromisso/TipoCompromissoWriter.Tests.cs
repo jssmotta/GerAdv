@@ -74,10 +74,10 @@ public class TipoCompromissoWriterTests
         var result = await _tipocompromissoWriter.WriteAsync(tipocompromisso, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoCompromisso.Object);
+        _mockFTipoCompromisso.VerifySet(x => x.FGuid = tipocompromisso.Guid, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.FIcone = tipocompromisso.Icone, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.FDescricao = tipocompromisso.Descricao, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.FFinanceiro = tipocompromisso.Financeiro, Times.Once);
-        _mockFTipoCompromisso.VerifySet(x => x.FGUID = tipocompromisso.GUID, Times.Once);
         _mockFTipoCompromisso.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class TipoCompromissoWriterTests
         var operadorId = 456;
         _mockTipoCompromissoFactory.Setup(x => x.DeleteAsync(operadorId, tipocompromissoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipocompromissoWriter.Delete(tipocompromissoResponse, operadorId, _mockConnection.Object);
+        await _tipocompromissoWriter.DeleteAsync(tipocompromissoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoCompromissoFactory.Verify(x => x.DeleteAsync(operadorId, tipocompromissoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class TipoCompromissoWriterTests
         var operadorId = 111;
         _mockTipoCompromissoFactory.Setup(x => x.DeleteAsync(operadorId, tipocompromissoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipocompromissoWriter.Delete(tipocompromissoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipocompromissoWriter.DeleteAsync(tipocompromissoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class TipoCompromissoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoCompromissoFactory.Setup(x => x.DeleteAsync(operadorId, tipocompromissoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipocompromissoWriter.Delete(tipocompromissoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipocompromissoWriter.DeleteAsync(tipocompromissoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class TipoCompromissoWriterTests
         return new Models.TipoCompromisso
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Icone = 1,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Financeiro = false,
-            GUID = Guid.NewGuid().ToString()
+            Financeiro = false
         };
     }
 #endregion

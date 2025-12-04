@@ -31,23 +31,24 @@ public partial class BensMateriaisWhere(IFBensMateriaisFactory bensmateriaisFact
             GarantiaLoja = dbRec.FGarantiaLoja,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             NomeVendedor = dbRec.FNomeVendedor ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCompra, out DateTime XDataCompra))
+        if (DateTime.TryParse(dbRec.FDataCompra.ToString(), out DateTime XDataCompra))
         {
-            bensmateriais.DataCompra = dbRec.FDataCompra;
+            bensmateriais.DataCompra = XDataCompra.ToString("dd/MM/yyyy");
             bensmateriais.DataCompra_date = XDataCompra;
         }
 
-        if (DateTime.TryParse(dbRec.FDataFimDaGarantia, out DateTime XDataFimDaGarantia))
+        if (DateTime.TryParse(dbRec.FDataFimDaGarantia.ToString(), out DateTime XDataFimDaGarantia))
         {
-            bensmateriais.DataFimDaGarantia = dbRec.FDataFimDaGarantia;
+            bensmateriais.DataFimDaGarantia = XDataFimDaGarantia.ToString("dd/MM/yyyy");
             bensmateriais.DataFimDaGarantia_date = XDataFimDaGarantia;
         }
 
-        if (DateTime.TryParse(dbRec.FDataTerminoDaGarantiaDaLoja, out DateTime XDataTerminoDaGarantiaDaLoja))
+        if (DateTime.TryParse(dbRec.FDataTerminoDaGarantiaDaLoja.ToString(), out DateTime XDataTerminoDaGarantiaDaLoja))
         {
-            bensmateriais.DataTerminoDaGarantiaDaLoja = dbRec.FDataTerminoDaGarantiaDaLoja;
+            bensmateriais.DataTerminoDaGarantiaDaLoja = XDataTerminoDaGarantiaDaLoja.ToString("dd/MM/yyyy");
             bensmateriais.DataTerminoDaGarantiaDaLoja_date = XDataTerminoDaGarantiaDaLoja;
         }
 

@@ -7,247 +7,240 @@ public partial class DBAgenda
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFIDCOB, pFldFClienteAvisado, pFldFRevisarP2, pFldFIDNE, pFldFCidade, pFldFOculto, pFldFCartaPrecatoria, pFldFRevisar, pFldFHrFinal, pFldFAdvogado, pFldFEventoGerador, pFldFEventoData, pFldFFuncionario, pFldFData, pFldFEventoPrazo, pFldFHora, pFldFCompromisso, pFldFTipoCompromisso, pFldFCliente, pFldFLiberado, pFldFImportante, pFldFConcluido, pFldFArea, pFldFJustica, pFldFProcesso, pFldFIDHistorico, pFldFIDInsProcesso, pFldFUsuario, pFldFPreposto, pFldFQuemID, pFldFQuemCodigo, pFldFGUID, pFldFStatus, pFldFValor, pFldFDecisao, pFldFSempre, pFldFPrazoDias, pFldFProtocoloIntegrado, pFldFDataInicioPrazo, pFldFUsuarioCiente;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FIDCOB, m_FIDNE, m_FCidade, m_FOculto, m_FCartaPrecatoria, m_FAdvogado, m_FEventoGerador, m_FFuncionario, m_FEventoPrazo, m_FTipoCompromisso, m_FCliente, m_FArea, m_FJustica, m_FProcesso, m_FIDHistorico, m_FIDInsProcesso, m_FUsuario, m_FPreposto, m_FQuemID, m_FQuemCodigo, m_FSempre, m_FPrazoDias, m_FProtocoloIntegrado;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FCompromisso, m_FGUID, m_FStatus, m_FDecisao;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FHrFinal, m_FEventoData, m_FData, m_FHora, m_FDataInicioPrazo;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FClienteAvisado, m_FRevisarP2, m_FRevisar, m_FLiberado, m_FImportante, m_FConcluido, m_FUsuarioCiente;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected decimal m_FValor;
+    private protected bool pFldFIDCOB, pFldFClienteAvisado, pFldFRevisarP2, pFldFIDNE, pFldFCidade, pFldFOculto, pFldFCartaPrecatoria, pFldFRevisar, pFldFHrFinal, pFldFAdvogado, pFldFEventoGerador, pFldFEventoData, pFldFFuncionario, pFldFData, pFldFEventoPrazo, pFldFHora, pFldFCompromisso, pFldFTipoCompromisso, pFldFCliente, pFldFLiberado, pFldFImportante, pFldFConcluido, pFldFArea, pFldFJustica, pFldFProcesso, pFldFIDHistorico, pFldFIDInsProcesso, pFldFUsuario, pFldFPreposto, pFldFQuemID, pFldFQuemCodigo, pFldFStatus, pFldFValor, pFldFDecisao, pFldFSempre, pFldFPrazoDias, pFldFProtocoloIntegrado, pFldFDataInicioPrazo, pFldFUsuarioCiente, pFldFGuid;
     public virtual int FIDCOB
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIDCOB;
+        get => field;
         set
         {
-            pFldFIDCOB = pFldFIDCOB || value != m_FIDCOB;
+            pFldFIDCOB = pFldFIDCOB || value != field;
             if (pFldFIDCOB)
-                m_FIDCOB = value;
+                field = value;
         }
     }
 
     public virtual bool FClienteAvisado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FClienteAvisado;
+        get => field;
         set
         {
-            pFldFClienteAvisado = pFldFClienteAvisado || value != m_FClienteAvisado;
+            pFldFClienteAvisado = pFldFClienteAvisado || value != field;
             if (pFldFClienteAvisado)
-                m_FClienteAvisado = value;
+                field = value;
         }
     }
 
     public virtual bool FRevisarP2
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRevisarP2;
+        get => field;
         set
         {
-            pFldFRevisarP2 = pFldFRevisarP2 || value != m_FRevisarP2;
+            pFldFRevisarP2 = pFldFRevisarP2 || value != field;
             if (pFldFRevisarP2)
-                m_FRevisarP2 = value;
+                field = value;
         }
     }
 
     public virtual int FIDNE
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIDNE;
+        get => field;
         set
         {
-            pFldFIDNE = pFldFIDNE || value != m_FIDNE;
+            pFldFIDNE = pFldFIDNE || value != field;
             if (pFldFIDNE)
-                m_FIDNE = value;
+                field = value;
         }
     }
 
     public virtual int FCidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidade;
+        get => field;
         set
         {
-            pFldFCidade = pFldFCidade || value != m_FCidade;
+            pFldFCidade = pFldFCidade || value != field;
             if (pFldFCidade)
-                m_FCidade = value;
+                field = value;
         }
     }
 
     public virtual int FOculto
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOculto;
+        get => field;
         set
         {
-            pFldFOculto = pFldFOculto || value != m_FOculto;
+            pFldFOculto = pFldFOculto || value != field;
             if (pFldFOculto)
-                m_FOculto = value;
+                field = value;
         }
     }
 
     public virtual int FCartaPrecatoria
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCartaPrecatoria;
+        get => field;
         set
         {
-            pFldFCartaPrecatoria = pFldFCartaPrecatoria || value != m_FCartaPrecatoria;
+            pFldFCartaPrecatoria = pFldFCartaPrecatoria || value != field;
             if (pFldFCartaPrecatoria)
-                m_FCartaPrecatoria = value;
+                field = value;
         }
     }
 
     public virtual bool FRevisar
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRevisar;
+        get => field;
         set
         {
-            pFldFRevisar = pFldFRevisar || value != m_FRevisar;
+            pFldFRevisar = pFldFRevisar || value != field;
             if (pFldFRevisar)
-                m_FRevisar = value;
+                field = value;
         }
     }
 
-    public virtual string? FHrFinal
+    public virtual TimeOnly? FHrFinal
     {
-        // fdDate2 TRACE CODE
-        get => $"{m_FHrFinal:HH:mm}";
+        get;
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (!value.HasValue)
             {
-                pFldFHrFinal = pFldFHrFinal || m_FHrFinal != null;
-                m_FHrFinal = null;
+                pFldFHrFinal = pFldFHrFinal || field != null;
+                field = null;
                 return;
             }
 
-            if (value.IsEquals(DevourerOne.PNow))
-            {
-                pFldFHrFinal = true;
-                m_FHrFinal = DevourerOne.DateTimeUtc;
-            }
-            else
-            {
-                if (value.IsEquals($"{m_FHrFinal:HH:mm}"))
-                    return;
-                if (!DateTime.TryParse(value, out var dateTime))
-                    return;
-                pFldFHrFinal = true;
-                m_FHrFinal = dateTime;
-            }
+            // Se já tem o mesmo valor, não faz nada
+            if (field.HasValue && field.Value == value.Value)
+                return;
+            pFldFHrFinal = true;
+            field = value;
         }
     }
 
     public virtual int FAdvogado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAdvogado;
+        get => field;
         set
         {
-            pFldFAdvogado = pFldFAdvogado || value != m_FAdvogado;
+            pFldFAdvogado = pFldFAdvogado || value != field;
             if (pFldFAdvogado)
-                m_FAdvogado = value;
+                field = value;
         }
     }
 
     public virtual int FEventoGerador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEventoGerador;
+        get => field;
         set
         {
-            pFldFEventoGerador = pFldFEventoGerador || value != m_FEventoGerador;
+            pFldFEventoGerador = pFldFEventoGerador || value != field;
             if (pFldFEventoGerador)
-                m_FEventoGerador = value;
+                field = value;
         }
     }
 
-    public virtual string? FEventoData
+    public virtual DateOnly? FEventoData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEventoData is null || m_FEventoData == DevourerOne.DDataZerada ? string.Empty : m_FEventoData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFEventoData, m_FEventoData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFEventoData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFEventoData, m_FEventoData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFEventoData = true;
+                field = value;
+            }
         }
     }
 
     public virtual int FFuncionario
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFuncionario;
+        get => field;
         set
         {
-            pFldFFuncionario = pFldFFuncionario || value != m_FFuncionario;
+            pFldFFuncionario = pFldFFuncionario || value != field;
             if (pFldFFuncionario)
-                m_FFuncionario = value;
+                field = value;
         }
     }
 
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
     public virtual int FEventoPrazo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEventoPrazo;
+        get => field;
         set
         {
-            pFldFEventoPrazo = pFldFEventoPrazo || value != m_FEventoPrazo;
+            pFldFEventoPrazo = pFldFEventoPrazo || value != field;
             if (pFldFEventoPrazo)
-                m_FEventoPrazo = value;
+                field = value;
         }
     }
 
-    public virtual string? FHora
+    public virtual TimeOnly? FHora
     {
-        // fdDate2 TRACE CODE
-        get => $"{m_FHora:HH:mm}";
+        get;
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (!value.HasValue)
             {
-                pFldFHora = pFldFHora || m_FHora != null;
-                m_FHora = null;
+                pFldFHora = pFldFHora || field != null;
+                field = null;
                 return;
             }
 
-            if (value.IsEquals(DevourerOne.PNow))
-            {
-                pFldFHora = true;
-                m_FHora = DevourerOne.DateTimeUtc;
-            }
-            else
-            {
-                if (value.IsEquals($"{m_FHora:HH:mm}"))
-                    return;
-                if (!DateTime.TryParse(value, out var dateTime))
-                    return;
-                pFldFHora = true;
-                m_FHora = dateTime;
-            }
+            // Se já tem o mesmo valor, não faz nada
+            if (field.HasValue && field.Value == value.Value)
+                return;
+            pFldFHora = true;
+            field = value;
         }
     }
 
@@ -255,197 +248,180 @@ public partial class DBAgenda
     public virtual string? FCompromisso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCompromisso ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCompromisso = pFldFCompromisso || !(m_FCompromisso ?? string.Empty).Equals(value);
+            pFldFCompromisso = pFldFCompromisso || !(field ?? string.Empty).Equals(value);
             if (pFldFCompromisso)
-                m_FCompromisso = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual int FTipoCompromisso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipoCompromisso;
+        get => field;
         set
         {
-            pFldFTipoCompromisso = pFldFTipoCompromisso || value != m_FTipoCompromisso;
+            pFldFTipoCompromisso = pFldFTipoCompromisso || value != field;
             if (pFldFTipoCompromisso)
-                m_FTipoCompromisso = value;
+                field = value;
         }
     }
 
     public virtual int FCliente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCliente;
+        get => field;
         set
         {
-            pFldFCliente = pFldFCliente || value != m_FCliente;
+            pFldFCliente = pFldFCliente || value != field;
             if (pFldFCliente)
-                m_FCliente = value;
+                field = value;
         }
     }
 
     public virtual bool FLiberado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiberado;
+        get => field;
         set
         {
-            pFldFLiberado = pFldFLiberado || value != m_FLiberado;
+            pFldFLiberado = pFldFLiberado || value != field;
             if (pFldFLiberado)
-                m_FLiberado = value;
+                field = value;
         }
     }
 
     public virtual bool FImportante
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FImportante;
+        get => field;
         set
         {
-            pFldFImportante = pFldFImportante || value != m_FImportante;
+            pFldFImportante = pFldFImportante || value != field;
             if (pFldFImportante)
-                m_FImportante = value;
+                field = value;
         }
     }
 
     public virtual bool FConcluido
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FConcluido;
+        get => field;
         set
         {
-            pFldFConcluido = pFldFConcluido || value != m_FConcluido;
+            pFldFConcluido = pFldFConcluido || value != field;
             if (pFldFConcluido)
-                m_FConcluido = value;
+                field = value;
         }
     }
 
     public virtual int FArea
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FArea;
+        get => field;
         set
         {
-            pFldFArea = pFldFArea || value != m_FArea;
+            pFldFArea = pFldFArea || value != field;
             if (pFldFArea)
-                m_FArea = value;
+                field = value;
         }
     }
 
     public virtual int FJustica
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FJustica;
+        get => field;
         set
         {
-            pFldFJustica = pFldFJustica || value != m_FJustica;
+            pFldFJustica = pFldFJustica || value != field;
             if (pFldFJustica)
-                m_FJustica = value;
+                field = value;
         }
     }
 
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     public virtual int FIDHistorico
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIDHistorico;
+        get => field;
         set
         {
-            pFldFIDHistorico = pFldFIDHistorico || value != m_FIDHistorico;
+            pFldFIDHistorico = pFldFIDHistorico || value != field;
             if (pFldFIDHistorico)
-                m_FIDHistorico = value;
+                field = value;
         }
     }
 
     public virtual int FIDInsProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIDInsProcesso;
+        get => field;
         set
         {
-            pFldFIDInsProcesso = pFldFIDInsProcesso || value != m_FIDInsProcesso;
+            pFldFIDInsProcesso = pFldFIDInsProcesso || value != field;
             if (pFldFIDInsProcesso)
-                m_FIDInsProcesso = value;
+                field = value;
         }
     }
 
     public virtual int FUsuario
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FUsuario;
+        get => field;
         set
         {
-            pFldFUsuario = pFldFUsuario || value != m_FUsuario;
+            pFldFUsuario = pFldFUsuario || value != field;
             if (pFldFUsuario)
-                m_FUsuario = value;
+                field = value;
         }
     }
 
     public virtual int FPreposto
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPreposto;
+        get => field;
         set
         {
-            pFldFPreposto = pFldFPreposto || value != m_FPreposto;
+            pFldFPreposto = pFldFPreposto || value != field;
             if (pFldFPreposto)
-                m_FPreposto = value;
+                field = value;
         }
     }
 
     public virtual int FQuemID
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FQuemID;
+        get => field;
         set
         {
-            pFldFQuemID = pFldFQuemID || value != m_FQuemID;
+            pFldFQuemID = pFldFQuemID || value != field;
             if (pFldFQuemID)
-                m_FQuemID = value;
+                field = value;
         }
     }
 
     public virtual int FQuemCodigo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FQuemCodigo;
+        get => field;
         set
         {
-            pFldFQuemCodigo = pFldFQuemCodigo || value != m_FQuemCodigo;
+            pFldFQuemCodigo = pFldFQuemCodigo || value != field;
             if (pFldFQuemCodigo)
-                m_FQuemCodigo = value;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Agenda deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
+                field = value;
         }
     }
 
@@ -453,41 +429,41 @@ public partial class DBAgenda
     public virtual string? FStatus
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FStatus ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFStatus = pFldFStatus || !(m_FStatus ?? string.Empty).Equals(value);
+            pFldFStatus = pFldFStatus || !(field ?? string.Empty).Equals(value);
             if (pFldFStatus)
-                m_FStatus = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual decimal FValor
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FValor;
+        get => field;
         set
         {
-            if (value == m_FValor)
+            if (value == field)
                 return;
             pFldFValor = true;
-            m_FValor = value;
+            field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FDecisao da tabela Agenda deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FDecisao da tabela 'Agenda' deve ter no máximo 2048 caracteres.")]
     public virtual string? FDecisao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDecisao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDecisao = pFldFDecisao || !(m_FDecisao ?? string.Empty).Equals(value);
+            pFldFDecisao = pFldFDecisao || !(field ?? string.Empty).Equals(value);
             if (pFldFDecisao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FDecisao = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
             }
         }
     }
@@ -495,72 +471,103 @@ public partial class DBAgenda
     public virtual int FSempre
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSempre;
+        get => field;
         set
         {
-            pFldFSempre = pFldFSempre || value != m_FSempre;
+            pFldFSempre = pFldFSempre || value != field;
             if (pFldFSempre)
-                m_FSempre = value;
+                field = value;
         }
     }
 
     public virtual int FPrazoDias
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPrazoDias;
+        get => field;
         set
         {
-            pFldFPrazoDias = pFldFPrazoDias || value != m_FPrazoDias;
+            pFldFPrazoDias = pFldFPrazoDias || value != field;
             if (pFldFPrazoDias)
-                m_FPrazoDias = value;
+                field = value;
         }
     }
 
     public virtual int FProtocoloIntegrado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProtocoloIntegrado;
+        get => field;
         set
         {
-            pFldFProtocoloIntegrado = pFldFProtocoloIntegrado || value != m_FProtocoloIntegrado;
+            pFldFProtocoloIntegrado = pFldFProtocoloIntegrado || value != field;
             if (pFldFProtocoloIntegrado)
-                m_FProtocoloIntegrado = value;
+                field = value;
         }
     }
 
-    public virtual string? FDataInicioPrazo
+    public virtual DateOnly? FDataInicioPrazo
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataInicioPrazo is null || m_FDataInicioPrazo == DevourerOne.DDataZerada ? string.Empty : m_FDataInicioPrazo.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataInicioPrazo, m_FDataInicioPrazo, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataInicioPrazo = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataInicioPrazo, m_FDataInicioPrazo) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataInicioPrazo = true;
+                field = value;
+            }
         }
     }
 
     public virtual bool FUsuarioCiente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FUsuarioCiente;
+        get => field;
         set
         {
-            pFldFUsuarioCiente = pFldFUsuarioCiente || value != m_FUsuarioCiente;
+            pFldFUsuarioCiente = pFldFUsuarioCiente || value != field;
             if (pFldFUsuarioCiente)
-                m_FUsuarioCiente = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Agenda' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -570,9 +577,13 @@ public partial class DBAgenda
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

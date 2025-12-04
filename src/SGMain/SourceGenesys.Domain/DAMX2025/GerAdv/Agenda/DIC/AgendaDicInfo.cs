@@ -41,7 +41,6 @@ public static partial class DBAgendaDicInfo
     public const string Preposto = "agePreposto"; // LOCALIZACAO 170523
     public const string QuemID = "ageQuemID"; // LOCALIZACAO 170523
     public const string QuemCodigo = "ageQuemCodigo"; // LOCALIZACAO 170523
-    public const string GUID = "ageGUID"; // LOCALIZACAO 170523
     public const string Status = "ageStatus"; // LOCALIZACAO 170523
     public const string Valor = "ageValor"; // LOCALIZACAO 170523
     public const string Decisao = "ageDecisao"; // LOCALIZACAO 170523
@@ -50,6 +49,7 @@ public static partial class DBAgendaDicInfo
     public const string ProtocoloIntegrado = "ageProtocoloIntegrado"; // LOCALIZACAO 170523
     public const string DataInicioPrazo = "ageDataInicioPrazo"; // LOCALIZACAO 170523
     public const string UsuarioCiente = "ageUsuarioCiente"; // LOCALIZACAO 170523
+    public const string Guid = "ageGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ageQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ageDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ageQuemAtu"; // LOCALIZACAO 170523
@@ -107,193 +107,51 @@ public static partial class DBAgendaDicInfo
 
     public const string PTabelaNome = "Agenda";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AgeIDCOB => new(0, PTabelaNome, CampoCodigo, IDCOB, "IDCOB", "IDCOB", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeClienteAvisado => new(0, PTabelaNome, CampoCodigo, ClienteAvisado, "ClienteAvisado", "ClienteAvisado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeRevisarP2 => new(0, PTabelaNome, CampoCodigo, RevisarP2, "RevisarP2", "RevisarP2", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeIDNE => new(0, PTabelaNome, CampoCodigo, IDNE, "IDNE", "IDNE", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeOculto => new(0, PTabelaNome, CampoCodigo, Oculto, "Oculto", "Oculto", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeCartaPrecatoria => new(0, PTabelaNome, CampoCodigo, CartaPrecatoria, "CartaPrecatoria", "CartaPrecatoria", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeRevisar => new(0, PTabelaNome, CampoCodigo, Revisar, "Revisar", "Revisar", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeHrFinal => new(0, PTabelaNome, CampoCodigo, HrFinal, "HrFinal", "HrFinal", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, "Advogado", "Advogado", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeEventoGerador => new(0, PTabelaNome, CampoCodigo, EventoGerador, "EventoGerador", "EventoGerador", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeEventoData => new(0, PTabelaNome, CampoCodigo, EventoData, "EventoData", "EventoData", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeFuncionario => new(0, PTabelaNome, CampoCodigo, Funcionario, "Colaborador", "Colaborador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBFuncionariosDicInfo.CampoCodigo, DBFuncionariosDicInfo.TabelaNome, new DBFuncionariosODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeEventoPrazo => new(0, PTabelaNome, CampoCodigo, EventoPrazo, "EventoPrazo", "EventoPrazo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeHora => new(0, PTabelaNome, CampoCodigo, Hora, "Hora", "Hora", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeCompromisso => new(0, PTabelaNome, CampoCodigo, Compromisso, DevourerOne.PMaxSizeCampoMemo, "Compromisso", "Compromisso", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeTipoCompromisso => new(0, PTabelaNome, CampoCodigo, TipoCompromisso, "TipoCompromisso", "TipoCompromisso", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoCompromissoDicInfo.CampoCodigo, DBTipoCompromissoDicInfo.TabelaNome, new DBTipoCompromissoODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeLiberado => new(0, PTabelaNome, CampoCodigo, Liberado, "Liberado", "Liberado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeImportante => new(0, PTabelaNome, CampoCodigo, Importante, "Importante", "Importante", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeConcluido => new(0, PTabelaNome, CampoCodigo, Concluido, "Concluido", "Concluido", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", ETipoDadosSysteminfo.SysteminfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeIDHistorico => new(0, PTabelaNome, CampoCodigo, IDHistorico, "IDHistorico", "IDHistorico", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeIDInsProcesso => new(0, PTabelaNome, CampoCodigo, IDInsProcesso, "IDInsProcesso", "IDInsProcesso", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeUsuario => new(0, PTabelaNome, CampoCodigo, Usuario, "Usuario", "Usuario", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgePreposto => new(0, PTabelaNome, CampoCodigo, Preposto, "Preposto", "Preposto", ETipoDadosSysteminfo.SysteminfoForeingkey, DBPrepostosDicInfo.CampoCodigo, DBPrepostosDicInfo.TabelaNome, new DBPrepostosODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeQuemID => new(0, PTabelaNome, CampoCodigo, QuemID, "QuemID", "QuemID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeQuemCodigo => new(0, PTabelaNome, CampoCodigo, QuemCodigo, "QuemCodigo", "QuemCodigo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeStatus => new(0, PTabelaNome, CampoCodigo, Status, DevourerOne.PMaxSizeCampoMemo, "Status", "Status", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeDecisao => new(0, PTabelaNome, CampoCodigo, Decisao, 2048, "Decisao", "Decisao", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeSempre => new(0, PTabelaNome, CampoCodigo, Sempre, "Sempre", "Sempre", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgePrazoDias => new(0, PTabelaNome, CampoCodigo, PrazoDias, "PrazoDias", "PrazoDias", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeProtocoloIntegrado => new(0, PTabelaNome, CampoCodigo, ProtocoloIntegrado, "ProtocoloIntegrado", "ProtocoloIntegrado", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeDataInicioPrazo => new(0, PTabelaNome, CampoCodigo, DataInicioPrazo, "DataInicioPrazo", "DataInicioPrazo", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeUsuarioCiente => new(0, PTabelaNome, CampoCodigo, UsuarioCiente, "UsuarioCiente", "UsuarioCiente", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "age"
-    }; // DBI 11 
-    public static DBInfoSystem AgeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "age"
-    };
-    public static DBInfoSystem AgeVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "age"
-    };
+    public static DBInfoSystem AgeIDCOB => new(0, PTabelaNome, CampoCodigo, IDCOB, IDCOB, IDCOB, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeClienteAvisado => new(0, PTabelaNome, CampoCodigo, ClienteAvisado, ClienteAvisado, ClienteAvisado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age", isRequired: true);
+    public static DBInfoSystem AgeRevisarP2 => new(0, PTabelaNome, CampoCodigo, RevisarP2, RevisarP2, RevisarP2, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age", isRequired: true);
+    public static DBInfoSystem AgeIDNE => new(0, PTabelaNome, CampoCodigo, IDNE, IDNE, IDNE, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeOculto => new(0, PTabelaNome, CampoCodigo, Oculto, Oculto, Oculto, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeCartaPrecatoria => new(0, PTabelaNome, CampoCodigo, CartaPrecatoria, CartaPrecatoria, CartaPrecatoria, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeRevisar => new(0, PTabelaNome, CampoCodigo, Revisar, Revisar, Revisar, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age", isRequired: true);
+    public static DBInfoSystem AgeHrFinal => new(0, PTabelaNome, CampoCodigo, HrFinal, HrFinal, HrFinal, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "age");
+    public static DBInfoSystem AgeAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, Advogado, Advogado, EDataTypeSystemInfo.SystemInfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeEventoGerador => new(0, PTabelaNome, CampoCodigo, EventoGerador, EventoGerador, EventoGerador, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeEventoData => new(0, PTabelaNome, CampoCodigo, EventoData, EventoData, EventoData, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "age");
+    public static DBInfoSystem AgeFuncionario => new(0, PTabelaNome, CampoCodigo, Funcionario, Funcionario, Funcionario, EDataTypeSystemInfo.SystemInfoForeingkey, DBFuncionariosDicInfo.CampoCodigo, DBFuncionariosDicInfo.TabelaNome, new DBFuncionariosODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "age");
+    public static DBInfoSystem AgeEventoPrazo => new(0, PTabelaNome, CampoCodigo, EventoPrazo, EventoPrazo, EventoPrazo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeHora => new(0, PTabelaNome, CampoCodigo, Hora, Hora, Hora, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "age");
+    public static DBInfoSystem AgeCompromisso => new(0, PTabelaNome, CampoCodigo, Compromisso, DevourerOne.PMaxSizeCampoMemo, Compromisso, Compromisso, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "age");
+    public static DBInfoSystem AgeTipoCompromisso => new(0, PTabelaNome, CampoCodigo, TipoCompromisso, TipoCompromisso, TipoCompromisso, EDataTypeSystemInfo.SystemInfoForeingkey, DBTipoCompromissoDicInfo.CampoCodigo, DBTipoCompromissoDicInfo.TabelaNome, new DBTipoCompromissoODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeLiberado => new(0, PTabelaNome, CampoCodigo, Liberado, Liberado, Liberado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age", isRequired: true);
+    public static DBInfoSystem AgeImportante => new(0, PTabelaNome, CampoCodigo, Importante, Importante, Importante, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age", isRequired: true);
+    public static DBInfoSystem AgeConcluido => new(0, PTabelaNome, CampoCodigo, Concluido, Concluido, Concluido, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age", isRequired: true);
+    public static DBInfoSystem AgeArea => new(0, PTabelaNome, CampoCodigo, Area, Area, Area, EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeJustica => new(0, PTabelaNome, CampoCodigo, Justica, Justica, Justica, EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeIDHistorico => new(0, PTabelaNome, CampoCodigo, IDHistorico, IDHistorico, IDHistorico, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeIDInsProcesso => new(0, PTabelaNome, CampoCodigo, IDInsProcesso, IDInsProcesso, IDInsProcesso, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeUsuario => new(0, PTabelaNome, CampoCodigo, Usuario, Usuario, Usuario, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgePreposto => new(0, PTabelaNome, CampoCodigo, Preposto, Preposto, Preposto, EDataTypeSystemInfo.SystemInfoForeingkey, DBPrepostosDicInfo.CampoCodigo, DBPrepostosDicInfo.TabelaNome, new DBPrepostosODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeQuemID => new(0, PTabelaNome, CampoCodigo, QuemID, QuemID, QuemID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeQuemCodigo => new(0, PTabelaNome, CampoCodigo, QuemCodigo, QuemCodigo, QuemCodigo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeStatus => new(0, PTabelaNome, CampoCodigo, Status, DevourerOne.PMaxSizeCampoMemo, Status, Status, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "age");
+    public static DBInfoSystem AgeValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "age");
+    public static DBInfoSystem AgeDecisao => new(0, PTabelaNome, CampoCodigo, Decisao, 2048, Decisao, Decisao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "age");
+    public static DBInfoSystem AgeSempre => new(0, PTabelaNome, CampoCodigo, Sempre, Sempre, Sempre, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgePrazoDias => new(0, PTabelaNome, CampoCodigo, PrazoDias, PrazoDias, PrazoDias, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeProtocoloIntegrado => new(0, PTabelaNome, CampoCodigo, ProtocoloIntegrado, ProtocoloIntegrado, ProtocoloIntegrado, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "age");
+    public static DBInfoSystem AgeDataInicioPrazo => new(0, PTabelaNome, CampoCodigo, DataInicioPrazo, DataInicioPrazo, DataInicioPrazo, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "age");
+    public static DBInfoSystem AgeUsuarioCiente => new(0, PTabelaNome, CampoCodigo, UsuarioCiente, UsuarioCiente, UsuarioCiente, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "age");
+    public static DBInfoSystem AgeGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "age");
+    public static DBInfoSystem AgeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "age");
+    public static DBInfoSystem AgeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "age"); // DBI 11 
+    public static DBInfoSystem AgeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "age");
+    public static DBInfoSystem AgeVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "age", isRequired: true);
 
 #endregion
     [Serializable]

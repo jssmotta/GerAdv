@@ -36,7 +36,21 @@ public class DBEventoPrazoAgendaTests : IDisposable
         dt.Columns.Add("epaDtAtu", typeof(DateTime));
         dt.Columns.Add("epaVisto", typeof(bool));
         dt.Columns.Add("epaNome", typeof(string));
+        dt.Columns.Add("epaBold", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["epaCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBEventoPrazoAgenda(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -57,7 +71,7 @@ public class DBEventoPrazoAgendaTests : IDisposable
     {
         var instance = new DBEventoPrazoAgenda();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("EventoPrazoAgenda", instance.ITabelaName());
+        Assert.Equal("EventoPrazoAgenda", instance.ITableName());
         Assert.Equal("epa", instance.Prefixo);
     }
 
@@ -75,29 +89,16 @@ public class DBEventoPrazoAgendaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["epaCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBEventoPrazoAgenda(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("EventoPrazoAgenda", cadastro.ITabelaName());
-        Assert.Equal("epaCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("epaNome", cadastro.ICampoNome());
-        Assert.Equal("epa", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("EventoPrazoAgenda", cadastro.ITableName());
+        Assert.Equal("epaCodigo", cadastro.IFieldId());
+        Assert.Equal("epaNome", cadastro.IFieldNameDescription());
+        Assert.Equal("epa", cadastro.IPrefix());
     }
 
 #endregion
@@ -157,9 +158,9 @@ public class DBEventoPrazoAgendaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

@@ -21,7 +21,7 @@ public partial class CargosEscClassWhere(IFCargosEscClassFactory cargosescclassF
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return cargosescclass;
     }

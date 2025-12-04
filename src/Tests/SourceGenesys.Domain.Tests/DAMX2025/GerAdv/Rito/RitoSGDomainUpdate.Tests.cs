@@ -22,7 +22,7 @@ public class DBRitoUpdate : IDisposable
         var rito = new DBRito();
         // Assert
         rito.Should().NotBeNull();
-        rito.ITabelaName().Should().Be("Rito");
+        rito.ITableName().Should().Be("Rito");
         rito.ID.Should().Be(0);
     }
 
@@ -33,10 +33,10 @@ public class DBRitoUpdate : IDisposable
         var rito = new DBRito
         {
             FDescricao = "AAAAAAAAAAAAAAAAAAAA",
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
         // Assert - All properties should be set rito.FDescricao.Should().Be( "AAAAAAAAAAAAAAAAAAAA");
-        rito.FGUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        rito.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -46,9 +46,9 @@ public class DBRitoUpdate : IDisposable
         var rito = new DBRito();
         var longString = new string ('X', 300);
         rito.FDescricao = longString; // MAX: 20
-        rito.FGUID = longString; // MAX: 100
+        rito.FGuid = longString; // MAX: 100
         // Assert - All properties should be set rito.FDescricao.Should().HaveLength(20);
-        rito.FGUID.Should().HaveLength(100);
+        rito.FGuid.Should().HaveLength(100);
     }
 
     [Theory]
@@ -125,7 +125,7 @@ public class DBRitoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -139,7 +139,7 @@ public class DBRitoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -155,7 +155,7 @@ public class DBRitoUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -170,7 +170,7 @@ public class DBRitoUpdate : IDisposable
         _instance.FDescricao = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -184,7 +184,7 @@ public class DBRitoUpdate : IDisposable
         _instance.FDescricao = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -198,7 +198,7 @@ public class DBRitoUpdate : IDisposable
         _instance.FDescricao = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -212,7 +212,7 @@ public class DBRitoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDescricao);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -238,7 +238,7 @@ public class DBRitoUpdate : IDisposable
         _instance.FDescricao = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -252,23 +252,23 @@ public class DBRitoUpdate : IDisposable
         _instance.FDescricao = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
+#region Testes de Guid
     [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
+    public void Guid_DefaultValue_ShouldBeEmpty()
     {
-        Assert.Equal(string.Empty, _instance.FGUID);
+        Assert.Equal(string.Empty, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
+    public void Guid_SetValidGuid_ShouldStore()
     {
         var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
     }
 
 #endregion

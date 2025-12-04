@@ -14,6 +14,14 @@ public partial class DBProObservacoes
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProObservacoes
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,19 +142,19 @@ public partial class DBProObservacoes
 
 #if (!NOTSTORED_ProObservacoes)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFNome || pFldFObservacoes || pFldFData || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFNome || pFldFObservacoes || pFldFData || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBProObservacoesDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProObservacoesDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBProObservacoesDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBProObservacoesDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFObservacoes)
-            updateTool.Fields(DBProObservacoesDicInfo.Observacoes, m_FObservacoes, ETiposCampos.FString);
+            updateTool.Fields(DBProObservacoesDicInfo.Observacoes, FObservacoes, EGenericTypeFields.FString);
         if (pFldFData)
-            updateTool.Fields(DBProObservacoesDicInfo.Data, m_FData, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBProObservacoesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBProObservacoesDicInfo.Data, FData, EGenericTypeFields.FDate);
+        if (pFldFGuid)
+            updateTool.Fields(DBProObservacoesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -158,24 +166,23 @@ public partial class DBProObservacoes
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProObservacoesDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProObservacoesDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProObservacoesDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProObservacoesDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProObservacoesDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProObservacoesDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProObservacoesDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProObservacoesDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBProObservacoesDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProObservacoesDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBProObservacoesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

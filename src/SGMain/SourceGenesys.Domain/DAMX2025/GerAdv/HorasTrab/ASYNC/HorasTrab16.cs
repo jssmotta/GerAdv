@@ -14,6 +14,14 @@ public partial class DBHorasTrab
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBHorasTrab
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,47 +142,47 @@ public partial class DBHorasTrab
 
 #if (!NOTSTORED_HorasTrab)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUID || pFldFIDContatoCRM || pFldFHonorario || pFldFIDAgenda || pFldFData || pFldFCliente || pFldFStatus || pFldFProcesso || pFldFAdvogado || pFldFFuncionario || pFldFHrIni || pFldFHrFim || pFldFTempo || pFldFValor || pFldFOBS || pFldFAnexo || pFldFAnexoComp || pFldFAnexoUNC || pFldFServico;
+    private bool HasAnyFieldChanged() => pFldFIDContatoCRM || pFldFHonorario || pFldFIDAgenda || pFldFData || pFldFCliente || pFldFStatus || pFldFProcesso || pFldFAdvogado || pFldFFuncionario || pFldFHrIni || pFldFHrFim || pFldFTempo || pFldFValor || pFldFOBS || pFldFAnexo || pFldFAnexoComp || pFldFAnexoUNC || pFldFServico || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFGUID)
-            updateTool.Fields(DBHorasTrabDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFIDContatoCRM)
-            updateTool.Fields(DBHorasTrabDicInfo.IDContatoCRM, m_FIDContatoCRM, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.IDContatoCRM, FIDContatoCRM, EGenericTypeFields.FNumber);
         if (pFldFHonorario || updateTool.Insert)
-            updateTool.Fields(DBHorasTrabDicInfo.Honorario, m_FHonorario, ETiposCampos.FBoolean);
+            updateTool.Fields(DBHorasTrabDicInfo.Honorario, FHonorario, EGenericTypeFields.FBoolean);
         if (pFldFIDAgenda)
-            updateTool.Fields(DBHorasTrabDicInfo.IDAgenda, m_FIDAgenda, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.IDAgenda, FIDAgenda, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBHorasTrabDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFCliente)
-            updateTool.Fields(DBHorasTrabDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFStatus)
-            updateTool.Fields(DBHorasTrabDicInfo.Status, m_FStatus, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.Status, FStatus, EGenericTypeFields.FNumber);
         if (pFldFProcesso)
-            updateTool.Fields(DBHorasTrabDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFAdvogado)
-            updateTool.Fields(DBHorasTrabDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumber);
         if (pFldFFuncionario)
-            updateTool.Fields(DBHorasTrabDicInfo.Funcionario, m_FFuncionario, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.Funcionario, FFuncionario, EGenericTypeFields.FNumber);
         if (pFldFHrIni)
-            updateTool.Fields(DBHorasTrabDicInfo.HrIni, m_FHrIni, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.HrIni, FHrIni, EGenericTypeFields.FString);
         if (pFldFHrFim)
-            updateTool.Fields(DBHorasTrabDicInfo.HrFim, m_FHrFim, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.HrFim, FHrFim, EGenericTypeFields.FString);
         if (pFldFTempo)
-            updateTool.Fields(DBHorasTrabDicInfo.Tempo, m_FTempo, ETiposCampos.FDecimal);
+            updateTool.Fields(DBHorasTrabDicInfo.Tempo, FTempo, EGenericTypeFields.FDecimal);
         if (pFldFValor)
-            updateTool.Fields(DBHorasTrabDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBHorasTrabDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFOBS)
-            updateTool.Fields(DBHorasTrabDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFAnexo)
-            updateTool.Fields(DBHorasTrabDicInfo.Anexo, m_FAnexo, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.Anexo, FAnexo, EGenericTypeFields.FString);
         if (pFldFAnexoComp)
-            updateTool.Fields(DBHorasTrabDicInfo.AnexoComp, m_FAnexoComp, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.AnexoComp, FAnexoComp, EGenericTypeFields.FString);
         if (pFldFAnexoUNC)
-            updateTool.Fields(DBHorasTrabDicInfo.AnexoUNC, m_FAnexoUNC, ETiposCampos.FString);
+            updateTool.Fields(DBHorasTrabDicInfo.AnexoUNC, FAnexoUNC, EGenericTypeFields.FString);
         if (pFldFServico)
-            updateTool.Fields(DBHorasTrabDicInfo.Servico, m_FServico, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.Servico, FServico, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBHorasTrabDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -186,24 +194,23 @@ public partial class DBHorasTrab
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBHorasTrabDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBHorasTrabDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBHorasTrabDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBHorasTrabDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBHorasTrabDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBHorasTrabDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBHorasTrabDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBHorasTrabDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBHorasTrabDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBHorasTrabDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

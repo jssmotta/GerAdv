@@ -18,12 +18,11 @@ export const useTribunalForm = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = useCallback((e: any) => {
-    const { name, value, type, checked } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));    
+ const handleChange = useCallback((e: any) => {
+    // Lazy require to avoid circular import surprises in SSR environments.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { genericHandleChange } = require('../../../tools/formUtils');
+    if (genericHandleChange) genericHandleChange(e, setData);
   }, []);
 
   const loadTribunal = useCallback(async (id: number) => {
@@ -171,20 +170,11 @@ export function useValidationsTribunal() {
     
       try {
    
-        if (data.nome.length <= 0) { 
-                                             return { isValid: false, message: 'O campo Nome não pode ficar vazio.' };
-                                         } 
-if (data.nome.length > 50) { 
-                                             return { isValid: false, message: 'O campo Nome não pode ter mais de 50 caracteres.' };
-                                         } 
-if (data.descricao.length > 50) { 
-                                             return { isValid: false, message: 'O campo Descricao não pode ter mais de 50 caracteres.' };
-                                         } 
-if (data.sigla.length > 20) { 
-                                             return { isValid: false, message: 'O campo Sigla não pode ter mais de 20 caracteres.' };
-                                         } 
-if (data.web.length > 255) { 
-                                             return { isValid: false, message: 'O campo Web não pode ter mais de 255 caracteres.' };
+        if (data.nome.includes('%')) { 
+                          return { isValid: false, message: `Remova o caracter '%' inválido!` };
+                      } 
+if (data.nome.length <= 0) { 
+                                             return { isValid: false, message: 'O campo  não pode ficar vazio.' };
                                          } 
 
 
@@ -208,15 +198,15 @@ if (data.web.length > 255) {
   const [selectedValue, setSelectedValue] = useState(initialValue);
   const [hasLoaded, setHasLoaded] = useState(false);
 
-  const fetchOptions = useCallback(async () => {
-    if (loading) return; // Evita múltiplas requisições simultâneas
+  const fetchOptions = useCallback(async (): Promise<void> => {
+    setLoading(true);
     
     setLoading(true);
     try {
       const response = await dataService.getList();
-      const mappedOptions = response.map(item => ({
+      const mappedOptions = response.map((item: any) => ({
         id: item.id,
-        nome: item.nome
+        nome: item.nome || 'Sem descrição',
       }));
       setOptions(mappedOptions);
       setFilteredOptions(mappedOptions);
@@ -227,7 +217,7 @@ if (data.web.length > 255) {
     } finally {
       setLoading(false);
     }
-  }, [dataService, loading]);
+  }, [dataService]);
 
   const handleFilter = useCallback((filterText: string) => {
     if (!filterText) {
@@ -242,21 +232,29 @@ if (data.web.length > 255) {
     setFilteredOptions(filtered);
   }, [options]);
 
-  const handleValueChange = useCallback((newValue: any) => {
-    setSelectedValue(newValue);
+  const handleValueChange = useCallback((newValue: any) => {  
+    if (newValue === null || (newValue && newValue.id !== undefined && newValue.nome !== undefined)) {
+      setSelectedValue(newValue);
+    }
   }, []);
   
   useEffect(() => {
     if (!hasLoaded) {
       fetchOptions();
     }
-  }, [fetchOptions, hasLoaded]);
+  }, [hasLoaded, fetchOptions]);
 
   const refreshCallback = useCallback(() => {
     if (hasLoaded) {
-      fetchOptions();
+      const currentSelected = selectedValue;
+      fetchOptions().then(() => {
+        // Reaplica o valor selecionado após o refresh
+        if (currentSelected) {
+          setSelectedValue(currentSelected);
+        }
+      });
     }
-  }, [fetchOptions, hasLoaded]);
+  }, [fetchOptions, hasLoaded, selectedValue]);
 
   useTribunalNotifications(
     refreshCallback, // onUpdate

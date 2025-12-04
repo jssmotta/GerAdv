@@ -60,7 +60,7 @@ public class DBPreClientesTests : IDisposable
         dt.Columns.Add("cliCEP", typeof(string));
         dt.Columns.Add("cliFax", typeof(string));
         dt.Columns.Add("cliFone", typeof(string));
-        dt.Columns.Add("cliData", typeof(string));
+        dt.Columns.Add("cliData", typeof(DateTime));
         dt.Columns.Add("cliHomePage", typeof(string));
         dt.Columns.Add("cliEMail", typeof(string));
         dt.Columns.Add("cliAssistido", typeof(string));
@@ -68,7 +68,23 @@ public class DBPreClientesTests : IDisposable
         dt.Columns.Add("cliAssEndereco", typeof(string));
         dt.Columns.Add("cliCNH", typeof(string));
         dt.Columns.Add("cliAssCPF", typeof(string));
+        dt.Columns.Add("cliEtiqueta", typeof(string));
+        dt.Columns.Add("cliAni", typeof(string));
+        dt.Columns.Add("cliBold", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["cliCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBPreClientes(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -89,7 +105,7 @@ public class DBPreClientesTests : IDisposable
     {
         var instance = new DBPreClientes();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("PreClientes", instance.ITabelaName());
+        Assert.Equal("PreClientes", instance.ITableName());
         Assert.Equal("cli", instance.Prefixo);
     }
 
@@ -107,29 +123,16 @@ public class DBPreClientesTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["cliCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBPreClientes(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("PreClientes", cadastro.ITabelaName());
-        Assert.Equal("cliCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("cliNome", cadastro.ICampoNome());
-        Assert.Equal("cli", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("PreClientes", cadastro.ITableName());
+        Assert.Equal("cliCodigo", cadastro.IFieldId());
+        Assert.Equal("cliNome", cadastro.IFieldNameDescription());
+        Assert.Equal("cli", cadastro.IPrefix());
     }
 
 #endregion
@@ -189,9 +192,9 @@ public class DBPreClientesTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -558,6 +561,23 @@ public class DBPreClientesTests : IDisposable
     {
         _instance.FFone = input;
         Assert.Equal(expected, _instance.FFone);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBPreClientes();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]

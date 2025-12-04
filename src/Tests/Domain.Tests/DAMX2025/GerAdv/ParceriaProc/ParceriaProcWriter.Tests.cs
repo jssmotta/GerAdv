@@ -74,9 +74,9 @@ public class ParceriaProcWriterTests
         var result = await _parceriaprocWriter.WriteAsync(parceriaproc, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFParceriaProc.Object);
+        _mockFParceriaProc.VerifySet(x => x.FGuid = parceriaproc.Guid, Times.Once);
         _mockFParceriaProc.VerifySet(x => x.FAdvogado = parceriaproc.Advogado, Times.Once);
         _mockFParceriaProc.VerifySet(x => x.FProcesso = parceriaproc.Processo, Times.Once);
-        _mockFParceriaProc.VerifySet(x => x.FGUID = parceriaproc.GUID, Times.Once);
         _mockFParceriaProc.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class ParceriaProcWriterTests
         var operadorId = 456;
         _mockParceriaProcFactory.Setup(x => x.DeleteAsync(operadorId, parceriaprocResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _parceriaprocWriter.Delete(parceriaprocResponse, operadorId, _mockConnection.Object);
+        await _parceriaprocWriter.DeleteAsync(parceriaprocResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockParceriaProcFactory.Verify(x => x.DeleteAsync(operadorId, parceriaprocResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class ParceriaProcWriterTests
         var operadorId = 111;
         _mockParceriaProcFactory.Setup(x => x.DeleteAsync(operadorId, parceriaprocResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _parceriaprocWriter.Delete(parceriaprocResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _parceriaprocWriter.DeleteAsync(parceriaprocResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class ParceriaProcWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockParceriaProcFactory.Setup(x => x.DeleteAsync(operadorId, parceriaprocResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _parceriaprocWriter.Delete(parceriaprocResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _parceriaprocWriter.DeleteAsync(parceriaprocResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class ParceriaProcWriterTests
         return new Models.ParceriaProc
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Advogado = 1,
-            Processo = 1,
-            GUID = Guid.NewGuid().ToString()
+            Processo = 1
         };
     }
 #endregion

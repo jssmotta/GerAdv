@@ -74,6 +74,7 @@ public class ClientesWriterTests
         var result = await _clientesWriter.WriteAsync(clientes, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFClientes.Object);
+        _mockFClientes.VerifySet(x => x.FGuid = clientes.Guid, Times.Once);
         _mockFClientes.VerifySet(x => x.FEmpresa = clientes.Empresa, Times.Once);
         _mockFClientes.VerifySet(x => x.FIcone = clientes.Icone, Times.Once);
         _mockFClientes.VerifySet(x => x.FNomeMae = clientes.NomeMae, Times.Once);
@@ -104,7 +105,7 @@ public class ClientesWriterTests
         _mockFClientes.VerifySet(x => x.FCEP = It.IsAny<string>(), Times.Once); // CEP é limpo pelo ClearInputCep()
         _mockFClientes.VerifySet(x => x.FFax = clientes.Fax, Times.Once);
         _mockFClientes.VerifySet(x => x.FFone = clientes.Fone, Times.Once);
-        _mockFClientes.VerifySet(x => x.FData = clientes.Data, Times.Once);
+        _mockFClientes.VerifySet(x => x.FData = clientes.Data.ToString(), Times.Once);
         _mockFClientes.VerifySet(x => x.FHomePage = clientes.HomePage, Times.Once);
         _mockFClientes.VerifySet(x => x.FEMail = clientes.EMail, Times.Once);
         _mockFClientes.VerifySet(x => x.FObito = clientes.Obito, Times.Once);
@@ -116,7 +117,6 @@ public class ClientesWriterTests
         _mockFClientes.VerifySet(x => x.FProBono = clientes.ProBono, Times.Once);
         _mockFClientes.VerifySet(x => x.FCNH = clientes.CNH, Times.Once);
         _mockFClientes.VerifySet(x => x.FPessoaContato = clientes.PessoaContato, Times.Once);
-        _mockFClientes.VerifySet(x => x.FGUID = clientes.GUID, Times.Once);
         _mockFClientes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -148,6 +148,21 @@ public class ClientesWriterTests
         await _clientesWriter.WriteAsync(clientes, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFClientes.VerifySet(x => x.FDtNasc = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var clientes = CreateValidClientesModel();
+        clientes.Data = null;
+        var auditorQuem = 123;
+        _mockClientesFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFClientes.Object);
+        _mockFClientes.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _clientesWriter.WriteAsync(clientes, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFClientes.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -190,7 +205,7 @@ public class ClientesWriterTests
         var operadorId = 456;
         _mockClientesFactory.Setup(x => x.DeleteAsync(operadorId, clientesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _clientesWriter.Delete(clientesResponse, operadorId, _mockConnection.Object);
+        await _clientesWriter.DeleteAsync(clientesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockClientesFactory.Verify(x => x.DeleteAsync(operadorId, clientesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -206,7 +221,7 @@ public class ClientesWriterTests
         var operadorId = 111;
         _mockClientesFactory.Setup(x => x.DeleteAsync(operadorId, clientesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _clientesWriter.Delete(clientesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _clientesWriter.DeleteAsync(clientesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -223,7 +238,7 @@ public class ClientesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockClientesFactory.Setup(x => x.DeleteAsync(operadorId, clientesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _clientesWriter.Delete(clientesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _clientesWriter.DeleteAsync(clientesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -253,6 +268,7 @@ public class ClientesWriterTests
         return new Models.Clientes
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Empresa = 1,
             Icone = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             NomeMae = "João",
@@ -283,7 +299,7 @@ public class ClientesWriterTests
             CEP = "01234-567",
             Fax = "(11) 88888-9999",
             Fone = "(11) 99999-9999",
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             HomePage = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             EMail = "test@email.com",
             Obito = false,
@@ -294,8 +310,7 @@ public class ClientesWriterTests
             ReportECBOnly = false,
             ProBono = false,
             CNH = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            PessoaContato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            PessoaContato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

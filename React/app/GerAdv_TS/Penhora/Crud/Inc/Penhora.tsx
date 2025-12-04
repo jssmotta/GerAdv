@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IPenhoraFormProps } from '../../Interfaces/interface.Penhora';
 import { PenhoraService } from '../../Services/Penhora.service';
 import { usePenhoraForm, useValidationsPenhora } from '../../Hooks/hookPenhora';
-import { PenhoraEmpty } from '../../../Models/Penhora';
+import { PenhoraEmpty } from '../../../Models/Penhora'; 
 import { PenhoraForm } from '../Forms/Penhora';
+ 
 
 const PenhoraInc: React.FC<IPenhoraFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const penhoraService = new PenhoraService(
-  new PenhoraApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadPenhora } = usePenhoraForm(
-PenhoraEmpty(), 
-penhoraService
-);
-useEffect(() => {
-  loadPenhora(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedPenhora = await penhoraService.savePenhora(data);
-    if (savedPenhora.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedPenhora);
+  const penhoraService = new PenhoraService(
+    new PenhoraApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadPenhora } = usePenhoraForm(
+    PenhoraEmpty(),
+    penhoraService
+  );
+
+  useEffect(() => {
+    loadPenhora(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedPenhora = await penhoraService.savePenhora(data);
+
+      if (savedPenhora.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedPenhora);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadPenhora(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <PenhoraForm
+        penhoraData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadPenhora(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<PenhoraForm
-penhoraData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default PenhoraInc;

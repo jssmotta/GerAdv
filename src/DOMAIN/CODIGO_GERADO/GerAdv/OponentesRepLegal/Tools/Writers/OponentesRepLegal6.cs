@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IOponentesRepLegalWriter
 {
     Task<FOponentesRepLegal> WriteAsync(Models.OponentesRepLegal oponentesreplegal, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OponentesRepLegalWriter(IFOponentesRepLegalFactory oponentesreplegalFactory) : IOponentesRepLegalWriter
 {
     private readonly IFOponentesRepLegalFactory _oponentesreplegalFactory = oponentesreplegalFactory ?? throw new ArgumentNullException(nameof(oponentesreplegalFactory));
-    public virtual async Task Delete(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(OponentesRepLegalResponse oponentesreplegal, int operadorId, MsiSqlConnection? oCnn)
     {
         await _oponentesreplegalFactory.DeleteAsync(operadorId, oponentesreplegal.Id, oCnn);
     }
@@ -37,6 +37,7 @@ public class OponentesRepLegalWriter(IFOponentesRepLegalFactory oponentesreplega
         dbRec.FEMail = oponentesreplegal.EMail;
         dbRec.FSite = oponentesreplegal.Site;
         dbRec.FObservacao = oponentesreplegal.Observacao;
+        dbRec.FBold = oponentesreplegal.Bold;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

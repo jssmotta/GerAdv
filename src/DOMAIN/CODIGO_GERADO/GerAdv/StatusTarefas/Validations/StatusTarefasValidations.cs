@@ -28,8 +28,6 @@ public class StatusTarefasValidation : IStatusTarefasValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBStatusTarefasDicInfo.SttNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBStatusTarefasDicInfo.SttNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBStatusTarefasDicInfo.SttGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBStatusTarefasDicInfo.SttGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class StatusTarefasValidation : IStatusTarefasValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

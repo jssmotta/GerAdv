@@ -131,16 +131,34 @@ namespace MenphisSI.GerAdv.Models
         public string Site { get; set; } = "";
 
         /// <summary>
-        /// GUID - opcGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Class - opcClass - tamanho máximo: 1 
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - opcEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - opcAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - opcBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - opcGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -270,16 +288,34 @@ namespace MenphisSI.GerAdv.Models.All
         public string Site { get; set; } = "";
 
         /// <summary>
-        /// GUID - opcGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Class - opcClass - tamanho máximo: 1 
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - opcEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - opcAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - opcBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - opcGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

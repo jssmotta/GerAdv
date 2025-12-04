@@ -37,13 +37,28 @@ public class DBTribunalTests : IDisposable
         dt.Columns.Add("triVisto", typeof(bool));
         dt.Columns.Add("triNome", typeof(string));
         dt.Columns.Add("triArea", typeof(int));
-        dt.Columns.Add("triGUID", typeof(string));
         dt.Columns.Add("triJustica", typeof(int));
         dt.Columns.Add("triDescricao", typeof(string));
         dt.Columns.Add("triInstancia", typeof(int));
         dt.Columns.Add("triSigla", typeof(string));
         dt.Columns.Add("triWeb", typeof(string));
+        dt.Columns.Add("triEtiqueta", typeof(string));
+        dt.Columns.Add("triBold", typeof(string));
+        dt.Columns.Add("triGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["triCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTribunal(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -64,7 +79,7 @@ public class DBTribunalTests : IDisposable
     {
         var instance = new DBTribunal();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Tribunal", instance.ITabelaName());
+        Assert.Equal("Tribunal", instance.ITableName());
         Assert.Equal("tri", instance.Prefixo);
     }
 
@@ -82,29 +97,16 @@ public class DBTribunalTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["triCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTribunal(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Tribunal", cadastro.ITabelaName());
-        Assert.Equal("triCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("triNome", cadastro.ICampoNome());
-        Assert.Equal("tri", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Tribunal", cadastro.ITableName());
+        Assert.Equal("triCodigo", cadastro.IFieldId());
+        Assert.Equal("triNome", cadastro.IFieldNameDescription());
+        Assert.Equal("tri", cadastro.IPrefix());
     }
 
 #endregion
@@ -164,9 +166,9 @@ public class DBTribunalTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -205,24 +207,6 @@ public class DBTribunalTests : IDisposable
     {
         var instance = new DBTribunal();
         Assert.Equal(0, instance.FArea);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
     }
 
     [Theory]
@@ -315,6 +299,24 @@ public class DBTribunalTests : IDisposable
         var longString = new string ('A', 255 + 10);
         _instance.FWeb = longString;
         Assert.True(_instance.FWeb.Length <= 255);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

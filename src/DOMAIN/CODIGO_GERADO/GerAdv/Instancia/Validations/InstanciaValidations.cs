@@ -23,13 +23,13 @@ public class InstanciaValidation : IInstanciaValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var nenotasExists0 = await nenotasService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNENotas { Instancia = id ?? default }, uri);
         if (nenotasExists0 != null && nenotasExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Notas associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela N E Notas associados a ele.");
         var prosucumbenciaExists1 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { Instancia = id ?? default }, uri);
         if (prosucumbenciaExists1 != null && prosucumbenciaExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Pro Sucumbencia associados a ele.");
         var tribunalExists2 = await tribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterTribunal { Instancia = id ?? default }, uri);
         if (tribunalExists2 != null && tribunalExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Tribunal associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Tribunal associados a ele.");
         return true;
     }
 
@@ -47,8 +47,6 @@ public class InstanciaValidation : IInstanciaValidation
             throw new SGValidationException($"AccessCode deve ter no máximo {DBInstanciaDicInfo.InsAccessCode.FTamanho} caracteres.");
         if (reg.ZKeyIA != null && reg.ZKeyIA.Length > DBInstanciaDicInfo.InsZKeyIA.FTamanho)
             throw new SGValidationException($"ZKeyIA deve ter no máximo {DBInstanciaDicInfo.InsZKeyIA.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBInstanciaDicInfo.InsGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBInstanciaDicInfo.InsGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -58,9 +56,20 @@ public class InstanciaValidation : IInstanciaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.NroProcesso))
             throw new SGValidationException("NroProcesso é obrigatório");
+        if (reg.NroProcesso.Contains("%"))
+            throw new SGValidationException("NroProcesso possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.ZKeyQuando))
         {
             if (DateTime.TryParse(reg.ZKeyQuando, out DateTime dataAntiga))
@@ -73,7 +82,7 @@ public class InstanciaValidation : IInstanciaValidation
         // Acao
         if (!reg.Acao.IsEmptyIDNumber())
         {
-            var regAcao = await acaoReader.Read(reg.Acao, oCnn);
+            var regAcao = await acaoReader.ReadAsync(reg.Acao, oCnn);
             if (regAcao == null || regAcao.Id != reg.Acao)
             {
                 throw new SGValidationException($"Acao não encontrado ({regAcao?.Id}).");
@@ -83,7 +92,7 @@ public class InstanciaValidation : IInstanciaValidation
         // Foro
         if (!reg.Foro.IsEmptyIDNumber())
         {
-            var regForo = await foroReader.Read(reg.Foro, oCnn);
+            var regForo = await foroReader.ReadAsync(reg.Foro, oCnn);
             if (regForo == null || regForo.Id != reg.Foro)
             {
                 throw new SGValidationException($"Foro não encontrado ({regForo?.Id}).");
@@ -93,7 +102,7 @@ public class InstanciaValidation : IInstanciaValidation
         // TipoRecurso
         if (!reg.TipoRecurso.IsEmptyIDNumber())
         {
-            var regTipoRecurso = await tiporecursoReader.Read(reg.TipoRecurso, oCnn);
+            var regTipoRecurso = await tiporecursoReader.ReadAsync(reg.TipoRecurso, oCnn);
             if (regTipoRecurso == null || regTipoRecurso.Id != reg.TipoRecurso)
             {
                 throw new SGValidationException($"Tipo Recurso não encontrado ({regTipoRecurso?.Id}).");

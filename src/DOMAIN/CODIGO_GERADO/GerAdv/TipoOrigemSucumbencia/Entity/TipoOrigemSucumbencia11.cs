@@ -23,12 +23,6 @@ public partial class FTipoOrigemSucumbenciaFactory : IFTipoOrigemSucumbenciaFact
         return FTipoOrigemSucumbencia.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FTipoOrigemSucumbencia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FTipoOrigemSucumbencia().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FTipoOrigemSucumbencia> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FTipoOrigemSucumbenciaFactory : IFTipoOrigemSucumbenciaFact
         return FTipoOrigemSucumbencia.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FTipoOrigemSucumbencia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FTipoOrigemSucumbencia().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FTipoOrigemSucumbenciaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

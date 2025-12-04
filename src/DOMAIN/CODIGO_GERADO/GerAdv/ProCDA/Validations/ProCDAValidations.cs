@@ -30,8 +30,6 @@ public class ProCDAValidation : IProCDAValidation
             throw new SGValidationException($"Nome deve ter no máximo {DBProCDADicInfo.PcdNome.FTamanho} caracteres.");
         if (reg.NroInterno != null && reg.NroInterno.Length > DBProCDADicInfo.PcdNroInterno.FTamanho)
             throw new SGValidationException($"NroInterno deve ter no máximo {DBProCDADicInfo.PcdNroInterno.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProCDADicInfo.PcdGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProCDADicInfo.PcdGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,6 +39,8 @@ public class ProCDAValidation : IProCDAValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

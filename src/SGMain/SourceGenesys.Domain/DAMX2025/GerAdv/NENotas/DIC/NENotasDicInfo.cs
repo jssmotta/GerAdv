@@ -50,74 +50,22 @@ public static partial class DBNENotasDicInfo
 
     public const string PTabelaNome = "NENotas";
 #region PropriedadesDaTabela
-    public static DBInfoSystem NepApenso => new(0, PTabelaNome, CampoCodigo, Apenso, "Apenso", "Apenso", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepPrecatoria => new(0, PTabelaNome, CampoCodigo, Precatoria, "Precatoria", "Precatoria", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, "Instancia", "Instancia", ETipoDadosSysteminfo.SysteminfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false)
-    {
-        Prefixo = "nep"
-    }; // DBI 11 
-    public static DBInfoSystem NepMovPro => new(0, PTabelaNome, CampoCodigo, MovPro, "MovPro", "MovPro", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepNome => new(0, PTabelaNome, CampoCodigo, Nome, 20, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepNotaExpedida => new(0, PTabelaNome, CampoCodigo, NotaExpedida, "NotaExpedida", "NotaExpedida", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepRevisada => new(0, PTabelaNome, CampoCodigo, Revisada, "Revisada", "Revisada", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepPalavraChave => new(0, PTabelaNome, CampoCodigo, PalavraChave, "PalavraChave", "PalavraChave", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepNotaPublicada => new(0, PTabelaNome, CampoCodigo, NotaPublicada, DevourerOne.PMaxSizeCampoMemo, "NotaPublicada", "NotaPublicada", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "nep"
-    }; // DBI 11 
-    public static DBInfoSystem NepDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "nep"
-    }; // DBI 11 
-    public static DBInfoSystem NepDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "nep"
-    };
-    public static DBInfoSystem NepVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "nep"
-    };
+    public static DBInfoSystem NepApenso => new(0, PTabelaNome, CampoCodigo, Apenso, Apenso, Apenso, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "nep");
+    public static DBInfoSystem NepPrecatoria => new(0, PTabelaNome, CampoCodigo, Precatoria, Precatoria, Precatoria, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "nep");
+    public static DBInfoSystem NepInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, Instancia, Instancia, EDataTypeSystemInfo.SystemInfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false, prefixo: "nep"); // DBI 11 
+    public static DBInfoSystem NepMovPro => new(0, PTabelaNome, CampoCodigo, MovPro, MovPro, MovPro, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "nep", isRequired: true);
+    public static DBInfoSystem NepNome => new(0, PTabelaNome, CampoCodigo, Nome, 20, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "nep");
+    public static DBInfoSystem NepNotaExpedida => new(0, PTabelaNome, CampoCodigo, NotaExpedida, NotaExpedida, NotaExpedida, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "nep", isRequired: true);
+    public static DBInfoSystem NepRevisada => new(0, PTabelaNome, CampoCodigo, Revisada, Revisada, Revisada, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "nep", isRequired: true);
+    public static DBInfoSystem NepProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "nep");
+    public static DBInfoSystem NepPalavraChave => new(0, PTabelaNome, CampoCodigo, PalavraChave, PalavraChave, PalavraChave, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "nep");
+    public static DBInfoSystem NepData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "nep");
+    public static DBInfoSystem NepNotaPublicada => new(0, PTabelaNome, CampoCodigo, NotaPublicada, DevourerOne.PMaxSizeCampoMemo, NotaPublicada, NotaPublicada, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "nep");
+    public static DBInfoSystem NepQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "nep"); // DBI 11 
+    public static DBInfoSystem NepDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "nep");
+    public static DBInfoSystem NepQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "nep"); // DBI 11 
+    public static DBInfoSystem NepDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "nep");
+    public static DBInfoSystem NepVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "nep", isRequired: true);
 
 #endregion
     [Serializable]

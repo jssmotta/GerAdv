@@ -8,6 +8,7 @@ export interface ITipoContatoCRM {
     id: number;
  
 	nome: string,
+	bold: boolean,
 }
 
 export interface ITipoContatoCRMFormProps {

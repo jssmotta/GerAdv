@@ -48,69 +48,21 @@ public static partial class DBAgendaSemanaDicInfo
 
     public const string PTabelaNome = "AgendaSemana";
 #region PropriedadesDaTabela
-    public static DBInfoSystem XxxParaNome => new(0, PTabelaNome, CampoCodigo, ParaNome, 60, "ParaNome", "ParaNome", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxFuncionario => new(0, PTabelaNome, CampoCodigo, Funcionario, "Colaborador", "Colaborador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBFuncionariosDicInfo.CampoCodigo, DBFuncionariosDicInfo.TabelaNome, new DBFuncionariosODicInfo(), false)
-    {
-        Prefixo = "xxx"
-    }; // DBI 11 
-    public static DBInfoSystem XxxAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, "Advogado", "Advogado", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false)
-    {
-        Prefixo = "xxx"
-    }; // DBI 11 
-    public static DBInfoSystem XxxHora => new(0, PTabelaNome, CampoCodigo, Hora, "Hora", "Hora", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxTipoCompromisso => new(0, PTabelaNome, CampoCodigo, TipoCompromisso, "TipoCompromisso", "TipoCompromisso", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoCompromissoDicInfo.CampoCodigo, DBTipoCompromissoDicInfo.TabelaNome, new DBTipoCompromissoODicInfo(), false)
-    {
-        Prefixo = "xxx"
-    }; // DBI 11 
-    public static DBInfoSystem XxxCompromisso => new(0, PTabelaNome, CampoCodigo, Compromisso, DevourerOne.PMaxSizeCampoMemo, "Compromisso", "Compromisso", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxConcluido => new(0, PTabelaNome, CampoCodigo, Concluido, "Concluido", "Concluido", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxLiberado => new(0, PTabelaNome, CampoCodigo, Liberado, "Liberado", "Liberado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxImportante => new(0, PTabelaNome, CampoCodigo, Importante, "Importante", "Importante", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxHoraFinal => new(0, PTabelaNome, CampoCodigo, HoraFinal, "HoraFinal", "HoraFinal", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "xxx"
-    }; // DBI 11 
-    public static DBInfoSystem XxxNomeCliente => new(0, PTabelaNome, CampoCodigo, NomeCliente, 80, "NomeCliente", "NomeCliente", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "xxx"
-    };
-    public static DBInfoSystem XxxTipo => new(0, PTabelaNome, CampoCodigo, Tipo, 100, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "xxx"
-    };
+    public static DBInfoSystem XxxParaNome => new(0, PTabelaNome, CampoCodigo, ParaNome, 60, ParaNome, ParaNome, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "xxx");
+    public static DBInfoSystem XxxData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "xxx");
+    public static DBInfoSystem XxxFuncionario => new(0, PTabelaNome, CampoCodigo, Funcionario, Funcionario, Funcionario, EDataTypeSystemInfo.SystemInfoForeingkey, DBFuncionariosDicInfo.CampoCodigo, DBFuncionariosDicInfo.TabelaNome, new DBFuncionariosODicInfo(), false, prefixo: "xxx"); // DBI 11 
+    public static DBInfoSystem XxxAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, Advogado, Advogado, EDataTypeSystemInfo.SystemInfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false, prefixo: "xxx"); // DBI 11 
+    public static DBInfoSystem XxxHora => new(0, PTabelaNome, CampoCodigo, Hora, Hora, Hora, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "xxx");
+    public static DBInfoSystem XxxTipoCompromisso => new(0, PTabelaNome, CampoCodigo, TipoCompromisso, TipoCompromisso, TipoCompromisso, EDataTypeSystemInfo.SystemInfoForeingkey, DBTipoCompromissoDicInfo.CampoCodigo, DBTipoCompromissoDicInfo.TabelaNome, new DBTipoCompromissoODicInfo(), false, prefixo: "xxx"); // DBI 11 
+    public static DBInfoSystem XxxCompromisso => new(0, PTabelaNome, CampoCodigo, Compromisso, DevourerOne.PMaxSizeCampoMemo, Compromisso, Compromisso, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "xxx");
+    public static DBInfoSystem XxxConcluido => new(0, PTabelaNome, CampoCodigo, Concluido, Concluido, Concluido, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "xxx", isRequired: true);
+    public static DBInfoSystem XxxLiberado => new(0, PTabelaNome, CampoCodigo, Liberado, Liberado, Liberado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "xxx", isRequired: true);
+    public static DBInfoSystem XxxImportante => new(0, PTabelaNome, CampoCodigo, Importante, Importante, Importante, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "xxx", isRequired: true);
+    public static DBInfoSystem XxxHoraFinal => new(0, PTabelaNome, CampoCodigo, HoraFinal, HoraFinal, HoraFinal, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "xxx");
+    public static DBInfoSystem XxxNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "xxx");
+    public static DBInfoSystem XxxCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "xxx"); // DBI 11 
+    public static DBInfoSystem XxxNomeCliente => new(0, PTabelaNome, CampoCodigo, NomeCliente, 80, NomeCliente, NomeCliente, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "xxx");
+    public static DBInfoSystem XxxTipo => new(0, PTabelaNome, CampoCodigo, Tipo, 100, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "xxx");
 
 #endregion
     [Serializable]

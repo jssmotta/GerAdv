@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IInstanciaReader
+public partial class InstanciaReader(IFInstanciaFactory instanciaFactory, IConnectionService connection) : IInstanciaReader
 {
     private readonly IFInstanciaFactory _instanciaFactory = instanciaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("insCodigo, insNroProcesso", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<InstanciaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBInstancia.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<InstanciaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("insCodigo, insNroProcesso", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<InstanciaResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBInstancia.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<InstanciaResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<InstanciaResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,19 +48,18 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
         return result;
     }
 
-    public async Task<InstanciaResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<InstanciaResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _instanciaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Instancia?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Instancia?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _instanciaFactory.CreateFromIdAsync(id, oCnn);
         var instancia = new Models.Instancia
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -63,7 +68,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -81,11 +85,18 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData9))
         {
-            instancia.ZKeyQuando = dbRec.FZKeyQuando;
-            instancia.ZKeyQuando_date = XZKeyQuando;
+            instancia.Data = XData9.ToString("dd/MM/yyyy");
+            instancia.Data_date = XData9;
+        }
+
+        if (DateTime.TryParse(dbRec.FZKeyQuando?.ToString(), out DateTime XZKeyQuando23))
+        {
+            instancia.ZKeyQuando = XZKeyQuando23.ToString("dd/MM/yyyy");
+            instancia.ZKeyQuando_date = XZKeyQuando23;
         }
 
         return instancia;
@@ -112,7 +123,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
         var instancia = new InstanciaResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -121,7 +131,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -139,11 +148,18 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData9))
         {
-            instancia.ZKeyQuando = dbRec.FZKeyQuando;
-            instancia.ZKeyQuando_date = XZKeyQuando;
+            instancia.Data = XData9.ToString("dd/MM/yyyy");
+            instancia.Data_date = XData9;
+        }
+
+        if (DateTime.TryParse(dbRec.FZKeyQuando?.ToString(), out DateTime XZKeyQuando23))
+        {
+            instancia.ZKeyQuando = XZKeyQuando23.ToString("dd/MM/yyyy");
+            instancia.ZKeyQuando_date = XZKeyQuando23;
         }
 
         return instancia;
@@ -159,7 +175,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
         var instancia = new InstanciaResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -168,7 +183,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -186,11 +200,18 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData9))
         {
-            instancia.ZKeyQuando = dbRec.FZKeyQuando;
-            instancia.ZKeyQuando_date = XZKeyQuando;
+            instancia.Data = XData9.ToString("dd/MM/yyyy");
+            instancia.Data_date = XData9;
+        }
+
+        if (DateTime.TryParse(dbRec.FZKeyQuando?.ToString(), out DateTime XZKeyQuando23))
+        {
+            instancia.ZKeyQuando = XZKeyQuando23.ToString("dd/MM/yyyy");
+            instancia.ZKeyQuando_date = XZKeyQuando23;
         }
 
         return instancia;
@@ -206,7 +227,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
         var instancia = new InstanciaResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -215,7 +235,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -233,11 +252,18 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData9))
         {
-            instancia.ZKeyQuando = dbRec.FZKeyQuando;
-            instancia.ZKeyQuando_date = XZKeyQuando;
+            instancia.Data = XData9.ToString("dd/MM/yyyy");
+            instancia.Data_date = XData9;
+        }
+
+        if (DateTime.TryParse(dbRec.FZKeyQuando?.ToString(), out DateTime XZKeyQuando23))
+        {
+            instancia.ZKeyQuando = XZKeyQuando23.ToString("dd/MM/yyyy");
+            instancia.ZKeyQuando_date = XZKeyQuando23;
         }
 
         try
@@ -277,7 +303,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
         var instancia = new InstanciaResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -286,7 +311,6 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -304,11 +328,18 @@ public partial class InstanciaReader(IFInstanciaFactory instanciaFactory) : IIns
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData9))
         {
-            instancia.ZKeyQuando = dbRec.FZKeyQuando;
-            instancia.ZKeyQuando_date = XZKeyQuando;
+            instancia.Data = XData9.ToString("dd/MM/yyyy");
+            instancia.Data_date = XData9;
+        }
+
+        if (DateTime.TryParse(dbRec.FZKeyQuando?.ToString(), out DateTime XZKeyQuando23))
+        {
+            instancia.ZKeyQuando = XZKeyQuando23.ToString("dd/MM/yyyy");
+            instancia.ZKeyQuando_date = XZKeyQuando23;
         }
 
         try

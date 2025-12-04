@@ -74,6 +74,7 @@ public class ProcessOutputEngineWriterTests
         var result = await _processoutputengineWriter.WriteAsync(processoutputengine, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProcessOutputEngine.Object);
+        _mockFProcessOutputEngine.VerifySet(x => x.FGuid = processoutputengine.Guid, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FNome = processoutputengine.Nome, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FDatabase = processoutputengine.Database, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FTabela = processoutputengine.Tabela, Times.Once);
@@ -86,7 +87,6 @@ public class ProcessOutputEngineWriterTests
         _mockFProcessOutputEngine.VerifySet(x => x.FIDModulo = processoutputengine.IDModulo, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FIsOnlyProcesso = processoutputengine.IsOnlyProcesso, Times.Once);
         _mockFProcessOutputEngine.VerifySet(x => x.FMyID = processoutputengine.MyID, Times.Once);
-        _mockFProcessOutputEngine.VerifySet(x => x.FGUID = processoutputengine.GUID, Times.Once);
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class ProcessOutputEngineWriterTests
         var operadorId = 456;
         _mockProcessOutputEngineFactory.Setup(x => x.DeleteAsync(operadorId, processoutputengineResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _processoutputengineWriter.Delete(processoutputengineResponse, operadorId, _mockConnection.Object);
+        await _processoutputengineWriter.DeleteAsync(processoutputengineResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProcessOutputEngineFactory.Verify(x => x.DeleteAsync(operadorId, processoutputengineResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -145,7 +145,7 @@ public class ProcessOutputEngineWriterTests
         var operadorId = 111;
         _mockProcessOutputEngineFactory.Setup(x => x.DeleteAsync(operadorId, processoutputengineResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _processoutputengineWriter.Delete(processoutputengineResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _processoutputengineWriter.DeleteAsync(processoutputengineResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -162,7 +162,7 @@ public class ProcessOutputEngineWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProcessOutputEngineFactory.Setup(x => x.DeleteAsync(operadorId, processoutputengineResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _processoutputengineWriter.Delete(processoutputengineResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _processoutputengineWriter.DeleteAsync(processoutputengineResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -192,6 +192,7 @@ public class ProcessOutputEngineWriterTests
         return new Models.ProcessOutputEngine
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
             Database = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Tabela = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -203,8 +204,7 @@ public class ProcessOutputEngineWriterTests
             DisabledItem = false,
             IDModulo = 1,
             IsOnlyProcesso = false,
-            MyID = 1,
-            GUID = Guid.NewGuid().ToString()
+            MyID = 1
         };
     }
 #endregion

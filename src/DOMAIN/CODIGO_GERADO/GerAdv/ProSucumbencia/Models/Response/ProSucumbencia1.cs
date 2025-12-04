@@ -37,6 +37,9 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Nome - scbNome - tamanho máximo: 2048 
         /// </summary>
@@ -56,10 +59,10 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Percentual { get; set; } = "";
 
         /// <summary>
-        /// GUID - scbGUID - tamanho máximo: 150 
+        /// GUID - scbGuid - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -95,6 +98,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Nome - scbNome - tamanho máximo: 2048 
         /// </summary>
@@ -114,10 +120,10 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Percentual { get; set; } = "";
 
         /// <summary>
-        /// GUID - scbGUID - tamanho máximo: 150 
+        /// GUID - scbGuid - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nroprocessoinstancia")]
         public string NroProcessoInstancia { get; set; } = string.Empty;

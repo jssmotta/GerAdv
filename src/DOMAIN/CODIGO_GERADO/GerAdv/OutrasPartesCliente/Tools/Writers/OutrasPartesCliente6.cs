@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IOutrasPartesClienteWriter
 {
     Task<FOutrasPartesCliente> WriteAsync(Models.OutrasPartesCliente outraspartescliente, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OutrasPartesClienteWriter(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteWriter
 {
     private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException(nameof(outraspartesclienteFactory));
-    public virtual async Task Delete(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(OutrasPartesClienteResponse outraspartescliente, int operadorId, MsiSqlConnection? oCnn)
     {
         await _outraspartesclienteFactory.DeleteAsync(operadorId, outraspartescliente.Id, oCnn);
     }
@@ -28,8 +28,11 @@ public class OutrasPartesClienteWriter(IFOutrasPartesClienteFactory outraspartes
         dbRec.FClientePrincipal = outraspartescliente.ClientePrincipal;
         dbRec.FTipo = outraspartescliente.Tipo;
         dbRec.FSexo = outraspartescliente.Sexo;
-        if (outraspartescliente.DtNasc != null)
-            dbRec.FDtNasc = outraspartescliente.DtNasc.ToString();
+        if (outraspartescliente.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(outraspartescliente.DtNasc));
+        }
+
         dbRec.FCPF = outraspartescliente.CPF.ClearInputCpf();
         dbRec.FRG = outraspartescliente.RG;
         dbRec.FCNPJ = outraspartescliente.CNPJ.ClearInputCnpj();
@@ -43,8 +46,11 @@ public class OutrasPartesClienteWriter(IFOutrasPartesClienteFactory outraspartes
         dbRec.FFax = outraspartescliente.Fax;
         dbRec.FEMail = outraspartescliente.EMail;
         dbRec.FSite = outraspartescliente.Site;
-        dbRec.FGUID = outraspartescliente.GUID;
         dbRec.FClass = outraspartescliente.Class;
+        dbRec.FEtiqueta = outraspartescliente.Etiqueta;
+        dbRec.FAni = outraspartescliente.Ani;
+        dbRec.FBold = outraspartescliente.Bold;
+        dbRec.FGuid = outraspartescliente.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

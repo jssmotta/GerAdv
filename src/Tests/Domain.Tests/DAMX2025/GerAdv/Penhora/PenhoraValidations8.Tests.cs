@@ -69,7 +69,7 @@ public class PenhoraValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockPenhoraService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhora>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Penhoras service mock
-        _ = _mockPenhoraStatusReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PenhoraStatusResponse { Id = id }));
+        _ = _mockPenhoraStatusReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PenhoraStatusResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -77,7 +77,7 @@ public class PenhoraValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockPenhoraService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterPenhora>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Penhoras service mock
-        _ = _mockPenhoraStatusReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PenhoraStatusResponse { Id = 0 }));
+        _ = _mockPenhoraStatusReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PenhoraStatusResponse { Id = 0 }));
     }
 
     [Fact]
@@ -182,7 +182,7 @@ public class PenhoraValidationTests : IDisposable
         // Arrange
         var penhora = CreateValidPenhora();
         penhora.PenhoraStatus = 999;
-        _mockPenhoraStatusReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PenhoraStatusResponse>(null));
+        _mockPenhoraStatusReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PenhoraStatusResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(penhora, _mockPenhoraService.Object, _mockPenhoraStatusReader.Object, _validUri, _mockConnection.Object));
@@ -199,7 +199,7 @@ public class PenhoraValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockPenhoraStatusReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockPenhoraStatusReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(penhora, _mockPenhoraService.Object, _mockPenhoraStatusReader.Object, _validUri, _mockConnection.Object));
@@ -216,7 +216,7 @@ public class PenhoraValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockPenhoraStatusReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockPenhoraStatusReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(penhora, _mockPenhoraService.Object, _mockPenhoraStatusReader.Object, _validUri, _mockConnection.Object);
@@ -236,7 +236,7 @@ public class PenhoraValidationTests : IDisposable
         var result = await _validation.ValidateReg(penhora, _mockPenhoraService.Object, _mockPenhoraStatusReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockPenhoraStatusReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockPenhoraStatusReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

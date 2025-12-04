@@ -26,8 +26,6 @@ public class ProResumosValidation : IProResumosValidation
 
     private bool ValidSizes(Models.ProResumos reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > DBProResumosDicInfo.PrsGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProResumosDicInfo.PrsGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -37,9 +35,20 @@ public class ProResumosValidation : IProResumosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         await Task.Delay(0);
         return true;
     }

@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProCDAWriter
 {
     Task<FProCDA> WriteAsync(Models.ProCDA procda, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProCDAResponse procda, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProCDAWriter(IFProCDAFactory procdaFactory) : IProCDAWriter
 {
     private readonly IFProCDAFactory _procdaFactory = procdaFactory ?? throw new ArgumentNullException(nameof(procdaFactory));
-    public virtual async Task Delete(ProCDAResponse procda, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProCDAResponse procda, int operadorId, MsiSqlConnection? oCnn)
     {
         await _procdaFactory.DeleteAsync(operadorId, procda.Id, oCnn);
     }
@@ -26,7 +26,8 @@ public class ProCDAWriter(IFProCDAFactory procdaFactory) : IProCDAWriter
         dbRec.FProcesso = procda.Processo;
         dbRec.FNome = procda.Nome;
         dbRec.FNroInterno = procda.NroInterno;
-        dbRec.FGUID = procda.GUID;
+        dbRec.FBold = procda.Bold;
+        dbRec.FGuid = procda.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

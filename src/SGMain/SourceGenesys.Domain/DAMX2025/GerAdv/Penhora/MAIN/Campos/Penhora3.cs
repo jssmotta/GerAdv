@@ -7,41 +7,32 @@ public partial class DBPenhora
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFProcesso, pFldFNome, pFldFDescricao, pFldFDataPenhora, pFldFPenhoraStatus, pFldFGUID, pFldFMaster;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FProcesso, m_FPenhoraStatus, m_FMaster;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FDescricao, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDataPenhora;
+    private protected bool pFldFProcesso, pFldFNome, pFldFDescricao, pFldFDataPenhora, pFldFPenhoraStatus, pFldFMaster, pFldFGuid;
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela Penhora deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela 'Penhora' deve ter no máximo 255 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -50,77 +41,91 @@ public partial class DBPenhora
     public virtual string? FDescricao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDescricao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
+            pFldFDescricao = pFldFDescricao || !(field ?? string.Empty).Equals(value);
             if (pFldFDescricao)
-                m_FDescricao = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
-    public virtual string? FDataPenhora
+    public virtual DateOnly? FDataPenhora
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataPenhora is null || m_FDataPenhora == DevourerOne.DDataZerada ? string.Empty : m_FDataPenhora.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataPenhora, m_FDataPenhora, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataPenhora = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataPenhora, m_FDataPenhora) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataPenhora = true;
+                field = value;
+            }
         }
     }
 
     public virtual int FPenhoraStatus
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPenhoraStatus;
+        get => field;
         set
         {
-            pFldFPenhoraStatus = pFldFPenhoraStatus || value != m_FPenhoraStatus;
+            pFldFPenhoraStatus = pFldFPenhoraStatus || value != field;
             if (pFldFPenhoraStatus)
-                m_FPenhoraStatus = value;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Penhora deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
+                field = value;
         }
     }
 
     public virtual int FMaster
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FMaster;
+        get => field;
         set
         {
-            pFldFMaster = pFldFMaster || value != m_FMaster;
+            pFldFMaster = pFldFMaster || value != field;
             if (pFldFMaster)
-                m_FMaster = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Penhora' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -130,9 +135,13 @@ public partial class DBPenhora
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

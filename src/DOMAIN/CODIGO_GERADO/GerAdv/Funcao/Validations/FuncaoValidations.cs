@@ -23,10 +23,10 @@ public class FuncaoValidation : IFuncaoValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var funcionariosExists0 = await funcionariosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterFuncionarios { Funcao = id ?? default }, uri);
         if (funcionariosExists0 != null && funcionariosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Colaborador associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Colaborador associados a ele.");
         var prepostosExists1 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Funcao = id ?? default }, uri);
         if (prepostosExists1 != null && prepostosExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Prepostos associados a ele.");
         return true;
     }
 
@@ -43,6 +43,8 @@ public class FuncaoValidation : IFuncaoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

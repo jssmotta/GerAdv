@@ -8,28 +8,19 @@ public partial class DBOponentesRepLegal
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFNome, pFldFFone, pFldFOponente, pFldFSexo, pFldFCPF, pFldFRG, pFldFEndereco, pFldFBairro, pFldFCEP, pFldFCidade, pFldFFax, pFldFEMail, pFldFSite, pFldFObservacao, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FOponente, m_FCidade;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FFone, m_FCPF, m_FRG, m_FEndereco, m_FBairro, m_FCEP, m_FFax, m_FEMail, m_FSite, m_FObservacao;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FSexo, m_FBold;
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela OponentesRepLegal deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela 'OponentesRepLegal' deve ter no máximo 80 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
@@ -38,48 +29,48 @@ public partial class DBOponentesRepLegal
     public virtual string? FFone
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFone ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFone = pFldFFone || !(m_FFone ?? string.Empty).Equals(value);
+            pFldFFone = pFldFFone || !(field ?? string.Empty).Equals(value);
             if (pFldFFone)
-                m_FFone = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual int FOponente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOponente;
+        get => field;
         set
         {
-            pFldFOponente = pFldFOponente || value != m_FOponente;
+            pFldFOponente = pFldFOponente || value != field;
             if (pFldFOponente)
-                m_FOponente = value;
+                field = value;
         }
     }
 
     public virtual bool FSexo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSexo;
+        get => field;
         set
         {
-            pFldFSexo = pFldFSexo || value != m_FSexo;
+            pFldFSexo = pFldFSexo || value != field;
             if (pFldFSexo)
-                m_FSexo = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela OponentesRepLegal deve ter no máximo 11 caracteres.")]
+    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela 'OponentesRepLegal' deve ter no máximo 11 caracteres.")]
     public virtual string? FCPF
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCPF ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCPF = pFldFCPF || !(m_FCPF ?? string.Empty).Equals(value);
+            pFldFCPF = pFldFCPF || !(field ?? string.Empty).Equals(value);
             if (pFldFCPF)
             {
                 var trimmed = (value?.Trim() ?? string.Empty).ClearInputCpf();
@@ -90,77 +81,75 @@ public partial class DBOponentesRepLegal
                 }
 
                 if (valueCpf.Length == 0 || valueCpf.IsValidCpf())
-                    m_FCPF = valueCpf;
-                else
-                    throw new ArgumentException("CPF inválido ou não informado corretamente.", nameof(value));
+                    field = valueCpf;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela OponentesRepLegal deve ter no máximo 30 caracteres.")]
+    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela 'OponentesRepLegal' deve ter no máximo 30 caracteres.")]
     public virtual string? FRG
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRG ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFRG = pFldFRG || !(m_FRG ?? string.Empty).Equals(value);
+            pFldFRG = pFldFRG || !(field ?? string.Empty).Equals(value);
             if (pFldFRG)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FRG = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+                field = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela OponentesRepLegal deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela 'OponentesRepLegal' deve ter no máximo 80 caracteres.")]
     public virtual string? FEndereco
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEndereco ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
+            pFldFEndereco = pFldFEndereco || !(field ?? string.Empty).Equals(value);
             if (pFldFEndereco)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEndereco = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela OponentesRepLegal deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela 'OponentesRepLegal' deve ter no máximo 50 caracteres.")]
     public virtual string? FBairro
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBairro ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFBairro = pFldFBairro || !(m_FBairro ?? string.Empty).Equals(value);
+            pFldFBairro = pFldFBairro || !(field ?? string.Empty).Equals(value);
             if (pFldFBairro)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FBairro = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela OponentesRepLegal deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela 'OponentesRepLegal' deve ter no máximo 10 caracteres.")]
     public virtual string? FCEP
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCEP ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
+            pFldFCEP = pFldFCEP || !(field ?? string.Empty).Equals(value);
             if (pFldFCEP)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
@@ -168,12 +157,12 @@ public partial class DBOponentesRepLegal
     public virtual int FCidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidade;
+        get => field;
         set
         {
-            pFldFCidade = pFldFCidade || value != m_FCidade;
+            pFldFCidade = pFldFCidade || value != field;
             if (pFldFCidade)
-                m_FCidade = value;
+                field = value;
         }
     }
 
@@ -181,48 +170,45 @@ public partial class DBOponentesRepLegal
     public virtual string? FFax
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFax ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFax = pFldFFax || !(m_FFax ?? string.Empty).Equals(value);
+            pFldFFax = pFldFFax || !(field ?? string.Empty).Equals(value);
             if (pFldFFax)
-                m_FFax = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FEMail da tabela OponentesRepLegal deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FEMail da tabela 'OponentesRepLegal' deve ter no máximo 150 caracteres.")]
     public virtual string? FEMail
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEMail ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
+            pFldFEMail = pFldFEMail || !(field ?? string.Empty).Equals(value);
             if (pFldFEMail)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEMail = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
-                if (m_FEMail.IsValidEmail())
-                    return;
-                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FSite da tabela OponentesRepLegal deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FSite da tabela 'OponentesRepLegal' deve ter no máximo 150 caracteres.")]
     public virtual string? FSite
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSite ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSite = pFldFSite || !(m_FSite ?? string.Empty).Equals(value);
+            pFldFSite = pFldFSite || !(field ?? string.Empty).Equals(value);
             if (pFldFSite)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSite = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
@@ -231,36 +217,36 @@ public partial class DBOponentesRepLegal
     public virtual string? FObservacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObservacao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObservacao = pFldFObservacao || !(m_FObservacao ?? string.Empty).Equals(value);
+            pFldFObservacao = pFldFObservacao || !(field ?? string.Empty).Equals(value);
             if (pFldFObservacao)
-                m_FObservacao = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -270,9 +256,13 @@ public partial class DBOponentesRepLegal
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

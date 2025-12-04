@@ -31,7 +31,7 @@ public partial class DBLivroCaixa
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,31 +138,31 @@ public partial class DBLivroCaixa
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFIDDes)
-            updateTool.Fields(DBLivroCaixaDicInfo.IDDes, m_FIDDes, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.IDDes, FIDDes, EGenericTypeFields.FNumber);
         if (pFldFPessoal)
-            updateTool.Fields(DBLivroCaixaDicInfo.Pessoal, m_FPessoal, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.Pessoal, FPessoal, EGenericTypeFields.FNumber);
         if (pFldFAjuste || updateTool.Insert)
-            updateTool.Fields(DBLivroCaixaDicInfo.Ajuste, m_FAjuste, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLivroCaixaDicInfo.Ajuste, FAjuste, EGenericTypeFields.FBoolean);
         if (pFldFIDHon)
-            updateTool.Fields(DBLivroCaixaDicInfo.IDHon, m_FIDHon, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.IDHon, FIDHon, EGenericTypeFields.FNumber);
         if (pFldFIDHonParc)
-            updateTool.Fields(DBLivroCaixaDicInfo.IDHonParc, m_FIDHonParc, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.IDHonParc, FIDHonParc, EGenericTypeFields.FNumber);
         if (pFldFIDHonSuc || updateTool.Insert)
-            updateTool.Fields(DBLivroCaixaDicInfo.IDHonSuc, m_FIDHonSuc, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLivroCaixaDicInfo.IDHonSuc, FIDHonSuc, EGenericTypeFields.FBoolean);
         if (pFldFData)
-            updateTool.Fields(DBLivroCaixaDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBLivroCaixaDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFProcesso)
-            updateTool.Fields(DBLivroCaixaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFValor)
-            updateTool.Fields(DBLivroCaixaDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBLivroCaixaDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFTipo || updateTool.Insert)
-            updateTool.Fields(DBLivroCaixaDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLivroCaixaDicInfo.Tipo, FTipo, EGenericTypeFields.FBoolean);
         if (pFldFHistorico)
-            updateTool.Fields(DBLivroCaixaDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
+            updateTool.Fields(DBLivroCaixaDicInfo.Historico, FHistorico, EGenericTypeFields.FString);
         if (pFldFPrevisto || updateTool.Insert)
-            updateTool.Fields(DBLivroCaixaDicInfo.Previsto, m_FPrevisto, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLivroCaixaDicInfo.Previsto, FPrevisto, EGenericTypeFields.FBoolean);
         if (pFldFGrupo)
-            updateTool.Fields(DBLivroCaixaDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.Grupo, FGrupo, EGenericTypeFields.FNumber);
     }
 
 #endif
@@ -174,20 +174,20 @@ public partial class DBLivroCaixa
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBLivroCaixaDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBLivroCaixaDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBLivroCaixaDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBLivroCaixaDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBLivroCaixaDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBLivroCaixaDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBLivroCaixaDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLivroCaixaDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBLivroCaixaDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -44,7 +44,7 @@ namespace MenphisSI.GerAdv.Models.Response
         public bool Autenticacao { get; set; }
 
         /// <summary>
-        /// Descricao - oepDescricao - tamanho máximo: 100 
+        /// Descrições - oepDescricao - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -54,12 +54,6 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("usuario")]
         public string Usuario { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// PortaSmtp - oepPortaSmtp  
@@ -78,6 +72,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("assinatura")]
         public string Assinatura { get; set; } = "";
+
+        /// <summary>
+        /// GUID - oepGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -120,7 +120,7 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public bool Autenticacao { get; set; }
 
         /// <summary>
-        /// Descricao - oepDescricao - tamanho máximo: 100 
+        /// Descrições - oepDescricao - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -130,12 +130,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("usuario")]
         public string Usuario { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// PortaSmtp - oepPortaSmtp  
@@ -154,6 +148,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("assinatura")]
         public string Assinatura { get; set; } = "";
+
+        /// <summary>
+        /// GUID - oepGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

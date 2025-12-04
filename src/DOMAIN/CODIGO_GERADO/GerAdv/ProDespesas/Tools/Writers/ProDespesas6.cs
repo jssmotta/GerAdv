@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProDespesasWriter
 {
     Task<FProDespesas> WriteAsync(Models.ProDespesas prodespesas, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDespesasWriter
 {
     private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory ?? throw new ArgumentNullException(nameof(prodespesasFactory));
-    public virtual async Task Delete(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProDespesasResponse prodespesas, int operadorId, MsiSqlConnection? oCnn)
     {
         await _prodespesasFactory.DeleteAsync(operadorId, prodespesas.Id, oCnn);
     }
@@ -23,20 +23,27 @@ public class ProDespesasWriter(IFProDespesasFactory prodespesasFactory) : IProDe
     public virtual async Task<FProDespesas> WriteAsync(Models.ProDespesas prodespesas, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (prodespesas.Id.IsEmptyIDNumber() ? _prodespesasFactory.CreateAsync() : _prodespesasFactory.CreateFromIdAsync(prodespesas.Id, oCnn));
-        dbRec.FGUID = prodespesas.GUID;
         dbRec.FLigacaoID = prodespesas.LigacaoID;
         dbRec.FCliente = prodespesas.Cliente;
         dbRec.FCorrigido = prodespesas.Corrigido;
-        dbRec.FData = prodespesas.Data;
+        if (prodespesas.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(prodespesas.Data));
+        }
+
         dbRec.FValorOriginal = prodespesas.ValorOriginal;
         dbRec.FProcesso = prodespesas.Processo;
         dbRec.FQuitado = prodespesas.Quitado;
-        if (prodespesas.DataCorrecao != null)
-            dbRec.FDataCorrecao = prodespesas.DataCorrecao.ToString();
+        if (prodespesas.DataCorrecao.NotIsEmpty())
+        {
+            dbRec.FDataCorrecao = DateOnly.FromDateTime(Convert.ToDateTime(prodespesas.DataCorrecao));
+        }
+
         dbRec.FValor = prodespesas.Valor;
         dbRec.FTipo = prodespesas.Tipo;
         dbRec.FHistorico = prodespesas.Historico;
         dbRec.FLivroCaixa = prodespesas.LivroCaixa;
+        dbRec.FGuid = prodespesas.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

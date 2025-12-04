@@ -23,7 +23,7 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { BensClassificacao = id ?? default }, uri);
         if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Bens Materiais associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBBensClassificacaoDicInfo.BcsNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBBensClassificacaoDicInfo.BcsNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBBensClassificacaoDicInfo.BcsGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBBensClassificacaoDicInfo.BcsGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,6 +40,8 @@ public class BensClassificacaoValidation : IBensClassificacaoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

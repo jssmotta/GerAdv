@@ -23,12 +23,6 @@ public partial class FDivisaoTribunalFactory : IFDivisaoTribunalFactory, IDispos
         return FDivisaoTribunal.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FDivisaoTribunal().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FDivisaoTribunal> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FDivisaoTribunalFactory : IFDivisaoTribunalFactory, IDispos
         return FDivisaoTribunal.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FDivisaoTribunal> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FDivisaoTribunal().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FDivisaoTribunalFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -14,16 +14,32 @@ public partial class AgendaSemanaController(IAgendaSemanaService agendasemanaSer
     private readonly IAgendaSemanaService _agendasemanaService = agendasemanaService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaSemana filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgendaSemana filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("AgendaSemana: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _agendasemanaService.Filter(max, filtro, uri);
+        //_logger.Info("AgendaSemana: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _agendasemanaService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterAgendaSemanaWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("AgendaSemana: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _agendasemanaService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 }

@@ -10,65 +10,72 @@ import { IStatusTarefas } from '../../Interfaces/interface.StatusTarefas';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { StatusTarefasEmpty } from '@/app/GerAdv_TS/Models/StatusTarefas';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface StatusTarefasWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedStatusTarefas?: IStatusTarefas;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedStatusTarefas?: IStatusTarefas;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const StatusTarefasWindow: React.FC<StatusTarefasWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedStatusTarefas, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedStatusTarefas,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Status Tarefas'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedStatusTarefas?.id ?? 0).toString()}
->
-<StatusTarefasInc
-id={selectedStatusTarefas?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Status Tarefas'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedStatusTarefas?.id ?? 0).toString()}
+            >
+                <StatusTarefasInc
+                    id={selectedStatusTarefas?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowStatusTarefas: React.FC<StatusTarefasWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<StatusTarefasWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedStatusTarefas={StatusTarefasEmpty()}>
-</StatusTarefasWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <StatusTarefasWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedStatusTarefas={StatusTarefasEmpty()}>
+        </StatusTarefasWindow>
+    )
 };
+
 export default StatusTarefasWindow;

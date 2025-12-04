@@ -35,11 +35,10 @@ public class DBHorasTrabTests : IDisposable
         dt.Columns.Add("htbQuemAtu", typeof(int));
         dt.Columns.Add("htbDtAtu", typeof(DateTime));
         dt.Columns.Add("htbVisto", typeof(bool));
-        dt.Columns.Add("htbGUID", typeof(string));
         dt.Columns.Add("htbIDContatoCRM", typeof(int));
         dt.Columns.Add("htbHonorario", typeof(string));
         dt.Columns.Add("htbIDAgenda", typeof(int));
-        dt.Columns.Add("htbData", typeof(string));
+        dt.Columns.Add("htbData", typeof(DateTime));
         dt.Columns.Add("htbCliente", typeof(int));
         dt.Columns.Add("htbStatus", typeof(int));
         dt.Columns.Add("htbProcesso", typeof(int));
@@ -54,7 +53,21 @@ public class DBHorasTrabTests : IDisposable
         dt.Columns.Add("htbAnexoComp", typeof(string));
         dt.Columns.Add("htbAnexoUNC", typeof(string));
         dt.Columns.Add("htbServico", typeof(int));
+        dt.Columns.Add("htbGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["htbCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBHorasTrab(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -75,7 +88,7 @@ public class DBHorasTrabTests : IDisposable
     {
         var instance = new DBHorasTrab();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("HorasTrab", instance.ITabelaName());
+        Assert.Equal("HorasTrab", instance.ITableName());
         Assert.Equal("htb", instance.Prefixo);
     }
 
@@ -93,29 +106,16 @@ public class DBHorasTrabTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["htbCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBHorasTrab(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("HorasTrab", cadastro.ITabelaName());
-        Assert.Equal("htbCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("htbData", cadastro.ICampoNome());
-        Assert.Equal("htb", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("HorasTrab", cadastro.ITableName());
+        Assert.Equal("htbCodigo", cadastro.IFieldId());
+        Assert.Equal("htbData", cadastro.IFieldNameDescription());
+        Assert.Equal("htb", cadastro.IPrefix());
     }
 
 #endregion
@@ -175,30 +175,12 @@ public class DBHorasTrabTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -251,6 +233,23 @@ public class DBHorasTrabTests : IDisposable
     {
         var instance = new DBHorasTrab();
         Assert.Equal(0, instance.FIDAgenda);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBHorasTrab();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]
@@ -465,6 +464,24 @@ public class DBHorasTrabTests : IDisposable
     {
         var instance = new DBHorasTrab();
         Assert.Equal(0, instance.FServico);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

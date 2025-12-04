@@ -22,7 +22,7 @@ public class DBProValoresUpdate : IDisposable
         var provalores = new DBProValores();
         // Assert
         provalores.Should().NotBeNull();
-        provalores.ITabelaName().Should().Be("ProValores");
+        provalores.ITableName().Should().Be("ProValores");
         provalores.ID.Should().Be(0);
     }
 
@@ -39,211 +39,22 @@ public class DBProValoresUpdate : IDisposable
         provalores.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
-    [Theory]
-    [InlineData("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
-    [InlineData("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
-    [InlineData("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc")]
-    public void FGuid_Property_ShouldAcceptValidNames(string Guid)
-    {
-        // Arrange
-        var provalores = new DBProValores
-        {
-            // Act
-            FGuid = Guid
-        };
-        // Assert
-        provalores.FGuid.Should().Be(Guid);
-    }
-
+#region Testes de Guid
     [Fact]
-    public void FGuid_WithNullValue_ShouldReturnEmptyString()
+    public void Guid_DefaultValue_ShouldBeEmpty()
     {
-        // Arrange
-        var provalores = new DBProValores
-        {
-            // Act
-            FGuid = null
-        };
-        // Assert
-        provalores.FGuid.Should().Be(string.Empty);
-    }
-
-    [Fact]
-    public void FGuid_WithExcessiveLength_ShouldTruncateToMaxLength()
-    {
-        // Arrange
-        var provalores = new DBProValores();
-        var longName = new string ('A', 50 + 10); // Exceeds 50 character limit
-        // Act
-        provalores.FGuid = longName;
-        // Assert
-        provalores.FGuid.Should().HaveLength(50);
-    }
-
-    [Fact]
-    public void FGuid_Get_WhenFieldIsNull_ReturnsEmptyString()
-    {
-        // Arrange
-        _instance.FGuid = null;
-        // Act
-        var result = _instance.FGuid;
-        // Assert
-        Assert.Equal(string.Empty, result);
-    }
-
-    [Fact]
-    public void FGuid_Get_WhenFieldHasValue_ReturnsValue()
-    {
-        // Arrange
-        var expectedValue = "Test Value".Trim();
-        _instance.FGuid = expectedValue;
-        // Act
-        var result = _instance.FGuid;
-        // Assert
-        Assert.Equal(expectedValue, result);
-    }
-
-    [Fact]
-    public void FGuid_Set_WithNullValue_SetsEmptyString()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        // Act
-        _instance.FGuid = null;
-        // Assert
         Assert.Equal(string.Empty, _instance.FGuid);
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
     }
 
     [Fact]
-    public void FGuid_Set_WithEmptyString_SetsEmptyString()
+    public void Guid_SetValidGuid_ShouldStore()
     {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        // Act
-        _instance.FGuid = string.Empty;
-        // Assert
-        Assert.Equal(string.Empty, _instance.FGuid);
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.False(fieldValue);
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
     }
 
-    [Fact]
-    public void FGuid_Set_WithValidValue_AppliesTransformationsAndSetsFlag()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        var inputValue = "  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  ";
-        var expectedValue = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-        // Act
-        _instance.FGuid = inputValue;
-        // Assert
-        Assert.Equal(expectedValue, _instance.FGuid);
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
-    [Fact]
-    public void FGuid_Set_WithSameValue_SetFlag()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        var value = "Test Value";
-        _instance.FGuid = value;
-        // Act
-        _instance.FGuid = value;
-        // Assert
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
-    [Fact]
-    public void FGuid_Set_WithDifferentValue_SetsFlag()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        _instance.FGuid = "Original Value";
-        // Act
-        _instance.FGuid = "New Value";
-        // Assert
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
-    [Fact]
-    public void FGuid_Set_MultipleTimes_FlagRemainsTrue()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        _instance.FGuid = "First Value";
-        // Act
-        _instance.FGuid = "Second Value";
-        // Assert
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
-    [Fact]
-    public void FGuid_Set_WithWhitespaceOnly_AppliesTrimAndSetsEmptyString()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        // Act
-        _instance.FGuid = "   ";
-        // Assert
-        Assert.Equal(string.Empty, _instance.FGuid);
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
-    [Theory]
-    [InlineData("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
-    [InlineData("  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  ", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")]
-    [InlineData("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc")]
-    public void FGuid_Set_AppliesFixAbcTransformation(string input, string expected)
-    {
-        // Act
-        _instance.FGuid = input;
-        // Assert
-        Assert.Equal(expected, _instance.FGuid);
-    }
-
-    [Fact]
-    public void FGuid_Set_FromNullToValue_SetsFlag()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        _instance.FGuid = null;
-        // Act
-        _instance.FGuid = "New Value";
-        // Assert
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
-    [Fact]
-    public void FGuid_Set_FromValueToNull_SetsFlag()
-    {
-        // Arrange
-        var fieldInfo = typeof(DBProValores).GetField("pFldFGuid", BindingFlags.NonPublic | BindingFlags.Instance);
-        _instance.FGuid = "Existing Value";
-        // Act
-        _instance.FGuid = null;
-        // Assert
-        var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
-        Assert.True(fieldValue);
-    }
-
+#endregion
     [Theory]
     [InlineData("AAAAAAAAAAAAAAAAAA")]
     [InlineData("BBBBBBBBBBBBBBBBB")]
@@ -318,7 +129,7 @@ public class DBProValoresUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FIndice);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -332,7 +143,7 @@ public class DBProValoresUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FIndice);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -348,7 +159,7 @@ public class DBProValoresUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FIndice);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -363,7 +174,7 @@ public class DBProValoresUpdate : IDisposable
         _instance.FIndice = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -377,7 +188,7 @@ public class DBProValoresUpdate : IDisposable
         _instance.FIndice = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -391,7 +202,7 @@ public class DBProValoresUpdate : IDisposable
         _instance.FIndice = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -405,7 +216,7 @@ public class DBProValoresUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FIndice);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -431,7 +242,7 @@ public class DBProValoresUpdate : IDisposable
         _instance.FIndice = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -445,7 +256,7 @@ public class DBProValoresUpdate : IDisposable
         _instance.FIndice = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

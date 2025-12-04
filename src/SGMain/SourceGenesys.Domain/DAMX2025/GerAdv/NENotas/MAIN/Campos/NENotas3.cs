@@ -8,79 +8,67 @@ public partial class DBNENotas
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFApenso, pFldFPrecatoria, pFldFInstancia, pFldFMovPro, pFldFNome, pFldFNotaExpedida, pFldFRevisada, pFldFProcesso, pFldFPalavraChave, pFldFData, pFldFNotaPublicada;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FApenso, m_FPrecatoria, m_FInstancia, m_FProcesso, m_FPalavraChave;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FNotaPublicada;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FMovPro, m_FNotaExpedida, m_FRevisada;
     public virtual int FApenso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FApenso;
+        get => field;
         set
         {
-            pFldFApenso = pFldFApenso || value != m_FApenso;
+            pFldFApenso = pFldFApenso || value != field;
             if (pFldFApenso)
-                m_FApenso = value;
+                field = value;
         }
     }
 
     public virtual int FPrecatoria
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPrecatoria;
+        get => field;
         set
         {
-            pFldFPrecatoria = pFldFPrecatoria || value != m_FPrecatoria;
+            pFldFPrecatoria = pFldFPrecatoria || value != field;
             if (pFldFPrecatoria)
-                m_FPrecatoria = value;
+                field = value;
         }
     }
 
     public virtual int FInstancia
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInstancia;
+        get => field;
         set
         {
-            pFldFInstancia = pFldFInstancia || value != m_FInstancia;
+            pFldFInstancia = pFldFInstancia || value != field;
             if (pFldFInstancia)
-                m_FInstancia = value;
+                field = value;
         }
     }
 
     public virtual bool FMovPro
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FMovPro;
+        get => field;
         set
         {
-            pFldFMovPro = pFldFMovPro || value != m_FMovPro;
+            pFldFMovPro = pFldFMovPro || value != field;
             if (pFldFMovPro)
-                m_FMovPro = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(20, ErrorMessage = "A propriedade FNome da tabela NENotas deve ter no máximo 20 caracteres.")]
+    [StringLength(20, ErrorMessage = "A propriedade FNome da tabela 'NENotas' deve ter no máximo 20 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+                field = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
             }
         }
     }
@@ -88,60 +76,74 @@ public partial class DBNENotas
     public virtual bool FNotaExpedida
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNotaExpedida;
+        get => field;
         set
         {
-            pFldFNotaExpedida = pFldFNotaExpedida || value != m_FNotaExpedida;
+            pFldFNotaExpedida = pFldFNotaExpedida || value != field;
             if (pFldFNotaExpedida)
-                m_FNotaExpedida = value;
+                field = value;
         }
     }
 
     public virtual bool FRevisada
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRevisada;
+        get => field;
         set
         {
-            pFldFRevisada = pFldFRevisada || value != m_FRevisada;
+            pFldFRevisada = pFldFRevisada || value != field;
             if (pFldFRevisada)
-                m_FRevisada = value;
+                field = value;
         }
     }
 
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     public virtual int FPalavraChave
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPalavraChave;
+        get => field;
         set
         {
-            pFldFPalavraChave = pFldFPalavraChave || value != m_FPalavraChave;
+            pFldFPalavraChave = pFldFPalavraChave || value != field;
             if (pFldFPalavraChave)
-                m_FPalavraChave = value;
+                field = value;
         }
     }
 
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
@@ -149,24 +151,24 @@ public partial class DBNENotas
     public virtual string? FNotaPublicada
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNotaPublicada ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNotaPublicada = pFldFNotaPublicada || !(m_FNotaPublicada ?? string.Empty).Equals(value);
+            pFldFNotaPublicada = pFldFNotaPublicada || !(field ?? string.Empty).Equals(value);
             if (pFldFNotaPublicada)
-                m_FNotaPublicada = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -176,9 +178,13 @@ public partial class DBNENotas
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

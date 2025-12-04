@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { OperadorGruposAgendaApiError } from '../GerAdv_TS/OperadorGruposAgenda/Apis/ApiOperadorGruposAgenda';
+import { OperadorGruposAgendaApiError } from '@/app/GerAdv_TS/OperadorGruposAgenda/Apis/ApiOperadorGruposAgenda';
 import { OperadorGruposAgendaApi } from '@/app/GerAdv_TS/OperadorGruposAgenda/Apis/ApiOperadorGruposAgenda';
-import { FilterOperadorGruposAgenda } from '../GerAdv_TS/OperadorGruposAgenda/Filters/OperadorGruposAgenda';
-import { IOperadorGruposAgenda } from '../GerAdv_TS/OperadorGruposAgenda/Interfaces/interface.OperadorGruposAgenda';
-import { OperadorGruposAgendaTestEmpty } from '../GerAdv_TS/Models/OperadorGruposAgenda';
+import { FilterOperadorGruposAgenda } from '@/app/GerAdv_TS/OperadorGruposAgenda/Filters/OperadorGruposAgenda';
+import { IOperadorGruposAgenda } from '@/app/GerAdv_TS/OperadorGruposAgenda/Interfaces/interface.OperadorGruposAgenda';
+import { OperadorGruposAgendaTestEmpty } from '@/app/GerAdv_TS/Models/OperadorGruposAgenda';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('OperadorGruposAgendaApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterOperadorGruposAgenda = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('OperadorGruposAgendaApi', () => {
   describe('addAndUpdate', () => {
     const mockOperadorGruposAgenda: IOperadorGruposAgenda = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+sqlwhere: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+nome: 'João',
+operador: 1
     };
 
     it('should add new operadorgruposagenda successfully', async () => {
@@ -487,7 +477,7 @@ describe('OperadorGruposAgendaApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterOperadorGruposAgenda = { funcionario: 1 };
+      const mockFilter: FilterOperadorGruposAgenda = { : 1 };
       
       const result = operadorgruposagendaApi.useFilter(mockFilter);
       

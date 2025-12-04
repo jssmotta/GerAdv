@@ -8,48 +8,39 @@ public partial class DBNECompromissos
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFPalavraChave, pFldFProvisionar, pFldFTipoCompromisso, pFldFTextoCompromisso, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FPalavraChave, m_FTipoCompromisso;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FTextoCompromisso;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FProvisionar, m_FBold;
     public virtual int FPalavraChave
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPalavraChave;
+        get => field;
         set
         {
-            pFldFPalavraChave = pFldFPalavraChave || value != m_FPalavraChave;
+            pFldFPalavraChave = pFldFPalavraChave || value != field;
             if (pFldFPalavraChave)
-                m_FPalavraChave = value;
+                field = value;
         }
     }
 
     public virtual bool FProvisionar
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProvisionar;
+        get => field;
         set
         {
-            pFldFProvisionar = pFldFProvisionar || value != m_FProvisionar;
+            pFldFProvisionar = pFldFProvisionar || value != field;
             if (pFldFProvisionar)
-                m_FProvisionar = value;
+                field = value;
         }
     }
 
     public virtual int FTipoCompromisso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipoCompromisso;
+        get => field;
         set
         {
-            pFldFTipoCompromisso = pFldFTipoCompromisso || value != m_FTipoCompromisso;
+            pFldFTipoCompromisso = pFldFTipoCompromisso || value != field;
             if (pFldFTipoCompromisso)
-                m_FTipoCompromisso = value;
+                field = value;
         }
     }
 
@@ -57,36 +48,36 @@ public partial class DBNECompromissos
     public virtual string? FTextoCompromisso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTextoCompromisso ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFTextoCompromisso = pFldFTextoCompromisso || !(m_FTextoCompromisso ?? string.Empty).Equals(value);
+            pFldFTextoCompromisso = pFldFTextoCompromisso || !(field ?? string.Empty).Equals(value);
             if (pFldFTextoCompromisso)
-                m_FTextoCompromisso = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -96,9 +87,13 @@ public partial class DBNECompromissos
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

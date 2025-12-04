@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { SMSAliceApiError } from '../GerAdv_TS/SMSAlice/Apis/ApiSMSAlice';
+import { SMSAliceApiError } from '@/app/GerAdv_TS/SMSAlice/Apis/ApiSMSAlice';
 import { SMSAliceApi } from '@/app/GerAdv_TS/SMSAlice/Apis/ApiSMSAlice';
-import { FilterSMSAlice } from '../GerAdv_TS/SMSAlice/Filters/SMSAlice';
-import { ISMSAlice } from '../GerAdv_TS/SMSAlice/Interfaces/interface.SMSAlice';
-import { SMSAliceTestEmpty } from '../GerAdv_TS/Models/SMSAlice';
+import { FilterSMSAlice } from '@/app/GerAdv_TS/SMSAlice/Filters/SMSAlice';
+import { ISMSAlice } from '@/app/GerAdv_TS/SMSAlice/Interfaces/interface.SMSAlice';
+import { SMSAliceTestEmpty } from '@/app/GerAdv_TS/Models/SMSAlice';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('SMSAliceApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterSMSAlice = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('SMSAliceApi', () => {
   describe('addAndUpdate', () => {
     const mockSMSAlice: ISMSAlice = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+operador: 1,
+nome: 'João',
+tipoemail: 1
     };
 
     it('should add new smsalice successfully', async () => {
@@ -487,7 +477,7 @@ describe('SMSAliceApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterSMSAlice = { funcionario: 1 };
+      const mockFilter: FilterSMSAlice = { : 1 };
       
       const result = smsaliceApi.useFilter(mockFilter);
       

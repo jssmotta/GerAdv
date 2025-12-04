@@ -67,7 +67,7 @@ public class InstanciaValidationTests : IDisposable
             LiminarConcedida = false,
             LiminarNegada = true,
             Processo = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             LiminarParcial = false,
             LiminarResultado = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             NroProcesso = "AAAAAAAAAAAAAAAAAAAAAAA",
@@ -94,9 +94,9 @@ public class InstanciaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockInstanciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterInstancia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Instancias service mock
-        _ = _mockAcaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AcaoResponse { Id = id }));
-        _ = _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ForoResponse { Id = id }));
-        _ = _mockTipoRecursoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoRecursoResponse { Id = id }));
+        _ = _mockAcaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AcaoResponse { Id = id }));
+        _ = _mockForoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ForoResponse { Id = id }));
+        _ = _mockTipoRecursoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoRecursoResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -104,9 +104,9 @@ public class InstanciaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockInstanciaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterInstancia>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Instancias service mock
-        _ = _mockAcaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AcaoResponse { Id = 0 }));
-        _ = _mockForoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ForoResponse { Id = 0 }));
-        _ = _mockTipoRecursoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoRecursoResponse { Id = 0 }));
+        _ = _mockAcaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AcaoResponse { Id = 0 }));
+        _ = _mockForoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ForoResponse { Id = 0 }));
+        _ = _mockTipoRecursoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoRecursoResponse { Id = 0 }));
     }
 
     [Fact]
@@ -150,6 +150,74 @@ public class InstanciaValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var instancia = CreateValidInstancia();
+        instancia.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var instancia = CreateValidInstancia();
+        instancia.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var instancia = CreateValidInstancia();
+        instancia.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var instancia = CreateValidInstancia();
+        instancia.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var instancia = CreateValidInstancia();
+        instancia.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region ZKeyQuando Validation Tests
     [Theory]
     [InlineData("01/01/1899")]
@@ -225,7 +293,7 @@ public class InstanciaValidationTests : IDisposable
         // Arrange
         var instancia = CreateValidInstancia();
         instancia.Acao = 999;
-        _mockAcaoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AcaoResponse>(null));
+        _mockAcaoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AcaoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
@@ -242,7 +310,7 @@ public class InstanciaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAcaoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAcaoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
@@ -259,7 +327,7 @@ public class InstanciaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAcaoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAcaoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
@@ -279,7 +347,7 @@ public class InstanciaValidationTests : IDisposable
         var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockAcaoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockAcaoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Foro
@@ -289,7 +357,7 @@ public class InstanciaValidationTests : IDisposable
         // Arrange
         var instancia = CreateValidInstancia();
         instancia.Foro = 999;
-        _mockForoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ForoResponse>(null));
+        _mockForoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ForoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
@@ -306,7 +374,7 @@ public class InstanciaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockForoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockForoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
@@ -323,7 +391,7 @@ public class InstanciaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockForoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockForoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
@@ -343,7 +411,7 @@ public class InstanciaValidationTests : IDisposable
         var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockForoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockForoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - TipoRecurso
@@ -353,7 +421,7 @@ public class InstanciaValidationTests : IDisposable
         // Arrange
         var instancia = CreateValidInstancia();
         instancia.TipoRecurso = 999;
-        _mockTipoRecursoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoRecursoResponse>(null));
+        _mockTipoRecursoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoRecursoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
@@ -370,7 +438,7 @@ public class InstanciaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockTipoRecursoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockTipoRecursoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object));
@@ -387,7 +455,7 @@ public class InstanciaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockTipoRecursoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockTipoRecursoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
@@ -407,7 +475,7 @@ public class InstanciaValidationTests : IDisposable
         var result = await _validation.ValidateReg(instancia, _mockInstanciaService.Object, _mockAcaoReader.Object, _mockForoReader.Object, _mockTipoRecursoReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockTipoRecursoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockTipoRecursoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

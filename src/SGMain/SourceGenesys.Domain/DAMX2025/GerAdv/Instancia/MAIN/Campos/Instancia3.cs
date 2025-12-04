@@ -7,62 +7,33 @@ public partial class DBInstancia
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFGUID, pFldFLiminarPedida, pFldFObjeto, pFldFStatusResultado, pFldFLiminarPendente, pFldFInterpusemosRecurso, pFldFLiminarConcedida, pFldFLiminarNegada, pFldFProcesso, pFldFData, pFldFLiminarParcial, pFldFLiminarResultado, pFldFNroProcesso, pFldFDivisao, pFldFLiminarCliente, pFldFComarca, pFldFSubDivisao, pFldFPrincipal, pFldFAcao, pFldFForo, pFldFTipoRecurso, pFldFZKey, pFldFZKeyQuem, pFldFZKeyQuando, pFldFNroAntigo, pFldFAccessCode, pFldFJulgador, pFldFZKeyIA;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FStatusResultado, m_FProcesso, m_FDivisao, m_FComarca, m_FSubDivisao, m_FAcao, m_FForo, m_FTipoRecurso, m_FZKeyQuem, m_FJulgador;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FGUID, m_FLiminarPedida, m_FObjeto, m_FLiminarResultado, m_FNroProcesso, m_FZKey, m_FNroAntigo, m_FAccessCode, m_FZKeyIA;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData, m_FZKeyQuando;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FLiminarPendente, m_FInterpusemosRecurso, m_FLiminarConcedida, m_FLiminarNegada, m_FLiminarParcial, m_FLiminarCliente, m_FPrincipal;
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Instancia deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
-        }
-    }
-
+    private protected bool pFldFLiminarPedida, pFldFObjeto, pFldFStatusResultado, pFldFLiminarPendente, pFldFInterpusemosRecurso, pFldFLiminarConcedida, pFldFLiminarNegada, pFldFProcesso, pFldFData, pFldFLiminarParcial, pFldFLiminarResultado, pFldFNroProcesso, pFldFDivisao, pFldFLiminarCliente, pFldFComarca, pFldFSubDivisao, pFldFPrincipal, pFldFAcao, pFldFForo, pFldFTipoRecurso, pFldFZKey, pFldFZKeyQuem, pFldFZKeyQuando, pFldFNroAntigo, pFldFAccessCode, pFldFJulgador, pFldFZKeyIA, pFldFGuid;
     // Tracking Code: 20250503
     public virtual string? FLiminarPedida
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarPedida ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFLiminarPedida = pFldFLiminarPedida || !(m_FLiminarPedida ?? string.Empty).Equals(value);
+            pFldFLiminarPedida = pFldFLiminarPedida || !(field ?? string.Empty).Equals(value);
             if (pFldFLiminarPedida)
-                m_FLiminarPedida = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FObjeto da tabela Instancia deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FObjeto da tabela 'Instancia' deve ter no máximo 255 caracteres.")]
     public virtual string? FObjeto
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObjeto ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObjeto = pFldFObjeto || !(m_FObjeto ?? string.Empty).Equals(value);
+            pFldFObjeto = pFldFObjeto || !(field ?? string.Empty).Equals(value);
             if (pFldFObjeto)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FObjeto = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -70,96 +41,110 @@ public partial class DBInstancia
     public virtual int FStatusResultado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FStatusResultado;
+        get => field;
         set
         {
-            pFldFStatusResultado = pFldFStatusResultado || value != m_FStatusResultado;
+            pFldFStatusResultado = pFldFStatusResultado || value != field;
             if (pFldFStatusResultado)
-                m_FStatusResultado = value;
+                field = value;
         }
     }
 
     public virtual bool FLiminarPendente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarPendente;
+        get => field;
         set
         {
-            pFldFLiminarPendente = pFldFLiminarPendente || value != m_FLiminarPendente;
+            pFldFLiminarPendente = pFldFLiminarPendente || value != field;
             if (pFldFLiminarPendente)
-                m_FLiminarPendente = value;
+                field = value;
         }
     }
 
     public virtual bool FInterpusemosRecurso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInterpusemosRecurso;
+        get => field;
         set
         {
-            pFldFInterpusemosRecurso = pFldFInterpusemosRecurso || value != m_FInterpusemosRecurso;
+            pFldFInterpusemosRecurso = pFldFInterpusemosRecurso || value != field;
             if (pFldFInterpusemosRecurso)
-                m_FInterpusemosRecurso = value;
+                field = value;
         }
     }
 
     public virtual bool FLiminarConcedida
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarConcedida;
+        get => field;
         set
         {
-            pFldFLiminarConcedida = pFldFLiminarConcedida || value != m_FLiminarConcedida;
+            pFldFLiminarConcedida = pFldFLiminarConcedida || value != field;
             if (pFldFLiminarConcedida)
-                m_FLiminarConcedida = value;
+                field = value;
         }
     }
 
     public virtual bool FLiminarNegada
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarNegada;
+        get => field;
         set
         {
-            pFldFLiminarNegada = pFldFLiminarNegada || value != m_FLiminarNegada;
+            pFldFLiminarNegada = pFldFLiminarNegada || value != field;
             if (pFldFLiminarNegada)
-                m_FLiminarNegada = value;
+                field = value;
         }
     }
 
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
     public virtual bool FLiminarParcial
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarParcial;
+        get => field;
         set
         {
-            pFldFLiminarParcial = pFldFLiminarParcial || value != m_FLiminarParcial;
+            pFldFLiminarParcial = pFldFLiminarParcial || value != field;
             if (pFldFLiminarParcial)
-                m_FLiminarParcial = value;
+                field = value;
         }
     }
 
@@ -167,28 +152,28 @@ public partial class DBInstancia
     public virtual string? FLiminarResultado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarResultado ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFLiminarResultado = pFldFLiminarResultado || !(m_FLiminarResultado ?? string.Empty).Equals(value);
+            pFldFLiminarResultado = pFldFLiminarResultado || !(field ?? string.Empty).Equals(value);
             if (pFldFLiminarResultado)
-                m_FLiminarResultado = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(25, ErrorMessage = "A propriedade FNroProcesso da tabela Instancia deve ter no máximo 25 caracteres.")]
+    [StringLength(25, ErrorMessage = "A propriedade FNroProcesso da tabela 'Instancia' deve ter no máximo 25 caracteres.")]
     public virtual string? FNroProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNroProcesso ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNroProcesso = pFldFNroProcesso || !(m_FNroProcesso ?? string.Empty).Equals(value);
+            pFldFNroProcesso = pFldFNroProcesso || !(field ?? string.Empty).Equals(value);
             if (pFldFNroProcesso)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNroProcesso = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+                field = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
             }
         }
     }
@@ -196,112 +181,112 @@ public partial class DBInstancia
     public virtual int FDivisao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDivisao;
+        get => field;
         set
         {
-            pFldFDivisao = pFldFDivisao || value != m_FDivisao;
+            pFldFDivisao = pFldFDivisao || value != field;
             if (pFldFDivisao)
-                m_FDivisao = value;
+                field = value;
         }
     }
 
     public virtual bool FLiminarCliente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLiminarCliente;
+        get => field;
         set
         {
-            pFldFLiminarCliente = pFldFLiminarCliente || value != m_FLiminarCliente;
+            pFldFLiminarCliente = pFldFLiminarCliente || value != field;
             if (pFldFLiminarCliente)
-                m_FLiminarCliente = value;
+                field = value;
         }
     }
 
     public virtual int FComarca
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FComarca;
+        get => field;
         set
         {
-            pFldFComarca = pFldFComarca || value != m_FComarca;
+            pFldFComarca = pFldFComarca || value != field;
             if (pFldFComarca)
-                m_FComarca = value;
+                field = value;
         }
     }
 
     public virtual int FSubDivisao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSubDivisao;
+        get => field;
         set
         {
-            pFldFSubDivisao = pFldFSubDivisao || value != m_FSubDivisao;
+            pFldFSubDivisao = pFldFSubDivisao || value != field;
             if (pFldFSubDivisao)
-                m_FSubDivisao = value;
+                field = value;
         }
     }
 
     public virtual bool FPrincipal
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPrincipal;
+        get => field;
         set
         {
-            pFldFPrincipal = pFldFPrincipal || value != m_FPrincipal;
+            pFldFPrincipal = pFldFPrincipal || value != field;
             if (pFldFPrincipal)
-                m_FPrincipal = value;
+                field = value;
         }
     }
 
     public virtual int FAcao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAcao;
+        get => field;
         set
         {
-            pFldFAcao = pFldFAcao || value != m_FAcao;
+            pFldFAcao = pFldFAcao || value != field;
             if (pFldFAcao)
-                m_FAcao = value;
+                field = value;
         }
     }
 
     public virtual int FForo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FForo;
+        get => field;
         set
         {
-            pFldFForo = pFldFForo || value != m_FForo;
+            pFldFForo = pFldFForo || value != field;
             if (pFldFForo)
-                m_FForo = value;
+                field = value;
         }
     }
 
     public virtual int FTipoRecurso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipoRecurso;
+        get => field;
         set
         {
-            pFldFTipoRecurso = pFldFTipoRecurso || value != m_FTipoRecurso;
+            pFldFTipoRecurso = pFldFTipoRecurso || value != field;
             if (pFldFTipoRecurso)
-                m_FTipoRecurso = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(25, ErrorMessage = "A propriedade FZKey da tabela Instancia deve ter no máximo 25 caracteres.")]
+    [StringLength(25, ErrorMessage = "A propriedade FZKey da tabela 'Instancia' deve ter no máximo 25 caracteres.")]
     public virtual string? FZKey
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FZKey ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFZKey = pFldFZKey || !(m_FZKey ?? string.Empty).Equals(value);
+            pFldFZKey = pFldFZKey || !(field ?? string.Empty).Equals(value);
             if (pFldFZKey)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FZKey = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+                field = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
             }
         }
     }
@@ -309,57 +294,71 @@ public partial class DBInstancia
     public virtual int FZKeyQuem
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FZKeyQuem;
+        get => field;
         set
         {
-            pFldFZKeyQuem = pFldFZKeyQuem || value != m_FZKeyQuem;
+            pFldFZKeyQuem = pFldFZKeyQuem || value != field;
             if (pFldFZKeyQuem)
-                m_FZKeyQuem = value;
+                field = value;
         }
     }
 
-    public virtual string? FZKeyQuando
+    public virtual DateOnly? FZKeyQuando
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FZKeyQuando is null || m_FZKeyQuando == DevourerOne.DDataZerada ? string.Empty : m_FZKeyQuando.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFZKeyQuando, m_FZKeyQuando, value)is not (true, var changed, var data))
-                return;
-            (pFldFZKeyQuando, m_FZKeyQuando) = (changed, data);
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(25, ErrorMessage = "A propriedade FNroAntigo da tabela Instancia deve ter no máximo 25 caracteres.")]
-    public virtual string? FNroAntigo
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNroAntigo ?? string.Empty;
-        set
-        {
-            pFldFNroAntigo = pFldFNroAntigo || !(m_FNroAntigo ?? string.Empty).Equals(value);
-            if (pFldFNroAntigo)
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
             {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FNroAntigo = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+                if (field.HasValue)
+                {
+                    pFldFZKeyQuando = true;
+                    field = null;
+                }
+
+                return;
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFZKeyQuando = true;
+                field = value;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FAccessCode da tabela Instancia deve ter no máximo 100 caracteres.")]
+    [StringLength(25, ErrorMessage = "A propriedade FNroAntigo da tabela 'Instancia' deve ter no máximo 25 caracteres.")]
+    public virtual string? FNroAntigo
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => field ?? string.Empty;
+        set
+        {
+            pFldFNroAntigo = pFldFNroAntigo || !(field ?? string.Empty).Equals(value);
+            if (pFldFNroAntigo)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FAccessCode da tabela 'Instancia' deve ter no máximo 100 caracteres.")]
     public virtual string? FAccessCode
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAccessCode ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFAccessCode = pFldFAccessCode || !(m_FAccessCode ?? string.Empty).Equals(value);
+            pFldFAccessCode = pFldFAccessCode || !(field ?? string.Empty).Equals(value);
             if (pFldFAccessCode)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FAccessCode = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
@@ -367,41 +366,58 @@ public partial class DBInstancia
     public virtual int FJulgador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FJulgador;
+        get => field;
         set
         {
-            pFldFJulgador = pFldFJulgador || value != m_FJulgador;
+            pFldFJulgador = pFldFJulgador || value != field;
             if (pFldFJulgador)
-                m_FJulgador = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(25, ErrorMessage = "A propriedade FZKeyIA da tabela Instancia deve ter no máximo 25 caracteres.")]
+    [StringLength(25, ErrorMessage = "A propriedade FZKeyIA da tabela 'Instancia' deve ter no máximo 25 caracteres.")]
     public virtual string? FZKeyIA
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FZKeyIA ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFZKeyIA = pFldFZKeyIA || !(m_FZKeyIA ?? string.Empty).Equals(value);
+            pFldFZKeyIA = pFldFZKeyIA || !(field ?? string.Empty).Equals(value);
             if (pFldFZKeyIA)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FZKeyIA = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+                field = trimmed.Length > 25 ? trimmed.AsSpan(0, 25).ToString() : trimmed;
+            }
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Instancia' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -411,9 +427,13 @@ public partial class DBInstancia
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

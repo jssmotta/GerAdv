@@ -90,6 +90,18 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("web")]
         public string Web { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - forEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Bold - forBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
     }
 }
 
@@ -178,6 +190,18 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("web")]
         public string Web { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - forEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Bold - forBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
 
         [JsonPropertyName("nomecidade")]
         public string NomeCidade { get; set; } = string.Empty;

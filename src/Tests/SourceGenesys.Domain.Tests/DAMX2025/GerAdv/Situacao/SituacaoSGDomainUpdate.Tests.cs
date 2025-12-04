@@ -22,7 +22,7 @@ public class DBSituacaoUpdate : IDisposable
         var situacao = new DBSituacao();
         // Assert
         situacao.Should().NotBeNull();
-        situacao.ITabelaName().Should().Be("Situacao");
+        situacao.ITableName().Should().Be("Situacao");
         situacao.ID.Should().Be(0);
     }
 
@@ -33,12 +33,12 @@ public class DBSituacaoUpdate : IDisposable
         var situacao = new DBSituacao
         {
             FParte_Int = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FParte_Opo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
         // Assert - All properties should be set situacao.FParte_Int.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        situacao.FGUID.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         situacao.FParte_Opo.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        situacao.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -48,13 +48,29 @@ public class DBSituacaoUpdate : IDisposable
         var situacao = new DBSituacao();
         var longString = new string ('X', 300);
         situacao.FParte_Int = longString; // MAX: 30
-        situacao.FGUID = longString; // MAX: 100
         situacao.FParte_Opo = longString; // MAX: 30
+        situacao.FGuid = longString; // MAX: 100
         // Assert - All properties should be set situacao.FParte_Int.Should().HaveLength(30);
-        situacao.FGUID.Should().HaveLength(100);
         situacao.FParte_Opo.Should().HaveLength(30);
+        situacao.FGuid.Should().HaveLength(100);
     }
 
+#region Testes de Guid
+    [Fact]
+    public void Guid_DefaultValue_ShouldBeEmpty()
+    {
+        Assert.Equal(string.Empty, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_SetValidGuid_ShouldStore()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
+    }
+
+#endregion
     [Theory]
     [InlineData("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData("BBBBBBBBBBBBBBBBBBBBBBBBBBB")]
@@ -129,7 +145,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FParte_Int);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -143,7 +159,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FParte_Int);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -159,7 +175,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FParte_Int);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -174,7 +190,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Int = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -188,7 +204,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Int = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -202,7 +218,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Int = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -216,7 +232,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FParte_Int);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -242,7 +258,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Int = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -256,7 +272,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Int = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -334,7 +350,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FParte_Opo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -348,7 +364,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FParte_Opo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -364,7 +380,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FParte_Opo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -379,7 +395,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Opo = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -393,7 +409,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Opo = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -407,7 +423,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Opo = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -421,7 +437,7 @@ public class DBSituacaoUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FParte_Opo);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -447,7 +463,7 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Opo = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -461,26 +477,10 @@ public class DBSituacaoUpdate : IDisposable
         _instance.FParte_Opo = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
-    [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
-    {
-        Assert.Equal(string.Empty, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
-    }
-
-#endregion
     [Fact]
     public void TabelaNome_Property_ShouldReturnCorrectTableName()
     {

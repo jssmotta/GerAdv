@@ -119,7 +119,7 @@ public class RamalWriterTests
         var operadorId = 456;
         _mockRamalFactory.Setup(x => x.DeleteAsync(operadorId, ramalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _ramalWriter.Delete(ramalResponse, operadorId, _mockConnection.Object);
+        await _ramalWriter.DeleteAsync(ramalResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockRamalFactory.Verify(x => x.DeleteAsync(operadorId, ramalResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class RamalWriterTests
         var operadorId = 111;
         _mockRamalFactory.Setup(x => x.DeleteAsync(operadorId, ramalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _ramalWriter.Delete(ramalResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _ramalWriter.DeleteAsync(ramalResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class RamalWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockRamalFactory.Setup(x => x.DeleteAsync(operadorId, ramalResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ramalWriter.Delete(ramalResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ramalWriter.DeleteAsync(ramalResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

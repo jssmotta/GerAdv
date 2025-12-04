@@ -58,8 +58,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 1,
             GUTMatriz = 1,
-            GUTAtividade = 1,
-            GUID = Guid.NewGuid().ToString()
+            GUTAtividade = 1
         };
     }
 
@@ -68,8 +67,8 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGUTAtividadesMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividadesMatriz>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadesMatrizs service mock
-        _ = _mockGUTMatrizReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTMatrizResponse { Id = id }));
-        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = id }));
+        _ = _mockGUTMatrizReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTMatrizResponse { Id = id }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTAtividadesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -77,8 +76,8 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGUTAtividadesMatrizService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividadesMatriz>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadesMatrizs service mock
-        _ = _mockGUTMatrizReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTMatrizResponse { Id = 0 }));
-        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = 0 }));
+        _ = _mockGUTMatrizReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTMatrizResponse { Id = 0 }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTAtividadesResponse { Id = 0 }));
     }
 
     [Fact]
@@ -89,8 +88,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 1,
             GUTMatriz = 1,
-            GUTAtividade = 1,
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            GUTAtividade = 1
         };
         SetupValidMocks();
         // Act
@@ -108,53 +106,6 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutatividadesmatriz = CreateValidGUTAtividadesMatriz();
-        gutatividadesmatriz.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutatividadesmatriz = CreateValidGUTAtividadesMatriz();
-        gutatividadesmatriz.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var gutatividadesmatriz = CreateValidGUTAtividadesMatriz();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutatividadesmatriz = CreateValidGUTAtividadesMatriz();
-        gutatividadesmatriz.GUID = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
 #region Foreign Key Validation Tests - GUTMatriz
     [Fact]
     public async Task ValidateReg_WithInvalidGUTMatriz_ShouldThrowSGValidationException()
@@ -162,7 +113,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         // Arrange
         var gutatividadesmatriz = CreateValidGUTAtividadesMatriz();
         gutatividadesmatriz.GUTMatriz = 999;
-        _mockGUTMatrizReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTMatrizResponse>(null));
+        _mockGUTMatrizReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTMatrizResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
@@ -179,7 +130,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockGUTMatrizReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockGUTMatrizReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
@@ -196,7 +147,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockGUTMatrizReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockGUTMatrizReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object);
@@ -212,7 +163,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         // Arrange
         var gutatividadesmatriz = CreateValidGUTAtividadesMatriz();
         gutatividadesmatriz.GUTAtividade = 999;
-        _mockGUTAtividadesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTAtividadesResponse>(null));
+        _mockGUTAtividadesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTAtividadesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
@@ -229,7 +180,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockGUTAtividadesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockGUTAtividadesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
@@ -246,7 +197,7 @@ public class GUTAtividadesMatrizValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockGUTAtividadesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockGUTAtividadesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gutatividadesmatriz, _mockGUTAtividadesMatrizService.Object, _mockGUTMatrizReader.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object);

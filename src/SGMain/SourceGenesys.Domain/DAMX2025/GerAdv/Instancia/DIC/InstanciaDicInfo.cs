@@ -10,7 +10,6 @@ public static partial class DBInstanciaDicInfo
     public const string CampoCodigo = "insCodigo";
     public const string CampoNome = "insNroProcesso";
     public const string TablePrefix = "ins";
-    public const string GUID = "insGUID"; // LOCALIZACAO 170523
     public const string LiminarPedida = "insLiminarPedida"; // LOCALIZACAO 170523
     public const string Objeto = "insObjeto"; // LOCALIZACAO 170523
     public const string StatusResultado = "insStatusResultado"; // LOCALIZACAO 170523
@@ -38,6 +37,7 @@ public static partial class DBInstanciaDicInfo
     public const string AccessCode = "insAccessCode"; // LOCALIZACAO 170523
     public const string Julgador = "insJulgador"; // LOCALIZACAO 170523
     public const string ZKeyIA = "insZKeyIA"; // LOCALIZACAO 170523
+    public const string Guid = "insGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "insQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "insDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "insQuemAtu"; // LOCALIZACAO 170523
@@ -83,146 +83,39 @@ public static partial class DBInstanciaDicInfo
 
     public const string PTabelaNome = "Instancia";
 #region PropriedadesDaTabela
-    public static DBInfoSystem InsGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarPedida => new(0, PTabelaNome, CampoCodigo, LiminarPedida, DevourerOne.PMaxSizeCampoMemo, "LiminarPedida", "LiminarPedida", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsObjeto => new(0, PTabelaNome, CampoCodigo, Objeto, 255, "Objeto", "Objeto", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsStatusResultado => new(0, PTabelaNome, CampoCodigo, StatusResultado, "StatusResultado", "StatusResultado", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarPendente => new(0, PTabelaNome, CampoCodigo, LiminarPendente, "LiminarPendente", "LiminarPendente", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsInterpusemosRecurso => new(0, PTabelaNome, CampoCodigo, InterpusemosRecurso, "InterpusemosRecurso", "InterpusemosRecurso", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarConcedida => new(0, PTabelaNome, CampoCodigo, LiminarConcedida, "LiminarConcedida", "LiminarConcedida", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarNegada => new(0, PTabelaNome, CampoCodigo, LiminarNegada, "LiminarNegada", "LiminarNegada", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarParcial => new(0, PTabelaNome, CampoCodigo, LiminarParcial, "LiminarParcial", "LiminarParcial", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarResultado => new(0, PTabelaNome, CampoCodigo, LiminarResultado, DevourerOne.PMaxSizeCampoMemo, "LiminarResultado", "LiminarResultado", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsNroProcesso => new(0, PTabelaNome, CampoCodigo, NroProcesso, 25, "NroProcesso", "NroProcesso", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsDivisao => new(0, PTabelaNome, CampoCodigo, Divisao, "Divisao", "Divisao", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsLiminarCliente => new(0, PTabelaNome, CampoCodigo, LiminarCliente, "LiminarCliente", "LiminarCliente", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsComarca => new(0, PTabelaNome, CampoCodigo, Comarca, "Comarca", "Comarca", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsSubDivisao => new(0, PTabelaNome, CampoCodigo, SubDivisao, "SubDivisao", "SubDivisao", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsPrincipal => new(0, PTabelaNome, CampoCodigo, Principal, "Principal", "Principal", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsAcao => new(0, PTabelaNome, CampoCodigo, Acao, "Acao", "Acao", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAcaoDicInfo.CampoCodigo, DBAcaoDicInfo.TabelaNome, new DBAcaoODicInfo(), false)
-    {
-        Prefixo = "ins"
-    }; // DBI 11 
-    public static DBInfoSystem InsForo => new(0, PTabelaNome, CampoCodigo, Foro, "Foro", "Foro", ETipoDadosSysteminfo.SysteminfoForeingkey, DBForoDicInfo.CampoCodigo, DBForoDicInfo.TabelaNome, new DBForoODicInfo(), false)
-    {
-        Prefixo = "ins"
-    }; // DBI 11 
-    public static DBInfoSystem InsTipoRecurso => new(0, PTabelaNome, CampoCodigo, TipoRecurso, "TipoRecurso", "TipoRecurso", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoRecursoDicInfo.CampoCodigo, DBTipoRecursoDicInfo.TabelaNome, new DBTipoRecursoODicInfo(), false)
-    {
-        Prefixo = "ins"
-    }; // DBI 11 
-    public static DBInfoSystem InsZKey => new(0, PTabelaNome, CampoCodigo, ZKey, 25, "ZKey", "ZKey", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsZKeyQuem => new(0, PTabelaNome, CampoCodigo, ZKeyQuem, "ZKeyQuem", "ZKeyQuem", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsZKeyQuando => new(0, PTabelaNome, CampoCodigo, ZKeyQuando, "ZKeyQuando", "ZKeyQuando", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsNroAntigo => new(0, PTabelaNome, CampoCodigo, NroAntigo, 25, "NroAntigo", "NroAntigo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsAccessCode => new(0, PTabelaNome, CampoCodigo, AccessCode, 100, "AccessCode", "AccessCode", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsJulgador => new(0, PTabelaNome, CampoCodigo, Julgador, "Julgador", "Julgador", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsZKeyIA => new(0, PTabelaNome, CampoCodigo, ZKeyIA, 25, "ZKeyIA", "ZKeyIA", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ins"
-    }; // DBI 11 
-    public static DBInfoSystem InsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ins"
-    }; // DBI 11 
-    public static DBInfoSystem InsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ins"
-    };
-    public static DBInfoSystem InsVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "ins"
-    };
+    public static DBInfoSystem InsLiminarPedida => new(0, PTabelaNome, CampoCodigo, LiminarPedida, DevourerOne.PMaxSizeCampoMemo, LiminarPedida, LiminarPedida, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsObjeto => new(0, PTabelaNome, CampoCodigo, Objeto, 255, Objeto, Objeto, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsStatusResultado => new(0, PTabelaNome, CampoCodigo, StatusResultado, StatusResultado, StatusResultado, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsLiminarPendente => new(0, PTabelaNome, CampoCodigo, LiminarPendente, LiminarPendente, LiminarPendente, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsInterpusemosRecurso => new(0, PTabelaNome, CampoCodigo, InterpusemosRecurso, InterpusemosRecurso, InterpusemosRecurso, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsLiminarConcedida => new(0, PTabelaNome, CampoCodigo, LiminarConcedida, LiminarConcedida, LiminarConcedida, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsLiminarNegada => new(0, PTabelaNome, CampoCodigo, LiminarNegada, LiminarNegada, LiminarNegada, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "ins");
+    public static DBInfoSystem InsLiminarParcial => new(0, PTabelaNome, CampoCodigo, LiminarParcial, LiminarParcial, LiminarParcial, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsLiminarResultado => new(0, PTabelaNome, CampoCodigo, LiminarResultado, DevourerOne.PMaxSizeCampoMemo, LiminarResultado, LiminarResultado, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsNroProcesso => new(0, PTabelaNome, CampoCodigo, NroProcesso, 25, NroProcesso, NroProcesso, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsDivisao => new(0, PTabelaNome, CampoCodigo, Divisao, Divisao, Divisao, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsLiminarCliente => new(0, PTabelaNome, CampoCodigo, LiminarCliente, LiminarCliente, LiminarCliente, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsComarca => new(0, PTabelaNome, CampoCodigo, Comarca, Comarca, Comarca, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsSubDivisao => new(0, PTabelaNome, CampoCodigo, SubDivisao, SubDivisao, SubDivisao, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsPrincipal => new(0, PTabelaNome, CampoCodigo, Principal, Principal, Principal, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ins", isRequired: true);
+    public static DBInfoSystem InsAcao => new(0, PTabelaNome, CampoCodigo, Acao, Acao, Acao, EDataTypeSystemInfo.SystemInfoForeingkey, DBAcaoDicInfo.CampoCodigo, DBAcaoDicInfo.TabelaNome, new DBAcaoODicInfo(), false, prefixo: "ins"); // DBI 11 
+    public static DBInfoSystem InsForo => new(0, PTabelaNome, CampoCodigo, Foro, Foro, Foro, EDataTypeSystemInfo.SystemInfoForeingkey, DBForoDicInfo.CampoCodigo, DBForoDicInfo.TabelaNome, new DBForoODicInfo(), false, prefixo: "ins"); // DBI 11 
+    public static DBInfoSystem InsTipoRecurso => new(0, PTabelaNome, CampoCodigo, TipoRecurso, TipoRecurso, TipoRecurso, EDataTypeSystemInfo.SystemInfoForeingkey, DBTipoRecursoDicInfo.CampoCodigo, DBTipoRecursoDicInfo.TabelaNome, new DBTipoRecursoODicInfo(), false, prefixo: "ins"); // DBI 11 
+    public static DBInfoSystem InsZKey => new(0, PTabelaNome, CampoCodigo, ZKey, 25, ZKey, ZKey, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsZKeyQuem => new(0, PTabelaNome, CampoCodigo, ZKeyQuem, ZKeyQuem, ZKeyQuem, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsZKeyQuando => new(0, PTabelaNome, CampoCodigo, ZKeyQuando, ZKeyQuando, ZKeyQuando, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "ins");
+    public static DBInfoSystem InsNroAntigo => new(0, PTabelaNome, CampoCodigo, NroAntigo, 25, NroAntigo, NroAntigo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsAccessCode => new(0, PTabelaNome, CampoCodigo, AccessCode, 100, AccessCode, AccessCode, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsJulgador => new(0, PTabelaNome, CampoCodigo, Julgador, Julgador, Julgador, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ins");
+    public static DBInfoSystem InsZKeyIA => new(0, PTabelaNome, CampoCodigo, ZKeyIA, 25, ZKeyIA, ZKeyIA, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ins");
+    public static DBInfoSystem InsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ins"); // DBI 11 
+    public static DBInfoSystem InsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ins");
+    public static DBInfoSystem InsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ins"); // DBI 11 
+    public static DBInfoSystem InsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ins");
+    public static DBInfoSystem InsVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ins", isRequired: true);
 
 #endregion
     [Serializable]

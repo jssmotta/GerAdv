@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBBensMateriais : VAuditor, ICadastros
+public partial class DBBensMateriais : VAuditor, ICrud
 {
 #region TableDefinition_BensMateriais
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBBensMateriais : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBBensMateriais : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_BensMateriais
@@ -62,7 +62,7 @@ public partial class DBBensMateriais : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFNome || pFldFBensClassificacao || pFldFDataCompra || pFldFDataFimDaGarantia || pFldFNFNRO || pFldFFornecedor || pFldFValorBem || pFldFNroSerieProduto || pFldFComprador || pFldFCidade || pFldFGarantiaLoja || pFldFDataTerminoDaGarantiaDaLoja || pFldFObservacoes || pFldFNomeVendedor || pFldFGUID || pFldFBold))
+            if (!(pFldFNome || pFldFBensClassificacao || pFldFDataCompra || pFldFDataFimDaGarantia || pFldFNFNRO || pFldFFornecedor || pFldFValorBem || pFldFNroSerieProduto || pFldFComprador || pFldFCidade || pFldFGarantiaLoja || pFldFDataTerminoDaGarantiaDaLoja || pFldFObservacoes || pFldFNomeVendedor || pFldFBold || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,44 +92,43 @@ public partial class DBBensMateriais : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFNome)
-            clsW.Fields(DBBensMateriaisDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBBensMateriaisDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFBensClassificacao)
-            clsW.Fields(DBBensMateriaisDicInfo.BensClassificacao, m_FBensClassificacao, ETiposCampos.FNumberNull);
+            clsW.Fields(DBBensMateriaisDicInfo.BensClassificacao, FBensClassificacao, EGenericTypeFields.FNumberNull);
         if (pFldFDataCompra)
-            clsW.Fields(DBBensMateriaisDicInfo.DataCompra, m_FDataCompra, ETiposCampos.FDate);
+            clsW.Fields(DBBensMateriaisDicInfo.DataCompra, FDataCompra, EGenericTypeFields.FDate);
         if (pFldFDataFimDaGarantia)
-            clsW.Fields(DBBensMateriaisDicInfo.DataFimDaGarantia, m_FDataFimDaGarantia, ETiposCampos.FDate);
+            clsW.Fields(DBBensMateriaisDicInfo.DataFimDaGarantia, FDataFimDaGarantia, EGenericTypeFields.FDate);
         if (pFldFNFNRO)
-            clsW.Fields(DBBensMateriaisDicInfo.NFNRO, m_FNFNRO, ETiposCampos.FString);
+            clsW.Fields(DBBensMateriaisDicInfo.NFNRO, FNFNRO, EGenericTypeFields.FString);
         if (pFldFFornecedor)
-            clsW.Fields(DBBensMateriaisDicInfo.Fornecedor, m_FFornecedor, ETiposCampos.FNumberNull);
+            clsW.Fields(DBBensMateriaisDicInfo.Fornecedor, FFornecedor, EGenericTypeFields.FNumberNull);
         if (pFldFValorBem)
-            clsW.Fields(DBBensMateriaisDicInfo.ValorBem, m_FValorBem, ETiposCampos.FDecimal);
+            clsW.Fields(DBBensMateriaisDicInfo.ValorBem, FValorBem, EGenericTypeFields.FDecimal);
         if (pFldFNroSerieProduto)
-            clsW.Fields(DBBensMateriaisDicInfo.NroSerieProduto, m_FNroSerieProduto, ETiposCampos.FString);
+            clsW.Fields(DBBensMateriaisDicInfo.NroSerieProduto, FNroSerieProduto, EGenericTypeFields.FString);
         if (pFldFComprador)
-            clsW.Fields(DBBensMateriaisDicInfo.Comprador, m_FComprador, ETiposCampos.FString);
+            clsW.Fields(DBBensMateriaisDicInfo.Comprador, FComprador, EGenericTypeFields.FString);
         if (pFldFCidade)
-            clsW.Fields(DBBensMateriaisDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBBensMateriaisDicInfo.Cidade, FCidade, EGenericTypeFields.FNumberNull);
         if (pFldFGarantiaLoja || ID.IsEmptyIDNumber())
-            clsW.Fields(DBBensMateriaisDicInfo.GarantiaLoja, m_FGarantiaLoja, ETiposCampos.FBoolean);
+            clsW.Fields(DBBensMateriaisDicInfo.GarantiaLoja, FGarantiaLoja, EGenericTypeFields.FBoolean);
         if (pFldFDataTerminoDaGarantiaDaLoja)
-            clsW.Fields(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja, m_FDataTerminoDaGarantiaDaLoja, ETiposCampos.FDate);
+            clsW.Fields(DBBensMateriaisDicInfo.DataTerminoDaGarantiaDaLoja, FDataTerminoDaGarantiaDaLoja, EGenericTypeFields.FDate);
         if (pFldFObservacoes)
-            clsW.Fields(DBBensMateriaisDicInfo.Observacoes, m_FObservacoes, ETiposCampos.FString);
+            clsW.Fields(DBBensMateriaisDicInfo.Observacoes, FObservacoes, EGenericTypeFields.FString);
         if (pFldFNomeVendedor)
-            clsW.Fields(DBBensMateriaisDicInfo.NomeVendedor, m_FNomeVendedor, ETiposCampos.FString);
-        if (pFldFGUID)
-            clsW.Fields(DBBensMateriaisDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBBensMateriaisDicInfo.NomeVendedor, FNomeVendedor, EGenericTypeFields.FString);
         if (pFldFBold || ID.IsEmptyIDNumber())
-            clsW.Fields(DBBensMateriaisDicInfo.Bold, m_FBold, ETiposCampos.FBoolean);
+            clsW.Fields(DBBensMateriaisDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            clsW.Fields(DBBensMateriaisDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_BensMateriais)
         if (clsW.HasUpdates)
         {
@@ -144,15 +143,15 @@ public partial class DBBensMateriais : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBBensMateriaisDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBBensMateriaisDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBBensMateriaisDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBBensMateriaisDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBBensMateriaisDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBBensMateriaisDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBBensMateriaisDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBBensMateriaisDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBBensMateriaisDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBBensMateriaisDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -176,7 +175,7 @@ public partial class DBBensMateriais : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

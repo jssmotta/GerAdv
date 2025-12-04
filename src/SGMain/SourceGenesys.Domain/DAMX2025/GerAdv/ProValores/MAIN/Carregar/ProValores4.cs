@@ -54,8 +54,24 @@ public partial class DBProValores
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProValoresDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FIndice = getValue(DBProValoresDicInfo.Indice)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProValoresDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProValoresDicInfo.Data)));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.DataUltimaCorrecao)))
-                m_FDataUltimaCorrecao = Convert.ToDateTime(getValue(DBProValoresDicInfo.DataUltimaCorrecao));
+                FDataUltimaCorrecao = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProValoresDicInfo.DataUltimaCorrecao)));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.Ignorar)))
-                m_FIgnorar = Convert.ToBoolean(getValue(DBProValoresDicInfo.Ignorar));
+                FIgnorar = Convert.ToBoolean(getValue(DBProValoresDicInfo.Ignorar));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.PercJuros)))
-                m_FPercJuros = Convert.ToDecimal(getValue(DBProValoresDicInfo.PercJuros));
+                FPercJuros = Convert.ToDecimal(getValue(DBProValoresDicInfo.PercJuros));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.PercMulta)))
-                m_FPercMulta = Convert.ToDecimal(getValue(DBProValoresDicInfo.PercMulta));
+                FPercMulta = Convert.ToDecimal(getValue(DBProValoresDicInfo.PercMulta));
         }
         catch
         {
@@ -118,7 +134,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProValoresDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProValoresDicInfo.Processo));
         }
         catch
         {
@@ -127,7 +143,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProValoresDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProValoresDicInfo.QuemAtu));
         }
         catch
         {
@@ -136,7 +152,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProValoresDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProValoresDicInfo.QuemCad));
         }
         catch
         {
@@ -145,7 +161,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.TipoValorProcesso)))
-                m_FTipoValorProcesso = Convert.ToInt32(getValue(DBProValoresDicInfo.TipoValorProcesso));
+                FTipoValorProcesso = Convert.ToInt32(getValue(DBProValoresDicInfo.TipoValorProcesso));
         }
         catch
         {
@@ -154,7 +170,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.ValorFinal)))
-                m_FValorFinal = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorFinal));
+                FValorFinal = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorFinal));
         }
         catch
         {
@@ -163,7 +179,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.ValorJurosCorrigido)))
-                m_FValorJurosCorrigido = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorJurosCorrigido));
+                FValorJurosCorrigido = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorJurosCorrigido));
         }
         catch
         {
@@ -172,7 +188,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.ValorMulta)))
-                m_FValorMulta = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorMulta));
+                FValorMulta = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorMulta));
         }
         catch
         {
@@ -181,7 +197,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.ValorMultaCorrigido)))
-                m_FValorMultaCorrigido = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorMultaCorrigido));
+                FValorMultaCorrigido = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorMultaCorrigido));
         }
         catch
         {
@@ -190,7 +206,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.ValorOriginal)))
-                m_FValorOriginal = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorOriginal));
+                FValorOriginal = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorOriginal));
         }
         catch
         {
@@ -199,7 +215,7 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.ValorOriginalCorrigidoIndice)))
-                m_FValorOriginalCorrigidoIndice = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorOriginalCorrigidoIndice));
+                FValorOriginalCorrigidoIndice = Convert.ToDecimal(getValue(DBProValoresDicInfo.ValorOriginalCorrigidoIndice));
         }
         catch
         {
@@ -208,30 +224,14 @@ public partial class DBProValores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProValoresDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProValoresDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGuid = getValue(DBProValoresDicInfo.Guid)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FIndice = getValue(DBProValoresDicInfo.Indice)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProValoresDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -255,7 +255,7 @@ public partial class DBProValores
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

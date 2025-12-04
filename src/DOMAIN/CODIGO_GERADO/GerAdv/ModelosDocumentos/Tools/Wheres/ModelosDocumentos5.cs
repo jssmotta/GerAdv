@@ -36,7 +36,7 @@ public partial class ModelosDocumentosWhere(IFModelosDocumentosFactory modelosdo
             Testemunhas = dbRec.FTestemunhas ?? string.Empty,
             TipoModeloDocumento = dbRec.FTipoModeloDocumento,
             CSS = dbRec.FCSS ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return modelosdocumentos;
     }

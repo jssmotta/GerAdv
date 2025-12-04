@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBNENotas : VAuditor, ICadastros
+public partial class DBNENotas : VAuditor, ICrud
 {
 #region TableDefinition_NENotas
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBNENotas : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBNENotas : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_NENotas
@@ -93,27 +93,27 @@ public partial class DBNENotas : VAuditor, ICadastros
         }
 
         if (pFldFApenso)
-            clsW.Fields(DBNENotasDicInfo.Apenso, m_FApenso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.Apenso, FApenso, EGenericTypeFields.FNumberNull);
         if (pFldFPrecatoria)
-            clsW.Fields(DBNENotasDicInfo.Precatoria, m_FPrecatoria, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.Precatoria, FPrecatoria, EGenericTypeFields.FNumberNull);
         if (pFldFInstancia)
-            clsW.Fields(DBNENotasDicInfo.Instancia, m_FInstancia, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.Instancia, FInstancia, EGenericTypeFields.FNumberNull);
         if (pFldFMovPro || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNENotasDicInfo.MovPro, m_FMovPro, ETiposCampos.FBoolean);
+            clsW.Fields(DBNENotasDicInfo.MovPro, FMovPro, EGenericTypeFields.FBoolean);
         if (pFldFNome)
-            clsW.Fields(DBNENotasDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBNENotasDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFNotaExpedida || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNENotasDicInfo.NotaExpedida, m_FNotaExpedida, ETiposCampos.FBoolean);
+            clsW.Fields(DBNENotasDicInfo.NotaExpedida, FNotaExpedida, EGenericTypeFields.FBoolean);
         if (pFldFRevisada || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNENotasDicInfo.Revisada, m_FRevisada, ETiposCampos.FBoolean);
+            clsW.Fields(DBNENotasDicInfo.Revisada, FRevisada, EGenericTypeFields.FBoolean);
         if (pFldFProcesso)
-            clsW.Fields(DBNENotasDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFPalavraChave)
-            clsW.Fields(DBNENotasDicInfo.PalavraChave, m_FPalavraChave, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.PalavraChave, FPalavraChave, EGenericTypeFields.FNumberNull);
         if (pFldFData)
-            clsW.Fields(DBNENotasDicInfo.Data, m_FData, ETiposCampos.FDate);
+            clsW.Fields(DBNENotasDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFNotaPublicada)
-            clsW.Fields(DBNENotasDicInfo.NotaPublicada, m_FNotaPublicada, ETiposCampos.FString);
+            clsW.Fields(DBNENotasDicInfo.NotaPublicada, FNotaPublicada, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_NENotas)
         if (clsW.HasUpdates)
         {
@@ -128,15 +128,15 @@ public partial class DBNENotas : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBNENotasDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBNENotasDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBNENotasDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBNENotasDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNENotasDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBNENotasDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBNENotasDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNENotasDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBNENotasDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -160,7 +160,7 @@ public partial class DBNENotas : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

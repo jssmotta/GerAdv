@@ -23,7 +23,7 @@ public class TipoEMailValidation : ITipoEMailValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var smsaliceExists0 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { TipoEMail = id ?? default }, uri);
         if (smsaliceExists0 != null && smsaliceExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela S M S Alice associados a ele.");
         return true;
     }
 
@@ -40,6 +40,8 @@ public class TipoEMailValidation : ITipoEMailValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         if (await IsDuplicado(reg, service, uri))
             throw new SGValidationException($"Tipo E Mail '{reg.Nome}'  - Nome");
         var validSizes = ValidSizes(reg);

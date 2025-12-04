@@ -9,54 +9,61 @@ import { ProcessOutputSourcesService } from '../../Services/ProcessOutputSources
 import { ProcessOutputSourcesApi } from '../../Apis/ApiProcessOutputSources';
 import ProcessOutputSourcesWindow from './ProcessOutputSourcesWindow';
 import {ProcessOutputSourcesEmpty } from '@/app/GerAdv_TS/Models/ProcessOutputSources';
-interface ProcessOutputSourcesWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ProcessOutputSourcesWindowId: React.FC<ProcessOutputSourcesWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const processoutputsourcesService = useMemo(() => {
-  return new ProcessOutputSourcesService(
-  new ProcessOutputSourcesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IProcessOutputSources | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ProcessOutputSourcesEmpty() as IProcessOutputSources);
-      return;
-    }
-    if (id) {
-      const response = await processoutputsourcesService.fetchProcessOutputSourcesById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ProcessOutputSourcesWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedProcessOutputSources={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ProcessOutputSourcesWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ProcessOutputSourcesWindowId: React.FC<ProcessOutputSourcesWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const processoutputsourcesService = useMemo(() => {
+        return new ProcessOutputSourcesService(
+            new ProcessOutputSourcesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IProcessOutputSources | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ProcessOutputSourcesEmpty() as IProcessOutputSources);
+                return;
+            }
+            if (id) {
+                 const response = await processoutputsourcesService.fetchProcessOutputSourcesById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ProcessOutputSourcesWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedProcessOutputSources={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ProcessOutputSourcesWindowId;

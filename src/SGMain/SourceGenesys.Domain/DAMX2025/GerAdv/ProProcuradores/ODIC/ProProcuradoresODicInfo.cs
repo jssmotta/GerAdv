@@ -9,25 +9,29 @@ public partial class DBProProcuradoresODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBProProcuradoresDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBProProcuradoresDicInfo.CampoCodigo;
+    public string IFieldId() => DBProProcuradoresDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBProProcuradoresDicInfo.TablePrefix;
+    public string IPrefix() => DBProProcuradoresDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBProProcuradoresDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBProProcuradoresDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBProProcuradoresODicInfo : IODicInfo
     public static string TCampoNome => DBProProcuradoresDicInfo.CampoNome;
     public static string TTabelaNome => DBProProcuradoresDicInfo.TabelaNome;
     public static string TTablePrefix => DBProProcuradoresDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapGUID, DBProProcuradoresDicInfo.PapBold, DBProProcuradoresDicInfo.PapQuemCad, DBProProcuradoresDicInfo.PapDtCad, DBProProcuradoresDicInfo.PapQuemAtu, DBProProcuradoresDicInfo.PapDtAtu, DBProProcuradoresDicInfo.PapVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapBold, DBProProcuradoresDicInfo.PapGuid, DBProProcuradoresDicInfo.PapQuemCad, DBProProcuradoresDicInfo.PapDtCad, DBProProcuradoresDicInfo.PapQuemAtu, DBProProcuradoresDicInfo.PapDtAtu, DBProProcuradoresDicInfo.PapVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProProcuradoresDicInfo.PapAdvogado, DBProProcuradoresDicInfo.PapNome, DBProProcuradoresDicInfo.PapProcesso, DBProProcuradoresDicInfo.PapData, DBProProcuradoresDicInfo.PapSubstabelecimento, DBProProcuradoresDicInfo.PapProcuracao, DBProProcuradoresDicInfo.PapBold, DBProProcuradoresDicInfo.PapGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["papCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBProProcuradoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["papAdvogado", "papCodigo", "papData", "papNome", "papProcesso"]);
         var result = campos.Where(campo => !campo.Equals(DBProProcuradoresDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

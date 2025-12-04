@@ -36,10 +36,23 @@ public class DBFaseTests : IDisposable
         dt.Columns.Add("fasDtAtu", typeof(DateTime));
         dt.Columns.Add("fasVisto", typeof(bool));
         dt.Columns.Add("fasDescricao", typeof(string));
-        dt.Columns.Add("fasGUID", typeof(string));
         dt.Columns.Add("fasJustica", typeof(int));
         dt.Columns.Add("fasArea", typeof(int));
+        dt.Columns.Add("fasGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["fasCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBFase(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +73,7 @@ public class DBFaseTests : IDisposable
     {
         var instance = new DBFase();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Fase", instance.ITabelaName());
+        Assert.Equal("Fase", instance.ITableName());
         Assert.Equal("fas", instance.Prefixo);
     }
 
@@ -78,29 +91,16 @@ public class DBFaseTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["fasCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBFase(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Fase", cadastro.ITabelaName());
-        Assert.Equal("fasCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("fasDescricao", cadastro.ICampoNome());
-        Assert.Equal("fas", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Fase", cadastro.ITableName());
+        Assert.Equal("fasCodigo", cadastro.IFieldId());
+        Assert.Equal("fasDescricao", cadastro.IFieldNameDescription());
+        Assert.Equal("fas", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,9 +160,9 @@ public class DBFaseTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -182,24 +182,6 @@ public class DBFaseTests : IDisposable
         var longString = new string ('A', 50 + 10);
         _instance.FDescricao = longString;
         Assert.True(_instance.FDescricao.Length <= 50);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
     }
 
     [Theory]
@@ -238,6 +220,24 @@ public class DBFaseTests : IDisposable
     {
         var instance = new DBFase();
         Assert.Equal(0, instance.FArea);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

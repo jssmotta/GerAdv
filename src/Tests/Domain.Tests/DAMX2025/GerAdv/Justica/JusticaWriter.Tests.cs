@@ -75,7 +75,7 @@ public class JusticaWriterTests
         // Assert
         result.Should().Be(_mockFJustica.Object);
         _mockFJustica.VerifySet(x => x.FNome = justica.Nome, Times.Once);
-        _mockFJustica.VerifySet(x => x.FGUID = justica.GUID, Times.Once);
+        _mockFJustica.VerifySet(x => x.FGuid = justica.Guid, Times.Once);
         _mockFJustica.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class JusticaWriterTests
         var operadorId = 456;
         _mockJusticaFactory.Setup(x => x.DeleteAsync(operadorId, justicaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _justicaWriter.Delete(justicaResponse, operadorId, _mockConnection.Object);
+        await _justicaWriter.DeleteAsync(justicaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockJusticaFactory.Verify(x => x.DeleteAsync(operadorId, justicaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class JusticaWriterTests
         var operadorId = 111;
         _mockJusticaFactory.Setup(x => x.DeleteAsync(operadorId, justicaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _justicaWriter.Delete(justicaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _justicaWriter.DeleteAsync(justicaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class JusticaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockJusticaFactory.Setup(x => x.DeleteAsync(operadorId, justicaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _justicaWriter.Delete(justicaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _justicaWriter.DeleteAsync(justicaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,7 +183,7 @@ public class JusticaWriterTests
         {
             Id = 0,
             Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

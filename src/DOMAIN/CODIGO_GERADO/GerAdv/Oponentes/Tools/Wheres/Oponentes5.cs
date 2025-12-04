@@ -21,7 +21,6 @@ public partial class OponentesWhere(IFOponentesFactory oponentesFactory) : IOpon
         {
             Id = dbRec.ID,
             EMPFuncao = dbRec.FEMPFuncao,
-            GUID = dbRec.FGUID ?? string.Empty,
             CTPSNumero = dbRec.FCTPSNumero ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
@@ -48,6 +47,9 @@ public partial class OponentesWhere(IFOponentesFactory oponentesFactory) : IOpon
             EMail = dbRec.FEMail ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             Top = dbRec.FTop,
+            Etiqueta = dbRec.FEtiqueta,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return oponentes;
     }

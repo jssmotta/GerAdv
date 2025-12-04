@@ -9,54 +9,61 @@ import { TipoContatoCRMService } from '../../Services/TipoContatoCRM.service';
 import { TipoContatoCRMApi } from '../../Apis/ApiTipoContatoCRM';
 import TipoContatoCRMWindow from './TipoContatoCRMWindow';
 import {TipoContatoCRMEmpty } from '@/app/GerAdv_TS/Models/TipoContatoCRM';
-interface TipoContatoCRMWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const TipoContatoCRMWindowId: React.FC<TipoContatoCRMWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const tipocontatocrmService = useMemo(() => {
-  return new TipoContatoCRMService(
-  new TipoContatoCRMApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ITipoContatoCRM | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(TipoContatoCRMEmpty() as ITipoContatoCRM);
-      return;
-    }
-    if (id) {
-      const response = await tipocontatocrmService.fetchTipoContatoCRMById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <TipoContatoCRMWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedTipoContatoCRM={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface TipoContatoCRMWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const TipoContatoCRMWindowId: React.FC<TipoContatoCRMWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const tipocontatocrmService = useMemo(() => {
+        return new TipoContatoCRMService(
+            new TipoContatoCRMApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ITipoContatoCRM | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(TipoContatoCRMEmpty() as ITipoContatoCRM);
+                return;
+            }
+            if (id) {
+                 const response = await tipocontatocrmService.fetchTipoContatoCRMById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <TipoContatoCRMWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedTipoContatoCRM={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default TipoContatoCRMWindowId;

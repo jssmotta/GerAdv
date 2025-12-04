@@ -34,6 +34,19 @@ public class DBViaRecebimentoTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["vrbCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBViaRecebimento(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -52,7 +65,7 @@ public class DBViaRecebimentoTests : IDisposable
     {
         var instance = new DBViaRecebimento();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ViaRecebimento", instance.ITabelaName());
+        Assert.Equal("ViaRecebimento", instance.ITableName());
         Assert.Equal("vrb", instance.Prefixo);
     }
 
@@ -70,29 +83,16 @@ public class DBViaRecebimentoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["vrbCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBViaRecebimento(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ViaRecebimento", cadastro.ITabelaName());
-        Assert.Equal("vrbCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("vrbNome", cadastro.ICampoNome());
-        Assert.Equal("vrb", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ViaRecebimento", cadastro.ITableName());
+        Assert.Equal("vrbCodigo", cadastro.IFieldId());
+        Assert.Equal("vrbNome", cadastro.IFieldNameDescription());
+        Assert.Equal("vrb", cadastro.IPrefix());
     }
 
 #endregion
@@ -152,9 +152,9 @@ public class DBViaRecebimentoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

@@ -14,6 +14,14 @@ public partial class DBGruposEmpresas
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBGruposEmpresas
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,27 +142,27 @@ public partial class DBGruposEmpresas
 
 #if (!NOTSTORED_GruposEmpresas)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFEMail || pFldFInativo || pFldFOponente || pFldFDescricao || pFldFObservacoes || pFldFCliente || pFldFGUID || pFldFIcone || pFldFDespesaUnificada;
+    private bool HasAnyFieldChanged() => pFldFEMail || pFldFInativo || pFldFOponente || pFldFDescricao || pFldFObservacoes || pFldFCliente || pFldFIcone || pFldFDespesaUnificada || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFEMail)
-            updateTool.Fields(DBGruposEmpresasDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBGruposEmpresasDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFInativo || updateTool.Insert)
-            updateTool.Fields(DBGruposEmpresasDicInfo.Inativo, m_FInativo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBGruposEmpresasDicInfo.Inativo, FInativo, EGenericTypeFields.FBoolean);
         if (pFldFOponente)
-            updateTool.Fields(DBGruposEmpresasDicInfo.Oponente, m_FOponente, ETiposCampos.FNumber);
+            updateTool.Fields(DBGruposEmpresasDicInfo.Oponente, FOponente, EGenericTypeFields.FNumber);
         if (pFldFDescricao)
-            updateTool.Fields(DBGruposEmpresasDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBGruposEmpresasDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFObservacoes)
-            updateTool.Fields(DBGruposEmpresasDicInfo.Observacoes, m_FObservacoes, ETiposCampos.FString);
+            updateTool.Fields(DBGruposEmpresasDicInfo.Observacoes, FObservacoes, EGenericTypeFields.FString);
         if (pFldFCliente)
-            updateTool.Fields(DBGruposEmpresasDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBGruposEmpresasDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBGruposEmpresasDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFIcone)
-            updateTool.Fields(DBGruposEmpresasDicInfo.Icone, m_FIcone, ETiposCampos.FString);
+            updateTool.Fields(DBGruposEmpresasDicInfo.Icone, FIcone, EGenericTypeFields.FString);
         if (pFldFDespesaUnificada || updateTool.Insert)
-            updateTool.Fields(DBGruposEmpresasDicInfo.DespesaUnificada, m_FDespesaUnificada, ETiposCampos.FBoolean);
+            updateTool.Fields(DBGruposEmpresasDicInfo.DespesaUnificada, FDespesaUnificada, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBGruposEmpresasDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -166,24 +174,23 @@ public partial class DBGruposEmpresas
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBGruposEmpresasDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGruposEmpresasDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBGruposEmpresasDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBGruposEmpresasDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBGruposEmpresasDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGruposEmpresasDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBGruposEmpresasDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBGruposEmpresasDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBGruposEmpresasDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBGruposEmpresasDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBGruposEmpresasDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

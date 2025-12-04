@@ -49,7 +49,21 @@ public class DBOponentesRepLegalTests : IDisposable
         dt.Columns.Add("oprEMail", typeof(string));
         dt.Columns.Add("oprSite", typeof(string));
         dt.Columns.Add("oprObservacao", typeof(string));
+        dt.Columns.Add("oprBold", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["oprCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBOponentesRepLegal(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -70,7 +84,7 @@ public class DBOponentesRepLegalTests : IDisposable
     {
         var instance = new DBOponentesRepLegal();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("OponentesRepLegal", instance.ITabelaName());
+        Assert.Equal("OponentesRepLegal", instance.ITableName());
         Assert.Equal("opr", instance.Prefixo);
     }
 
@@ -88,29 +102,16 @@ public class DBOponentesRepLegalTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["oprCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBOponentesRepLegal(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("OponentesRepLegal", cadastro.ITabelaName());
-        Assert.Equal("oprCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("oprNome", cadastro.ICampoNome());
-        Assert.Equal("opr", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("OponentesRepLegal", cadastro.ITableName());
+        Assert.Equal("oprCodigo", cadastro.IFieldId());
+        Assert.Equal("oprNome", cadastro.IFieldNameDescription());
+        Assert.Equal("opr", cadastro.IPrefix());
     }
 
 #endregion
@@ -170,9 +171,9 @@ public class DBOponentesRepLegalTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

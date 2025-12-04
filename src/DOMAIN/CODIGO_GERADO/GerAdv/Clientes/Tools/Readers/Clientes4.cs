@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ClientesReader(IFClientesFactory clientesFactory) : IClientesReader
+public partial class ClientesReader(IFClientesFactory clientesFactory, IConnectionService connection) : IClientesReader
 {
     private readonly IFClientesFactory _clientesFactory = clientesFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cliCodigo, cliNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ClientesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBClientes.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ClientesResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cliCodigo, cliNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ClientesResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBClientes.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ClientesResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ClientesResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
         return result;
     }
 
-    public async Task<ClientesResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ClientesResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _clientesFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Clientes?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Clientes?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _clientesFactory.CreateFromIdAsync(id, oCnn);
         var clientes = new Models.Clientes
@@ -57,7 +63,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -83,7 +88,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -95,17 +99,27 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp4))
         {
-            clientes.RGDataExp = dbRec.FRGDataExp;
-            clientes.RGDataExp_date = XRGDataExp;
+            clientes.RGDataExp = XRGDataExp4.ToString("dd/MM/yyyy");
+            clientes.RGDataExp_date = XRGDataExp4;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc15))
         {
-            clientes.DtNasc = dbRec.FDtNasc;
-            clientes.DtNasc_date = XDtNasc;
+            clientes.DtNasc = XDtNasc15.ToString("dd/MM/yyyy");
+            clientes.DtNasc_date = XDtNasc15;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData31))
+        {
+            clientes.Data = XData31.ToString("dd/MM/yyyy");
+            clientes.Data_date = XData31;
         }
 
         return clientes;
@@ -135,7 +149,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -161,7 +174,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -173,17 +185,27 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp4))
         {
-            clientes.RGDataExp = dbRec.FRGDataExp;
-            clientes.RGDataExp_date = XRGDataExp;
+            clientes.RGDataExp = XRGDataExp4.ToString("dd/MM/yyyy");
+            clientes.RGDataExp_date = XRGDataExp4;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc15))
         {
-            clientes.DtNasc = dbRec.FDtNasc;
-            clientes.DtNasc_date = XDtNasc;
+            clientes.DtNasc = XDtNasc15.ToString("dd/MM/yyyy");
+            clientes.DtNasc_date = XDtNasc15;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData31))
+        {
+            clientes.Data = XData31.ToString("dd/MM/yyyy");
+            clientes.Data_date = XData31;
         }
 
         return clientes;
@@ -202,7 +224,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -228,7 +249,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -240,17 +260,27 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp4))
         {
-            clientes.RGDataExp = dbRec.FRGDataExp;
-            clientes.RGDataExp_date = XRGDataExp;
+            clientes.RGDataExp = XRGDataExp4.ToString("dd/MM/yyyy");
+            clientes.RGDataExp_date = XRGDataExp4;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc15))
         {
-            clientes.DtNasc = dbRec.FDtNasc;
-            clientes.DtNasc_date = XDtNasc;
+            clientes.DtNasc = XDtNasc15.ToString("dd/MM/yyyy");
+            clientes.DtNasc_date = XDtNasc15;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData31))
+        {
+            clientes.Data = XData31.ToString("dd/MM/yyyy");
+            clientes.Data_date = XData31;
         }
 
         return clientes;
@@ -269,7 +299,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -295,7 +324,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -307,17 +335,27 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp4))
         {
-            clientes.RGDataExp = dbRec.FRGDataExp;
-            clientes.RGDataExp_date = XRGDataExp;
+            clientes.RGDataExp = XRGDataExp4.ToString("dd/MM/yyyy");
+            clientes.RGDataExp_date = XRGDataExp4;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc15))
         {
-            clientes.DtNasc = dbRec.FDtNasc;
-            clientes.DtNasc_date = XDtNasc;
+            clientes.DtNasc = XDtNasc15.ToString("dd/MM/yyyy");
+            clientes.DtNasc_date = XDtNasc15;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData31))
+        {
+            clientes.Data = XData31.ToString("dd/MM/yyyy");
+            clientes.Data_date = XData31;
         }
 
         try
@@ -360,7 +398,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             Empresa = dbRec.FEmpresa,
             Icone = dbRec.FIcone ?? string.Empty,
             NomeMae = dbRec.FNomeMae ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Inativo = dbRec.FInativo,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             SendEMail = dbRec.FSendEMail,
@@ -386,7 +423,6 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             CEP = dbRec.FCEP?.MaskCep() ?? string.Empty,
             Fax = dbRec.FFax ?? string.Empty,
             Fone = dbRec.FFone ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             HomePage = dbRec.FHomePage ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Obito = dbRec.FObito,
@@ -398,17 +434,27 @@ public partial class ClientesReader(IFClientesFactory clientesFactory) : IClient
             ProBono = dbRec.FProBono,
             CNH = dbRec.FCNH ?? string.Empty,
             PessoaContato = dbRec.FPessoaContato ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp4))
         {
-            clientes.RGDataExp = dbRec.FRGDataExp;
-            clientes.RGDataExp_date = XRGDataExp;
+            clientes.RGDataExp = XRGDataExp4.ToString("dd/MM/yyyy");
+            clientes.RGDataExp_date = XRGDataExp4;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc15))
         {
-            clientes.DtNasc = dbRec.FDtNasc;
-            clientes.DtNasc_date = XDtNasc;
+            clientes.DtNasc = XDtNasc15.ToString("dd/MM/yyyy");
+            clientes.DtNasc_date = XDtNasc15;
+        }
+
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData31))
+        {
+            clientes.Data = XData31.ToString("dd/MM/yyyy");
+            clientes.Data_date = XData31;
         }
 
         try

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBProcessOutputEngine : VNoAuditor, ICadastros
+public partial class DBProcessOutputEngine : VNoAuditor, ICrud
 {
 #region TableDefinition_ProcessOutputEngine
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBProcessOutputEngine : VNoAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBProcessOutputEngine : VNoAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_ProcessOutputEngine
@@ -62,7 +62,7 @@ public partial class DBProcessOutputEngine : VNoAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFNome || pFldFDatabase || pFldFTabela || pFldFCampo || pFldFValor || pFldFOutput || pFldFAdministrador || pFldFGUID || pFldFOutputSource || pFldFDisabledItem || pFldFIDModulo || pFldFIsOnlyProcesso || pFldFMyID))
+            if (!(pFldFNome || pFldFDatabase || pFldFTabela || pFldFCampo || pFldFValor || pFldFOutput || pFldFAdministrador || pFldFOutputSource || pFldFDisabledItem || pFldFIDModulo || pFldFIsOnlyProcesso || pFldFMyID || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -94,38 +94,37 @@ public partial class DBProcessOutputEngine : VNoAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFNome)
-            clsW.Fields(DBProcessOutputEngineDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFDatabase)
-            clsW.Fields(DBProcessOutputEngineDicInfo.Database, m_FDatabase, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Database, FDatabase, EGenericTypeFields.FString);
         if (pFldFTabela)
-            clsW.Fields(DBProcessOutputEngineDicInfo.Tabela, m_FTabela, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Tabela, FTabela, EGenericTypeFields.FString);
         if (pFldFCampo)
-            clsW.Fields(DBProcessOutputEngineDicInfo.Campo, m_FCampo, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Campo, FCampo, EGenericTypeFields.FString);
         if (pFldFValor)
-            clsW.Fields(DBProcessOutputEngineDicInfo.Valor, m_FValor, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Valor, FValor, EGenericTypeFields.FString);
         if (pFldFOutput)
-            clsW.Fields(DBProcessOutputEngineDicInfo.Output, m_FOutput, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Output, FOutput, EGenericTypeFields.FString);
         if (pFldFAdministrador || ID.IsEmptyIDNumber())
-            clsW.Fields(DBProcessOutputEngineDicInfo.Administrador, m_FAdministrador, ETiposCampos.FBoolean);
-        if (pFldFGUID)
-            clsW.Fields(DBProcessOutputEngineDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBProcessOutputEngineDicInfo.Administrador, FAdministrador, EGenericTypeFields.FBoolean);
         if (pFldFOutputSource)
-            clsW.Fields(DBProcessOutputEngineDicInfo.OutputSource, m_FOutputSource, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProcessOutputEngineDicInfo.OutputSource, FOutputSource, EGenericTypeFields.FNumberNull);
         if (pFldFDisabledItem || ID.IsEmptyIDNumber())
-            clsW.Fields(DBProcessOutputEngineDicInfo.DisabledItem, m_FDisabledItem, ETiposCampos.FBoolean);
+            clsW.Fields(DBProcessOutputEngineDicInfo.DisabledItem, FDisabledItem, EGenericTypeFields.FBoolean);
         if (pFldFIDModulo)
-            clsW.Fields(DBProcessOutputEngineDicInfo.IDModulo, m_FIDModulo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProcessOutputEngineDicInfo.IDModulo, FIDModulo, EGenericTypeFields.FNumberNull);
         if (pFldFIsOnlyProcesso || ID.IsEmptyIDNumber())
-            clsW.Fields(DBProcessOutputEngineDicInfo.IsOnlyProcesso, m_FIsOnlyProcesso, ETiposCampos.FBoolean);
+            clsW.Fields(DBProcessOutputEngineDicInfo.IsOnlyProcesso, FIsOnlyProcesso, EGenericTypeFields.FBoolean);
         if (pFldFMyID)
-            clsW.Fields(DBProcessOutputEngineDicInfo.MyID, m_FMyID, ETiposCampos.FNumberNull);
+            clsW.Fields(DBProcessOutputEngineDicInfo.MyID, FMyID, EGenericTypeFields.FNumberNull);
+        if (pFldFGuid)
+            clsW.Fields(DBProcessOutputEngineDicInfo.Guid, FGuid, EGenericTypeFields.FString);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -149,7 +148,7 @@ public partial class DBProcessOutputEngine : VNoAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

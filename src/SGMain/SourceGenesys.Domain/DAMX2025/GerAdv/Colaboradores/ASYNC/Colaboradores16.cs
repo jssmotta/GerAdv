@@ -31,7 +31,7 @@ public partial class DBColaboradores
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,43 +134,49 @@ public partial class DBColaboradores
 
 #if (!NOTSTORED_Colaboradores)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFCargo || pFldFCliente || pFldFSexo || pFldFNome || pFldFCPF || pFldFRG || pFldFDtNasc || pFldFIdade || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFCidade || pFldFFone || pFldFObservacao || pFldFEMail || pFldFCNH || pFldFClass;
+    private bool HasAnyFieldChanged() => pFldFCargo || pFldFCliente || pFldFSexo || pFldFNome || pFldFCPF || pFldFRG || pFldFDtNasc || pFldFIdade || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFCidade || pFldFFone || pFldFObservacao || pFldFEMail || pFldFCNH || pFldFClass || pFldFEtiqueta || pFldFAni || pFldFBold;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFCargo)
-            updateTool.Fields(DBColaboradoresDicInfo.Cargo, m_FCargo, ETiposCampos.FNumber);
+            updateTool.Fields(DBColaboradoresDicInfo.Cargo, FCargo, EGenericTypeFields.FNumber);
         if (pFldFCliente)
-            updateTool.Fields(DBColaboradoresDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBColaboradoresDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFSexo || updateTool.Insert)
-            updateTool.Fields(DBColaboradoresDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBColaboradoresDicInfo.Sexo, FSexo, EGenericTypeFields.FBoolean);
         if (pFldFNome)
-            updateTool.Fields(DBColaboradoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFCPF)
-            updateTool.Fields(DBColaboradoresDicInfo.CPF, m_FCPF, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.CPF, FCPF, EGenericTypeFields.FString);
         if (pFldFRG)
-            updateTool.Fields(DBColaboradoresDicInfo.RG, m_FRG, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.RG, FRG, EGenericTypeFields.FString);
         if (pFldFDtNasc)
-            updateTool.Fields(DBColaboradoresDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
+            updateTool.Fields(DBColaboradoresDicInfo.DtNasc, FDtNasc, EGenericTypeFields.FDate);
         if (pFldFIdade)
-            updateTool.Fields(DBColaboradoresDicInfo.Idade, m_FIdade, ETiposCampos.FNumber);
+            updateTool.Fields(DBColaboradoresDicInfo.Idade, FIdade, EGenericTypeFields.FNumber);
         if (pFldFEndereco)
-            updateTool.Fields(DBColaboradoresDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            updateTool.Fields(DBColaboradoresDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFCEP)
-            updateTool.Fields(DBColaboradoresDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFCidade)
-            updateTool.Fields(DBColaboradoresDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBColaboradoresDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFFone)
-            updateTool.Fields(DBColaboradoresDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFObservacao)
-            updateTool.Fields(DBColaboradoresDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBColaboradoresDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFCNH)
-            updateTool.Fields(DBColaboradoresDicInfo.CNH, m_FCNH, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.CNH, FCNH, EGenericTypeFields.FString);
         if (pFldFClass)
-            updateTool.Fields(DBColaboradoresDicInfo.Class, m_FClass, ETiposCampos.FString);
+            updateTool.Fields(DBColaboradoresDicInfo.Class, FClass, EGenericTypeFields.FString);
+        if (pFldFEtiqueta || updateTool.Insert)
+            updateTool.Fields(DBColaboradoresDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
+        if (pFldFAni || updateTool.Insert)
+            updateTool.Fields(DBColaboradoresDicInfo.Ani, FAni, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBColaboradoresDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
     }
 
 #endif
@@ -182,20 +188,20 @@ public partial class DBColaboradores
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBColaboradoresDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBColaboradoresDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBColaboradoresDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBColaboradoresDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBColaboradoresDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBColaboradoresDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBColaboradoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBColaboradoresDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBColaboradoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBColaboradoresDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

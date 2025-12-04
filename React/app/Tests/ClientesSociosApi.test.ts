@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ClientesSociosApiError } from '../GerAdv_TS/ClientesSocios/Apis/ApiClientesSocios';
+import { ClientesSociosApiError } from '@/app/GerAdv_TS/ClientesSocios/Apis/ApiClientesSocios';
 import { ClientesSociosApi } from '@/app/GerAdv_TS/ClientesSocios/Apis/ApiClientesSocios';
-import { FilterClientesSocios } from '../GerAdv_TS/ClientesSocios/Filters/ClientesSocios';
-import { IClientesSocios } from '../GerAdv_TS/ClientesSocios/Interfaces/interface.ClientesSocios';
-import { ClientesSociosTestEmpty } from '../GerAdv_TS/Models/ClientesSocios';
+import { FilterClientesSocios } from '@/app/GerAdv_TS/ClientesSocios/Filters/ClientesSocios';
+import { IClientesSocios } from '@/app/GerAdv_TS/ClientesSocios/Interfaces/interface.ClientesSocios';
+import { ClientesSociosTestEmpty } from '@/app/GerAdv_TS/Models/ClientesSocios';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ClientesSociosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterClientesSocios = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,42 @@ describe('ClientesSociosApi', () => {
   describe('addAndUpdate', () => {
     const mockClientesSocios: IClientesSocios = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+somenterepresentante: false,
+idade: 0,
+isrepresentantelegal: true,
+qualificacao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+sexo: false,
+dtnasc: '24/04/1975',
+nome: 'João',
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+representantelegal: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+cliente: 0,
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+cep: '01234-567',
+cidade: 0,
+rg: '12.345.678-9',
+cpf: '544.506.718-13',
+fone: '(11) 99999-9999',
+participacao: 'AAAAAAAA',
+cargo: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+email: 'test@email.com',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+cnh: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+datacontrato: '24/04/1975',
+cnpj: '93016944000138',
+inscest: 'AAAAAAAAAAAAA',
+socioempresaadminnome: 'João',
+enderecosocio: 'Rua das Flores, 123',
+bairrosocio: 'Centro',
+cepsocio: '01234-567',
+cidadesocio: 0,
+rgdataexp: '24/04/1975',
+socioempresaadminsomente: true,
+tipo: false,
+fax: '(11) 88888-9999',
+class: 'A'
     };
 
     it('should add new clientessocios successfully', async () => {
@@ -487,7 +509,7 @@ describe('ClientesSociosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterClientesSocios = { funcionario: 1 };
+      const mockFilter: FilterClientesSocios = { : 1 };
       
       const result = clientessociosApi.useFilter(mockFilter);
       

@@ -9,54 +9,61 @@ import { TipoEnderecoSistemaService } from '../../Services/TipoEnderecoSistema.s
 import { TipoEnderecoSistemaApi } from '../../Apis/ApiTipoEnderecoSistema';
 import TipoEnderecoSistemaWindow from './TipoEnderecoSistemaWindow';
 import {TipoEnderecoSistemaEmpty } from '@/app/GerAdv_TS/Models/TipoEnderecoSistema';
-interface TipoEnderecoSistemaWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const TipoEnderecoSistemaWindowId: React.FC<TipoEnderecoSistemaWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const tipoenderecosistemaService = useMemo(() => {
-  return new TipoEnderecoSistemaService(
-  new TipoEnderecoSistemaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ITipoEnderecoSistema | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(TipoEnderecoSistemaEmpty() as ITipoEnderecoSistema);
-      return;
-    }
-    if (id) {
-      const response = await tipoenderecosistemaService.fetchTipoEnderecoSistemaById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <TipoEnderecoSistemaWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedTipoEnderecoSistema={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface TipoEnderecoSistemaWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const TipoEnderecoSistemaWindowId: React.FC<TipoEnderecoSistemaWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const tipoenderecosistemaService = useMemo(() => {
+        return new TipoEnderecoSistemaService(
+            new TipoEnderecoSistemaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ITipoEnderecoSistema | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(TipoEnderecoSistemaEmpty() as ITipoEnderecoSistema);
+                return;
+            }
+            if (id) {
+                 const response = await tipoenderecosistemaService.fetchTipoEnderecoSistemaById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <TipoEnderecoSistemaWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedTipoEnderecoSistema={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default TipoEnderecoSistemaWindowId;

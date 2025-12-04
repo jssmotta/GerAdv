@@ -110,10 +110,10 @@ namespace MenphisSI.GerAdv.Models.Response
         public string CSS { get; set; } = "";
 
         /// <summary>
-        /// GUID - mdcGUID - tamanho máximo: 100 
+        /// GUID - mdcGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -222,10 +222,10 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string CSS { get; set; } = "";
 
         /// <summary>
-        /// GUID - mdcGUID - tamanho máximo: 100 
+        /// GUID - mdcGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nometipomodelodocumento")]
         public string NomeTipoModeloDocumento { get; set; } = string.Empty;

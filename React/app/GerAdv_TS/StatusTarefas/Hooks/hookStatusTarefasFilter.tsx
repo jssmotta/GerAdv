@@ -9,100 +9,230 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterStatusTarefas } from '@/app/GerAdv_TS/StatusTarefas/Filters/StatusTarefas';
+import FilterDialogButton from '@/app/components/Cruds/FilterDialogButton';
+import InputGuid from '@/app/components/Inputs/InputGuid'
+
+
 interface UseStatusTarefasFilterProps {
-  handleFetchWithFilter: (filtro?: FilterStatusTarefas | undefined | null) => Promise<void>;
+    handleFetchWithFilter: (filtro?: FilterStatusTarefas | undefined | null) => Promise<void>;
 }
+
 interface UseStatusTarefasFilterReturn {
-  // Estados
-  showSearch: boolean;
-  windowFilter: FilterStatusTarefas;
-  setWindowFilter: React.Dispatch<React.SetStateAction<FilterStatusTarefas>>;
-  // Handlers do Dialog
-  handleSearch: () => void;
-  handleCloseSearch: () => void;
-  handleConfirmSearch: (filter: FilterStatusTarefas) => Promise<void>;
-  // Render function
-  renderInputFilters: (handlers: FilterHandlers<FilterStatusTarefas>) => React.ReactNode;
-  // Utilitários
-  clearFilter: () => void;
-  hasActiveFilter: boolean;
+    // Estados
+    showSearch: boolean;
+    windowFilter: FilterStatusTarefas;
+    setWindowFilter: React.Dispatch<React.SetStateAction<FilterStatusTarefas>>;
+
+    // Handlers do Dialog
+    handleSearch: () => void;
+    handleCloseSearch: () => void;
+    handleConfirmSearch: (filter: FilterStatusTarefas) => Promise<void>;
+
+    // Render function
+    renderInputFilters: (handlers: FilterHandlers<FilterStatusTarefas>) => React.ReactNode;
+
+    // Utilitários
+    clearFilter: () => void;
+    hasActiveFilter: boolean;
 }
+
 export const useStatusTarefasFilter = ({ handleFetchWithFilter }: UseStatusTarefasFilterProps): UseStatusTarefasFilterReturn => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [windowFilter, setWindowFilter] = useState<FilterStatusTarefas>({} as FilterStatusTarefas);
-  // Handlers do Dialog
-  const handleSearch = () => {
-    setShowSearch(true);
-    const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterStatusTarefas;
-    setWindowFilter(filterWildechar);
-  };
-  const handleCloseSearch = () => {
-    setShowSearch(false);
-  };
-  const handleConfirmSearch = async (filter: FilterStatusTarefas) => {
-    await handleFetchWithFilter(filter);
-  };
-  // Função para limpar filtros
-  const clearFilter = () => {
-    setWindowFilter({});
-    sessionStorage.removeItem(btoa('StatusTarefasFilter'));
-    handleFetchWithFilter({});
-  };
-  // Verificar se há filtros ativos
-  const hasActiveFilter = Object.values(windowFilter).some(value =>
-    value !== undefined && value !== null && value !== '' && value !== -2147483648
-  );
-  // Função para renderizar os campos de filtro
-  const renderInputFilters = (handlers: FilterHandlers<FilterStatusTarefas>) => (
-  <>
-  <InputInput
-  type='text'
-  id='nome'
-  name='nome'
-  value={handlers.windowFilter?.nome ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Nome'
-  label='Nome'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro'
-  name='codigo_filtro'
-  value={handlers.windowFilter?.codigo_filtro ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código do cadastro'
-  label='Código (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro_end'
-  name='codigo_filtro_end'
-  value={handlers.windowFilter?.codigo_filtro_end ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código final do cadastro'
-  label='Código final'
-  disabled={handlers.windowFilter?.codigo_filtro ? false: true}
-  className='inputIncNome inputSearch'
-  />
-</>
-);
-return {
-  // Estados
-  showSearch, 
-  windowFilter, 
-  setWindowFilter, 
-  // Handlers
-  handleSearch, 
-  handleCloseSearch, 
-  handleConfirmSearch, 
-  // Render function
-  renderInputFilters, 
-  // Utilitários
-  clearFilter, 
-  hasActiveFilter
-};
+    const [showSearch, setShowSearch] = useState(false);
+    const [windowFilter, setWindowFilter] = useState<FilterStatusTarefas>({} as FilterStatusTarefas);
+
+    // Handlers do Dialog
+    const handleSearch = () => {
+        setShowSearch(true);
+        const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterStatusTarefas;
+        setWindowFilter(filterWildechar);
+    };
+
+    const handleCloseSearch = () => {
+        setShowSearch(false);
+    };
+
+    const handleConfirmSearch = async (filter: FilterStatusTarefas) => {
+        await handleFetchWithFilter(filter);
+    };
+
+    // Função para limpar filtros
+    const clearFilter = () => {
+        setWindowFilter({} as FilterStatusTarefas);
+        sessionStorage.removeItem(btoa('StatusTarefasFilter'));
+        handleFetchWithFilter({} as FilterStatusTarefas);
+    };
+
+    // Verificar se há filtros ativos
+    const hasActiveFilter = Object.values(windowFilter).some(value =>
+        value !== undefined && value !== null && value !== '' && value !== -2147483648
+    );
+
+    // Função para renderizar os campos de filtro
+    const renderInputFilters = (handlers: FilterHandlers<FilterStatusTarefas>) => (        
+        <>
+        <InputInput
+                type='text'
+                id='nome'
+                name='nome'
+                value={handlers.windowFilter?.nome ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Nome'
+                label='Nome'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad'
+                name='quemcad'
+                value={handlers.windowFilter?.quemcad ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro'
+                label='Usuário de Cadastro (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quemcad_end'
+                name='quemcad_end'
+                value={handlers.windowFilter?.quemcad_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Cadastro final'
+                label='Usuário de Cadastro final'
+                disabled={handlers.windowFilter?.quemcad ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtcad'
+                label='Data de Cadastro (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad'
+                value={handlers.windowFilter?.dtcad ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtcad', value)}
+            />
+<InputDate
+                type='text'
+                id='dtcad_end'
+                label='Data de Cadastro (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtcad_end'
+                value={handlers.windowFilter?.dtcad_end ?? ''}
+                disabled={handlers.windowFilter?.dtcad ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtcad_end', value)}
+            />
+<InputInput
+                type='text'
+                id='quematu'
+                name='quematu'
+                value={handlers.windowFilter?.quematu ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização'
+                label='Usuário de Atualização (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='quematu_end'
+                name='quematu_end'
+                value={handlers.windowFilter?.quematu_end ?? ''}
+                onChange={handlers.handleInputChange}
+                placeholder='Informe Usuário de Atualização final'
+                label='Usuário de Atualização final'
+                disabled={handlers.windowFilter?.quematu ? false : true}
+                className='input-default-main inputSearch'
+                />
+<InputDate
+                type='text'
+                id='dtatu'
+                label='Data de Atualização (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu'
+                value={handlers.windowFilter?.dtatu ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('dtatu', value)}
+            />
+<InputDate
+                type='text'
+                id='dtatu_end'
+                label='Data de Atualização (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='dtatu_end'
+                value={handlers.windowFilter?.dtatu_end ?? ''}
+                disabled={handlers.windowFilter?.dtatu ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('dtatu_end', value)}
+            />
+<InputComboFilterYesNo
+                type='text'
+                id='visto'
+                name='visto'
+                value={handlers.windowFilter?.visto ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Visto'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputGuid
+                type='text'
+                id='guid'
+                name='guid'
+                value={handlers.windowFilter?.guid ?? ''}
+                 onChange={(value: string) =>
+          handlers.handleInputChange({ target: { name: 'guid', value } } as any)
+        }
+                placeholder='Informe GUID'
+                label='GUID'
+                className='input-default-main inputSearch'
+                />
+
+<InputInput
+                type='text'
+                id='codigo_filtro'
+                name='codigo_filtro'
+                value={handlers.windowFilter?.codigo_filtro ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código do cadastro'
+                label='Código (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='codigo_filtro_end'
+                name='codigo_filtro_end'
+                value={handlers.windowFilter?.codigo_filtro_end ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código final do cadastro'
+                label='Código final'
+                disabled={handlers.windowFilter?.codigo_filtro ? false : true}
+                className='input-default-main inputSearch'
+                />
+
+        </>        
+    );
+
+
+    
+
+
+    return {
+        // Estados
+        showSearch,
+        windowFilter,
+        setWindowFilter,
+
+        // Handlers
+        handleSearch,
+        handleCloseSearch,
+        handleConfirmSearch,
+
+        // Render function
+        renderInputFilters,
+
+        // Utilitários
+        clearFilter,
+        hasActiveFilter
+    };
 };

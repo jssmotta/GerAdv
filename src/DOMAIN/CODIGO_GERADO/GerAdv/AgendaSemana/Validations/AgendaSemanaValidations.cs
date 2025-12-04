@@ -25,10 +25,37 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Hora))
+        {
+            if (DateTime.TryParse(reg.Hora, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Hora não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.HoraFinal))
+        {
+            if (DateTime.TryParse(reg.HoraFinal, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("HoraFinal não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Funcionarios
         if (!reg.Funcionario.IsEmptyIDNumber())
         {
-            var regFuncionarios = await funcionariosReader.Read(reg.Funcionario, oCnn);
+            var regFuncionarios = await funcionariosReader.ReadAsync(reg.Funcionario, oCnn);
             if (regFuncionarios == null || regFuncionarios.Id != reg.Funcionario)
             {
                 throw new SGValidationException($"Colaborador não encontrado ({regFuncionarios?.Id}).");
@@ -38,7 +65,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {
-            var regAdvogados = await advogadosReader.Read(reg.Advogado, oCnn);
+            var regAdvogados = await advogadosReader.ReadAsync(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");
@@ -48,7 +75,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         // TipoCompromisso
         if (!reg.TipoCompromisso.IsEmptyIDNumber())
         {
-            var regTipoCompromisso = await tipocompromissoReader.Read(reg.TipoCompromisso, oCnn);
+            var regTipoCompromisso = await tipocompromissoReader.ReadAsync(reg.TipoCompromisso, oCnn);
             if (regTipoCompromisso == null || regTipoCompromisso.Id != reg.TipoCompromisso)
             {
                 throw new SGValidationException($"Tipo Compromisso não encontrado ({regTipoCompromisso?.Id}).");
@@ -58,7 +85,7 @@ public class AgendaSemanaValidation : IAgendaSemanaValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

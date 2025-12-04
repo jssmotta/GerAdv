@@ -54,8 +54,24 @@ public partial class DBJustica
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBJusticaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBJusticaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBJusticaDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBJusticaDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBJusticaDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBJustica
         try
         {
             if (!DBNull.Value.Equals(getValue(DBJusticaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBJusticaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBJusticaDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBJustica
         try
         {
             if (!DBNull.Value.Equals(getValue(DBJusticaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBJusticaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBJusticaDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBJustica
         try
         {
             if (!DBNull.Value.Equals(getValue(DBJusticaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBJusticaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBJusticaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBJusticaDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBJusticaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBJustica
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

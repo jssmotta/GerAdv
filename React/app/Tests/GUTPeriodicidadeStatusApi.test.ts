@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { GUTPeriodicidadeStatusApiError } from '../GerAdv_TS/GUTPeriodicidadeStatus/Apis/ApiGUTPeriodicidadeStatus';
+import { GUTPeriodicidadeStatusApiError } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Apis/ApiGUTPeriodicidadeStatus';
 import { GUTPeriodicidadeStatusApi } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Apis/ApiGUTPeriodicidadeStatus';
-import { FilterGUTPeriodicidadeStatus } from '../GerAdv_TS/GUTPeriodicidadeStatus/Filters/GUTPeriodicidadeStatus';
-import { IGUTPeriodicidadeStatus } from '../GerAdv_TS/GUTPeriodicidadeStatus/Interfaces/interface.GUTPeriodicidadeStatus';
-import { GUTPeriodicidadeStatusTestEmpty } from '../GerAdv_TS/Models/GUTPeriodicidadeStatus';
+import { FilterGUTPeriodicidadeStatus } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Filters/GUTPeriodicidadeStatus';
+import { IGUTPeriodicidadeStatus } from '@/app/GerAdv_TS/GUTPeriodicidadeStatus/Interfaces/interface.GUTPeriodicidadeStatus';
+import { GUTPeriodicidadeStatusTestEmpty } from '@/app/GerAdv_TS/Models/GUTPeriodicidadeStatus';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('GUTPeriodicidadeStatusApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterGUTPeriodicidadeStatus = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,9 @@ describe('GUTPeriodicidadeStatusApi', () => {
   describe('addAndUpdate', () => {
     const mockGUTPeriodicidadeStatus: IGUTPeriodicidadeStatus = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+gutatividade: 1,
+datarealizado: '24/04/1975'
     };
 
     it('should add new gutperiodicidadestatus successfully', async () => {
@@ -487,7 +476,7 @@ describe('GUTPeriodicidadeStatusApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterGUTPeriodicidadeStatus = { funcionario: 1 };
+      const mockFilter: FilterGUTPeriodicidadeStatus = { : 1 };
       
       const result = gutperiodicidadestatusApi.useFilter(mockFilter);
       

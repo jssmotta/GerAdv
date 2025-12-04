@@ -37,13 +37,26 @@ public class DBProSucumbenciaTests : IDisposable
         dt.Columns.Add("scbVisto", typeof(bool));
         dt.Columns.Add("scbProcesso", typeof(int));
         dt.Columns.Add("scbInstancia", typeof(int));
-        dt.Columns.Add("scbData", typeof(string));
+        dt.Columns.Add("scbData", typeof(DateTime));
         dt.Columns.Add("scbNome", typeof(string));
         dt.Columns.Add("scbTipoOrigemSucumbencia", typeof(int));
         dt.Columns.Add("scbValor", typeof(decimal));
         dt.Columns.Add("scbPercentual", typeof(string));
-        dt.Columns.Add("scbGUID", typeof(string));
+        dt.Columns.Add("scbGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["scbCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProSucumbencia(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -64,7 +77,7 @@ public class DBProSucumbenciaTests : IDisposable
     {
         var instance = new DBProSucumbencia();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProSucumbencia", instance.ITabelaName());
+        Assert.Equal("ProSucumbencia", instance.ITableName());
         Assert.Equal("scb", instance.Prefixo);
     }
 
@@ -82,29 +95,16 @@ public class DBProSucumbenciaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["scbCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProSucumbencia(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProSucumbencia", cadastro.ITabelaName());
-        Assert.Equal("scbCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("scbData", cadastro.ICampoNome());
-        Assert.Equal("scb", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProSucumbencia", cadastro.ITableName());
+        Assert.Equal("scbCodigo", cadastro.IFieldId());
+        Assert.Equal("scbData", cadastro.IFieldNameDescription());
+        Assert.Equal("scb", cadastro.IPrefix());
     }
 
 #endregion
@@ -164,9 +164,9 @@ public class DBProSucumbenciaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -206,6 +206,23 @@ public class DBProSucumbenciaTests : IDisposable
     {
         var instance = new DBProSucumbencia();
         Assert.Equal(0, instance.FInstancia);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBProSucumbencia();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]
@@ -267,18 +284,18 @@ public class DBProSucumbenciaTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 150 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 150);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 150);
     }
 
     public virtual void Dispose()

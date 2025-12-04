@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProcessosObsReportApiError } from '../GerAdv_TS/ProcessosObsReport/Apis/ApiProcessosObsReport';
+import { ProcessosObsReportApiError } from '@/app/GerAdv_TS/ProcessosObsReport/Apis/ApiProcessosObsReport';
 import { ProcessosObsReportApi } from '@/app/GerAdv_TS/ProcessosObsReport/Apis/ApiProcessosObsReport';
-import { FilterProcessosObsReport } from '../GerAdv_TS/ProcessosObsReport/Filters/ProcessosObsReport';
-import { IProcessosObsReport } from '../GerAdv_TS/ProcessosObsReport/Interfaces/interface.ProcessosObsReport';
-import { ProcessosObsReportTestEmpty } from '../GerAdv_TS/Models/ProcessosObsReport';
+import { FilterProcessosObsReport } from '@/app/GerAdv_TS/ProcessosObsReport/Filters/ProcessosObsReport';
+import { IProcessosObsReport } from '@/app/GerAdv_TS/ProcessosObsReport/Interfaces/interface.ProcessosObsReport';
+import { ProcessosObsReportTestEmpty } from '@/app/GerAdv_TS/Models/ProcessosObsReport';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProcessosObsReportApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProcessosObsReport = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,11 @@ describe('ProcessosObsReportApi', () => {
   describe('addAndUpdate', () => {
     const mockProcessosObsReport: IProcessosObsReport = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+data: '24/04/1975',
+processo: 1,
+observacao: 'Observação teste',
+historico: 0
     };
 
     it('should add new processosobsreport successfully', async () => {
@@ -487,7 +478,7 @@ describe('ProcessosObsReportApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProcessosObsReport = { funcionario: 1 };
+      const mockFilter: FilterProcessosObsReport = { : 1 };
       
       const result = processosobsreportApi.useFilter(mockFilter);
       

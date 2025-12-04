@@ -32,12 +32,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Cidade { get; set; }
 
         /// <summary>
-        /// GUID - preGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Nome - preNome - tamanho máximo: 80 
         /// </summary>
         [JsonPropertyName("nome")]
@@ -204,6 +198,30 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - preEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - preAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - preBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - preGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -234,12 +252,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Cidade { get; set; }
 
         /// <summary>
-        /// GUID - preGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Nome - preNome - tamanho máximo: 80 
         /// </summary>
         [JsonPropertyName("nome")]
@@ -406,6 +418,30 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - preEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - preAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - preBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - preGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("descricaofuncao")]
         public string DescricaoFuncao { get; set; } = string.Empty;

@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { ISituacaoFormProps } from '../../Interfaces/interface.Situacao';
 import { SituacaoService } from '../../Services/Situacao.service';
 import { useSituacaoForm, useValidationsSituacao } from '../../Hooks/hookSituacao';
-import { SituacaoEmpty } from '../../../Models/Situacao';
+import { SituacaoEmpty } from '../../../Models/Situacao'; 
 import { SituacaoForm } from '../Forms/Situacao';
+ 
 
 const SituacaoInc: React.FC<ISituacaoFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const situacaoService = new SituacaoService(
-  new SituacaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadSituacao } = useSituacaoForm(
-SituacaoEmpty(), 
-situacaoService
-);
-useEffect(() => {
-  loadSituacao(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedSituacao = await situacaoService.saveSituacao(data);
-    if (savedSituacao.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedSituacao);
+  const situacaoService = new SituacaoService(
+    new SituacaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadSituacao } = useSituacaoForm(
+    SituacaoEmpty(),
+    situacaoService
+  );
+
+  useEffect(() => {
+    loadSituacao(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedSituacao = await situacaoService.saveSituacao(data);
+
+      if (savedSituacao.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedSituacao);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadSituacao(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <SituacaoForm
+        situacaoData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadSituacao(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<SituacaoForm
-situacaoData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default SituacaoInc;

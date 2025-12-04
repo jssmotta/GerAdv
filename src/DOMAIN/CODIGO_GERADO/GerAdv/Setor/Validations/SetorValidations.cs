@@ -23,7 +23,7 @@ public class SetorValidation : ISetorValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var prepostosExists0 = await prepostosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPrepostos { Setor = id ?? default }, uri);
         if (prepostosExists0 != null && prepostosExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Prepostos associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Prepostos associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class SetorValidation : ISetorValidation
     {
         if (reg.Descricao != null && reg.Descricao.Length > DBSetorDicInfo.SetDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBSetorDicInfo.SetDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBSetorDicInfo.SetGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBSetorDicInfo.SetGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,6 +40,8 @@ public class SetorValidation : ISetorValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

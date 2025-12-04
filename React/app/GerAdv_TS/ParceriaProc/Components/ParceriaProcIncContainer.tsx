@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import ParceriaProcInc from '../Crud/Inc/ParceriaProc';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface ParceriaProcIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const ParceriaProcIncContainer: React.FC<ParceriaProcIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <ParceriaProcInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <ParceriaProcInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default ParceriaProcIncContainer;

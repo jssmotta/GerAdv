@@ -54,8 +54,16 @@ public partial class DBProcessosObsReport
         // Checkpoint Carregar 
         try
         {
+            FObservacao = getValue(DBProcessosObsReportDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProcessosObsReportDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProcessosObsReportDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProcessosObsReportDicInfo.Data)));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBProcessosObsReport
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessosObsReportDicInfo.Historico)))
-                m_FHistorico = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.Historico));
+                FHistorico = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.Historico));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBProcessosObsReport
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessosObsReportDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.Processo));
         }
         catch
         {
@@ -100,7 +108,7 @@ public partial class DBProcessosObsReport
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessosObsReportDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +117,7 @@ public partial class DBProcessosObsReport
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessosObsReportDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProcessosObsReportDicInfo.QuemCad));
         }
         catch
         {
@@ -118,22 +126,14 @@ public partial class DBProcessosObsReport
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessosObsReportDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProcessosObsReportDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBProcessosObsReportDicInfo.Observacao)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProcessosObsReportDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -157,7 +157,7 @@ public partial class DBProcessosObsReport
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

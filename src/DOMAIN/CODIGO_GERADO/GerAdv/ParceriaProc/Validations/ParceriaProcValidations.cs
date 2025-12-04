@@ -26,8 +26,6 @@ public class ParceriaProcValidation : IParceriaProcValidation
 
     private bool ValidSizes(Models.ParceriaProc reg)
     {
-        if (reg.GUID != null && reg.GUID.Length > DBParceriaProcDicInfo.ParGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBParceriaProcDicInfo.ParGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,7 +39,7 @@ public class ParceriaProcValidation : IParceriaProcValidation
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {
-            var regAdvogados = await advogadosReader.Read(reg.Advogado, oCnn);
+            var regAdvogados = await advogadosReader.ReadAsync(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");

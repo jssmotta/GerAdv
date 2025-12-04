@@ -27,7 +27,7 @@ public partial class CidadeWhere(IFCidadeFactory cidadeFactory) : ICidadeWhere
             Nome = dbRec.FNome ?? string.Empty,
             UF = dbRec.FUF,
             Sigla = dbRec.FSigla ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return cidade;
     }

@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IStatusHTrabService
 {
+    Task<Filters.FilterStatusHTrab> FilterVoice([FromBody] Filters.FilterStatusHTrab filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<StatusHTrabResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterStatusHTrab filter, [FromRoute, Required] string uri = "");
     Task<StatusHTrabResponse?> AddAndUpdate(Models.StatusHTrab? regStatusHTrab, [FromRoute, Required] string uri = "");
     Task<StatusHTrabResponse?> Validation(Models.StatusHTrab? regStatusHTrab, [FromRoute, Required] string uri = "");

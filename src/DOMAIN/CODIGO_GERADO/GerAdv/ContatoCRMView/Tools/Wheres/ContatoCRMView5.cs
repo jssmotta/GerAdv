@@ -21,9 +21,14 @@ public partial class ContatoCRMViewWhere(IFContatoCRMViewFactory contatocrmviewF
         {
             Id = dbRec.ID,
             CGUID = dbRec.FCGUID ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
             IP = dbRec.FIP ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            contatocrmview.Data = XData.ToString("dd/MM/yyyy");
+            contatocrmview.Data_date = XData;
+        }
+
         return contatocrmview;
     }
 }

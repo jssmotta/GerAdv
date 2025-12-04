@@ -23,12 +23,6 @@ public partial class FGraphFactory : IFGraphFactory, IDisposable
         return FGraph.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGraph> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FGraph().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FGraph> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FGraphFactory : IFGraphFactory, IDisposable
         return FGraph.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FGraph> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FGraph().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FGraphFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

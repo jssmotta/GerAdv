@@ -4,14 +4,15 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IDivisaoTribunalReader
 {
-    Task<DivisaoTribunalResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.DivisaoTribunal?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<DivisaoTribunalResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.DivisaoTribunal?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec, MsiSqlConnection? oCnn);
     DivisaoTribunalResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     DivisaoTribunalResponse? Read(FDivisaoTribunal dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     DivisaoTribunalResponseAll? ReadAll(FDivisaoTribunal dbRec, IDataRecord dr);
     DivisaoTribunalResponseAll? ReadAll(SG.GerAdv.DBDivisaoTribunal dbRec, DataRow dr);
-    Task<IEnumerable<DivisaoTribunalResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DivisaoTribunalResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

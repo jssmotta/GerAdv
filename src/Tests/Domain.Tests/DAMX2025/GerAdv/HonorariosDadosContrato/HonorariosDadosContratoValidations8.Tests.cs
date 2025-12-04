@@ -55,7 +55,6 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         return new Models.HonorariosDadosContrato
         {
             Id = 1,
-            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Cliente = 1,
             Fixo = false,
             Variavel = true,
@@ -74,7 +73,7 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockHonorariosDadosContratoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterHonorariosDadosContrato>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the HonorariosDadosContratos service mock
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -82,7 +81,7 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockHonorariosDadosContratoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterHonorariosDadosContrato>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the HonorariosDadosContratos service mock
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]
@@ -92,7 +91,6 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         var honorariosdadoscontrato = new Models.HonorariosDadosContrato
         {
             Id = 1,
-            Guid = null,
             Cliente = 1,
             Fixo = false,
             Variavel = true,
@@ -124,7 +122,7 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         // Arrange
         var honorariosdadoscontrato = CreateValidHonorariosDadosContrato();
         honorariosdadoscontrato.Cliente = 999;
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(honorariosdadoscontrato, _mockHonorariosDadosContratoService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -141,7 +139,7 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(honorariosdadoscontrato, _mockHonorariosDadosContratoService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -158,7 +156,7 @@ public class HonorariosDadosContratoValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockClientesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockClientesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(honorariosdadoscontrato, _mockHonorariosDadosContratoService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);

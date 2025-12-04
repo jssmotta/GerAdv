@@ -32,12 +32,6 @@ namespace MenphisSI.GerAdv.Models
         public bool SomenteRepresentante { get; set; }
 
         /// <summary>
-        /// GUID - cscGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Idade - cscIdade  
         /// </summary>
         [JsonPropertyName("idade")]
@@ -237,6 +231,30 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - cscEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - cscAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - cscBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - cscGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -267,12 +285,6 @@ namespace MenphisSI.GerAdv.Models.All
         public bool SomenteRepresentante { get; set; }
 
         /// <summary>
-        /// GUID - cscGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Idade - cscIdade  
         /// </summary>
         [JsonPropertyName("idade")]
@@ -472,6 +484,30 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - cscEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - cscAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - cscBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - cscGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ISMSAliceService
 {
+    Task<Filters.FilterSMSAlice> FilterVoice([FromBody] Filters.FilterSMSAlice filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<SMSAliceResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterSMSAlice filter, [FromRoute, Required] string uri = "");
     Task<SMSAliceResponse?> AddAndUpdate(Models.SMSAlice? regSMSAlice, [FromRoute, Required] string uri = "");
     Task<SMSAliceResponse?> Validation(Models.SMSAlice? regSMSAlice, [FromRoute, Required] string uri = "");
     Task<SMSAliceResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<SMSAliceResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<SMSAliceResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterSMSAlice? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

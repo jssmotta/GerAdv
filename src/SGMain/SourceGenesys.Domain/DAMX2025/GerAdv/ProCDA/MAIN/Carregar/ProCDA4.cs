@@ -54,8 +54,32 @@ public partial class DBProCDA
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProCDADicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBProCDADicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNroInterno = getValue(DBProCDADicInfo.NroInterno)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProCDADicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBProCDADicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBProCDADicInfo.Bold));
         }
         catch
         {
@@ -82,7 +106,7 @@ public partial class DBProCDA
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProCDADicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProCDADicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProCDADicInfo.Processo));
         }
         catch
         {
@@ -91,7 +115,7 @@ public partial class DBProCDA
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProCDADicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProCDADicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProCDADicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBProCDA
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProCDADicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProCDADicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProCDADicInfo.QuemCad));
         }
         catch
         {
@@ -109,38 +133,14 @@ public partial class DBProCDA
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProCDADicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProCDADicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProCDADicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBProCDADicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNroInterno = getValue(DBProCDADicInfo.NroInterno)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProCDADicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -164,7 +164,7 @@ public partial class DBProCDA
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

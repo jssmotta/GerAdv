@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProSucumbenciaWriter
 {
     Task<FProSucumbencia> WriteAsync(Models.ProSucumbencia prosucumbencia, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProSucumbenciaWriter(IFProSucumbenciaFactory prosucumbenciaFactory) : IProSucumbenciaWriter
 {
     private readonly IFProSucumbenciaFactory _prosucumbenciaFactory = prosucumbenciaFactory ?? throw new ArgumentNullException(nameof(prosucumbenciaFactory));
-    public virtual async Task Delete(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProSucumbenciaResponse prosucumbencia, int operadorId, MsiSqlConnection? oCnn)
     {
         await _prosucumbenciaFactory.DeleteAsync(operadorId, prosucumbencia.Id, oCnn);
     }
@@ -25,12 +25,16 @@ public class ProSucumbenciaWriter(IFProSucumbenciaFactory prosucumbenciaFactory)
         using var dbRec = await (prosucumbencia.Id.IsEmptyIDNumber() ? _prosucumbenciaFactory.CreateAsync() : _prosucumbenciaFactory.CreateFromIdAsync(prosucumbencia.Id, oCnn));
         dbRec.FProcesso = prosucumbencia.Processo;
         dbRec.FInstancia = prosucumbencia.Instancia;
-        dbRec.FData = prosucumbencia.Data;
+        if (prosucumbencia.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(prosucumbencia.Data));
+        }
+
         dbRec.FNome = prosucumbencia.Nome;
         dbRec.FTipoOrigemSucumbencia = prosucumbencia.TipoOrigemSucumbencia;
         dbRec.FValor = prosucumbencia.Valor;
         dbRec.FPercentual = prosucumbencia.Percentual;
-        dbRec.FGUID = prosucumbencia.GUID;
+        dbRec.FGuid = prosucumbencia.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

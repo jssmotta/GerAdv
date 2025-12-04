@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import SetorInc from '../Crud/Inc/Setor';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface SetorIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const SetorIncContainer: React.FC<SetorIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <SetorInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <SetorInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default SetorIncContainer;

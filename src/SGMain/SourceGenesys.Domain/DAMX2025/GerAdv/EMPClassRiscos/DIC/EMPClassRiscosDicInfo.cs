@@ -11,8 +11,8 @@ public static partial class DBEMPClassRiscosDicInfo
     public const string CampoNome = "ecrNome";
     public const string TablePrefix = "ecr";
     public const string Nome = "ecrNome"; // LOCALIZACAO 170523
-    public const string GUID = "ecrGUID"; // LOCALIZACAO 170523
     public const string Bold = "ecrBold"; // LOCALIZACAO 170523
+    public const string Guid = "ecrGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ecrQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ecrDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ecrQuemAtu"; // LOCALIZACAO 170523
@@ -33,40 +33,14 @@ public static partial class DBEMPClassRiscosDicInfo
 
     public const string PTabelaNome = "EMPClassRiscos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem EcrNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "ecr"
-    };
-    public static DBInfoSystem EcrGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ecr"
-    };
-    public static DBInfoSystem EcrBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "ecr"
-    };
-    public static DBInfoSystem EcrQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ecr"
-    }; // DBI 11 
-    public static DBInfoSystem EcrDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ecr"
-    };
-    public static DBInfoSystem EcrQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ecr"
-    }; // DBI 11 
-    public static DBInfoSystem EcrDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ecr"
-    };
-    public static DBInfoSystem EcrVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "ecr"
-    };
+    public static DBInfoSystem EcrNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "ecr");
+    public static DBInfoSystem EcrBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "ecr", isRequired: true);
+    public static DBInfoSystem EcrGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ecr");
+    public static DBInfoSystem EcrQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ecr"); // DBI 11 
+    public static DBInfoSystem EcrDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ecr");
+    public static DBInfoSystem EcrQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ecr"); // DBI 11 
+    public static DBInfoSystem EcrDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ecr");
+    public static DBInfoSystem EcrVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ecr", isRequired: true);
 
 #endregion
     [Serializable]

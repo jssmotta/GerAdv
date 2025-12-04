@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IEnquadramentoEmpresaWriter
 {
     Task<FEnquadramentoEmpresa> WriteAsync(Models.EnquadramentoEmpresa enquadramentoempresa, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EnquadramentoEmpresaWriter(IFEnquadramentoEmpresaFactory enquadramentoempresaFactory) : IEnquadramentoEmpresaWriter
 {
     private readonly IFEnquadramentoEmpresaFactory _enquadramentoempresaFactory = enquadramentoempresaFactory ?? throw new ArgumentNullException(nameof(enquadramentoempresaFactory));
-    public virtual async Task Delete(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(EnquadramentoEmpresaResponse enquadramentoempresa, int operadorId, MsiSqlConnection? oCnn)
     {
         await _enquadramentoempresaFactory.DeleteAsync(operadorId, enquadramentoempresa.Id, oCnn);
     }
@@ -24,7 +24,7 @@ public class EnquadramentoEmpresaWriter(IFEnquadramentoEmpresaFactory enquadrame
     {
         using var dbRec = await (enquadramentoempresa.Id.IsEmptyIDNumber() ? _enquadramentoempresaFactory.CreateAsync() : _enquadramentoempresaFactory.CreateFromIdAsync(enquadramentoempresa.Id, oCnn));
         dbRec.FNome = enquadramentoempresa.Nome;
-        dbRec.FGUID = enquadramentoempresa.GUID;
+        dbRec.FGuid = enquadramentoempresa.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

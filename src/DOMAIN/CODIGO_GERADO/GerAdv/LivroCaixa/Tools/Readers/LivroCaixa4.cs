@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : ILivroCaixaReader
+public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory, IConnectionService connection) : ILivroCaixaReader
 {
     private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("livCodigo, livData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<LivroCaixaResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBLivroCaixa.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<LivroCaixaResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("livCodigo, livData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<LivroCaixaResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBLivroCaixa.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<LivroCaixaResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<LivroCaixaResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
         return result;
     }
 
-    public async Task<LivroCaixaResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<LivroCaixaResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _livrocaixaFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.LivroCaixa?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.LivroCaixa?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _livrocaixaFactory.CreateFromIdAsync(id, oCnn);
         var livrocaixa = new Models.LivroCaixa
@@ -60,7 +66,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -68,6 +73,12 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData7))
+        {
+            livrocaixa.Data = XData7.ToString("dd/MM/yyyy");
+            livrocaixa.Data_date = XData7;
+        }
+
         return livrocaixa;
     }
 
@@ -98,7 +109,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -106,6 +116,12 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData7))
+        {
+            livrocaixa.Data = XData7.ToString("dd/MM/yyyy");
+            livrocaixa.Data_date = XData7;
+        }
+
         return livrocaixa;
     }
 
@@ -125,7 +141,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -133,6 +148,12 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData7))
+        {
+            livrocaixa.Data = XData7.ToString("dd/MM/yyyy");
+            livrocaixa.Data_date = XData7;
+        }
+
         return livrocaixa;
     }
 
@@ -152,7 +173,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -160,6 +180,12 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData7))
+        {
+            livrocaixa.Data = XData7.ToString("dd/MM/yyyy");
+            livrocaixa.Data_date = XData7;
+        }
+
         return livrocaixa;
     }
 
@@ -179,7 +205,6 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             IDHon = dbRec.FIDHon,
             IDHonParc = dbRec.FIDHonParc,
             IDHonSuc = dbRec.FIDHonSuc,
-            Data = dbRec.FData ?? string.Empty,
             Processo = dbRec.FProcesso,
             Valor = dbRec.FValor,
             Tipo = dbRec.FTipo,
@@ -187,6 +212,12 @@ public partial class LivroCaixaReader(IFLivroCaixaFactory livrocaixaFactory) : I
             Previsto = dbRec.FPrevisto,
             Grupo = dbRec.FGrupo,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData7))
+        {
+            livrocaixa.Data = XData7.ToString("dd/MM/yyyy");
+            livrocaixa.Data_date = XData7;
+        }
+
         return livrocaixa;
     }
 }

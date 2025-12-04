@@ -23,12 +23,6 @@ public partial class FHonorariosDadosContratoFactory : IFHonorariosDadosContrato
         return FHonorariosDadosContrato.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FHonorariosDadosContrato> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FHonorariosDadosContrato().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FHonorariosDadosContrato> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FHonorariosDadosContratoFactory : IFHonorariosDadosContrato
         return FHonorariosDadosContrato.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FHonorariosDadosContrato> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FHonorariosDadosContrato().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FHonorariosDadosContratoFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

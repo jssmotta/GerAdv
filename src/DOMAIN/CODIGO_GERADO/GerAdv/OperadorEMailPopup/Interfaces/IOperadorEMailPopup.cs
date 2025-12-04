@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IOperadorEMailPopupService
 {
+    Task<Filters.FilterOperadorEMailPopup> FilterVoice([FromBody] Filters.FilterOperadorEMailPopup filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<OperadorEMailPopupResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOperadorEMailPopup filter, [FromRoute, Required] string uri = "");
     Task<OperadorEMailPopupResponse?> AddAndUpdate(Models.OperadorEMailPopup? regOperadorEMailPopup, [FromRoute, Required] string uri = "");
     Task<OperadorEMailPopupResponse?> Validation(Models.OperadorEMailPopup? regOperadorEMailPopup, [FromRoute, Required] string uri = "");
     Task<OperadorEMailPopupResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<OperadorEMailPopupResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<OperadorEMailPopupResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperadorEMailPopup? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

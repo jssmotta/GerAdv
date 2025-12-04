@@ -54,8 +54,96 @@ public partial class DBOponentesRepLegal
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBOponentesRepLegalDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBOponentesRepLegalDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBOponentesRepLegalDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBOponentesRepLegalDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBOponentesRepLegalDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBOponentesRepLegalDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBOponentesRepLegalDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBOponentesRepLegalDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBOponentesRepLegalDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBOponentesRepLegalDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBOponentesRepLegalDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBOponentesRepLegalDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBOponentesRepLegalDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +152,7 @@ public partial class DBOponentesRepLegal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +179,7 @@ public partial class DBOponentesRepLegal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.Oponente)))
-                m_FOponente = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.Oponente));
+                FOponente = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.Oponente));
         }
         catch
         {
@@ -100,7 +188,7 @@ public partial class DBOponentesRepLegal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +197,7 @@ public partial class DBOponentesRepLegal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBOponentesRepLegalDicInfo.QuemCad));
         }
         catch
         {
@@ -118,7 +206,7 @@ public partial class DBOponentesRepLegal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBOponentesRepLegalDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBOponentesRepLegalDicInfo.Sexo));
         }
         catch
         {
@@ -127,102 +215,14 @@ public partial class DBOponentesRepLegal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOponentesRepLegalDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBOponentesRepLegalDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBOponentesRepLegalDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBOponentesRepLegalDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBOponentesRepLegalDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBOponentesRepLegalDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBOponentesRepLegalDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBOponentesRepLegalDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBOponentesRepLegalDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBOponentesRepLegalDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBOponentesRepLegalDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBOponentesRepLegalDicInfo.RG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBOponentesRepLegalDicInfo.Site)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBOponentesRepLegalDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -246,7 +246,7 @@ public partial class DBOponentesRepLegal
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

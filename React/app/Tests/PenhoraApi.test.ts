@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { PenhoraApiError } from '../GerAdv_TS/Penhora/Apis/ApiPenhora';
+import { PenhoraApiError } from '@/app/GerAdv_TS/Penhora/Apis/ApiPenhora';
 import { PenhoraApi } from '@/app/GerAdv_TS/Penhora/Apis/ApiPenhora';
-import { FilterPenhora } from '../GerAdv_TS/Penhora/Filters/Penhora';
-import { IPenhora } from '../GerAdv_TS/Penhora/Interfaces/interface.Penhora';
-import { PenhoraTestEmpty } from '../GerAdv_TS/Models/Penhora';
+import { FilterPenhora } from '@/app/GerAdv_TS/Penhora/Filters/Penhora';
+import { IPenhora } from '@/app/GerAdv_TS/Penhora/Interfaces/interface.Penhora';
+import { PenhoraTestEmpty } from '@/app/GerAdv_TS/Models/Penhora';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('PenhoraApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterPenhora = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,13 @@ describe('PenhoraApi', () => {
   describe('addAndUpdate', () => {
     const mockPenhora: IPenhora = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+nome: 'João',
+descricao: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+datapenhora: '04:04',
+penhorastatus: 0,
+master: 0
     };
 
     it('should add new penhora successfully', async () => {
@@ -487,7 +480,7 @@ describe('PenhoraApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterPenhora = { funcionario: 1 };
+      const mockFilter: FilterPenhora = { : 1 };
       
       const result = penhoraApi.useFilter(mockFilter);
       

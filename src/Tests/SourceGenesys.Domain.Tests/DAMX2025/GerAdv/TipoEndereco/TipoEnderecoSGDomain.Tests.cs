@@ -35,9 +35,22 @@ public class DBTipoEnderecoTests : IDisposable
         dt.Columns.Add("tipQuemAtu", typeof(int));
         dt.Columns.Add("tipDtAtu", typeof(DateTime));
         dt.Columns.Add("tipVisto", typeof(bool));
-        dt.Columns.Add("tipGUID", typeof(string));
         dt.Columns.Add("tipDescricao", typeof(string));
+        dt.Columns.Add("tipGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["tipCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTipoEndereco(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -58,7 +71,7 @@ public class DBTipoEnderecoTests : IDisposable
     {
         var instance = new DBTipoEndereco();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("TipoEndereco", instance.ITabelaName());
+        Assert.Equal("TipoEndereco", instance.ITableName());
         Assert.Equal("tip", instance.Prefixo);
     }
 
@@ -76,29 +89,16 @@ public class DBTipoEnderecoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["tipCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTipoEndereco(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("TipoEndereco", cadastro.ITabelaName());
-        Assert.Equal("tipCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("tipDescricao", cadastro.ICampoNome());
-        Assert.Equal("tip", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("TipoEndereco", cadastro.ITableName());
+        Assert.Equal("tipCodigo", cadastro.IFieldId());
+        Assert.Equal("tipDescricao", cadastro.IFieldNameDescription());
+        Assert.Equal("tip", cadastro.IPrefix());
     }
 
 #endregion
@@ -158,30 +158,12 @@ public class DBTipoEnderecoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
@@ -198,6 +180,24 @@ public class DBTipoEnderecoTests : IDisposable
         var longString = new string ('A', 40 + 10);
         _instance.FDescricao = longString;
         Assert.True(_instance.FDescricao.Length <= 40);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

@@ -74,8 +74,8 @@ public class EnquadramentoEmpresaWriterTests
         var result = await _enquadramentoempresaWriter.WriteAsync(enquadramentoempresa, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFEnquadramentoEmpresa.Object);
+        _mockFEnquadramentoEmpresa.VerifySet(x => x.FGuid = enquadramentoempresa.Guid, Times.Once);
         _mockFEnquadramentoEmpresa.VerifySet(x => x.FNome = enquadramentoempresa.Nome, Times.Once);
-        _mockFEnquadramentoEmpresa.VerifySet(x => x.FGUID = enquadramentoempresa.GUID, Times.Once);
         _mockFEnquadramentoEmpresa.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class EnquadramentoEmpresaWriterTests
         var operadorId = 456;
         _mockEnquadramentoEmpresaFactory.Setup(x => x.DeleteAsync(operadorId, enquadramentoempresaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _enquadramentoempresaWriter.Delete(enquadramentoempresaResponse, operadorId, _mockConnection.Object);
+        await _enquadramentoempresaWriter.DeleteAsync(enquadramentoempresaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockEnquadramentoEmpresaFactory.Verify(x => x.DeleteAsync(operadorId, enquadramentoempresaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class EnquadramentoEmpresaWriterTests
         var operadorId = 111;
         _mockEnquadramentoEmpresaFactory.Setup(x => x.DeleteAsync(operadorId, enquadramentoempresaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _enquadramentoempresaWriter.Delete(enquadramentoempresaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _enquadramentoempresaWriter.DeleteAsync(enquadramentoempresaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class EnquadramentoEmpresaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockEnquadramentoEmpresaFactory.Setup(x => x.DeleteAsync(operadorId, enquadramentoempresaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _enquadramentoempresaWriter.Delete(enquadramentoempresaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _enquadramentoempresaWriter.DeleteAsync(enquadramentoempresaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class EnquadramentoEmpresaWriterTests
         return new Models.EnquadramentoEmpresa
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

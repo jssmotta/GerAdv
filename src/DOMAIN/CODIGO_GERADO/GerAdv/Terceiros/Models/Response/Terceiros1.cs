@@ -80,12 +80,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public string EMail { get; set; } = "";
 
         /// <summary>
-        /// GUID - terGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Class - terClass - tamanho máximo: 1 
         /// </summary>
         [JsonPropertyName("class")]
@@ -102,6 +96,18 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("sexo")]
         public bool Sexo { get; set; }
+
+        /// <summary>
+        /// Bold - terBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - terGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -180,12 +186,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string EMail { get; set; } = "";
 
         /// <summary>
-        /// GUID - terGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Class - terClass - tamanho máximo: 1 
         /// </summary>
         [JsonPropertyName("class")]
@@ -202,6 +202,18 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("sexo")]
         public bool Sexo { get; set; }
+
+        /// <summary>
+        /// Bold - terBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - terGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("descricaoposicaooutraspartes")]
         public string DescricaoPosicaoOutrasPartes { get; set; } = string.Empty;

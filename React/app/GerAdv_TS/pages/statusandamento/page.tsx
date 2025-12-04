@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { StatusAndamentoGridAdapter } from '@/app/GerAdv_TS/StatusAndamento/Adapter/StatusAndamentoGridAdapter';
 import StatusAndamentoGridContainer from '@/app/GerAdv_TS/StatusAndamento/Components/StatusAndamentoGridContainer';
+
 const StatusAndamentoPage: React.FC = () => {
-  const StatusAndamentoGrid = new StatusAndamentoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Status Andamento' />
-    <StatusAndamentoGridContainer grid={StatusAndamentoGrid} />
-  </PageLayout>
-);
+    const StatusAndamentoGrid = new StatusAndamentoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <StatusAndamentoGridContainer grid={StatusAndamentoGrid} />
+        </PageLayout>
+    );
 };
+
 export default StatusAndamentoPage;

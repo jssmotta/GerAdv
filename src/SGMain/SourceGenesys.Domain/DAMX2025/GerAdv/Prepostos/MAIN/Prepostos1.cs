@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBPrepostos : VAuditor, ICadastros
+public partial class DBPrepostos : VAuditor, ICrud
 {
 #region TableDefinition_Prepostos
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBPrepostos : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBPrepostos : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_Prepostos
@@ -62,7 +62,7 @@ public partial class DBPrepostos : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFGUID || pFldFNome || pFldFFuncao || pFldFSetor || pFldFDtNasc || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCPF || pFldFRG || pFldFPeriodo_Ini || pFldFPeriodo_Fim || pFldFRegistro || pFldFCTPSNumero || pFldFCTPSSerie || pFldFCTPSDtEmissao || pFldFPIS || pFldFSalario || pFldFLiberaAgenda || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFone || pFldFFax || pFldFEMail || pFldFPai || pFldFMae || pFldFClass || pFldFEtiqueta || pFldFAni || pFldFBold))
+            if (!(pFldFNome || pFldFFuncao || pFldFSetor || pFldFDtNasc || pFldFQualificacao || pFldFSexo || pFldFIdade || pFldFCPF || pFldFRG || pFldFPeriodo_Ini || pFldFPeriodo_Fim || pFldFRegistro || pFldFCTPSNumero || pFldFCTPSSerie || pFldFCTPSDtEmissao || pFldFPIS || pFldFSalario || pFldFLiberaAgenda || pFldFObservacao || pFldFEndereco || pFldFBairro || pFldFCidade || pFldFCEP || pFldFFone || pFldFFax || pFldFEMail || pFldFPai || pFldFMae || pFldFClass || pFldFEtiqueta || pFldFAni || pFldFBold || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,78 +92,77 @@ public partial class DBPrepostos : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
-        if (pFldFGUID)
-            clsW.Fields(DBPrepostosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFNome)
-            clsW.Fields(DBPrepostosDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFFuncao)
-            clsW.Fields(DBPrepostosDicInfo.Funcao, m_FFuncao, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPrepostosDicInfo.Funcao, FFuncao, EGenericTypeFields.FNumberNull);
         if (pFldFSetor)
-            clsW.Fields(DBPrepostosDicInfo.Setor, m_FSetor, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPrepostosDicInfo.Setor, FSetor, EGenericTypeFields.FNumberNull);
         if (pFldFDtNasc)
-            clsW.Fields(DBPrepostosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
+            clsW.Fields(DBPrepostosDicInfo.DtNasc, FDtNasc, EGenericTypeFields.FDate);
         if (pFldFQualificacao)
-            clsW.Fields(DBPrepostosDicInfo.Qualificacao, m_FQualificacao, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Qualificacao, FQualificacao, EGenericTypeFields.FString);
         if (pFldFSexo || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPrepostosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
+            clsW.Fields(DBPrepostosDicInfo.Sexo, FSexo, EGenericTypeFields.FBoolean);
         if (pFldFIdade)
-            clsW.Fields(DBPrepostosDicInfo.Idade, m_FIdade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPrepostosDicInfo.Idade, FIdade, EGenericTypeFields.FNumberNull);
         if (pFldFCPF)
-            clsW.Fields(DBPrepostosDicInfo.CPF, m_FCPF, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.CPF, FCPF, EGenericTypeFields.FString);
         if (pFldFRG)
-            clsW.Fields(DBPrepostosDicInfo.RG, m_FRG, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.RG, FRG, EGenericTypeFields.FString);
         if (pFldFPeriodo_Ini)
-            clsW.Fields(DBPrepostosDicInfo.Periodo_Ini, m_FPeriodo_Ini, ETiposCampos.FDate);
+            clsW.Fields(DBPrepostosDicInfo.Periodo_Ini, FPeriodo_Ini, EGenericTypeFields.FDate);
         if (pFldFPeriodo_Fim)
-            clsW.Fields(DBPrepostosDicInfo.Periodo_Fim, m_FPeriodo_Fim, ETiposCampos.FDate);
+            clsW.Fields(DBPrepostosDicInfo.Periodo_Fim, FPeriodo_Fim, EGenericTypeFields.FDate);
         if (pFldFRegistro)
-            clsW.Fields(DBPrepostosDicInfo.Registro, m_FRegistro, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Registro, FRegistro, EGenericTypeFields.FString);
         if (pFldFCTPSNumero)
-            clsW.Fields(DBPrepostosDicInfo.CTPSNumero, m_FCTPSNumero, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.CTPSNumero, FCTPSNumero, EGenericTypeFields.FString);
         if (pFldFCTPSSerie)
-            clsW.Fields(DBPrepostosDicInfo.CTPSSerie, m_FCTPSSerie, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.CTPSSerie, FCTPSSerie, EGenericTypeFields.FString);
         if (pFldFCTPSDtEmissao)
-            clsW.Fields(DBPrepostosDicInfo.CTPSDtEmissao, m_FCTPSDtEmissao, ETiposCampos.FDate);
+            clsW.Fields(DBPrepostosDicInfo.CTPSDtEmissao, FCTPSDtEmissao, EGenericTypeFields.FDate);
         if (pFldFPIS)
-            clsW.Fields(DBPrepostosDicInfo.PIS, m_FPIS, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.PIS, FPIS, EGenericTypeFields.FString);
         if (pFldFSalario)
-            clsW.Fields(DBPrepostosDicInfo.Salario, m_FSalario, ETiposCampos.FDecimal);
+            clsW.Fields(DBPrepostosDicInfo.Salario, FSalario, EGenericTypeFields.FDecimal);
         if (pFldFLiberaAgenda || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPrepostosDicInfo.LiberaAgenda, m_FLiberaAgenda, ETiposCampos.FBoolean);
+            clsW.Fields(DBPrepostosDicInfo.LiberaAgenda, FLiberaAgenda, EGenericTypeFields.FBoolean);
         if (pFldFObservacao)
-            clsW.Fields(DBPrepostosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBPrepostosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            clsW.Fields(DBPrepostosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFCidade)
-            clsW.Fields(DBPrepostosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPrepostosDicInfo.Cidade, FCidade, EGenericTypeFields.FNumberNull);
         if (pFldFCEP)
-            clsW.Fields(DBPrepostosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFFone)
-            clsW.Fields(DBPrepostosDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            clsW.Fields(DBPrepostosDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFEMail)
-            clsW.Fields(DBPrepostosDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFPai)
-            clsW.Fields(DBPrepostosDicInfo.Pai, m_FPai, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Pai, FPai, EGenericTypeFields.FString);
         if (pFldFMae)
-            clsW.Fields(DBPrepostosDicInfo.Mae, m_FMae, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Mae, FMae, EGenericTypeFields.FString);
         if (pFldFClass)
-            clsW.Fields(DBPrepostosDicInfo.Class, m_FClass, ETiposCampos.FString);
+            clsW.Fields(DBPrepostosDicInfo.Class, FClass, EGenericTypeFields.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPrepostosDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
+            clsW.Fields(DBPrepostosDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
         if (pFldFAni || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPrepostosDicInfo.Ani, m_FAni, ETiposCampos.FBoolean);
+            clsW.Fields(DBPrepostosDicInfo.Ani, FAni, EGenericTypeFields.FBoolean);
         if (pFldFBold || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPrepostosDicInfo.Bold, m_FBold, ETiposCampos.FBoolean);
+            clsW.Fields(DBPrepostosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            clsW.Fields(DBPrepostosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Prepostos)
         if (clsW.HasUpdates)
         {
@@ -178,15 +177,15 @@ public partial class DBPrepostos : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBPrepostosDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPrepostosDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBPrepostosDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBPrepostosDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBPrepostosDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPrepostosDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBPrepostosDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBPrepostosDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPrepostosDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBPrepostosDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -210,7 +209,7 @@ public partial class DBPrepostos : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

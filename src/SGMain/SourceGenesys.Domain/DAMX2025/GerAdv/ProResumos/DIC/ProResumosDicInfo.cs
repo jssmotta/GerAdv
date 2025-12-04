@@ -13,9 +13,9 @@ public static partial class DBProResumosDicInfo
     public const string Processo = "prsProcesso"; // LOCALIZACAO 170523
     public const string Data = "prsData"; // LOCALIZACAO 170523
     public const string Resumo = "prsResumo"; // LOCALIZACAO 170523
-    public const string GUID = "prsGUID"; // LOCALIZACAO 170523
     public const string TipoResumo = "prsTipoResumo"; // LOCALIZACAO 170523
     public const string Bold = "prsBold"; // LOCALIZACAO 170523
+    public const string Guid = "prsGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "prsQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "prsDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "prsQuemAtu"; // LOCALIZACAO 170523
@@ -39,52 +39,17 @@ public static partial class DBProResumosDicInfo
 
     public const string PTabelaNome = "ProResumos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PrsProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsResumo => new(0, PTabelaNome, CampoCodigo, Resumo, DevourerOne.PMaxSizeCampoMemo, "Resumo", "Resumo", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsTipoResumo => new(0, PTabelaNome, CampoCodigo, TipoResumo, "TipoResumo", "TipoResumo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "prs"
-    }; // DBI 11 
-    public static DBInfoSystem PrsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "prs"
-    }; // DBI 11 
-    public static DBInfoSystem PrsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "prs"
-    };
-    public static DBInfoSystem PrsVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "prs"
-    };
+    public static DBInfoSystem PrsProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "prs");
+    public static DBInfoSystem PrsData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "prs");
+    public static DBInfoSystem PrsResumo => new(0, PTabelaNome, CampoCodigo, Resumo, DevourerOne.PMaxSizeCampoMemo, Resumo, Resumo, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "prs");
+    public static DBInfoSystem PrsTipoResumo => new(0, PTabelaNome, CampoCodigo, TipoResumo, TipoResumo, TipoResumo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "prs");
+    public static DBInfoSystem PrsBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "prs", isRequired: true);
+    public static DBInfoSystem PrsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "prs");
+    public static DBInfoSystem PrsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "prs"); // DBI 11 
+    public static DBInfoSystem PrsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "prs");
+    public static DBInfoSystem PrsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "prs"); // DBI 11 
+    public static DBInfoSystem PrsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "prs");
+    public static DBInfoSystem PrsVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "prs", isRequired: true);
 
 #endregion
     [Serializable]

@@ -21,7 +21,8 @@ public partial class BensClassificacaoWhere(IFBensClassificacaoFactory bensclass
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return bensclassificacao;
     }

@@ -26,10 +26,10 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Ordem { get; set; }
 
         /// <summary>
-        /// GUID - gttGUID - tamanho máximo: 50 
+        /// GUID - gttGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -54,9 +54,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Ordem { get; set; }
 
         /// <summary>
-        /// GUID - gttGUID - tamanho máximo: 50 
+        /// GUID - gttGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

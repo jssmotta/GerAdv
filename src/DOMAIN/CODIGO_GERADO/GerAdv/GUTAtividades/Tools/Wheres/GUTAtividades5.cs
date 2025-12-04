@@ -25,14 +25,14 @@ public partial class GUTAtividadesWhere(IFGUTAtividadesFactory gutatividadesFact
             GUTGrupo = dbRec.FGUTGrupo,
             GUTPeriodicidade = dbRec.FGUTPeriodicidade,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Concluido = dbRec.FConcluido,
             DiasParaIniciar = dbRec.FDiasParaIniciar,
             MinutosParaRealizar = dbRec.FMinutosParaRealizar,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataConcluido, out DateTime XDataConcluido))
+        if (DateTime.TryParse(dbRec.FDataConcluido.ToString(), out DateTime XDataConcluido))
         {
-            gutatividades.DataConcluido = dbRec.FDataConcluido;
+            gutatividades.DataConcluido = XDataConcluido.ToString("dd/MM/yyyy");
             gutatividades.DataConcluido_date = XDataConcluido;
         }
 

@@ -119,7 +119,7 @@ public class GUTMatrizWriterTests
         var operadorId = 456;
         _mockGUTMatrizFactory.Setup(x => x.DeleteAsync(operadorId, gutmatrizResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _gutmatrizWriter.Delete(gutmatrizResponse, operadorId, _mockConnection.Object);
+        await _gutmatrizWriter.DeleteAsync(gutmatrizResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGUTMatrizFactory.Verify(x => x.DeleteAsync(operadorId, gutmatrizResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class GUTMatrizWriterTests
         var operadorId = 111;
         _mockGUTMatrizFactory.Setup(x => x.DeleteAsync(operadorId, gutmatrizResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _gutmatrizWriter.Delete(gutmatrizResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _gutmatrizWriter.DeleteAsync(gutmatrizResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class GUTMatrizWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGUTMatrizFactory.Setup(x => x.DeleteAsync(operadorId, gutmatrizResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutmatrizWriter.Delete(gutmatrizResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutmatrizWriter.DeleteAsync(gutmatrizResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

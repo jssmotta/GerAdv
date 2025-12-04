@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IAdvogadosWriter
 {
     Task<FAdvogados> WriteAsync(Models.Advogados advogados, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(AdvogadosResponse advogados, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWriter
 {
     private readonly IFAdvogadosFactory _advogadosFactory = advogadosFactory ?? throw new ArgumentNullException(nameof(advogadosFactory));
-    public virtual async Task Delete(AdvogadosResponse advogados, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(AdvogadosResponse advogados, int operadorId, MsiSqlConnection? oCnn)
     {
         await _advogadosFactory.DeleteAsync(operadorId, advogados.Id, oCnn);
     }
@@ -31,7 +31,6 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         dbRec.FCasa = advogados.Casa;
         dbRec.FNomeMae = advogados.NomeMae;
         dbRec.FEscritorio = advogados.Escritorio;
-        dbRec.FGUID = advogados.GUID;
         dbRec.FEstagiario = advogados.Estagiario;
         dbRec.FOAB = advogados.OAB;
         dbRec.FNomeCompleto = advogados.NomeCompleto;
@@ -45,12 +44,21 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         dbRec.FFone = advogados.Fone;
         dbRec.FFax = advogados.Fax;
         dbRec.FComissao = advogados.Comissao;
-        if (advogados.DtInicio != null)
-            dbRec.FDtInicio = advogados.DtInicio.ToString();
-        if (advogados.DtFim != null)
-            dbRec.FDtFim = advogados.DtFim.ToString();
-        if (advogados.DtNasc != null)
-            dbRec.FDtNasc = advogados.DtNasc.ToString();
+        if (advogados.DtInicio.NotIsEmpty())
+        {
+            dbRec.FDtInicio = DateOnly.FromDateTime(Convert.ToDateTime(advogados.DtInicio));
+        }
+
+        if (advogados.DtFim.NotIsEmpty())
+        {
+            dbRec.FDtFim = DateOnly.FromDateTime(Convert.ToDateTime(advogados.DtFim));
+        }
+
+        if (advogados.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(advogados.DtNasc));
+        }
+
         dbRec.FSalario = advogados.Salario;
         dbRec.FSecretaria = advogados.Secretaria;
         dbRec.FTextoProcuracao = advogados.TextoProcuracao;
@@ -62,6 +70,10 @@ public class AdvogadosWriter(IFAdvogadosFactory advogadosFactory) : IAdvogadosWr
         dbRec.FParcTop = advogados.ParcTop;
         dbRec.FClass = advogados.Class;
         dbRec.FTop = advogados.Top;
+        dbRec.FEtiqueta = advogados.Etiqueta;
+        dbRec.FAni = advogados.Ani;
+        dbRec.FBold = advogados.Bold;
+        dbRec.FGuid = advogados.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

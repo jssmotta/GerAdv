@@ -54,8 +54,24 @@ public partial class DBProResumos
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProResumosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FResumo = getValue(DBProResumosDicInfo.Resumo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBProResumosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBProResumosDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBProResumos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProResumosDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProResumosDicInfo.Data)));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBProResumos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProResumosDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProResumosDicInfo.Processo));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBProResumos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProResumosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProResumosDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBProResumos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProResumosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProResumosDicInfo.QuemCad));
         }
         catch
         {
@@ -118,7 +134,7 @@ public partial class DBProResumos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.TipoResumo)))
-                m_FTipoResumo = Convert.ToInt32(getValue(DBProResumosDicInfo.TipoResumo));
+                FTipoResumo = Convert.ToInt32(getValue(DBProResumosDicInfo.TipoResumo));
         }
         catch
         {
@@ -127,30 +143,14 @@ public partial class DBProResumos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProResumosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProResumosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProResumosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FResumo = getValue(DBProResumosDicInfo.Resumo)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProResumosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -174,7 +174,7 @@ public partial class DBProResumos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

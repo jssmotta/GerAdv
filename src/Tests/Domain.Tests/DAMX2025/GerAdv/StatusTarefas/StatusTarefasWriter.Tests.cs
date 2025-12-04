@@ -74,8 +74,8 @@ public class StatusTarefasWriterTests
         var result = await _statustarefasWriter.WriteAsync(statustarefas, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFStatusTarefas.Object);
+        _mockFStatusTarefas.VerifySet(x => x.FGuid = statustarefas.Guid, Times.Once);
         _mockFStatusTarefas.VerifySet(x => x.FNome = statustarefas.Nome, Times.Once);
-        _mockFStatusTarefas.VerifySet(x => x.FGUID = statustarefas.GUID, Times.Once);
         _mockFStatusTarefas.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class StatusTarefasWriterTests
         var operadorId = 456;
         _mockStatusTarefasFactory.Setup(x => x.DeleteAsync(operadorId, statustarefasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _statustarefasWriter.Delete(statustarefasResponse, operadorId, _mockConnection.Object);
+        await _statustarefasWriter.DeleteAsync(statustarefasResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockStatusTarefasFactory.Verify(x => x.DeleteAsync(operadorId, statustarefasResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class StatusTarefasWriterTests
         var operadorId = 111;
         _mockStatusTarefasFactory.Setup(x => x.DeleteAsync(operadorId, statustarefasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _statustarefasWriter.Delete(statustarefasResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _statustarefasWriter.DeleteAsync(statustarefasResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class StatusTarefasWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockStatusTarefasFactory.Setup(x => x.DeleteAsync(operadorId, statustarefasResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _statustarefasWriter.Delete(statustarefasResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _statustarefasWriter.DeleteAsync(statustarefasResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class StatusTarefasWriterTests
         return new Models.StatusTarefas
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

@@ -12,8 +12,8 @@ public static partial class DBTiposAcaoDicInfo
     public const string TablePrefix = "tac";
     public const string Nome = "tacNome"; // LOCALIZACAO 170523
     public const string Inativo = "tacInativo"; // LOCALIZACAO 170523
-    public const string GUID = "tacGUID"; // LOCALIZACAO 170523
     public const string Bold = "tacBold"; // LOCALIZACAO 170523
+    public const string Guid = "tacGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "tacQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "tacDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "tacQuemAtu"; // LOCALIZACAO 170523
@@ -35,45 +35,15 @@ public static partial class DBTiposAcaoDicInfo
 
     public const string PTabelaNome = "TiposAcao";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TacNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "tac"
-    };
-    public static DBInfoSystem TacInativo => new(0, PTabelaNome, CampoCodigo, Inativo, "Inativo", "Inativo", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "tac"
-    };
-    public static DBInfoSystem TacGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "tac"
-    };
-    public static DBInfoSystem TacBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "tac"
-    };
-    public static DBInfoSystem TacQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tac"
-    }; // DBI 11 
-    public static DBInfoSystem TacDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "tac"
-    };
-    public static DBInfoSystem TacQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tac"
-    }; // DBI 11 
-    public static DBInfoSystem TacDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "tac"
-    };
-    public static DBInfoSystem TacVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "tac"
-    };
+    public static DBInfoSystem TacNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tac");
+    public static DBInfoSystem TacInativo => new(0, PTabelaNome, CampoCodigo, Inativo, Inativo, Inativo, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "tac", isRequired: true);
+    public static DBInfoSystem TacBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tac", isRequired: true);
+    public static DBInfoSystem TacGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tac");
+    public static DBInfoSystem TacQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tac"); // DBI 11 
+    public static DBInfoSystem TacDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tac");
+    public static DBInfoSystem TacQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tac"); // DBI 11 
+    public static DBInfoSystem TacDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tac");
+    public static DBInfoSystem TacVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tac", isRequired: true);
 
 #endregion
     [Serializable]

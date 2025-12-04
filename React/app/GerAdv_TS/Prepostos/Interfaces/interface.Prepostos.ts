@@ -36,6 +36,9 @@ export interface IPrepostos {
 	pai: string,
 	mae: string,
 	class: string,
+	etiqueta: boolean,
+	ani: boolean,
+	bold: boolean,
 }
 
 export interface IPrepostosFormProps {

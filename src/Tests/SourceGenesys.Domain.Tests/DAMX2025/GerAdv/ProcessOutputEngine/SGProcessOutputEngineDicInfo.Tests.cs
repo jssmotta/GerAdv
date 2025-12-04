@@ -27,9 +27,9 @@ public class DBProcessOutputEngineODicInfoTests
     }
 
     [Fact]
-    public void IPkIndicesFields_ShouldReturn_Empty()
+    public void IPkIndexFields_ShouldReturn_Empty()
     {
-        var result = _sut.IPkIndicesFields();
+        var result = _sut.IPkIndexFields();
         result.Should().HaveCount(4);
     }
 
@@ -41,9 +41,9 @@ public class DBProcessOutputEngineODicInfoTests
     }
 
     [Fact]
-    public void ICampoCodigo_ShouldReturn_StaticValue()
+    public void IFieldId_ShouldReturn_StaticValue()
     {
-        var result = _sut.ICampoCodigo();
+        var result = _sut.IFieldId();
         result.Should().Be(DBProcessOutputEngineODicInfo.TCampoCodigo);
     }
 
@@ -55,9 +55,9 @@ public class DBProcessOutputEngineODicInfoTests
     }
 
     [Fact]
-    public void IPrefixo_ShouldReturn_StaticValue()
+    public void IPrefix_ShouldReturn_StaticValue()
     {
-        var result = _sut.IPrefixo();
+        var result = _sut.IPrefix();
         result.Should().Be(DBProcessOutputEngineODicInfo.TTablePrefix);
     }
 
@@ -65,7 +65,7 @@ public class DBProcessOutputEngineODicInfoTests
     public void IdIsIdentity_ShouldReturn_False()
     {
         var result = _sut.IdIsIdentity();
-        result.Should().BeTrue();
+        result.Should().BeFalse();
     }
 
     [Fact]
@@ -83,16 +83,16 @@ public class DBProcessOutputEngineODicInfoTests
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturn_False()
+    public void IsStoredProcedureOrView_ShouldReturn_False()
     {
-        var result = _sut.IIsStoredProcedureOrView();
+        var result = _sut.IsStoredProcedureOrView();
         result.Should().BeFalse();
     }
 
     [Fact]
-    public void ICampoNome_ShouldReturn_StaticValue()
+    public void IFieldNameDescription_ShouldReturn_StaticValue()
     {
-        var result = _sut.ICampoNome();
+        var result = _sut.IFieldNameDescription();
         result.Should().Be(DBProcessOutputEngineODicInfo.TCampoNome);
     }
 

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBOperadores : VAuditor, ICadastros
+public partial class DBOperadores : VAuditor, ICrud
 {
 #region TableDefinition_Operadores
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBOperadores : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBOperadores : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_Operadores
@@ -93,35 +93,35 @@ public partial class DBOperadores : VAuditor, ICadastros
         }
 
         if (pFldFEnviado || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadoresDicInfo.Enviado, m_FEnviado, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadoresDicInfo.Enviado, FEnviado, EGenericTypeFields.FBoolean);
         if (pFldFCasa || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadoresDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadoresDicInfo.Casa, FCasa, EGenericTypeFields.FBoolean);
         if (pFldFCasaID)
-            clsW.Fields(DBOperadoresDicInfo.CasaID, m_FCasaID, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadoresDicInfo.CasaID, FCasaID, EGenericTypeFields.FNumberNull);
         if (pFldFCasaCodigo)
-            clsW.Fields(DBOperadoresDicInfo.CasaCodigo, m_FCasaCodigo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadoresDicInfo.CasaCodigo, FCasaCodigo, EGenericTypeFields.FNumberNull);
         if (pFldFIsNovo || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadoresDicInfo.IsNovo, m_FIsNovo, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadoresDicInfo.IsNovo, FIsNovo, EGenericTypeFields.FBoolean);
         if (pFldFCliente)
-            clsW.Fields(DBOperadoresDicInfo.Cliente, m_FCliente, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadoresDicInfo.Cliente, FCliente, EGenericTypeFields.FNumberNull);
         if (pFldFGrupo)
-            clsW.Fields(DBOperadoresDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadoresDicInfo.Grupo, FGrupo, EGenericTypeFields.FNumberNull);
         if (pFldFNome)
-            clsW.Fields(DBOperadoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBOperadoresDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFEMail)
-            clsW.Fields(DBOperadoresDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            clsW.Fields(DBOperadoresDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFSenha)
-            clsW.Fields(DBOperadoresDicInfo.Senha, m_FSenha, ETiposCampos.FString);
+            clsW.Fields(DBOperadoresDicInfo.Senha, FSenha, EGenericTypeFields.FString);
         if (pFldFAtivado || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadoresDicInfo.Ativado, m_FAtivado, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadoresDicInfo.Ativado, FAtivado, EGenericTypeFields.FBoolean);
         if (pFldFAtualizarSenha || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadoresDicInfo.AtualizarSenha, m_FAtualizarSenha, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadoresDicInfo.AtualizarSenha, FAtualizarSenha, EGenericTypeFields.FBoolean);
         if (pFldFSenha256)
-            clsW.Fields(DBOperadoresDicInfo.Senha256, m_FSenha256, ETiposCampos.FString);
+            clsW.Fields(DBOperadoresDicInfo.Senha256, FSenha256, EGenericTypeFields.FString);
         if (pFldFSuporteSenha256)
-            clsW.Fields(DBOperadoresDicInfo.SuporteSenha256, m_FSuporteSenha256, ETiposCampos.FString);
+            clsW.Fields(DBOperadoresDicInfo.SuporteSenha256, FSuporteSenha256, EGenericTypeFields.FString);
         if (pFldFSuporteMaxAge)
-            clsW.Fields(DBOperadoresDicInfo.SuporteMaxAge, m_FSuporteMaxAge, ETiposCampos.FDate);
+            clsW.Fields(DBOperadoresDicInfo.SuporteMaxAge, FSuporteMaxAge, EGenericTypeFields.FDate);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Operadores)
         if (clsW.HasUpdates)
         {
@@ -136,15 +136,15 @@ public partial class DBOperadores : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBOperadoresDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadoresDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBOperadoresDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBOperadoresDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBOperadoresDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadoresDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBOperadoresDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBOperadoresDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadoresDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadoresDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -168,7 +168,7 @@ public partial class DBOperadores : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

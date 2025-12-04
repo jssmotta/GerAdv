@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IOperadorGruposAgendaWriter
 {
     Task<FOperadorGruposAgenda> WriteAsync(Models.OperadorGruposAgenda operadorgruposagenda, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(OperadorGruposAgendaResponse operadorgruposagenda, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(OperadorGruposAgendaResponse operadorgruposagenda, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OperadorGruposAgendaWriter(IFOperadorGruposAgendaFactory operadorgruposagendaFactory) : IOperadorGruposAgendaWriter
 {
     private readonly IFOperadorGruposAgendaFactory _operadorgruposagendaFactory = operadorgruposagendaFactory ?? throw new ArgumentNullException(nameof(operadorgruposagendaFactory));
-    public virtual async Task Delete(OperadorGruposAgendaResponse operadorgruposagenda, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(OperadorGruposAgendaResponse operadorgruposagenda, int operadorId, MsiSqlConnection? oCnn)
     {
         await _operadorgruposagendaFactory.DeleteAsync(operadorId, operadorgruposagenda.Id, oCnn);
     }
@@ -26,7 +26,7 @@ public class OperadorGruposAgendaWriter(IFOperadorGruposAgendaFactory operadorgr
         dbRec.FSQLWhere = operadorgruposagenda.SQLWhere;
         dbRec.FNome = operadorgruposagenda.Nome;
         dbRec.FOperador = operadorgruposagenda.Operador;
-        dbRec.FGUID = operadorgruposagenda.GUID;
+        dbRec.FGuid = operadorgruposagenda.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

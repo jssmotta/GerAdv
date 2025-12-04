@@ -23,12 +23,6 @@ public partial class FNECompromissosFactory : IFNECompromissosFactory, IDisposab
         return FNECompromissos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FNECompromissos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FNECompromissos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FNECompromissos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FNECompromissosFactory : IFNECompromissosFactory, IDisposab
         return FNECompromissos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FNECompromissos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FNECompromissos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FNECompromissosFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

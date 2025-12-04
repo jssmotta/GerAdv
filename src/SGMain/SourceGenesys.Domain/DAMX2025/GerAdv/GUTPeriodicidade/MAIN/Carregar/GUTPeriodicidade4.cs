@@ -54,6 +54,22 @@ public partial class DBGUTPeriodicidade
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBGUTPeriodicidadeDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBGUTPeriodicidadeDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBGUTPeriodicidadeDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBGUTPeriodicidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeDicInfo.IntervaloDias)))
-                m_FIntervaloDias = Convert.ToInt32(getValue(DBGUTPeriodicidadeDicInfo.IntervaloDias));
+                FIntervaloDias = Convert.ToInt32(getValue(DBGUTPeriodicidadeDicInfo.IntervaloDias));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBGUTPeriodicidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGUTPeriodicidadeDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGUTPeriodicidadeDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBGUTPeriodicidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGUTPeriodicidadeDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGUTPeriodicidadeDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBGUTPeriodicidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTPeriodicidadeDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGUTPeriodicidadeDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGUTPeriodicidadeDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBGUTPeriodicidadeDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGUTPeriodicidadeDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBGUTPeriodicidade
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

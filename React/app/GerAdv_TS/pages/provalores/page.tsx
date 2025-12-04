@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ProValoresGridAdapter } from '@/app/GerAdv_TS/ProValores/Adapter/ProValoresGridAdapter';
 import ProValoresGridContainer from '@/app/GerAdv_TS/ProValores/Components/ProValoresGridContainer';
+
 const ProValoresPage: React.FC = () => {
-  const ProValoresGrid = new ProValoresGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Pro Valores' />
-    <ProValoresGridContainer grid={ProValoresGrid} />
-  </PageLayout>
-);
+    const ProValoresGrid = new ProValoresGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ProValoresGridContainer grid={ProValoresGrid} />
+        </PageLayout>
+    );
 };
+
 export default ProValoresPage;

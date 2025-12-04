@@ -21,9 +21,9 @@ public partial class FaseWhere(IFFaseFactory faseFactory) : IFaseWhere
         {
             Id = dbRec.ID,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return fase;
     }

@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outraspartesclienteFactory) : IOutrasPartesClienteReader
+public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outraspartesclienteFactory, IConnectionService connection) : IOutrasPartesClienteReader
 {
     private readonly IFOutrasPartesClienteFactory _outraspartesclienteFactory = outraspartesclienteFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opcCodigo, opcNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<OutrasPartesClienteResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOutrasPartesCliente.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<OutrasPartesClienteResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("opcCodigo, opcNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<OutrasPartesClienteResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBOutrasPartesCliente.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<OutrasPartesClienteResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<OutrasPartesClienteResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
         return result;
     }
 
-    public async Task<OutrasPartesClienteResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<OutrasPartesClienteResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _outraspartesclienteFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.OutrasPartesCliente?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.OutrasPartesCliente?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _outraspartesclienteFactory.CreateFromIdAsync(id, oCnn);
         var outraspartescliente = new Models.OutrasPartesCliente
@@ -72,13 +78,16 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            outraspartescliente.DtNasc = dbRec.FDtNasc;
-            outraspartescliente.DtNasc_date = XDtNasc;
+            outraspartescliente.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            outraspartescliente.DtNasc_date = XDtNasc6;
         }
 
         return outraspartescliente;
@@ -123,13 +132,16 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            outraspartescliente.DtNasc = dbRec.FDtNasc;
-            outraspartescliente.DtNasc_date = XDtNasc;
+            outraspartescliente.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            outraspartescliente.DtNasc_date = XDtNasc6;
         }
 
         return outraspartescliente;
@@ -163,13 +175,16 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            outraspartescliente.DtNasc = dbRec.FDtNasc;
-            outraspartescliente.DtNasc_date = XDtNasc;
+            outraspartescliente.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            outraspartescliente.DtNasc_date = XDtNasc6;
         }
 
         return outraspartescliente;
@@ -203,13 +218,16 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            outraspartescliente.DtNasc = dbRec.FDtNasc;
-            outraspartescliente.DtNasc_date = XDtNasc;
+            outraspartescliente.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            outraspartescliente.DtNasc_date = XDtNasc6;
         }
 
         try
@@ -251,13 +269,16 @@ public partial class OutrasPartesClienteReader(IFOutrasPartesClienteFactory outr
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            outraspartescliente.DtNasc = dbRec.FDtNasc;
-            outraspartescliente.DtNasc_date = XDtNasc;
+            outraspartescliente.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            outraspartescliente.DtNasc_date = XDtNasc6;
         }
 
         try

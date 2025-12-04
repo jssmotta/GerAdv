@@ -34,6 +34,19 @@ public class DBTipoEMailTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["tmlCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTipoEMail(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -52,7 +65,7 @@ public class DBTipoEMailTests : IDisposable
     {
         var instance = new DBTipoEMail();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("TipoEMail", instance.ITabelaName());
+        Assert.Equal("TipoEMail", instance.ITableName());
         Assert.Equal("tml", instance.Prefixo);
     }
 
@@ -70,29 +83,16 @@ public class DBTipoEMailTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["tmlCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTipoEMail(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("TipoEMail", cadastro.ITabelaName());
-        Assert.Equal("tmlCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("tmlNome", cadastro.ICampoNome());
-        Assert.Equal("tml", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("TipoEMail", cadastro.ITableName());
+        Assert.Equal("tmlCodigo", cadastro.IFieldId());
+        Assert.Equal("tmlNome", cadastro.IFieldNameDescription());
+        Assert.Equal("tml", cadastro.IPrefix());
     }
 
 #endregion
@@ -152,9 +152,9 @@ public class DBTipoEMailTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

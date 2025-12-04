@@ -74,6 +74,7 @@ public class GUTAtividadesWriterTests
         var result = await _gutatividadesWriter.WriteAsync(gutatividades, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFGUTAtividades.Object);
+        _mockFGUTAtividades.VerifySet(x => x.FGuid = gutatividades.Guid, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FNome = gutatividades.Nome, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FObservacao = gutatividades.Observacao, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FGUTGrupo = gutatividades.GUTGrupo, Times.Once);
@@ -83,7 +84,6 @@ public class GUTAtividadesWriterTests
         _mockFGUTAtividades.VerifySet(x => x.FDataConcluido = gutatividades.DataConcluido.ToString(), Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FDiasParaIniciar = gutatividades.DiasParaIniciar, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.FMinutosParaRealizar = gutatividades.MinutosParaRealizar, Times.Once);
-        _mockFGUTAtividades.VerifySet(x => x.FGUID = gutatividades.GUID, Times.Once);
         _mockFGUTAtividades.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -142,7 +142,7 @@ public class GUTAtividadesWriterTests
         var operadorId = 456;
         _mockGUTAtividadesFactory.Setup(x => x.DeleteAsync(operadorId, gutatividadesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _gutatividadesWriter.Delete(gutatividadesResponse, operadorId, _mockConnection.Object);
+        await _gutatividadesWriter.DeleteAsync(gutatividadesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGUTAtividadesFactory.Verify(x => x.DeleteAsync(operadorId, gutatividadesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -158,7 +158,7 @@ public class GUTAtividadesWriterTests
         var operadorId = 111;
         _mockGUTAtividadesFactory.Setup(x => x.DeleteAsync(operadorId, gutatividadesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _gutatividadesWriter.Delete(gutatividadesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _gutatividadesWriter.DeleteAsync(gutatividadesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -175,7 +175,7 @@ public class GUTAtividadesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGUTAtividadesFactory.Setup(x => x.DeleteAsync(operadorId, gutatividadesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutatividadesWriter.Delete(gutatividadesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutatividadesWriter.DeleteAsync(gutatividadesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -205,6 +205,7 @@ public class GUTAtividadesWriterTests
         return new Models.GUTAtividades
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
             Observacao = "Observação teste",
             GUTGrupo = 1,
@@ -213,8 +214,7 @@ public class GUTAtividadesWriterTests
             Concluido = false,
             DataConcluido = "24/04/1975",
             DiasParaIniciar = 1,
-            MinutosParaRealizar = 1,
-            GUID = Guid.NewGuid().ToString()
+            MinutosParaRealizar = 1
         };
     }
 #endregion

@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IDiario2Service
 {
+    Task<Filters.FilterDiario2> FilterVoice([FromBody] Filters.FilterDiario2 filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<Diario2ResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterDiario2 filter, [FromRoute, Required] string uri = "");
     Task<Diario2Response?> AddAndUpdate(Models.Diario2? regDiario2, [FromRoute, Required] string uri = "");
     Task<Diario2Response?> Validation(Models.Diario2? regDiario2, [FromRoute, Required] string uri = "");
     Task<Diario2Response?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<Diario2Response?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<Diario2ResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterDiario2? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

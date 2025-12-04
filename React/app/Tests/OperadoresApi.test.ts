@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { OperadoresApiError } from '../GerAdv_TS/Operadores/Apis/ApiOperadores';
+import { OperadoresApiError } from '@/app/GerAdv_TS/Operadores/Apis/ApiOperadores';
 import { OperadoresApi } from '@/app/GerAdv_TS/Operadores/Apis/ApiOperadores';
-import { FilterOperadores } from '../GerAdv_TS/Operadores/Filters/Operadores';
-import { IOperadores } from '../GerAdv_TS/Operadores/Interfaces/interface.Operadores';
-import { OperadoresTestEmpty } from '../GerAdv_TS/Models/Operadores';
+import { FilterOperadores } from '@/app/GerAdv_TS/Operadores/Filters/Operadores';
+import { IOperadores } from '@/app/GerAdv_TS/Operadores/Interfaces/interface.Operadores';
+import { OperadoresTestEmpty } from '@/app/GerAdv_TS/Models/Operadores';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('OperadoresApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterOperadores = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,17 @@ describe('OperadoresApi', () => {
   describe('addAndUpdate', () => {
     const mockOperadores: IOperadores = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+enviado: false,
+casa: true,
+casaid: 0,
+casacodigo: 0,
+isnovo: false,
+cliente: 0,
+grupo: 0,
+nome: 'João',
+email: 'test@email.com',
+ativado: true
     };
 
     it('should add new operadores successfully', async () => {
@@ -487,7 +484,7 @@ describe('OperadoresApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterOperadores = { funcionario: 1 };
+      const mockFilter: FilterOperadores = { : 1 };
       
       const result = operadoresApi.useFilter(mockFilter);
       

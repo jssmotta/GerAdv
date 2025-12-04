@@ -14,6 +14,14 @@ public partial class DBOperadorGruposAgenda
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBOperadorGruposAgenda
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,17 +142,17 @@ public partial class DBOperadorGruposAgenda
 
 #if (!NOTSTORED_OperadorGruposAgenda)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFSQLWhere || pFldFNome || pFldFOperador || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFSQLWhere || pFldFNome || pFldFOperador || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFSQLWhere)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.SQLWhere, m_FSQLWhere, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.SQLWhere, FSQLWhere, EGenericTypeFields.FString);
         if (pFldFNome)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFOperador)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.Operador, FOperador, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -156,24 +164,23 @@ public partial class DBOperadorGruposAgenda
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBOperadorGruposAgendaDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBOperadorGruposAgendaDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBOperadorGruposAgendaDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBOperadorGruposAgendaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -5,12 +5,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { StatusInstanciaGridAdapter } from '@/app/GerAdv_TS/StatusInstancia/Adapter/StatusInstanciaGridAdapter';
+
 // Mock StatusInstanciaGrid component
 jest.mock('@/app/GerAdv_TS/StatusInstancia/Crud/Grids/StatusInstanciaGrid', () => () => <div data-testid='statusinstancia-grid-mock' />);
+
 describe('StatusInstanciaGridAdapter', () => {
-  it('should render StatusInstanciaGrid component', () => {
-    const adapter = new StatusInstanciaGridAdapter();
-    const { getByTestId } = render(<>{adapter.render()}</>);
-    expect(getByTestId('statusinstancia-grid-mock')).toBeInTheDocument();
-  });
+    it('should render StatusInstanciaGrid component', () => {
+        const adapter = new StatusInstanciaGridAdapter();
+        const { getByTestId } = render(<>{adapter.render()}</>);
+        expect(getByTestId('statusinstancia-grid-mock')).toBeInTheDocument();
+    });
 });

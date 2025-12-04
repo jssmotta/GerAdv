@@ -15,9 +15,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         private readonly Mock<IGUTPeriodicidadeReader> _mockGUTPeriodicidadeReader;
         private readonly Mock<IOperadorReader> _mockOperadorReader;
         private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-        private readonly Mock<HybridCache> _mockCache;
+        private readonly Mock<IHybridCache> _mockCache;
         private readonly Mock<IMemoryCache> _mockMemoryCache;
+        private readonly Mock<IConnectionService> _mockConnectionService;
         private readonly GUTAtividadesService _service;
+        private readonly GUTAtividadesServiceS _serviceS;
         public GUTAtividadesServiceWFiltroTests()
         {
             _mockAppSettings = new Mock<IOptions<AppSettings>>();
@@ -30,11 +32,13 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             _mockGUTPeriodicidadeReader = new Mock<IGUTPeriodicidadeReader>();
             _mockOperadorReader = new Mock<IOperadorReader>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-            _mockCache = new Mock<HybridCache>();
+            _mockCache = new Mock<IHybridCache>();
             _mockMemoryCache = new Mock<IMemoryCache>();
+            _mockConnectionService = new();
             var appSettings = new AppSettings();
             _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-            _service = new GUTAtividadesService(_mockAppSettings.Object, _mockGUTAtividadesFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _mockGUTAtividadesMatrizService.Object, _mockGUTPeriodicidadeStatusService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object);
+            _serviceS = new GUTAtividadesServiceS();
+            _service = new GUTAtividadesService(_mockAppSettings.Object, _mockGUTAtividadesFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _mockGUTAtividadesMatrizService.Object, _mockGUTPeriodicidadeStatusService.Object, _mockHttpContextAccessor.Object, _mockCache.Object, _mockMemoryCache.Object, _mockConnectionService.Object);
         }
 
         [Fact]
@@ -43,7 +47,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             FilterGUTAtividades? filtro = null;
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().BeNull();
         }
@@ -54,7 +58,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterGUTAtividades(); // Todos os valores padrão
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -67,22 +71,27 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterGUTAtividades
             {
+                QuemCad = 1,
+                DtCad = "24/04/1975",
+                QuemAtu = 1,
+                DtAtu = "24/04/1975",
+                Visto = 2,
+                Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 Nome = "João",
                 Observacao = "Observação teste",
                 GUTGrupo = 1,
                 GUTPeriodicidade = 1,
                 Operador = 1,
-                Concluido = 2,
+                Concluido = 1,
                 DataConcluido = "24/04/1975",
                 DiasParaIniciar = 1,
                 MinutosParaRealizar = 1,
-                GUID = Guid.NewGuid().ToString(),
                 WildcardChar = '%',
                 LogicalOperator = " AND "
             };
             // Act
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             stopwatch.Stop();
             // Assert
             resultado.Should().NotBeNull();
@@ -92,18 +101,253 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         }
 
 #region String Tests
+        [Theory]
+        [InlineData("     ")] // Apenas espaços
+        [InlineData("\t\t\t")] // Apenas tabs
+        [InlineData("\n\n\n")] // Apenas quebras de linha
+        [InlineData("\r\n\r\n")] // Carriage return + line feed
+        public void WFiltro_Guid_ComStringComApenasWhitespace_NaoDeveIncluirNoFiltro(string guidComWhitespace)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = guidComWhitespace,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty();
+            resultado.Value.parametros.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_Guid_ComStringMuitoLonga_DeveProcessarCorretamente()
+        {
+            // Arrange
+            var guidGigante = new string ('A', 1000);
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = guidGigante,
+                WildcardChar = '%',
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.Should().Be($"%{guidGigante}%");
+        }
+
+        [Theory]
+        [InlineData("João'Silva")] // Com aspas simples
+        [InlineData("João\"Silva")] // Com aspas duplas
+        [InlineData("João;DROP%TABLE--")] // SQL injection attempt
+        [InlineData("João<script>alert('xss')</script>")] // XSS attempt
+        public void WFiltro_Guid_ComCaracteresEspeciais_DeveProcessarCorretamente(string guidComCaracteresEspeciais)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = guidComCaracteresEspeciais,
+                WildcardChar = '%',
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.ToString().Should().Contain(guidComCaracteresEspeciais);
+        }
+
+        [Fact]
+        public void WFiltro_GuidGUTAtividades_QuandoStringVazia_NaoDeveIncluirNoFiltro()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = string.Empty,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando string vazia
+            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
+        }
+
+        [Fact]
+        public void WFiltro_GuidGUTAtividades_QuandoStringNull_NaoDeveIncluirNoFiltro()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = null,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando null
+            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
+        }
+
+        [Fact]
+        public void WFiltro_GuidGUTAtividades_SemWildcard_DeveRetornarValorOriginal()
+        {
+            // Arrange
+            var nomeGUTAtividades = "João Silva";
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = nomeGUTAtividades,
+                WildcardChar = '\0', // Sem wildcard
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Sem wildcard, deve retornar valor original
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.ToString().Should().Be("%João%Silva%");
+        }
+
+        [Theory]
+        [InlineData('%', "João Silva", "%João%Silva%")]
+        [InlineData('*', "João Silva", "*João*Silva*")]
+        [InlineData('\0', "João Silva", "%João%Silva%")]
+        [InlineData(' ', "João Silva", "%João%Silva%")]
+        public void WFiltro_GuidGUTAtividades_DiferentesWildcards_DeveAplicarCorretamente(char wildcardChar, string nomeOriginal, string esperado)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = nomeOriginal,
+                WildcardChar = wildcardChar,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(esperado);
+        }
+
+        [Fact]
+        public void WFiltro_GuidGUTAtividades_StringComEspacos_DeveSubstituirEspacosPorWildcard()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "João da Silva",
+                WildcardChar = '%',
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Espaços devem ser substituídos por wildcards
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.ToString().Should().Be("%João%da%Silva%");
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void WFiltro_GuidGUTAtividades_StringsVazias_NaoDeveIncluirNoFiltro(string? nomeGUTAtividades)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = nomeGUTAtividades,
+                WildcardChar = '%',
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty();
+            resultado.Value.parametros.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_GuidGUTAtividades_ComOutrosCampos_DeveUsarLogicalOperator()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "João",
+                Codigo_filtro = 1, // Campo INT para testar combinação
+                WildcardChar = '%',
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos com AND entre eles
+            resultado.Value.where.Should().Contain("@agtGuid");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividades.CampoCodigo}");
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 2 parâmetros
+            resultado.Value.parametros.Should().HaveCount(2);
+            // Verifica se um usa LIKE e outro usa =
+            resultado.Value.where.Should().Contain("like @agtGuid");
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividades.CampoCodigo}");
+        }
+
+        [Fact]
+        public void WFiltro_GuidGUTAtividades_QuandoTemValor_DeveIncluirNoFiltroComLike()
+        {
+            // Arrange
+            var nomeGUTAtividades = "João Silva";
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = nomeGUTAtividades,
+                WildcardChar = '%', // Wildcard padrão SQL
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se o WHERE contém a condição com LIKE
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Guid}]");
+            resultado.Value.where.Should().Contain("like @agtGuid");
+            resultado.Value.where.Should().Contain(DevourerConsts.MsiCollate);
+            // Verifica se tem exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico (com wildcard aplicado)
+            var parametro = resultado.Value.parametros.First();
+            parametro.ParameterName.Should().Be("@agtGuid");
+            parametro.Value.ToString().Should().Be("%João%Silva%"); // ApplyWildCard aplicado
+        }
+
         [Fact]
         public void WFiltro_Nome_QuandoLogicalOperatorNull_DeveUsarAndPorPadrao()
         {
             // Arrange
             var filtro = new FilterGUTAtividades
             {
-                GUTGrupo = 1,
+                Codigo_filtro = 1,
                 Nome = "João",
                 LogicalOperator = null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" AND ");
@@ -113,17 +357,17 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         [InlineData("")]
         [InlineData("   ")]
         [InlineData(null)]
-        public void WFiltroNome_LogicalOperatorVazioOuNulo_DeveUsarAndPorPadrao(string logicalOperator)
+        public void WFiltroNome_LogicalOperatorVazioOuNulo_DeveUsarAndPorPadrao(string? logicalOperator)
         {
             // Arrange
             var filtro = new FilterGUTAtividades
             {
                 Nome = "João",
-                GUTGrupo = 2,
-                LogicalOperator = logicalOperator
+                Codigo_filtro = 2,
+                LogicalOperator = logicalOperator!
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" AND ");
@@ -143,7 +387,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -162,7 +406,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -185,7 +429,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -203,7 +447,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando string vazia
@@ -220,7 +464,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando null
@@ -239,20 +483,20 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
             // Sem wildcard, deve retornar valor original
             var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("João Silva");
+            parametro.Value.ToString().Should().Be("%João%Silva%");
         }
 
         [Theory]
         [InlineData('%', "João Silva", "%João%Silva%")]
         [InlineData('*', "João Silva", "*João*Silva*")]
-        [InlineData('\0', "João Silva", "João Silva")]
-        [InlineData(' ', "João Silva", "João Silva")]
+        [InlineData('\0', "João Silva", "%João%Silva%")]
+        [InlineData(' ', "João Silva", "%João%Silva%")]
         public void WFiltro_NomeGUTAtividades_DiferentesWildcards_DeveAplicarCorretamente(char wildcardChar, string nomeOriginal, string esperado)
         {
             // Arrange
@@ -263,7 +507,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -281,7 +525,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -304,7 +548,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -318,23 +562,23 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Nome = "João",
-                GUTGrupo = 1, // Campo INT para testar combinação
+                Codigo_filtro = 1, // Campo INT para testar combinação
                 WildcardChar = '%',
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain("@agtNome");
-            resultado.Value.where.Should().Contain("@agtGUTGrupo");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividades.CampoCodigo}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetros
             resultado.Value.parametros.Should().HaveCount(2);
             // Verifica se um usa LIKE e outro usa =
             resultado.Value.where.Should().Contain("like @agtNome");
-            resultado.Value.where.Should().Contain("= @agtGUTGrupo");
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividades.CampoCodigo}");
         }
 
         [Fact]
@@ -349,7 +593,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição com LIKE
@@ -378,7 +622,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -397,7 +641,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -420,7 +664,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -438,7 +682,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando string vazia
@@ -455,7 +699,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando null
@@ -474,20 +718,20 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
             // Sem wildcard, deve retornar valor original
             var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("João Silva");
+            parametro.Value.ToString().Should().Be("%João%Silva%");
         }
 
         [Theory]
         [InlineData('%', "João Silva", "%João%Silva%")]
         [InlineData('*', "João Silva", "*João*Silva*")]
-        [InlineData('\0', "João Silva", "João Silva")]
-        [InlineData(' ', "João Silva", "João Silva")]
+        [InlineData('\0', "João Silva", "%João%Silva%")]
+        [InlineData(' ', "João Silva", "%João%Silva%")]
         public void WFiltro_ObservacaoGUTAtividades_DiferentesWildcards_DeveAplicarCorretamente(char wildcardChar, string nomeOriginal, string esperado)
         {
             // Arrange
@@ -498,7 +742,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -516,7 +760,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -539,7 +783,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -553,23 +797,23 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Observacao = "João",
-                GUTGrupo = 1, // Campo INT para testar combinação
+                Codigo_filtro = 1, // Campo INT para testar combinação
                 WildcardChar = '%',
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain("@agtObservacao");
-            resultado.Value.where.Should().Contain("@agtGUTGrupo");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividades.CampoCodigo}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetros
             resultado.Value.parametros.Should().HaveCount(2);
             // Verifica se um usa LIKE e outro usa =
             resultado.Value.where.Should().Contain("like @agtObservacao");
-            resultado.Value.where.Should().Contain("= @agtGUTGrupo");
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividades.CampoCodigo}");
         }
 
         [Fact]
@@ -584,7 +828,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição com LIKE
@@ -599,243 +843,1402 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             parametro.Value.ToString().Should().Be("%João%Silva%"); // ApplyWildCard aplicado
         }
 
-        [Theory]
-        [InlineData("     ")] // Apenas espaços
-        [InlineData("\t\t\t")] // Apenas tabs
-        [InlineData("\n\n\n")] // Apenas quebras de linha
-        [InlineData("\r\n\r\n")] // Carriage return + line feed
-        public void WFiltro_GUID_ComStringComApenasWhitespace_NaoDeveIncluirNoFiltro(string guidComWhitespace)
+#endregion
+#region Integer Tests
+#region filtro.QuemCad_end Tests
+        [Fact]
+        public void WFiltro_QuemCad_end_QuandoDecimalMinValue_NaoDeveIncluirParametroOuCondicionaWhere()
         {
             // Arrange
             var filtro = new FilterGUTAtividades
             {
-                GUID = guidComWhitespace,
+                QuemCad_end = int.MinValue, // Valor padrão que indica "não filtrar"
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
+            resultado.Value.parametros.Should().BeEmpty(); // Nenhum parâmetro deve ser adicionado
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_end_QuandoTemValorPositivo_SemQuemCadInicial_DeveAdicionarParametroMasNaoCondicionaWhere()
+        {
+            // Arrange
+            var valorQuemCadEnd = 5000;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = int.MinValue, // Não define salário inicial
+                QuemCad_end = valorQuemCadEnd,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Como não há QuemCad inicial válido, não deve incluir condição WHERE, mas o parâmetro QuemCad_end é adicionado
             resultado.Value.where.Should().BeEmpty();
-            resultado.Value.parametros.Should().BeEmpty();
+            resultado.Value.parametros.Should().HaveCount(0); // QuemCad_end parameter is added
+            var parametro = resultado.Value.parametros?.FirstOrDefault();
+            parametro.Should().BeNull();
         }
 
         [Fact]
-        public void WFiltro_GUID_ComStringMuitoLonga_DeveProcessarCorretamente()
+        public void WFiltro_QuemCad_end_QuandoSomenteValorInicial_SemQuemCadEnd_DeveUsarOperadorIgualdade()
         {
             // Arrange
-            var guidGigante = new string ('A', 1000);
+            var valorQuemCad = 2500;
             var filtro = new FilterGUTAtividades
             {
-                GUID = guidGigante,
-                WildcardChar = '%',
+                QuemCad = valorQuemCad,
+                QuemCad_end = int.MinValue, // Não define salário final
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
+            // Deve usar operador de igualdade, não BETWEEN
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemCad}] = @{DBGUTAtividadesDicInfo.QuemCad}");
+            resultado.Value.where.Should().NotContain("BETWEEN");
+            // Deve ter exatamente 1 parâmetro
             resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico
             var parametro = resultado.Value.parametros.First();
-            parametro.Value.Should().Be($"%{guidGigante}%");
-        }
-
-        [Theory]
-        [InlineData("João'Silva")] // Com aspas simples
-        [InlineData("João\"Silva")] // Com aspas duplas
-        [InlineData("João;DROP%TABLE--")] // SQL injection attempt
-        [InlineData("João<script>alert('xss')</script>")] // XSS attempt
-        public void WFiltro_GUID_ComCaracteresEspeciais_DeveProcessarCorretamente(string guidComCaracteresEspeciais)
-        {
-            // Arrange
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = guidComCaracteresEspeciais,
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Contain(guidComCaracteresEspeciais);
+            parametro.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.QuemCad}");
+            parametro.Value.Should().Be(valorQuemCad);
         }
 
         [Fact]
-        public void WFiltro_GUIDGUTAtividades_QuandoStringVazia_NaoDeveIncluirNoFiltro()
+        public void WFiltro_QuemCad_end_QuandoTemAmbosValores_DeveUsarOperadorBETWEEN()
         {
             // Arrange
+            var valorQuemCadInicial = 1000;
+            var valorQuemCadFinal = 5000;
             var filtro = new FilterGUTAtividades
             {
-                GUID = string.Empty,
+                QuemCad = valorQuemCadInicial,
+                QuemCad_end = valorQuemCadFinal,
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
-            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando string vazia
-            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
-        }
-
-        [Fact]
-        public void WFiltro_GUIDGUTAtividades_QuandoStringNull_NaoDeveIncluirNoFiltro()
-        {
-            // Arrange
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = null,
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando null
-            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
-        }
-
-        [Fact]
-        public void WFiltro_GUIDGUTAtividades_SemWildcard_DeveRetornarValorOriginal()
-        {
-            // Arrange
-            var nomeGUTAtividades = "João Silva";
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = nomeGUTAtividades,
-                WildcardChar = '\0', // Sem wildcard
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            // Sem wildcard, deve retornar valor original
-            var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("João Silva");
-        }
-
-        [Theory]
-        [InlineData('%', "João Silva", "%João%Silva%")]
-        [InlineData('*', "João Silva", "*João*Silva*")]
-        [InlineData('\0', "João Silva", "João Silva")]
-        [InlineData(' ', "João Silva", "João Silva")]
-        public void WFiltro_GUIDGUTAtividades_DiferentesWildcards_DeveAplicarCorretamente(char wildcardChar, string nomeOriginal, string esperado)
-        {
-            // Arrange
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = nomeOriginal,
-                WildcardChar = wildcardChar,
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            resultado.Value.parametros.First().Value.Should().Be(esperado);
-        }
-
-        [Fact]
-        public void WFiltro_GUIDGUTAtividades_StringComEspacos_DeveSubstituirEspacosPorWildcard()
-        {
-            // Arrange
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = "João da Silva",
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            // Espaços devem ser substituídos por wildcards
-            var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("%João%da%Silva%");
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData(null)]
-        public void WFiltro_GUIDGUTAtividades_StringsVazias_NaoDeveIncluirNoFiltro(string? nomeGUTAtividades)
-        {
-            // Arrange
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = nomeGUTAtividades,
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.where.Should().BeEmpty();
-            resultado.Value.parametros.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void WFiltro_GUIDGUTAtividades_ComOutrosCampos_DeveUsarLogicalOperator()
-        {
-            // Arrange
-            var filtro = new FilterGUTAtividades
-            {
-                GUID = "João",
-                GUTGrupo = 1, // Campo INT para testar combinação
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            // Deve conter ambos os campos com AND entre eles
-            resultado.Value.where.Should().Contain("@agtGUID");
-            resultado.Value.where.Should().Contain("@agtGUTGrupo");
-            resultado.Value.where.Should().Contain(" AND ");
-            // Deve ter 2 parâmetros
+            // Deve usar operador BETWEEN
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.QuemCad} BETWEEN @{DBGUTAtividadesDicInfo.QuemCad} AND @{DBGUTAtividadesDicInfo.QuemCad}_end");
+            resultado.Value.where.Should().NotContain(" = ");
+            // Deve ter exatamente 2 parâmetros
             resultado.Value.parametros.Should().HaveCount(2);
-            // Verifica se um usa LIKE e outro usa =
-            resultado.Value.where.Should().Contain("like @agtGUID");
-            resultado.Value.where.Should().Contain("= @agtGUTGrupo");
+            // Verifica os parâmetros específicos
+            var parametroInicial = resultado.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemCad}");
+            var parametroFinal = resultado.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemCad}_end");
+            parametroInicial.Should().NotBeNull();
+            parametroInicial!.Value.Should().Be(valorQuemCadInicial);
+            parametroFinal.Should().NotBeNull();
+            parametroFinal!.Value.Should().Be(valorQuemCadFinal);
         }
 
-        [Fact]
-        public void WFiltro_GUIDGUTAtividades_QuandoTemValor_DeveIncluirNoFiltroComLike()
+        [Theory]
+        [InlineData(1000, 2000)]
+        [InlineData(0, 1000)]
+        [InlineData(2500, 7500)]
+        [InlineData(10000, 50000)]
+        public void WFiltro_QuemCad_RangeDiferentesValores_DeveProcessarCorretamente(int valorInicial, int valorFinal)
         {
             // Arrange
-            var nomeGUTAtividades = "João Silva";
             var filtro = new FilterGUTAtividades
             {
-                GUID = nomeGUTAtividades,
-                WildcardChar = '%', // Wildcard padrão SQL
+                QuemCad = valorInicial,
+                QuemCad_end = valorFinal,
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
-            // Verifica se o WHERE contém a condição com LIKE
-            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.GUID}]");
-            resultado.Value.where.Should().Contain("like @agtGUID");
-            resultado.Value.where.Should().Contain(DevourerConsts.MsiCollate);
-            // Verifica se tem exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(2);
+            resultado.Value.where.Should().Contain("BETWEEN");
+            var parametroInicial = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemCad}");
+            var parametroFinal = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemCad}_end");
+            parametroInicial.Value.Should().Be(valorInicial);
+            parametroFinal.Value.Should().Be(valorFinal);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_ComOutrosCampos_DeveUsarLogicalOperatorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1000,
+                QuemCad_end = 5000,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.QuemCad}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
+            // Deve usar o operador lógico entre eles
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 3 parâmetros (2 para salário + 1 para nome)
+            resultado.Value.parametros.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_ComLogicalOperatorOR_DeveUsarOperadorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1000,
+                QuemCad_end = 5000,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " OR "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain(" OR ");
+            resultado.Value.parametros.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_QuandoLogicalOperatorVazio_DeveUsarAndPorPadrao()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1000,
+                QuemCad_end = 5000,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = string.Empty // Operador vazio
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar AND como padrão
+            resultado.Value.where.Should().Contain(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_CondicaoWhereDeveUsarTabelaNomeCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1000,
+                QuemCad_end = 5000,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se usa o nome da tabela correto no BETWEEN
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.QuemCad} BETWEEN");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_NaoDeveUsarMsiCollate()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1000,
+                QuemCad_end = 5000,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Campos DECIMAL não devem usar COLLATE
+            resultado.Value.where.Should().NotContain(DevourerConsts.MsiCollate);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_ComoUnicoCampo_DeveNaoTerOperadorLogico()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1000,
+                QuemCad_end = 5000,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Como é o único campo, não deve ter operador lógico no início
+            resultado.Value.where.Should().NotStartWith(" AND ");
+            resultado.Value.where.Should().NotStartWith(" OR ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Range_ParametrosDevemTerTipoCorreto()
+        {
+            // Arrange
+            var valorQuemCadInicial = 2500;
+            var valorQuemCadFinal = 4750;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCadInicial,
+                QuemCad_end = valorQuemCadFinal,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(2);
+            var parametroInicial = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemCad}");
+            var parametroFinal = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemCad}_end");
+            parametroInicial.Value.Should().BeOfType<int>();
+            parametroInicial.Value.Should().Be(valorQuemCadInicial);
+            parametroFinal.Value.Should().BeOfType<int>();
+            parametroFinal.Value.Should().Be(valorQuemCadFinal);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoAmbosZero_DeveUsarBETWEEN()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 0,
+                QuemCad_end = 0,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain("BETWEEN");
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoSomenteZeroInicial_DeveUsarIgualdade()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 0,
+                QuemCad_end = int.MinValue,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain(" = ");
+            resultado.Value.where.Should().NotContain("BETWEEN");
             resultado.Value.parametros.Should().HaveCount(1);
-            // Verifica o parâmetro específico (com wildcard aplicado)
-            var parametro = resultado.Value.parametros.First();
-            parametro.ParameterName.Should().Be("@agtGUID");
-            parametro.Value.ToString().Should().Be("%João%Silva%"); // ApplyWildCard aplicado
+            resultado.Value.parametros.First().Value.Should().Be(0m);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Logica_BETWEEN_Verifica_Condicoes_Exatas()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1500,
+                QuemCad_end = 4500,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica a lógica exata: !(filtro.QuemCad == int.MinValue) && !(filtro.QuemCad_end == int.MinValue)
+            // Deve resultar em BETWEEN quando ambos os valores não são MinValue
+            resultado.Value.where.Should().Be($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.QuemCad} BETWEEN @{DBGUTAtividadesDicInfo.QuemCad} AND @{DBGUTAtividadesDicInfo.QuemCad}_end");
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_Logica_Igualdade_Verifica_Condicoes_Exatas()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 2000,
+                QuemCad_end = int.MinValue,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica a lógica exata: !(filtro.QuemCad == int.MinValue) && filtro.QuemCad_end == int.MinValue
+            // Deve resultar em igualdade quando apenas QuemCad tem valor válido
+            resultado.Value.where.Should().Be($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemCad}] = @{DBGUTAtividadesDicInfo.QuemCad}");
+            resultado.Value.parametros.Should().HaveCount(1);
         }
 
 #endregion
-#region Integer Tests
+        [Theory]
+        [InlineData(int.MaxValue)]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void WFiltro_QuemCad_ComValoresExtremos_DeveProcessarCorretamente(int valorExtremo)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorExtremo,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorExtremo);
+        }
+
+#region filtro.QuemCad Isolated Tests
+        [Fact]
+        public void WFiltro_QuemCad_QuandoIntMinValue_NaoDeveIncluirParametroOuCondicionaWhere()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = int.MinValue, // Valor padrão que indica "não filtrar"
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
+            resultado.Value.parametros.Should().BeEmpty(); // Nenhum parâmetro deve ser adicionado
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoTemValorPositivo_DeveIncluirParametroECondicionaWhere()
+        {
+            // Arrange
+            var valorQuemCad = 5;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCad,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se o WHERE contém a condição correta
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemCad}] = @{DBGUTAtividadesDicInfo.QuemCad}");
+            // Verifica se tem exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico
+            var parametro = resultado.Value.parametros.First();
+            parametro.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.QuemCad}");
+            parametro.Value.Should().Be(valorQuemCad);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoValorZero_DeveIncluirParametroECondicionaWhere()
+        {
+            // Arrange
+            var valorQuemCad = 0;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCad,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.QuemCad}");
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorQuemCad);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(999)]
+        [InlineData(2147483647)]
+        public void WFiltro_QuemCad_DiferentesValoresValidos_DeveProcessarCorretamente(int valorQuemCad)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCad,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorQuemCad);
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.QuemCad}");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_ComOutrosCampos_DeveUsarLogicalOperatorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.QuemCad}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
+            // Deve usar o operador lógico entre eles
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 2 parâmetro(s)
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_ComLogicalOperatorOR_DeveUsarOperadorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " OR "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain(" OR ");
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoLogicalOperatorVazio_DeveUsarAndPorPadrao()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = string.Empty // Operador vazio
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar AND como padrão
+            resultado.Value.where.Should().Contain(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoLogicalOperatorNull_DeveUsarAndPorPadrao()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = null // Operador null
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar AND como padrão
+            resultado.Value.where.Should().Contain(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_CondicaoWhereDeveUsarTabelnaNomeCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se usa o nome da tabela correto
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemCad}]");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_DeveUsarOperadorIgualdade()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar operador de igualdade, não LIKE
+            resultado.Value.where.Should().Contain(" = ");
+            resultado.Value.where.Should().NotContain(" like ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_NaoDeveUsarMsiCollate()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Campos INT não devem usar COLLATE
+            resultado.Value.where.Should().NotContain(DevourerConsts.MsiCollate);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_ComoUnicoCampo_DeveNaoTerOperadorLogico()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Como é o único campo, não deve ter operador lógico no início
+            resultado.Value.where.Should().NotStartWith(" AND ");
+            resultado.Value.where.Should().NotStartWith(" OR ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_ParametroDeveTerTipoCorreto()
+        {
+            // Arrange
+            int valorQuemCad = 42;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCad,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.Should().BeOfType<int>();
+            parametro.Value.Should().Be(valorQuemCad);
+        }
+
+#endregion
+        [Fact]
+        public void WFiltro_QuemCad_QuandoValorMinValue_NaoDeveIncluirNoFiltro()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = int.MinValue, // Valor que indica "não filtrar"
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
+            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_QuandoTemValor_DeveIncluirNoFiltro()
+        {
+            // Arrange
+            var valorQuemCad = 1;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCad,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se o WHERE contém a condição do QuemCad
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemCad}] = @agtQuemCad");
+            // Verifica se tem exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico
+            var parametro = resultado.Value.parametros.First();
+            parametro.ParameterName.Should().Be($"@agtQuemCad");
+            parametro.Value.Should().Be(valorQuemCad);
+        }
+
+        [Fact]
+        public void WFiltro_QuemCad_ComOutrosCampos_DeveUsarLogicalOperator()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos com AND entre eles
+            resultado.Value.where.Should().Contain($"@agtQuemCad");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 2 parâmetro(s)
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(999)]
+        public void WFiltro_QuemCad_DiferentesValores_DeveFuncionar(int valorQuemCad)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemCad = valorQuemCad,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorQuemCad);
+        }
+
+#region filtro.QuemAtu_end Tests
+        [Fact]
+        public void WFiltro_QuemAtu_end_QuandoDecimalMinValue_NaoDeveIncluirParametroOuCondicionaWhere()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu_end = int.MinValue, // Valor padrão que indica "não filtrar"
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
+            resultado.Value.parametros.Should().BeEmpty(); // Nenhum parâmetro deve ser adicionado
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_end_QuandoTemValorPositivo_SemQuemAtuInicial_DeveAdicionarParametroMasNaoCondicionaWhere()
+        {
+            // Arrange
+            var valorQuemAtuEnd = 5000;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = int.MinValue, // Não define salário inicial
+                QuemAtu_end = valorQuemAtuEnd,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Como não há QuemAtu inicial válido, não deve incluir condição WHERE, mas o parâmetro QuemAtu_end é adicionado
+            resultado.Value.where.Should().BeEmpty();
+            resultado.Value.parametros.Should().HaveCount(0); // QuemAtu_end parameter is added
+            var parametro = resultado.Value.parametros?.FirstOrDefault();
+            parametro.Should().BeNull();
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_end_QuandoSomenteValorInicial_SemQuemAtuEnd_DeveUsarOperadorIgualdade()
+        {
+            // Arrange
+            var valorQuemAtu = 2500;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                QuemAtu_end = int.MinValue, // Não define salário final
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar operador de igualdade, não BETWEEN
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemAtu}] = @{DBGUTAtividadesDicInfo.QuemAtu}");
+            resultado.Value.where.Should().NotContain("BETWEEN");
+            // Deve ter exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico
+            var parametro = resultado.Value.parametros.First();
+            parametro.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            parametro.Value.Should().Be(valorQuemAtu);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_end_QuandoTemAmbosValores_DeveUsarOperadorBETWEEN()
+        {
+            // Arrange
+            var valorQuemAtuInicial = 1000;
+            var valorQuemAtuFinal = 5000;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtuInicial,
+                QuemAtu_end = valorQuemAtuFinal,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar operador BETWEEN
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.QuemAtu} BETWEEN @{DBGUTAtividadesDicInfo.QuemAtu} AND @{DBGUTAtividadesDicInfo.QuemAtu}_end");
+            resultado.Value.where.Should().NotContain(" = ");
+            // Deve ter exatamente 2 parâmetros
+            resultado.Value.parametros.Should().HaveCount(2);
+            // Verifica os parâmetros específicos
+            var parametroInicial = resultado.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            var parametroFinal = resultado.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemAtu}_end");
+            parametroInicial.Should().NotBeNull();
+            parametroInicial!.Value.Should().Be(valorQuemAtuInicial);
+            parametroFinal.Should().NotBeNull();
+            parametroFinal!.Value.Should().Be(valorQuemAtuFinal);
+        }
+
+        [Theory]
+        [InlineData(1000, 2000)]
+        [InlineData(0, 1000)]
+        [InlineData(2500, 7500)]
+        [InlineData(10000, 50000)]
+        public void WFiltro_QuemAtu_RangeDiferentesValores_DeveProcessarCorretamente(int valorInicial, int valorFinal)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorInicial,
+                QuemAtu_end = valorFinal,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(2);
+            resultado.Value.where.Should().Contain("BETWEEN");
+            var parametroInicial = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            var parametroFinal = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemAtu}_end");
+            parametroInicial.Value.Should().Be(valorInicial);
+            parametroFinal.Value.Should().Be(valorFinal);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_ComOutrosCampos_DeveUsarLogicalOperatorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1000,
+                QuemAtu_end = 5000,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
+            // Deve usar o operador lógico entre eles
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 3 parâmetros (2 para salário + 1 para nome)
+            resultado.Value.parametros.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_ComLogicalOperatorOR_DeveUsarOperadorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1000,
+                QuemAtu_end = 5000,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " OR "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain(" OR ");
+            resultado.Value.parametros.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_QuandoLogicalOperatorVazio_DeveUsarAndPorPadrao()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1000,
+                QuemAtu_end = 5000,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = string.Empty // Operador vazio
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar AND como padrão
+            resultado.Value.where.Should().Contain(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_CondicaoWhereDeveUsarTabelaNomeCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1000,
+                QuemAtu_end = 5000,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se usa o nome da tabela correto no BETWEEN
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.QuemAtu} BETWEEN");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_NaoDeveUsarMsiCollate()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1000,
+                QuemAtu_end = 5000,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Campos DECIMAL não devem usar COLLATE
+            resultado.Value.where.Should().NotContain(DevourerConsts.MsiCollate);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_ComoUnicoCampo_DeveNaoTerOperadorLogico()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1000,
+                QuemAtu_end = 5000,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Como é o único campo, não deve ter operador lógico no início
+            resultado.Value.where.Should().NotStartWith(" AND ");
+            resultado.Value.where.Should().NotStartWith(" OR ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Range_ParametrosDevemTerTipoCorreto()
+        {
+            // Arrange
+            var valorQuemAtuInicial = 2500;
+            var valorQuemAtuFinal = 4750;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtuInicial,
+                QuemAtu_end = valorQuemAtuFinal,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(2);
+            var parametroInicial = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            var parametroFinal = resultado.Value.parametros.First(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.QuemAtu}_end");
+            parametroInicial.Value.Should().BeOfType<int>();
+            parametroInicial.Value.Should().Be(valorQuemAtuInicial);
+            parametroFinal.Value.Should().BeOfType<int>();
+            parametroFinal.Value.Should().Be(valorQuemAtuFinal);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoAmbosZero_DeveUsarBETWEEN()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 0,
+                QuemAtu_end = 0,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain("BETWEEN");
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoSomenteZeroInicial_DeveUsarIgualdade()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 0,
+                QuemAtu_end = int.MinValue,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain(" = ");
+            resultado.Value.where.Should().NotContain("BETWEEN");
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(0m);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Logica_BETWEEN_Verifica_Condicoes_Exatas()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1500,
+                QuemAtu_end = 4500,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica a lógica exata: !(filtro.QuemAtu == int.MinValue) && !(filtro.QuemAtu_end == int.MinValue)
+            // Deve resultar em BETWEEN quando ambos os valores não são MinValue
+            resultado.Value.where.Should().Be($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.QuemAtu} BETWEEN @{DBGUTAtividadesDicInfo.QuemAtu} AND @{DBGUTAtividadesDicInfo.QuemAtu}_end");
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_Logica_Igualdade_Verifica_Condicoes_Exatas()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 2000,
+                QuemAtu_end = int.MinValue,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica a lógica exata: !(filtro.QuemAtu == int.MinValue) && filtro.QuemAtu_end == int.MinValue
+            // Deve resultar em igualdade quando apenas QuemAtu tem valor válido
+            resultado.Value.where.Should().Be($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemAtu}] = @{DBGUTAtividadesDicInfo.QuemAtu}");
+            resultado.Value.parametros.Should().HaveCount(1);
+        }
+
+#endregion
+        [Theory]
+        [InlineData(int.MaxValue)]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void WFiltro_QuemAtu_ComValoresExtremos_DeveProcessarCorretamente(int valorExtremo)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorExtremo,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorExtremo);
+        }
+
+#region filtro.QuemAtu Isolated Tests
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoIntMinValue_NaoDeveIncluirParametroOuCondicionaWhere()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = int.MinValue, // Valor padrão que indica "não filtrar"
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
+            resultado.Value.parametros.Should().BeEmpty(); // Nenhum parâmetro deve ser adicionado
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoTemValorPositivo_DeveIncluirParametroECondicionaWhere()
+        {
+            // Arrange
+            var valorQuemAtu = 5;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se o WHERE contém a condição correta
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemAtu}] = @{DBGUTAtividadesDicInfo.QuemAtu}");
+            // Verifica se tem exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico
+            var parametro = resultado.Value.parametros.First();
+            parametro.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            parametro.Value.Should().Be(valorQuemAtu);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoValorZero_DeveIncluirParametroECondicionaWhere()
+        {
+            // Arrange
+            var valorQuemAtu = 0;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.QuemAtu}");
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorQuemAtu);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(999)]
+        [InlineData(2147483647)]
+        public void WFiltro_QuemAtu_DiferentesValoresValidos_DeveProcessarCorretamente(int valorQuemAtu)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorQuemAtu);
+            resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.QuemAtu}");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_ComOutrosCampos_DeveUsarLogicalOperatorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.QuemAtu}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
+            // Deve usar o operador lógico entre eles
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 2 parâmetro(s)
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_ComLogicalOperatorOR_DeveUsarOperadorCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " OR "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().Contain(" OR ");
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoLogicalOperatorVazio_DeveUsarAndPorPadrao()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = string.Empty // Operador vazio
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar AND como padrão
+            resultado.Value.where.Should().Contain(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoLogicalOperatorNull_DeveUsarAndPorPadrao()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = null // Operador null
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar AND como padrão
+            resultado.Value.where.Should().Contain(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_CondicaoWhereDeveUsarTabelnaNomeCorreto()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se usa o nome da tabela correto
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemAtu}]");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_DeveUsarOperadorIgualdade()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve usar operador de igualdade, não LIKE
+            resultado.Value.where.Should().Contain(" = ");
+            resultado.Value.where.Should().NotContain(" like ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_NaoDeveUsarMsiCollate()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Campos INT não devem usar COLLATE
+            resultado.Value.where.Should().NotContain(DevourerConsts.MsiCollate);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_ComoUnicoCampo_DeveNaoTerOperadorLogico()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Como é o único campo, não deve ter operador lógico no início
+            resultado.Value.where.Should().NotStartWith(" AND ");
+            resultado.Value.where.Should().NotStartWith(" OR ");
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_ParametroDeveTerTipoCorreto()
+        {
+            // Arrange
+            int valorQuemAtu = 42;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.Should().BeOfType<int>();
+            parametro.Value.Should().Be(valorQuemAtu);
+        }
+
+#endregion
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoValorMinValue_NaoDeveIncluirNoFiltro()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = int.MinValue, // Valor que indica "não filtrar"
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
+            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_QuandoTemValor_DeveIncluirNoFiltro()
+        {
+            // Arrange
+            var valorQuemAtu = 1;
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Verifica se o WHERE contém a condição do QuemAtu
+            resultado.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.QuemAtu}] = @agtQuemAtu");
+            // Verifica se tem exatamente 1 parâmetro
+            resultado.Value.parametros.Should().HaveCount(1);
+            // Verifica o parâmetro específico
+            var parametro = resultado.Value.parametros.First();
+            parametro.ParameterName.Should().Be($"@agtQuemAtu");
+            parametro.Value.Should().Be(valorQuemAtu);
+        }
+
+        [Fact]
+        public void WFiltro_QuemAtu_ComOutrosCampos_DeveUsarLogicalOperator()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = 1,
+                Guid = "A", // Outro campo para testar o LogicalOperator
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            // Deve conter ambos os campos com AND entre eles
+            resultado.Value.where.Should().Contain($"@agtQuemAtu");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
+            resultado.Value.where.Should().Contain(" AND ");
+            // Deve ter 2 parâmetro(s)
+            resultado.Value.parametros.Should().HaveCount(2);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(999)]
+        public void WFiltro_QuemAtu_DiferentesValores_DeveFuncionar(int valorQuemAtu)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                QuemAtu = valorQuemAtu,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            resultado.Value.parametros.First().Value.Should().Be(valorQuemAtu);
+        }
+
 #region filtro.GUTGrupo_end Tests
         [Fact]
         public void WFiltro_GUTGrupo_end_QuandoDecimalMinValue_NaoDeveIncluirParametroOuCondicionaWhere()
@@ -847,7 +2250,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -866,7 +2269,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há GUTGrupo inicial válido, não deve incluir condição WHERE, mas o parâmetro GUTGrupo_end é adicionado
@@ -888,7 +2291,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -915,7 +2318,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -947,7 +2350,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -966,16 +2369,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 GUTGrupo = 1000,
                 GUTGrupo_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.GUTGrupo}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -990,11 +2393,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 GUTGrupo = 1000,
                 GUTGrupo_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -1009,11 +2412,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 GUTGrupo = 1000,
                 GUTGrupo_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1031,7 +2434,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -1049,7 +2452,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -1067,7 +2470,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -1088,7 +2491,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -1111,7 +2514,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -1129,7 +2532,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -1149,7 +2552,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.GUTGrupo == int.MinValue) && !(filtro.GUTGrupo_end == int.MinValue)
@@ -1169,7 +2572,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.GUTGrupo == int.MinValue) && filtro.GUTGrupo_end == int.MinValue
@@ -1192,7 +2595,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1210,7 +2613,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -1228,7 +2631,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -1252,7 +2655,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.GUTGrupo}");
@@ -1274,7 +2677,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1289,16 +2692,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTGrupo = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.GUTGrupo}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -1312,11 +2715,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTGrupo = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -1330,11 +2733,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTGrupo = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1348,11 +2751,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTGrupo = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1369,7 +2772,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -1386,7 +2789,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -1404,7 +2807,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -1421,7 +2824,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -1440,7 +2843,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1460,7 +2863,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -1478,7 +2881,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do GUTGrupo
@@ -1498,16 +2901,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTGrupo = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agtGUTGrupo");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -1526,7 +2929,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1544,7 +2947,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -1563,7 +2966,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há GUTPeriodicidade inicial válido, não deve incluir condição WHERE, mas o parâmetro GUTPeriodicidade_end é adicionado
@@ -1585,7 +2988,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -1612,7 +3015,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -1644,7 +3047,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -1663,16 +3066,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 GUTPeriodicidade = 1000,
                 GUTPeriodicidade_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.GUTPeriodicidade}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -1687,11 +3090,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 GUTPeriodicidade = 1000,
                 GUTPeriodicidade_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -1706,11 +3109,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 GUTPeriodicidade = 1000,
                 GUTPeriodicidade_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1728,7 +3131,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -1746,7 +3149,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -1764,7 +3167,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -1785,7 +3188,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -1808,7 +3211,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -1826,7 +3229,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -1846,7 +3249,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.GUTPeriodicidade == int.MinValue) && !(filtro.GUTPeriodicidade_end == int.MinValue)
@@ -1866,7 +3269,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.GUTPeriodicidade == int.MinValue) && filtro.GUTPeriodicidade_end == int.MinValue
@@ -1889,7 +3292,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1907,7 +3310,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -1925,7 +3328,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -1949,7 +3352,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.GUTPeriodicidade}");
@@ -1971,7 +3374,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1986,16 +3389,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTPeriodicidade = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.GUTPeriodicidade}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -2009,11 +3412,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTPeriodicidade = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -2027,11 +3430,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTPeriodicidade = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -2045,11 +3448,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTPeriodicidade = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -2066,7 +3469,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -2083,7 +3486,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -2101,7 +3504,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -2118,7 +3521,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -2137,7 +3540,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -2157,7 +3560,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -2175,7 +3578,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do GUTPeriodicidade
@@ -2195,16 +3598,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 GUTPeriodicidade = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agtGUTPeriodicidade");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -2223,7 +3626,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -2241,7 +3644,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -2260,7 +3663,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há Operador inicial válido, não deve incluir condição WHERE, mas o parâmetro Operador_end é adicionado
@@ -2282,7 +3685,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -2309,7 +3712,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -2341,7 +3744,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -2360,16 +3763,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Operador = 1000,
                 Operador_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Operador}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -2384,11 +3787,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Operador = 1000,
                 Operador_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -2403,11 +3806,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Operador = 1000,
                 Operador_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -2425,7 +3828,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -2443,7 +3846,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -2461,7 +3864,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -2482,7 +3885,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -2505,7 +3908,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -2523,7 +3926,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -2543,7 +3946,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Operador == int.MinValue) && !(filtro.Operador_end == int.MinValue)
@@ -2563,7 +3966,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Operador == int.MinValue) && filtro.Operador_end == int.MinValue
@@ -2586,7 +3989,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -2604,7 +4007,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -2622,7 +4025,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -2646,7 +4049,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.Operador}");
@@ -2668,7 +4071,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -2683,16 +4086,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Operador = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Operador}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -2706,11 +4109,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Operador = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -2724,11 +4127,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Operador = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -2742,11 +4145,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Operador = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -2763,7 +4166,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -2780,7 +4183,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -2798,7 +4201,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -2815,7 +4218,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -2834,7 +4237,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -2854,7 +4257,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -2872,7 +4275,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do Operador
@@ -2892,16 +4295,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Operador = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agtOperador");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -2920,7 +4323,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -2938,7 +4341,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -2957,7 +4360,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há DiasParaIniciar inicial válido, não deve incluir condição WHERE, mas o parâmetro DiasParaIniciar_end é adicionado
@@ -2979,7 +4382,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -3006,7 +4409,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -3038,7 +4441,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3057,16 +4460,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 DiasParaIniciar = 1000,
                 DiasParaIniciar_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.DiasParaIniciar}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -3081,11 +4484,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 DiasParaIniciar = 1000,
                 DiasParaIniciar_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -3100,11 +4503,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 DiasParaIniciar = 1000,
                 DiasParaIniciar_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -3122,7 +4525,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -3140,7 +4543,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -3158,7 +4561,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -3179,7 +4582,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3202,7 +4605,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -3220,7 +4623,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -3240,7 +4643,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.DiasParaIniciar == int.MinValue) && !(filtro.DiasParaIniciar_end == int.MinValue)
@@ -3260,7 +4663,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.DiasParaIniciar == int.MinValue) && filtro.DiasParaIniciar_end == int.MinValue
@@ -3283,7 +4686,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -3301,7 +4704,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -3319,7 +4722,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -3343,7 +4746,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.DiasParaIniciar}");
@@ -3365,7 +4768,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -3380,16 +4783,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 DiasParaIniciar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.DiasParaIniciar}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -3403,11 +4806,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 DiasParaIniciar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -3421,11 +4824,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 DiasParaIniciar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -3439,11 +4842,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 DiasParaIniciar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -3460,7 +4863,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -3477,7 +4880,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -3495,7 +4898,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -3512,7 +4915,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -3531,7 +4934,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -3551,7 +4954,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -3569,7 +4972,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do DiasParaIniciar
@@ -3589,16 +4992,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 DiasParaIniciar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agtDiasParaIniciar");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3617,7 +5020,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -3635,7 +5038,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -3654,7 +5057,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há MinutosParaRealizar inicial válido, não deve incluir condição WHERE, mas o parâmetro MinutosParaRealizar_end é adicionado
@@ -3676,7 +5079,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -3703,7 +5106,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -3735,7 +5138,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3754,16 +5157,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 MinutosParaRealizar = 1000,
                 MinutosParaRealizar_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.MinutosParaRealizar}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -3778,11 +5181,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 MinutosParaRealizar = 1000,
                 MinutosParaRealizar_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -3797,11 +5200,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 MinutosParaRealizar = 1000,
                 MinutosParaRealizar_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -3819,7 +5222,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -3837,7 +5240,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -3855,7 +5258,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -3876,7 +5279,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -3899,7 +5302,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -3917,7 +5320,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -3937,7 +5340,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.MinutosParaRealizar == int.MinValue) && !(filtro.MinutosParaRealizar_end == int.MinValue)
@@ -3957,7 +5360,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.MinutosParaRealizar == int.MinValue) && filtro.MinutosParaRealizar_end == int.MinValue
@@ -3980,7 +5383,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -3998,7 +5401,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -4016,7 +5419,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -4040,7 +5443,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.MinutosParaRealizar}");
@@ -4062,7 +5465,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -4077,16 +5480,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 MinutosParaRealizar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.MinutosParaRealizar}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -4100,11 +5503,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 MinutosParaRealizar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -4118,11 +5521,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 MinutosParaRealizar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -4136,11 +5539,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 MinutosParaRealizar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -4157,7 +5560,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -4174,7 +5577,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -4192,7 +5595,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -4209,7 +5612,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -4228,7 +5631,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -4248,7 +5651,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -4266,7 +5669,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do MinutosParaRealizar
@@ -4286,16 +5689,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 MinutosParaRealizar = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@agtMinutosParaRealizar");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -4314,7 +5717,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -4332,7 +5735,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -4351,7 +5754,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há Codigo_filtro inicial válido, não deve incluir condição WHERE, mas o parâmetro Codigo_filtro_end é adicionado
@@ -4373,7 +5776,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -4400,7 +5803,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -4432,7 +5835,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -4451,16 +5854,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Codigo_filtro = 1000,
                 Codigo_filtro_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.CampoCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 3 parâmetros (2 para salário + 1 para nome)
@@ -4475,11 +5878,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Codigo_filtro = 1000,
                 Codigo_filtro_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -4494,11 +5897,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Codigo_filtro = 1000,
                 Codigo_filtro_end = 5000,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -4516,7 +5919,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -4534,7 +5937,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -4552,7 +5955,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -4573,7 +5976,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -4596,7 +5999,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -4614,7 +6017,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -4634,7 +6037,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Codigo_filtro == int.MinValue) && !(filtro.Codigo_filtro_end == int.MinValue)
@@ -4654,7 +6057,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Codigo_filtro == int.MinValue) && filtro.Codigo_filtro_end == int.MinValue
@@ -4677,7 +6080,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -4695,7 +6098,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -4713,7 +6116,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -4737,7 +6140,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBGUTAtividadesDicInfo.CampoCodigo}");
@@ -4759,7 +6162,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -4774,16 +6177,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Codigo_filtro = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
+                Guid = "A", // Outro campo para testar o LogicalOperator // Outro campo INT para verificar a lógica AND
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.CampoCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             // Deve usar o operador lógico entre eles
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
@@ -4797,11 +6200,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Codigo_filtro = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -4815,11 +6218,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Codigo_filtro = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -4833,11 +6236,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Codigo_filtro = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -4854,7 +6257,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -4871,7 +6274,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -4889,7 +6292,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -4906,7 +6309,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -4925,7 +6328,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -4945,7 +6348,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -4963,7 +6366,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do Codigo_filtro
@@ -4983,16 +6386,16 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterGUTAtividades
             {
                 Codigo_filtro = 1,
-                Observacao = "A", // Outro campo para testar o LogicalOperator
+                Guid = "A", // Outro campo para testar o LogicalOperator
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.CampoCodigo}");
-            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Observacao}");
+            resultado.Value.where.Should().Contain($"@{DBGUTAtividadesDicInfo.Guid}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetro(s)
             resultado.Value.parametros.Should().HaveCount(2);
@@ -5011,7 +6414,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -5026,6 +6429,636 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         [InlineData("31/12/9999")] // Data máxima
         [InlineData("01/01/1900")] // Data muito antiga
         [InlineData("29/02/2024")] // Ano bissexto
+        public void WFiltro_DtCad_ComDatasExtremas_DeveProcessarCorretamente(string dataExtrema)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = dataExtrema,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.Should().BeOfType<DateTime>();
+        }
+
+        [Theory]
+        [InlineData("32/12/2023")] // Dia inválido
+        [InlineData("31/13/2023")] // Mês inválido
+        [InlineData("29/02/2023")] // Não é ano bissexto
+        [InlineData("abc/def/ghij")] // Formato completamente inválido
+        public void WFiltro_DtCad_ComDatasInvalidas_NaoDeveAdicionarParametros(string dataInvalida)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = dataInvalida,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().BeEmpty();
+            resultado.Value.where.Should().BeEmpty();
+        }
+
+#region DtCad Tests
+        [Fact]
+        public void WFiltro_DtCad_WhenEmptyOrNull_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = string.Empty,
+                DtCad_end = null,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenValidSingleDate_ShouldAddParameterAndGenerateWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = testDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            parameter.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.DtCad}");
+            parameter.Value.Should().BeOfType<DateTime>();
+            var expectedDate = DateTime.Parse(testDate);
+            ((DateTime)parameter.Value).Should().Be(expectedDate);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtCad}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtCad}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenValidDateRange_ShouldAddBothParametersAndGenerateBetweenClause()
+        {
+            // Arrange
+            var startDate = "01/06/2023";
+            var endDate = "30/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = startDate,
+                DtCad_end = endDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(2);
+            var startParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.DtCad}");
+            var endParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.DtCad}_end");
+            startParameter.Should().NotBeNull();
+            endParameter.Should().NotBeNull();
+            startParameter!.Value.Should().BeOfType<DateTime>();
+            endParameter!.Value.Should().BeOfType<DateTime>();
+            ((DateTime)startParameter.Value).Should().Be(DateTime.Parse(startDate));
+            ((DateTime)endParameter.Value).Should().Be(DateTime.Parse(endDate));
+            result.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.DtCad} BETWEEN @{DBGUTAtividadesDicInfo.DtCad} AND @{DBGUTAtividadesDicInfo.DtCad}_end");
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenInvalidDateFormat_ShouldNotAddParameter()
+        {
+            // Arrange
+            var invalidDate = "invalid-date";
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = invalidDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenStartDateValidButEndDateInvalid_ShouldOnlyAddStartParameterAndGenerateSingleDateClause()
+        {
+            // Arrange
+            var validStartDate = "15/06/2023";
+            var invalidEndDate = "invalid-date";
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = validStartDate,
+                DtCad_end = invalidEndDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            parameter.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.DtCad}");
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtCad}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtCad}, 103)");
+            result.Value.where.Should().NotContain("BETWEEN");
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenStartDateInvalidButEndDateValid_ShouldNotAddAnyParameters()
+        {
+            // Arrange
+            var invalidStartDate = "invalid-date";
+            var validEndDate = "30/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = invalidStartDate,
+                DtCad_end = validEndDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenWhitespaceOnlyDates_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = "   ",
+                DtCad_end = "\t\n",
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WithOtherFilters_ShouldIncludeLogicalOperatorInWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "A",
+                DtCad = testDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(2); // Nome + DtCad
+            result.Value.where.Should().Contain(TSql.And);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtCad}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtCad}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WithORLogicalOperator_ShouldUseORInWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "A",
+                DtCad = testDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.OR
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().Contain(TSql.OR);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtCad}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtCad}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenOnlyEndDateProvided_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = string.Empty,
+                DtCad_end = "30/06/2023",
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_WhenDateTimeMinValue_ShouldNotAddParameters()
+        {
+            // Arrange
+            var minValueDate = DateTime.MinValue.ToString("dd/MM/yyyy");
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = minValueDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            // The IsEmptyDX extension method should catch DateTime.MinValue and return true
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtCad_AsFirstFilter_ShouldNotIncludeLogicalOperatorAtStart()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = testDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().NotStartWith(TSql.And);
+            result.Value.where.Should().StartWith($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtCad}], 103)");
+        }
+
+        [Theory]
+        [InlineData("15/06/2023", "2023-06-15T00:00:00")]
+        [InlineData("01/01/2024", "2024-01-01T00:00:00")]
+        [InlineData("31/12/2022", "2022-12-31T00:00:00")]
+        public void WFiltro_DtCad_WhenVariousValidDateFormats_ShouldParseCorrectly(string inputDate, string expectedDateTimeString)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtCad = inputDate,
+                DtCad_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            var expectedDateTime = DateTime.Parse(expectedDateTimeString);
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            ((DateTime)parameter.Value).Should().Be(expectedDateTime);
+        }
+
+#endregion
+        [Theory]
+        [InlineData("31/12/9999")] // Data máxima
+        [InlineData("01/01/1900")] // Data muito antiga
+        [InlineData("29/02/2024")] // Ano bissexto
+        public void WFiltro_DtAtu_ComDatasExtremas_DeveProcessarCorretamente(string dataExtrema)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = dataExtrema,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.Should().BeOfType<DateTime>();
+        }
+
+        [Theory]
+        [InlineData("32/12/2023")] // Dia inválido
+        [InlineData("31/13/2023")] // Mês inválido
+        [InlineData("29/02/2023")] // Não é ano bissexto
+        [InlineData("abc/def/ghij")] // Formato completamente inválido
+        public void WFiltro_DtAtu_ComDatasInvalidas_NaoDeveAdicionarParametros(string dataInvalida)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = dataInvalida,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().BeEmpty();
+            resultado.Value.where.Should().BeEmpty();
+        }
+
+#region DtAtu Tests
+        [Fact]
+        public void WFiltro_DtAtu_WhenEmptyOrNull_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = string.Empty,
+                DtAtu_end = null,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenValidSingleDate_ShouldAddParameterAndGenerateWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = testDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            parameter.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.DtAtu}");
+            parameter.Value.Should().BeOfType<DateTime>();
+            var expectedDate = DateTime.Parse(testDate);
+            ((DateTime)parameter.Value).Should().Be(expectedDate);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtAtu}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtAtu}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenValidDateRange_ShouldAddBothParametersAndGenerateBetweenClause()
+        {
+            // Arrange
+            var startDate = "01/06/2023";
+            var endDate = "30/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = startDate,
+                DtAtu_end = endDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(2);
+            var startParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.DtAtu}");
+            var endParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.DtAtu}_end");
+            startParameter.Should().NotBeNull();
+            endParameter.Should().NotBeNull();
+            startParameter!.Value.Should().BeOfType<DateTime>();
+            endParameter!.Value.Should().BeOfType<DateTime>();
+            ((DateTime)startParameter.Value).Should().Be(DateTime.Parse(startDate));
+            ((DateTime)endParameter.Value).Should().Be(DateTime.Parse(endDate));
+            result.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].{DBGUTAtividadesDicInfo.DtAtu} BETWEEN @{DBGUTAtividadesDicInfo.DtAtu} AND @{DBGUTAtividadesDicInfo.DtAtu}_end");
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenInvalidDateFormat_ShouldNotAddParameter()
+        {
+            // Arrange
+            var invalidDate = "invalid-date";
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = invalidDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenStartDateValidButEndDateInvalid_ShouldOnlyAddStartParameterAndGenerateSingleDateClause()
+        {
+            // Arrange
+            var validStartDate = "15/06/2023";
+            var invalidEndDate = "invalid-date";
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = validStartDate,
+                DtAtu_end = invalidEndDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            parameter.ParameterName.Should().Be($"@{DBGUTAtividadesDicInfo.DtAtu}");
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtAtu}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtAtu}, 103)");
+            result.Value.where.Should().NotContain("BETWEEN");
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenStartDateInvalidButEndDateValid_ShouldNotAddAnyParameters()
+        {
+            // Arrange
+            var invalidStartDate = "invalid-date";
+            var validEndDate = "30/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = invalidStartDate,
+                DtAtu_end = validEndDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenWhitespaceOnlyDates_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = "   ",
+                DtAtu_end = "\t\n",
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WithOtherFilters_ShouldIncludeLogicalOperatorInWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "A",
+                DtAtu = testDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(2); // Nome + DtAtu
+            result.Value.where.Should().Contain(TSql.And);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtAtu}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtAtu}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WithORLogicalOperator_ShouldUseORInWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "A",
+                DtAtu = testDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.OR
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().Contain(TSql.OR);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtAtu}], 103) = CONVERT(DATE, @{DBGUTAtividadesDicInfo.DtAtu}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenOnlyEndDateProvided_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = string.Empty,
+                DtAtu_end = "30/06/2023",
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_WhenDateTimeMinValue_ShouldNotAddParameters()
+        {
+            // Arrange
+            var minValueDate = DateTime.MinValue.ToString("dd/MM/yyyy");
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = minValueDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            // The IsEmptyDX extension method should catch DateTime.MinValue and return true
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DtAtu_AsFirstFilter_ShouldNotIncludeLogicalOperatorAtStart()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = testDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().NotStartWith(TSql.And);
+            result.Value.where.Should().StartWith($"CONVERT(DATE,[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.DtAtu}], 103)");
+        }
+
+        [Theory]
+        [InlineData("15/06/2023", "2023-06-15T00:00:00")]
+        [InlineData("01/01/2024", "2024-01-01T00:00:00")]
+        [InlineData("31/12/2022", "2022-12-31T00:00:00")]
+        public void WFiltro_DtAtu_WhenVariousValidDateFormats_ShouldParseCorrectly(string inputDate, string expectedDateTimeString)
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                DtAtu = inputDate,
+                DtAtu_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            var expectedDateTime = DateTime.Parse(expectedDateTimeString);
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            ((DateTime)parameter.Value).Should().Be(expectedDateTime);
+        }
+
+#endregion
+        [Theory]
+        [InlineData("31/12/9999")] // Data máxima
+        [InlineData("01/01/1900")] // Data muito antiga
+        [InlineData("29/02/2024")] // Ano bissexto
         public void WFiltro_DataConcluido_ComDatasExtremas_DeveProcessarCorretamente(string dataExtrema)
         {
             // Arrange
@@ -5035,7 +7068,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -5057,7 +7090,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().BeEmpty();
@@ -5076,7 +7109,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().BeEmpty();
@@ -5095,7 +7128,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().HaveCount(1);
@@ -5120,7 +7153,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().HaveCount(2);
@@ -5147,7 +7180,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().BeEmpty();
@@ -5167,7 +7200,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().HaveCount(1);
@@ -5190,7 +7223,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().BeEmpty();
@@ -5208,7 +7241,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().BeEmpty();
@@ -5222,13 +7255,13 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var testDate = "15/06/2023";
             var filtro = new FilterGUTAtividades
             {
-                Observacao = "A",
+                Guid = "A",
                 DataConcluido = testDate,
                 DataConcluido_end = string.Empty,
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().HaveCount(2); // Nome + DataConcluido
@@ -5243,13 +7276,13 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var testDate = "15/06/2023";
             var filtro = new FilterGUTAtividades
             {
-                Observacao = "A",
+                Guid = "A",
                 DataConcluido = testDate,
                 DataConcluido_end = string.Empty,
                 LogicalOperator = TSql.OR
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().Contain(TSql.OR);
@@ -5267,7 +7300,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().BeEmpty();
@@ -5286,7 +7319,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             // The IsEmptyDX extension method should catch DateTime.MinValue and return true
@@ -5306,7 +7339,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = TSql.And
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().NotStartWith(TSql.And);
@@ -5328,7 +7361,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             };
             var expectedDateTime = DateTime.Parse(expectedDateTimeString);
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().HaveCount(1);
@@ -5339,6 +7372,122 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
 #endregion
 #endregion
 #region Bool Tests
+#region Visto Filter Tests
+        [Fact]
+        public void WFiltro_VistoEqualsIntMinValue_ShouldNotAddParameterOrWhereClause()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Visto = int.MinValue
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().NotContain(p => p.ParameterName.Contains(DBGUTAtividadesDicInfo.Visto));
+            result.Value.where.Should().NotContain(DBGUTAtividadesDicInfo.Visto);
+        }
+
+        [Fact]
+        public void WFiltro_VistoHasValidValue_ShouldAddParameterAndWhereClause()
+        {
+            // Arrange
+            var VistoValue = 1;
+            var filtro = new FilterGUTAtividades
+            {
+                Visto = VistoValue,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            // Check parameter
+            var VistoParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.Visto}");
+            VistoParameter.Should().NotBeNull();
+            VistoParameter.Value.Should().Be(VistoValue);
+            // Check where clause
+            result.Value.where.Should().Contain($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Visto}] = @{DBGUTAtividadesDicInfo.Visto}");
+        }
+
+        [Fact]
+        public void WFiltro_VistoWithDifferentValues_ShouldAddCorrectParameterValue()
+        {
+            // Arrange & Act & Assert for Visto = 0 (typically female)
+            var filtroFemale = new FilterGUTAtividades
+            {
+                Visto = 0
+            };
+            var resultFemale = _serviceS.WFiltro(filtroFemale);
+            resultFemale.Should().NotBeNull();
+            var femaleParam = resultFemale.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.Visto}");
+            femaleParam.Should().NotBeNull();
+            femaleParam.Value.Should().Be(0);
+            // Arrange & Act & Assert for Visto = 1 (typically male)
+            var filtroMale = new FilterGUTAtividades
+            {
+                Visto = 1
+            };
+            var resultMale = _serviceS.WFiltro(filtroMale);
+            resultMale.Should().NotBeNull();
+            var maleParam = resultMale.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.Visto}");
+            maleParam.Should().NotBeNull();
+            maleParam.Value.Should().Be(1);
+        }
+
+        [Fact]
+        public void WFiltro_VistoAsFirstFilter_ShouldNotIncludeLogicalOperatorInWhereClause()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Visto = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().StartWith($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Visto}] = @{DBGUTAtividadesDicInfo.Visto}");
+            result.Value.where.Should().NotStartWith(" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_VistoWithOtherFilters_ShouldIncludeLogicalOperatorInWhereClause()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "Guid",
+                Visto = 1,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().Contain($" AND ");
+        }
+
+        [Fact]
+        public void WFiltro_VistoWithORLogicalOperator_ShouldUseORInWhereClause()
+        {
+            // Arrange
+            var filtro = new FilterGUTAtividades
+            {
+                Guid = "Guid",
+                Visto = 1,
+                LogicalOperator = " OR "
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().Contain(" OR ");
+        }
+
+#endregion
 #region Concluido Filter Tests
         [Fact]
         public void WFiltro_ConcluidoEqualsIntMinValue_ShouldNotAddParameterOrWhereClause()
@@ -5349,7 +7498,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 Concluido = int.MinValue
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().NotContain(p => p.ParameterName.Contains(DBGUTAtividadesDicInfo.Concluido));
@@ -5367,7 +7516,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             // Check parameter
@@ -5386,7 +7535,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Concluido = 0
             };
-            var resultFemale = _service.WFiltro(filtroFemale);
+            var resultFemale = _serviceS.WFiltro(filtroFemale);
             resultFemale.Should().NotBeNull();
             var femaleParam = resultFemale.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.Concluido}");
             femaleParam.Should().NotBeNull();
@@ -5396,7 +7545,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Concluido = 1
             };
-            var resultMale = _service.WFiltro(filtroMale);
+            var resultMale = _serviceS.WFiltro(filtroMale);
             resultMale.Should().NotBeNull();
             var maleParam = resultMale.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBGUTAtividadesDicInfo.Concluido}");
             maleParam.Should().NotBeNull();
@@ -5413,7 +7562,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().StartWith($"[{DBGUTAtividadesDicInfo.PTabelaNome}].[{DBGUTAtividadesDicInfo.Concluido}] = @{DBGUTAtividadesDicInfo.Concluido}");
@@ -5426,12 +7575,12 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterGUTAtividades
             {
-                Observacao = "Observacao",
+                Guid = "Guid",
                 Concluido = 1,
                 LogicalOperator = " AND "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().Contain($" AND ");
@@ -5443,12 +7592,12 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterGUTAtividades
             {
-                Observacao = "Observacao",
+                Guid = "Guid",
                 Concluido = 1,
                 LogicalOperator = " OR "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().Contain(" OR ");

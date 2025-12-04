@@ -23,12 +23,6 @@ public partial class FFaseFactory : IFFaseFactory, IDisposable
         return FFase.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FFase> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FFase().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FFase> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FFaseFactory : IFFaseFactory, IDisposable
         return FFase.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FFase> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FFase().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FFaseFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

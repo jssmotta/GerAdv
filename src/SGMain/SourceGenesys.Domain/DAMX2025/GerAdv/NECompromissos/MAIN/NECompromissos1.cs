@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBNECompromissos : VAuditor, ICadastros
+public partial class DBNECompromissos : VAuditor, ICrud
 {
 #region TableDefinition_NECompromissos
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBNECompromissos : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBNECompromissos : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -73,15 +73,15 @@ public partial class DBNECompromissos : VAuditor, ICadastros
         }
 
         if (pFldFPalavraChave)
-            clsW.Fields(DBNECompromissosDicInfo.PalavraChave, m_FPalavraChave, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNECompromissosDicInfo.PalavraChave, FPalavraChave, EGenericTypeFields.FNumberNull);
         if (pFldFProvisionar || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNECompromissosDicInfo.Provisionar, m_FProvisionar, ETiposCampos.FBoolean);
+            clsW.Fields(DBNECompromissosDicInfo.Provisionar, FProvisionar, EGenericTypeFields.FBoolean);
         if (pFldFTipoCompromisso)
-            clsW.Fields(DBNECompromissosDicInfo.TipoCompromisso, m_FTipoCompromisso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNECompromissosDicInfo.TipoCompromisso, FTipoCompromisso, EGenericTypeFields.FNumberNull);
         if (pFldFTextoCompromisso)
-            clsW.Fields(DBNECompromissosDicInfo.TextoCompromisso, m_FTextoCompromisso, ETiposCampos.FString);
+            clsW.Fields(DBNECompromissosDicInfo.TextoCompromisso, FTextoCompromisso, EGenericTypeFields.FString);
         if (pFldFBold || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNECompromissosDicInfo.Bold, m_FBold, ETiposCampos.FBoolean);
+            clsW.Fields(DBNECompromissosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_NECompromissos)
         if (clsW.HasUpdates)
         {
@@ -96,15 +96,15 @@ public partial class DBNECompromissos : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBNECompromissosDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNECompromissosDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBNECompromissosDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBNECompromissosDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBNECompromissosDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBNECompromissosDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBNECompromissosDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBNECompromissosDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBNECompromissosDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBNECompromissosDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

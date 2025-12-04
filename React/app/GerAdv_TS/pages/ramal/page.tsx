@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { RamalGridAdapter } from '@/app/GerAdv_TS/Ramal/Adapter/RamalGridAdapter';
 import RamalGridContainer from '@/app/GerAdv_TS/Ramal/Components/RamalGridContainer';
+
 const RamalPage: React.FC = () => {
-  const RamalGrid = new RamalGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Ramal' />
-    <RamalGridContainer grid={RamalGrid} />
-  </PageLayout>
-);
+    const RamalGrid = new RamalGridAdapter();
+
+    return (
+        <PageLayout>            
+            <RamalGridContainer grid={RamalGrid} />
+        </PageLayout>
+    );
 };
+
 export default RamalPage;

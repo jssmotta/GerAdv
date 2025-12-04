@@ -74,9 +74,9 @@ public class GUTPeriodicidadeWriterTests
         var result = await _gutperiodicidadeWriter.WriteAsync(gutperiodicidade, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFGUTPeriodicidade.Object);
+        _mockFGUTPeriodicidade.VerifySet(x => x.FGuid = gutperiodicidade.Guid, Times.Once);
         _mockFGUTPeriodicidade.VerifySet(x => x.FNome = gutperiodicidade.Nome, Times.Once);
         _mockFGUTPeriodicidade.VerifySet(x => x.FIntervaloDias = gutperiodicidade.IntervaloDias, Times.Once);
-        _mockFGUTPeriodicidade.VerifySet(x => x.FGUID = gutperiodicidade.GUID, Times.Once);
         _mockFGUTPeriodicidade.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class GUTPeriodicidadeWriterTests
         var operadorId = 456;
         _mockGUTPeriodicidadeFactory.Setup(x => x.DeleteAsync(operadorId, gutperiodicidadeResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _gutperiodicidadeWriter.Delete(gutperiodicidadeResponse, operadorId, _mockConnection.Object);
+        await _gutperiodicidadeWriter.DeleteAsync(gutperiodicidadeResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGUTPeriodicidadeFactory.Verify(x => x.DeleteAsync(operadorId, gutperiodicidadeResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class GUTPeriodicidadeWriterTests
         var operadorId = 111;
         _mockGUTPeriodicidadeFactory.Setup(x => x.DeleteAsync(operadorId, gutperiodicidadeResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _gutperiodicidadeWriter.Delete(gutperiodicidadeResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _gutperiodicidadeWriter.DeleteAsync(gutperiodicidadeResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class GUTPeriodicidadeWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGUTPeriodicidadeFactory.Setup(x => x.DeleteAsync(operadorId, gutperiodicidadeResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutperiodicidadeWriter.Delete(gutperiodicidadeResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gutperiodicidadeWriter.DeleteAsync(gutperiodicidadeResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class GUTPeriodicidadeWriterTests
         return new Models.GUTPeriodicidade
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
-            IntervaloDias = 1,
-            GUID = Guid.NewGuid().ToString()
+            IntervaloDias = 1
         };
     }
 #endregion

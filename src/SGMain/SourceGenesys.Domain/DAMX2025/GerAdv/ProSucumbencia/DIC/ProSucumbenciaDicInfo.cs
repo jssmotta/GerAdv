@@ -17,7 +17,7 @@ public static partial class DBProSucumbenciaDicInfo
     public const string TipoOrigemSucumbencia = "scbTipoOrigemSucumbencia"; // LOCALIZACAO 170523
     public const string Valor = "scbValor"; // LOCALIZACAO 170523
     public const string Percentual = "scbPercentual"; // LOCALIZACAO 170523
-    public const string GUID = "scbGUID"; // LOCALIZACAO 170523
+    public const string Guid = "scbGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "scbQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "scbDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "scbQuemAtu"; // LOCALIZACAO 170523
@@ -43,66 +43,19 @@ public static partial class DBProSucumbenciaDicInfo
 
     public const string PTabelaNome = "ProSucumbencia";
 #region PropriedadesDaTabela
-    public static DBInfoSystem ScbProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, "Instancia", "Instancia", ETipoDadosSysteminfo.SysteminfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false)
-    {
-        Prefixo = "scb"
-    }; // DBI 11 
-    public static DBInfoSystem ScbData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbNome => new(0, PTabelaNome, CampoCodigo, Nome, 2048, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbTipoOrigemSucumbencia => new(0, PTabelaNome, CampoCodigo, TipoOrigemSucumbencia, "TipoOrigemSucumbencia", "TipoOrigemSucumbencia", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoOrigemSucumbenciaDicInfo.CampoCodigo, DBTipoOrigemSucumbenciaDicInfo.TabelaNome, new DBTipoOrigemSucumbenciaODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    }; // DBI 11 
-    public static DBInfoSystem ScbValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbPercentual => new(0, PTabelaNome, CampoCodigo, Percentual, 5, "Percentual", "Percentual", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    }; // DBI 11 
-    public static DBInfoSystem ScbDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "scb"
-    }; // DBI 11 
-    public static DBInfoSystem ScbDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "scb"
-    };
-    public static DBInfoSystem ScbVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "scb"
-    };
+    public static DBInfoSystem ScbProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "scb", isRequired: true);
+    public static DBInfoSystem ScbInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, Instancia, Instancia, EDataTypeSystemInfo.SystemInfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false, prefixo: "scb"); // DBI 11 
+    public static DBInfoSystem ScbData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "scb", isRequired: true);
+    public static DBInfoSystem ScbNome => new(0, PTabelaNome, CampoCodigo, Nome, 2048, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "scb", isRequired: true);
+    public static DBInfoSystem ScbTipoOrigemSucumbencia => new(0, PTabelaNome, CampoCodigo, TipoOrigemSucumbencia, TipoOrigemSucumbencia, TipoOrigemSucumbencia, EDataTypeSystemInfo.SystemInfoForeingkey, DBTipoOrigemSucumbenciaDicInfo.CampoCodigo, DBTipoOrigemSucumbenciaDicInfo.TabelaNome, new DBTipoOrigemSucumbenciaODicInfo(), false, prefixo: "scb", isRequired: true); // DBI 11 
+    public static DBInfoSystem ScbValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "scb");
+    public static DBInfoSystem ScbPercentual => new(0, PTabelaNome, CampoCodigo, Percentual, 5, Percentual, Percentual, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "scb");
+    public static DBInfoSystem ScbGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "scb", isRequired: true);
+    public static DBInfoSystem ScbQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "scb", isRequired: true); // DBI 11 
+    public static DBInfoSystem ScbDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "scb", isRequired: true);
+    public static DBInfoSystem ScbQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "scb"); // DBI 11 
+    public static DBInfoSystem ScbDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "scb");
+    public static DBInfoSystem ScbVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "scb", isRequired: true);
 
 #endregion
     [Serializable]

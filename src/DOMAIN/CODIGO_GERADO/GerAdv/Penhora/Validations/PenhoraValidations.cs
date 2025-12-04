@@ -28,8 +28,6 @@ public class PenhoraValidation : IPenhoraValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBPenhoraDicInfo.PhrNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBPenhoraDicInfo.PhrNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBPenhoraDicInfo.PhrGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBPenhoraDicInfo.PhrGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class PenhoraValidation : IPenhoraValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -54,7 +54,7 @@ public class PenhoraValidation : IPenhoraValidation
         // PenhoraStatus
         if (!reg.PenhoraStatus.IsEmptyIDNumber())
         {
-            var regPenhoraStatus = await penhorastatusReader.Read(reg.PenhoraStatus, oCnn);
+            var regPenhoraStatus = await penhorastatusReader.ReadAsync(reg.PenhoraStatus, oCnn);
             if (regPenhoraStatus == null || regPenhoraStatus.Id != reg.PenhoraStatus)
             {
                 throw new SGValidationException($"Penhora Status não encontrado ({regPenhoraStatus?.Id}).");

@@ -22,7 +22,7 @@ public class DBParceriaProcUpdate : IDisposable
         var parceriaproc = new DBParceriaProc();
         // Assert
         parceriaproc.Should().NotBeNull();
-        parceriaproc.ITabelaName().Should().Be("ParceriaProc");
+        parceriaproc.ITableName().Should().Be("ParceriaProc");
         parceriaproc.ID.Should().Be(0);
     }
 
@@ -32,9 +32,9 @@ public class DBParceriaProcUpdate : IDisposable
         // Arrange
         var parceriaproc = new DBParceriaProc
         {
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
-    // Assert - All properties should be set parceriaproc.FGUID.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    // Assert - All properties should be set parceriaproc.FGuid.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -43,23 +43,23 @@ public class DBParceriaProcUpdate : IDisposable
         // Arrange
         var parceriaproc = new DBParceriaProc();
         var longString = new string ('X', 300);
-        parceriaproc.FGUID = longString; // MAX: 100
-    // Assert - All properties should be set parceriaproc.FGUID.Should().HaveLength(100);
+        parceriaproc.FGuid = longString; // MAX: 100
+    // Assert - All properties should be set parceriaproc.FGuid.Should().HaveLength(100);
     }
 
-#region Testes de GUID
+#region Testes de Guid
     [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
+    public void Guid_DefaultValue_ShouldBeEmpty()
     {
-        Assert.Equal(string.Empty, _instance.FGUID);
+        Assert.Equal(string.Empty, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
+    public void Guid_SetValidGuid_ShouldStore()
     {
         var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
     }
 
 #endregion

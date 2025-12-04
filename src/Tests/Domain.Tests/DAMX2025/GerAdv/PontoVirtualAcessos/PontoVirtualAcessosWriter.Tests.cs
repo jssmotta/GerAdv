@@ -75,9 +75,24 @@ public class PontoVirtualAcessosWriterTests
         // Assert
         result.Should().Be(_mockFPontoVirtualAcessos.Object);
         _mockFPontoVirtualAcessos.VerifySet(x => x.FOperador = pontovirtualacessos.Operador, Times.Once);
-        _mockFPontoVirtualAcessos.VerifySet(x => x.FDataHora = pontovirtualacessos.DataHora, Times.Once);
+        _mockFPontoVirtualAcessos.VerifySet(x => x.FDataHora = pontovirtualacessos.DataHora.ToString(), Times.Once);
         _mockFPontoVirtualAcessos.VerifySet(x => x.FTipo = pontovirtualacessos.Tipo, Times.Once);
         _mockFPontoVirtualAcessos.VerifySet(x => x.FOrigem = pontovirtualacessos.Origem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullDataHora_ShouldNotSetFDataHora()
+    {
+        // Arrange
+        var pontovirtualacessos = CreateValidPontoVirtualAcessosModel();
+        pontovirtualacessos.DataHora = null;
+        var auditorQuem = 123;
+        _mockPontoVirtualAcessosFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFPontoVirtualAcessos.Object);
+        _mockFPontoVirtualAcessos.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _pontovirtualacessosWriter.WriteAsync(pontovirtualacessos, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFPontoVirtualAcessos.VerifySet(x => x.FDataHora = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -120,7 +135,7 @@ public class PontoVirtualAcessosWriterTests
         var operadorId = 456;
         _mockPontoVirtualAcessosFactory.Setup(x => x.DeleteAsync(operadorId, pontovirtualacessosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _pontovirtualacessosWriter.Delete(pontovirtualacessosResponse, operadorId, _mockConnection.Object);
+        await _pontovirtualacessosWriter.DeleteAsync(pontovirtualacessosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockPontoVirtualAcessosFactory.Verify(x => x.DeleteAsync(operadorId, pontovirtualacessosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +151,7 @@ public class PontoVirtualAcessosWriterTests
         var operadorId = 111;
         _mockPontoVirtualAcessosFactory.Setup(x => x.DeleteAsync(operadorId, pontovirtualacessosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _pontovirtualacessosWriter.Delete(pontovirtualacessosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _pontovirtualacessosWriter.DeleteAsync(pontovirtualacessosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +168,7 @@ public class PontoVirtualAcessosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockPontoVirtualAcessosFactory.Setup(x => x.DeleteAsync(operadorId, pontovirtualacessosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _pontovirtualacessosWriter.Delete(pontovirtualacessosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _pontovirtualacessosWriter.DeleteAsync(pontovirtualacessosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,7 +199,7 @@ public class PontoVirtualAcessosWriterTests
         {
             Id = 0,
             Operador = 1,
-            DataHora = "27/05/2022",
+            DataHora = "04:04",
             Tipo = false,
             Origem = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };

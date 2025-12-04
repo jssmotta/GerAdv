@@ -20,10 +20,10 @@ namespace MenphisSI.GerAdv.Models
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// GUID - tesGUID - tamanho máximo: 150 
+        /// GUID - tesGuid - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -42,9 +42,9 @@ namespace MenphisSI.GerAdv.Models.All
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// GUID - tesGUID - tamanho máximo: 150 
+        /// GUID - tesGuid - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

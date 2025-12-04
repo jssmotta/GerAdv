@@ -40,12 +40,25 @@ public class DBGUTAtividadesTests : IDisposable
         dt.Columns.Add("agtGUTGrupo", typeof(int));
         dt.Columns.Add("agtGUTPeriodicidade", typeof(int));
         dt.Columns.Add("agtOperador", typeof(int));
-        dt.Columns.Add("agtGUID", typeof(string));
         dt.Columns.Add("agtConcluido", typeof(string));
         dt.Columns.Add("agtDataConcluido", typeof(DateTime));
         dt.Columns.Add("agtDiasParaIniciar", typeof(int));
         dt.Columns.Add("agtMinutosParaRealizar", typeof(int));
+        dt.Columns.Add("agtGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["agtCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBGUTAtividades(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -66,7 +79,7 @@ public class DBGUTAtividadesTests : IDisposable
     {
         var instance = new DBGUTAtividades();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("GUTAtividades", instance.ITabelaName());
+        Assert.Equal("GUTAtividades", instance.ITableName());
         Assert.Equal("agt", instance.Prefixo);
     }
 
@@ -84,29 +97,16 @@ public class DBGUTAtividadesTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["agtCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBGUTAtividades(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("GUTAtividades", cadastro.ITabelaName());
-        Assert.Equal("agtCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("agtNome", cadastro.ICampoNome());
-        Assert.Equal("agt", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("GUTAtividades", cadastro.ITableName());
+        Assert.Equal("agtCodigo", cadastro.IFieldId());
+        Assert.Equal("agtNome", cadastro.IFieldNameDescription());
+        Assert.Equal("agt", cadastro.IPrefix());
     }
 
 #endregion
@@ -166,9 +166,9 @@ public class DBGUTAtividadesTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -258,24 +258,6 @@ public class DBGUTAtividadesTests : IDisposable
     }
 
     [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 50 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 50);
-    }
-
-    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void Concluido_ShouldAcceptBooleanValues(bool value)
@@ -344,6 +326,24 @@ public class DBGUTAtividadesTests : IDisposable
     {
         var instance = new DBGUTAtividades();
         Assert.Equal(0, instance.FMinutosParaRealizar);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 50 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 50);
     }
 
     public virtual void Dispose()

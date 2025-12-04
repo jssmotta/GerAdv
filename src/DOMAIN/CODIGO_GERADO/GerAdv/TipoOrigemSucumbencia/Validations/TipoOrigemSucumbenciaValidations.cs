@@ -23,7 +23,7 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var prosucumbenciaExists0 = await prosucumbenciaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProSucumbencia { TipoOrigemSucumbencia = id ?? default }, uri);
         if (prosucumbenciaExists0 != null && prosucumbenciaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Sucumbencia associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Pro Sucumbencia associados a ele.");
         return true;
     }
 
@@ -40,6 +40,8 @@ public class TipoOrigemSucumbenciaValidation : ITipoOrigemSucumbenciaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         if (await IsDuplicado(reg, service, uri))
             throw new SGValidationException($"Tipo Origem Sucumbencia '{reg.Nome}'  - Nome");
         var validSizes = ValidSizes(reg);

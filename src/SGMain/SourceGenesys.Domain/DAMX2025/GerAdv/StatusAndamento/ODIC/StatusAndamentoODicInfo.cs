@@ -9,25 +9,29 @@ public partial class DBStatusAndamentoODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBStatusAndamentoDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBStatusAndamentoDicInfo.CampoCodigo;
+    public string IFieldId() => DBStatusAndamentoDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBStatusAndamentoDicInfo.TablePrefix;
+    public string IPrefix() => DBStatusAndamentoDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBStatusAndamentoDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBStatusAndamentoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBStatusAndamentoODicInfo : IODicInfo
     public static string TCampoNome => DBStatusAndamentoDicInfo.CampoNome;
     public static string TTabelaNome => DBStatusAndamentoDicInfo.TabelaNome;
     public static string TTablePrefix => DBStatusAndamentoDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanGUID, DBStatusAndamentoDicInfo.SanIcone, DBStatusAndamentoDicInfo.SanBold, DBStatusAndamentoDicInfo.SanQuemCad, DBStatusAndamentoDicInfo.SanDtCad, DBStatusAndamentoDicInfo.SanQuemAtu, DBStatusAndamentoDicInfo.SanDtAtu, DBStatusAndamentoDicInfo.SanVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanGUID, DBStatusAndamentoDicInfo.SanIcone];
+    public static ImmutableArray<DBInfoSystem> List => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanIcone, DBStatusAndamentoDicInfo.SanBold, DBStatusAndamentoDicInfo.SanGuid, DBStatusAndamentoDicInfo.SanQuemCad, DBStatusAndamentoDicInfo.SanDtCad, DBStatusAndamentoDicInfo.SanQuemAtu, DBStatusAndamentoDicInfo.SanDtAtu, DBStatusAndamentoDicInfo.SanVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBStatusAndamentoDicInfo.SanNome, DBStatusAndamentoDicInfo.SanIcone, DBStatusAndamentoDicInfo.SanBold, DBStatusAndamentoDicInfo.SanGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["sanCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBStatusAndamentoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["sanCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBStatusAndamentoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

@@ -49,14 +49,16 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
             throw new SGValidationException($"EMail em formato inválido.");
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -72,7 +74,7 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
         // Oponentes
         if (!reg.Oponente.IsEmptyIDNumber())
         {
-            var regOponentes = await oponentesReader.Read(reg.Oponente, oCnn);
+            var regOponentes = await oponentesReader.ReadAsync(reg.Oponente, oCnn);
             if (regOponentes == null || regOponentes.Id != reg.Oponente)
             {
                 throw new SGValidationException($"Oponentes não encontrado ({regOponentes?.Id}).");
@@ -82,7 +84,7 @@ public class OponentesRepLegalValidation : IOponentesRepLegalValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

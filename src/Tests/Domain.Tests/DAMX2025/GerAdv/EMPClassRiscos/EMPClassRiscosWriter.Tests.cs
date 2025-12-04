@@ -74,8 +74,8 @@ public class EMPClassRiscosWriterTests
         var result = await _empclassriscosWriter.WriteAsync(empclassriscos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFEMPClassRiscos.Object);
+        _mockFEMPClassRiscos.VerifySet(x => x.FGuid = empclassriscos.Guid, Times.Once);
         _mockFEMPClassRiscos.VerifySet(x => x.FNome = empclassriscos.Nome, Times.Once);
-        _mockFEMPClassRiscos.VerifySet(x => x.FGUID = empclassriscos.GUID, Times.Once);
         _mockFEMPClassRiscos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class EMPClassRiscosWriterTests
         var operadorId = 456;
         _mockEMPClassRiscosFactory.Setup(x => x.DeleteAsync(operadorId, empclassriscosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _empclassriscosWriter.Delete(empclassriscosResponse, operadorId, _mockConnection.Object);
+        await _empclassriscosWriter.DeleteAsync(empclassriscosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockEMPClassRiscosFactory.Verify(x => x.DeleteAsync(operadorId, empclassriscosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class EMPClassRiscosWriterTests
         var operadorId = 111;
         _mockEMPClassRiscosFactory.Setup(x => x.DeleteAsync(operadorId, empclassriscosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _empclassriscosWriter.Delete(empclassriscosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _empclassriscosWriter.DeleteAsync(empclassriscosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class EMPClassRiscosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockEMPClassRiscosFactory.Setup(x => x.DeleteAsync(operadorId, empclassriscosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _empclassriscosWriter.Delete(empclassriscosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _empclassriscosWriter.DeleteAsync(empclassriscosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class EMPClassRiscosWriterTests
         return new Models.EMPClassRiscos
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

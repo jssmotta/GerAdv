@@ -67,7 +67,7 @@ public class ContaCorrenteValidationTests : IDisposable
             Processo = 0,
             ParcelaX = 0,
             Valor = 1m,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Cliente = 0,
             Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Contrato = true,
@@ -88,7 +88,7 @@ public class ContaCorrenteValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockContaCorrenteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContaCorrente>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ContaCorrentes service mock
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -96,7 +96,7 @@ public class ContaCorrenteValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockContaCorrenteService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterContaCorrente>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ContaCorrentes service mock
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = 0 }));
     }
 
     [Fact]
@@ -202,6 +202,74 @@ public class ContaCorrenteValidationTests : IDisposable
     }
 
 #endregion
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var contacorrente = CreateValidContaCorrente();
+        contacorrente.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var contacorrente = CreateValidContaCorrente();
+        contacorrente.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var contacorrente = CreateValidContaCorrente();
+        contacorrente.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var contacorrente = CreateValidContaCorrente();
+        contacorrente.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var contacorrente = CreateValidContaCorrente();
+        contacorrente.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region DataPgto Validation Tests
     [Theory]
     [InlineData("01/01/1899")]
@@ -277,7 +345,7 @@ public class ContaCorrenteValidationTests : IDisposable
         // Arrange
         var contacorrente = CreateValidContaCorrente();
         contacorrente.Cliente = 999;
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -294,7 +362,7 @@ public class ContaCorrenteValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object));
@@ -311,7 +379,7 @@ public class ContaCorrenteValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockClientesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockClientesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
@@ -331,7 +399,7 @@ public class ContaCorrenteValidationTests : IDisposable
         var result = await _validation.ValidateReg(contacorrente, _mockContaCorrenteService.Object, _mockClientesReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockClientesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockClientesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

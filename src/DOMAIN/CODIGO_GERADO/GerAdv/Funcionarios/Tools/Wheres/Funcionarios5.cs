@@ -20,7 +20,6 @@ public partial class FuncionariosWhere(IFFuncionariosFactory funcionariosFactory
         var funcionarios = new FuncionariosResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             EMailPro = dbRec.FEMailPro ?? string.Empty,
             Cargo = dbRec.FCargo,
             Nome = dbRec.FNome ?? string.Empty,
@@ -43,33 +42,42 @@ public partial class FuncionariosWhere(IFFuncionariosFactory funcionariosFactory
             CTPSSerie = dbRec.FCTPSSerie ?? string.Empty,
             PIS = dbRec.FPIS ?? string.Empty,
             Salario = dbRec.FSalario,
-            Data = dbRec.FData ?? string.Empty,
             LiberaAgenda = dbRec.FLiberaAgenda,
             Pasta = dbRec.FPasta ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini.ToString(), out DateTime XPeriodo_Ini))
         {
-            funcionarios.Periodo_Ini = dbRec.FPeriodo_Ini;
+            funcionarios.Periodo_Ini = XPeriodo_Ini.ToString("dd/MM/yyyy");
             funcionarios.Periodo_Ini_date = XPeriodo_Ini;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim.ToString(), out DateTime XPeriodo_Fim))
         {
-            funcionarios.Periodo_Fim = dbRec.FPeriodo_Fim;
+            funcionarios.Periodo_Fim = XPeriodo_Fim.ToString("dd/MM/yyyy");
             funcionarios.Periodo_Fim_date = XPeriodo_Fim;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao.ToString(), out DateTime XCTPSDtEmissao))
         {
-            funcionarios.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
+            funcionarios.CTPSDtEmissao = XCTPSDtEmissao.ToString("dd/MM/yyyy");
             funcionarios.CTPSDtEmissao_date = XCTPSDtEmissao;
         }
 
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            funcionarios.DtNasc = dbRec.FDtNasc;
+            funcionarios.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             funcionarios.DtNasc_date = XDtNasc;
+        }
+
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            funcionarios.Data = XData.ToString("dd/MM/yyyy");
+            funcionarios.Data_date = XData;
         }
 
         return funcionarios;

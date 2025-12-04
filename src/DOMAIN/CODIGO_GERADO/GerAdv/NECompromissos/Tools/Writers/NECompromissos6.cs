@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface INECompromissosWriter
 {
     Task<FNECompromissos> WriteAsync(Models.NECompromissos necompromissos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class NECompromissosWriter(IFNECompromissosFactory necompromissosFactory) : INECompromissosWriter
 {
     private readonly IFNECompromissosFactory _necompromissosFactory = necompromissosFactory ?? throw new ArgumentNullException(nameof(necompromissosFactory));
-    public virtual async Task Delete(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(NECompromissosResponse necompromissos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _necompromissosFactory.DeleteAsync(operadorId, necompromissos.Id, oCnn);
     }
@@ -27,6 +27,7 @@ public class NECompromissosWriter(IFNECompromissosFactory necompromissosFactory)
         dbRec.FProvisionar = necompromissos.Provisionar;
         dbRec.FTipoCompromisso = necompromissos.TipoCompromisso;
         dbRec.FTextoCompromisso = necompromissos.TextoCompromisso;
+        dbRec.FBold = necompromissos.Bold;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

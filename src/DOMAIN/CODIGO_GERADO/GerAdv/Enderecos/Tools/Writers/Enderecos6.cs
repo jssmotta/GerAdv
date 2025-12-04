@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IEnderecosWriter
 {
     Task<FEnderecos> WriteAsync(Models.Enderecos enderecos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(EnderecosResponse enderecos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class EnderecosWriter(IFEnderecosFactory enderecosFactory) : IEnderecosWriter
 {
     private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory ?? throw new ArgumentNullException(nameof(enderecosFactory));
-    public virtual async Task Delete(EnderecosResponse enderecos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(EnderecosResponse enderecos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _enderecosFactory.DeleteAsync(operadorId, enderecos.Id, oCnn);
     }
@@ -24,11 +24,13 @@ public class EnderecosWriter(IFEnderecosFactory enderecosFactory) : IEnderecosWr
     {
         using var dbRec = await (enderecos.Id.IsEmptyIDNumber() ? _enderecosFactory.CreateAsync() : _enderecosFactory.CreateFromIdAsync(enderecos.Id, oCnn));
         dbRec.FTopIndex = enderecos.TopIndex;
-        dbRec.FGUID = enderecos.GUID;
         dbRec.FDescricao = enderecos.Descricao;
         dbRec.FContato = enderecos.Contato;
-        if (enderecos.DtNasc != null)
-            dbRec.FDtNasc = enderecos.DtNasc.ToString();
+        if (enderecos.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(enderecos.DtNasc));
+        }
+
         dbRec.FEndereco = enderecos.Endereco;
         dbRec.FBairro = enderecos.Bairro;
         dbRec.FPrivativo = enderecos.Privativo;
@@ -45,6 +47,10 @@ public class EnderecosWriter(IFEnderecosFactory enderecosFactory) : IEnderecosWr
         dbRec.FQuem = enderecos.Quem;
         dbRec.FQuemIndicou = enderecos.QuemIndicou;
         dbRec.FReportECBOnly = enderecos.ReportECBOnly;
+        dbRec.FEtiqueta = enderecos.Etiqueta;
+        dbRec.FAni = enderecos.Ani;
+        dbRec.FBold = enderecos.Bold;
+        dbRec.FGuid = enderecos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

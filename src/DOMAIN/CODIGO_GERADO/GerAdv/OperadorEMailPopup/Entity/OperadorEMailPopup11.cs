@@ -23,12 +23,6 @@ public partial class FOperadorEMailPopupFactory : IFOperadorEMailPopupFactory, I
         return FOperadorEMailPopup.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOperadorEMailPopup> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FOperadorEMailPopup().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FOperadorEMailPopup> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FOperadorEMailPopupFactory : IFOperadorEMailPopupFactory, I
         return FOperadorEMailPopup.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FOperadorEMailPopup> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FOperadorEMailPopup().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FOperadorEMailPopupFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IProProcuradoresFormProps } from '../../Interfaces/interface.ProProcuradores';
 import { ProProcuradoresService } from '../../Services/ProProcuradores.service';
 import { useProProcuradoresForm, useValidationsProProcuradores } from '../../Hooks/hookProProcuradores';
-import { ProProcuradoresEmpty } from '../../../Models/ProProcuradores';
+import { ProProcuradoresEmpty } from '../../../Models/ProProcuradores'; 
 import { ProProcuradoresForm } from '../Forms/ProProcuradores';
+ 
 
 const ProProcuradoresInc: React.FC<IProProcuradoresFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const proprocuradoresService = new ProProcuradoresService(
-  new ProProcuradoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadProProcuradores } = useProProcuradoresForm(
-ProProcuradoresEmpty(), 
-proprocuradoresService
-);
-useEffect(() => {
-  loadProProcuradores(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedProProcuradores = await proprocuradoresService.saveProProcuradores(data);
-    if (savedProProcuradores.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedProProcuradores);
+  const proprocuradoresService = new ProProcuradoresService(
+    new ProProcuradoresApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadProProcuradores } = useProProcuradoresForm(
+    ProProcuradoresEmpty(),
+    proprocuradoresService
+  );
+
+  useEffect(() => {
+    loadProProcuradores(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedProProcuradores = await proprocuradoresService.saveProProcuradores(data);
+
+      if (savedProProcuradores.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedProProcuradores);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadProProcuradores(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <ProProcuradoresForm
+        proprocuradoresData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadProProcuradores(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<ProProcuradoresForm
-proprocuradoresData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default ProProcuradoresInc;

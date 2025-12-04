@@ -30,8 +30,6 @@ public class Diario2Validation : IDiario2Validation
             throw new SGValidationException($"Nome deve ter no máximo {DBDiario2DicInfo.DiaNome.FTamanho} caracteres.");
         if (reg.Ocorrencia != null && reg.Ocorrencia.Length > DBDiario2DicInfo.DiaOcorrencia.FTamanho)
             throw new SGValidationException($"Ocorrencia deve ter no máximo {DBDiario2DicInfo.DiaOcorrencia.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBDiario2DicInfo.DiaGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBDiario2DicInfo.DiaGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,11 +39,27 @@ public class Diario2Validation : IDiario2Validation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
+        if (!DateTime.TryParse(reg.Data, out _))
+        {
+            throw new SGValidationException($"Data inválida: {reg.Data}");
+        }
+
+        if (reg.Data.IsEmpty())
+            throw new SGValidationException("Data é obrigatório.");
+        if (reg.Hora.IsEmpty())
+            throw new SGValidationException("Hora é obrigatório.");
+        if (!DateTime.TryParse(reg.Hora, out _))
+        {
+            throw new SGValidationException($"Hora inválida: {reg.Hora}");
+        }
+
         if (reg.Hora.IsEmpty())
             throw new SGValidationException("Hora é obrigatório.");
         if (reg.Operador == 0)
@@ -54,11 +68,27 @@ public class Diario2Validation : IDiario2Validation
             throw new SGValidationException("Nome é obrigatório.");
         if (reg.Ocorrencia.IsEmpty())
             throw new SGValidationException("Ocorrencia é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.Hora))
+        {
+            if (DateTime.TryParse(reg.Hora, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Hora não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Operador
         {
-            var regOperador = await operadorReader.Read(reg.Operador, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");
@@ -68,7 +98,7 @@ public class Diario2Validation : IDiario2Validation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

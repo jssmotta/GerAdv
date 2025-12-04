@@ -74,6 +74,7 @@ public class OponentesWriterTests
         var result = await _oponentesWriter.WriteAsync(oponentes, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFOponentes.Object);
+        _mockFOponentes.VerifySet(x => x.FGuid = oponentes.Guid, Times.Once);
         _mockFOponentes.VerifySet(x => x.FEMPFuncao = oponentes.EMPFuncao, Times.Once);
         _mockFOponentes.VerifySet(x => x.FCTPSNumero = oponentes.CTPSNumero, Times.Once);
         _mockFOponentes.VerifySet(x => x.FSite = oponentes.Site, Times.Once);
@@ -101,7 +102,6 @@ public class OponentesWriterTests
         _mockFOponentes.VerifySet(x => x.FEMail = oponentes.EMail, Times.Once);
         _mockFOponentes.VerifySet(x => x.FClass = oponentes.Class, Times.Once);
         _mockFOponentes.VerifySet(x => x.FTop = oponentes.Top, Times.Once);
-        _mockFOponentes.VerifySet(x => x.FGUID = oponentes.GUID, Times.Once);
         _mockFOponentes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -145,7 +145,7 @@ public class OponentesWriterTests
         var operadorId = 456;
         _mockOponentesFactory.Setup(x => x.DeleteAsync(operadorId, oponentesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _oponentesWriter.Delete(oponentesResponse, operadorId, _mockConnection.Object);
+        await _oponentesWriter.DeleteAsync(oponentesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockOponentesFactory.Verify(x => x.DeleteAsync(operadorId, oponentesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -161,7 +161,7 @@ public class OponentesWriterTests
         var operadorId = 111;
         _mockOponentesFactory.Setup(x => x.DeleteAsync(operadorId, oponentesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _oponentesWriter.Delete(oponentesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _oponentesWriter.DeleteAsync(oponentesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -178,7 +178,7 @@ public class OponentesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockOponentesFactory.Setup(x => x.DeleteAsync(operadorId, oponentesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _oponentesWriter.Delete(oponentesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _oponentesWriter.DeleteAsync(oponentesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -208,6 +208,7 @@ public class OponentesWriterTests
         return new Models.Oponentes
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             EMPFuncao = 1,
             CTPSNumero = "AAAAAAAAAAAAA",
             Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -234,8 +235,7 @@ public class OponentesWriterTests
             Observacao = "Observação teste",
             EMail = "test@email.com",
             Class = "A",
-            Top = false,
-            GUID = Guid.NewGuid().ToString()
+            Top = false
         };
     }
 #endregion

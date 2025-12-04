@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IObjetosWriter
 {
     Task<FObjetos> WriteAsync(Models.Objetos objetos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ObjetosResponse objetos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ObjetosResponse objetos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ObjetosWriter(IFObjetosFactory objetosFactory) : IObjetosWriter
 {
     private readonly IFObjetosFactory _objetosFactory = objetosFactory ?? throw new ArgumentNullException(nameof(objetosFactory));
-    public virtual async Task Delete(ObjetosResponse objetos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ObjetosResponse objetos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _objetosFactory.DeleteAsync(operadorId, objetos.Id, oCnn);
     }
@@ -26,7 +26,8 @@ public class ObjetosWriter(IFObjetosFactory objetosFactory) : IObjetosWriter
         dbRec.FJustica = objetos.Justica;
         dbRec.FArea = objetos.Area;
         dbRec.FNome = objetos.Nome;
-        dbRec.FGUID = objetos.GUID;
+        dbRec.FBold = objetos.Bold;
+        dbRec.FGuid = objetos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

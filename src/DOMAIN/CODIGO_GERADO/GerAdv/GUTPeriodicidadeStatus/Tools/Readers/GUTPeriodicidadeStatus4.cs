@@ -2,36 +2,42 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactory gutperiodicidadestatusFactory) : IGUTPeriodicidadeStatusReader
+public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactory gutperiodicidadestatusFactory, IConnectionService connection) : IGUTPeriodicidadeStatusReader
 {
     private readonly IFGUTPeriodicidadeStatusFactory _gutperiodicidadestatusFactory = gutperiodicidadestatusFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBGUTPeriodicidadeStatus.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBGUTPeriodicidadeStatus.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<GUTPeriodicidadeStatusResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<GUTPeriodicidadeStatusResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -41,25 +47,25 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         return result;
     }
 
-    public async Task<GUTPeriodicidadeStatusResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<GUTPeriodicidadeStatusResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gutperiodicidadestatusFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.GUTPeriodicidadeStatus?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.GUTPeriodicidadeStatus?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _gutperiodicidadestatusFactory.CreateFromIdAsync(id, oCnn);
         var gutperiodicidadestatus = new Models.GUTPeriodicidadeStatus
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataRealizado, out DateTime XDataRealizado))
+        if (DateTime.TryParse(dbRec.FDataRealizado?.ToString(), out DateTime XDataRealizado2))
         {
-            gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-            gutperiodicidadestatus.DataRealizado_date = XDataRealizado;
+            gutperiodicidadestatus.DataRealizado = XDataRealizado2.ToString("dd/MM/yyyy");
+            gutperiodicidadestatus.DataRealizado_date = XDataRealizado2;
         }
 
         return gutperiodicidadestatus;
@@ -87,12 +93,12 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataRealizado, out DateTime XDataRealizado))
+        if (DateTime.TryParse(dbRec.FDataRealizado?.ToString(), out DateTime XDataRealizado2))
         {
-            gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-            gutperiodicidadestatus.DataRealizado_date = XDataRealizado;
+            gutperiodicidadestatus.DataRealizado = XDataRealizado2.ToString("dd/MM/yyyy");
+            gutperiodicidadestatus.DataRealizado_date = XDataRealizado2;
         }
 
         return gutperiodicidadestatus;
@@ -109,12 +115,12 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataRealizado, out DateTime XDataRealizado))
+        if (DateTime.TryParse(dbRec.FDataRealizado?.ToString(), out DateTime XDataRealizado2))
         {
-            gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-            gutperiodicidadestatus.DataRealizado_date = XDataRealizado;
+            gutperiodicidadestatus.DataRealizado = XDataRealizado2.ToString("dd/MM/yyyy");
+            gutperiodicidadestatus.DataRealizado_date = XDataRealizado2;
         }
 
         return gutperiodicidadestatus;
@@ -131,12 +137,12 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataRealizado, out DateTime XDataRealizado))
+        if (DateTime.TryParse(dbRec.FDataRealizado?.ToString(), out DateTime XDataRealizado2))
         {
-            gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-            gutperiodicidadestatus.DataRealizado_date = XDataRealizado;
+            gutperiodicidadestatus.DataRealizado = XDataRealizado2.ToString("dd/MM/yyyy");
+            gutperiodicidadestatus.DataRealizado_date = XDataRealizado2;
         }
 
         try
@@ -161,12 +167,12 @@ public partial class GUTPeriodicidadeStatusReader(IFGUTPeriodicidadeStatusFactor
         {
             Id = dbRec.ID,
             GUTAtividade = dbRec.FGUTAtividade,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataRealizado, out DateTime XDataRealizado))
+        if (DateTime.TryParse(dbRec.FDataRealizado?.ToString(), out DateTime XDataRealizado2))
         {
-            gutperiodicidadestatus.DataRealizado = dbRec.FDataRealizado;
-            gutperiodicidadestatus.DataRealizado_date = XDataRealizado;
+            gutperiodicidadestatus.DataRealizado = XDataRealizado2.ToString("dd/MM/yyyy");
+            gutperiodicidadestatus.DataRealizado_date = XDataRealizado2;
         }
 
         try

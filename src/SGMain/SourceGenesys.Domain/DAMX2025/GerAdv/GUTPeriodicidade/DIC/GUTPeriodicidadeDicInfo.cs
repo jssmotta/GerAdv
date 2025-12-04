@@ -12,7 +12,7 @@ public static partial class DBGUTPeriodicidadeDicInfo
     public const string TablePrefix = "pcg";
     public const string Nome = "pcgNome"; // LOCALIZACAO 170523
     public const string IntervaloDias = "pcgIntervaloDias"; // LOCALIZACAO 170523
-    public const string GUID = "pcgGUID"; // LOCALIZACAO 170523
+    public const string Guid = "pcgGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "pcgQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "pcgDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "pcgQuemAtu"; // LOCALIZACAO 170523
@@ -33,43 +33,14 @@ public static partial class DBGUTPeriodicidadeDicInfo
 
     public const string PTabelaNome = "GUTPeriodicidade";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PcgNome => new(0, PTabelaNome, CampoCodigo, Nome, 20, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "pcg"
-    };
-    public static DBInfoSystem PcgIntervaloDias => new(0, PTabelaNome, CampoCodigo, IntervaloDias, "IntervaloDias", "IntervaloDias", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "pcg"
-    };
-    public static DBInfoSystem PcgGUID => new(0, PTabelaNome, CampoCodigo, GUID, 50, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "pcg"
-    };
-    public static DBInfoSystem PcgQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "pcg"
-    }; // DBI 11 
-    public static DBInfoSystem PcgDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "pcg"
-    };
-    public static DBInfoSystem PcgQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pcg"
-    }; // DBI 11 
-    public static DBInfoSystem PcgDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pcg"
-    };
-    public static DBInfoSystem PcgVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pcg"
-    };
+    public static DBInfoSystem PcgNome => new(0, PTabelaNome, CampoCodigo, Nome, 20, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "pcg", isRequired: true);
+    public static DBInfoSystem PcgIntervaloDias => new(0, PTabelaNome, CampoCodigo, IntervaloDias, IntervaloDias, IntervaloDias, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "pcg");
+    public static DBInfoSystem PcgGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pcg", isRequired: true);
+    public static DBInfoSystem PcgQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pcg", isRequired: true); // DBI 11 
+    public static DBInfoSystem PcgDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pcg", isRequired: true);
+    public static DBInfoSystem PcgQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pcg"); // DBI 11 
+    public static DBInfoSystem PcgDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pcg");
+    public static DBInfoSystem PcgVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pcg", isRequired: true);
 
 #endregion
     [Serializable]

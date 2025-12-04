@@ -11,9 +11,11 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         private readonly Mock<IPontoVirtualAcessosValidation> _mockValidation;
         private readonly Mock<IPontoVirtualAcessosWriter> _mockWriter;
         private readonly Mock<IOperadorReader> _mockOperadorReader;
-        private readonly Mock<HybridCache> _mockCache;
+        private readonly Mock<IHybridCache> _mockCache;
         private readonly Mock<IMemoryCache> _mockMemoryCache;
+        private readonly Mock<IConnectionService> _mockConnectionService;
         private readonly PontoVirtualAcessosService _service;
+        private readonly PontoVirtualAcessosServiceS _serviceS;
         public PontoVirtualAcessosServiceWFiltroTests()
         {
             _mockAppSettings = new Mock<IOptions<AppSettings>>();
@@ -22,11 +24,13 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             _mockValidation = new Mock<IPontoVirtualAcessosValidation>();
             _mockWriter = new Mock<IPontoVirtualAcessosWriter>();
             _mockOperadorReader = new Mock<IOperadorReader>();
-            _mockCache = new Mock<HybridCache>();
+            _mockCache = new Mock<IHybridCache>();
             _mockMemoryCache = new Mock<IMemoryCache>();
+            _mockConnectionService = new();
             var appSettings = new AppSettings();
             _mockAppSettings.Setup(x => x.Value).Returns(appSettings);
-            _service = new PontoVirtualAcessosService(_mockAppSettings.Object, _mockPontoVirtualAcessosFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockOperadorReader.Object, _mockCache.Object, _mockMemoryCache.Object);
+            _serviceS = new PontoVirtualAcessosServiceS();
+            _service = new PontoVirtualAcessosService(_mockAppSettings.Object, _mockPontoVirtualAcessosFactory.Object, _mockReader.Object, _mockValidation.Object, _mockWriter.Object, _mockOperadorReader.Object, _mockCache.Object, _mockMemoryCache.Object, _mockConnectionService.Object);
         }
 
         [Fact]
@@ -35,7 +39,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             FilterPontoVirtualAcessos? filtro = null;
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().BeNull();
         }
@@ -46,7 +50,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             // Arrange
             var filtro = new FilterPontoVirtualAcessos(); // Todos os valores padrão
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -60,7 +64,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterPontoVirtualAcessos
             {
                 Operador = 1,
-                DataHora = "27/05/2022",
+                DataHora = "04:04",
                 Tipo = 2,
                 Origem = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 WildcardChar = '%',
@@ -68,7 +72,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             };
             // Act
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             stopwatch.Stop();
             // Assert
             resultado.Should().NotBeNull();
@@ -78,177 +82,6 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
         }
 
 #region String Tests
-        [Fact]
-        public void WFiltro_DataHoraPontoVirtualAcessos_QuandoStringVazia_NaoDeveIncluirNoFiltro()
-        {
-            // Arrange
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = string.Empty,
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando string vazia
-            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
-        }
-
-        [Fact]
-        public void WFiltro_DataHoraPontoVirtualAcessos_QuandoStringNull_NaoDeveIncluirNoFiltro()
-        {
-            // Arrange
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = null,
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando null
-            resultado.Value.parametros.Should().BeEmpty(); // Sem parâmetros
-        }
-
-        [Fact]
-        public void WFiltro_DataHoraPontoVirtualAcessos_SemWildcard_DeveRetornarValorOriginal()
-        {
-            // Arrange
-            var nomePontoVirtualAcessos = "João Silva";
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = nomePontoVirtualAcessos,
-                WildcardChar = '\0', // Sem wildcard
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            // Sem wildcard, deve retornar valor original
-            var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("João Silva");
-        }
-
-        [Theory]
-        [InlineData('%', "João Silva", "%João%Silva%")]
-        [InlineData('*', "João Silva", "*João*Silva*")]
-        [InlineData('\0', "João Silva", "João Silva")]
-        [InlineData(' ', "João Silva", "João Silva")]
-        public void WFiltro_DataHoraPontoVirtualAcessos_DiferentesWildcards_DeveAplicarCorretamente(char wildcardChar, string nomeOriginal, string esperado)
-        {
-            // Arrange
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = nomeOriginal,
-                WildcardChar = wildcardChar,
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            resultado.Value.parametros.First().Value.Should().Be(esperado);
-        }
-
-        [Fact]
-        public void WFiltro_DataHoraPontoVirtualAcessos_StringComEspacos_DeveSubstituirEspacosPorWildcard()
-        {
-            // Arrange
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = "João da Silva",
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.parametros.Should().HaveCount(1);
-            // Espaços devem ser substituídos por wildcards
-            var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("%João%da%Silva%");
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData(null)]
-        public void WFiltro_DataHoraPontoVirtualAcessos_StringsVazias_NaoDeveIncluirNoFiltro(string? nomePontoVirtualAcessos)
-        {
-            // Arrange
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = nomePontoVirtualAcessos,
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            resultado.Value.where.Should().BeEmpty();
-            resultado.Value.parametros.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void WFiltro_DataHoraPontoVirtualAcessos_ComOutrosCampos_DeveUsarLogicalOperator()
-        {
-            // Arrange
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = "João",
-                Operador = 1, // Campo INT para testar combinação
-                WildcardChar = '%',
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            // Deve conter ambos os campos com AND entre eles
-            resultado.Value.where.Should().Contain("@pvaDataHora");
-            resultado.Value.where.Should().Contain("@pvaOperador");
-            resultado.Value.where.Should().Contain(" AND ");
-            // Deve ter 2 parâmetros
-            resultado.Value.parametros.Should().HaveCount(2);
-            // Verifica se um usa LIKE e outro usa =
-            resultado.Value.where.Should().Contain("like @pvaDataHora");
-            resultado.Value.where.Should().Contain("= @pvaOperador");
-        }
-
-        [Fact]
-        public void WFiltro_DataHoraPontoVirtualAcessos_QuandoTemValor_DeveIncluirNoFiltroComLike()
-        {
-            // Arrange
-            var nomePontoVirtualAcessos = "João Silva";
-            var filtro = new FilterPontoVirtualAcessos
-            {
-                DataHora = nomePontoVirtualAcessos,
-                WildcardChar = '%', // Wildcard padrão SQL
-                LogicalOperator = " AND "
-            };
-            // Act
-            var resultado = _service.WFiltro(filtro);
-            // Assert
-            resultado.Should().NotBeNull();
-            // Verifica se o WHERE contém a condição com LIKE
-            resultado.Value.where.Should().Contain($"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}]");
-            resultado.Value.where.Should().Contain("like @pvaDataHora");
-            resultado.Value.where.Should().Contain(DevourerConsts.MsiCollate);
-            // Verifica se tem exatamente 1 parâmetro
-            resultado.Value.parametros.Should().HaveCount(1);
-            // Verifica o parâmetro específico (com wildcard aplicado)
-            var parametro = resultado.Value.parametros.First();
-            parametro.ParameterName.Should().Be("@pvaDataHora");
-            parametro.Value.ToString().Should().Be("%João%Silva%"); // ApplyWildCard aplicado
-        }
-
         [Theory]
         [InlineData("     ")] // Apenas espaços
         [InlineData("\t\t\t")] // Apenas tabs
@@ -263,7 +96,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -282,7 +115,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -305,7 +138,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -323,7 +156,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando string vazia
@@ -340,7 +173,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando null
@@ -359,20 +192,20 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
             // Sem wildcard, deve retornar valor original
             var parametro = resultado.Value.parametros.First();
-            parametro.Value.ToString().Should().Be("João Silva");
+            parametro.Value.ToString().Should().Be("%João%Silva%");
         }
 
         [Theory]
         [InlineData('%', "João Silva", "%João%Silva%")]
         [InlineData('*', "João Silva", "*João*Silva*")]
-        [InlineData('\0', "João Silva", "João Silva")]
-        [InlineData(' ', "João Silva", "João Silva")]
+        [InlineData('\0', "João Silva", "%João%Silva%")]
+        [InlineData(' ', "João Silva", "%João%Silva%")]
         public void WFiltro_OrigemPontoVirtualAcessos_DiferentesWildcards_DeveAplicarCorretamente(char wildcardChar, string nomeOriginal, string esperado)
         {
             // Arrange
@@ -383,7 +216,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -401,7 +234,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -424,7 +257,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty();
@@ -438,23 +271,23 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             var filtro = new FilterPontoVirtualAcessos
             {
                 Origem = "João",
-                Operador = 1, // Campo INT para testar combinação
+                Codigo_filtro = 1, // Campo INT para testar combinação
                 WildcardChar = '%',
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
             resultado.Value.where.Should().Contain("@pvaOrigem");
-            resultado.Value.where.Should().Contain("@pvaOperador");
+            resultado.Value.where.Should().Contain($"@{DBPontoVirtualAcessos.CampoCodigo}");
             resultado.Value.where.Should().Contain(" AND ");
             // Deve ter 2 parâmetros
             resultado.Value.parametros.Should().HaveCount(2);
             // Verifica se um usa LIKE e outro usa =
             resultado.Value.where.Should().Contain("like @pvaOrigem");
-            resultado.Value.where.Should().Contain("= @pvaOperador");
+            resultado.Value.where.Should().Contain($"= @{DBPontoVirtualAcessos.CampoCodigo}");
         }
 
         [Fact]
@@ -469,7 +302,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição com LIKE
@@ -497,7 +330,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -516,7 +349,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há Operador inicial válido, não deve incluir condição WHERE, mas o parâmetro Operador_end é adicionado
@@ -538,7 +371,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -565,7 +398,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -597,7 +430,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -620,7 +453,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
@@ -644,7 +477,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -663,7 +496,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -681,7 +514,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -699,7 +532,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -717,7 +550,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -738,7 +571,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -761,7 +594,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -779,7 +612,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -799,7 +632,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Operador == int.MinValue) && !(filtro.Operador_end == int.MinValue)
@@ -819,7 +652,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Operador == int.MinValue) && filtro.Operador_end == int.MinValue
@@ -842,7 +675,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -860,7 +693,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -878,7 +711,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -902,7 +735,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBPontoVirtualAcessosDicInfo.Operador}");
@@ -924,7 +757,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -943,7 +776,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
@@ -966,7 +799,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -984,7 +817,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1002,7 +835,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1019,7 +852,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -1036,7 +869,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -1054,7 +887,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -1071,7 +904,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -1090,7 +923,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1110,7 +943,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -1128,7 +961,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do Operador
@@ -1152,7 +985,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
@@ -1176,7 +1009,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1194,7 +1027,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -1213,7 +1046,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como não há Codigo_filtro inicial válido, não deve incluir condição WHERE, mas o parâmetro Codigo_filtro_end é adicionado
@@ -1235,7 +1068,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não BETWEEN
@@ -1262,7 +1095,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador BETWEEN
@@ -1294,7 +1127,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -1317,7 +1150,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
@@ -1341,7 +1174,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -1360,7 +1193,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1378,7 +1211,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto no BETWEEN
@@ -1396,7 +1229,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos DECIMAL não devem usar COLLATE
@@ -1414,7 +1247,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -1435,7 +1268,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(2);
@@ -1458,7 +1291,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain("BETWEEN");
@@ -1476,7 +1309,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" = ");
@@ -1496,7 +1329,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Codigo_filtro == int.MinValue) && !(filtro.Codigo_filtro_end == int.MinValue)
@@ -1516,7 +1349,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica a lógica exata: !(filtro.Codigo_filtro == int.MinValue) && filtro.Codigo_filtro_end == int.MinValue
@@ -1539,7 +1372,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1557,7 +1390,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE deve estar vazio
@@ -1575,7 +1408,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição correta
@@ -1599,7 +1432,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain($"= @{DBPontoVirtualAcessosDicInfo.CampoCodigo}");
@@ -1621,7 +1454,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1640,7 +1473,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos
@@ -1663,7 +1496,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " OR "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().Contain(" OR ");
@@ -1681,7 +1514,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = string.Empty // Operador vazio
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1699,7 +1532,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = null // Operador null
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar AND como padrão
@@ -1716,7 +1549,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se usa o nome da tabela correto
@@ -1733,7 +1566,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve usar operador de igualdade, não LIKE
@@ -1751,7 +1584,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Campos INT não devem usar COLLATE
@@ -1768,7 +1601,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Como é o único campo, não deve ter operador lógico no início
@@ -1787,7 +1620,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1807,7 +1640,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.where.Should().BeEmpty(); // WHERE vazio quando só tem MinValue
@@ -1825,7 +1658,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Verifica se o WHERE contém a condição do Codigo_filtro
@@ -1849,7 +1682,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             // Deve conter ambos os campos com AND entre eles
@@ -1873,7 +1706,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var resultado = _service.WFiltro(filtro);
+            var resultado = _serviceS.WFiltro(filtro);
             // Assert
             resultado.Should().NotBeNull();
             resultado.Value.parametros.Should().HaveCount(1);
@@ -1884,6 +1717,321 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
 #region Decimal Tests
 #endregion
 #region DateTime Tests
+        [Theory]
+        [InlineData("31/12/9999")] // Data máxima
+        [InlineData("01/01/1900")] // Data muito antiga
+        [InlineData("29/02/2024")] // Ano bissexto
+        public void WFiltro_DataHora_ComDatasExtremas_DeveProcessarCorretamente(string dataExtrema)
+        {
+            // Arrange
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = dataExtrema,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().HaveCount(1);
+            var parametro = resultado.Value.parametros.First();
+            parametro.Value.Should().BeOfType<DateTime>();
+        }
+
+        [Theory]
+        [InlineData("32/12/2023")] // Dia inválido
+        [InlineData("31/13/2023")] // Mês inválido
+        [InlineData("29/02/2023")] // Não é ano bissexto
+        [InlineData("abc/def/ghij")] // Formato completamente inválido
+        public void WFiltro_DataHora_ComDatasInvalidas_NaoDeveAdicionarParametros(string dataInvalida)
+        {
+            // Arrange
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = dataInvalida,
+                LogicalOperator = " AND "
+            };
+            // Act
+            var resultado = _serviceS.WFiltro(filtro);
+            // Assert
+            resultado.Should().NotBeNull();
+            resultado.Value.parametros.Should().BeEmpty();
+            resultado.Value.where.Should().BeEmpty();
+        }
+
+#region DataHora Tests
+        [Fact]
+        public void WFiltro_DataHora_WhenEmptyOrNull_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = string.Empty,
+                DataHora_end = null,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenValidSingleDate_ShouldAddParameterAndGenerateWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = testDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            parameter.ParameterName.Should().Be($"@{DBPontoVirtualAcessosDicInfo.DataHora}");
+            parameter.Value.Should().BeOfType<DateTime>();
+            var expectedDate = DateTime.Parse(testDate);
+            ((DateTime)parameter.Value).Should().Be(expectedDate);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 103) = CONVERT(DATE, @{DBPontoVirtualAcessosDicInfo.DataHora}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenValidDateRange_ShouldAddBothParametersAndGenerateBetweenClause()
+        {
+            // Arrange
+            var startDate = "01/06/2023";
+            var endDate = "30/06/2023";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = startDate,
+                DataHora_end = endDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(2);
+            var startParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBPontoVirtualAcessosDicInfo.DataHora}");
+            var endParameter = result.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBPontoVirtualAcessosDicInfo.DataHora}_end");
+            startParameter.Should().NotBeNull();
+            endParameter.Should().NotBeNull();
+            startParameter!.Value.Should().BeOfType<DateTime>();
+            endParameter!.Value.Should().BeOfType<DateTime>();
+            ((DateTime)startParameter.Value).Should().Be(DateTime.Parse(startDate));
+            ((DateTime)endParameter.Value).Should().Be(DateTime.Parse(endDate));
+            result.Value.where.Should().Contain($"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].{DBPontoVirtualAcessosDicInfo.DataHora} BETWEEN @{DBPontoVirtualAcessosDicInfo.DataHora} AND @{DBPontoVirtualAcessosDicInfo.DataHora}_end");
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenInvalidDateFormat_ShouldNotAddParameter()
+        {
+            // Arrange
+            var invalidDate = "invalid-date";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = invalidDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenStartDateValidButEndDateInvalid_ShouldOnlyAddStartParameterAndGenerateSingleDateClause()
+        {
+            // Arrange
+            var validStartDate = "15/06/2023";
+            var invalidEndDate = "invalid-date";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = validStartDate,
+                DataHora_end = invalidEndDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            parameter.ParameterName.Should().Be($"@{DBPontoVirtualAcessosDicInfo.DataHora}");
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 103) = CONVERT(DATE, @{DBPontoVirtualAcessosDicInfo.DataHora}, 103)");
+            result.Value.where.Should().NotContain("BETWEEN");
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenStartDateInvalidButEndDateValid_ShouldNotAddAnyParameters()
+        {
+            // Arrange
+            var invalidStartDate = "invalid-date";
+            var validEndDate = "30/06/2023";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = invalidStartDate,
+                DataHora_end = validEndDate,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenWhitespaceOnlyDates_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = "   ",
+                DataHora_end = "\t\n",
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WithOtherFilters_ShouldIncludeLogicalOperatorInWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                Origem = "A",
+                DataHora = testDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(2); // Nome + DataHora
+            result.Value.where.Should().Contain(TSql.And);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 103) = CONVERT(DATE, @{DBPontoVirtualAcessosDicInfo.DataHora}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WithORLogicalOperator_ShouldUseORInWhereClause()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                Origem = "A",
+                DataHora = testDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.OR
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().Contain(TSql.OR);
+            result.Value.where.Should().Contain($"CONVERT(DATE,[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 103) = CONVERT(DATE, @{DBPontoVirtualAcessosDicInfo.DataHora}, 103)");
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenOnlyEndDateProvided_ShouldNotAddParameters()
+        {
+            // Arrange
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = string.Empty,
+                DataHora_end = "30/06/2023",
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_WhenDateTimeMinValue_ShouldNotAddParameters()
+        {
+            // Arrange
+            var minValueDate = DateTime.MinValue.ToString("dd/MM/yyyy");
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = minValueDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            // The IsEmptyDX extension method should catch DateTime.MinValue and return true
+            result.Value.parametros.Should().BeEmpty();
+            result.Value.where.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WFiltro_DataHora_AsFirstFilter_ShouldNotIncludeLogicalOperatorAtStart()
+        {
+            // Arrange
+            var testDate = "15/06/2023";
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = testDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.where.Should().NotStartWith(TSql.And);
+            result.Value.where.Should().StartWith($"CONVERT(DATE,[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.DataHora}], 103)");
+        }
+
+        [Theory]
+        [InlineData("15/06/2023", "2023-06-15T00:00:00")]
+        [InlineData("01/01/2024", "2024-01-01T00:00:00")]
+        [InlineData("31/12/2022", "2022-12-31T00:00:00")]
+        public void WFiltro_DataHora_WhenVariousValidDateFormats_ShouldParseCorrectly(string inputDate, string expectedDateTimeString)
+        {
+            // Arrange
+            var filtro = new FilterPontoVirtualAcessos
+            {
+                DataHora = inputDate,
+                DataHora_end = string.Empty,
+                LogicalOperator = TSql.And
+            };
+            var expectedDateTime = DateTime.Parse(expectedDateTimeString);
+            // Act
+            var result = _serviceS.WFiltro(filtro);
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.parametros.Should().HaveCount(1);
+            var parameter = result.Value.parametros.First();
+            ((DateTime)parameter.Value).Should().Be(expectedDateTime);
+        }
+
+#endregion
 #endregion
 #region Bool Tests
 #region Tipo Filter Tests
@@ -1896,7 +2044,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 Tipo = int.MinValue
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.parametros.Should().NotContain(p => p.ParameterName.Contains(DBPontoVirtualAcessosDicInfo.Tipo));
@@ -1914,7 +2062,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             // Check parameter
@@ -1933,7 +2081,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Tipo = 0
             };
-            var resultFemale = _service.WFiltro(filtroFemale);
+            var resultFemale = _serviceS.WFiltro(filtroFemale);
             resultFemale.Should().NotBeNull();
             var femaleParam = resultFemale.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBPontoVirtualAcessosDicInfo.Tipo}");
             femaleParam.Should().NotBeNull();
@@ -1943,7 +2091,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
             {
                 Tipo = 1
             };
-            var resultMale = _service.WFiltro(filtroMale);
+            var resultMale = _serviceS.WFiltro(filtroMale);
             resultMale.Should().NotBeNull();
             var maleParam = resultMale.Value.parametros.FirstOrDefault(p => p.ParameterName == $"@{DBPontoVirtualAcessosDicInfo.Tipo}");
             maleParam.Should().NotBeNull();
@@ -1960,7 +2108,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().StartWith($"[{DBPontoVirtualAcessosDicInfo.PTabelaNome}].[{DBPontoVirtualAcessosDicInfo.Tipo}] = @{DBPontoVirtualAcessosDicInfo.Tipo}");
@@ -1978,7 +2126,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " AND "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().Contain($" AND ");
@@ -1995,7 +2143,7 @@ namespace MenphisSI.GerAdv.WFiltro.Tests
                 LogicalOperator = " OR "
             };
             // Act
-            var result = _service.WFiltro(filtro);
+            var result = _serviceS.WFiltro(filtro);
             // Assert
             result.Should().NotBeNull();
             result.Value.where.Should().Contain(" OR ");

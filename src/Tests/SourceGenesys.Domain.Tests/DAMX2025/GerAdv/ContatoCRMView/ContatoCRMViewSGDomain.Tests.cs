@@ -31,9 +31,22 @@ public class DBContatoCRMViewTests : IDisposable
         // Campos obrigatórios Source Genesys
         dt.Columns.Add("ccwCodigo", typeof(int));
         dt.Columns.Add("ccwCGUID", typeof(string));
-        dt.Columns.Add("ccwData", typeof(string));
+        dt.Columns.Add("ccwData", typeof(DateTime));
         dt.Columns.Add("ccwIP", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ccwCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBContatoCRMView(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -54,7 +67,7 @@ public class DBContatoCRMViewTests : IDisposable
     {
         var instance = new DBContatoCRMView();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ContatoCRMView", instance.ITabelaName());
+        Assert.Equal("ContatoCRMView", instance.ITableName());
         Assert.Equal("ccw", instance.Prefixo);
     }
 
@@ -72,29 +85,16 @@ public class DBContatoCRMViewTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ccwCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBContatoCRMView(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ContatoCRMView", cadastro.ITabelaName());
-        Assert.Equal("ccwCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ccwData", cadastro.ICampoNome());
-        Assert.Equal("ccw", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ContatoCRMView", cadastro.ITableName());
+        Assert.Equal("ccwCodigo", cadastro.IFieldId());
+        Assert.Equal("ccwData", cadastro.IFieldNameDescription());
+        Assert.Equal("ccw", cadastro.IPrefix());
     }
 
 #endregion
@@ -154,9 +154,9 @@ public class DBContatoCRMViewTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -176,6 +176,23 @@ public class DBContatoCRMViewTests : IDisposable
         var longString = new string ('A', 100 + 10);
         _instance.FCGUID = longString;
         Assert.True(_instance.FCGUID.Length <= 100);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBContatoCRMView();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]

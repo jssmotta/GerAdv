@@ -54,8 +54,112 @@ public partial class DBContratos
         // Checkpoint Carregar 
         try
         {
+            FChaveContrato = getValue(DBContratosDicInfo.ChaveContrato)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FDOCUMENTO = getValue(DBContratosDicInfo.DOCUMENTO)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail1 = getValue(DBContratosDicInfo.EMail1)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail2 = getValue(DBContratosDicInfo.EMail2)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail3 = getValue(DBContratosDicInfo.EMail3)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBContratosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FJuros = getValue(DBContratosDicInfo.Juros)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FMulta = getValue(DBContratosDicInfo.Multa)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOBS = getValue(DBContratosDicInfo.OBS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPessoa1 = getValue(DBContratosDicInfo.Pessoa1)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPessoa2 = getValue(DBContratosDicInfo.Pessoa2)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPessoa3 = getValue(DBContratosDicInfo.Pessoa3)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FProtestar = getValue(DBContratosDicInfo.Protestar)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Advogado)))
-                m_FAdvogado = Convert.ToInt32(getValue(DBContratosDicInfo.Advogado));
+                FAdvogado = Convert.ToInt32(getValue(DBContratosDicInfo.Advogado));
         }
         catch
         {
@@ -64,7 +168,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Avulso)))
-                m_FAvulso = Convert.ToBoolean(getValue(DBContratosDicInfo.Avulso));
+                FAvulso = Convert.ToBoolean(getValue(DBContratosDicInfo.Avulso));
         }
         catch
         {
@@ -73,7 +177,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBContratosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBContratosDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +186,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBContratosDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBContratosDicInfo.Cliente));
         }
         catch
         {
@@ -91,7 +195,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.ClienteContrato)))
-                m_FClienteContrato = Convert.ToInt32(getValue(DBContratosDicInfo.ClienteContrato));
+                FClienteContrato = Convert.ToInt32(getValue(DBContratosDicInfo.ClienteContrato));
         }
         catch
         {
@@ -100,7 +204,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.DataInicio)))
-                m_FDataInicio = Convert.ToDateTime(getValue(DBContratosDicInfo.DataInicio));
+                FDataInicio = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBContratosDicInfo.DataInicio)));
         }
         catch
         {
@@ -109,7 +213,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.DataTermino)))
-                m_FDataTermino = Convert.ToDateTime(getValue(DBContratosDicInfo.DataTermino));
+                FDataTermino = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBContratosDicInfo.DataTermino)));
         }
         catch
         {
@@ -118,7 +222,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Dia)))
-                m_FDia = Convert.ToInt32(getValue(DBContratosDicInfo.Dia));
+                FDia = Convert.ToInt32(getValue(DBContratosDicInfo.Dia));
         }
         catch
         {
@@ -145,7 +249,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.IdExtrangeiro)))
-                m_FIdExtrangeiro = Convert.ToInt32(getValue(DBContratosDicInfo.IdExtrangeiro));
+                FIdExtrangeiro = Convert.ToInt32(getValue(DBContratosDicInfo.IdExtrangeiro));
         }
         catch
         {
@@ -154,7 +258,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.OcultarRelatorio)))
-                m_FOcultarRelatorio = Convert.ToBoolean(getValue(DBContratosDicInfo.OcultarRelatorio));
+                FOcultarRelatorio = Convert.ToBoolean(getValue(DBContratosDicInfo.OcultarRelatorio));
         }
         catch
         {
@@ -163,7 +267,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.PercEscritorio)))
-                m_FPercEscritorio = Convert.ToDecimal(getValue(DBContratosDicInfo.PercEscritorio));
+                FPercEscritorio = Convert.ToDecimal(getValue(DBContratosDicInfo.PercEscritorio));
         }
         catch
         {
@@ -172,7 +276,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBContratosDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBContratosDicInfo.Processo));
         }
         catch
         {
@@ -181,7 +285,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBContratosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBContratosDicInfo.QuemAtu));
         }
         catch
         {
@@ -190,7 +294,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBContratosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBContratosDicInfo.QuemCad));
         }
         catch
         {
@@ -199,7 +303,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Suspenso)))
-                m_FSuspenso = Convert.ToBoolean(getValue(DBContratosDicInfo.Suspenso));
+                FSuspenso = Convert.ToBoolean(getValue(DBContratosDicInfo.Suspenso));
         }
         catch
         {
@@ -208,7 +312,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.TipoCobranca)))
-                m_FTipoCobranca = Convert.ToInt32(getValue(DBContratosDicInfo.TipoCobranca));
+                FTipoCobranca = Convert.ToInt32(getValue(DBContratosDicInfo.TipoCobranca));
         }
         catch
         {
@@ -217,7 +321,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBContratosDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBContratosDicInfo.Valor));
         }
         catch
         {
@@ -226,7 +330,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.ValorConsultoria)))
-                m_FValorConsultoria = Convert.ToDecimal(getValue(DBContratosDicInfo.ValorConsultoria));
+                FValorConsultoria = Convert.ToDecimal(getValue(DBContratosDicInfo.ValorConsultoria));
         }
         catch
         {
@@ -235,7 +339,7 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.ValorRealizavel)))
-                m_FValorRealizavel = Convert.ToDecimal(getValue(DBContratosDicInfo.ValorRealizavel));
+                FValorRealizavel = Convert.ToDecimal(getValue(DBContratosDicInfo.ValorRealizavel));
         }
         catch
         {
@@ -244,118 +348,14 @@ public partial class DBContratos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBContratosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBContratosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FChaveContrato = getValue(DBContratosDicInfo.ChaveContrato)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDOCUMENTO = getValue(DBContratosDicInfo.DOCUMENTO)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail1 = getValue(DBContratosDicInfo.EMail1)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail2 = getValue(DBContratosDicInfo.EMail2)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail3 = getValue(DBContratosDicInfo.EMail3)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBContratosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FJuros = getValue(DBContratosDicInfo.Juros)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FMulta = getValue(DBContratosDicInfo.Multa)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOBS = getValue(DBContratosDicInfo.OBS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPessoa1 = getValue(DBContratosDicInfo.Pessoa1)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPessoa2 = getValue(DBContratosDicInfo.Pessoa2)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPessoa3 = getValue(DBContratosDicInfo.Pessoa3)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FProtestar = getValue(DBContratosDicInfo.Protestar)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBContratosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -379,7 +379,7 @@ public partial class DBContratos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

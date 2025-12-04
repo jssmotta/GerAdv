@@ -54,8 +54,192 @@ public partial class DBAdvogados
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBAdvogadosDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBAdvogadosDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBAdvogadosDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FContaBancaria = getValue(DBAdvogadosDicInfo.ContaBancaria)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBAdvogadosDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCTPS = getValue(DBAdvogadosDicInfo.CTPS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCTPSSerie = getValue(DBAdvogadosDicInfo.CTPSSerie)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBAdvogadosDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMailPro = getValue(DBAdvogadosDicInfo.EMailPro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBAdvogadosDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEspecializacao = getValue(DBAdvogadosDicInfo.Especializacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBAdvogadosDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBAdvogadosDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBAdvogadosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBAdvogadosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeCompleto = getValue(DBAdvogadosDicInfo.NomeCompleto)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeMae = getValue(DBAdvogadosDicInfo.NomeMae)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOAB = getValue(DBAdvogadosDicInfo.OAB)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBAdvogadosDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPasta = getValue(DBAdvogadosDicInfo.Pasta)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBAdvogadosDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSecretaria = getValue(DBAdvogadosDicInfo.Secretaria)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTextoProcuracao = getValue(DBAdvogadosDicInfo.TextoProcuracao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Ani));
         }
         catch
         {
@@ -64,7 +248,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +257,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Cargo)))
-                m_FCargo = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Cargo));
+                FCargo = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Cargo));
         }
         catch
         {
@@ -82,7 +266,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Casa)))
-                m_FCasa = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Casa));
+                FCasa = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Casa));
         }
         catch
         {
@@ -91,7 +275,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Cidade));
         }
         catch
         {
@@ -100,7 +284,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Comissao)))
-                m_FComissao = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Comissao));
+                FComissao = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Comissao));
         }
         catch
         {
@@ -127,7 +311,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.DtFim)))
-                m_FDtFim = Convert.ToDateTime(getValue(DBAdvogadosDicInfo.DtFim));
+                FDtFim = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAdvogadosDicInfo.DtFim)));
         }
         catch
         {
@@ -136,7 +320,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.DtInicio)))
-                m_FDtInicio = Convert.ToDateTime(getValue(DBAdvogadosDicInfo.DtInicio));
+                FDtInicio = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAdvogadosDicInfo.DtInicio)));
         }
         catch
         {
@@ -145,7 +329,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBAdvogadosDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAdvogadosDicInfo.DtNasc)));
         }
         catch
         {
@@ -154,7 +338,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Escritorio)))
-                m_FEscritorio = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Escritorio));
+                FEscritorio = Convert.ToInt32(getValue(DBAdvogadosDicInfo.Escritorio));
         }
         catch
         {
@@ -163,7 +347,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Estagiario)))
-                m_FEstagiario = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Estagiario));
+                FEstagiario = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Estagiario));
         }
         catch
         {
@@ -172,7 +356,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Etiqueta));
         }
         catch
         {
@@ -181,7 +365,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.ParcTop)))
-                m_FParcTop = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.ParcTop));
+                FParcTop = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.ParcTop));
         }
         catch
         {
@@ -190,7 +374,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBAdvogadosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBAdvogadosDicInfo.QuemAtu));
         }
         catch
         {
@@ -199,7 +383,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBAdvogadosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBAdvogadosDicInfo.QuemCad));
         }
         catch
         {
@@ -208,7 +392,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Salario)))
-                m_FSalario = Convert.ToDecimal(getValue(DBAdvogadosDicInfo.Salario));
+                FSalario = Convert.ToDecimal(getValue(DBAdvogadosDicInfo.Salario));
         }
         catch
         {
@@ -217,7 +401,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Sexo));
         }
         catch
         {
@@ -226,7 +410,7 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Top));
         }
         catch
         {
@@ -235,198 +419,14 @@ public partial class DBAdvogados
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAdvogadosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBAdvogadosDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBAdvogadosDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBAdvogadosDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FContaBancaria = getValue(DBAdvogadosDicInfo.ContaBancaria)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBAdvogadosDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCTPS = getValue(DBAdvogadosDicInfo.CTPS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCTPSSerie = getValue(DBAdvogadosDicInfo.CTPSSerie)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBAdvogadosDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMailPro = getValue(DBAdvogadosDicInfo.EMailPro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBAdvogadosDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEspecializacao = getValue(DBAdvogadosDicInfo.Especializacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBAdvogadosDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBAdvogadosDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBAdvogadosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBAdvogadosDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeCompleto = getValue(DBAdvogadosDicInfo.NomeCompleto)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeMae = getValue(DBAdvogadosDicInfo.NomeMae)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOAB = getValue(DBAdvogadosDicInfo.OAB)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBAdvogadosDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPasta = getValue(DBAdvogadosDicInfo.Pasta)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBAdvogadosDicInfo.RG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSecretaria = getValue(DBAdvogadosDicInfo.Secretaria)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTextoProcuracao = getValue(DBAdvogadosDicInfo.TextoProcuracao)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBAdvogadosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -450,7 +450,7 @@ public partial class DBAdvogados
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

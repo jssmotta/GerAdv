@@ -32,7 +32,7 @@ namespace MenphisSI.GerAdv.Models.Response
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// Descricao - phrDescricao  
+        /// Descrições - phrDescricao  
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -47,16 +47,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public DateTime? DataPenhora_date { get; set; }
 
         /// <summary>
-        /// GUID - phrGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Master - phrMaster  
         /// </summary>
         [JsonPropertyName("master")]
         public int Master { get; set; }
+
+        /// <summary>
+        /// GUID - phrGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -87,7 +87,7 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// Descricao - phrDescricao  
+        /// Descrições - phrDescricao  
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -102,16 +102,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public DateTime? DataPenhora_date { get; set; }
 
         /// <summary>
-        /// GUID - phrGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Master - phrMaster  
         /// </summary>
         [JsonPropertyName("master")]
         public int Master { get; set; }
+
+        /// <summary>
+        /// GUID - phrGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomepenhorastatus")]
         public string NomePenhoraStatus { get; set; } = string.Empty;

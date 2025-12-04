@@ -54,8 +54,24 @@ public partial class DBStatusAndamento
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBStatusAndamentoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBStatusAndamentoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBStatusAndamentoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBStatusAndamentoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBStatusAndamentoDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBStatusAndamento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusAndamentoDicInfo.Icone)))
-                m_FIcone = Convert.ToInt32(getValue(DBStatusAndamentoDicInfo.Icone));
+                FIcone = Convert.ToInt32(getValue(DBStatusAndamentoDicInfo.Icone));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBStatusAndamento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusAndamentoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBStatusAndamentoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBStatusAndamentoDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBStatusAndamento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusAndamentoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBStatusAndamentoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBStatusAndamentoDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBStatusAndamento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusAndamentoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBStatusAndamentoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBStatusAndamentoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBStatusAndamentoDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBStatusAndamentoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBStatusAndamento
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

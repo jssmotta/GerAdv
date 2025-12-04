@@ -29,13 +29,6 @@ public partial class FGUTAtividadesMatriz : MenphisSI.SG.GerAdv.DBGUTAtividadesM
     {
     }
 
-    public async Task<FGUTAtividadesMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fGUTAtividadesMatriz = new FGUTAtividadesMatriz();
-        await fGUTAtividadesMatriz.CarregarAsync(id, oCnn);
-        return fGUTAtividadesMatriz;
-    }
-
     private FGUTAtividadesMatriz(List<SqlParameter>? parameters, MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -44,6 +37,13 @@ public partial class FGUTAtividadesMatriz : MenphisSI.SG.GerAdv.DBGUTAtividadesM
     public static FGUTAtividadesMatriz CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FGUTAtividadesMatriz(parameters, oCnn, fullSql, sqlWhere, join);
+    }
+
+    public async Task<FGUTAtividadesMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        var fGUTAtividadesMatriz = new FGUTAtividadesMatriz();
+        await fGUTAtividadesMatriz.CarregarAsync(id, oCnn);
+        return fGUTAtividadesMatriz;
     }
 
     // Initialize method to load data with parameters after DI construction
@@ -55,14 +55,14 @@ public partial class FGUTAtividadesMatriz : MenphisSI.SG.GerAdv.DBGUTAtividadesM
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
             using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}] COLLATE SQL_Latin1_General_CP1_CI_AI like @CampoNome", oCnn?.InnerConnection);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

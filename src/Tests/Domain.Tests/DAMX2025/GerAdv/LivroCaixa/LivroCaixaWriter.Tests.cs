@@ -81,13 +81,28 @@ public class LivroCaixaWriterTests
         _mockFLivroCaixa.VerifySet(x => x.FIDHon = livrocaixa.IDHon, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FIDHonParc = livrocaixa.IDHonParc, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FIDHonSuc = livrocaixa.IDHonSuc, Times.Once);
-        _mockFLivroCaixa.VerifySet(x => x.FData = livrocaixa.Data, Times.Once);
+        _mockFLivroCaixa.VerifySet(x => x.FData = livrocaixa.Data.ToString(), Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FProcesso = livrocaixa.Processo, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FValor = livrocaixa.Valor, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FTipo = livrocaixa.Tipo, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FHistorico = livrocaixa.Historico, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.FGrupo = livrocaixa.Grupo, Times.Once);
         _mockFLivroCaixa.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var livrocaixa = CreateValidLivroCaixaModel();
+        livrocaixa.Data = null;
+        var auditorQuem = 123;
+        _mockLivroCaixaFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFLivroCaixa.Object);
+        _mockFLivroCaixa.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _livrocaixaWriter.WriteAsync(livrocaixa, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFLivroCaixa.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -130,7 +145,7 @@ public class LivroCaixaWriterTests
         var operadorId = 456;
         _mockLivroCaixaFactory.Setup(x => x.DeleteAsync(operadorId, livrocaixaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _livrocaixaWriter.Delete(livrocaixaResponse, operadorId, _mockConnection.Object);
+        await _livrocaixaWriter.DeleteAsync(livrocaixaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockLivroCaixaFactory.Verify(x => x.DeleteAsync(operadorId, livrocaixaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -146,7 +161,7 @@ public class LivroCaixaWriterTests
         var operadorId = 111;
         _mockLivroCaixaFactory.Setup(x => x.DeleteAsync(operadorId, livrocaixaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _livrocaixaWriter.Delete(livrocaixaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _livrocaixaWriter.DeleteAsync(livrocaixaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -163,7 +178,7 @@ public class LivroCaixaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockLivroCaixaFactory.Setup(x => x.DeleteAsync(operadorId, livrocaixaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _livrocaixaWriter.Delete(livrocaixaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _livrocaixaWriter.DeleteAsync(livrocaixaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -200,7 +215,7 @@ public class LivroCaixaWriterTests
             IDHon = 1,
             IDHonParc = 1,
             IDHonSuc = false,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Processo = 1,
             Valor = 1m,
             Tipo = false,

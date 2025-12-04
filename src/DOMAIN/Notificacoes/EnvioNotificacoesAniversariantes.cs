@@ -7,6 +7,13 @@ using DBOperador = MenphisSI.SG.GerAdv.DBOperador;
 namespace Domain.BaseCommon.Helpers;
 public class EnvioNotificacoesAniversariantes
 {
+    private readonly SendEmailApi _servicoEmail;
+
+    public EnvioNotificacoesAniversariantes(SendEmailApi servicoEmail)
+    {
+        _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
+    }
+
     private string ConteudoHtml(string operador, int advogado, string uri, MsiSqlConnection oCnn)
     {
         var ds = ObterAniversariantes(oCnn, uri, advogado);
@@ -190,7 +197,6 @@ ORDER BY ageData;
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
         var operadores = await reader.Listar(100, uri, filtroOperadores,[], "operNome",new CancellationToken());
-        var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
@@ -227,7 +233,7 @@ ORDER BY ageData;
             };
 
 
-           _ = servicoEmail.Send(email);
+           _ = _servicoEmail.Send(email);
  
              
 #if (!DEBUG)
@@ -243,7 +249,7 @@ ORDER BY ageData;
                         NomeDoMail = "NIVER - " + uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                         Time2Live = 24
                     };
-                    _ = servicoEmail.Send(email2);
+                    _ = _servicoEmail.Send(email2);
                 }
 
             
@@ -390,7 +396,6 @@ ORDER BY ageData;
         var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
         var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
 
-        var servicoEmail = new SendEmailApi();
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
@@ -426,7 +431,7 @@ ORDER BY ageData;
                 Time2Live = 24
             };
 
-            _ = servicoEmail.Send(email);
+            _ = _servicoEmail.Send(email);
 #endif 
             count++;
 

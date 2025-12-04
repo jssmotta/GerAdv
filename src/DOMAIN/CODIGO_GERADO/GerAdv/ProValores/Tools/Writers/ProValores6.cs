@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProValoresWriter
 {
     Task<FProValores> WriteAsync(Models.ProValores provalores, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProValoresResponse provalores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValoresWriter
 {
     private readonly IFProValoresFactory _provaloresFactory = provaloresFactory ?? throw new ArgumentNullException(nameof(provaloresFactory));
-    public virtual async Task Delete(ProValoresResponse provalores, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProValoresResponse provalores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _provaloresFactory.DeleteAsync(operadorId, provalores.Id, oCnn);
     }
@@ -27,7 +27,11 @@ public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValor
         dbRec.FTipoValorProcesso = provalores.TipoValorProcesso;
         dbRec.FIndice = provalores.Indice;
         dbRec.FIgnorar = provalores.Ignorar;
-        dbRec.FData = provalores.Data;
+        if (provalores.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(provalores.Data));
+        }
+
         dbRec.FValorOriginal = provalores.ValorOriginal;
         dbRec.FPercMulta = provalores.PercMulta;
         dbRec.FValorMulta = provalores.ValorMulta;
@@ -36,8 +40,11 @@ public class ProValoresWriter(IFProValoresFactory provaloresFactory) : IProValor
         dbRec.FValorMultaCorrigido = provalores.ValorMultaCorrigido;
         dbRec.FValorJurosCorrigido = provalores.ValorJurosCorrigido;
         dbRec.FValorFinal = provalores.ValorFinal;
-        if (provalores.DataUltimaCorrecao != null)
-            dbRec.FDataUltimaCorrecao = provalores.DataUltimaCorrecao.ToString();
+        if (provalores.DataUltimaCorrecao.NotIsEmpty())
+        {
+            dbRec.FDataUltimaCorrecao = DateOnly.FromDateTime(Convert.ToDateTime(provalores.DataUltimaCorrecao));
+        }
+
         dbRec.FGuid = provalores.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);

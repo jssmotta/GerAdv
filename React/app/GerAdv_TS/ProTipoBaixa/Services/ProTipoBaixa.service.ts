@@ -7,6 +7,8 @@ import { ProTipoBaixaApi, ProTipoBaixaApiError } from '../Apis/ApiProTipoBaixa';
 import { FilterProTipoBaixa } from '../Filters/ProTipoBaixa';
 import { IProTipoBaixa } from '../Interfaces/interface.ProTipoBaixa';
 import { ProTipoBaixaEmpty } from '../../Models/ProTipoBaixa';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
+import { AxiosResponse } from 'axios';
 
 export class ProTipoBaixaValidator {
   static validateProTipoBaixa(protipobaixa: IProTipoBaixa): { isValid: boolean; errors: string[] } {
@@ -29,6 +31,7 @@ export interface IProTipoBaixaService {
   getAll: (filtro?: FilterProTipoBaixa) => Promise<IProTipoBaixa[]>;
   deleteProTipoBaixa: (id: number) => Promise<void>;
   validateProTipoBaixa: (protipobaixa: IProTipoBaixa) => { isValid: boolean; errors: string[] };
+  filterVoice: (filtro?: FilterProTipoBaixa, voiceCommand?: ICommandSpeakerRequest) => Promise<AxiosResponse>;
 }
 
 export class ProTipoBaixaService implements IProTipoBaixaService {
@@ -94,15 +97,24 @@ export class ProTipoBaixaService implements IProTipoBaixaService {
   ): Promise<IProTipoBaixa[]> {
     try {
       // Carrega dados offline primeiro
-      const preloadResponse = await this.api.filterPreload(0, filtro ?? {});
-      const offlineData = preloadResponse?.data || [];
+      const preloadResponse = await this.api.filterPreload(0, (filtro ?? {}) as any);
+       // Normaliza offline
+      const offlineRaw = preloadResponse?.data;
+      const offlineData = Array.isArray(offlineRaw)
+        ? offlineRaw
+        : offlineRaw?.data ?? offlineRaw?.items ?? offlineRaw?.rows ?? [];
 
       if (onOnlineData) {
         // Busca dados online em background e envia via callback
-        this.api.filter(0, filtro ?? {})
+        this.api
+          .filter(0, (filtro ?? {}) as any)
           .then(response => {
-            if (response?.data) {
-              onOnlineData(response.data);
+            const raw = response?.data;
+            const onlineData = Array.isArray(raw)
+              ? raw
+              : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+            if (onlineData) {
+              onOnlineData(onlineData);
             }
           })
           .catch(error => {
@@ -114,8 +126,12 @@ export class ProTipoBaixaService implements IProTipoBaixaService {
       } else {
         // Se não há callback, aguarda dados online e retorna
         try {
-          const onlineResponse = await this.api.filter(0, filtro ?? {});
-          return onlineResponse?.data || offlineData;
+          const onlineResponse = await this.api.filter(0, (filtro ?? {}) as any);
+          const raw = onlineResponse?.data;
+          const onlineData = Array.isArray(raw)
+            ? raw
+            : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+          return onlineData || offlineData;
         } catch (error) {
             if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
                 console.log('Error fetching online ProTipoBaixa');
@@ -147,5 +163,22 @@ export class ProTipoBaixaService implements IProTipoBaixaService {
 
   validateProTipoBaixa(protipobaixa: IProTipoBaixa): { isValid: boolean; errors: string[] } {
     return ProTipoBaixaValidator.validateProTipoBaixa(protipobaixa);
+  }
+
+  async filterVoice(filtro?: FilterProTipoBaixa, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+    try {
+      const response = await this.api.filterVoice(filtro, voiceCommand);
+      return response;
+    } catch (error) {
+      if (error instanceof ProTipoBaixaApiError) {
+        throw error;
+      }
+      throw new ProTipoBaixaApiError(
+        'Erro ao processar filtro de voz',
+        500,
+        'VOICE_FILTER_ERROR',
+        error
+      );
+    }
   }
 }

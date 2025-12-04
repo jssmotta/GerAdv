@@ -20,11 +20,7 @@ public static partial class DBTipoOrigemSucumbenciaDicInfo
 
     public const string PTabelaNome = "TipoOrigemSucumbencia";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TosNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "tos"
-    };
+    public static DBInfoSystem TosNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tos", isRequired: true);
 
 #endregion
     [Serializable]

@@ -10,7 +10,6 @@ public static partial class DBEscritoriosDicInfo
     public const string CampoCodigo = "escCodigo";
     public const string CampoNome = "escNome";
     public const string TablePrefix = "esc";
-    public const string GUID = "escGUID"; // LOCALIZACAO 170523
     public const string CNPJ = "escCNPJ"; // LOCALIZACAO 170523
     public const string Casa = "escCasa"; // LOCALIZACAO 170523
     public const string Parceria = "escParceria"; // LOCALIZACAO 170523
@@ -32,6 +31,7 @@ public static partial class DBEscritoriosDicInfo
     public const string Top = "escTop"; // LOCALIZACAO 170523
     public const string Etiqueta = "escEtiqueta"; // LOCALIZACAO 170523
     public const string Bold = "escBold"; // LOCALIZACAO 170523
+    public const string Guid = "escGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "escQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "escDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "escQuemAtu"; // LOCALIZACAO 170523
@@ -71,119 +71,33 @@ public static partial class DBEscritoriosDicInfo
 
     public const string PTabelaNome = "Escritorios";
 #region PropriedadesDaTabela
-    public static DBInfoSystem EscGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", ETipoDadosSysteminfo.SysteminfoTextCnpj, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscCasa => new(0, PTabelaNome, CampoCodigo, Casa, "Casa", "Casa", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscParceria => new(0, PTabelaNome, CampoCodigo, Parceria, "Parceria", "Parceria", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscOAB => new(0, PTabelaNome, CampoCodigo, OAB, 15, "OAB", "OAB", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "esc"
-    }; // DBI 11 
-    public static DBInfoSystem EscBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 30, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscSite => new(0, PTabelaNome, CampoCodigo, Site, 200, "Site", "Site", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscEMail => new(0, PTabelaNome, CampoCodigo, EMail, 100, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, "OBS", "OBS", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscAdvResponsavel => new(0, PTabelaNome, CampoCodigo, AdvResponsavel, 80, "AdvResponsavel", "AdvResponsavel", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscSecretaria => new(0, PTabelaNome, CampoCodigo, Secretaria, 80, "Secretaria", "Secretaria", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, "InscEst", "InscEst", ETipoDadosSysteminfo.SysteminfoTextInscricao, true, false, false)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscCorrespondente => new(0, PTabelaNome, CampoCodigo, Correspondente, "Correspondente", "Correspondente", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "esc"
-    }; // DBI 11 
-    public static DBInfoSystem EscDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "esc"
-    }; // DBI 11 
-    public static DBInfoSystem EscDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "esc"
-    };
-    public static DBInfoSystem EscVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "esc"
-    };
+    public static DBInfoSystem EscCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, CNPJ, CNPJ, EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscCasa => new(0, PTabelaNome, CampoCodigo, Casa, Casa, Casa, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "esc", isRequired: true);
+    public static DBInfoSystem EscParceria => new(0, PTabelaNome, CampoCodigo, Parceria, Parceria, Parceria, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "esc", isRequired: true);
+    public static DBInfoSystem EscNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "esc");
+    public static DBInfoSystem EscOAB => new(0, PTabelaNome, CampoCodigo, OAB, 15, OAB, OAB, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 50, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "esc"); // DBI 11 
+    public static DBInfoSystem EscBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 30, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscSite => new(0, PTabelaNome, CampoCodigo, Site, 200, Site, Site, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscEMail => new(0, PTabelaNome, CampoCodigo, EMail, 100, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscOBS => new(0, PTabelaNome, CampoCodigo, OBS, DevourerOne.PMaxSizeCampoMemo, OBS, OBS, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscAdvResponsavel => new(0, PTabelaNome, CampoCodigo, AdvResponsavel, 80, AdvResponsavel, AdvResponsavel, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscSecretaria => new(0, PTabelaNome, CampoCodigo, Secretaria, 80, Secretaria, Secretaria, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, InscEst, InscEst, EDataTypeSystemInfo.SystemInfoTextInscricao, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscCorrespondente => new(0, PTabelaNome, CampoCodigo, Correspondente, Correspondente, Correspondente, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "esc");
+    public static DBInfoSystem EscTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "esc");
+    public static DBInfoSystem EscEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "esc", isRequired: true);
+    public static DBInfoSystem EscBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "esc", isRequired: true);
+    public static DBInfoSystem EscGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "esc");
+    public static DBInfoSystem EscQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "esc"); // DBI 11 
+    public static DBInfoSystem EscDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "esc");
+    public static DBInfoSystem EscQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "esc"); // DBI 11 
+    public static DBInfoSystem EscDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "esc");
+    public static DBInfoSystem EscVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "esc", isRequired: true);
 
 #endregion
     [Serializable]

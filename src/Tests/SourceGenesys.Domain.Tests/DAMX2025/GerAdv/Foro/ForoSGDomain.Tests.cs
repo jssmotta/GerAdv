@@ -48,7 +48,22 @@ public class DBForoTests : IDisposable
         dt.Columns.Add("forOBS", typeof(string));
         dt.Columns.Add("forUnicoConfirmado", typeof(string));
         dt.Columns.Add("forWeb", typeof(string));
+        dt.Columns.Add("forEtiqueta", typeof(string));
+        dt.Columns.Add("forBold", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["forCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBForo(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -69,7 +84,7 @@ public class DBForoTests : IDisposable
     {
         var instance = new DBForo();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Foro", instance.ITabelaName());
+        Assert.Equal("Foro", instance.ITableName());
         Assert.Equal("for", instance.Prefixo);
     }
 
@@ -87,29 +102,16 @@ public class DBForoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["forCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBForo(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Foro", cadastro.ITabelaName());
-        Assert.Equal("forCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("forNome", cadastro.ICampoNome());
-        Assert.Equal("for", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Foro", cadastro.ITableName());
+        Assert.Equal("forCodigo", cadastro.IFieldId());
+        Assert.Equal("forNome", cadastro.IFieldNameDescription());
+        Assert.Equal("for", cadastro.IPrefix());
     }
 
 #endregion
@@ -169,9 +171,9 @@ public class DBForoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

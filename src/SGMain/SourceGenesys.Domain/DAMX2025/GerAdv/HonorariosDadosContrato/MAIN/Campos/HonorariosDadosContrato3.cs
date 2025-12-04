@@ -7,96 +7,81 @@ public partial class DBHonorariosDadosContrato
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFCliente, pFldFFixo, pFldFVariavel, pFldFPercSucesso, pFldFProcesso, pFldFArquivoContrato, pFldFTextoContrato, pFldFValorFixo, pFldFObservacao, pFldFGuid, pFldFDataContrato;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FCliente, m_FProcesso;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FArquivoContrato, m_FTextoContrato, m_FObservacao, m_FGuid;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDataContrato;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FFixo, m_FVariavel;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected decimal m_FPercSucesso, m_FValorFixo;
+    private protected bool pFldFCliente, pFldFFixo, pFldFVariavel, pFldFPercSucesso, pFldFProcesso, pFldFArquivoContrato, pFldFTextoContrato, pFldFValorFixo, pFldFObservacao, pFldFDataContrato, pFldFGuid;
     public virtual int FCliente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCliente;
+        get => field;
         set
         {
-            pFldFCliente = pFldFCliente || value != m_FCliente;
+            pFldFCliente = pFldFCliente || value != field;
             if (pFldFCliente)
-                m_FCliente = value;
+                field = value;
         }
     }
 
     public virtual bool FFixo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFixo;
+        get => field;
         set
         {
-            pFldFFixo = pFldFFixo || value != m_FFixo;
+            pFldFFixo = pFldFFixo || value != field;
             if (pFldFFixo)
-                m_FFixo = value;
+                field = value;
         }
     }
 
     public virtual bool FVariavel
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FVariavel;
+        get => field;
         set
         {
-            pFldFVariavel = pFldFVariavel || value != m_FVariavel;
+            pFldFVariavel = pFldFVariavel || value != field;
             if (pFldFVariavel)
-                m_FVariavel = value;
+                field = value;
         }
     }
 
     public virtual decimal FPercSucesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPercSucesso;
+        get => field;
         set
         {
-            if (value == m_FPercSucesso)
+            if (value == field)
                 return;
             pFldFPercSucesso = true;
-            m_FPercSucesso = value;
+            field = value;
         }
     }
 
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FArquivoContrato da tabela HonorariosDadosContrato deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FArquivoContrato da tabela 'HonorariosDadosContrato' deve ter no máximo 2048 caracteres.")]
     public virtual string? FArquivoContrato
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FArquivoContrato ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFArquivoContrato = pFldFArquivoContrato || !(m_FArquivoContrato ?? string.Empty).Equals(value);
+            pFldFArquivoContrato = pFldFArquivoContrato || !(field ?? string.Empty).Equals(value);
             if (pFldFArquivoContrato)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FArquivoContrato = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
             }
         }
     }
@@ -105,83 +90,97 @@ public partial class DBHonorariosDadosContrato
     public virtual string? FTextoContrato
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTextoContrato ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFTextoContrato = pFldFTextoContrato || !(m_FTextoContrato ?? string.Empty).Equals(value);
+            pFldFTextoContrato = pFldFTextoContrato || !(field ?? string.Empty).Equals(value);
             if (pFldFTextoContrato)
-                m_FTextoContrato = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual decimal FValorFixo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FValorFixo;
+        get => field;
         set
         {
-            if (value == m_FValorFixo)
+            if (value == field)
                 return;
             pFldFValorFixo = true;
-            m_FValorFixo = value;
+            field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FObservacao da tabela HonorariosDadosContrato deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FObservacao da tabela 'HonorariosDadosContrato' deve ter no máximo 2048 caracteres.")]
     public virtual string? FObservacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObservacao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObservacao = pFldFObservacao || !(m_FObservacao ?? string.Empty).Equals(value);
+            pFldFObservacao = pFldFObservacao || !(field ?? string.Empty).Equals(value);
             if (pFldFObservacao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FObservacao = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+            }
+        }
+    }
+
+    public virtual DateOnly? FDataContrato
+    {
+        get;
+        set
+        {
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataContrato = true;
+                    field = null;
+                }
+
+                return;
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataContrato = true;
+                field = value;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FGuid da tabela HonorariosDadosContrato deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FGuid da tabela 'HonorariosDadosContrato' deve ter no máximo 150 caracteres.")]
     public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGuid ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGuid = pFldFGuid || !(m_FGuid ?? string.Empty).Equals(value);
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
             if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGuid = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
-        }
-    }
-
-    public virtual string? FDataContrato
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataContrato is null || m_FDataContrato == DevourerOne.DDataZerada ? string.Empty : m_FDataContrato.Value.ToString("dd/MM/yyyy");
-        set
-        {
-            if (DevourerOne.DateUp12(pFldFDataContrato, m_FDataContrato, value)is not (true, var changed, var data))
-                return;
-            (pFldFDataContrato, m_FDataContrato) = (changed, data);
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -191,9 +190,13 @@ public partial class DBHonorariosDadosContrato
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

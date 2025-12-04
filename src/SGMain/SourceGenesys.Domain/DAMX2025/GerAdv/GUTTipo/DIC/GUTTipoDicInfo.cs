@@ -12,7 +12,7 @@ public static partial class DBGUTTipoDicInfo
     public const string TablePrefix = "gtt";
     public const string Nome = "gttNome"; // LOCALIZACAO 170523
     public const string Ordem = "gttOrdem"; // LOCALIZACAO 170523
-    public const string GUID = "gttGUID"; // LOCALIZACAO 170523
+    public const string Guid = "gttGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "gttQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "gttDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "gttQuemAtu"; // LOCALIZACAO 170523
@@ -33,44 +33,14 @@ public static partial class DBGUTTipoDicInfo
 
     public const string PTabelaNome = "GUTTipo";
 #region PropriedadesDaTabela
-    public static DBInfoSystem GttNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "gtt"
-    };
-    public static DBInfoSystem GttOrdem => new(0, PTabelaNome, CampoCodigo, Ordem, "Ordem", "Ordem", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "gtt"
-    };
-    public static DBInfoSystem GttGUID => new(0, PTabelaNome, CampoCodigo, GUID, 50, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "gtt"
-    };
-    public static DBInfoSystem GttQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "gtt"
-    }; // DBI 11 
-    public static DBInfoSystem GttDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "gtt"
-    };
-    public static DBInfoSystem GttQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "gtt"
-    }; // DBI 11 
-    public static DBInfoSystem GttDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "gtt"
-    };
-    public static DBInfoSystem GttVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "gtt"
-    };
+    public static DBInfoSystem GttNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "gtt", isRequired: true);
+    public static DBInfoSystem GttOrdem => new(0, PTabelaNome, CampoCodigo, Ordem, Ordem, Ordem, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "gtt", isRequired: true);
+    public static DBInfoSystem GttGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "gtt", isRequired: true);
+    public static DBInfoSystem GttQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gtt", isRequired: true); // DBI 11 
+    public static DBInfoSystem GttDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "gtt", isRequired: true);
+    public static DBInfoSystem GttQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "gtt"); // DBI 11 
+    public static DBInfoSystem GttDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "gtt");
+    public static DBInfoSystem GttVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "gtt", isRequired: true);
 
 #endregion
     [Serializable]

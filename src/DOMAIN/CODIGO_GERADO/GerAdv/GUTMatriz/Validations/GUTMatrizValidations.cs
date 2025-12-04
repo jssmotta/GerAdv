@@ -23,7 +23,7 @@ public class GUTMatrizValidation : IGUTMatrizValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTMatriz = id ?? default }, uri);
         if (gutatividadesmatrizExists0 != null && gutatividadesmatrizExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela G U T Atividades Matriz associados a ele.");
         return true;
     }
 
@@ -40,6 +40,8 @@ public class GUTMatrizValidation : IGUTMatrizValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -51,7 +53,7 @@ public class GUTMatrizValidation : IGUTMatrizValidation
             throw new SGValidationException("Valor é obrigatório.");
         // GUTTipo
         {
-            var regGUTTipo = await guttipoReader.Read(reg.GUTTipo, oCnn);
+            var regGUTTipo = await guttipoReader.ReadAsync(reg.GUTTipo, oCnn);
             if (regGUTTipo == null || regGUTTipo.Id != reg.GUTTipo)
             {
                 throw new SGValidationException($"G U T Tipo não encontrado ({regGUTTipo?.Id}).");

@@ -26,8 +26,6 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
 
     private bool ValidSizes(Models.HonorariosDadosContrato reg)
     {
-        if (reg.Guid != null && reg.Guid.Length > DBHonorariosDadosContratoDicInfo.HdcGuid.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBHonorariosDadosContratoDicInfo.HdcGuid.FTamanho} caracteres.");
         if (reg.ArquivoContrato != null && reg.ArquivoContrato.Length > DBHonorariosDadosContratoDicInfo.HdcArquivoContrato.FTamanho)
             throw new SGValidationException($"ArquivoContrato deve ter no máximo {DBHonorariosDadosContratoDicInfo.HdcArquivoContrato.FTamanho} caracteres.");
         if (reg.Observacao != null && reg.Observacao.Length > DBHonorariosDadosContratoDicInfo.HdcObservacao.FTamanho)
@@ -64,7 +62,7 @@ public class HonorariosDadosContratoValidation : IHonorariosDadosContratoValidat
 
         // Clientes
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");

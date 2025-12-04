@@ -74,9 +74,9 @@ public class GraphWriterTests
         var result = await _graphWriter.WriteAsync(graph, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFGraph.Object);
+        _mockFGraph.VerifySet(x => x.FGuid = graph.Guid, Times.Once);
         _mockFGraph.VerifySet(x => x.FTabela = graph.Tabela, Times.Once);
         _mockFGraph.VerifySet(x => x.FTabelaId = graph.TabelaId, Times.Once);
-        _mockFGraph.VerifySet(x => x.FGUID = graph.GUID, Times.Once);
         _mockFGraph.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class GraphWriterTests
         var operadorId = 456;
         _mockGraphFactory.Setup(x => x.DeleteAsync(operadorId, graphResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _graphWriter.Delete(graphResponse, operadorId, _mockConnection.Object);
+        await _graphWriter.DeleteAsync(graphResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGraphFactory.Verify(x => x.DeleteAsync(operadorId, graphResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class GraphWriterTests
         var operadorId = 111;
         _mockGraphFactory.Setup(x => x.DeleteAsync(operadorId, graphResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _graphWriter.Delete(graphResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _graphWriter.DeleteAsync(graphResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class GraphWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGraphFactory.Setup(x => x.DeleteAsync(operadorId, graphResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _graphWriter.Delete(graphResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _graphWriter.DeleteAsync(graphResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class GraphWriterTests
         return new Models.Graph
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Tabela = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            TabelaId = 1,
-            GUID = Guid.NewGuid().ToString()
+            TabelaId = 1
         };
     }
 #endregion

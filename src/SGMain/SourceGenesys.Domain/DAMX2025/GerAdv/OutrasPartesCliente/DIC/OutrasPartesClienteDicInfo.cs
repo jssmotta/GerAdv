@@ -29,11 +29,11 @@ public static partial class DBOutrasPartesClienteDicInfo
     public const string Fax = "opcFax"; // LOCALIZACAO 170523
     public const string EMail = "opcEMail"; // LOCALIZACAO 170523
     public const string Site = "opcSite"; // LOCALIZACAO 170523
-    public const string GUID = "opcGUID"; // LOCALIZACAO 170523
     public const string Class = "opcClass"; // LOCALIZACAO 170523
     public const string Etiqueta = "opcEtiqueta"; // LOCALIZACAO 170523
     public const string Ani = "opcAni"; // LOCALIZACAO 170523
     public const string Bold = "opcBold"; // LOCALIZACAO 170523
+    public const string Guid = "opcGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "opcQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "opcDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "opcQuemAtu"; // LOCALIZACAO 170523
@@ -75,128 +75,35 @@ public static partial class DBOutrasPartesClienteDicInfo
 
     public const string PTabelaNome = "OutrasPartesCliente";
 #region PropriedadesDaTabela
-    public static DBInfoSystem OpcNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcTerceirizado => new(0, PTabelaNome, CampoCodigo, Terceirizado, "Terceirizado", "Terceirizado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcClientePrincipal => new(0, PTabelaNome, CampoCodigo, ClientePrincipal, "ClientePrincipal", "ClientePrincipal", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", ETipoDadosSysteminfo.SysteminfoDataNascimento)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", ETipoDadosSysteminfo.SysteminfoTextCnpj, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, "InscEst", "InscEst", ETipoDadosSysteminfo.SysteminfoTextInscricao, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcNomeFantasia => new(0, PTabelaNome, CampoCodigo, NomeFantasia, 255, "NomeFantasia", "NomeFantasia", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "opc"
-    }; // DBI 11 
-    public static DBInfoSystem OpcCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcSite => new(0, PTabelaNome, CampoCodigo, Site, 150, "Site", "Site", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "opc"
-    }; // DBI 11 
-    public static DBInfoSystem OpcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "opc"
-    }; // DBI 11 
-    public static DBInfoSystem OpcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "opc"
-    };
-    public static DBInfoSystem OpcVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "opc"
-    };
+    public static DBInfoSystem OpcNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "opc");
+    public static DBInfoSystem OpcTerceirizado => new(0, PTabelaNome, CampoCodigo, Terceirizado, Terceirizado, Terceirizado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "opc", isRequired: true);
+    public static DBInfoSystem OpcClientePrincipal => new(0, PTabelaNome, CampoCodigo, ClientePrincipal, ClientePrincipal, ClientePrincipal, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "opc");
+    public static DBInfoSystem OpcTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "opc", isRequired: true);
+    public static DBInfoSystem OpcSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "opc", isRequired: true);
+    public static DBInfoSystem OpcDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, DtNasc, DtNasc, EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "opc");
+    public static DBInfoSystem OpcCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcRG => new(0, PTabelaNome, CampoCodigo, RG, 30, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, CNPJ, CNPJ, EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, InscEst, InscEst, EDataTypeSystemInfo.SystemInfoTextInscricao, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcNomeFantasia => new(0, PTabelaNome, CampoCodigo, NomeFantasia, 255, NomeFantasia, NomeFantasia, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "opc"); // DBI 11 
+    public static DBInfoSystem OpcCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcSite => new(0, PTabelaNome, CampoCodigo, Site, 150, Site, Site, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "opc", isRequired: true);
+    public static DBInfoSystem OpcAni => new(0, PTabelaNome, CampoCodigo, Ani, Ani, Ani, EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "opc");
+    public static DBInfoSystem OpcBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "opc", isRequired: true);
+    public static DBInfoSystem OpcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "opc");
+    public static DBInfoSystem OpcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "opc"); // DBI 11 
+    public static DBInfoSystem OpcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "opc");
+    public static DBInfoSystem OpcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "opc"); // DBI 11 
+    public static DBInfoSystem OpcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "opc");
+    public static DBInfoSystem OpcVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "opc", isRequired: true);
 
 #endregion
     [Serializable]

@@ -30,8 +30,6 @@ public class SituacaoValidation : ISituacaoValidation
             throw new SGValidationException($"Parte_Int deve ter no máximo {DBSituacaoDicInfo.SitParte_Int.FTamanho} caracteres.");
         if (reg.Parte_Opo != null && reg.Parte_Opo.Length > DBSituacaoDicInfo.SitParte_Opo.FTamanho)
             throw new SGValidationException($"Parte_Opo deve ter no máximo {DBSituacaoDicInfo.SitParte_Opo.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBSituacaoDicInfo.SitGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBSituacaoDicInfo.SitGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,6 +39,8 @@ public class SituacaoValidation : ISituacaoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Parte_Int))
             throw new SGValidationException("Parte_Int é obrigatório");
+        if (reg.Parte_Int.Contains("%"))
+            throw new SGValidationException("Parte_Int possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

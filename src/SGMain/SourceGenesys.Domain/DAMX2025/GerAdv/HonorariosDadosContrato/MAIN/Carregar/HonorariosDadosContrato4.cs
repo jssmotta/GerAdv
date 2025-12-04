@@ -54,8 +54,40 @@ public partial class DBHonorariosDadosContrato
         // Checkpoint Carregar 
         try
         {
+            FArquivoContrato = getValue(DBHonorariosDadosContratoDicInfo.ArquivoContrato)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBHonorariosDadosContratoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBHonorariosDadosContratoDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTextoContrato = getValue(DBHonorariosDadosContratoDicInfo.TextoContrato)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.Cliente));
         }
         catch
         {
@@ -64,7 +96,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.DataContrato)))
-                m_FDataContrato = Convert.ToDateTime(getValue(DBHonorariosDadosContratoDicInfo.DataContrato));
+                FDataContrato = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBHonorariosDadosContratoDicInfo.DataContrato)));
         }
         catch
         {
@@ -91,7 +123,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.Fixo)))
-                m_FFixo = Convert.ToBoolean(getValue(DBHonorariosDadosContratoDicInfo.Fixo));
+                FFixo = Convert.ToBoolean(getValue(DBHonorariosDadosContratoDicInfo.Fixo));
         }
         catch
         {
@@ -100,7 +132,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.PercSucesso)))
-                m_FPercSucesso = Convert.ToDecimal(getValue(DBHonorariosDadosContratoDicInfo.PercSucesso));
+                FPercSucesso = Convert.ToDecimal(getValue(DBHonorariosDadosContratoDicInfo.PercSucesso));
         }
         catch
         {
@@ -109,7 +141,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.Processo));
         }
         catch
         {
@@ -118,7 +150,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.QuemAtu));
         }
         catch
         {
@@ -127,7 +159,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBHonorariosDadosContratoDicInfo.QuemCad));
         }
         catch
         {
@@ -136,7 +168,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.ValorFixo)))
-                m_FValorFixo = Convert.ToDecimal(getValue(DBHonorariosDadosContratoDicInfo.ValorFixo));
+                FValorFixo = Convert.ToDecimal(getValue(DBHonorariosDadosContratoDicInfo.ValorFixo));
         }
         catch
         {
@@ -145,7 +177,7 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.Variavel)))
-                m_FVariavel = Convert.ToBoolean(getValue(DBHonorariosDadosContratoDicInfo.Variavel));
+                FVariavel = Convert.ToBoolean(getValue(DBHonorariosDadosContratoDicInfo.Variavel));
         }
         catch
         {
@@ -154,46 +186,14 @@ public partial class DBHonorariosDadosContrato
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHonorariosDadosContratoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBHonorariosDadosContratoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FArquivoContrato = getValue(DBHonorariosDadosContratoDicInfo.ArquivoContrato)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGuid = getValue(DBHonorariosDadosContratoDicInfo.Guid)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBHonorariosDadosContratoDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTextoContrato = getValue(DBHonorariosDadosContratoDicInfo.TextoContrato)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBHonorariosDadosContratoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -217,7 +217,7 @@ public partial class DBHonorariosDadosContrato
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

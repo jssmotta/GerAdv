@@ -9,54 +9,61 @@ import { StatusInstanciaService } from '../../Services/StatusInstancia.service';
 import { StatusInstanciaApi } from '../../Apis/ApiStatusInstancia';
 import StatusInstanciaWindow from './StatusInstanciaWindow';
 import {StatusInstanciaEmpty } from '@/app/GerAdv_TS/Models/StatusInstancia';
-interface StatusInstanciaWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const StatusInstanciaWindowId: React.FC<StatusInstanciaWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const statusinstanciaService = useMemo(() => {
-  return new StatusInstanciaService(
-  new StatusInstanciaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IStatusInstancia | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(StatusInstanciaEmpty() as IStatusInstancia);
-      return;
-    }
-    if (id) {
-      const response = await statusinstanciaService.fetchStatusInstanciaById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <StatusInstanciaWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedStatusInstancia={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface StatusInstanciaWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const StatusInstanciaWindowId: React.FC<StatusInstanciaWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const statusinstanciaService = useMemo(() => {
+        return new StatusInstanciaService(
+            new StatusInstanciaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IStatusInstancia | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(StatusInstanciaEmpty() as IStatusInstancia);
+                return;
+            }
+            if (id) {
+                 const response = await statusinstanciaService.fetchStatusInstanciaById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <StatusInstanciaWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedStatusInstancia={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default StatusInstanciaWindowId;

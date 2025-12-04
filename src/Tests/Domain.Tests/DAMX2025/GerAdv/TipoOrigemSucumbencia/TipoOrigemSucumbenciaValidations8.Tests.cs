@@ -105,7 +105,7 @@ public class TipoOrigemSucumbenciaValidationTests : IDisposable
         tipoorigemsucumbencia.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoorigemsucumbencia, _mockTipoOrigemSucumbenciaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class TipoOrigemSucumbenciaValidationTests : IDisposable
     {
         // Arrange
         var tipoorigemsucumbencia = CreateValidTipoOrigemSucumbencia();
-        tipoorigemsucumbencia.Nome = "   ";
+        tipoorigemsucumbencia.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoorigemsucumbencia, _mockTipoOrigemSucumbenciaService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

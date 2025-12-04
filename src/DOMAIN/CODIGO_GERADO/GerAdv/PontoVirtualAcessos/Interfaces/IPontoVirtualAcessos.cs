@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IPontoVirtualAcessosService
 {
+    Task<Filters.FilterPontoVirtualAcessos> FilterVoice([FromBody] Filters.FilterPontoVirtualAcessos filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<PontoVirtualAcessosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterPontoVirtualAcessos filter, [FromRoute, Required] string uri = "");
     Task<PontoVirtualAcessosResponse?> AddAndUpdate(Models.PontoVirtualAcessos? regPontoVirtualAcessos, [FromRoute, Required] string uri = "");
     Task<PontoVirtualAcessosResponse?> Validation(Models.PontoVirtualAcessos? regPontoVirtualAcessos, [FromRoute, Required] string uri = "");

@@ -9,128 +9,181 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterPontoVirtualAcessos } from '@/app/GerAdv_TS/PontoVirtualAcessos/Filters/PontoVirtualAcessos';
+import FilterDialogButton from '@/app/components/Cruds/FilterDialogButton';
+import {useOperadorFilter} from '@/app/GerAdv_TS/Operador/Hooks/hookOperadorFilter';
 import OperadorComboBox from '@/app/GerAdv_TS/Operador/ComboBox/Operador';
+
+
 interface UsePontoVirtualAcessosFilterProps {
-  handleFetchWithFilter: (filtro?: FilterPontoVirtualAcessos | undefined | null) => Promise<void>;
+    handleFetchWithFilter: (filtro?: FilterPontoVirtualAcessos | undefined | null) => Promise<void>;
 }
+
 interface UsePontoVirtualAcessosFilterReturn {
-  // Estados
-  showSearch: boolean;
-  windowFilter: FilterPontoVirtualAcessos;
-  setWindowFilter: React.Dispatch<React.SetStateAction<FilterPontoVirtualAcessos>>;
-  // Handlers do Dialog
-  handleSearch: () => void;
-  handleCloseSearch: () => void;
-  handleConfirmSearch: (filter: FilterPontoVirtualAcessos) => Promise<void>;
-  // Render function
-  renderInputFilters: (handlers: FilterHandlers<FilterPontoVirtualAcessos>) => React.ReactNode;
-  // Utilitários
-  clearFilter: () => void;
-  hasActiveFilter: boolean;
+    // Estados
+    showSearch: boolean;
+    windowFilter: FilterPontoVirtualAcessos;
+    setWindowFilter: React.Dispatch<React.SetStateAction<FilterPontoVirtualAcessos>>;
+
+    // Handlers do Dialog
+    handleSearch: () => void;
+    handleCloseSearch: () => void;
+    handleConfirmSearch: (filter: FilterPontoVirtualAcessos) => Promise<void>;
+
+    // Render function
+    renderInputFilters: (handlers: FilterHandlers<FilterPontoVirtualAcessos>) => React.ReactNode;
+
+    // Utilitários
+    clearFilter: () => void;
+    hasActiveFilter: boolean;
 }
+
 export const usePontoVirtualAcessosFilter = ({ handleFetchWithFilter }: UsePontoVirtualAcessosFilterProps): UsePontoVirtualAcessosFilterReturn => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [windowFilter, setWindowFilter] = useState<FilterPontoVirtualAcessos>({} as FilterPontoVirtualAcessos);
-  // Handlers do Dialog
-  const handleSearch = () => {
-    setShowSearch(true);
-    const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterPontoVirtualAcessos;
-    setWindowFilter(filterWildechar);
-  };
-  const handleCloseSearch = () => {
-    setShowSearch(false);
-  };
-  const handleConfirmSearch = async (filter: FilterPontoVirtualAcessos) => {
-    await handleFetchWithFilter(filter);
-  };
-  // Função para limpar filtros
-  const clearFilter = () => {
-    setWindowFilter({});
-    sessionStorage.removeItem(btoa('PontoVirtualAcessosFilter'));
-    handleFetchWithFilter({});
-  };
-  // Verificar se há filtros ativos
-  const hasActiveFilter = Object.values(windowFilter).some(value =>
-    value !== undefined && value !== null && value !== '' && value !== -2147483648
-  );
-  // Função para renderizar os campos de filtro
-  const renderInputFilters = (handlers: FilterHandlers<FilterPontoVirtualAcessos>) => (
-  <>
-  <OperadorComboBox
-  name='operador'
-  dataForm={null}
-  value={handlers.windowFilter?.operador}
-  setValue={(e:any) => handlers.handleComboChange(e, 'operador')}
-  className='inputSearch inputSearchComboboxTab'
-  label='Operador'
-  />
-  <InputInput
-  type='text'
-  id='datahora'
-  name='datahora'
-  value={handlers.windowFilter?.datahora ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe DataHora'
-  label='DataHora'
-  className='inputIncNome inputSearch'
-  />
-  <InputComboFilterYesNo
-  type='text'
-  id='tipo'
-  name='tipo'
-  value={handlers.windowFilter?.tipo ?? -2147483648}
-  onChange={handlers.handleInputChange}
-  label='Tipo'
-  className='inputSearch inputSearchCheckbox'
-  />
-  <InputInput
-  type='text'
-  id='origem'
-  name='origem'
-  value={handlers.windowFilter?.origem ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Origem'
-  label='Origem'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro'
-  name='codigo_filtro'
-  value={handlers.windowFilter?.codigo_filtro ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código do cadastro'
-  label='Código (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro_end'
-  name='codigo_filtro_end'
-  value={handlers.windowFilter?.codigo_filtro_end ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código final do cadastro'
-  label='Código final'
-  disabled={handlers.windowFilter?.codigo_filtro ? false: true}
-  className='inputIncNome inputSearch'
-  />
-</>
-);
-return {
-  // Estados
-  showSearch, 
-  windowFilter, 
-  setWindowFilter, 
-  // Handlers
-  handleSearch, 
-  handleCloseSearch, 
-  handleConfirmSearch, 
-  // Render function
-  renderInputFilters, 
-  // Utilitários
-  clearFilter, 
-  hasActiveFilter
-};
+    const [showSearch, setShowSearch] = useState(false);
+    const [windowFilter, setWindowFilter] = useState<FilterPontoVirtualAcessos>({} as FilterPontoVirtualAcessos);
+
+    // Handlers do Dialog
+    const handleSearch = () => {
+        setShowSearch(true);
+        const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterPontoVirtualAcessos;
+        setWindowFilter(filterWildechar);
+    };
+
+    const handleCloseSearch = () => {
+        setShowSearch(false);
+    };
+
+    const handleConfirmSearch = async (filter: FilterPontoVirtualAcessos) => {
+        await handleFetchWithFilter(filter);
+    };
+
+    // Função para limpar filtros
+    const clearFilter = () => {
+        setWindowFilter({} as FilterPontoVirtualAcessos);
+        sessionStorage.removeItem(btoa('PontoVirtualAcessosFilter'));
+        handleFetchWithFilter({} as FilterPontoVirtualAcessos);
+    };
+
+    // Verificar se há filtros ativos
+    const hasActiveFilter = Object.values(windowFilter).some(value =>
+        value !== undefined && value !== null && value !== '' && value !== -2147483648
+    );
+
+    // Função para renderizar os campos de filtro
+    const renderInputFilters = (handlers: FilterHandlers<FilterPontoVirtualAcessos>) => (        
+        <>
+        <OperadorComboBox
+                name='operador'
+                dataForm={null}
+                value={handlers.windowFilter?.operador}
+                setValue={(e:any) => handlers.handleComboChange(e, 'operador')}
+                className='inputSearch inputSearchComboboxTab'
+                label='Operador'
+            />
+<InputDate
+                type='text'
+                id='datahora'
+                label='DataHora (igual ou início)'
+                dataForm={null}
+                className='inputSearch'
+                name='datahora'
+                value={handlers.windowFilter?.datahora ?? ''}                
+                onChange={(value: string) => handlers.handleDateChange('datahora', value)}
+            />
+<InputDate
+                type='text'
+                id='datahora_end'
+                label='DataHora (final)'
+                dataForm={null}
+                className='inputSearch'
+                name='datahora_end'
+                value={handlers.windowFilter?.datahora_end ?? ''}
+                disabled={handlers.windowFilter?.datahora ? false : true}
+                onChange={(value: string) => handlers.handleDateChange('datahora_end', value)}
+            />
+<InputComboFilterYesNo
+                type='text'
+                id='tipo'
+                name='tipo'
+                value={handlers.windowFilter?.tipo ?? -2147483648}
+                onChange={handlers.handleInputChange} 
+                label='Tipo'
+                className='inputSearch inputSearchCheckbox'
+                />
+<InputInput
+                type='text'
+                id='origem'
+                name='origem'
+                value={handlers.windowFilter?.origem ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Origem'
+                label='Origem'
+                className='input-default-main inputSearch'
+                />
+ <FilterDialogButton
+        // passa o objeto nested (pode ser undefined => cast para objeto vazio)
+        filter={handlers.windowFilter.filterOperador ?? ({} as any) as any}
+        setFilter={(f: any) =>
+          handlers.setWindowFilter((prev) => ({ ...prev, filterOperador: f }))
+        }
+        // ao confirmar, NÃO precisa fazer nada - o setFilter já atualizou
+        onConfirm={async (f: any) => {          
+        }}
+        title='Filtrar Operador'
+        buttonText='Operador'
+        renderInputFilters={renderOperadorInputs} 
+
+      />
+
+<InputInput
+                type='text'
+                id='codigo_filtro'
+                name='codigo_filtro'
+                value={handlers.windowFilter?.codigo_filtro ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código do cadastro'
+                label='Código (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='codigo_filtro_end'
+                name='codigo_filtro_end'
+                value={handlers.windowFilter?.codigo_filtro_end ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código final do cadastro'
+                label='Código final'
+                disabled={handlers.windowFilter?.codigo_filtro ? false : true}
+                className='input-default-main inputSearch'
+                />
+
+        </>        
+    );
+
+
+    const { renderInputFilters: renderOperadorInputs } = useOperadorFilter({
+    handleFetchWithFilter: async () => {},
+  });
+
+
+
+    return {
+        // Estados
+        showSearch,
+        windowFilter,
+        setWindowFilter,
+
+        // Handlers
+        handleSearch,
+        handleCloseSearch,
+        handleConfirmSearch,
+
+        // Render function
+        renderInputFilters,
+
+        // Utilitários
+        clearFilter,
+        hasActiveFilter
+    };
 };

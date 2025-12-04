@@ -10,65 +10,72 @@ import { ITipoContatoCRM } from '../../Interfaces/interface.TipoContatoCRM';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { TipoContatoCRMEmpty } from '@/app/GerAdv_TS/Models/TipoContatoCRM';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface TipoContatoCRMWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedTipoContatoCRM?: ITipoContatoCRM;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedTipoContatoCRM?: ITipoContatoCRM;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const TipoContatoCRMWindow: React.FC<TipoContatoCRMWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedTipoContatoCRM, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedTipoContatoCRM,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Tipo Contato C R M'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedTipoContatoCRM?.id ?? 0).toString()}
->
-<TipoContatoCRMInc
-id={selectedTipoContatoCRM?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Tipo Contato C R M'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedTipoContatoCRM?.id ?? 0).toString()}
+            >
+                <TipoContatoCRMInc
+                    id={selectedTipoContatoCRM?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowTipoContatoCRM: React.FC<TipoContatoCRMWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<TipoContatoCRMWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedTipoContatoCRM={TipoContatoCRMEmpty()}>
-</TipoContatoCRMWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <TipoContatoCRMWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedTipoContatoCRM={TipoContatoCRMEmpty()}>
+        </TipoContatoCRMWindow>
+    )
 };
+
 export default TipoContatoCRMWindow;

@@ -39,6 +39,19 @@ public class DBOperadorGruposTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["opgCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBOperadorGrupos(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -57,7 +70,7 @@ public class DBOperadorGruposTests : IDisposable
     {
         var instance = new DBOperadorGrupos();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("OperadorGrupos", instance.ITabelaName());
+        Assert.Equal("OperadorGrupos", instance.ITableName());
         Assert.Equal("opg", instance.Prefixo);
     }
 
@@ -75,29 +88,16 @@ public class DBOperadorGruposTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["opgCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBOperadorGrupos(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("OperadorGrupos", cadastro.ITabelaName());
-        Assert.Equal("opgCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("opgNome", cadastro.ICampoNome());
-        Assert.Equal("opg", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("OperadorGrupos", cadastro.ITableName());
+        Assert.Equal("opgCodigo", cadastro.IFieldId());
+        Assert.Equal("opgNome", cadastro.IFieldNameDescription());
+        Assert.Equal("opg", cadastro.IPrefix());
     }
 
 #endregion
@@ -157,9 +157,9 @@ public class DBOperadorGruposTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

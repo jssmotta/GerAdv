@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITerceirosReader
+public partial class TerceirosReader(IFTerceirosFactory terceirosFactory, IConnectionService connection) : ITerceirosReader
 {
     private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("terCodigo, terNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<TerceirosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBTerceiros.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<TerceirosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("terCodigo, terNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<TerceirosResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBTerceiros.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<TerceirosResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<TerceirosResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
         return result;
     }
 
-    public async Task<TerceirosResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<TerceirosResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _terceirosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Terceiros?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Terceiros?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _terceirosFactory.CreateFromIdAsync(id, oCnn);
         var terceiros = new Models.Terceiros
@@ -65,10 +71,11 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return terceiros;
     }
@@ -105,10 +112,11 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return terceiros;
     }
@@ -134,10 +142,11 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return terceiros;
     }
@@ -163,10 +172,11 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {
@@ -208,10 +218,11 @@ public partial class TerceirosReader(IFTerceirosFactory terceirosFactory) : ITer
             Fax = dbRec.FFax ?? string.Empty,
             OBS = dbRec.FOBS ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
             VaraForoComarca = dbRec.FVaraForoComarca ?? string.Empty,
             Sexo = dbRec.FSexo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {

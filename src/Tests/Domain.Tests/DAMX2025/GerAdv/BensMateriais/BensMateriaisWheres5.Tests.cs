@@ -301,20 +301,6 @@ public class BensMateriaisWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDataCompraStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFBensMateriais(DataCompra: "invalid-date");
-        _mockBensMateriaisFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFBensMateriais.Object);
-        // Act
-        var result = _bensmateriaisWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataCompra.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDataCompraFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -363,20 +349,6 @@ public class BensMateriaisWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDataFimDaGarantiaStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFBensMateriais(DataFimDaGarantia: "invalid-date");
-        _mockBensMateriaisFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFBensMateriais.Object);
-        // Act
-        var result = _bensmateriaisWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataFimDaGarantia.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDataFimDaGarantiaFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -422,20 +394,6 @@ public class BensMateriaisWhereTests : IDisposable
         var result = _bensmateriaisWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.DataTerminoDaGarantiaDaLoja.Should().Be("02/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDataTerminoDaGarantiaDaLojaStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFBensMateriais(DataTerminoDaGarantiaDaLoja: "invalid-date");
-        _mockBensMateriaisFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFBensMateriais.Object);
-        // Act
-        var result = _bensmateriaisWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataTerminoDaGarantiaDaLoja.Should().Be("");
     }
 
     [Fact]

@@ -54,6 +54,22 @@ public partial class DBSMSAlice
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBSMSAliceDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBSMSAliceDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBSMSAliceDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBSMSAliceDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBSMSAlice
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSMSAliceDicInfo.Operador)))
-                m_FOperador = Convert.ToInt32(getValue(DBSMSAliceDicInfo.Operador));
+                FOperador = Convert.ToInt32(getValue(DBSMSAliceDicInfo.Operador));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBSMSAlice
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSMSAliceDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBSMSAliceDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBSMSAliceDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBSMSAlice
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSMSAliceDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBSMSAliceDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBSMSAliceDicInfo.QuemCad));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBSMSAlice
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSMSAliceDicInfo.TipoEMail)))
-                m_FTipoEMail = Convert.ToInt32(getValue(DBSMSAliceDicInfo.TipoEMail));
+                FTipoEMail = Convert.ToInt32(getValue(DBSMSAliceDicInfo.TipoEMail));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBSMSAlice
         try
         {
             if (!DBNull.Value.Equals(getValue(DBSMSAliceDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBSMSAliceDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBSMSAliceDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBSMSAliceDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBSMSAliceDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBSMSAlice
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

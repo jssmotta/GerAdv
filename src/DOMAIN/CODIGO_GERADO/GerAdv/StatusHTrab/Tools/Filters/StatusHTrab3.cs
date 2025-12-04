@@ -7,29 +7,49 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterStatusHTrabWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de StatusHTrab padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterStatusHTrab Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterStatusHTrab
 {
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("descricao")]
+    [Description("Descrições")]
     public string? Descricao { get; set; } = string.Empty;
 
-    [JsonPropertyName("descricao_end")]
-    public string? Descricao_end { get; set; } = string.Empty;
-
     [JsonPropertyName("resid")]
+    [Description("ResID -2147483648 para nada ou id")]
     public int ResID { get; set; } = int.MinValue;
 
     [JsonPropertyName("resid_end")]
+    [Description("ResID -2147483648 para nada ou id para final do intervalo")]
     public int ResID_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

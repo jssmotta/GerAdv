@@ -66,8 +66,6 @@ public class ClientesSociosValidation : IClientesSociosValidation
             throw new SGValidationException($"Fax deve ter no máximo {DBClientesSociosDicInfo.CscFax.FTamanho} caracteres.");
         if (reg.Class != null && reg.Class.Length > DBClientesSociosDicInfo.CscClass.FTamanho)
             throw new SGValidationException($"Class deve ter no máximo {DBClientesSociosDicInfo.CscClass.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBClientesSociosDicInfo.CscGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBClientesSociosDicInfo.CscGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -77,6 +75,8 @@ public class ClientesSociosValidation : IClientesSociosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -111,9 +111,9 @@ public class ClientesSociosValidation : IClientesSociosValidation
             }
         }
 
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -126,14 +126,14 @@ public class ClientesSociosValidation : IClientesSociosValidation
             }
         }
 
-        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Clientes Socios com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
@@ -143,7 +143,7 @@ public class ClientesSociosValidation : IClientesSociosValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

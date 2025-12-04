@@ -52,7 +52,23 @@ public class DBColaboradoresTests : IDisposable
         dt.Columns.Add("colEMail", typeof(string));
         dt.Columns.Add("colCNH", typeof(string));
         dt.Columns.Add("colClass", typeof(string));
+        dt.Columns.Add("colEtiqueta", typeof(string));
+        dt.Columns.Add("colAni", typeof(string));
+        dt.Columns.Add("colBold", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["colCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBColaboradores(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -73,7 +89,7 @@ public class DBColaboradoresTests : IDisposable
     {
         var instance = new DBColaboradores();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Colaboradores", instance.ITabelaName());
+        Assert.Equal("Colaboradores", instance.ITableName());
         Assert.Equal("col", instance.Prefixo);
     }
 
@@ -91,29 +107,16 @@ public class DBColaboradoresTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["colCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBColaboradores(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Colaboradores", cadastro.ITabelaName());
-        Assert.Equal("colCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("colNome", cadastro.ICampoNome());
-        Assert.Equal("col", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Colaboradores", cadastro.ITableName());
+        Assert.Equal("colCodigo", cadastro.IFieldId());
+        Assert.Equal("colNome", cadastro.IFieldNameDescription());
+        Assert.Equal("col", cadastro.IPrefix());
     }
 
 #endregion
@@ -173,9 +176,9 @@ public class DBColaboradoresTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

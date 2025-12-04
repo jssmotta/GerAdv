@@ -50,7 +50,7 @@ namespace MenphisSI.GerAdv.Models
         public bool Autenticacao { get; set; }
 
         /// <summary>
-        /// Descricao - oepDescricao - tamanho máximo: 100 
+        /// Descrições - oepDescricao - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -60,12 +60,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("usuario")]
         public string Usuario { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// PortaSmtp - oepPortaSmtp  
@@ -90,6 +84,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("senha256")]
         public string Senha256 { get; set; } = "";
+
+        /// <summary>
+        /// GUID - oepGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -138,7 +138,7 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Autenticacao { get; set; }
 
         /// <summary>
-        /// Descricao - oepDescricao - tamanho máximo: 100 
+        /// Descrições - oepDescricao - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -148,12 +148,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("usuario")]
         public string Usuario { get; set; } = "";
-
-        /// <summary>
-        /// GUID - oepGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// PortaSmtp - oepPortaSmtp  
@@ -178,6 +172,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("senha256")]
         public string Senha256 { get; set; } = "";
+
+        /// <summary>
+        /// GUID - oepGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

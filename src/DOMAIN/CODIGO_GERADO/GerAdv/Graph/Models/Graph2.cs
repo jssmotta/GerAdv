@@ -32,10 +32,10 @@ namespace MenphisSI.GerAdv.Models
         public byte[] Imagem { get; set; } = [];
 
         /// <summary>
-        /// GUID - gphGUID - tamanho máximo: 150 
+        /// GUID - gphGuid - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -66,9 +66,9 @@ namespace MenphisSI.GerAdv.Models.All
         public byte[] Imagem { get; set; } = [];
 
         /// <summary>
-        /// GUID - gphGUID - tamanho máximo: 150 
+        /// GUID - gphGuid - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

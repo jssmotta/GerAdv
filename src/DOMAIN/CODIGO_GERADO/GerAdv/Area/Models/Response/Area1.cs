@@ -14,22 +14,22 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// Descricao - areDescricao - tamanho máximo: 40 
+        /// Descrições - areDescricao - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
-
-        /// <summary>
-        /// GUID - areGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// Top - areTop  
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// GUID - areGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -42,21 +42,21 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Descricao - areDescricao - tamanho máximo: 40 
+        /// Descrições - areDescricao - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
-
-        /// <summary>
-        /// GUID - areGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// Top - areTop  
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// GUID - areGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

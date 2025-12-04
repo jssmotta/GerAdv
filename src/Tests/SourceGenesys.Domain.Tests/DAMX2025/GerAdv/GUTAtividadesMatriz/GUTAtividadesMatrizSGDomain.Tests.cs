@@ -37,8 +37,21 @@ public class DBGUTAtividadesMatrizTests : IDisposable
         dt.Columns.Add("amgVisto", typeof(bool));
         dt.Columns.Add("amgGUTMatriz", typeof(int));
         dt.Columns.Add("amgGUTAtividade", typeof(int));
-        dt.Columns.Add("amgGUID", typeof(string));
+        dt.Columns.Add("amgGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["amgCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBGUTAtividadesMatriz(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -59,7 +72,7 @@ public class DBGUTAtividadesMatrizTests : IDisposable
     {
         var instance = new DBGUTAtividadesMatriz();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("GUTAtividadesMatriz", instance.ITabelaName());
+        Assert.Equal("GUTAtividadesMatriz", instance.ITableName());
         Assert.Equal("amg", instance.Prefixo);
     }
 
@@ -77,29 +90,16 @@ public class DBGUTAtividadesMatrizTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["amgCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBGUTAtividadesMatriz(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("GUTAtividadesMatriz", cadastro.ITabelaName());
-        Assert.Equal("amgCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("", cadastro.ICampoNome());
-        Assert.Equal("amg", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("GUTAtividadesMatriz", cadastro.ITableName());
+        Assert.Equal("amgCodigo", cadastro.IFieldId());
+        Assert.Equal("", cadastro.IFieldNameDescription());
+        Assert.Equal("amg", cadastro.IPrefix());
     }
 
 #endregion
@@ -159,9 +159,9 @@ public class DBGUTAtividadesMatrizTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -207,18 +207,18 @@ public class DBGUTAtividadesMatrizTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 50 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 50);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 50);
     }
 
     public virtual void Dispose()

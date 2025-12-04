@@ -10,7 +10,6 @@ public static partial class DBProDespesasDicInfo
     public const string CampoCodigo = "desCodigo";
     public const string CampoNome = "desData";
     public const string TablePrefix = "des";
-    public const string GUID = "desGUID"; // LOCALIZACAO 170523
     public const string LigacaoID = "desLigacaoID"; // LOCALIZACAO 170523
     public const string Cliente = "desCliente"; // LOCALIZACAO 170523
     public const string Corrigido = "desCorrigido"; // LOCALIZACAO 170523
@@ -23,6 +22,7 @@ public static partial class DBProDespesasDicInfo
     public const string Tipo = "desTipo"; // LOCALIZACAO 170523
     public const string Historico = "desHistorico"; // LOCALIZACAO 170523
     public const string LivroCaixa = "desLivroCaixa"; // LOCALIZACAO 170523
+    public const string Guid = "desGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "desQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "desDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "desQuemAtu"; // LOCALIZACAO 170523
@@ -53,82 +53,24 @@ public static partial class DBProDespesasDicInfo
 
     public const string PTabelaNome = "ProDespesas";
 #region PropriedadesDaTabela
-    public static DBInfoSystem DesGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesLigacaoID => new(0, PTabelaNome, CampoCodigo, LigacaoID, "LigacaoID", "LigacaoID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "des"
-    }; // DBI 11 
-    public static DBInfoSystem DesCorrigido => new(0, PTabelaNome, CampoCodigo, Corrigido, "Corrigido", "Corrigido", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesValorOriginal => new(0, PTabelaNome, CampoCodigo, ValorOriginal, "ValorOriginal", "ValorOriginal", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesQuitado => new(0, PTabelaNome, CampoCodigo, Quitado, "Quitado", "Quitado", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesDataCorrecao => new(0, PTabelaNome, CampoCodigo, DataCorrecao, "DataCorrecao", "DataCorrecao", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoDouble)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesHistorico => new(0, PTabelaNome, CampoCodigo, Historico, 100, "Historico", "Historico", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesLivroCaixa => new(0, PTabelaNome, CampoCodigo, LivroCaixa, "LivroCaixa", "LivroCaixa", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "des"
-    }; // DBI 11 
-    public static DBInfoSystem DesDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "des"
-    }; // DBI 11 
-    public static DBInfoSystem DesDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "des"
-    };
-    public static DBInfoSystem DesVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "des"
-    };
+    public static DBInfoSystem DesLigacaoID => new(0, PTabelaNome, CampoCodigo, LigacaoID, LigacaoID, LigacaoID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "des");
+    public static DBInfoSystem DesCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "des"); // DBI 11 
+    public static DBInfoSystem DesCorrigido => new(0, PTabelaNome, CampoCodigo, Corrigido, Corrigido, Corrigido, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "des", isRequired: true);
+    public static DBInfoSystem DesData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "des");
+    public static DBInfoSystem DesValorOriginal => new(0, PTabelaNome, CampoCodigo, ValorOriginal, ValorOriginal, ValorOriginal, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "des");
+    public static DBInfoSystem DesProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "des");
+    public static DBInfoSystem DesQuitado => new(0, PTabelaNome, CampoCodigo, Quitado, Quitado, Quitado, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "des");
+    public static DBInfoSystem DesDataCorrecao => new(0, PTabelaNome, CampoCodigo, DataCorrecao, DataCorrecao, DataCorrecao, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "des");
+    public static DBInfoSystem DesValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoDouble, prefixo: "des");
+    public static DBInfoSystem DesTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "des", isRequired: true);
+    public static DBInfoSystem DesHistorico => new(0, PTabelaNome, CampoCodigo, Historico, 100, Historico, Historico, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "des");
+    public static DBInfoSystem DesLivroCaixa => new(0, PTabelaNome, CampoCodigo, LivroCaixa, LivroCaixa, LivroCaixa, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "des", isRequired: true);
+    public static DBInfoSystem DesGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "des");
+    public static DBInfoSystem DesQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "des"); // DBI 11 
+    public static DBInfoSystem DesDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "des");
+    public static DBInfoSystem DesQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "des"); // DBI 11 
+    public static DBInfoSystem DesDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "des");
+    public static DBInfoSystem DesVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "des", isRequired: true);
 
 #endregion
     [Serializable]

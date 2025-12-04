@@ -26,9 +26,9 @@ public partial class GruposEmpresasWhere(IFGruposEmpresasFactory gruposempresasF
             Descricao = dbRec.FDescricao ?? string.Empty,
             Observacoes = dbRec.FObservacoes ?? string.Empty,
             Cliente = dbRec.FCliente,
-            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone ?? string.Empty,
             DespesaUnificada = dbRec.FDespesaUnificada,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return gruposempresas;
     }

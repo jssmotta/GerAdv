@@ -23,22 +23,20 @@ public class TribunalValidation : ITribunalValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var divisaotribunalExists0 = await divisaotribunalService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDivisaoTribunal { Tribunal = id ?? default }, uri);
         if (divisaotribunalExists0 != null && divisaotribunalExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Divisao Tribunal associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Divisao Tribunal associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Tribunal reg)
     {
         if (reg.Nome != null && reg.Nome.Length > DBTribunalDicInfo.TriNome.FTamanho)
-            throw new SGValidationException($"Nome deve ter no máximo {DBTribunalDicInfo.TriNome.FTamanho} caracteres.");
+            throw new SGValidationException($"nome deve ter no máximo {DBTribunalDicInfo.TriNome.FTamanho} caracteres.");
         if (reg.Descricao != null && reg.Descricao.Length > DBTribunalDicInfo.TriDescricao.FTamanho)
-            throw new SGValidationException($"Descricao deve ter no máximo {DBTribunalDicInfo.TriDescricao.FTamanho} caracteres.");
+            throw new SGValidationException($"descricao deve ter no máximo {DBTribunalDicInfo.TriDescricao.FTamanho} caracteres.");
         if (reg.Sigla != null && reg.Sigla.Length > DBTribunalDicInfo.TriSigla.FTamanho)
-            throw new SGValidationException($"Sigla deve ter no máximo {DBTribunalDicInfo.TriSigla.FTamanho} caracteres.");
+            throw new SGValidationException($"sigla deve ter no máximo {DBTribunalDicInfo.TriSigla.FTamanho} caracteres.");
         if (reg.Web != null && reg.Web.Length > DBTribunalDicInfo.TriWeb.FTamanho)
-            throw new SGValidationException($"Web deve ter no máximo {DBTribunalDicInfo.TriWeb.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTribunalDicInfo.TriGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTribunalDicInfo.TriGUID.FTamanho} caracteres.");
+            throw new SGValidationException($"web deve ter no máximo {DBTribunalDicInfo.TriWeb.FTamanho} caracteres.");
         return true;
     }
 
@@ -48,14 +46,16 @@ public class TribunalValidation : ITribunalValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.Area == 0)
-            throw new SGValidationException("Area é obrigatório.");
+            throw new SGValidationException("area é obrigatório.");
         // Area
         {
-            var regArea = await areaReader.Read(reg.Area, oCnn);
+            var regArea = await areaReader.ReadAsync(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
                 throw new SGValidationException($"Área não encontrado ({regArea?.Id}).");
@@ -65,7 +65,7 @@ public class TribunalValidation : ITribunalValidation
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {
-            var regJustica = await justicaReader.Read(reg.Justica, oCnn);
+            var regJustica = await justicaReader.ReadAsync(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
@@ -75,7 +75,7 @@ public class TribunalValidation : ITribunalValidation
         // Instancia
         if (!reg.Instancia.IsEmptyIDNumber())
         {
-            var regInstancia = await instanciaReader.Read(reg.Instancia, oCnn);
+            var regInstancia = await instanciaReader.ReadAsync(reg.Instancia, oCnn);
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
             {
                 throw new SGValidationException($"Instancia não encontrado ({regInstancia?.Id}).");

@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operadoremailpopupFactory) : IOperadorEMailPopupReader
+public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operadoremailpopupFactory, IConnectionService connection) : IOperadorEMailPopupReader
 {
     private readonly IFOperadorEMailPopupFactory _operadoremailpopupFactory = operadoremailpopupFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("oepCodigo, oepNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<OperadorEMailPopupResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperadorEMailPopup.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<OperadorEMailPopupResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("oepCodigo, oepNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<OperadorEMailPopupResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBOperadorEMailPopup.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<OperadorEMailPopupResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<OperadorEMailPopupResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operad
         return result;
     }
 
-    public async Task<OperadorEMailPopupResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<OperadorEMailPopupResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadoremailpopupFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.OperadorEMailPopup?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.OperadorEMailPopup?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadoremailpopupFactory.CreateFromIdAsync(id, oCnn);
         var operadoremailpopup = new Models.OperadorEMailPopup
@@ -61,10 +67,10 @@ public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operad
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return operadoremailpopup;
     }
@@ -97,10 +103,10 @@ public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operad
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return operadoremailpopup;
     }
@@ -122,10 +128,10 @@ public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operad
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return operadoremailpopup;
     }
@@ -147,10 +153,10 @@ public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operad
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {
@@ -180,10 +186,10 @@ public partial class OperadorEMailPopupReader(IFOperadorEMailPopupFactory operad
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         try
         {

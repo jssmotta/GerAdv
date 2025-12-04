@@ -9,25 +9,29 @@ public partial class DBHorasTrabODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBHorasTrabDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBHorasTrabDicInfo.CampoCodigo;
+    public string IFieldId() => DBHorasTrabDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBHorasTrabDicInfo.TablePrefix;
+    public string IPrefix() => DBHorasTrabDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBHorasTrabDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBHorasTrabDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBHorasTrabODicInfo : IODicInfo
     public static string TCampoNome => DBHorasTrabDicInfo.CampoNome;
     public static string TTabelaNome => DBHorasTrabDicInfo.TabelaNome;
     public static string TTablePrefix => DBHorasTrabDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBHorasTrabDicInfo.HtbGUID, DBHorasTrabDicInfo.HtbIDContatoCRM, DBHorasTrabDicInfo.HtbHonorario, DBHorasTrabDicInfo.HtbIDAgenda, DBHorasTrabDicInfo.HtbData, DBHorasTrabDicInfo.HtbCliente, DBHorasTrabDicInfo.HtbStatus, DBHorasTrabDicInfo.HtbProcesso, DBHorasTrabDicInfo.HtbAdvogado, DBHorasTrabDicInfo.HtbFuncionario, DBHorasTrabDicInfo.HtbHrIni, DBHorasTrabDicInfo.HtbHrFim, DBHorasTrabDicInfo.HtbTempo, DBHorasTrabDicInfo.HtbValor, DBHorasTrabDicInfo.HtbOBS, DBHorasTrabDicInfo.HtbAnexo, DBHorasTrabDicInfo.HtbAnexoComp, DBHorasTrabDicInfo.HtbAnexoUNC, DBHorasTrabDicInfo.HtbServico, DBHorasTrabDicInfo.HtbQuemCad, DBHorasTrabDicInfo.HtbDtCad, DBHorasTrabDicInfo.HtbQuemAtu, DBHorasTrabDicInfo.HtbDtAtu, DBHorasTrabDicInfo.HtbVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBHorasTrabDicInfo.HtbGUID, DBHorasTrabDicInfo.HtbIDContatoCRM, DBHorasTrabDicInfo.HtbHonorario, DBHorasTrabDicInfo.HtbIDAgenda, DBHorasTrabDicInfo.HtbData, DBHorasTrabDicInfo.HtbCliente, DBHorasTrabDicInfo.HtbStatus, DBHorasTrabDicInfo.HtbProcesso, DBHorasTrabDicInfo.HtbAdvogado, DBHorasTrabDicInfo.HtbFuncionario, DBHorasTrabDicInfo.HtbHrIni, DBHorasTrabDicInfo.HtbHrFim, DBHorasTrabDicInfo.HtbTempo, DBHorasTrabDicInfo.HtbValor, DBHorasTrabDicInfo.HtbOBS, DBHorasTrabDicInfo.HtbAnexo, DBHorasTrabDicInfo.HtbAnexoComp, DBHorasTrabDicInfo.HtbAnexoUNC, DBHorasTrabDicInfo.HtbServico];
+    public static ImmutableArray<DBInfoSystem> List => [DBHorasTrabDicInfo.HtbIDContatoCRM, DBHorasTrabDicInfo.HtbHonorario, DBHorasTrabDicInfo.HtbIDAgenda, DBHorasTrabDicInfo.HtbData, DBHorasTrabDicInfo.HtbCliente, DBHorasTrabDicInfo.HtbStatus, DBHorasTrabDicInfo.HtbProcesso, DBHorasTrabDicInfo.HtbAdvogado, DBHorasTrabDicInfo.HtbFuncionario, DBHorasTrabDicInfo.HtbHrIni, DBHorasTrabDicInfo.HtbHrFim, DBHorasTrabDicInfo.HtbTempo, DBHorasTrabDicInfo.HtbValor, DBHorasTrabDicInfo.HtbOBS, DBHorasTrabDicInfo.HtbAnexo, DBHorasTrabDicInfo.HtbAnexoComp, DBHorasTrabDicInfo.HtbAnexoUNC, DBHorasTrabDicInfo.HtbServico, DBHorasTrabDicInfo.HtbGuid, DBHorasTrabDicInfo.HtbQuemCad, DBHorasTrabDicInfo.HtbDtCad, DBHorasTrabDicInfo.HtbQuemAtu, DBHorasTrabDicInfo.HtbDtAtu, DBHorasTrabDicInfo.HtbVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBHorasTrabDicInfo.HtbIDContatoCRM, DBHorasTrabDicInfo.HtbHonorario, DBHorasTrabDicInfo.HtbIDAgenda, DBHorasTrabDicInfo.HtbData, DBHorasTrabDicInfo.HtbCliente, DBHorasTrabDicInfo.HtbStatus, DBHorasTrabDicInfo.HtbProcesso, DBHorasTrabDicInfo.HtbAdvogado, DBHorasTrabDicInfo.HtbFuncionario, DBHorasTrabDicInfo.HtbHrIni, DBHorasTrabDicInfo.HtbHrFim, DBHorasTrabDicInfo.HtbTempo, DBHorasTrabDicInfo.HtbValor, DBHorasTrabDicInfo.HtbOBS, DBHorasTrabDicInfo.HtbAnexo, DBHorasTrabDicInfo.HtbAnexoComp, DBHorasTrabDicInfo.HtbAnexoUNC, DBHorasTrabDicInfo.HtbServico, DBHorasTrabDicInfo.HtbGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["htbCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBHorasTrabDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["htbCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBHorasTrabDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

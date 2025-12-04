@@ -7,46 +7,20 @@ public partial class DBEscritorios
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFGUID, pFldFCNPJ, pFldFCasa, pFldFParceria, pFldFNome, pFldFOAB, pFldFEndereco, pFldFCidade, pFldFBairro, pFldFCEP, pFldFFone, pFldFFax, pFldFSite, pFldFEMail, pFldFOBS, pFldFAdvResponsavel, pFldFSecretaria, pFldFInscEst, pFldFCorrespondente, pFldFTop, pFldFEtiqueta, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FCidade;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FGUID, m_FCNPJ, m_FNome, m_FOAB, m_FEndereco, m_FBairro, m_FCEP, m_FFone, m_FFax, m_FSite, m_FEMail, m_FOBS, m_FAdvResponsavel, m_FSecretaria, m_FInscEst;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FCasa, m_FParceria, m_FCorrespondente, m_FTop, m_FEtiqueta, m_FBold;
+    private protected bool pFldFCNPJ, pFldFCasa, pFldFParceria, pFldFNome, pFldFOAB, pFldFEndereco, pFldFCidade, pFldFBairro, pFldFCEP, pFldFFone, pFldFFax, pFldFSite, pFldFEMail, pFldFOBS, pFldFAdvResponsavel, pFldFSecretaria, pFldFInscEst, pFldFCorrespondente, pFldFTop, pFldFEtiqueta, pFldFBold, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Escritorios deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(14, ErrorMessage = "A propriedade FCNPJ da tabela Escritorios deve ter no máximo 14 caracteres.")]
+    [StringLength(14, ErrorMessage = "A propriedade FCNPJ da tabela 'Escritorios' deve ter no máximo 14 caracteres.")]
     public virtual string? FCNPJ
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCNPJ ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCNPJ = pFldFCNPJ || !(m_FCNPJ ?? string.Empty).Equals(value);
+            pFldFCNPJ = pFldFCNPJ || !(field ?? string.Empty).Equals(value);
             if (pFldFCNPJ)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCNPJ = trimmed.Length > 14 ? trimmed.AsSpan(0, 14).ToString() : trimmed;
+                field = trimmed.Length > 14 ? trimmed.AsSpan(0, 14).ToString() : trimmed;
             }
         }
     }
@@ -54,74 +28,74 @@ public partial class DBEscritorios
     public virtual bool FCasa
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCasa;
+        get => field;
         set
         {
-            pFldFCasa = pFldFCasa || value != m_FCasa;
+            pFldFCasa = pFldFCasa || value != field;
             if (pFldFCasa)
-                m_FCasa = value;
+                field = value;
         }
     }
 
     public virtual bool FParceria
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FParceria;
+        get => field;
         set
         {
-            pFldFParceria = pFldFParceria || value != m_FParceria;
+            pFldFParceria = pFldFParceria || value != field;
             if (pFldFParceria)
-                m_FParceria = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela Escritorios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela 'Escritorios' deve ter no máximo 50 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(15, ErrorMessage = "A propriedade FOAB da tabela Escritorios deve ter no máximo 15 caracteres.")]
+    [StringLength(15, ErrorMessage = "A propriedade FOAB da tabela 'Escritorios' deve ter no máximo 15 caracteres.")]
     public virtual string? FOAB
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOAB ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOAB = pFldFOAB || !(m_FOAB ?? string.Empty).Equals(value);
+            pFldFOAB = pFldFOAB || !(field ?? string.Empty).Equals(value);
             if (pFldFOAB)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FOAB = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
+                field = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FEndereco da tabela Escritorios deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FEndereco da tabela 'Escritorios' deve ter no máximo 50 caracteres.")]
     public virtual string? FEndereco
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEndereco ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
+            pFldFEndereco = pFldFEndereco || !(field ?? string.Empty).Equals(value);
             if (pFldFEndereco)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEndereco = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -129,45 +103,45 @@ public partial class DBEscritorios
     public virtual int FCidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidade;
+        get => field;
         set
         {
-            pFldFCidade = pFldFCidade || value != m_FCidade;
+            pFldFCidade = pFldFCidade || value != field;
             if (pFldFCidade)
-                m_FCidade = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(30, ErrorMessage = "A propriedade FBairro da tabela Escritorios deve ter no máximo 30 caracteres.")]
+    [StringLength(30, ErrorMessage = "A propriedade FBairro da tabela 'Escritorios' deve ter no máximo 30 caracteres.")]
     public virtual string? FBairro
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBairro ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFBairro = pFldFBairro || !(m_FBairro ?? string.Empty).Equals(value);
+            pFldFBairro = pFldFBairro || !(field ?? string.Empty).Equals(value);
             if (pFldFBairro)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FBairro = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+                field = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela Escritorios deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela 'Escritorios' deve ter no máximo 10 caracteres.")]
     public virtual string? FCEP
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCEP ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
+            pFldFCEP = pFldFCEP || !(field ?? string.Empty).Equals(value);
             if (pFldFCEP)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
@@ -176,12 +150,12 @@ public partial class DBEscritorios
     public virtual string? FFone
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFone ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFone = pFldFFone || !(m_FFone ?? string.Empty).Equals(value);
+            pFldFFone = pFldFFone || !(field ?? string.Empty).Equals(value);
             if (pFldFFone)
-                m_FFone = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -189,48 +163,45 @@ public partial class DBEscritorios
     public virtual string? FFax
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFax ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFax = pFldFFax || !(m_FFax ?? string.Empty).Equals(value);
+            pFldFFax = pFldFFax || !(field ?? string.Empty).Equals(value);
             if (pFldFFax)
-                m_FFax = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(200, ErrorMessage = "A propriedade FSite da tabela Escritorios deve ter no máximo 200 caracteres.")]
+    [StringLength(200, ErrorMessage = "A propriedade FSite da tabela 'Escritorios' deve ter no máximo 200 caracteres.")]
     public virtual string? FSite
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSite ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSite = pFldFSite || !(m_FSite ?? string.Empty).Equals(value);
+            pFldFSite = pFldFSite || !(field ?? string.Empty).Equals(value);
             if (pFldFSite)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSite = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+                field = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FEMail da tabela Escritorios deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FEMail da tabela 'Escritorios' deve ter no máximo 100 caracteres.")]
     public virtual string? FEMail
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEMail ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEMail = pFldFEMail || !(m_FEMail ?? string.Empty).Equals(value);
+            pFldFEMail = pFldFEMail || !(field ?? string.Empty).Equals(value);
             if (pFldFEMail)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEMail = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-                if (m_FEMail.IsValidEmail())
-                    return;
-                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
@@ -239,62 +210,62 @@ public partial class DBEscritorios
     public virtual string? FOBS
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOBS ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOBS = pFldFOBS || !(m_FOBS ?? string.Empty).Equals(value);
+            pFldFOBS = pFldFOBS || !(field ?? string.Empty).Equals(value);
             if (pFldFOBS)
-                m_FOBS = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FAdvResponsavel da tabela Escritorios deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FAdvResponsavel da tabela 'Escritorios' deve ter no máximo 80 caracteres.")]
     public virtual string? FAdvResponsavel
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAdvResponsavel ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFAdvResponsavel = pFldFAdvResponsavel || !(m_FAdvResponsavel ?? string.Empty).Equals(value);
+            pFldFAdvResponsavel = pFldFAdvResponsavel || !(field ?? string.Empty).Equals(value);
             if (pFldFAdvResponsavel)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FAdvResponsavel = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FSecretaria da tabela Escritorios deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FSecretaria da tabela 'Escritorios' deve ter no máximo 80 caracteres.")]
     public virtual string? FSecretaria
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSecretaria ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSecretaria = pFldFSecretaria || !(m_FSecretaria ?? string.Empty).Equals(value);
+            pFldFSecretaria = pFldFSecretaria || !(field ?? string.Empty).Equals(value);
             if (pFldFSecretaria)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSecretaria = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(15, ErrorMessage = "A propriedade FInscEst da tabela Escritorios deve ter no máximo 15 caracteres.")]
+    [StringLength(15, ErrorMessage = "A propriedade FInscEst da tabela 'Escritorios' deve ter no máximo 15 caracteres.")]
     public virtual string? FInscEst
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInscEst ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFInscEst = pFldFInscEst || !(m_FInscEst ?? string.Empty).Equals(value);
+            pFldFInscEst = pFldFInscEst || !(field ?? string.Empty).Equals(value);
             if (pFldFInscEst)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FInscEst = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
+                field = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
             }
         }
     }
@@ -302,60 +273,77 @@ public partial class DBEscritorios
     public virtual bool FCorrespondente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCorrespondente;
+        get => field;
         set
         {
-            pFldFCorrespondente = pFldFCorrespondente || value != m_FCorrespondente;
+            pFldFCorrespondente = pFldFCorrespondente || value != field;
             if (pFldFCorrespondente)
-                m_FCorrespondente = value;
+                field = value;
         }
     }
 
     public virtual bool FTop
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTop;
+        get => field;
         set
         {
-            pFldFTop = pFldFTop || value != m_FTop;
+            pFldFTop = pFldFTop || value != field;
             if (pFldFTop)
-                m_FTop = value;
+                field = value;
         }
     }
 
     public virtual bool FEtiqueta
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEtiqueta;
+        get => field;
         set
         {
-            pFldFEtiqueta = pFldFEtiqueta || value != m_FEtiqueta;
+            pFldFEtiqueta = pFldFEtiqueta || value != field;
             if (pFldFEtiqueta)
-                m_FEtiqueta = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Escritorios' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -365,9 +353,13 @@ public partial class DBEscritorios
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

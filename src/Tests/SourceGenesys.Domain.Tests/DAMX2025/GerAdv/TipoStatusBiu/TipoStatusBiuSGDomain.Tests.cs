@@ -34,6 +34,19 @@ public class DBTipoStatusBiuTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["tsbCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTipoStatusBiu(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -52,7 +65,7 @@ public class DBTipoStatusBiuTests : IDisposable
     {
         var instance = new DBTipoStatusBiu();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("TipoStatusBiu", instance.ITabelaName());
+        Assert.Equal("TipoStatusBiu", instance.ITableName());
         Assert.Equal("tsb", instance.Prefixo);
     }
 
@@ -70,29 +83,16 @@ public class DBTipoStatusBiuTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["tsbCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTipoStatusBiu(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("TipoStatusBiu", cadastro.ITabelaName());
-        Assert.Equal("tsbCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("tsbNome", cadastro.ICampoNome());
-        Assert.Equal("tsb", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("TipoStatusBiu", cadastro.ITableName());
+        Assert.Equal("tsbCodigo", cadastro.IFieldId());
+        Assert.Equal("tsbNome", cadastro.IFieldNameDescription());
+        Assert.Equal("tsb", cadastro.IPrefix());
     }
 
 #endregion
@@ -152,9 +152,9 @@ public class DBTipoStatusBiuTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

@@ -9,54 +9,61 @@ import { SituacaoService } from '../../Services/Situacao.service';
 import { SituacaoApi } from '../../Apis/ApiSituacao';
 import SituacaoWindow from './SituacaoWindow';
 import {SituacaoEmpty } from '@/app/GerAdv_TS/Models/Situacao';
-interface SituacaoWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const SituacaoWindowId: React.FC<SituacaoWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const situacaoService = useMemo(() => {
-  return new SituacaoService(
-  new SituacaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ISituacao | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(SituacaoEmpty() as ISituacao);
-      return;
-    }
-    if (id) {
-      const response = await situacaoService.fetchSituacaoById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <SituacaoWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedSituacao={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface SituacaoWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const SituacaoWindowId: React.FC<SituacaoWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const situacaoService = useMemo(() => {
+        return new SituacaoService(
+            new SituacaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ISituacao | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(SituacaoEmpty() as ISituacao);
+                return;
+            }
+            if (id) {
+                 const response = await situacaoService.fetchSituacaoById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <SituacaoWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedSituacao={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default SituacaoWindowId;

@@ -22,7 +22,7 @@ public class DBLivroCaixaUpdate : IDisposable
         var livrocaixa = new DBLivroCaixa();
         // Assert
         livrocaixa.Should().NotBeNull();
-        livrocaixa.ITabelaName().Should().Be("LivroCaixa");
+        livrocaixa.ITableName().Should().Be("LivroCaixa");
         livrocaixa.ID.Should().Be(0);
     }
 
@@ -125,7 +125,7 @@ public class DBLivroCaixaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHistorico);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -139,7 +139,7 @@ public class DBLivroCaixaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHistorico);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -155,7 +155,7 @@ public class DBLivroCaixaUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FHistorico);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -170,7 +170,7 @@ public class DBLivroCaixaUpdate : IDisposable
         _instance.FHistorico = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -184,7 +184,7 @@ public class DBLivroCaixaUpdate : IDisposable
         _instance.FHistorico = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -198,7 +198,7 @@ public class DBLivroCaixaUpdate : IDisposable
         _instance.FHistorico = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -212,7 +212,7 @@ public class DBLivroCaixaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FHistorico);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -238,7 +238,7 @@ public class DBLivroCaixaUpdate : IDisposable
         _instance.FHistorico = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -252,7 +252,7 @@ public class DBLivroCaixaUpdate : IDisposable
         _instance.FHistorico = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

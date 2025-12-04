@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IGUTAtividadesReader
 {
-    Task<GUTAtividadesResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.GUTAtividades?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<GUTAtividadesResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.GUTAtividades?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     GUTAtividadesResponse? Read(FGUTAtividades dbRec, MsiSqlConnection? oCnn);
     GUTAtividadesResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTAtividadesResponse? Read(FGUTAtividades dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     GUTAtividadesResponseAll? ReadAll(FGUTAtividades dbRec, IDataRecord dr);
     GUTAtividadesResponseAll? ReadAll(SG.GerAdv.DBGUTAtividades dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<GUTAtividadesResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<GUTAtividadesResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

@@ -68,12 +68,6 @@ namespace MenphisSI.GerAdv.Models
         public string Observacao { get; set; } = "";
 
         /// <summary>
-        /// GUID - hdcGuid - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string Guid { get; set; } = "";
-
-        /// <summary>
         /// DataContrato - hdcDataContrato  
         /// </summary>
         [JsonPropertyName("datacontrato")]
@@ -81,6 +75,12 @@ namespace MenphisSI.GerAdv.Models
 
         [JsonPropertyName("datacontrato_date")]
         public DateTime? DataContrato_date { get; set; }
+
+        /// <summary>
+        /// GUID - hdcGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -147,12 +147,6 @@ namespace MenphisSI.GerAdv.Models.All
         public string Observacao { get; set; } = "";
 
         /// <summary>
-        /// GUID - hdcGuid - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string Guid { get; set; } = "";
-
-        /// <summary>
         /// DataContrato - hdcDataContrato  
         /// </summary>
         [JsonPropertyName("datacontrato")]
@@ -160,6 +154,12 @@ namespace MenphisSI.GerAdv.Models.All
 
         [JsonPropertyName("datacontrato_date")]
         public DateTime? DataContrato_date { get; set; }
+
+        /// <summary>
+        /// GUID - hdcGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

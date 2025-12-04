@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBGUTAtividadesMatriz : VAuditor, ICadastros
+public partial class DBGUTAtividadesMatriz : VAuditor, ICrud
 {
 #region TableDefinition_GUTAtividadesMatriz
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBGUTAtividadesMatriz : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBGUTAtividadesMatriz : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -48,7 +48,7 @@ public partial class DBGUTAtividadesMatriz : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFGUTMatriz || pFldFGUTAtividade || pFldFGUID))
+            if (!(pFldFGUTMatriz || pFldFGUTAtividade || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -72,18 +72,17 @@ public partial class DBGUTAtividadesMatriz : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFGUTMatriz)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.GUTMatriz, m_FGUTMatriz, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.GUTMatriz, FGUTMatriz, EGenericTypeFields.FNumberNull);
         if (pFldFGUTAtividade)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.GUTAtividade, m_FGUTAtividade, ETiposCampos.FNumberNull);
-        if (pFldFGUID)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.GUTAtividade, FGUTAtividade, EGenericTypeFields.FNumberNull);
+        if (pFldFGuid)
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_GUTAtividadesMatriz)
         if (clsW.HasUpdates)
         {
@@ -98,15 +97,15 @@ public partial class DBGUTAtividadesMatriz : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBGUTAtividadesMatrizDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBGUTAtividadesMatrizDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

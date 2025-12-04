@@ -23,12 +23,6 @@ public partial class FAndamentosMDFactory : IFAndamentosMDFactory, IDisposable
         return FAndamentosMD.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FAndamentosMD> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FAndamentosMD().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FAndamentosMD> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FAndamentosMDFactory : IFAndamentosMDFactory, IDisposable
         return FAndamentosMD.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FAndamentosMD> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FAndamentosMD().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FAndamentosMDFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

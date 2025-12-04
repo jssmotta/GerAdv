@@ -23,12 +23,6 @@ public partial class FEnderecosFactory : IFEnderecosFactory, IDisposable
         return FEnderecos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FEnderecos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FEnderecos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FEnderecos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FEnderecosFactory : IFEnderecosFactory, IDisposable
         return FEnderecos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FEnderecos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FEnderecos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FEnderecosFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -14,6 +14,14 @@ public partial class DBProProcuradores
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProProcuradores
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,23 +142,25 @@ public partial class DBProProcuradores
 
 #if (!NOTSTORED_ProProcuradores)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFAdvogado || pFldFNome || pFldFProcesso || pFldFData || pFldFSubstabelecimento || pFldFProcuracao || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFAdvogado || pFldFNome || pFldFProcesso || pFldFData || pFldFSubstabelecimento || pFldFProcuracao || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFAdvogado)
-            updateTool.Fields(DBProProcuradoresDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumber);
+            updateTool.Fields(DBProProcuradoresDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBProProcuradoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBProProcuradoresDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFProcesso)
-            updateTool.Fields(DBProProcuradoresDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProProcuradoresDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProProcuradoresDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBProProcuradoresDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFSubstabelecimento || updateTool.Insert)
-            updateTool.Fields(DBProProcuradoresDicInfo.Substabelecimento, m_FSubstabelecimento, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProProcuradoresDicInfo.Substabelecimento, FSubstabelecimento, EGenericTypeFields.FBoolean);
         if (pFldFProcuracao || updateTool.Insert)
-            updateTool.Fields(DBProProcuradoresDicInfo.Procuracao, m_FProcuracao, ETiposCampos.FBoolean);
-        if (pFldFGUID)
-            updateTool.Fields(DBProProcuradoresDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBProProcuradoresDicInfo.Procuracao, FProcuracao, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBProProcuradoresDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBProProcuradoresDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -162,24 +172,23 @@ public partial class DBProProcuradores
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProProcuradoresDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProProcuradoresDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProProcuradoresDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProProcuradoresDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProProcuradoresDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProProcuradoresDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProProcuradoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProProcuradoresDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBProProcuradoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProProcuradoresDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBProProcuradoresDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

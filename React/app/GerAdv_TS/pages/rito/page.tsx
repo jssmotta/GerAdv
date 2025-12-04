@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { RitoGridAdapter } from '@/app/GerAdv_TS/Rito/Adapter/RitoGridAdapter';
 import RitoGridContainer from '@/app/GerAdv_TS/Rito/Components/RitoGridContainer';
+
 const RitoPage: React.FC = () => {
-  const RitoGrid = new RitoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Rito' />
-    <RitoGridContainer grid={RitoGrid} />
-  </PageLayout>
-);
+    const RitoGrid = new RitoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <RitoGridContainer grid={RitoGrid} />
+        </PageLayout>
+    );
 };
+
 export default RitoPage;

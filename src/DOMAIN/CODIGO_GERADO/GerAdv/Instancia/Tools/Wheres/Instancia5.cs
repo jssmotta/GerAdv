@@ -20,7 +20,6 @@ public partial class InstanciaWhere(IFInstanciaFactory instanciaFactory) : IInst
         var instancia = new InstanciaResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LiminarPedida = dbRec.FLiminarPedida ?? string.Empty,
             Objeto = dbRec.FObjeto ?? string.Empty,
             StatusResultado = dbRec.FStatusResultado,
@@ -29,7 +28,6 @@ public partial class InstanciaWhere(IFInstanciaFactory instanciaFactory) : IInst
             LiminarConcedida = dbRec.FLiminarConcedida,
             LiminarNegada = dbRec.FLiminarNegada,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             LiminarParcial = dbRec.FLiminarParcial,
             LiminarResultado = dbRec.FLiminarResultado ?? string.Empty,
             NroProcesso = dbRec.FNroProcesso ?? string.Empty,
@@ -47,10 +45,17 @@ public partial class InstanciaWhere(IFInstanciaFactory instanciaFactory) : IInst
             AccessCode = dbRec.FAccessCode ?? string.Empty,
             Julgador = dbRec.FJulgador,
             ZKeyIA = dbRec.FZKeyIA ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FZKeyQuando, out DateTime XZKeyQuando))
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
         {
-            instancia.ZKeyQuando = dbRec.FZKeyQuando;
+            instancia.Data = XData.ToString("dd/MM/yyyy");
+            instancia.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FZKeyQuando.ToString(), out DateTime XZKeyQuando))
+        {
+            instancia.ZKeyQuando = XZKeyQuando.ToString("dd/MM/yyyy");
             instancia.ZKeyQuando_date = XZKeyQuando;
         }
 

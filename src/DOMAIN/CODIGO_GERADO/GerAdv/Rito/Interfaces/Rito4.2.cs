@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface IRitoReader
 {
-    Task<RitoResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.Rito?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<RitoResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.Rito?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     RitoResponse? Read(FRito dbRec, MsiSqlConnection? oCnn);
     RitoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     RitoResponse? Read(FRito dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     RitoResponseAll? ReadAll(FRito dbRec, IDataRecord dr);
     RitoResponseAll? ReadAll(SG.GerAdv.DBRito dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<RitoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<RitoResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

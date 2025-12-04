@@ -26,7 +26,7 @@ public static partial class DBModelosDocumentosDicInfo
     public const string Testemunhas = "mdcTestemunhas"; // LOCALIZACAO 170523
     public const string TipoModeloDocumento = "mdcTipoModeloDocumento"; // LOCALIZACAO 170523
     public const string CSS = "mdcCSS"; // LOCALIZACAO 170523
-    public const string GUID = "mdcGUID"; // LOCALIZACAO 170523
+    public const string Guid = "mdcGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "mdcQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "mdcDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "mdcQuemAtu"; // LOCALIZACAO 170523
@@ -61,100 +61,28 @@ public static partial class DBModelosDocumentosDicInfo
 
     public const string PTabelaNome = "ModelosDocumentos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem MdcNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcRemuneracao => new(0, PTabelaNome, CampoCodigo, Remuneracao, DevourerOne.PMaxSizeCampoMemo, "Remuneracao", "Remuneracao", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcAssinatura => new(0, PTabelaNome, CampoCodigo, Assinatura, DevourerOne.PMaxSizeCampoMemo, "Assinatura", "Assinatura", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcHeader => new(0, PTabelaNome, CampoCodigo, Header, DevourerOne.PMaxSizeCampoMemo, "Header", "Header", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcFooter => new(0, PTabelaNome, CampoCodigo, Footer, DevourerOne.PMaxSizeCampoMemo, "Footer", "Footer", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcExtra1 => new(0, PTabelaNome, CampoCodigo, Extra1, DevourerOne.PMaxSizeCampoMemo, "Extra1", "Extra1", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcExtra2 => new(0, PTabelaNome, CampoCodigo, Extra2, DevourerOne.PMaxSizeCampoMemo, "Extra2", "Extra2", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcExtra3 => new(0, PTabelaNome, CampoCodigo, Extra3, DevourerOne.PMaxSizeCampoMemo, "Extra3", "Extra3", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcOutorgante => new(0, PTabelaNome, CampoCodigo, Outorgante, DevourerOne.PMaxSizeCampoMemo, "Outorgante", "Outorgante", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcOutorgados => new(0, PTabelaNome, CampoCodigo, Outorgados, DevourerOne.PMaxSizeCampoMemo, "Outorgados", "Outorgados", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcPoderes => new(0, PTabelaNome, CampoCodigo, Poderes, DevourerOne.PMaxSizeCampoMemo, "Poderes", "Poderes", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcObjeto => new(0, PTabelaNome, CampoCodigo, Objeto, DevourerOne.PMaxSizeCampoMemo, "Objeto", "Objeto", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcTitulo => new(0, PTabelaNome, CampoCodigo, Titulo, 2000, "Titulo", "Titulo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcTestemunhas => new(0, PTabelaNome, CampoCodigo, Testemunhas, DevourerOne.PMaxSizeCampoMemo, "Testemunhas", "Testemunhas", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcTipoModeloDocumento => new(0, PTabelaNome, CampoCodigo, TipoModeloDocumento, "TipoModeloDocumento", "TipoModeloDocumento", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoModeloDocumentoDicInfo.CampoCodigo, DBTipoModeloDocumentoDicInfo.TabelaNome, new DBTipoModeloDocumentoODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "mdc"
-    }; // DBI 11 
-    public static DBInfoSystem MdcCSS => new(0, PTabelaNome, CampoCodigo, CSS, DevourerOne.PMaxSizeCampoMemo, "CSS", "CSS", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "mdc"
-    }; // DBI 11 
-    public static DBInfoSystem MdcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "mdc"
-    }; // DBI 11 
-    public static DBInfoSystem MdcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "mdc"
-    };
-    public static DBInfoSystem MdcVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "mdc"
-    };
+    public static DBInfoSystem MdcNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "mdc", isRequired: true);
+    public static DBInfoSystem MdcRemuneracao => new(0, PTabelaNome, CampoCodigo, Remuneracao, DevourerOne.PMaxSizeCampoMemo, Remuneracao, Remuneracao, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcAssinatura => new(0, PTabelaNome, CampoCodigo, Assinatura, DevourerOne.PMaxSizeCampoMemo, Assinatura, Assinatura, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcHeader => new(0, PTabelaNome, CampoCodigo, Header, DevourerOne.PMaxSizeCampoMemo, Header, Header, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcFooter => new(0, PTabelaNome, CampoCodigo, Footer, DevourerOne.PMaxSizeCampoMemo, Footer, Footer, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcExtra1 => new(0, PTabelaNome, CampoCodigo, Extra1, DevourerOne.PMaxSizeCampoMemo, Extra1, Extra1, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcExtra2 => new(0, PTabelaNome, CampoCodigo, Extra2, DevourerOne.PMaxSizeCampoMemo, Extra2, Extra2, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcExtra3 => new(0, PTabelaNome, CampoCodigo, Extra3, DevourerOne.PMaxSizeCampoMemo, Extra3, Extra3, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcOutorgante => new(0, PTabelaNome, CampoCodigo, Outorgante, DevourerOne.PMaxSizeCampoMemo, Outorgante, Outorgante, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcOutorgados => new(0, PTabelaNome, CampoCodigo, Outorgados, DevourerOne.PMaxSizeCampoMemo, Outorgados, Outorgados, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcPoderes => new(0, PTabelaNome, CampoCodigo, Poderes, DevourerOne.PMaxSizeCampoMemo, Poderes, Poderes, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcObjeto => new(0, PTabelaNome, CampoCodigo, Objeto, DevourerOne.PMaxSizeCampoMemo, Objeto, Objeto, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcTitulo => new(0, PTabelaNome, CampoCodigo, Titulo, 2000, Titulo, Titulo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcTestemunhas => new(0, PTabelaNome, CampoCodigo, Testemunhas, DevourerOne.PMaxSizeCampoMemo, Testemunhas, Testemunhas, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcTipoModeloDocumento => new(0, PTabelaNome, CampoCodigo, TipoModeloDocumento, TipoModeloDocumento, TipoModeloDocumento, EDataTypeSystemInfo.SystemInfoForeingkey, DBTipoModeloDocumentoDicInfo.CampoCodigo, DBTipoModeloDocumentoDicInfo.TabelaNome, new DBTipoModeloDocumentoODicInfo(), false, prefixo: "mdc", isRequired: true); // DBI 11 
+    public static DBInfoSystem MdcCSS => new(0, PTabelaNome, CampoCodigo, CSS, DevourerOne.PMaxSizeCampoMemo, CSS, CSS, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "mdc");
+    public static DBInfoSystem MdcGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "mdc", isRequired: true);
+    public static DBInfoSystem MdcQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "mdc", isRequired: true); // DBI 11 
+    public static DBInfoSystem MdcDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "mdc", isRequired: true);
+    public static DBInfoSystem MdcQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "mdc"); // DBI 11 
+    public static DBInfoSystem MdcDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "mdc");
+    public static DBInfoSystem MdcVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "mdc", isRequired: true);
 
 #endregion
     [Serializable]

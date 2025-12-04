@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { HonorariosDadosContratoGridAdapter } from '@/app/GerAdv_TS/HonorariosDadosContrato/Adapter/HonorariosDadosContratoGridAdapter';
 import HonorariosDadosContratoGridContainer from '@/app/GerAdv_TS/HonorariosDadosContrato/Components/HonorariosDadosContratoGridContainer';
+
 const HonorariosDadosContratoPage: React.FC = () => {
-  const HonorariosDadosContratoGrid = new HonorariosDadosContratoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Honorarios Dados Contrato' />
-    <HonorariosDadosContratoGridContainer grid={HonorariosDadosContratoGrid} />
-  </PageLayout>
-);
+    const HonorariosDadosContratoGrid = new HonorariosDadosContratoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <HonorariosDadosContratoGridContainer grid={HonorariosDadosContratoGrid} />
+        </PageLayout>
+    );
 };
+
 export default HonorariosDadosContratoPage;

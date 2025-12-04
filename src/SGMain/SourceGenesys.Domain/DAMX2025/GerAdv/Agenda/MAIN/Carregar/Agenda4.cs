@@ -54,8 +54,40 @@ public partial class DBAgenda
         // Checkpoint Carregar 
         try
         {
+            FCompromisso = getValue(DBAgendaDicInfo.Compromisso)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FDecisao = getValue(DBAgendaDicInfo.Decisao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBAgendaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FStatus = getValue(DBAgendaDicInfo.Status)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Advogado)))
-                m_FAdvogado = Convert.ToInt32(getValue(DBAgendaDicInfo.Advogado));
+                FAdvogado = Convert.ToInt32(getValue(DBAgendaDicInfo.Advogado));
         }
         catch
         {
@@ -64,7 +96,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBAgendaDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBAgendaDicInfo.Area));
         }
         catch
         {
@@ -73,7 +105,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.CartaPrecatoria)))
-                m_FCartaPrecatoria = Convert.ToInt32(getValue(DBAgendaDicInfo.CartaPrecatoria));
+                FCartaPrecatoria = Convert.ToInt32(getValue(DBAgendaDicInfo.CartaPrecatoria));
         }
         catch
         {
@@ -82,7 +114,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBAgendaDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBAgendaDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +123,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBAgendaDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBAgendaDicInfo.Cliente));
         }
         catch
         {
@@ -100,7 +132,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.ClienteAvisado)))
-                m_FClienteAvisado = Convert.ToBoolean(getValue(DBAgendaDicInfo.ClienteAvisado));
+                FClienteAvisado = Convert.ToBoolean(getValue(DBAgendaDicInfo.ClienteAvisado));
         }
         catch
         {
@@ -109,7 +141,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Concluido)))
-                m_FConcluido = Convert.ToBoolean(getValue(DBAgendaDicInfo.Concluido));
+                FConcluido = Convert.ToBoolean(getValue(DBAgendaDicInfo.Concluido));
         }
         catch
         {
@@ -118,7 +150,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBAgendaDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaDicInfo.Data)));
         }
         catch
         {
@@ -127,7 +159,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.DataInicioPrazo)))
-                m_FDataInicioPrazo = Convert.ToDateTime(getValue(DBAgendaDicInfo.DataInicioPrazo));
+                FDataInicioPrazo = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaDicInfo.DataInicioPrazo)));
         }
         catch
         {
@@ -154,7 +186,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.EventoData)))
-                m_FEventoData = Convert.ToDateTime(getValue(DBAgendaDicInfo.EventoData));
+                FEventoData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaDicInfo.EventoData)));
         }
         catch
         {
@@ -163,7 +195,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.EventoGerador)))
-                m_FEventoGerador = Convert.ToInt32(getValue(DBAgendaDicInfo.EventoGerador));
+                FEventoGerador = Convert.ToInt32(getValue(DBAgendaDicInfo.EventoGerador));
         }
         catch
         {
@@ -172,7 +204,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.EventoPrazo)))
-                m_FEventoPrazo = Convert.ToInt32(getValue(DBAgendaDicInfo.EventoPrazo));
+                FEventoPrazo = Convert.ToInt32(getValue(DBAgendaDicInfo.EventoPrazo));
         }
         catch
         {
@@ -181,7 +213,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Funcionario)))
-                m_FFuncionario = Convert.ToInt32(getValue(DBAgendaDicInfo.Funcionario));
+                FFuncionario = Convert.ToInt32(getValue(DBAgendaDicInfo.Funcionario));
         }
         catch
         {
@@ -190,7 +222,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Hora)))
-                m_FHora = Convert.ToDateTime(getValue(DBAgendaDicInfo.Hora));
+                FHora = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaDicInfo.Hora)));
         }
         catch
         {
@@ -199,7 +231,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.HrFinal)))
-                m_FHrFinal = Convert.ToDateTime(getValue(DBAgendaDicInfo.HrFinal));
+                FHrFinal = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaDicInfo.HrFinal)));
         }
         catch
         {
@@ -208,7 +240,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.IDCOB)))
-                m_FIDCOB = Convert.ToInt32(getValue(DBAgendaDicInfo.IDCOB));
+                FIDCOB = Convert.ToInt32(getValue(DBAgendaDicInfo.IDCOB));
         }
         catch
         {
@@ -217,7 +249,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.IDHistorico)))
-                m_FIDHistorico = Convert.ToInt32(getValue(DBAgendaDicInfo.IDHistorico));
+                FIDHistorico = Convert.ToInt32(getValue(DBAgendaDicInfo.IDHistorico));
         }
         catch
         {
@@ -226,7 +258,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.IDInsProcesso)))
-                m_FIDInsProcesso = Convert.ToInt32(getValue(DBAgendaDicInfo.IDInsProcesso));
+                FIDInsProcesso = Convert.ToInt32(getValue(DBAgendaDicInfo.IDInsProcesso));
         }
         catch
         {
@@ -235,7 +267,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.IDNE)))
-                m_FIDNE = Convert.ToInt32(getValue(DBAgendaDicInfo.IDNE));
+                FIDNE = Convert.ToInt32(getValue(DBAgendaDicInfo.IDNE));
         }
         catch
         {
@@ -244,7 +276,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Importante)))
-                m_FImportante = Convert.ToBoolean(getValue(DBAgendaDicInfo.Importante));
+                FImportante = Convert.ToBoolean(getValue(DBAgendaDicInfo.Importante));
         }
         catch
         {
@@ -253,7 +285,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBAgendaDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBAgendaDicInfo.Justica));
         }
         catch
         {
@@ -262,7 +294,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Liberado)))
-                m_FLiberado = Convert.ToBoolean(getValue(DBAgendaDicInfo.Liberado));
+                FLiberado = Convert.ToBoolean(getValue(DBAgendaDicInfo.Liberado));
         }
         catch
         {
@@ -271,7 +303,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Oculto)))
-                m_FOculto = Convert.ToInt32(getValue(DBAgendaDicInfo.Oculto));
+                FOculto = Convert.ToInt32(getValue(DBAgendaDicInfo.Oculto));
         }
         catch
         {
@@ -280,7 +312,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.PrazoDias)))
-                m_FPrazoDias = Convert.ToInt32(getValue(DBAgendaDicInfo.PrazoDias));
+                FPrazoDias = Convert.ToInt32(getValue(DBAgendaDicInfo.PrazoDias));
         }
         catch
         {
@@ -289,7 +321,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Preposto)))
-                m_FPreposto = Convert.ToInt32(getValue(DBAgendaDicInfo.Preposto));
+                FPreposto = Convert.ToInt32(getValue(DBAgendaDicInfo.Preposto));
         }
         catch
         {
@@ -298,7 +330,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBAgendaDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBAgendaDicInfo.Processo));
         }
         catch
         {
@@ -307,7 +339,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.ProtocoloIntegrado)))
-                m_FProtocoloIntegrado = Convert.ToInt32(getValue(DBAgendaDicInfo.ProtocoloIntegrado));
+                FProtocoloIntegrado = Convert.ToInt32(getValue(DBAgendaDicInfo.ProtocoloIntegrado));
         }
         catch
         {
@@ -316,7 +348,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemAtu));
         }
         catch
         {
@@ -325,7 +357,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemCad));
         }
         catch
         {
@@ -334,7 +366,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.QuemCodigo)))
-                m_FQuemCodigo = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemCodigo));
+                FQuemCodigo = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemCodigo));
         }
         catch
         {
@@ -343,7 +375,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.QuemID)))
-                m_FQuemID = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemID));
+                FQuemID = Convert.ToInt32(getValue(DBAgendaDicInfo.QuemID));
         }
         catch
         {
@@ -352,7 +384,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Revisar)))
-                m_FRevisar = Convert.ToBoolean(getValue(DBAgendaDicInfo.Revisar));
+                FRevisar = Convert.ToBoolean(getValue(DBAgendaDicInfo.Revisar));
         }
         catch
         {
@@ -361,7 +393,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.RevisarP2)))
-                m_FRevisarP2 = Convert.ToBoolean(getValue(DBAgendaDicInfo.RevisarP2));
+                FRevisarP2 = Convert.ToBoolean(getValue(DBAgendaDicInfo.RevisarP2));
         }
         catch
         {
@@ -370,7 +402,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Sempre)))
-                m_FSempre = Convert.ToInt32(getValue(DBAgendaDicInfo.Sempre));
+                FSempre = Convert.ToInt32(getValue(DBAgendaDicInfo.Sempre));
         }
         catch
         {
@@ -379,7 +411,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.TipoCompromisso)))
-                m_FTipoCompromisso = Convert.ToInt32(getValue(DBAgendaDicInfo.TipoCompromisso));
+                FTipoCompromisso = Convert.ToInt32(getValue(DBAgendaDicInfo.TipoCompromisso));
         }
         catch
         {
@@ -388,7 +420,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Usuario)))
-                m_FUsuario = Convert.ToInt32(getValue(DBAgendaDicInfo.Usuario));
+                FUsuario = Convert.ToInt32(getValue(DBAgendaDicInfo.Usuario));
         }
         catch
         {
@@ -397,7 +429,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.UsuarioCiente)))
-                m_FUsuarioCiente = Convert.ToBoolean(getValue(DBAgendaDicInfo.UsuarioCiente));
+                FUsuarioCiente = Convert.ToBoolean(getValue(DBAgendaDicInfo.UsuarioCiente));
         }
         catch
         {
@@ -406,7 +438,7 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBAgendaDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBAgendaDicInfo.Valor));
         }
         catch
         {
@@ -415,46 +447,14 @@ public partial class DBAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBAgendaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCompromisso = getValue(DBAgendaDicInfo.Compromisso)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDecisao = getValue(DBAgendaDicInfo.Decisao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBAgendaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FStatus = getValue(DBAgendaDicInfo.Status)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBAgendaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -478,7 +478,7 @@ public partial class DBAgenda
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

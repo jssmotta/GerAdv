@@ -21,6 +21,7 @@ export interface ITerceiros {
 	class: string,
 	varaforocomarca: string,
 	sexo: boolean,
+	bold: boolean,
 }
 
 export interface ITerceirosFormProps {

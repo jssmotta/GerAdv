@@ -18,6 +18,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// Bold - npcBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
     }
 }
 
@@ -34,5 +40,11 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
+
+        /// <summary>
+        /// Bold - npcBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
     }
 }

@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IServicosFormProps } from '../../Interfaces/interface.Servicos';
 import { ServicosService } from '../../Services/Servicos.service';
 import { useServicosForm, useValidationsServicos } from '../../Hooks/hookServicos';
-import { ServicosEmpty } from '../../../Models/Servicos';
+import { ServicosEmpty } from '../../../Models/Servicos'; 
 import { ServicosForm } from '../Forms/Servicos';
+ 
 
 const ServicosInc: React.FC<IServicosFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const servicosService = new ServicosService(
-  new ServicosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadServicos } = useServicosForm(
-ServicosEmpty(), 
-servicosService
-);
-useEffect(() => {
-  loadServicos(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedServicos = await servicosService.saveServicos(data);
-    if (savedServicos.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedServicos);
+  const servicosService = new ServicosService(
+    new ServicosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadServicos } = useServicosForm(
+    ServicosEmpty(),
+    servicosService
+  );
+
+  useEffect(() => {
+    loadServicos(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedServicos = await servicosService.saveServicos(data);
+
+      if (savedServicos.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedServicos);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadServicos(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <ServicosForm
+        servicosData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadServicos(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<ServicosForm
-servicosData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default ServicosInc;

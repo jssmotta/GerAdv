@@ -23,10 +23,10 @@ public class FuncionariosValidation : IFuncionariosValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Funcionario = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Compromisso associados a ele.");
         var horastrabExists1 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Funcionario = id ?? default }, uri);
         if (horastrabExists1 != null && horastrabExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Horas Trab associados a ele.");
         return true;
     }
 
@@ -58,8 +58,6 @@ public class FuncionariosValidation : IFuncionariosValidation
             throw new SGValidationException($"Pasta deve ter no máximo {DBFuncionariosDicInfo.FunPasta.FTamanho} caracteres.");
         if (reg.Class != null && reg.Class.Length > DBFuncionariosDicInfo.FunClass.FTamanho)
             throw new SGValidationException($"Class deve ter no máximo {DBFuncionariosDicInfo.FunClass.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBFuncionariosDicInfo.FunGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBFuncionariosDicInfo.FunGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -69,6 +67,8 @@ public class FuncionariosValidation : IFuncionariosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -123,9 +123,18 @@ public class FuncionariosValidation : IFuncionariosValidation
             }
         }
 
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -141,7 +150,7 @@ public class FuncionariosValidation : IFuncionariosValidation
         // Cargos
         if (!reg.Cargo.IsEmptyIDNumber())
         {
-            var regCargos = await cargosReader.Read(reg.Cargo, oCnn);
+            var regCargos = await cargosReader.ReadAsync(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
             {
                 throw new SGValidationException($"Cargo não encontrado ({regCargos?.Id}).");
@@ -151,7 +160,7 @@ public class FuncionariosValidation : IFuncionariosValidation
         // Funcao
         if (!reg.Funcao.IsEmptyIDNumber())
         {
-            var regFuncao = await funcaoReader.Read(reg.Funcao, oCnn);
+            var regFuncao = await funcaoReader.ReadAsync(reg.Funcao, oCnn);
             if (regFuncao == null || regFuncao.Id != reg.Funcao)
             {
                 throw new SGValidationException($"Função não encontrado ({regFuncao?.Id}).");
@@ -161,7 +170,7 @@ public class FuncionariosValidation : IFuncionariosValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

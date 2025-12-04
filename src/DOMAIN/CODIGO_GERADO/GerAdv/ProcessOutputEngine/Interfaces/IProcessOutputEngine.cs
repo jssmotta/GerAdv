@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProcessOutputEngineService
 {
+    Task<Filters.FilterProcessOutputEngine> FilterVoice([FromBody] Filters.FilterProcessOutputEngine filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ProcessOutputEngineResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessOutputEngine filter, [FromRoute, Required] string uri = "");
     Task<ProcessOutputEngineResponse?> AddAndUpdate(Models.ProcessOutputEngine? regProcessOutputEngine, [FromRoute, Required] string uri = "");
     Task<ProcessOutputEngineResponse?> Validation(Models.ProcessOutputEngine? regProcessOutputEngine, [FromRoute, Required] string uri = "");

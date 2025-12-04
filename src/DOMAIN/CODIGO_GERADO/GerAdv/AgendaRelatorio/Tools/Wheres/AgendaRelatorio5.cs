@@ -20,7 +20,7 @@ public partial class AgendaRelatorioWhere(IFAgendaRelatorioFactory agendarelator
         var agendarelatorio = new AgendaRelatorioResponse
         {
             Id = dbRec.ID,
-            vqaData = dbRec.FvqaData,
+            vqaData = dbRec.FvqaData?.ToString("dd/MM/yyyy") ?? string.Empty,
             vqaProcesso = dbRec.FvqaProcesso,
             xxxParaNome = dbRec.FxxxParaNome ?? string.Empty,
             xxxParaPessoas = dbRec.FxxxParaPessoas ?? string.Empty,

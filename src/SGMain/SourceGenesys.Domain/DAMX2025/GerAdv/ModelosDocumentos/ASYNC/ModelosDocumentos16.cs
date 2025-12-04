@@ -14,6 +14,14 @@ public partial class DBModelosDocumentos
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBModelosDocumentos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,43 +142,43 @@ public partial class DBModelosDocumentos
 
 #if (!NOTSTORED_ModelosDocumentos)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome || pFldFRemuneracao || pFldFAssinatura || pFldFHeader || pFldFFooter || pFldFExtra1 || pFldFExtra2 || pFldFExtra3 || pFldFOutorgante || pFldFOutorgados || pFldFPoderes || pFldFObjeto || pFldFTitulo || pFldFTestemunhas || pFldFTipoModeloDocumento || pFldFCSS || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFRemuneracao || pFldFAssinatura || pFldFHeader || pFldFFooter || pFldFExtra1 || pFldFExtra2 || pFldFExtra3 || pFldFOutorgante || pFldFOutorgados || pFldFPoderes || pFldFObjeto || pFldFTitulo || pFldFTestemunhas || pFldFTipoModeloDocumento || pFldFCSS || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFRemuneracao)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Remuneracao, m_FRemuneracao, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Remuneracao, FRemuneracao, EGenericTypeFields.FString);
         if (pFldFAssinatura)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Assinatura, m_FAssinatura, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Assinatura, FAssinatura, EGenericTypeFields.FString);
         if (pFldFHeader)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Header, m_FHeader, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Header, FHeader, EGenericTypeFields.FString);
         if (pFldFFooter)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Footer, m_FFooter, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Footer, FFooter, EGenericTypeFields.FString);
         if (pFldFExtra1)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Extra1, m_FExtra1, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Extra1, FExtra1, EGenericTypeFields.FString);
         if (pFldFExtra2)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Extra2, m_FExtra2, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Extra2, FExtra2, EGenericTypeFields.FString);
         if (pFldFExtra3)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Extra3, m_FExtra3, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Extra3, FExtra3, EGenericTypeFields.FString);
         if (pFldFOutorgante)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Outorgante, m_FOutorgante, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Outorgante, FOutorgante, EGenericTypeFields.FString);
         if (pFldFOutorgados)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Outorgados, m_FOutorgados, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Outorgados, FOutorgados, EGenericTypeFields.FString);
         if (pFldFPoderes)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Poderes, m_FPoderes, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Poderes, FPoderes, EGenericTypeFields.FString);
         if (pFldFObjeto)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Objeto, m_FObjeto, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Objeto, FObjeto, EGenericTypeFields.FString);
         if (pFldFTitulo)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Titulo, m_FTitulo, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Titulo, FTitulo, EGenericTypeFields.FString);
         if (pFldFTestemunhas)
-            updateTool.Fields(DBModelosDocumentosDicInfo.Testemunhas, m_FTestemunhas, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.Testemunhas, FTestemunhas, EGenericTypeFields.FString);
         if (pFldFTipoModeloDocumento)
-            updateTool.Fields(DBModelosDocumentosDicInfo.TipoModeloDocumento, m_FTipoModeloDocumento, ETiposCampos.FNumber);
+            updateTool.Fields(DBModelosDocumentosDicInfo.TipoModeloDocumento, FTipoModeloDocumento, EGenericTypeFields.FNumber);
         if (pFldFCSS)
-            updateTool.Fields(DBModelosDocumentosDicInfo.CSS, m_FCSS, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBModelosDocumentosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBModelosDocumentosDicInfo.CSS, FCSS, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            updateTool.Fields(DBModelosDocumentosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -182,24 +190,23 @@ public partial class DBModelosDocumentos
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBModelosDocumentosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBModelosDocumentosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBModelosDocumentosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBModelosDocumentosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBModelosDocumentosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBModelosDocumentosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBModelosDocumentosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBModelosDocumentosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBModelosDocumentosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBModelosDocumentosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBModelosDocumentosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

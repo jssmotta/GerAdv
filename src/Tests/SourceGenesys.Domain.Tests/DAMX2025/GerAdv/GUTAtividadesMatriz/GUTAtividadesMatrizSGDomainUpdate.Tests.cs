@@ -22,7 +22,7 @@ public class DBGUTAtividadesMatrizUpdate : IDisposable
         var gutatividadesmatriz = new DBGUTAtividadesMatriz();
         // Assert
         gutatividadesmatriz.Should().NotBeNull();
-        gutatividadesmatriz.ITabelaName().Should().Be("GUTAtividadesMatriz");
+        gutatividadesmatriz.ITableName().Should().Be("GUTAtividadesMatriz");
         gutatividadesmatriz.ID.Should().Be(0);
     }
 
@@ -32,9 +32,9 @@ public class DBGUTAtividadesMatrizUpdate : IDisposable
         // Arrange
         var gutatividadesmatriz = new DBGUTAtividadesMatriz
         {
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
-    // Assert - All properties should be set gutatividadesmatriz.FGUID.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    // Assert - All properties should be set gutatividadesmatriz.FGuid.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -43,23 +43,23 @@ public class DBGUTAtividadesMatrizUpdate : IDisposable
         // Arrange
         var gutatividadesmatriz = new DBGUTAtividadesMatriz();
         var longString = new string ('X', 300);
-        gutatividadesmatriz.FGUID = longString; // MAX: 50
-    // Assert - All properties should be set gutatividadesmatriz.FGUID.Should().HaveLength(50);
+        gutatividadesmatriz.FGuid = longString; // MAX: 50
+    // Assert - All properties should be set gutatividadesmatriz.FGuid.Should().HaveLength(50);
     }
 
-#region Testes de GUID
+#region Testes de Guid
     [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
+    public void Guid_DefaultValue_ShouldBeEmpty()
     {
-        Assert.Equal(string.Empty, _instance.FGUID);
+        Assert.Equal(string.Empty, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
+    public void Guid_SetValidGuid_ShouldStore()
     {
         var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
     }
 
 #endregion

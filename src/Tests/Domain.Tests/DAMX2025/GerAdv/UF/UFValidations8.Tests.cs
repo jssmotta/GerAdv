@@ -68,7 +68,7 @@ public class UFValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockUFService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterUF>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the UFs service mock
-        _ = _mockPaisesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PaisesResponse { Id = id }));
+        _ = _mockPaisesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PaisesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -76,7 +76,7 @@ public class UFValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockUFService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterUF>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the UFs service mock
-        _ = _mockPaisesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PaisesResponse { Id = 0 }));
+        _ = _mockPaisesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PaisesResponse { Id = 0 }));
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class UFValidationTests : IDisposable
         // Arrange
         var uf = CreateValidUF();
         uf.Pais = 999;
-        _mockPaisesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PaisesResponse>(null));
+        _mockPaisesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PaisesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(uf, _mockUFService.Object, _mockPaisesReader.Object, _validUri, _mockConnection.Object));
@@ -131,7 +131,7 @@ public class UFValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockPaisesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockPaisesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(uf, _mockUFService.Object, _mockPaisesReader.Object, _validUri, _mockConnection.Object));
@@ -148,7 +148,7 @@ public class UFValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockPaisesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockPaisesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(uf, _mockUFService.Object, _mockPaisesReader.Object, _validUri, _mockConnection.Object);
@@ -168,7 +168,7 @@ public class UFValidationTests : IDisposable
         var result = await _validation.ValidateReg(uf, _mockUFService.Object, _mockPaisesReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockPaisesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockPaisesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

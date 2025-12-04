@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IServicosWriter
 {
     Task<FServicos> WriteAsync(Models.Servicos servicos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ServicosResponse servicos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ServicosResponse servicos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ServicosWriter(IFServicosFactory servicosFactory) : IServicosWriter
 {
     private readonly IFServicosFactory _servicosFactory = servicosFactory ?? throw new ArgumentNullException(nameof(servicosFactory));
-    public virtual async Task Delete(ServicosResponse servicos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ServicosResponse servicos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _servicosFactory.DeleteAsync(operadorId, servicos.Id, oCnn);
     }
@@ -26,7 +26,7 @@ public class ServicosWriter(IFServicosFactory servicosFactory) : IServicosWriter
         dbRec.FCobrar = servicos.Cobrar;
         dbRec.FDescricao = servicos.Descricao;
         dbRec.FBasico = servicos.Basico;
-        dbRec.FGUID = servicos.GUID;
+        dbRec.FGuid = servicos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

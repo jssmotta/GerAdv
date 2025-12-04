@@ -27,7 +27,6 @@ public partial class LigacoesWhere(IFLigacoesFactory ligacoesFactory) : ILigacoe
             Contato = dbRec.FContato ?? string.Empty,
             QuemID = dbRec.FQuemID,
             Telefonista = dbRec.FTelefonista,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             QuemCodigo = dbRec.FQuemCodigo,
             Solicitante = dbRec.FSolicitante,
@@ -37,25 +36,42 @@ public partial class LigacoesWhere(IFLigacoesFactory ligacoesFactory) : ILigacoe
             Particular = dbRec.FParticular,
             Realizada = dbRec.FRealizada,
             Status = dbRec.FStatus ?? string.Empty,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Urgente = dbRec.FUrgente,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigarPara = dbRec.FLigarPara ?? string.Empty,
             Processo = dbRec.FProcesso,
             StartScreen = dbRec.FStartScreen,
             Emotion = dbRec.FEmotion,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataRealizada, out DateTime XDataRealizada))
+        if (DateTime.TryParse(dbRec.FDataRealizada.ToString(), out DateTime XDataRealizada))
         {
-            ligacoes.DataRealizada = dbRec.FDataRealizada;
+            ligacoes.DataRealizada = XDataRealizada.ToString("dd/MM/yyyy");
             ligacoes.DataRealizada_date = XDataRealizada;
         }
 
-        if (DateTime.TryParse(dbRec.FUltimoAviso, out DateTime XUltimoAviso))
+        if (DateTime.TryParse(dbRec.FUltimoAviso.ToString(), out DateTime XUltimoAviso))
         {
-            ligacoes.UltimoAviso = dbRec.FUltimoAviso;
+            ligacoes.UltimoAviso = XUltimoAviso.ToString("dd/MM/yyyy");
             ligacoes.UltimoAviso_date = XUltimoAviso;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal1))
+        {
+            ligacoes.HoraFinal = XHoraFinal1.ToString("HH:mm");
+            ligacoes.HoraFinal_date = XHoraFinal1;
+        }
+
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            ligacoes.Data = XData.ToString("dd/MM/yyyy");
+            ligacoes.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora1))
+        {
+            ligacoes.Hora = XHora1.ToString("HH:mm");
+            ligacoes.Hora_date = XHora1;
         }
 
         return ligacoes;

@@ -9,25 +9,29 @@ public partial class DBTipoContatoCRMODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBTipoContatoCRMDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBTipoContatoCRMDicInfo.CampoCodigo;
+    public string IFieldId() => DBTipoContatoCRMDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBTipoContatoCRMDicInfo.TablePrefix;
+    public string IPrefix() => DBTipoContatoCRMDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBTipoContatoCRMDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBTipoContatoCRMDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBTipoContatoCRMODicInfo : IODicInfo
     public static string TCampoNome => DBTipoContatoCRMDicInfo.CampoNome;
     public static string TTabelaNome => DBTipoContatoCRMDicInfo.TabelaNome;
     public static string TTablePrefix => DBTipoContatoCRMDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccGUID, DBTipoContatoCRMDicInfo.TccBold, DBTipoContatoCRMDicInfo.TccQuemCad, DBTipoContatoCRMDicInfo.TccDtCad, DBTipoContatoCRMDicInfo.TccQuemAtu, DBTipoContatoCRMDicInfo.TccDtAtu, DBTipoContatoCRMDicInfo.TccVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccBold, DBTipoContatoCRMDicInfo.TccGuid, DBTipoContatoCRMDicInfo.TccQuemCad, DBTipoContatoCRMDicInfo.TccDtCad, DBTipoContatoCRMDicInfo.TccQuemAtu, DBTipoContatoCRMDicInfo.TccDtAtu, DBTipoContatoCRMDicInfo.TccVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBTipoContatoCRMDicInfo.TccNome, DBTipoContatoCRMDicInfo.TccBold, DBTipoContatoCRMDicInfo.TccGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["tccCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBTipoContatoCRMDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["tccCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBTipoContatoCRMDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

@@ -83,9 +83,24 @@ public class NENotasWriterTests
         _mockFNENotas.VerifySet(x => x.FRevisada = nenotas.Revisada, Times.Once);
         _mockFNENotas.VerifySet(x => x.FProcesso = nenotas.Processo, Times.Once);
         _mockFNENotas.VerifySet(x => x.FPalavraChave = nenotas.PalavraChave, Times.Once);
-        _mockFNENotas.VerifySet(x => x.FData = nenotas.Data, Times.Once);
+        _mockFNENotas.VerifySet(x => x.FData = nenotas.Data.ToString(), Times.Once);
         _mockFNENotas.VerifySet(x => x.FNotaPublicada = nenotas.NotaPublicada, Times.Once);
         _mockFNENotas.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var nenotas = CreateValidNENotasModel();
+        nenotas.Data = null;
+        var auditorQuem = 123;
+        _mockNENotasFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFNENotas.Object);
+        _mockFNENotas.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _nenotasWriter.WriteAsync(nenotas, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFNENotas.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -128,7 +143,7 @@ public class NENotasWriterTests
         var operadorId = 456;
         _mockNENotasFactory.Setup(x => x.DeleteAsync(operadorId, nenotasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _nenotasWriter.Delete(nenotasResponse, operadorId, _mockConnection.Object);
+        await _nenotasWriter.DeleteAsync(nenotasResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockNENotasFactory.Verify(x => x.DeleteAsync(operadorId, nenotasResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -144,7 +159,7 @@ public class NENotasWriterTests
         var operadorId = 111;
         _mockNENotasFactory.Setup(x => x.DeleteAsync(operadorId, nenotasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _nenotasWriter.Delete(nenotasResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _nenotasWriter.DeleteAsync(nenotasResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -161,7 +176,7 @@ public class NENotasWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockNENotasFactory.Setup(x => x.DeleteAsync(operadorId, nenotasResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _nenotasWriter.Delete(nenotasResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _nenotasWriter.DeleteAsync(nenotasResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -200,7 +215,7 @@ public class NENotasWriterTests
             Revisada = false,
             Processo = 1,
             PalavraChave = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             NotaPublicada = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
     }

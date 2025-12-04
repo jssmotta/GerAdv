@@ -11,7 +11,7 @@ public static partial class DBCargosEscClassDicInfo
     public const string CampoNome = "cecNome";
     public const string TablePrefix = "cec";
     public const string Nome = "cecNome"; // LOCALIZACAO 170523
-    public const string GUID = "cecGUID"; // LOCALIZACAO 170523
+    public const string Guid = "cecGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "cecQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "cecDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "cecQuemAtu"; // LOCALIZACAO 170523
@@ -31,35 +31,13 @@ public static partial class DBCargosEscClassDicInfo
 
     public const string PTabelaNome = "CargosEscClass";
 #region PropriedadesDaTabela
-    public static DBInfoSystem CecNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "cec"
-    };
-    public static DBInfoSystem CecGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "cec"
-    };
-    public static DBInfoSystem CecQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cec"
-    }; // DBI 11 
-    public static DBInfoSystem CecDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "cec"
-    };
-    public static DBInfoSystem CecQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cec"
-    }; // DBI 11 
-    public static DBInfoSystem CecDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "cec"
-    };
-    public static DBInfoSystem CecVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "cec"
-    };
+    public static DBInfoSystem CecNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "cec");
+    public static DBInfoSystem CecGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "cec");
+    public static DBInfoSystem CecQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cec"); // DBI 11 
+    public static DBInfoSystem CecDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "cec");
+    public static DBInfoSystem CecQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cec"); // DBI 11 
+    public static DBInfoSystem CecDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "cec");
+    public static DBInfoSystem CecVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "cec", isRequired: true);
 
 #endregion
     [Serializable]

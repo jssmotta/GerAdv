@@ -74,6 +74,7 @@ public class LigacoesWriterTests
         var result = await _ligacoesWriter.WriteAsync(ligacoes, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFLigacoes.Object);
+        _mockFLigacoes.VerifySet(x => x.FGuid = ligacoes.Guid, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FAssunto = ligacoes.Assunto, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FAgeClienteAvisado = ligacoes.AgeClienteAvisado, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FCelular = ligacoes.Celular, Times.Once);
@@ -83,7 +84,7 @@ public class LigacoesWriterTests
         _mockFLigacoes.VerifySet(x => x.FQuemID = ligacoes.QuemID, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FTelefonista = ligacoes.Telefonista, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FUltimoAviso = ligacoes.UltimoAviso.ToString(), Times.Once);
-        _mockFLigacoes.VerifySet(x => x.FHoraFinal = ligacoes.HoraFinal, Times.Once);
+        _mockFLigacoes.VerifySet(x => x.FHoraFinal = ligacoes.HoraFinal.ToString(), Times.Once);
         _mockFLigacoes.VerifySet(x => x.FNome = ligacoes.Nome, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FQuemCodigo = ligacoes.QuemCodigo, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FSolicitante = ligacoes.Solicitante, Times.Once);
@@ -93,14 +94,13 @@ public class LigacoesWriterTests
         _mockFLigacoes.VerifySet(x => x.FParticular = ligacoes.Particular, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FRealizada = ligacoes.Realizada, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FStatus = ligacoes.Status, Times.Once);
-        _mockFLigacoes.VerifySet(x => x.FData = ligacoes.Data, Times.Once);
-        _mockFLigacoes.VerifySet(x => x.FHora = ligacoes.Hora, Times.Once);
+        _mockFLigacoes.VerifySet(x => x.FData = ligacoes.Data.ToString(), Times.Once);
+        _mockFLigacoes.VerifySet(x => x.FHora = ligacoes.Hora.ToString(), Times.Once);
         _mockFLigacoes.VerifySet(x => x.FUrgente = ligacoes.Urgente, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FLigarPara = ligacoes.LigarPara, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FProcesso = ligacoes.Processo, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FStartScreen = ligacoes.StartScreen, Times.Once);
         _mockFLigacoes.VerifySet(x => x.FEmotion = ligacoes.Emotion, Times.Once);
-        _mockFLigacoes.VerifySet(x => x.FGUID = ligacoes.GUID, Times.Once);
         _mockFLigacoes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -132,6 +132,51 @@ public class LigacoesWriterTests
         await _ligacoesWriter.WriteAsync(ligacoes, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFLigacoes.VerifySet(x => x.FUltimoAviso = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullHoraFinal_ShouldNotSetFHoraFinal()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoesModel();
+        ligacoes.HoraFinal = null;
+        var auditorQuem = 123;
+        _mockLigacoesFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFLigacoes.Object);
+        _mockFLigacoes.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _ligacoesWriter.WriteAsync(ligacoes, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFLigacoes.VerifySet(x => x.FHoraFinal = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoesModel();
+        ligacoes.Data = null;
+        var auditorQuem = 123;
+        _mockLigacoesFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFLigacoes.Object);
+        _mockFLigacoes.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _ligacoesWriter.WriteAsync(ligacoes, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFLigacoes.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullHora_ShouldNotSetFHora()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoesModel();
+        ligacoes.Hora = null;
+        var auditorQuem = 123;
+        _mockLigacoesFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFLigacoes.Object);
+        _mockFLigacoes.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _ligacoesWriter.WriteAsync(ligacoes, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFLigacoes.VerifySet(x => x.FHora = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -174,7 +219,7 @@ public class LigacoesWriterTests
         var operadorId = 456;
         _mockLigacoesFactory.Setup(x => x.DeleteAsync(operadorId, ligacoesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _ligacoesWriter.Delete(ligacoesResponse, operadorId, _mockConnection.Object);
+        await _ligacoesWriter.DeleteAsync(ligacoesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockLigacoesFactory.Verify(x => x.DeleteAsync(operadorId, ligacoesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -190,7 +235,7 @@ public class LigacoesWriterTests
         var operadorId = 111;
         _mockLigacoesFactory.Setup(x => x.DeleteAsync(operadorId, ligacoesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _ligacoesWriter.Delete(ligacoesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _ligacoesWriter.DeleteAsync(ligacoesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -207,7 +252,7 @@ public class LigacoesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockLigacoesFactory.Setup(x => x.DeleteAsync(operadorId, ligacoesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ligacoesWriter.Delete(ligacoesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ligacoesWriter.DeleteAsync(ligacoesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -237,6 +282,7 @@ public class LigacoesWriterTests
         return new Models.Ligacoes
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Assunto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             AgeClienteAvisado = 1,
             Celular = false,
@@ -246,7 +292,7 @@ public class LigacoesWriterTests
             QuemID = 1,
             Telefonista = 1,
             UltimoAviso = "24/04/1975",
-            HoraFinal = "27/05/2022",
+            HoraFinal = "04:04",
             Nome = "João",
             QuemCodigo = 1,
             Solicitante = 1,
@@ -256,14 +302,13 @@ public class LigacoesWriterTests
             Particular = false,
             Realizada = false,
             Status = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            Data = "27/05/2022",
-            Hora = "27/05/2022",
+            Data = "24/04/1975",
+            Hora = "04:04",
             Urgente = false,
             LigarPara = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             StartScreen = false,
-            Emotion = 1,
-            GUID = Guid.NewGuid().ToString()
+            Emotion = 1
         };
     }
 #endregion

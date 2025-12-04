@@ -23,12 +23,6 @@ public partial class FNEPalavrasChavesFactory : IFNEPalavrasChavesFactory, IDisp
         return FNEPalavrasChaves.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FNEPalavrasChaves> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FNEPalavrasChaves().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FNEPalavrasChaves> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FNEPalavrasChavesFactory : IFNEPalavrasChavesFactory, IDisp
         return FNEPalavrasChaves.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FNEPalavrasChaves> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FNEPalavrasChaves().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FNEPalavrasChavesFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

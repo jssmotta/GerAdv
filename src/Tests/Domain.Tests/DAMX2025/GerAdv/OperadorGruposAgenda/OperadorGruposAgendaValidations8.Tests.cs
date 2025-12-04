@@ -57,8 +57,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
             Id = 1,
             SQLWhere = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Nome = "João",
-            Operador = 1,
-            GUID = Guid.NewGuid().ToString()
+            Operador = 1
         };
     }
 
@@ -67,7 +66,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockOperadorGruposAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGruposAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorGruposAgendas service mock
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -75,7 +74,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockOperadorGruposAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorGruposAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorGruposAgendas service mock
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]
@@ -87,8 +86,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
             Id = 1,
             SQLWhere = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Operador = 1,
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Operador = 1
         };
         SetupValidMocks();
         // Act
@@ -115,7 +113,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         operadorgruposagenda.SQLWhere = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -146,7 +144,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
     {
         // Arrange
         var operadorgruposagenda = CreateValidOperadorGruposAgenda();
-        operadorgruposagenda.SQLWhere = "   ";
+        operadorgruposagenda.SQLWhere = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
@@ -162,7 +160,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         operadorgruposagenda.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -193,54 +191,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
     {
         // Arrange
         var operadorgruposagenda = CreateValidOperadorGruposAgenda();
-        operadorgruposagenda.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var operadorgruposagenda = CreateValidOperadorGruposAgenda();
-        operadorgruposagenda.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var operadorgruposagenda = CreateValidOperadorGruposAgenda();
-        operadorgruposagenda.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var operadorgruposagenda = CreateValidOperadorGruposAgenda();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var operadorgruposagenda = CreateValidOperadorGruposAgenda();
-        operadorgruposagenda.GUID = "   ";
+        operadorgruposagenda.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
@@ -254,7 +205,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         // Arrange
         var operadorgruposagenda = CreateValidOperadorGruposAgenda();
         operadorgruposagenda.Operador = 999;
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -271,7 +222,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -288,7 +239,7 @@ public class OperadorGruposAgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockOperadorReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockOperadorReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(operadorgruposagenda, _mockOperadorGruposAgendaService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);

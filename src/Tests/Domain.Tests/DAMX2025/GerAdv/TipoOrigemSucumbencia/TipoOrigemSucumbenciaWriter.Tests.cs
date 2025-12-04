@@ -117,7 +117,7 @@ public class TipoOrigemSucumbenciaWriterTests
         var operadorId = 456;
         _mockTipoOrigemSucumbenciaFactory.Setup(x => x.DeleteAsync(operadorId, tipoorigemsucumbenciaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipoorigemsucumbenciaWriter.Delete(tipoorigemsucumbenciaResponse, operadorId, _mockConnection.Object);
+        await _tipoorigemsucumbenciaWriter.DeleteAsync(tipoorigemsucumbenciaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoOrigemSucumbenciaFactory.Verify(x => x.DeleteAsync(operadorId, tipoorigemsucumbenciaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -133,7 +133,7 @@ public class TipoOrigemSucumbenciaWriterTests
         var operadorId = 111;
         _mockTipoOrigemSucumbenciaFactory.Setup(x => x.DeleteAsync(operadorId, tipoorigemsucumbenciaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipoorigemsucumbenciaWriter.Delete(tipoorigemsucumbenciaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipoorigemsucumbenciaWriter.DeleteAsync(tipoorigemsucumbenciaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -150,7 +150,7 @@ public class TipoOrigemSucumbenciaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoOrigemSucumbenciaFactory.Setup(x => x.DeleteAsync(operadorId, tipoorigemsucumbenciaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoorigemsucumbenciaWriter.Delete(tipoorigemsucumbenciaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoorigemsucumbenciaWriter.DeleteAsync(tipoorigemsucumbenciaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

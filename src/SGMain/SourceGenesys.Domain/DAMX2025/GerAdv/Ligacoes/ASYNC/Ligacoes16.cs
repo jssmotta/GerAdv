@@ -14,6 +14,14 @@ public partial class DBLigacoes
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBLigacoes
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,63 +142,65 @@ public partial class DBLigacoes
 
 #if (!NOTSTORED_Ligacoes)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFAssunto || pFldFAgeClienteAvisado || pFldFCelular || pFldFCliente || pFldFContato || pFldFDataRealizada || pFldFQuemID || pFldFTelefonista || pFldFUltimoAviso || pFldFHoraFinal || pFldFNome || pFldFQuemCodigo || pFldFSolicitante || pFldFPara || pFldFFone || pFldFRamal || pFldFParticular || pFldFRealizada || pFldFStatus || pFldFData || pFldFHora || pFldFUrgente || pFldFGUID || pFldFLigarPara || pFldFProcesso || pFldFStartScreen || pFldFEmotion;
+    private bool HasAnyFieldChanged() => pFldFAssunto || pFldFAgeClienteAvisado || pFldFCelular || pFldFCliente || pFldFContato || pFldFDataRealizada || pFldFQuemID || pFldFTelefonista || pFldFUltimoAviso || pFldFHoraFinal || pFldFNome || pFldFQuemCodigo || pFldFSolicitante || pFldFPara || pFldFFone || pFldFRamal || pFldFParticular || pFldFRealizada || pFldFStatus || pFldFData || pFldFHora || pFldFUrgente || pFldFLigarPara || pFldFProcesso || pFldFStartScreen || pFldFEmotion || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFAssunto)
-            updateTool.Fields(DBLigacoesDicInfo.Assunto, m_FAssunto, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Assunto, FAssunto, EGenericTypeFields.FString);
         if (pFldFAgeClienteAvisado)
-            updateTool.Fields(DBLigacoesDicInfo.AgeClienteAvisado, m_FAgeClienteAvisado, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.AgeClienteAvisado, FAgeClienteAvisado, EGenericTypeFields.FNumber);
         if (pFldFCelular || updateTool.Insert)
-            updateTool.Fields(DBLigacoesDicInfo.Celular, m_FCelular, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLigacoesDicInfo.Celular, FCelular, EGenericTypeFields.FBoolean);
         if (pFldFCliente)
-            updateTool.Fields(DBLigacoesDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFContato)
-            updateTool.Fields(DBLigacoesDicInfo.Contato, m_FContato, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Contato, FContato, EGenericTypeFields.FString);
         if (pFldFDataRealizada)
-            updateTool.Fields(DBLigacoesDicInfo.DataRealizada, m_FDataRealizada, ETiposCampos.FDate);
+            updateTool.Fields(DBLigacoesDicInfo.DataRealizada, FDataRealizada, EGenericTypeFields.FDate);
         if (pFldFQuemID)
-            updateTool.Fields(DBLigacoesDicInfo.QuemID, m_FQuemID, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.QuemID, FQuemID, EGenericTypeFields.FNumber);
         if (pFldFTelefonista)
-            updateTool.Fields(DBLigacoesDicInfo.Telefonista, m_FTelefonista, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.Telefonista, FTelefonista, EGenericTypeFields.FNumber);
         if (pFldFUltimoAviso)
-            updateTool.Fields(DBLigacoesDicInfo.UltimoAviso, m_FUltimoAviso, ETiposCampos.FDate);
+            updateTool.Fields(DBLigacoesDicInfo.UltimoAviso, FUltimoAviso, EGenericTypeFields.FDate);
         if (pFldFHoraFinal)
-            updateTool.Fields(DBLigacoesDicInfo.HoraFinal, m_FHoraFinal, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.HoraFinal, FHoraFinal, EGenericTypeFields.FDate);
         if (pFldFNome)
-            updateTool.Fields(DBLigacoesDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFQuemCodigo)
-            updateTool.Fields(DBLigacoesDicInfo.QuemCodigo, m_FQuemCodigo, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.QuemCodigo, FQuemCodigo, EGenericTypeFields.FNumber);
         if (pFldFSolicitante)
-            updateTool.Fields(DBLigacoesDicInfo.Solicitante, m_FSolicitante, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.Solicitante, FSolicitante, EGenericTypeFields.FNumber);
         if (pFldFPara)
-            updateTool.Fields(DBLigacoesDicInfo.Para, m_FPara, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Para, FPara, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBLigacoesDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFRamal)
-            updateTool.Fields(DBLigacoesDicInfo.Ramal, m_FRamal, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.Ramal, FRamal, EGenericTypeFields.FNumber);
         if (pFldFParticular || updateTool.Insert)
-            updateTool.Fields(DBLigacoesDicInfo.Particular, m_FParticular, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLigacoesDicInfo.Particular, FParticular, EGenericTypeFields.FBoolean);
         if (pFldFRealizada || updateTool.Insert)
-            updateTool.Fields(DBLigacoesDicInfo.Realizada, m_FRealizada, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLigacoesDicInfo.Realizada, FRealizada, EGenericTypeFields.FBoolean);
         if (pFldFStatus)
-            updateTool.Fields(DBLigacoesDicInfo.Status, m_FStatus, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Status, FStatus, EGenericTypeFields.FString);
         if (pFldFData)
-            updateTool.Fields(DBLigacoesDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFHora)
-            updateTool.Fields(DBLigacoesDicInfo.Hora, m_FHora, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Hora, FHora, EGenericTypeFields.FDate);
         if (pFldFUrgente || updateTool.Insert)
-            updateTool.Fields(DBLigacoesDicInfo.Urgente, m_FUrgente, ETiposCampos.FBoolean);
-        if (pFldFGUID)
-            updateTool.Fields(DBLigacoesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.Urgente, FUrgente, EGenericTypeFields.FBoolean);
         if (pFldFLigarPara)
-            updateTool.Fields(DBLigacoesDicInfo.LigarPara, m_FLigarPara, ETiposCampos.FString);
+            updateTool.Fields(DBLigacoesDicInfo.LigarPara, FLigarPara, EGenericTypeFields.FString);
         if (pFldFProcesso)
-            updateTool.Fields(DBLigacoesDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFStartScreen || updateTool.Insert)
-            updateTool.Fields(DBLigacoesDicInfo.StartScreen, m_FStartScreen, ETiposCampos.FBoolean);
+            updateTool.Fields(DBLigacoesDicInfo.StartScreen, FStartScreen, EGenericTypeFields.FBoolean);
         if (pFldFEmotion)
-            updateTool.Fields(DBLigacoesDicInfo.Emotion, m_FEmotion, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.Emotion, FEmotion, EGenericTypeFields.FNumber);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBLigacoesDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBLigacoesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -202,24 +212,23 @@ public partial class DBLigacoes
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBLigacoesDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBLigacoesDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBLigacoesDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBLigacoesDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBLigacoesDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBLigacoesDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBLigacoesDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBLigacoesDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBLigacoesDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBLigacoesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

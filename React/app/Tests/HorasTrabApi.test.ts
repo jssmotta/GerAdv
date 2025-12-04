@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { HorasTrabApiError } from '../GerAdv_TS/HorasTrab/Apis/ApiHorasTrab';
+import { HorasTrabApiError } from '@/app/GerAdv_TS/HorasTrab/Apis/ApiHorasTrab';
 import { HorasTrabApi } from '@/app/GerAdv_TS/HorasTrab/Apis/ApiHorasTrab';
-import { FilterHorasTrab } from '../GerAdv_TS/HorasTrab/Filters/HorasTrab';
-import { IHorasTrab } from '../GerAdv_TS/HorasTrab/Interfaces/interface.HorasTrab';
-import { HorasTrabTestEmpty } from '../GerAdv_TS/Models/HorasTrab';
+import { FilterHorasTrab } from '@/app/GerAdv_TS/HorasTrab/Filters/HorasTrab';
+import { IHorasTrab } from '@/app/GerAdv_TS/HorasTrab/Interfaces/interface.HorasTrab';
+import { HorasTrabTestEmpty } from '@/app/GerAdv_TS/Models/HorasTrab';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('HorasTrabApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterHorasTrab = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,25 @@ describe('HorasTrabApi', () => {
   describe('addAndUpdate', () => {
     const mockHorasTrab: IHorasTrab = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+idcontatocrm: 0,
+honorario: false,
+idagenda: 0,
+data: '24/04/1975',
+cliente: 0,
+status: 0,
+processo: 0,
+advogado: 0,
+funcionario: 0,
+hrini: 'AAA',
+hrfim: 'AAA',
+tempo: 1m,
+valor: 1m,
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+anexo: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+anexocomp: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+anexounc: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+servico: 0
     };
 
     it('should add new horastrab successfully', async () => {
@@ -487,7 +492,7 @@ describe('HorasTrabApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterHorasTrab = { funcionario: 1 };
+      const mockFilter: FilterHorasTrab = { : 1 };
       
       const result = horastrabApi.useFilter(mockFilter);
       

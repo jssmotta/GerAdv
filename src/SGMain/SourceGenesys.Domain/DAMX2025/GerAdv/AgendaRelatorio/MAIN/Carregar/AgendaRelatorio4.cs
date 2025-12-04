@@ -51,8 +51,72 @@ public partial class DBAgendaRelatorio
         // Checkpoint Carregar 
         try
         {
+            FxxxBoxAudiencia = getValue(DBAgendaRelatorioDicInfo.xxxBoxAudiencia)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxBoxAudienciaMobile = getValue(DBAgendaRelatorioDicInfo.xxxBoxAudienciaMobile)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxNomeAdvogado = getValue(DBAgendaRelatorioDicInfo.xxxNomeAdvogado)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxNomeArea = getValue(DBAgendaRelatorioDicInfo.xxxNomeArea)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxNomeForo = getValue(DBAgendaRelatorioDicInfo.xxxNomeForo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxNomeJustica = getValue(DBAgendaRelatorioDicInfo.xxxNomeJustica)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxParaNome = getValue(DBAgendaRelatorioDicInfo.xxxParaNome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FxxxParaPessoas = getValue(DBAgendaRelatorioDicInfo.xxxParaPessoas)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAgendaRelatorioDicInfo.vqaData)))
-                m_FvqaData = Convert.ToDateTime(getValue(DBAgendaRelatorioDicInfo.vqaData));
+                FvqaData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaRelatorioDicInfo.vqaData)));
         }
         catch
         {
@@ -61,78 +125,14 @@ public partial class DBAgendaRelatorio
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaRelatorioDicInfo.vqaProcesso)))
-                m_FvqaProcesso = Convert.ToInt32(getValue(DBAgendaRelatorioDicInfo.vqaProcesso));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxBoxAudiencia = getValue(DBAgendaRelatorioDicInfo.xxxBoxAudiencia)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxBoxAudienciaMobile = getValue(DBAgendaRelatorioDicInfo.xxxBoxAudienciaMobile)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxNomeAdvogado = getValue(DBAgendaRelatorioDicInfo.xxxNomeAdvogado)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxNomeArea = getValue(DBAgendaRelatorioDicInfo.xxxNomeArea)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxNomeForo = getValue(DBAgendaRelatorioDicInfo.xxxNomeForo)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxNomeJustica = getValue(DBAgendaRelatorioDicInfo.xxxNomeJustica)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxParaNome = getValue(DBAgendaRelatorioDicInfo.xxxParaNome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FxxxParaPessoas = getValue(DBAgendaRelatorioDicInfo.xxxParaPessoas)?.ToString() ?? string.Empty;
+                FvqaProcesso = Convert.ToInt32(getValue(DBAgendaRelatorioDicInfo.vqaProcesso));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBAgendaRelatorio
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

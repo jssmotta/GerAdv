@@ -21,11 +21,17 @@ public partial class ProResumosWhere(IFProResumosFactory proresumosFactory) : IP
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            proresumos.Data = XData.ToString("dd/MM/yyyy");
+            proresumos.Data_date = XData;
+        }
+
         return proresumos;
     }
 }

@@ -24,21 +24,9 @@ public static partial class DBGUTMatrizDicInfo
 
     public const string PTabelaNome = "GUTMatriz";
 #region PropriedadesDaTabela
-    public static DBInfoSystem GutDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 150, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "gut"
-    };
-    public static DBInfoSystem GutGUTTipo => new(0, PTabelaNome, CampoCodigo, GUTTipo, "GUTTipo", "GUTTipo", ETipoDadosSysteminfo.SysteminfoForeingkey, DBGUTTipoDicInfo.CampoCodigo, DBGUTTipoDicInfo.TabelaNome, new DBGUTTipoODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "gut"
-    }; // DBI 11 
-    public static DBInfoSystem GutValor => new(0, PTabelaNome, CampoCodigo, Valor, "Valor", "Valor", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        IsRequired = true,
-        Prefixo = "gut"
-    };
+    public static DBInfoSystem GutDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 150, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "gut", isRequired: true);
+    public static DBInfoSystem GutGUTTipo => new(0, PTabelaNome, CampoCodigo, GUTTipo, GUTTipo, GUTTipo, EDataTypeSystemInfo.SystemInfoForeingkey, DBGUTTipoDicInfo.CampoCodigo, DBGUTTipoDicInfo.TabelaNome, new DBGUTTipoODicInfo(), false, prefixo: "gut", isRequired: true); // DBI 11 
+    public static DBInfoSystem GutValor => new(0, PTabelaNome, CampoCodigo, Valor, Valor, Valor, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "gut", isRequired: true);
 
 #endregion
     [Serializable]

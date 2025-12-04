@@ -14,19 +14,13 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// GUID - tipGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Icone - tipIcone  
         /// </summary>
         [JsonPropertyName("icone")]
         public int Icone { get; set; }
 
         /// <summary>
-        /// Descricao - tipDescricao - tamanho máximo: 100 
+        /// Descrições - tipDescricao - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -36,6 +30,18 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("financeiro")]
         public bool Financeiro { get; set; }
+
+        /// <summary>
+        /// Bold - tipBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - tipGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -48,19 +54,13 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// GUID - tipGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// Icone - tipIcone  
         /// </summary>
         [JsonPropertyName("icone")]
         public int Icone { get; set; }
 
         /// <summary>
-        /// Descricao - tipDescricao - tamanho máximo: 100 
+        /// Descrições - tipDescricao - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -70,5 +70,17 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("financeiro")]
         public bool Financeiro { get; set; }
+
+        /// <summary>
+        /// Bold - tipBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - tipGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

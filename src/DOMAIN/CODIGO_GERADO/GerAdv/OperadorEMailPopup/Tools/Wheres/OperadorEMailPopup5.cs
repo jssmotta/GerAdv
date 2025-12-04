@@ -27,10 +27,10 @@ public partial class OperadorEMailPopupWhere(IFOperadorEMailPopupFactory operado
             Autenticacao = dbRec.FAutenticacao,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Usuario = dbRec.FUsuario ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             PortaSmtp = dbRec.FPortaSmtp,
             PortaPop3 = dbRec.FPortaPop3,
             Assinatura = dbRec.FAssinatura ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return operadoremailpopup;
     }

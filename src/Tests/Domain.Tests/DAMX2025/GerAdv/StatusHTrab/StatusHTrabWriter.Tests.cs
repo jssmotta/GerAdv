@@ -118,7 +118,7 @@ public class StatusHTrabWriterTests
         var operadorId = 456;
         _mockStatusHTrabFactory.Setup(x => x.DeleteAsync(operadorId, statushtrabResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _statushtrabWriter.Delete(statushtrabResponse, operadorId, _mockConnection.Object);
+        await _statushtrabWriter.DeleteAsync(statushtrabResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockStatusHTrabFactory.Verify(x => x.DeleteAsync(operadorId, statushtrabResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -134,7 +134,7 @@ public class StatusHTrabWriterTests
         var operadorId = 111;
         _mockStatusHTrabFactory.Setup(x => x.DeleteAsync(operadorId, statushtrabResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _statushtrabWriter.Delete(statushtrabResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _statushtrabWriter.DeleteAsync(statushtrabResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -151,7 +151,7 @@ public class StatusHTrabWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockStatusHTrabFactory.Setup(x => x.DeleteAsync(operadorId, statushtrabResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _statushtrabWriter.Delete(statushtrabResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _statushtrabWriter.DeleteAsync(statushtrabResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

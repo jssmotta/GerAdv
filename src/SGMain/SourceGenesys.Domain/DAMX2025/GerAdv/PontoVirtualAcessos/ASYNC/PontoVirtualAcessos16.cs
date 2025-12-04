@@ -31,7 +31,7 @@ public partial class DBPontoVirtualAcessos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,13 +138,13 @@ public partial class DBPontoVirtualAcessos
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFOperador)
-            updateTool.Fields(DBPontoVirtualAcessosDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
+            updateTool.Fields(DBPontoVirtualAcessosDicInfo.Operador, FOperador, EGenericTypeFields.FNumber);
         if (pFldFDataHora)
-            updateTool.Fields(DBPontoVirtualAcessosDicInfo.DataHora, m_FDataHora, ETiposCampos.FString);
+            updateTool.Fields(DBPontoVirtualAcessosDicInfo.DataHora, FDataHora, EGenericTypeFields.FDate);
         if (pFldFTipo || updateTool.Insert)
-            updateTool.Fields(DBPontoVirtualAcessosDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBPontoVirtualAcessosDicInfo.Tipo, FTipo, EGenericTypeFields.FBoolean);
         if (pFldFOrigem)
-            updateTool.Fields(DBPontoVirtualAcessosDicInfo.Origem, m_FOrigem, ETiposCampos.FString);
+            updateTool.Fields(DBPontoVirtualAcessosDicInfo.Origem, FOrigem, EGenericTypeFields.FString);
     }
 
 #endif
@@ -156,7 +156,7 @@ public partial class DBPontoVirtualAcessos
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

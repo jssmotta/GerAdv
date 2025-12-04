@@ -9,54 +9,61 @@ import { TiposAcaoService } from '../../Services/TiposAcao.service';
 import { TiposAcaoApi } from '../../Apis/ApiTiposAcao';
 import TiposAcaoWindow from './TiposAcaoWindow';
 import {TiposAcaoEmpty } from '@/app/GerAdv_TS/Models/TiposAcao';
-interface TiposAcaoWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const TiposAcaoWindowId: React.FC<TiposAcaoWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const tiposacaoService = useMemo(() => {
-  return new TiposAcaoService(
-  new TiposAcaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ITiposAcao | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(TiposAcaoEmpty() as ITiposAcao);
-      return;
-    }
-    if (id) {
-      const response = await tiposacaoService.fetchTiposAcaoById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <TiposAcaoWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedTiposAcao={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface TiposAcaoWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const TiposAcaoWindowId: React.FC<TiposAcaoWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const tiposacaoService = useMemo(() => {
+        return new TiposAcaoService(
+            new TiposAcaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ITiposAcao | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(TiposAcaoEmpty() as ITiposAcao);
+                return;
+            }
+            if (id) {
+                 const response = await tiposacaoService.fetchTiposAcaoById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <TiposAcaoWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedTiposAcao={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default TiposAcaoWindowId;

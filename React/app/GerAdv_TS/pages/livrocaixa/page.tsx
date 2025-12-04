@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { LivroCaixaGridAdapter } from '@/app/GerAdv_TS/LivroCaixa/Adapter/LivroCaixaGridAdapter';
 import LivroCaixaGridContainer from '@/app/GerAdv_TS/LivroCaixa/Components/LivroCaixaGridContainer';
+
 const LivroCaixaPage: React.FC = () => {
-  const LivroCaixaGrid = new LivroCaixaGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Livro Caixa' />
-    <LivroCaixaGridContainer grid={LivroCaixaGrid} />
-  </PageLayout>
-);
+    const LivroCaixaGrid = new LivroCaixaGridAdapter();
+
+    return (
+        <PageLayout>            
+            <LivroCaixaGridContainer grid={LivroCaixaGrid} />
+        </PageLayout>
+    );
 };
+
 export default LivroCaixaPage;

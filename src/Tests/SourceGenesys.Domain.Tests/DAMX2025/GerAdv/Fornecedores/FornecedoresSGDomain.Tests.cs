@@ -55,8 +55,23 @@ public class DBFornecedoresTests : IDisposable
         dt.Columns.Add("forObs", typeof(string));
         dt.Columns.Add("forProdutos", typeof(string));
         dt.Columns.Add("forContatos", typeof(string));
-        dt.Columns.Add("forGUID", typeof(string));
+        dt.Columns.Add("forEtiqueta", typeof(string));
+        dt.Columns.Add("forBold", typeof(string));
+        dt.Columns.Add("forGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["forCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBFornecedores(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -77,7 +92,7 @@ public class DBFornecedoresTests : IDisposable
     {
         var instance = new DBFornecedores();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Fornecedores", instance.ITabelaName());
+        Assert.Equal("Fornecedores", instance.ITableName());
         Assert.Equal("for", instance.Prefixo);
     }
 
@@ -95,29 +110,16 @@ public class DBFornecedoresTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["forCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBFornecedores(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Fornecedores", cadastro.ITabelaName());
-        Assert.Equal("forCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("forNome", cadastro.ICampoNome());
-        Assert.Equal("for", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Fornecedores", cadastro.ITableName());
+        Assert.Equal("forCodigo", cadastro.IFieldId());
+        Assert.Equal("forNome", cadastro.IFieldNameDescription());
+        Assert.Equal("for", cadastro.IPrefix());
     }
 
 #endregion
@@ -177,9 +179,9 @@ public class DBFornecedoresTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -434,18 +436,18 @@ public class DBFornecedoresTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

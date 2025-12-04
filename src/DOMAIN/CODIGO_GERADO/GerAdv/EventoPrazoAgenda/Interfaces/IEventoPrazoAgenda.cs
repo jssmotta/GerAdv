@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IEventoPrazoAgendaService
 {
+    Task<Filters.FilterEventoPrazoAgenda> FilterVoice([FromBody] Filters.FilterEventoPrazoAgenda filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<EventoPrazoAgendaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterEventoPrazoAgenda filter, [FromRoute, Required] string uri = "");
     Task<EventoPrazoAgendaResponse?> AddAndUpdate(Models.EventoPrazoAgenda? regEventoPrazoAgenda, [FromRoute, Required] string uri = "");
     Task<EventoPrazoAgendaResponse?> Validation(Models.EventoPrazoAgenda? regEventoPrazoAgenda, [FromRoute, Required] string uri = "");
     Task<EventoPrazoAgendaResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<EventoPrazoAgendaResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<EventoPrazoAgendaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterEventoPrazoAgenda? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

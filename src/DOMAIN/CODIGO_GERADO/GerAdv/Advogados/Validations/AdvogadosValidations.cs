@@ -23,19 +23,19 @@ public class AdvogadosValidation : IAdvogadosValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Advogado = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Compromisso associados a ele.");
         var contratosExists1 = await contratosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterContratos { Advogado = id ?? default }, uri);
         if (contratosExists1 != null && contratosExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Contratos associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Contratos associados a ele.");
         var horastrabExists2 = await horastrabService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterHorasTrab { Advogado = id ?? default }, uri);
         if (horastrabExists2 != null && horastrabExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Horas Trab associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Horas Trab associados a ele.");
         var parceriaprocExists3 = await parceriaprocService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterParceriaProc { Advogado = id ?? default }, uri);
         if (parceriaprocExists3 != null && parceriaprocExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Parceria Proc associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Parceria Proc associados a ele.");
         var proprocuradoresExists4 = await proprocuradoresService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterProProcuradores { Advogado = id ?? default }, uri);
         if (proprocuradoresExists4 != null && proprocuradoresExists4.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Pro Procuradores associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Pro Procuradores associados a ele.");
         return true;
     }
 
@@ -73,8 +73,6 @@ public class AdvogadosValidation : IAdvogadosValidation
             throw new SGValidationException($"Pasta deve ter no máximo {DBAdvogadosDicInfo.AdvPasta.FTamanho} caracteres.");
         if (reg.Class != null && reg.Class.Length > DBAdvogadosDicInfo.AdvClass.FTamanho)
             throw new SGValidationException($"Class deve ter no máximo {DBAdvogadosDicInfo.AdvClass.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBAdvogadosDicInfo.AdvGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBAdvogadosDicInfo.AdvGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -84,6 +82,8 @@ public class AdvogadosValidation : IAdvogadosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -120,9 +120,9 @@ public class AdvogadosValidation : IAdvogadosValidation
             }
         }
 
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -138,7 +138,7 @@ public class AdvogadosValidation : IAdvogadosValidation
         // Cargos
         if (!reg.Cargo.IsEmptyIDNumber())
         {
-            var regCargos = await cargosReader.Read(reg.Cargo, oCnn);
+            var regCargos = await cargosReader.ReadAsync(reg.Cargo, oCnn);
             if (regCargos == null || regCargos.Id != reg.Cargo)
             {
                 throw new SGValidationException($"Cargo não encontrado ({regCargos?.Id}).");
@@ -148,7 +148,7 @@ public class AdvogadosValidation : IAdvogadosValidation
         // Escritorios
         if (!reg.Escritorio.IsEmptyIDNumber())
         {
-            var regEscritorios = await escritoriosReader.Read(reg.Escritorio, oCnn);
+            var regEscritorios = await escritoriosReader.ReadAsync(reg.Escritorio, oCnn);
             if (regEscritorios == null || regEscritorios.Id != reg.Escritorio)
             {
                 throw new SGValidationException($"Escritorios não encontrado ({regEscritorios?.Id}).");
@@ -158,7 +158,7 @@ public class AdvogadosValidation : IAdvogadosValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

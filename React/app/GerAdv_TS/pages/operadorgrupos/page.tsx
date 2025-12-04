@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { OperadorGruposGridAdapter } from '@/app/GerAdv_TS/OperadorGrupos/Adapter/OperadorGruposGridAdapter';
 import OperadorGruposGridContainer from '@/app/GerAdv_TS/OperadorGrupos/Components/OperadorGruposGridContainer';
+
 const OperadorGruposPage: React.FC = () => {
-  const OperadorGruposGrid = new OperadorGruposGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Operador Grupos' />
-    <OperadorGruposGridContainer grid={OperadorGruposGrid} />
-  </PageLayout>
-);
+    const OperadorGruposGrid = new OperadorGruposGridAdapter();
+
+    return (
+        <PageLayout>            
+            <OperadorGruposGridContainer grid={OperadorGruposGrid} />
+        </PageLayout>
+    );
 };
+
 export default OperadorGruposPage;

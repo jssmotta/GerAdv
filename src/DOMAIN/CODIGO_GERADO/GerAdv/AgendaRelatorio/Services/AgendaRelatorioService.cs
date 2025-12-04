@@ -6,41 +6,85 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, IFAgendaRelatorioFactory agendarelatorioFactory, IAgendaRelatorioReader reader, IAgendaRelatorioValidation validation, HybridCache cache, IMemoryCache memory) : IAgendaRelatorioService, IDisposable
+public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, IFAgendaRelatorioFactory agendarelatorioFactory, IAgendaRelatorioReader reader, IAgendaRelatorioValidation validation, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterAgendaRelatorio> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IAgendaRelatorioService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterAgendaRelatorio> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFAgendaRelatorioFactory agendarelatorioFactory = agendarelatorioFactory;
     private readonly IAgendaRelatorioReader reader = reader;
     private readonly IAgendaRelatorioValidation validation = validation;
     public async Task<IEnumerable<AgendaRelatorioResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaRelatorio filtro, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
-            throw new DatabaseConnectionException();
+            throw new Exception("AgendaRelatorio: URI inválida");
         }
 
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var cacheKey = $"{uri}-{max}-AgendaRelatorio-Filter-{where.GetHashCode2()}{filterHash}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroAgendaRelatorio(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterAgendaRelatorio>.GetFilterHash(filtro);
+            var cacheKey = $"{uri}-{max}-AgendaRelatorio-Filter-{where.GetHashCode2()}{filterHash}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"AgendaRelatorio - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterAgendaRelatorio> FilterVoice([FromBody] Filters.FilterAgendaRelatorio filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("AgendaRelatorio: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterAgendaRelatorio? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterAgendaRelatorio();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterAgendaRelatorio();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"AgendaRelatorio - error on creating filter.");
+        }
     }
 
     public virtual void Dispose()
@@ -63,9 +107,6 @@ public partial class AgendaRelatorioService(IOptions<AppSettings> appSettings, I
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

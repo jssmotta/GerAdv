@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProCDAApiError } from '../GerAdv_TS/ProCDA/Apis/ApiProCDA';
+import { ProCDAApiError } from '@/app/GerAdv_TS/ProCDA/Apis/ApiProCDA';
 import { ProCDAApi } from '@/app/GerAdv_TS/ProCDA/Apis/ApiProCDA';
-import { FilterProCDA } from '../GerAdv_TS/ProCDA/Filters/ProCDA';
-import { IProCDA } from '../GerAdv_TS/ProCDA/Interfaces/interface.ProCDA';
-import { ProCDATestEmpty } from '../GerAdv_TS/Models/ProCDA';
+import { FilterProCDA } from '@/app/GerAdv_TS/ProCDA/Filters/ProCDA';
+import { IProCDA } from '@/app/GerAdv_TS/ProCDA/Interfaces/interface.ProCDA';
+import { ProCDATestEmpty } from '@/app/GerAdv_TS/Models/ProCDA';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProCDAApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProCDA = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('ProCDAApi', () => {
   describe('addAndUpdate', () => {
     const mockProCDA: IProCDA = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+nome: 'João',
+nrointerno: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new procda successfully', async () => {
@@ -487,7 +477,7 @@ describe('ProCDAApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProCDA = { funcionario: 1 };
+      const mockFilter: FilterProCDA = { : 1 };
       
       const result = procdaApi.useFilter(mockFilter);
       

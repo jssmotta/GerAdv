@@ -30,9 +30,9 @@ public static partial class DBFornecedoresDicInfo
     public const string Obs = "forObs"; // LOCALIZACAO 170523
     public const string Produtos = "forProdutos"; // LOCALIZACAO 170523
     public const string Contatos = "forContatos"; // LOCALIZACAO 170523
-    public const string GUID = "forGUID"; // LOCALIZACAO 170523
     public const string Etiqueta = "forEtiqueta"; // LOCALIZACAO 170523
     public const string Bold = "forBold"; // LOCALIZACAO 170523
+    public const string Guid = "forGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "forQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "forDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "forQuemAtu"; // LOCALIZACAO 170523
@@ -73,123 +73,34 @@ public static partial class DBFornecedoresDicInfo
 
     public const string PTabelaNome = "Fornecedores";
 #region PropriedadesDaTabela
-    public static DBInfoSystem ForGrupo => new(0, PTabelaNome, CampoCodigo, Grupo, "Grupo", "Grupo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForSubGrupo => new(0, PTabelaNome, CampoCodigo, SubGrupo, "SubGrupo", "SubGrupo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", ETipoDadosSysteminfo.SysteminfoTextCnpj, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, "InscEst", "InscEst", ETipoDadosSysteminfo.SysteminfoTextInscricao, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "for"
-    }; // DBI 11 
-    public static DBInfoSystem ForFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForEmail => new(0, PTabelaNome, CampoCodigo, Email, 150, "Email", "Email", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForSite => new(0, PTabelaNome, CampoCodigo, Site, 150, "Site", "Site", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForObs => new(0, PTabelaNome, CampoCodigo, Obs, DevourerOne.PMaxSizeCampoMemo, "Obs", "Obs", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForProdutos => new(0, PTabelaNome, CampoCodigo, Produtos, DevourerOne.PMaxSizeCampoMemo, "Produtos", "Produtos", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForContatos => new(0, PTabelaNome, CampoCodigo, Contatos, DevourerOne.PMaxSizeCampoMemo, "Contatos", "Contatos", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "for"
-    }; // DBI 11 
-    public static DBInfoSystem ForDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "for"
-    }; // DBI 11 
-    public static DBInfoSystem ForDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "for"
-    };
-    public static DBInfoSystem ForVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "for"
-    };
+    public static DBInfoSystem ForGrupo => new(0, PTabelaNome, CampoCodigo, Grupo, Grupo, Grupo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "for");
+    public static DBInfoSystem ForNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "for");
+    public static DBInfoSystem ForSubGrupo => new(0, PTabelaNome, CampoCodigo, SubGrupo, SubGrupo, SubGrupo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "for");
+    public static DBInfoSystem ForTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "for", isRequired: true);
+    public static DBInfoSystem ForSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "for", isRequired: true);
+    public static DBInfoSystem ForCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, CNPJ, CNPJ, EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, InscEst, InscEst, EDataTypeSystemInfo.SystemInfoTextInscricao, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForRG => new(0, PTabelaNome, CampoCodigo, RG, 30, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "for"); // DBI 11 
+    public static DBInfoSystem ForFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForEmail => new(0, PTabelaNome, CampoCodigo, Email, 150, Email, Email, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForSite => new(0, PTabelaNome, CampoCodigo, Site, 150, Site, Site, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForObs => new(0, PTabelaNome, CampoCodigo, Obs, DevourerOne.PMaxSizeCampoMemo, Obs, Obs, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForProdutos => new(0, PTabelaNome, CampoCodigo, Produtos, DevourerOne.PMaxSizeCampoMemo, Produtos, Produtos, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForContatos => new(0, PTabelaNome, CampoCodigo, Contatos, DevourerOne.PMaxSizeCampoMemo, Contatos, Contatos, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "for", isRequired: true);
+    public static DBInfoSystem ForBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "for", isRequired: true);
+    public static DBInfoSystem ForGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "for");
+    public static DBInfoSystem ForQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "for"); // DBI 11 
+    public static DBInfoSystem ForDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "for");
+    public static DBInfoSystem ForQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "for"); // DBI 11 
+    public static DBInfoSystem ForDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "for");
+    public static DBInfoSystem ForVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "for", isRequired: true);
 
 #endregion
     [Serializable]

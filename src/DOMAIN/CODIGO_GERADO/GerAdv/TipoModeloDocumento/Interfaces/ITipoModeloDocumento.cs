@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoModeloDocumentoService
 {
+    Task<Filters.FilterTipoModeloDocumento> FilterVoice([FromBody] Filters.FilterTipoModeloDocumento filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<TipoModeloDocumentoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoModeloDocumento filter, [FromRoute, Required] string uri = "");
     Task<TipoModeloDocumentoResponse?> AddAndUpdate(Models.TipoModeloDocumento? regTipoModeloDocumento, [FromRoute, Required] string uri = "");
     Task<TipoModeloDocumentoResponse?> Validation(Models.TipoModeloDocumento? regTipoModeloDocumento, [FromRoute, Required] string uri = "");
     Task<TipoModeloDocumentoResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<TipoModeloDocumentoResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<TipoModeloDocumentoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoModeloDocumento? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

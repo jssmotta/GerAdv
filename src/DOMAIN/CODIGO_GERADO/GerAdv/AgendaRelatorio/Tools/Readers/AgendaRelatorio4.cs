@@ -2,36 +2,42 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelatorioFactory) : IAgendaRelatorioReader
+public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelatorioFactory, IConnectionService connection) : IAgendaRelatorioReader
 {
     private readonly IFAgendaRelatorioFactory _agendarelatorioFactory = agendarelatorioFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<AgendaRelatorioResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBAgendaRelatorio.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<AgendaRelatorioResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<AgendaRelatorioResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBAgendaRelatorio.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<AgendaRelatorioResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<AgendaRelatorioResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -57,7 +63,7 @@ public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelato
         var agendarelatorio = new AgendaRelatorioResponse
         {
             Id = dbRec.ID,
-            vqaData = dbRec.FvqaData ?? string.Empty,
+            vqaData = dbRec.FvqaData?.ToString("dd/MM/yyyy") ?? string.Empty,
             vqaProcesso = dbRec.FvqaProcesso,
             xxxParaNome = dbRec.FxxxParaNome ?? string.Empty,
             xxxParaPessoas = dbRec.FxxxParaPessoas ?? string.Empty,
@@ -81,7 +87,7 @@ public partial class AgendaRelatorioReader(IFAgendaRelatorioFactory agendarelato
         var agendarelatorio = new AgendaRelatorioResponseAll
         {
             Id = dbRec.ID,
-            vqaData = dbRec.FvqaData ?? string.Empty,
+            vqaData = dbRec.FvqaData?.ToString("dd/MM/yyyy") ?? string.Empty,
             vqaProcesso = dbRec.FvqaProcesso,
             xxxParaNome = dbRec.FxxxParaNome ?? string.Empty,
             xxxParaPessoas = dbRec.FxxxParaPessoas ?? string.Empty,

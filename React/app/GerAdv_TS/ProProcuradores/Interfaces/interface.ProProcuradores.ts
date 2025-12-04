@@ -13,6 +13,7 @@ export interface IProProcuradores {
 	data: string,
 	substabelecimento: boolean,
 	procuracao: boolean,
+	bold: boolean,
 }
 
 export interface IProProcuradoresFormProps {

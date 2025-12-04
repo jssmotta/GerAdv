@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBDivisaoTribunal : VAuditor, ICadastros
+public partial class DBDivisaoTribunal : VAuditor, ICrud
 {
 #region TableDefinition_DivisaoTribunal
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBDivisaoTribunal : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBDivisaoTribunal : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -48,7 +48,7 @@ public partial class DBDivisaoTribunal : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFGUID || pFldFNumCodigo || pFldFJustica || pFldFNomeEspecial || pFldFArea || pFldFCidade || pFldFForo || pFldFTribunal || pFldFCodigoDiv || pFldFEndereco || pFldFFone || pFldFFax || pFldFCEP || pFldFObs || pFldFEMail || pFldFAndar || pFldFEtiqueta || pFldFBold))
+            if (!(pFldFNumCodigo || pFldFJustica || pFldFNomeEspecial || pFldFArea || pFldFCidade || pFldFForo || pFldFTribunal || pFldFCodigoDiv || pFldFEndereco || pFldFFone || pFldFFax || pFldFCEP || pFldFObs || pFldFEMail || pFldFAndar || pFldFEtiqueta || pFldFBold || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -72,48 +72,47 @@ public partial class DBDivisaoTribunal : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
-        if (pFldFGUID)
-            clsW.Fields(DBDivisaoTribunalDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFNumCodigo)
-            clsW.Fields(DBDivisaoTribunalDicInfo.NumCodigo, m_FNumCodigo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.NumCodigo, FNumCodigo, EGenericTypeFields.FNumberNull);
         if (pFldFJustica)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Justica, m_FJustica, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Justica, FJustica, EGenericTypeFields.FNumberNull);
         if (pFldFNomeEspecial)
-            clsW.Fields(DBDivisaoTribunalDicInfo.NomeEspecial, m_FNomeEspecial, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.NomeEspecial, FNomeEspecial, EGenericTypeFields.FString);
         if (pFldFArea)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Area, m_FArea, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Area, FArea, EGenericTypeFields.FNumberNull);
         if (pFldFCidade)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Cidade, FCidade, EGenericTypeFields.FNumberNull);
         if (pFldFForo)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Foro, m_FForo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Foro, FForo, EGenericTypeFields.FNumberNull);
         if (pFldFTribunal)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Tribunal, m_FTribunal, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Tribunal, FTribunal, EGenericTypeFields.FNumberNull);
         if (pFldFCodigoDiv)
-            clsW.Fields(DBDivisaoTribunalDicInfo.CodigoDiv, m_FCodigoDiv, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.CodigoDiv, FCodigoDiv, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFFone)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFCEP)
-            clsW.Fields(DBDivisaoTribunalDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFObs)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Obs, m_FObs, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Obs, FObs, EGenericTypeFields.FString);
         if (pFldFEMail)
-            clsW.Fields(DBDivisaoTribunalDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFAndar)
-            clsW.Fields(DBDivisaoTribunalDicInfo.Andar, m_FAndar, ETiposCampos.FString);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Andar, FAndar, EGenericTypeFields.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
-            clsW.Fields(DBDivisaoTribunalDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
         if (pFldFBold || ID.IsEmptyIDNumber())
-            clsW.Fields(DBDivisaoTribunalDicInfo.Bold, m_FBold, ETiposCampos.FBoolean);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            clsW.Fields(DBDivisaoTribunalDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_DivisaoTribunal)
         if (clsW.HasUpdates)
         {
@@ -128,15 +127,15 @@ public partial class DBDivisaoTribunal : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBDivisaoTribunalDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBDivisaoTribunalDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBDivisaoTribunalDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBDivisaoTribunalDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBDivisaoTribunalDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBDivisaoTribunalDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBDivisaoTribunalDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBDivisaoTribunalDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBDivisaoTribunalDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

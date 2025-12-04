@@ -9,54 +9,61 @@ import { ProObservacoesService } from '../../Services/ProObservacoes.service';
 import { ProObservacoesApi } from '../../Apis/ApiProObservacoes';
 import ProObservacoesWindow from './ProObservacoesWindow';
 import {ProObservacoesEmpty } from '@/app/GerAdv_TS/Models/ProObservacoes';
-interface ProObservacoesWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ProObservacoesWindowId: React.FC<ProObservacoesWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const proobservacoesService = useMemo(() => {
-  return new ProObservacoesService(
-  new ProObservacoesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IProObservacoes | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ProObservacoesEmpty() as IProObservacoes);
-      return;
-    }
-    if (id) {
-      const response = await proobservacoesService.fetchProObservacoesById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ProObservacoesWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedProObservacoes={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ProObservacoesWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ProObservacoesWindowId: React.FC<ProObservacoesWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const proobservacoesService = useMemo(() => {
+        return new ProObservacoesService(
+            new ProObservacoesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IProObservacoes | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ProObservacoesEmpty() as IProObservacoes);
+                return;
+            }
+            if (id) {
+                 const response = await proobservacoesService.fetchProObservacoesById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ProObservacoesWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedProObservacoes={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ProObservacoesWindowId;

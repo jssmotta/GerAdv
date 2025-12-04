@@ -74,6 +74,7 @@ public class InstanciaWriterTests
         var result = await _instanciaWriter.WriteAsync(instancia, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFInstancia.Object);
+        _mockFInstancia.VerifySet(x => x.FGuid = instancia.Guid, Times.Once);
         _mockFInstancia.VerifySet(x => x.FLiminarPedida = instancia.LiminarPedida, Times.Once);
         _mockFInstancia.VerifySet(x => x.FObjeto = instancia.Objeto, Times.Once);
         _mockFInstancia.VerifySet(x => x.FStatusResultado = instancia.StatusResultado, Times.Once);
@@ -82,7 +83,7 @@ public class InstanciaWriterTests
         _mockFInstancia.VerifySet(x => x.FLiminarConcedida = instancia.LiminarConcedida, Times.Once);
         _mockFInstancia.VerifySet(x => x.FLiminarNegada = instancia.LiminarNegada, Times.Once);
         _mockFInstancia.VerifySet(x => x.FProcesso = instancia.Processo, Times.Once);
-        _mockFInstancia.VerifySet(x => x.FData = instancia.Data, Times.Once);
+        _mockFInstancia.VerifySet(x => x.FData = instancia.Data.ToString(), Times.Once);
         _mockFInstancia.VerifySet(x => x.FLiminarParcial = instancia.LiminarParcial, Times.Once);
         _mockFInstancia.VerifySet(x => x.FLiminarResultado = instancia.LiminarResultado, Times.Once);
         _mockFInstancia.VerifySet(x => x.FNroProcesso = instancia.NroProcesso, Times.Once);
@@ -101,8 +102,22 @@ public class InstanciaWriterTests
         _mockFInstancia.VerifySet(x => x.FAccessCode = instancia.AccessCode, Times.Once);
         _mockFInstancia.VerifySet(x => x.FJulgador = instancia.Julgador, Times.Once);
         _mockFInstancia.VerifySet(x => x.FZKeyIA = instancia.ZKeyIA, Times.Once);
-        _mockFInstancia.VerifySet(x => x.FGUID = instancia.GUID, Times.Once);
         _mockFInstancia.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var instancia = CreateValidInstanciaModel();
+        instancia.Data = null;
+        var auditorQuem = 123;
+        _mockInstanciaFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFInstancia.Object);
+        _mockFInstancia.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _instanciaWriter.WriteAsync(instancia, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFInstancia.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -160,7 +175,7 @@ public class InstanciaWriterTests
         var operadorId = 456;
         _mockInstanciaFactory.Setup(x => x.DeleteAsync(operadorId, instanciaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _instanciaWriter.Delete(instanciaResponse, operadorId, _mockConnection.Object);
+        await _instanciaWriter.DeleteAsync(instanciaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockInstanciaFactory.Verify(x => x.DeleteAsync(operadorId, instanciaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -176,7 +191,7 @@ public class InstanciaWriterTests
         var operadorId = 111;
         _mockInstanciaFactory.Setup(x => x.DeleteAsync(operadorId, instanciaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _instanciaWriter.Delete(instanciaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _instanciaWriter.DeleteAsync(instanciaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -193,7 +208,7 @@ public class InstanciaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockInstanciaFactory.Setup(x => x.DeleteAsync(operadorId, instanciaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _instanciaWriter.Delete(instanciaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _instanciaWriter.DeleteAsync(instanciaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -223,6 +238,7 @@ public class InstanciaWriterTests
         return new Models.Instancia
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             LiminarPedida = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Objeto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             StatusResultado = 1,
@@ -231,7 +247,7 @@ public class InstanciaWriterTests
             LiminarConcedida = false,
             LiminarNegada = false,
             Processo = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             LiminarParcial = false,
             LiminarResultado = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             NroProcesso = "AAAAAAAAAAAAAAAAAAAAAAA",
@@ -249,8 +265,7 @@ public class InstanciaWriterTests
             NroAntigo = "AAAAAAAAAAAAAAAAAAAAAAA",
             AccessCode = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Julgador = 1,
-            ZKeyIA = "AAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            ZKeyIA = "AAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

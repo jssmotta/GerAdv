@@ -20,12 +20,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Cliente { get; set; }
 
         /// <summary>
-        /// GUID - desGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// LigacaoID - desLigacaoID  
         /// </summary>
         [JsonPropertyName("ligacaoid")]
@@ -42,6 +36,9 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
+
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// ValorOriginal - desValorOriginal  
@@ -93,6 +90,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("livrocaixa")]
         public bool LivroCaixa { get; set; }
+
+        /// <summary>
+        /// GUID - desGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -111,12 +114,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Cliente { get; set; }
 
         /// <summary>
-        /// GUID - desGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// LigacaoID - desLigacaoID  
         /// </summary>
         [JsonPropertyName("ligacaoid")]
@@ -133,6 +130,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
+
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// ValorOriginal - desValorOriginal  
@@ -184,6 +184,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("livrocaixa")]
         public bool LivroCaixa { get; set; }
+
+        /// <summary>
+        /// GUID - desGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

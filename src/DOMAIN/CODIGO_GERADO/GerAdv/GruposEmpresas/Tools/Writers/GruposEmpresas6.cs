@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IGruposEmpresasWriter
 {
     Task<FGruposEmpresas> WriteAsync(Models.GruposEmpresas gruposempresas, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GruposEmpresasWriter(IFGruposEmpresasFactory gruposempresasFactory) : IGruposEmpresasWriter
 {
     private readonly IFGruposEmpresasFactory _gruposempresasFactory = gruposempresasFactory ?? throw new ArgumentNullException(nameof(gruposempresasFactory));
-    public virtual async Task Delete(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(GruposEmpresasResponse gruposempresas, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gruposempresasFactory.DeleteAsync(operadorId, gruposempresas.Id, oCnn);
     }
@@ -29,9 +29,9 @@ public class GruposEmpresasWriter(IFGruposEmpresasFactory gruposempresasFactory)
         dbRec.FDescricao = gruposempresas.Descricao;
         dbRec.FObservacoes = gruposempresas.Observacoes;
         dbRec.FCliente = gruposempresas.Cliente;
-        dbRec.FGUID = gruposempresas.GUID;
         dbRec.FIcone = gruposempresas.Icone;
         dbRec.FDespesaUnificada = gruposempresas.DespesaUnificada;
+        dbRec.FGuid = gruposempresas.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

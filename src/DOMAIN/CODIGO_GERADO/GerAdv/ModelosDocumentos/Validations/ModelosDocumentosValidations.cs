@@ -30,8 +30,6 @@ public class ModelosDocumentosValidation : IModelosDocumentosValidation
             throw new SGValidationException($"Nome deve ter no máximo {DBModelosDocumentosDicInfo.MdcNome.FTamanho} caracteres.");
         if (reg.Titulo != null && reg.Titulo.Length > DBModelosDocumentosDicInfo.MdcTitulo.FTamanho)
             throw new SGValidationException($"Titulo deve ter no máximo {DBModelosDocumentosDicInfo.MdcTitulo.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBModelosDocumentosDicInfo.MdcGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBModelosDocumentosDicInfo.MdcGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,6 +39,8 @@ public class ModelosDocumentosValidation : IModelosDocumentosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         if (await IsDuplicado(reg, service, uri))
             throw new SGValidationException($"Modelos Documentos '{reg.Nome}'  - Nome");
         var validSizes = ValidSizes(reg);
@@ -48,11 +48,9 @@ public class ModelosDocumentosValidation : IModelosDocumentosValidation
             return false;
         if (reg.TipoModeloDocumento == 0)
             throw new SGValidationException("TipoModeloDocumento é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         // TipoModeloDocumento
         {
-            var regTipoModeloDocumento = await tipomodelodocumentoReader.Read(reg.TipoModeloDocumento, oCnn);
+            var regTipoModeloDocumento = await tipomodelodocumentoReader.ReadAsync(reg.TipoModeloDocumento, oCnn);
             if (regTipoModeloDocumento == null || regTipoModeloDocumento.Id != reg.TipoModeloDocumento)
             {
                 throw new SGValidationException($"Tipo Modelo Documento não encontrado ({regTipoModeloDocumento?.Id}).");

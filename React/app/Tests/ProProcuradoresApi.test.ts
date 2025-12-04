@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProProcuradoresApiError } from '../GerAdv_TS/ProProcuradores/Apis/ApiProProcuradores';
+import { ProProcuradoresApiError } from '@/app/GerAdv_TS/ProProcuradores/Apis/ApiProProcuradores';
 import { ProProcuradoresApi } from '@/app/GerAdv_TS/ProProcuradores/Apis/ApiProProcuradores';
-import { FilterProProcuradores } from '../GerAdv_TS/ProProcuradores/Filters/ProProcuradores';
-import { IProProcuradores } from '../GerAdv_TS/ProProcuradores/Interfaces/interface.ProProcuradores';
-import { ProProcuradoresTestEmpty } from '../GerAdv_TS/Models/ProProcuradores';
+import { FilterProProcuradores } from '@/app/GerAdv_TS/ProProcuradores/Filters/ProProcuradores';
+import { IProProcuradores } from '@/app/GerAdv_TS/ProProcuradores/Interfaces/interface.ProProcuradores';
+import { ProProcuradoresTestEmpty } from '@/app/GerAdv_TS/Models/ProProcuradores';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProProcuradoresApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProProcuradores = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,13 @@ describe('ProProcuradoresApi', () => {
   describe('addAndUpdate', () => {
     const mockProProcuradores: IProProcuradores = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+advogado: 0,
+nome: 'João',
+processo: 0,
+data: '24/04/1975',
+substabelecimento: false,
+procuracao: true
     };
 
     it('should add new proprocuradores successfully', async () => {
@@ -487,7 +480,7 @@ describe('ProProcuradoresApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProProcuradores = { funcionario: 1 };
+      const mockFilter: FilterProProcuradores = { : 1 };
       
       const result = proprocuradoresApi.useFilter(mockFilter);
       

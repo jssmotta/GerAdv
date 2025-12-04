@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IReuniaoWriter
 {
     Task<FReuniao> WriteAsync(Models.Reuniao reuniao, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ReuniaoWriter(IFReuniaoFactory reuniaoFactory) : IReuniaoWriter
 {
     private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory ?? throw new ArgumentNullException(nameof(reuniaoFactory));
-    public virtual async Task Delete(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ReuniaoResponse reuniao, int operadorId, MsiSqlConnection? oCnn)
     {
         await _reuniaoFactory.DeleteAsync(operadorId, reuniao.Id, oCnn);
     }
@@ -25,19 +25,37 @@ public class ReuniaoWriter(IFReuniaoFactory reuniaoFactory) : IReuniaoWriter
         using var dbRec = await (reuniao.Id.IsEmptyIDNumber() ? _reuniaoFactory.CreateAsync() : _reuniaoFactory.CreateFromIdAsync(reuniao.Id, oCnn));
         dbRec.FCliente = reuniao.Cliente;
         dbRec.FIDAgenda = reuniao.IDAgenda;
-        dbRec.FData = reuniao.Data;
+        if (reuniao.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(reuniao.Data));
+        }
+
         dbRec.FPauta = reuniao.Pauta;
         dbRec.FATA = reuniao.ATA;
-        if (reuniao.HoraInicial != null)
-            dbRec.FHoraInicial = reuniao.HoraInicial.ToString();
-        dbRec.FHoraFinal = reuniao.HoraFinal;
+        if (reuniao.HoraInicial.NotIsEmpty())
+        {
+            dbRec.FHoraInicial = DateOnly.FromDateTime(Convert.ToDateTime(reuniao.HoraInicial));
+        }
+
+        if (reuniao.HoraFinal.NotIsEmpty())
+        {
+            dbRec.FHoraFinal = TimeOnly.FromDateTime(Convert.ToDateTime(reuniao.HoraFinal));
+        }
+
         dbRec.FExterna = reuniao.Externa;
-        if (reuniao.HoraSaida != null)
-            dbRec.FHoraSaida = reuniao.HoraSaida.ToString();
-        if (reuniao.HoraRetorno != null)
-            dbRec.FHoraRetorno = reuniao.HoraRetorno.ToString();
+        if (reuniao.HoraSaida.NotIsEmpty())
+        {
+            dbRec.FHoraSaida = DateOnly.FromDateTime(Convert.ToDateTime(reuniao.HoraSaida));
+        }
+
+        if (reuniao.HoraRetorno.NotIsEmpty())
+        {
+            dbRec.FHoraRetorno = DateOnly.FromDateTime(Convert.ToDateTime(reuniao.HoraRetorno));
+        }
+
         dbRec.FPrincipaisDecisoes = reuniao.PrincipaisDecisoes;
-        dbRec.FGUID = reuniao.GUID;
+        dbRec.FBold = reuniao.Bold;
+        dbRec.FGuid = reuniao.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

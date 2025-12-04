@@ -42,8 +42,6 @@ public class ContratosValidation : IContratosValidation
             throw new SGValidationException($"ChaveContrato deve ter no máximo {DBContratosDicInfo.CttChaveContrato.FTamanho} caracteres.");
         if (reg.Multa != null && reg.Multa.Length > DBContratosDicInfo.CttMulta.FTamanho)
             throw new SGValidationException($"Multa deve ter no máximo {DBContratosDicInfo.CttMulta.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBContratosDicInfo.CttGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBContratosDicInfo.CttGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -90,7 +88,7 @@ public class ContratosValidation : IContratosValidation
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
@@ -100,7 +98,7 @@ public class ContratosValidation : IContratosValidation
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {
-            var regAdvogados = await advogadosReader.Read(reg.Advogado, oCnn);
+            var regAdvogados = await advogadosReader.ReadAsync(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");

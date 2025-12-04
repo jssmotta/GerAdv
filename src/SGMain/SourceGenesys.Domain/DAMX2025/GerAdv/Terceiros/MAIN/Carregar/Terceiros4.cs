@@ -54,8 +54,96 @@ public partial class DBTerceiros
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBTerceirosDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBTerceirosDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBTerceirosDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBTerceirosDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBTerceirosDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBTerceirosDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBTerceirosDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBTerceirosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBTerceirosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOBS = getValue(DBTerceirosDicInfo.OBS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FVaraForoComarca = getValue(DBTerceirosDicInfo.VaraForoComarca)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBTerceirosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBTerceirosDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +152,7 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBTerceirosDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBTerceirosDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +179,7 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBTerceirosDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBTerceirosDicInfo.Processo));
         }
         catch
         {
@@ -100,7 +188,7 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTerceirosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTerceirosDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +197,7 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTerceirosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTerceirosDicInfo.QuemCad));
         }
         catch
         {
@@ -118,7 +206,7 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBTerceirosDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBTerceirosDicInfo.Sexo));
         }
         catch
         {
@@ -127,7 +215,7 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.Situacao)))
-                m_FSituacao = Convert.ToInt32(getValue(DBTerceirosDicInfo.Situacao));
+                FSituacao = Convert.ToInt32(getValue(DBTerceirosDicInfo.Situacao));
         }
         catch
         {
@@ -136,102 +224,14 @@ public partial class DBTerceiros
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTerceirosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTerceirosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBTerceirosDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBTerceirosDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBTerceirosDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBTerceirosDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBTerceirosDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBTerceirosDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBTerceirosDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTerceirosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBTerceirosDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOBS = getValue(DBTerceirosDicInfo.OBS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FVaraForoComarca = getValue(DBTerceirosDicInfo.VaraForoComarca)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTerceirosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -255,7 +255,7 @@ public partial class DBTerceiros
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

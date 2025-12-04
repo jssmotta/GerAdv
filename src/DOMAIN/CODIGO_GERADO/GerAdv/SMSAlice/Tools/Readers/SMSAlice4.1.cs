@@ -36,15 +36,54 @@ LEFT JOIN {DBTipoEMailDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoEMailDicInfo.PTa
         return query;
     }
 
-    public async Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn)
+    public async Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
+    {
+        if (oCnn is null)
+        {
+            return null;
+        }
+
+        string query = $@"{ConfiguracoesDBT.SQLNoCount}
+SELECT TOP (1) 
+	FORMAT(smaDtCad, 'dd/MM/yyyy HH:mm:ss') as DtCad,
+    FORMAT(smaDtAtu, 'dd/MM/yyyy HH:mm:ss') as DtAtu,
+	c.operNome as QuemCad,
+	u.operNome as QuemAtu,
+    smaVisto as Visto
+FROM {oCnn.UseDbo}.SMSAlice dbq WITH (INDEX = idx_SMSAlice_AuditorDtAtu)
+LEFT JOIN Operador c on c.operCodigo = dbq.smaQuemCad
+LEFT JOIN Operador u on u.operCodigo = dbq.smaQuemAtu
+WHERE [smaCodigo] = @id
+OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
+        using var cmd = new SqlCommand(query, oCnn.InnerConnection);
+        cmd.Parameters.AddWithValue("@id", id);
+        var dr = await cmd.ExecuteReaderAsync();
+        if (await dr.ReadAsync())
+        {
+            var auditor = new AuditorResponse
+            {
+                TableName = DBSMSAlice.PTabelaNome,
+                DataHoraCadastro = dr[0] == DBNull.Value ? string.Empty : dr.GetString(0),
+                DataHoraAlteracao = dr[1] == DBNull.Value ? string.Empty : dr.GetString(1),
+                NomeQuemCadastrou = dr[2] == DBNull.Value ? string.Empty : dr.GetString(2),
+                NomeQuemAlterou = dr[3] == DBNull.Value ? string.Empty : dr.GetString(3),
+                Checked = dr[4] == DBNull.Value ? false : dr.GetBoolean(4)
+            };
+            return auditor;
+        }
+
+        return null;
+    }
+
+    public async Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
         string query = $@"{ConfiguracoesDBT.SQLNoCount}
 SELECT TOP (1) 
     FORMAT(smaDtAtu, 'yyyy-MM-dd-HH-mm-ss')
-FROM {oCnn.UseDbo}.SMSAlice WITH (NOLOCK, INDEX = idx_SMSAlice_AuditorDtAtu)
-WHERE smaCodigo = @id
+FROM {oCnn.UseDbo}.SMSAlice WITH (INDEX = idx_SMSAlice_AuditorDtAtu)
+WHERE [smaCodigo] = @id
 OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         using var cmd = new SqlCommand(query, oCnn.InnerConnection);
         cmd.Parameters.AddWithValue("@id", id);
@@ -52,42 +91,37 @@ OPTION (OPTIMIZE FOR (@id UNKNOWN), FAST 1);";
         return dataFormatada;
     }
 
-    public async Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
+    public async Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn)
     {
         if (oCnn is null)
             return string.Empty;
-        string query = $@"{ConfiguracoesDBT.SQLNoCount}
-SELECT TOP ({max}) 
-    FORMAT(
-        CASE 
-            WHEN smaDtAtu IS NULL THEN smaDtCad 
-            WHEN smaDtAtu > smaDtCad THEN smaDtAtu 
-            ELSE smaDtCad 
-        END, 'yyyy-MM-dd-HH-mm-ss') AS data
-FROM {oCnn.UseDbo}.SMSAlice
-        {(cWhere.Trim().Equals("") ? "" : $" WHERE {cWhere}")}
-ORDER BY 
-    CASE 
-        WHEN smaDtAtu IS NULL THEN smaDtCad 
-        WHEN smaDtAtu > smaDtCad THEN smaDtAtu 
-        ELSE smaDtCad 
-    END DESC;";
+        var query = BuildSqlQuery(@" FORMAT(
+                CASE 
+                    WHEN smaDtAtu IS NULL THEN smaDtCad 
+                    WHEN smaDtAtu > smaDtCad THEN smaDtAtu 
+                    ELSE smaDtCad 
+                END, 'yyyy-MM-dd-HH-mm-ss') AS data", cWhere, @"CASE 
+                WHEN smaDtAtu IS NULL THEN smaDtCad 
+                WHEN smaDtAtu > smaDtCad THEN smaDtAtu 
+                ELSE smaDtCad 
+            END DESC", max, oCnn);
         using var cmd = new SqlCommand(query, oCnn.InnerConnection);
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
         var dataFormatada = $"{await cmd.ExecuteScalarAsync()}";
         return dataFormatada;

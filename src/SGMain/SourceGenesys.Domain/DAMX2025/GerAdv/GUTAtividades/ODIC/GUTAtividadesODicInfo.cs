@@ -9,25 +9,29 @@ public partial class DBGUTAtividadesODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBGUTAtividadesDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBGUTAtividadesDicInfo.CampoCodigo;
+    public string IFieldId() => DBGUTAtividadesDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBGUTAtividadesDicInfo.TablePrefix;
+    public string IPrefix() => DBGUTAtividadesDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBGUTAtividadesDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBGUTAtividadesDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBGUTAtividadesODicInfo : IODicInfo
     public static string TCampoNome => DBGUTAtividadesDicInfo.CampoNome;
     public static string TTabelaNome => DBGUTAtividadesDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTAtividadesDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtGUID, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar, DBGUTAtividadesDicInfo.AgtQuemCad, DBGUTAtividadesDicInfo.AgtDtCad, DBGUTAtividadesDicInfo.AgtQuemAtu, DBGUTAtividadesDicInfo.AgtDtAtu, DBGUTAtividadesDicInfo.AgtVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtGUID, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar];
+    public static ImmutableArray<DBInfoSystem> List => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar, DBGUTAtividadesDicInfo.AgtGuid, DBGUTAtividadesDicInfo.AgtQuemCad, DBGUTAtividadesDicInfo.AgtDtCad, DBGUTAtividadesDicInfo.AgtQuemAtu, DBGUTAtividadesDicInfo.AgtDtAtu, DBGUTAtividadesDicInfo.AgtVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBGUTAtividadesDicInfo.AgtNome, DBGUTAtividadesDicInfo.AgtObservacao, DBGUTAtividadesDicInfo.AgtGUTGrupo, DBGUTAtividadesDicInfo.AgtGUTPeriodicidade, DBGUTAtividadesDicInfo.AgtOperador, DBGUTAtividadesDicInfo.AgtConcluido, DBGUTAtividadesDicInfo.AgtDataConcluido, DBGUTAtividadesDicInfo.AgtDiasParaIniciar, DBGUTAtividadesDicInfo.AgtMinutosParaRealizar, DBGUTAtividadesDicInfo.AgtGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["agtCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBGUTAtividadesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["agtCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBGUTAtividadesDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

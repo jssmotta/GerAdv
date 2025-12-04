@@ -14,7 +14,7 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Descricao - funDescricao - tamanho máximo: 40 
+        /// Descrições - funDescricao - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -30,7 +30,7 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Descricao - funDescricao - tamanho máximo: 40 
+        /// Descrições - funDescricao - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";

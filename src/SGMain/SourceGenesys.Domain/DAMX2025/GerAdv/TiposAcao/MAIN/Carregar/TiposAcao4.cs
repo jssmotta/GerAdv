@@ -54,8 +54,24 @@ public partial class DBTiposAcao
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBTiposAcaoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBTiposAcaoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTiposAcaoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBTiposAcaoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBTiposAcaoDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBTiposAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTiposAcaoDicInfo.Inativo)))
-                m_FInativo = Convert.ToBoolean(getValue(DBTiposAcaoDicInfo.Inativo));
+                FInativo = Convert.ToBoolean(getValue(DBTiposAcaoDicInfo.Inativo));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBTiposAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTiposAcaoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTiposAcaoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTiposAcaoDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBTiposAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTiposAcaoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTiposAcaoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTiposAcaoDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBTiposAcao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTiposAcaoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTiposAcaoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTiposAcaoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBTiposAcaoDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTiposAcaoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBTiposAcao
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

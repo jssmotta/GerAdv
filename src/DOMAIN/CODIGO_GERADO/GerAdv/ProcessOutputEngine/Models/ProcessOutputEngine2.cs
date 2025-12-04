@@ -56,12 +56,6 @@ namespace MenphisSI.GerAdv.Models
         public bool Administrador { get; set; }
 
         /// <summary>
-        /// GUID - poeGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// OutputSource - poeOutputSource  
         /// </summary>
         [JsonPropertyName("outputsource")]
@@ -90,6 +84,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("myid")]
         public int MyID { get; set; }
+
+        /// <summary>
+        /// GUID - poeGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -144,12 +144,6 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Administrador { get; set; }
 
         /// <summary>
-        /// GUID - poeGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// OutputSource - poeOutputSource  
         /// </summary>
         [JsonPropertyName("outputsource")]
@@ -178,5 +172,11 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("myid")]
         public int MyID { get; set; }
+
+        /// <summary>
+        /// GUID - poeGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

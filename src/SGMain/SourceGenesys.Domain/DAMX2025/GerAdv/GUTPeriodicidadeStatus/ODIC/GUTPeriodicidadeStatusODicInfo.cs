@@ -9,25 +9,29 @@ public partial class DBGUTPeriodicidadeStatusODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBGUTPeriodicidadeStatusDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBGUTPeriodicidadeStatusDicInfo.CampoCodigo;
+    public string IFieldId() => DBGUTPeriodicidadeStatusDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBGUTPeriodicidadeStatusDicInfo.TablePrefix;
+    public string IPrefix() => DBGUTPeriodicidadeStatusDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBGUTPeriodicidadeStatusDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBGUTPeriodicidadeStatusDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBGUTPeriodicidadeStatusODicInfo : IODicInfo
     public static string TCampoNome => DBGUTPeriodicidadeStatusDicInfo.CampoNome;
     public static string TTabelaNome => DBGUTPeriodicidadeStatusDicInfo.TabelaNome;
     public static string TTablePrefix => DBGUTPeriodicidadeStatusDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID, DBGUTPeriodicidadeStatusDicInfo.PgsQuemCad, DBGUTPeriodicidadeStatusDicInfo.PgsDtCad, DBGUTPeriodicidadeStatusDicInfo.PgsQuemAtu, DBGUTPeriodicidadeStatusDicInfo.PgsDtAtu, DBGUTPeriodicidadeStatusDicInfo.PgsVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGuid, DBGUTPeriodicidadeStatusDicInfo.PgsQuemCad, DBGUTPeriodicidadeStatusDicInfo.PgsDtCad, DBGUTPeriodicidadeStatusDicInfo.PgsQuemAtu, DBGUTPeriodicidadeStatusDicInfo.PgsDtAtu, DBGUTPeriodicidadeStatusDicInfo.PgsVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBGUTPeriodicidadeStatusDicInfo.PgsGUTAtividade, DBGUTPeriodicidadeStatusDicInfo.PgsDataRealizado, DBGUTPeriodicidadeStatusDicInfo.PgsGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["pgsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["pgsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBGUTPeriodicidadeStatusDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

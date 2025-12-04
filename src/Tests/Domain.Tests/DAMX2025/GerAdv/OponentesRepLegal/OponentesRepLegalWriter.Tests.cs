@@ -131,7 +131,7 @@ public class OponentesRepLegalWriterTests
         var operadorId = 456;
         _mockOponentesRepLegalFactory.Setup(x => x.DeleteAsync(operadorId, oponentesreplegalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _oponentesreplegalWriter.Delete(oponentesreplegalResponse, operadorId, _mockConnection.Object);
+        await _oponentesreplegalWriter.DeleteAsync(oponentesreplegalResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockOponentesRepLegalFactory.Verify(x => x.DeleteAsync(operadorId, oponentesreplegalResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -147,7 +147,7 @@ public class OponentesRepLegalWriterTests
         var operadorId = 111;
         _mockOponentesRepLegalFactory.Setup(x => x.DeleteAsync(operadorId, oponentesreplegalResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _oponentesreplegalWriter.Delete(oponentesreplegalResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _oponentesreplegalWriter.DeleteAsync(oponentesreplegalResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -164,7 +164,7 @@ public class OponentesRepLegalWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockOponentesRepLegalFactory.Setup(x => x.DeleteAsync(operadorId, oponentesreplegalResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _oponentesreplegalWriter.Delete(oponentesreplegalResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _oponentesreplegalWriter.DeleteAsync(oponentesreplegalResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

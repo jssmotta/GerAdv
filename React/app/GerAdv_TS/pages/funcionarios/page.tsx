@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { FuncionariosGridAdapter } from '@/app/GerAdv_TS/Funcionarios/Adapter/FuncionariosGridAdapter';
 import FuncionariosGridContainer from '@/app/GerAdv_TS/Funcionarios/Components/FuncionariosGridContainer';
+
 const FuncionariosPage: React.FC = () => {
-  const FuncionariosGrid = new FuncionariosGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Colaborador' />
-    <FuncionariosGridContainer grid={FuncionariosGrid} />
-  </PageLayout>
-);
+    const FuncionariosGrid = new FuncionariosGridAdapter();
+
+    return (
+        <PageLayout>            
+            <FuncionariosGridContainer grid={FuncionariosGrid} />
+        </PageLayout>
+    );
 };
+
 export default FuncionariosPage;

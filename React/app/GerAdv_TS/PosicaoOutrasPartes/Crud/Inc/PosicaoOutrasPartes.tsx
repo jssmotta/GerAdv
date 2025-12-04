@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IPosicaoOutrasPartesFormProps } from '../../Interfaces/interface.PosicaoOutrasPartes';
 import { PosicaoOutrasPartesService } from '../../Services/PosicaoOutrasPartes.service';
 import { usePosicaoOutrasPartesForm, useValidationsPosicaoOutrasPartes } from '../../Hooks/hookPosicaoOutrasPartes';
-import { PosicaoOutrasPartesEmpty } from '../../../Models/PosicaoOutrasPartes';
+import { PosicaoOutrasPartesEmpty } from '../../../Models/PosicaoOutrasPartes'; 
 import { PosicaoOutrasPartesForm } from '../Forms/PosicaoOutrasPartes';
+ 
 
 const PosicaoOutrasPartesInc: React.FC<IPosicaoOutrasPartesFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const posicaooutraspartesService = new PosicaoOutrasPartesService(
-  new PosicaoOutrasPartesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadPosicaoOutrasPartes } = usePosicaoOutrasPartesForm(
-PosicaoOutrasPartesEmpty(), 
-posicaooutraspartesService
-);
-useEffect(() => {
-  loadPosicaoOutrasPartes(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedPosicaoOutrasPartes = await posicaooutraspartesService.savePosicaoOutrasPartes(data);
-    if (savedPosicaoOutrasPartes.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedPosicaoOutrasPartes);
+  const posicaooutraspartesService = new PosicaoOutrasPartesService(
+    new PosicaoOutrasPartesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadPosicaoOutrasPartes } = usePosicaoOutrasPartesForm(
+    PosicaoOutrasPartesEmpty(),
+    posicaooutraspartesService
+  );
+
+  useEffect(() => {
+    loadPosicaoOutrasPartes(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedPosicaoOutrasPartes = await posicaooutraspartesService.savePosicaoOutrasPartes(data);
+
+      if (savedPosicaoOutrasPartes.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedPosicaoOutrasPartes);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadPosicaoOutrasPartes(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <PosicaoOutrasPartesForm
+        posicaooutraspartesData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadPosicaoOutrasPartes(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<PosicaoOutrasPartesForm
-posicaooutraspartesData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default PosicaoOutrasPartesInc;

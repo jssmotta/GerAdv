@@ -8,54 +8,62 @@ public partial class DBContatoCRMView
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFCGUID, pFldFData, pFldFIP;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FCGUID, m_FIP;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData;
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FCGUID da tabela ContatoCRMView deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FCGUID da tabela 'ContatoCRMView' deve ter no máximo 100 caracteres.")]
     public virtual string? FCGUID
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCGUID ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCGUID = pFldFCGUID || !(m_FCGUID ?? string.Empty).Equals(value);
+            pFldFCGUID = pFldFCGUID || !(field ?? string.Empty).Equals(value);
             if (pFldFCGUID)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FIP da tabela ContatoCRMView deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FIP da tabela 'ContatoCRMView' deve ter no máximo 50 caracteres.")]
     public virtual string? FIP
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIP ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFIP = pFldFIP || !(m_FIP ?? string.Empty).Equals(value);
+            pFldFIP = pFldFIP || !(field ?? string.Empty).Equals(value);
             if (pFldFIP)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FIP = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -68,13 +76,13 @@ public partial class DBContatoCRMView
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -84,9 +92,13 @@ public partial class DBContatoCRMView
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

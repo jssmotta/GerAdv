@@ -8,8 +8,8 @@ namespace MenphisSI.GerAdv.WarmUp;
 
 public partial class OponentesWarmUp
 {
-    public async Task WarmReadStringAuditor(string uri, MsiSqlConnection? oCnn) => await CreateIdx(uri, oCnn);
-    private async Task CreateIdx(string uri, MsiSqlConnection? oCnn)
+    public async Task WarmReadStringAuditorAsync(string uri, MsiSqlConnection? oCnn, IConnectionService _connectionService) => await CreateIdx(uri, oCnn, _connectionService);
+    private async Task CreateIdx(string uri, MsiSqlConnection? oCnn, IConnectionService _connectionService)
     {
         Console.WriteLine($"WarmUp Oponentes: {uri}");
         var testSql = $"SELECT TOP (1) '1' FROM sys.indexes WHERE name = 'idx_Oponentes_AuditorDtAtu' AND object_id = OBJECT_ID('[{oCnn.UseDbo}].[Oponentes]')";
@@ -20,7 +20,8 @@ public partial class OponentesWarmUp
             return;
         }
 
-        using var oCnnRw = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnnRw = scope.Connection;
         if (oCnnRw is null)
             return;
         ConfiguracoesDBT.ExecuteSqlCreate($@"IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_Oponentes_AuditorDtAtu' AND object_id = OBJECT_ID('[{oCnnRw.UseDbo}].[Oponentes]'))

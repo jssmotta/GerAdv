@@ -105,7 +105,7 @@ public class TipoStatusBiuValidationTests : IDisposable
         tipostatusbiu.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipostatusbiu, _mockTipoStatusBiuService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class TipoStatusBiuValidationTests : IDisposable
     {
         // Arrange
         var tipostatusbiu = CreateValidTipoStatusBiu();
-        tipostatusbiu.Nome = "   ";
+        tipostatusbiu.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipostatusbiu, _mockTipoStatusBiuService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

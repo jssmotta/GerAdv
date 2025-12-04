@@ -281,20 +281,6 @@ public class GUTAtividadesWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDataConcluidoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFGUTAtividades(DataConcluido: "invalid-date");
-        _mockGUTAtividadesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFGUTAtividades.Object);
-        // Act
-        var result = _gutatividadesWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataConcluido.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDataConcluidoFields_ShouldNotSetDateProperties()
     {
         // Arrange

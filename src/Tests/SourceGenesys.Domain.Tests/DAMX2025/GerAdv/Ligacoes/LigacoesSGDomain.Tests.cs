@@ -44,7 +44,7 @@ public class DBLigacoesTests : IDisposable
         dt.Columns.Add("ligQuemID", typeof(int));
         dt.Columns.Add("ligTelefonista", typeof(int));
         dt.Columns.Add("ligUltimoAviso", typeof(DateTime));
-        dt.Columns.Add("ligHoraFinal", typeof(string));
+        dt.Columns.Add("ligHoraFinal", typeof(DateTime));
         dt.Columns.Add("ligNome", typeof(string));
         dt.Columns.Add("ligQuemCodigo", typeof(int));
         dt.Columns.Add("ligSolicitante", typeof(int));
@@ -54,15 +54,29 @@ public class DBLigacoesTests : IDisposable
         dt.Columns.Add("ligParticular", typeof(string));
         dt.Columns.Add("ligRealizada", typeof(string));
         dt.Columns.Add("ligStatus", typeof(string));
-        dt.Columns.Add("ligData", typeof(string));
-        dt.Columns.Add("ligHora", typeof(string));
+        dt.Columns.Add("ligData", typeof(DateTime));
+        dt.Columns.Add("ligHora", typeof(DateTime));
         dt.Columns.Add("ligUrgente", typeof(string));
-        dt.Columns.Add("ligGUID", typeof(string));
         dt.Columns.Add("ligLigarPara", typeof(string));
         dt.Columns.Add("ligProcesso", typeof(int));
         dt.Columns.Add("ligStartScreen", typeof(string));
         dt.Columns.Add("ligEmotion", typeof(int));
+        dt.Columns.Add("ligBold", typeof(string));
+        dt.Columns.Add("ligGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ligCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBLigacoes(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -83,7 +97,7 @@ public class DBLigacoesTests : IDisposable
     {
         var instance = new DBLigacoes();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Ligacoes", instance.ITabelaName());
+        Assert.Equal("Ligacoes", instance.ITableName());
         Assert.Equal("lig", instance.Prefixo);
     }
 
@@ -101,29 +115,16 @@ public class DBLigacoesTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ligCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBLigacoes(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Ligacoes", cadastro.ITabelaName());
-        Assert.Equal("ligCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ligNome", cadastro.ICampoNome());
-        Assert.Equal("lig", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Ligacoes", cadastro.ITableName());
+        Assert.Equal("ligCodigo", cadastro.IFieldId());
+        Assert.Equal("ligNome", cadastro.IFieldNameDescription());
+        Assert.Equal("lig", cadastro.IPrefix());
     }
 
 #endregion
@@ -183,9 +184,9 @@ public class DBLigacoesTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -352,6 +353,23 @@ public class DBLigacoesTests : IDisposable
     }
 
     [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HoraFinal_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHoraFinal = dateString;
+        Assert.Equal(expected, _instance.FHoraFinal);
+    }
+
+    [Fact]
+    public void HoraFinal_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBLigacoes();
+        Assert.Equal(string.Empty, instance.FHoraFinal);
+    }
+
+    [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
@@ -497,6 +515,40 @@ public class DBLigacoesTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBLigacoes();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void Hora_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHora = dateString;
+        Assert.Equal(expected, _instance.FHora);
+    }
+
+    [Fact]
+    public void Hora_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBLigacoes();
+        Assert.Equal(string.Empty, instance.FHora);
+    }
+
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void Urgente_ShouldAcceptBooleanValues(bool value)
@@ -510,24 +562,6 @@ public class DBLigacoesTests : IDisposable
     {
         var instance = new DBLigacoes();
         Assert.False(instance.FUrgente);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
     }
 
     [Theory]
@@ -600,6 +634,24 @@ public class DBLigacoesTests : IDisposable
     {
         var instance = new DBLigacoes();
         Assert.Equal(0, instance.FEmotion);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

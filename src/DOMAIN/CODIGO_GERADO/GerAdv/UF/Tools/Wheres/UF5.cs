@@ -25,7 +25,7 @@ public partial class UFWhere(IFUFFactory ufFactory) : IUFWhere
             Pais = dbRec.FPais,
             Top = dbRec.FTop,
             Descricao = dbRec.FDescricao ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return uf;
     }

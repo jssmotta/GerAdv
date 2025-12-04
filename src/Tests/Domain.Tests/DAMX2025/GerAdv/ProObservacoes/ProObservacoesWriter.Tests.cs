@@ -74,12 +74,27 @@ public class ProObservacoesWriterTests
         var result = await _proobservacoesWriter.WriteAsync(proobservacoes, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProObservacoes.Object);
+        _mockFProObservacoes.VerifySet(x => x.FGuid = proobservacoes.Guid, Times.Once);
         _mockFProObservacoes.VerifySet(x => x.FProcesso = proobservacoes.Processo, Times.Once);
         _mockFProObservacoes.VerifySet(x => x.FNome = proobservacoes.Nome, Times.Once);
         _mockFProObservacoes.VerifySet(x => x.FObservacoes = proobservacoes.Observacoes, Times.Once);
-        _mockFProObservacoes.VerifySet(x => x.FData = proobservacoes.Data, Times.Once);
-        _mockFProObservacoes.VerifySet(x => x.FGUID = proobservacoes.GUID, Times.Once);
+        _mockFProObservacoes.VerifySet(x => x.FData = proobservacoes.Data.ToString(), Times.Once);
         _mockFProObservacoes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var proobservacoes = CreateValidProObservacoesModel();
+        proobservacoes.Data = null;
+        var auditorQuem = 123;
+        _mockProObservacoesFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProObservacoes.Object);
+        _mockFProObservacoes.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _proobservacoesWriter.WriteAsync(proobservacoes, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProObservacoes.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -122,7 +137,7 @@ public class ProObservacoesWriterTests
         var operadorId = 456;
         _mockProObservacoesFactory.Setup(x => x.DeleteAsync(operadorId, proobservacoesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _proobservacoesWriter.Delete(proobservacoesResponse, operadorId, _mockConnection.Object);
+        await _proobservacoesWriter.DeleteAsync(proobservacoesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProObservacoesFactory.Verify(x => x.DeleteAsync(operadorId, proobservacoesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -138,7 +153,7 @@ public class ProObservacoesWriterTests
         var operadorId = 111;
         _mockProObservacoesFactory.Setup(x => x.DeleteAsync(operadorId, proobservacoesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _proobservacoesWriter.Delete(proobservacoesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _proobservacoesWriter.DeleteAsync(proobservacoesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -155,7 +170,7 @@ public class ProObservacoesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProObservacoesFactory.Setup(x => x.DeleteAsync(operadorId, proobservacoesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _proobservacoesWriter.Delete(proobservacoesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _proobservacoesWriter.DeleteAsync(proobservacoesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -185,11 +200,11 @@ public class ProObservacoesWriterTests
         return new Models.ProObservacoes
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             Nome = "João",
             Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            Data = "27/05/2022",
-            GUID = Guid.NewGuid().ToString()
+            Data = "24/04/1975"
         };
     }
 #endregion

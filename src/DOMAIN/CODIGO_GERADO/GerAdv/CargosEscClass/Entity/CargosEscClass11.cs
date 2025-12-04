@@ -23,12 +23,6 @@ public partial class FCargosEscClassFactory : IFCargosEscClassFactory, IDisposab
         return FCargosEscClass.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FCargosEscClass> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FCargosEscClass().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FCargosEscClass> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FCargosEscClassFactory : IFCargosEscClassFactory, IDisposab
         return FCargosEscClass.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FCargosEscClass> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FCargosEscClass().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FCargosEscClassFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -11,9 +11,9 @@ public static partial class DBRitoDicInfo
     public const string CampoNome = "ritDescricao";
     public const string TablePrefix = "rit";
     public const string Descricao = "ritDescricao"; // LOCALIZACAO 170523
-    public const string GUID = "ritGUID"; // LOCALIZACAO 170523
     public const string Top = "ritTop"; // LOCALIZACAO 170523
     public const string Bold = "ritBold"; // LOCALIZACAO 170523
+    public const string Guid = "ritGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ritQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ritDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ritQuemAtu"; // LOCALIZACAO 170523
@@ -35,44 +35,15 @@ public static partial class DBRitoDicInfo
 
     public const string PTabelaNome = "Rito";
 #region PropriedadesDaTabela
-    public static DBInfoSystem RitDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 20, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "rit"
-    };
-    public static DBInfoSystem RitGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "rit"
-    };
-    public static DBInfoSystem RitTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "rit"
-    };
-    public static DBInfoSystem RitBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "rit"
-    };
-    public static DBInfoSystem RitQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "rit"
-    }; // DBI 11 
-    public static DBInfoSystem RitDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "rit"
-    };
-    public static DBInfoSystem RitQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "rit"
-    }; // DBI 11 
-    public static DBInfoSystem RitDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "rit"
-    };
-    public static DBInfoSystem RitVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "rit"
-    };
+    public static DBInfoSystem RitDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 20, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "rit");
+    public static DBInfoSystem RitTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "rit");
+    public static DBInfoSystem RitBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "rit", isRequired: true);
+    public static DBInfoSystem RitGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "rit");
+    public static DBInfoSystem RitQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "rit"); // DBI 11 
+    public static DBInfoSystem RitDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "rit");
+    public static DBInfoSystem RitQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "rit"); // DBI 11 
+    public static DBInfoSystem RitDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "rit");
+    public static DBInfoSystem RitVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "rit", isRequired: true);
 
 #endregion
     [Serializable]

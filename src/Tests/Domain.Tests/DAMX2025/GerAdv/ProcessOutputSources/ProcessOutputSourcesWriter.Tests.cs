@@ -74,8 +74,8 @@ public class ProcessOutputSourcesWriterTests
         var result = await _processoutputsourcesWriter.WriteAsync(processoutputsources, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProcessOutputSources.Object);
+        _mockFProcessOutputSources.VerifySet(x => x.FGuid = processoutputsources.Guid, Times.Once);
         _mockFProcessOutputSources.VerifySet(x => x.FNome = processoutputsources.Nome, Times.Once);
-        _mockFProcessOutputSources.VerifySet(x => x.FGUID = processoutputsources.GUID, Times.Once);
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public class ProcessOutputSourcesWriterTests
         var operadorId = 456;
         _mockProcessOutputSourcesFactory.Setup(x => x.DeleteAsync(operadorId, processoutputsourcesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _processoutputsourcesWriter.Delete(processoutputsourcesResponse, operadorId, _mockConnection.Object);
+        await _processoutputsourcesWriter.DeleteAsync(processoutputsourcesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProcessOutputSourcesFactory.Verify(x => x.DeleteAsync(operadorId, processoutputsourcesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -134,7 +134,7 @@ public class ProcessOutputSourcesWriterTests
         var operadorId = 111;
         _mockProcessOutputSourcesFactory.Setup(x => x.DeleteAsync(operadorId, processoutputsourcesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _processoutputsourcesWriter.Delete(processoutputsourcesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _processoutputsourcesWriter.DeleteAsync(processoutputsourcesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -151,7 +151,7 @@ public class ProcessOutputSourcesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProcessOutputSourcesFactory.Setup(x => x.DeleteAsync(operadorId, processoutputsourcesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _processoutputsourcesWriter.Delete(processoutputsourcesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _processoutputsourcesWriter.DeleteAsync(processoutputsourcesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -181,8 +181,8 @@ public class ProcessOutputSourcesWriterTests
         return new Models.ProcessOutputSources
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

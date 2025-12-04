@@ -28,8 +28,6 @@ public class TipoEnderecoValidation : ITipoEnderecoValidation
     {
         if (reg.Descricao != null && reg.Descricao.Length > DBTipoEnderecoDicInfo.TipDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBTipoEnderecoDicInfo.TipDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTipoEnderecoDicInfo.TipGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTipoEnderecoDicInfo.TipGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class TipoEnderecoValidation : ITipoEnderecoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

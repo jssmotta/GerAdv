@@ -54,8 +54,184 @@ public partial class DBPreClientes
         // Checkpoint Carregar 
         try
         {
+            FAssCPF = getValue(DBPreClientesDicInfo.AssCPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FAssEndereco = getValue(DBPreClientesDicInfo.AssEndereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FAssistido = getValue(DBPreClientesDicInfo.Assistido)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FAssRG = getValue(DBPreClientesDicInfo.AssRG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FBairro = getValue(DBPreClientesDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBPreClientesDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBPreClientesDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNH = getValue(DBPreClientesDicInfo.CNH)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNPJ = getValue(DBPreClientesDicInfo.CNPJ)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBPreClientesDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBPreClientesDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBPreClientesDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBPreClientesDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBPreClientesDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHomePage = getValue(DBPreClientesDicInfo.HomePage)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FInscEst = getValue(DBPreClientesDicInfo.InscEst)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBPreClientesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeFantasia = getValue(DBPreClientesDicInfo.NomeFantasia)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBPreClientesDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQualificacao = getValue(DBPreClientesDicInfo.Qualificacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQuemIndicou = getValue(DBPreClientesDicInfo.QuemIndicou)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBPreClientesDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Adv)))
-                m_FAdv = Convert.ToInt32(getValue(DBPreClientesDicInfo.Adv));
+                FAdv = Convert.ToInt32(getValue(DBPreClientesDicInfo.Adv));
         }
         catch
         {
@@ -64,7 +240,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Ani));
         }
         catch
         {
@@ -73,7 +249,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +258,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBPreClientesDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBPreClientesDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +267,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBPreClientesDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPreClientesDicInfo.Data)));
         }
         catch
         {
@@ -118,7 +294,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBPreClientesDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPreClientesDicInfo.DtNasc)));
         }
         catch
         {
@@ -127,7 +303,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Etiqueta));
         }
         catch
         {
@@ -136,7 +312,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Idade)))
-                m_FIdade = Convert.ToInt32(getValue(DBPreClientesDicInfo.Idade));
+                FIdade = Convert.ToInt32(getValue(DBPreClientesDicInfo.Idade));
         }
         catch
         {
@@ -145,7 +321,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.IDRep)))
-                m_FIDRep = Convert.ToInt32(getValue(DBPreClientesDicInfo.IDRep));
+                FIDRep = Convert.ToInt32(getValue(DBPreClientesDicInfo.IDRep));
         }
         catch
         {
@@ -154,7 +330,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Inativo)))
-                m_FInativo = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Inativo));
+                FInativo = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Inativo));
         }
         catch
         {
@@ -163,7 +339,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Juridica)))
-                m_FJuridica = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Juridica));
+                FJuridica = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Juridica));
         }
         catch
         {
@@ -172,7 +348,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBPreClientesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBPreClientesDicInfo.QuemAtu));
         }
         catch
         {
@@ -181,7 +357,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBPreClientesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBPreClientesDicInfo.QuemCad));
         }
         catch
         {
@@ -190,7 +366,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Sexo));
         }
         catch
         {
@@ -199,7 +375,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Tipo));
         }
         catch
         {
@@ -208,7 +384,7 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.TipoCaptacao)))
-                m_FTipoCaptacao = Convert.ToBoolean(getValue(DBPreClientesDicInfo.TipoCaptacao));
+                FTipoCaptacao = Convert.ToBoolean(getValue(DBPreClientesDicInfo.TipoCaptacao));
         }
         catch
         {
@@ -217,190 +393,14 @@ public partial class DBPreClientes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPreClientesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssCPF = getValue(DBPreClientesDicInfo.AssCPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssEndereco = getValue(DBPreClientesDicInfo.AssEndereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssistido = getValue(DBPreClientesDicInfo.Assistido)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssRG = getValue(DBPreClientesDicInfo.AssRG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBPreClientesDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBPreClientesDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBPreClientesDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNH = getValue(DBPreClientesDicInfo.CNH)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNPJ = getValue(DBPreClientesDicInfo.CNPJ)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBPreClientesDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBPreClientesDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBPreClientesDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBPreClientesDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBPreClientesDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHomePage = getValue(DBPreClientesDicInfo.HomePage)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FInscEst = getValue(DBPreClientesDicInfo.InscEst)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBPreClientesDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeFantasia = getValue(DBPreClientesDicInfo.NomeFantasia)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBPreClientesDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQualificacao = getValue(DBPreClientesDicInfo.Qualificacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQuemIndicou = getValue(DBPreClientesDicInfo.QuemIndicou)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBPreClientesDicInfo.RG)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBPreClientesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -424,7 +424,7 @@ public partial class DBPreClientes
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

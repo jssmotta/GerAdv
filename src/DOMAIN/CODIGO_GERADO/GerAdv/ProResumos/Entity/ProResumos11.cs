@@ -23,12 +23,6 @@ public partial class FProResumosFactory : IFProResumosFactory, IDisposable
         return FProResumos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProResumos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FProResumos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FProResumos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FProResumosFactory : IFProResumosFactory, IDisposable
         return FProResumos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FProResumos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FProResumos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FProResumosFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

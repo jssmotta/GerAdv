@@ -54,8 +54,160 @@ public partial class DBPrepostos
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBPrepostosDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBPrepostosDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBPrepostosDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBPrepostosDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCTPSNumero = getValue(DBPrepostosDicInfo.CTPSNumero)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCTPSSerie = getValue(DBPrepostosDicInfo.CTPSSerie)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBPrepostosDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBPrepostosDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBPrepostosDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBPrepostosDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBPrepostosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FMae = getValue(DBPrepostosDicInfo.Mae)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBPrepostosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBPrepostosDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPai = getValue(DBPrepostosDicInfo.Pai)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPIS = getValue(DBPrepostosDicInfo.PIS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQualificacao = getValue(DBPrepostosDicInfo.Qualificacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRegistro = getValue(DBPrepostosDicInfo.Registro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBPrepostosDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Ani));
         }
         catch
         {
@@ -64,7 +216,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +225,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBPrepostosDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBPrepostosDicInfo.Cidade));
         }
         catch
         {
@@ -82,7 +234,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.CTPSDtEmissao)))
-                m_FCTPSDtEmissao = Convert.ToDateTime(getValue(DBPrepostosDicInfo.CTPSDtEmissao));
+                FCTPSDtEmissao = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPrepostosDicInfo.CTPSDtEmissao)));
         }
         catch
         {
@@ -109,7 +261,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBPrepostosDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPrepostosDicInfo.DtNasc)));
         }
         catch
         {
@@ -118,7 +270,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Etiqueta));
         }
         catch
         {
@@ -127,7 +279,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Funcao)))
-                m_FFuncao = Convert.ToInt32(getValue(DBPrepostosDicInfo.Funcao));
+                FFuncao = Convert.ToInt32(getValue(DBPrepostosDicInfo.Funcao));
         }
         catch
         {
@@ -136,7 +288,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Idade)))
-                m_FIdade = Convert.ToInt32(getValue(DBPrepostosDicInfo.Idade));
+                FIdade = Convert.ToInt32(getValue(DBPrepostosDicInfo.Idade));
         }
         catch
         {
@@ -145,7 +297,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.LiberaAgenda)))
-                m_FLiberaAgenda = Convert.ToBoolean(getValue(DBPrepostosDicInfo.LiberaAgenda));
+                FLiberaAgenda = Convert.ToBoolean(getValue(DBPrepostosDicInfo.LiberaAgenda));
         }
         catch
         {
@@ -154,7 +306,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Periodo_Fim)))
-                m_FPeriodo_Fim = Convert.ToDateTime(getValue(DBPrepostosDicInfo.Periodo_Fim));
+                FPeriodo_Fim = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPrepostosDicInfo.Periodo_Fim)));
         }
         catch
         {
@@ -163,7 +315,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Periodo_Ini)))
-                m_FPeriodo_Ini = Convert.ToDateTime(getValue(DBPrepostosDicInfo.Periodo_Ini));
+                FPeriodo_Ini = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPrepostosDicInfo.Periodo_Ini)));
         }
         catch
         {
@@ -172,7 +324,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBPrepostosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBPrepostosDicInfo.QuemAtu));
         }
         catch
         {
@@ -181,7 +333,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBPrepostosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBPrepostosDicInfo.QuemCad));
         }
         catch
         {
@@ -190,7 +342,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Salario)))
-                m_FSalario = Convert.ToDecimal(getValue(DBPrepostosDicInfo.Salario));
+                FSalario = Convert.ToDecimal(getValue(DBPrepostosDicInfo.Salario));
         }
         catch
         {
@@ -199,7 +351,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Setor)))
-                m_FSetor = Convert.ToInt32(getValue(DBPrepostosDicInfo.Setor));
+                FSetor = Convert.ToInt32(getValue(DBPrepostosDicInfo.Setor));
         }
         catch
         {
@@ -208,7 +360,7 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Sexo));
         }
         catch
         {
@@ -217,166 +369,14 @@ public partial class DBPrepostos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPrepostosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBPrepostosDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBPrepostosDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBPrepostosDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBPrepostosDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCTPSNumero = getValue(DBPrepostosDicInfo.CTPSNumero)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCTPSSerie = getValue(DBPrepostosDicInfo.CTPSSerie)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBPrepostosDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBPrepostosDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBPrepostosDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBPrepostosDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBPrepostosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FMae = getValue(DBPrepostosDicInfo.Mae)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBPrepostosDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBPrepostosDicInfo.Observacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPai = getValue(DBPrepostosDicInfo.Pai)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPIS = getValue(DBPrepostosDicInfo.PIS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQualificacao = getValue(DBPrepostosDicInfo.Qualificacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRegistro = getValue(DBPrepostosDicInfo.Registro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBPrepostosDicInfo.RG)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBPrepostosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -400,7 +400,7 @@ public partial class DBPrepostos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

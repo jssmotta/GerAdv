@@ -74,19 +74,34 @@ public class ReuniaoWriterTests
         var result = await _reuniaoWriter.WriteAsync(reuniao, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFReuniao.Object);
+        _mockFReuniao.VerifySet(x => x.FGuid = reuniao.Guid, Times.Once);
         _mockFReuniao.VerifySet(x => x.FCliente = reuniao.Cliente, Times.Once);
         _mockFReuniao.VerifySet(x => x.FIDAgenda = reuniao.IDAgenda, Times.Once);
-        _mockFReuniao.VerifySet(x => x.FData = reuniao.Data, Times.Once);
+        _mockFReuniao.VerifySet(x => x.FData = reuniao.Data.ToString(), Times.Once);
         _mockFReuniao.VerifySet(x => x.FPauta = reuniao.Pauta, Times.Once);
         _mockFReuniao.VerifySet(x => x.FATA = reuniao.ATA, Times.Once);
         _mockFReuniao.VerifySet(x => x.FHoraInicial = reuniao.HoraInicial.ToString(), Times.Once);
-        _mockFReuniao.VerifySet(x => x.FHoraFinal = reuniao.HoraFinal, Times.Once);
+        _mockFReuniao.VerifySet(x => x.FHoraFinal = reuniao.HoraFinal.ToString(), Times.Once);
         _mockFReuniao.VerifySet(x => x.FExterna = reuniao.Externa, Times.Once);
         _mockFReuniao.VerifySet(x => x.FHoraSaida = reuniao.HoraSaida.ToString(), Times.Once);
         _mockFReuniao.VerifySet(x => x.FHoraRetorno = reuniao.HoraRetorno.ToString(), Times.Once);
         _mockFReuniao.VerifySet(x => x.FPrincipaisDecisoes = reuniao.PrincipaisDecisoes, Times.Once);
-        _mockFReuniao.VerifySet(x => x.FGUID = reuniao.GUID, Times.Once);
         _mockFReuniao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var reuniao = CreateValidReuniaoModel();
+        reuniao.Data = null;
+        var auditorQuem = 123;
+        _mockReuniaoFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFReuniao.Object);
+        _mockFReuniao.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _reuniaoWriter.WriteAsync(reuniao, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFReuniao.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -102,6 +117,21 @@ public class ReuniaoWriterTests
         await _reuniaoWriter.WriteAsync(reuniao, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFReuniao.VerifySet(x => x.FHoraInicial = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullHoraFinal_ShouldNotSetFHoraFinal()
+    {
+        // Arrange
+        var reuniao = CreateValidReuniaoModel();
+        reuniao.HoraFinal = null;
+        var auditorQuem = 123;
+        _mockReuniaoFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFReuniao.Object);
+        _mockFReuniao.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _reuniaoWriter.WriteAsync(reuniao, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFReuniao.VerifySet(x => x.FHoraFinal = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -174,7 +204,7 @@ public class ReuniaoWriterTests
         var operadorId = 456;
         _mockReuniaoFactory.Setup(x => x.DeleteAsync(operadorId, reuniaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _reuniaoWriter.Delete(reuniaoResponse, operadorId, _mockConnection.Object);
+        await _reuniaoWriter.DeleteAsync(reuniaoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockReuniaoFactory.Verify(x => x.DeleteAsync(operadorId, reuniaoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -190,7 +220,7 @@ public class ReuniaoWriterTests
         var operadorId = 111;
         _mockReuniaoFactory.Setup(x => x.DeleteAsync(operadorId, reuniaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _reuniaoWriter.Delete(reuniaoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _reuniaoWriter.DeleteAsync(reuniaoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -207,7 +237,7 @@ public class ReuniaoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockReuniaoFactory.Setup(x => x.DeleteAsync(operadorId, reuniaoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _reuniaoWriter.Delete(reuniaoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _reuniaoWriter.DeleteAsync(reuniaoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -237,18 +267,18 @@ public class ReuniaoWriterTests
         return new Models.Reuniao
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Cliente = 1,
             IDAgenda = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Pauta = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             ATA = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             HoraInicial = "04:04",
-            HoraFinal = "27/05/2022",
+            HoraFinal = "04:04",
             Externa = false,
             HoraSaida = "04:04",
             HoraRetorno = "04:04",
-            PrincipaisDecisoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            GUID = Guid.NewGuid().ToString()
+            PrincipaisDecisoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
     }
 #endregion

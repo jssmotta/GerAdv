@@ -21,7 +21,6 @@ public partial class ClientesSociosWhere(IFClientesSociosFactory clientessociosF
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
-            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -53,22 +52,26 @@ public partial class ClientesSociosWhere(IFClientesSociosFactory clientessociosF
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            clientessocios.DtNasc = dbRec.FDtNasc;
+            clientessocios.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             clientessocios.DtNasc_date = XDtNasc;
         }
 
-        if (DateTime.TryParse(dbRec.FDataContrato, out DateTime XDataContrato))
+        if (DateTime.TryParse(dbRec.FDataContrato.ToString(), out DateTime XDataContrato))
         {
-            clientessocios.DataContrato = dbRec.FDataContrato;
+            clientessocios.DataContrato = XDataContrato.ToString("dd/MM/yyyy");
             clientessocios.DataContrato_date = XDataContrato;
         }
 
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp.ToString(), out DateTime XRGDataExp))
         {
-            clientessocios.RGDataExp = dbRec.FRGDataExp;
+            clientessocios.RGDataExp = XRGDataExp.ToString("dd/MM/yyyy");
             clientessocios.RGDataExp_date = XRGDataExp;
         }
 

@@ -54,8 +54,88 @@ public partial class DBForo
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBForoDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBForoDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBForoDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBForoDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBForoDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBForoDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBForoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOBS = getValue(DBForoDicInfo.OBS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBForoDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FWeb = getValue(DBForoDicInfo.Web)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBForoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBForoDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +144,7 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBForoDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBForoDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +171,7 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBForoDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBForoDicInfo.Etiqueta));
         }
         catch
         {
@@ -100,7 +180,7 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBForoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBForoDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +189,7 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBForoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBForoDicInfo.QuemCad));
         }
         catch
         {
@@ -118,7 +198,7 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.Unico)))
-                m_FUnico = Convert.ToBoolean(getValue(DBForoDicInfo.Unico));
+                FUnico = Convert.ToBoolean(getValue(DBForoDicInfo.Unico));
         }
         catch
         {
@@ -127,7 +207,7 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.UnicoConfirmado)))
-                m_FUnicoConfirmado = Convert.ToBoolean(getValue(DBForoDicInfo.UnicoConfirmado));
+                FUnicoConfirmado = Convert.ToBoolean(getValue(DBForoDicInfo.UnicoConfirmado));
         }
         catch
         {
@@ -136,94 +216,14 @@ public partial class DBForo
         try
         {
             if (!DBNull.Value.Equals(getValue(DBForoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBForoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBForoDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBForoDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBForoDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBForoDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBForoDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBForoDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBForoDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOBS = getValue(DBForoDicInfo.OBS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBForoDicInfo.Site)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FWeb = getValue(DBForoDicInfo.Web)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBForoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -247,7 +247,7 @@ public partial class DBForo
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

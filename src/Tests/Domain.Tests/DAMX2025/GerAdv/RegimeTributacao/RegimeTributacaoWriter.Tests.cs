@@ -74,8 +74,8 @@ public class RegimeTributacaoWriterTests
         var result = await _regimetributacaoWriter.WriteAsync(regimetributacao, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFRegimeTributacao.Object);
+        _mockFRegimeTributacao.VerifySet(x => x.FGuid = regimetributacao.Guid, Times.Once);
         _mockFRegimeTributacao.VerifySet(x => x.FNome = regimetributacao.Nome, Times.Once);
-        _mockFRegimeTributacao.VerifySet(x => x.FGUID = regimetributacao.GUID, Times.Once);
         _mockFRegimeTributacao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class RegimeTributacaoWriterTests
         var operadorId = 456;
         _mockRegimeTributacaoFactory.Setup(x => x.DeleteAsync(operadorId, regimetributacaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _regimetributacaoWriter.Delete(regimetributacaoResponse, operadorId, _mockConnection.Object);
+        await _regimetributacaoWriter.DeleteAsync(regimetributacaoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockRegimeTributacaoFactory.Verify(x => x.DeleteAsync(operadorId, regimetributacaoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class RegimeTributacaoWriterTests
         var operadorId = 111;
         _mockRegimeTributacaoFactory.Setup(x => x.DeleteAsync(operadorId, regimetributacaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _regimetributacaoWriter.Delete(regimetributacaoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _regimetributacaoWriter.DeleteAsync(regimetributacaoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class RegimeTributacaoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockRegimeTributacaoFactory.Setup(x => x.DeleteAsync(operadorId, regimetributacaoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _regimetributacaoWriter.Delete(regimetributacaoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _regimetributacaoWriter.DeleteAsync(regimetributacaoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class RegimeTributacaoWriterTests
         return new Models.RegimeTributacao
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

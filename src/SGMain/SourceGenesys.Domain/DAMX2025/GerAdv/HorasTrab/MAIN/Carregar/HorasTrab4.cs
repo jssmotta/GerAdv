@@ -54,8 +54,64 @@ public partial class DBHorasTrab
         // Checkpoint Carregar 
         try
         {
+            FAnexo = getValue(DBHorasTrabDicInfo.Anexo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FAnexoComp = getValue(DBHorasTrabDicInfo.AnexoComp)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FAnexoUNC = getValue(DBHorasTrabDicInfo.AnexoUNC)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBHorasTrabDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHrFim = getValue(DBHorasTrabDicInfo.HrFim)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHrIni = getValue(DBHorasTrabDicInfo.HrIni)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOBS = getValue(DBHorasTrabDicInfo.OBS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Advogado)))
-                m_FAdvogado = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Advogado));
+                FAdvogado = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Advogado));
         }
         catch
         {
@@ -64,7 +120,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Cliente));
         }
         catch
         {
@@ -73,7 +129,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBHorasTrabDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBHorasTrabDicInfo.Data)));
         }
         catch
         {
@@ -100,7 +156,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Funcionario)))
-                m_FFuncionario = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Funcionario));
+                FFuncionario = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Funcionario));
         }
         catch
         {
@@ -109,7 +165,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Honorario)))
-                m_FHonorario = Convert.ToBoolean(getValue(DBHorasTrabDicInfo.Honorario));
+                FHonorario = Convert.ToBoolean(getValue(DBHorasTrabDicInfo.Honorario));
         }
         catch
         {
@@ -118,7 +174,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.IDAgenda)))
-                m_FIDAgenda = Convert.ToInt32(getValue(DBHorasTrabDicInfo.IDAgenda));
+                FIDAgenda = Convert.ToInt32(getValue(DBHorasTrabDicInfo.IDAgenda));
         }
         catch
         {
@@ -127,7 +183,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.IDContatoCRM)))
-                m_FIDContatoCRM = Convert.ToInt32(getValue(DBHorasTrabDicInfo.IDContatoCRM));
+                FIDContatoCRM = Convert.ToInt32(getValue(DBHorasTrabDicInfo.IDContatoCRM));
         }
         catch
         {
@@ -136,7 +192,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Processo));
         }
         catch
         {
@@ -145,7 +201,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBHorasTrabDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBHorasTrabDicInfo.QuemAtu));
         }
         catch
         {
@@ -154,7 +210,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBHorasTrabDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBHorasTrabDicInfo.QuemCad));
         }
         catch
         {
@@ -163,7 +219,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Servico)))
-                m_FServico = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Servico));
+                FServico = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Servico));
         }
         catch
         {
@@ -172,7 +228,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Status)))
-                m_FStatus = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Status));
+                FStatus = Convert.ToInt32(getValue(DBHorasTrabDicInfo.Status));
         }
         catch
         {
@@ -181,7 +237,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Tempo)))
-                m_FTempo = Convert.ToDecimal(getValue(DBHorasTrabDicInfo.Tempo));
+                FTempo = Convert.ToDecimal(getValue(DBHorasTrabDicInfo.Tempo));
         }
         catch
         {
@@ -190,7 +246,7 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBHorasTrabDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBHorasTrabDicInfo.Valor));
         }
         catch
         {
@@ -199,70 +255,14 @@ public partial class DBHorasTrab
         try
         {
             if (!DBNull.Value.Equals(getValue(DBHorasTrabDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBHorasTrabDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAnexo = getValue(DBHorasTrabDicInfo.Anexo)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAnexoComp = getValue(DBHorasTrabDicInfo.AnexoComp)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAnexoUNC = getValue(DBHorasTrabDicInfo.AnexoUNC)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBHorasTrabDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHrFim = getValue(DBHorasTrabDicInfo.HrFim)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHrIni = getValue(DBHorasTrabDicInfo.HrIni)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOBS = getValue(DBHorasTrabDicInfo.OBS)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBHorasTrabDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -286,7 +286,7 @@ public partial class DBHorasTrab
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

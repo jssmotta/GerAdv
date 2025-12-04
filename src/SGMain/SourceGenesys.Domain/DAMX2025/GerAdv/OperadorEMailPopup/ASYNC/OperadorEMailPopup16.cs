@@ -14,6 +14,14 @@ public partial class DBOperadorEMailPopup
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBOperadorEMailPopup
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,35 +142,35 @@ public partial class DBOperadorEMailPopup
 
 #if (!NOTSTORED_OperadorEMailPopup)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFOperador || pFldFNome || pFldFSenha || pFldFSMTP || pFldFPOP3 || pFldFAutenticacao || pFldFDescricao || pFldFUsuario || pFldFGUID || pFldFPortaSmtp || pFldFPortaPop3 || pFldFAssinatura || pFldFSenha256;
+    private bool HasAnyFieldChanged() => pFldFOperador || pFldFNome || pFldFSenha || pFldFSMTP || pFldFPOP3 || pFldFAutenticacao || pFldFDescricao || pFldFUsuario || pFldFPortaSmtp || pFldFPortaPop3 || pFldFAssinatura || pFldFSenha256 || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFOperador)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Operador, FOperador, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFSenha)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Senha, m_FSenha, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Senha, FSenha, EGenericTypeFields.FString);
         if (pFldFSMTP)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.SMTP, m_FSMTP, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.SMTP, FSMTP, EGenericTypeFields.FString);
         if (pFldFPOP3)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.POP3, m_FPOP3, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.POP3, FPOP3, EGenericTypeFields.FString);
         if (pFldFAutenticacao || updateTool.Insert)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Autenticacao, m_FAutenticacao, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Autenticacao, FAutenticacao, EGenericTypeFields.FBoolean);
         if (pFldFDescricao)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFUsuario)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Usuario, m_FUsuario, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Usuario, FUsuario, EGenericTypeFields.FString);
         if (pFldFPortaSmtp)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.PortaSmtp, m_FPortaSmtp, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.PortaSmtp, FPortaSmtp, EGenericTypeFields.FNumber);
         if (pFldFPortaPop3)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.PortaPop3, m_FPortaPop3, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.PortaPop3, FPortaPop3, EGenericTypeFields.FNumber);
         if (pFldFAssinatura)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Assinatura, m_FAssinatura, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Assinatura, FAssinatura, EGenericTypeFields.FString);
         if (pFldFSenha256)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.Senha256, m_FSenha256, ETiposCampos.FString);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Senha256, FSenha256, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -174,24 +182,23 @@ public partial class DBOperadorEMailPopup
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBOperadorEMailPopupDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBOperadorEMailPopupDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBOperadorEMailPopupDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBOperadorEMailPopupDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

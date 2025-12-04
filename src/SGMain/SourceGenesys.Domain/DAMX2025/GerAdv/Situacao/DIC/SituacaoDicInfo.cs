@@ -11,10 +11,10 @@ public static partial class DBSituacaoDicInfo
     public const string CampoNome = "sitParte_Int";
     public const string TablePrefix = "sit";
     public const string Parte_Int = "sitParte_Int"; // LOCALIZACAO 170523
-    public const string GUID = "sitGUID"; // LOCALIZACAO 170523
     public const string Parte_Opo = "sitParte_Opo"; // LOCALIZACAO 170523
     public const string Top = "sitTop"; // LOCALIZACAO 170523
     public const string Bold = "sitBold"; // LOCALIZACAO 170523
+    public const string Guid = "sitGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "sitQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "sitDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "sitQuemAtu"; // LOCALIZACAO 170523
@@ -37,48 +37,16 @@ public static partial class DBSituacaoDicInfo
 
     public const string PTabelaNome = "Situacao";
 #region PropriedadesDaTabela
-    public static DBInfoSystem SitParte_Int => new(0, PTabelaNome, CampoCodigo, Parte_Int, 30, "Parte_Int", "Parte_Int", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitParte_Opo => new(0, PTabelaNome, CampoCodigo, Parte_Opo, 30, "Parte_Opo", "Parte_Opo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "sit"
-    }; // DBI 11 
-    public static DBInfoSystem SitDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "sit"
-    }; // DBI 11 
-    public static DBInfoSystem SitDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "sit"
-    };
-    public static DBInfoSystem SitVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "sit"
-    };
+    public static DBInfoSystem SitParte_Int => new(0, PTabelaNome, CampoCodigo, Parte_Int, 30, Parte_Int, Parte_Int, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "sit");
+    public static DBInfoSystem SitParte_Opo => new(0, PTabelaNome, CampoCodigo, Parte_Opo, 30, Parte_Opo, Parte_Opo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "sit");
+    public static DBInfoSystem SitTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "sit");
+    public static DBInfoSystem SitBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "sit", isRequired: true);
+    public static DBInfoSystem SitGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "sit");
+    public static DBInfoSystem SitQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "sit"); // DBI 11 
+    public static DBInfoSystem SitDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "sit");
+    public static DBInfoSystem SitQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "sit"); // DBI 11 
+    public static DBInfoSystem SitDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "sit");
+    public static DBInfoSystem SitVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "sit", isRequired: true);
 
 #endregion
     [Serializable]

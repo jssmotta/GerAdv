@@ -11,8 +11,8 @@ public static partial class DBTipoContatoCRMDicInfo
     public const string CampoNome = "tccNome";
     public const string TablePrefix = "tcc";
     public const string Nome = "tccNome"; // LOCALIZACAO 170523
-    public const string GUID = "tccGUID"; // LOCALIZACAO 170523
     public const string Bold = "tccBold"; // LOCALIZACAO 170523
+    public const string Guid = "tccGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "tccQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "tccDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "tccQuemAtu"; // LOCALIZACAO 170523
@@ -33,40 +33,14 @@ public static partial class DBTipoContatoCRMDicInfo
 
     public const string PTabelaNome = "TipoContatoCRM";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TccNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "tcc"
-    };
-    public static DBInfoSystem TccGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "tcc"
-    };
-    public static DBInfoSystem TccBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "tcc"
-    };
-    public static DBInfoSystem TccQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tcc"
-    }; // DBI 11 
-    public static DBInfoSystem TccDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "tcc"
-    };
-    public static DBInfoSystem TccQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tcc"
-    }; // DBI 11 
-    public static DBInfoSystem TccDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "tcc"
-    };
-    public static DBInfoSystem TccVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "tcc"
-    };
+    public static DBInfoSystem TccNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tcc");
+    public static DBInfoSystem TccBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tcc", isRequired: true);
+    public static DBInfoSystem TccGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tcc");
+    public static DBInfoSystem TccQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tcc"); // DBI 11 
+    public static DBInfoSystem TccDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tcc");
+    public static DBInfoSystem TccQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tcc"); // DBI 11 
+    public static DBInfoSystem TccDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tcc");
+    public static DBInfoSystem TccVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tcc", isRequired: true);
 
 #endregion
     [Serializable]

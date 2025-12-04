@@ -11,7 +11,7 @@ public static partial class DBPenhoraStatusDicInfo
     public const string CampoNome = "phsNome";
     public const string TablePrefix = "phs";
     public const string Nome = "phsNome"; // LOCALIZACAO 170523
-    public const string GUID = "phsGUID"; // LOCALIZACAO 170523
+    public const string Guid = "phsGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "phsQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "phsDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "phsQuemAtu"; // LOCALIZACAO 170523
@@ -31,35 +31,13 @@ public static partial class DBPenhoraStatusDicInfo
 
     public const string PTabelaNome = "PenhoraStatus";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PhsNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "phs"
-    };
-    public static DBInfoSystem PhsGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "phs"
-    };
-    public static DBInfoSystem PhsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "phs"
-    }; // DBI 11 
-    public static DBInfoSystem PhsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "phs"
-    };
-    public static DBInfoSystem PhsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "phs"
-    }; // DBI 11 
-    public static DBInfoSystem PhsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "phs"
-    };
-    public static DBInfoSystem PhsVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "phs"
-    };
+    public static DBInfoSystem PhsNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "phs");
+    public static DBInfoSystem PhsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "phs");
+    public static DBInfoSystem PhsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "phs"); // DBI 11 
+    public static DBInfoSystem PhsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "phs");
+    public static DBInfoSystem PhsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "phs"); // DBI 11 
+    public static DBInfoSystem PhsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "phs");
+    public static DBInfoSystem PhsVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "phs", isRequired: true);
 
 #endregion
     [Serializable]

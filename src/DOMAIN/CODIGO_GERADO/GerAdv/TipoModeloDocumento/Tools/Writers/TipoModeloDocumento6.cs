@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITipoModeloDocumentoWriter
 {
     Task<FTipoModeloDocumento> WriteAsync(Models.TipoModeloDocumento tipomodelodocumento, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoModeloDocumentoWriter(IFTipoModeloDocumentoFactory tipomodelodocumentoFactory) : ITipoModeloDocumentoWriter
 {
     private readonly IFTipoModeloDocumentoFactory _tipomodelodocumentoFactory = tipomodelodocumentoFactory ?? throw new ArgumentNullException(nameof(tipomodelodocumentoFactory));
-    public virtual async Task Delete(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TipoModeloDocumentoResponse tipomodelodocumento, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipomodelodocumentoFactory.DeleteAsync(operadorId, tipomodelodocumento.Id, oCnn);
     }
@@ -24,7 +24,7 @@ public class TipoModeloDocumentoWriter(IFTipoModeloDocumentoFactory tipomodelodo
     {
         using var dbRec = await (tipomodelodocumento.Id.IsEmptyIDNumber() ? _tipomodelodocumentoFactory.CreateAsync() : _tipomodelodocumentoFactory.CreateFromIdAsync(tipomodelodocumento.Id, oCnn));
         dbRec.FNome = tipomodelodocumento.Nome;
-        dbRec.FGUID = tipomodelodocumento.GUID;
+        dbRec.FGuid = tipomodelodocumento.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -23,7 +23,7 @@ public class RamalValidation : IRamalValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var ligacoesExists0 = await ligacoesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterLigacoes { Ramal = id ?? default }, uri);
         if (ligacoesExists0 != null && ligacoesExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ligacoes associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Ligacoes associados a ele.");
         return true;
     }
 
@@ -40,6 +40,8 @@ public class RamalValidation : IRamalValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

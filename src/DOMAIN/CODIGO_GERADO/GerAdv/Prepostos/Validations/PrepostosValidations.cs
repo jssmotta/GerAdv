@@ -23,7 +23,7 @@ public class PrepostosValidation : IPrepostosValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Preposto = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Compromisso associados a ele.");
         return true;
     }
 
@@ -57,8 +57,6 @@ public class PrepostosValidation : IPrepostosValidation
             throw new SGValidationException($"Mae deve ter no máximo {DBPrepostosDicInfo.PreMae.FTamanho} caracteres.");
         if (reg.Class != null && reg.Class.Length > DBPrepostosDicInfo.PreClass.FTamanho)
             throw new SGValidationException($"Class deve ter no máximo {DBPrepostosDicInfo.PreClass.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBPrepostosDicInfo.PreGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBPrepostosDicInfo.PreGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -68,6 +66,8 @@ public class PrepostosValidation : IPrepostosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -120,9 +120,9 @@ public class PrepostosValidation : IPrepostosValidation
             }
         }
 
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -138,7 +138,7 @@ public class PrepostosValidation : IPrepostosValidation
         // Funcao
         if (!reg.Funcao.IsEmptyIDNumber())
         {
-            var regFuncao = await funcaoReader.Read(reg.Funcao, oCnn);
+            var regFuncao = await funcaoReader.ReadAsync(reg.Funcao, oCnn);
             if (regFuncao == null || regFuncao.Id != reg.Funcao)
             {
                 throw new SGValidationException($"Função não encontrado ({regFuncao?.Id}).");
@@ -148,7 +148,7 @@ public class PrepostosValidation : IPrepostosValidation
         // Setor
         if (!reg.Setor.IsEmptyIDNumber())
         {
-            var regSetor = await setorReader.Read(reg.Setor, oCnn);
+            var regSetor = await setorReader.ReadAsync(reg.Setor, oCnn);
             if (regSetor == null || regSetor.Id != reg.Setor)
             {
                 throw new SGValidationException($"Setor não encontrado ({regSetor?.Id}).");
@@ -158,7 +158,7 @@ public class PrepostosValidation : IPrepostosValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

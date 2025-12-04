@@ -12,7 +12,6 @@ public static partial class DBTribunalDicInfo
     public const string TablePrefix = "tri";
     public const string Nome = "triNome"; // LOCALIZACAO 170523
     public const string Area = "triArea"; // LOCALIZACAO 170523
-    public const string GUID = "triGUID"; // LOCALIZACAO 170523
     public const string Justica = "triJustica"; // LOCALIZACAO 170523
     public const string Descricao = "triDescricao"; // LOCALIZACAO 170523
     public const string Instancia = "triInstancia"; // LOCALIZACAO 170523
@@ -20,6 +19,7 @@ public static partial class DBTribunalDicInfo
     public const string Web = "triWeb"; // LOCALIZACAO 170523
     public const string Etiqueta = "triEtiqueta"; // LOCALIZACAO 170523
     public const string Bold = "triBold"; // LOCALIZACAO 170523
+    public const string Guid = "triGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "triQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "triDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "triQuemAtu"; // LOCALIZACAO 170523
@@ -47,70 +47,21 @@ public static partial class DBTribunalDicInfo
 
     public const string PTabelaNome = "Tribunal";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TriNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "tri"
-    }; // DBI 11 
-    public static DBInfoSystem TriGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", ETipoDadosSysteminfo.SysteminfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false)
-    {
-        Prefixo = "tri"
-    }; // DBI 11 
-    public static DBInfoSystem TriDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, "Instancia", "Instancia", ETipoDadosSysteminfo.SysteminfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false)
-    {
-        Prefixo = "tri"
-    }; // DBI 11 
-    public static DBInfoSystem TriSigla => new(0, PTabelaNome, CampoCodigo, Sigla, 20, "Sigla", "Sigla", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriWeb => new(0, PTabelaNome, CampoCodigo, Web, 255, "Web", "Web", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tri"
-    }; // DBI 11 
-    public static DBInfoSystem TriDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "tri"
-    }; // DBI 11 
-    public static DBInfoSystem TriDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "tri"
-    };
-    public static DBInfoSystem TriVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "tri"
-    };
+    public static DBInfoSystem TriNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tri");
+    public static DBInfoSystem TriArea => new(0, PTabelaNome, CampoCodigo, Area, Area, Area, EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "tri", isRequired: true); // DBI 11 
+    public static DBInfoSystem TriJustica => new(0, PTabelaNome, CampoCodigo, Justica, Justica, Justica, EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "tri"); // DBI 11 
+    public static DBInfoSystem TriDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tri");
+    public static DBInfoSystem TriInstancia => new(0, PTabelaNome, CampoCodigo, Instancia, Instancia, Instancia, EDataTypeSystemInfo.SystemInfoForeingkey, DBInstanciaDicInfo.CampoCodigo, DBInstanciaDicInfo.TabelaNome, new DBInstanciaODicInfo(), false, prefixo: "tri"); // DBI 11 
+    public static DBInfoSystem TriSigla => new(0, PTabelaNome, CampoCodigo, Sigla, 20, Sigla, Sigla, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "tri");
+    public static DBInfoSystem TriWeb => new(0, PTabelaNome, CampoCodigo, Web, 255, Web, Web, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "tri");
+    public static DBInfoSystem TriEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "tri", isRequired: true);
+    public static DBInfoSystem TriBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "tri", isRequired: true);
+    public static DBInfoSystem TriGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "tri");
+    public static DBInfoSystem TriQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tri"); // DBI 11 
+    public static DBInfoSystem TriDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "tri");
+    public static DBInfoSystem TriQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "tri"); // DBI 11 
+    public static DBInfoSystem TriDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "tri");
+    public static DBInfoSystem TriVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "tri", isRequired: true);
 
 #endregion
     [Serializable]

@@ -10,65 +10,72 @@ import { IPrepostos } from '../../Interfaces/interface.Prepostos';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { PrepostosEmpty } from '@/app/GerAdv_TS/Models/Prepostos';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface PrepostosWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedPrepostos?: IPrepostos;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedPrepostos?: IPrepostos;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const PrepostosWindow: React.FC<PrepostosWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedPrepostos, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedPrepostos,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Prepostos'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={905}
-  newWidth={1250}
-  mobile={isMobile}
-  id={(selectedPrepostos?.id ?? 0).toString()}
->
-<PrepostosInc
-id={selectedPrepostos?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Prepostos'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={905}
+                newWidth={1250}
+                mobile={isMobile}
+                id={(selectedPrepostos?.id ?? 0).toString()}
+            >
+                <PrepostosInc
+                    id={selectedPrepostos?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowPrepostos: React.FC<PrepostosWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<PrepostosWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedPrepostos={PrepostosEmpty()}>
-</PrepostosWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <PrepostosWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedPrepostos={PrepostosEmpty()}>
+        </PrepostosWindow>
+    )
 };
+
 export default PrepostosWindow;

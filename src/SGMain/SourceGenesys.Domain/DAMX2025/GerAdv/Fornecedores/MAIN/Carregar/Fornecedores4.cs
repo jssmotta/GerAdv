@@ -54,8 +54,136 @@ public partial class DBFornecedores
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBFornecedoresDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBFornecedoresDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNPJ = getValue(DBFornecedoresDicInfo.CNPJ)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FContatos = getValue(DBFornecedoresDicInfo.Contatos)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBFornecedoresDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEmail = getValue(DBFornecedoresDicInfo.Email)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBFornecedoresDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBFornecedoresDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBFornecedoresDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBFornecedoresDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FInscEst = getValue(DBFornecedoresDicInfo.InscEst)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBFornecedoresDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObs = getValue(DBFornecedoresDicInfo.Obs)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FProdutos = getValue(DBFornecedoresDicInfo.Produtos)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBFornecedoresDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBFornecedoresDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +192,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBFornecedoresDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBFornecedoresDicInfo.Cidade));
         }
         catch
         {
@@ -91,7 +219,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Etiqueta));
         }
         catch
         {
@@ -100,7 +228,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Grupo)))
-                m_FGrupo = Convert.ToInt32(getValue(DBFornecedoresDicInfo.Grupo));
+                FGrupo = Convert.ToInt32(getValue(DBFornecedoresDicInfo.Grupo));
         }
         catch
         {
@@ -109,7 +237,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBFornecedoresDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBFornecedoresDicInfo.QuemAtu));
         }
         catch
         {
@@ -118,7 +246,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBFornecedoresDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBFornecedoresDicInfo.QuemCad));
         }
         catch
         {
@@ -127,7 +255,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Sexo));
         }
         catch
         {
@@ -136,7 +264,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.SubGrupo)))
-                m_FSubGrupo = Convert.ToInt32(getValue(DBFornecedoresDicInfo.SubGrupo));
+                FSubGrupo = Convert.ToInt32(getValue(DBFornecedoresDicInfo.SubGrupo));
         }
         catch
         {
@@ -145,7 +273,7 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Tipo));
         }
         catch
         {
@@ -154,142 +282,14 @@ public partial class DBFornecedores
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFornecedoresDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBFornecedoresDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBFornecedoresDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNPJ = getValue(DBFornecedoresDicInfo.CNPJ)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FContatos = getValue(DBFornecedoresDicInfo.Contatos)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBFornecedoresDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEmail = getValue(DBFornecedoresDicInfo.Email)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBFornecedoresDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBFornecedoresDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBFornecedoresDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBFornecedoresDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FInscEst = getValue(DBFornecedoresDicInfo.InscEst)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBFornecedoresDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObs = getValue(DBFornecedoresDicInfo.Obs)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FProdutos = getValue(DBFornecedoresDicInfo.Produtos)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBFornecedoresDicInfo.RG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBFornecedoresDicInfo.Site)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBFornecedoresDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -313,7 +313,7 @@ public partial class DBFornecedores
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

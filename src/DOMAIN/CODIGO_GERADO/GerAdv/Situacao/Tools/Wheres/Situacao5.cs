@@ -21,9 +21,10 @@ public partial class SituacaoWhere(IFSituacaoFactory situacaoFactory) : ISituaca
         {
             Id = dbRec.ID,
             Parte_Int = dbRec.FParte_Int ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Parte_Opo = dbRec.FParte_Opo ?? string.Empty,
             Top = dbRec.FTop,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return situacao;
     }

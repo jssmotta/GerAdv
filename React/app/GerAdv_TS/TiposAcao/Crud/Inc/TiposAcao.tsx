@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { ITiposAcaoFormProps } from '../../Interfaces/interface.TiposAcao';
 import { TiposAcaoService } from '../../Services/TiposAcao.service';
 import { useTiposAcaoForm, useValidationsTiposAcao } from '../../Hooks/hookTiposAcao';
-import { TiposAcaoEmpty } from '../../../Models/TiposAcao';
+import { TiposAcaoEmpty } from '../../../Models/TiposAcao'; 
 import { TiposAcaoForm } from '../Forms/TiposAcao';
+ 
 
 const TiposAcaoInc: React.FC<ITiposAcaoFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const tiposacaoService = new TiposAcaoService(
-  new TiposAcaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadTiposAcao } = useTiposAcaoForm(
-TiposAcaoEmpty(), 
-tiposacaoService
-);
-useEffect(() => {
-  loadTiposAcao(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedTiposAcao = await tiposacaoService.saveTiposAcao(data);
-    if (savedTiposAcao.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedTiposAcao);
+  const tiposacaoService = new TiposAcaoService(
+    new TiposAcaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadTiposAcao } = useTiposAcaoForm(
+    TiposAcaoEmpty(),
+    tiposacaoService
+  );
+
+  useEffect(() => {
+    loadTiposAcao(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedTiposAcao = await tiposacaoService.saveTiposAcao(data);
+
+      if (savedTiposAcao.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedTiposAcao);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadTiposAcao(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <TiposAcaoForm
+        tiposacaoData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadTiposAcao(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<TiposAcaoForm
-tiposacaoData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default TiposAcaoInc;

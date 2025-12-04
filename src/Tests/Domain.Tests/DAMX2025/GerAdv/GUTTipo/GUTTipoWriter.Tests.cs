@@ -74,9 +74,9 @@ public class GUTTipoWriterTests
         var result = await _guttipoWriter.WriteAsync(guttipo, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFGUTTipo.Object);
+        _mockFGUTTipo.VerifySet(x => x.FGuid = guttipo.Guid, Times.Once);
         _mockFGUTTipo.VerifySet(x => x.FNome = guttipo.Nome, Times.Once);
         _mockFGUTTipo.VerifySet(x => x.FOrdem = guttipo.Ordem, Times.Once);
-        _mockFGUTTipo.VerifySet(x => x.FGUID = guttipo.GUID, Times.Once);
         _mockFGUTTipo.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -120,7 +120,7 @@ public class GUTTipoWriterTests
         var operadorId = 456;
         _mockGUTTipoFactory.Setup(x => x.DeleteAsync(operadorId, guttipoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _guttipoWriter.Delete(guttipoResponse, operadorId, _mockConnection.Object);
+        await _guttipoWriter.DeleteAsync(guttipoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGUTTipoFactory.Verify(x => x.DeleteAsync(operadorId, guttipoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -136,7 +136,7 @@ public class GUTTipoWriterTests
         var operadorId = 111;
         _mockGUTTipoFactory.Setup(x => x.DeleteAsync(operadorId, guttipoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _guttipoWriter.Delete(guttipoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _guttipoWriter.DeleteAsync(guttipoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -153,7 +153,7 @@ public class GUTTipoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGUTTipoFactory.Setup(x => x.DeleteAsync(operadorId, guttipoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _guttipoWriter.Delete(guttipoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _guttipoWriter.DeleteAsync(guttipoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,9 +183,9 @@ public class GUTTipoWriterTests
         return new Models.GUTTipo
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
-            Ordem = 1,
-            GUID = Guid.NewGuid().ToString()
+            Ordem = 1
         };
     }
 #endregion

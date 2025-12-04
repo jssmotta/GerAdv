@@ -9,25 +9,29 @@ public partial class DBOperadorODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBOperadorDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBOperadorDicInfo.CampoCodigo;
+    public string IFieldId() => DBOperadorDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBOperadorDicInfo.TablePrefix;
+    public string IPrefix() => DBOperadorDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBOperadorDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBOperadorDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBOperadorODicInfo : IODicInfo
     public static string TCampoNome => DBOperadorDicInfo.CampoNome;
     public static string TTabelaNome => DBOperadorDicInfo.TabelaNome;
     public static string TTablePrefix => DBOperadorDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBOperadorDicInfo.OperEMail, DBOperadorDicInfo.OperPasta, DBOperadorDicInfo.OperTelefonista, DBOperadorDicInfo.OperMaster, DBOperadorDicInfo.OperNome, DBOperadorDicInfo.OperNick, DBOperadorDicInfo.OperRamal, DBOperadorDicInfo.OperCadID, DBOperadorDicInfo.OperCadCod, DBOperadorDicInfo.OperExcluido, DBOperadorDicInfo.OperSituacao, DBOperadorDicInfo.OperComputador, DBOperadorDicInfo.OperMinhaDescricao, DBOperadorDicInfo.OperUltimoLogoff, DBOperadorDicInfo.OperEMailNet, DBOperadorDicInfo.OperOnlineIP, DBOperadorDicInfo.OperOnLine, DBOperadorDicInfo.OperSysOp, DBOperadorDicInfo.OperStatusId, DBOperadorDicInfo.OperStatusMessage, DBOperadorDicInfo.OperIsFinanceiro, DBOperadorDicInfo.OperGUID, DBOperadorDicInfo.OperTop, DBOperadorDicInfo.OperSexo, DBOperadorDicInfo.OperBasico, DBOperadorDicInfo.OperExterno, DBOperadorDicInfo.OperSenha256, DBOperadorDicInfo.OperEMailConfirmado, DBOperadorDicInfo.OperDataLimiteReset, DBOperadorDicInfo.OperSuporteSenha256, DBOperadorDicInfo.OperSuporteMaxAge, DBOperadorDicInfo.OperSuporteNomeSolicitante, DBOperadorDicInfo.OperSuporteUltimoAcesso, DBOperadorDicInfo.OperSuporteIpUltimoAcesso, DBOperadorDicInfo.OperQuemCad, DBOperadorDicInfo.OperDtCad, DBOperadorDicInfo.OperQuemAtu, DBOperadorDicInfo.OperDtAtu, DBOperadorDicInfo.OperVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOperadorDicInfo.OperEMail, DBOperadorDicInfo.OperPasta, DBOperadorDicInfo.OperTelefonista, DBOperadorDicInfo.OperMaster, DBOperadorDicInfo.OperNome, DBOperadorDicInfo.OperNick, DBOperadorDicInfo.OperRamal, DBOperadorDicInfo.OperCadID, DBOperadorDicInfo.OperCadCod, DBOperadorDicInfo.OperExcluido, DBOperadorDicInfo.OperSituacao, DBOperadorDicInfo.OperComputador, DBOperadorDicInfo.OperMinhaDescricao, DBOperadorDicInfo.OperUltimoLogoff, DBOperadorDicInfo.OperEMailNet, DBOperadorDicInfo.OperOnlineIP, DBOperadorDicInfo.OperOnLine, DBOperadorDicInfo.OperSysOp, DBOperadorDicInfo.OperStatusId, DBOperadorDicInfo.OperStatusMessage, DBOperadorDicInfo.OperIsFinanceiro, DBOperadorDicInfo.OperGUID, DBOperadorDicInfo.OperTop, DBOperadorDicInfo.OperSexo, DBOperadorDicInfo.OperBasico, DBOperadorDicInfo.OperExterno, DBOperadorDicInfo.OperSenha256, DBOperadorDicInfo.OperEMailConfirmado, DBOperadorDicInfo.OperDataLimiteReset, DBOperadorDicInfo.OperSuporteSenha256, DBOperadorDicInfo.OperSuporteMaxAge, DBOperadorDicInfo.OperSuporteNomeSolicitante, DBOperadorDicInfo.OperSuporteUltimoAcesso, DBOperadorDicInfo.OperSuporteIpUltimoAcesso];
+    public static ImmutableArray<DBInfoSystem> List => [DBOperadorDicInfo.OperEMail, DBOperadorDicInfo.OperPasta, DBOperadorDicInfo.OperTelefonista, DBOperadorDicInfo.OperMaster, DBOperadorDicInfo.OperNome, DBOperadorDicInfo.OperNick, DBOperadorDicInfo.OperRamal, DBOperadorDicInfo.OperCadID, DBOperadorDicInfo.OperCadCod, DBOperadorDicInfo.OperExcluido, DBOperadorDicInfo.OperSituacao, DBOperadorDicInfo.OperComputador, DBOperadorDicInfo.OperMinhaDescricao, DBOperadorDicInfo.OperUltimoLogoff, DBOperadorDicInfo.OperEMailNet, DBOperadorDicInfo.OperOnlineIP, DBOperadorDicInfo.OperOnLine, DBOperadorDicInfo.OperSysOp, DBOperadorDicInfo.OperStatusId, DBOperadorDicInfo.OperStatusMessage, DBOperadorDicInfo.OperIsFinanceiro, DBOperadorDicInfo.OperTop, DBOperadorDicInfo.OperSexo, DBOperadorDicInfo.OperBasico, DBOperadorDicInfo.OperExterno, DBOperadorDicInfo.OperSenha256, DBOperadorDicInfo.OperEMailConfirmado, DBOperadorDicInfo.OperDataLimiteReset, DBOperadorDicInfo.OperSuporteSenha256, DBOperadorDicInfo.OperSuporteMaxAge, DBOperadorDicInfo.OperSuporteNomeSolicitante, DBOperadorDicInfo.OperSuporteUltimoAcesso, DBOperadorDicInfo.OperSuporteIpUltimoAcesso, DBOperadorDicInfo.OperGuid, DBOperadorDicInfo.OperQuemCad, DBOperadorDicInfo.OperDtCad, DBOperadorDicInfo.OperQuemAtu, DBOperadorDicInfo.OperDtAtu, DBOperadorDicInfo.OperVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOperadorDicInfo.OperEMail, DBOperadorDicInfo.OperPasta, DBOperadorDicInfo.OperTelefonista, DBOperadorDicInfo.OperMaster, DBOperadorDicInfo.OperNome, DBOperadorDicInfo.OperNick, DBOperadorDicInfo.OperRamal, DBOperadorDicInfo.OperCadID, DBOperadorDicInfo.OperCadCod, DBOperadorDicInfo.OperExcluido, DBOperadorDicInfo.OperSituacao, DBOperadorDicInfo.OperComputador, DBOperadorDicInfo.OperMinhaDescricao, DBOperadorDicInfo.OperUltimoLogoff, DBOperadorDicInfo.OperEMailNet, DBOperadorDicInfo.OperOnlineIP, DBOperadorDicInfo.OperOnLine, DBOperadorDicInfo.OperSysOp, DBOperadorDicInfo.OperStatusId, DBOperadorDicInfo.OperStatusMessage, DBOperadorDicInfo.OperIsFinanceiro, DBOperadorDicInfo.OperTop, DBOperadorDicInfo.OperSexo, DBOperadorDicInfo.OperBasico, DBOperadorDicInfo.OperExterno, DBOperadorDicInfo.OperSenha256, DBOperadorDicInfo.OperEMailConfirmado, DBOperadorDicInfo.OperDataLimiteReset, DBOperadorDicInfo.OperSuporteSenha256, DBOperadorDicInfo.OperSuporteMaxAge, DBOperadorDicInfo.OperSuporteNomeSolicitante, DBOperadorDicInfo.OperSuporteUltimoAcesso, DBOperadorDicInfo.OperSuporteIpUltimoAcesso, DBOperadorDicInfo.OperGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["operCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOperadorDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["operCodigo", "operNome"]);
         var result = campos.Where(campo => !campo.Equals(DBOperadorDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

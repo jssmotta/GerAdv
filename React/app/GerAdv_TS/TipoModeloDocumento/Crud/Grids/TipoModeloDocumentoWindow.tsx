@@ -10,65 +10,72 @@ import { ITipoModeloDocumento } from '../../Interfaces/interface.TipoModeloDocum
 import { useIsMobile } from '@/app/context/MobileContext';
 import { TipoModeloDocumentoEmpty } from '@/app/GerAdv_TS/Models/TipoModeloDocumento';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface TipoModeloDocumentoWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedTipoModeloDocumento?: ITipoModeloDocumento;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedTipoModeloDocumento?: ITipoModeloDocumento;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const TipoModeloDocumentoWindow: React.FC<TipoModeloDocumentoWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedTipoModeloDocumento, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedTipoModeloDocumento,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Tipo Modelo Documento'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedTipoModeloDocumento?.id ?? 0).toString()}
->
-<TipoModeloDocumentoInc
-id={selectedTipoModeloDocumento?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Tipo Modelo Documento'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedTipoModeloDocumento?.id ?? 0).toString()}
+            >
+                <TipoModeloDocumentoInc
+                    id={selectedTipoModeloDocumento?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowTipoModeloDocumento: React.FC<TipoModeloDocumentoWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<TipoModeloDocumentoWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedTipoModeloDocumento={TipoModeloDocumentoEmpty()}>
-</TipoModeloDocumentoWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <TipoModeloDocumentoWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedTipoModeloDocumento={TipoModeloDocumentoEmpty()}>
+        </TipoModeloDocumentoWindow>
+    )
 };
+
 export default TipoModeloDocumentoWindow;

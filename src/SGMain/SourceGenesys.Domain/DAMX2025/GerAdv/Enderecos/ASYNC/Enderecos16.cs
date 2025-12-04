@@ -14,6 +14,14 @@ public partial class DBEnderecos
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBEnderecos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,51 +142,57 @@ public partial class DBEnderecos
 
 #if (!NOTSTORED_Enderecos)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFTopIndex || pFldFGUID || pFldFDescricao || pFldFContato || pFldFDtNasc || pFldFEndereco || pFldFBairro || pFldFPrivativo || pFldFAddContato || pFldFCEP || pFldFOAB || pFldFOBS || pFldFFone || pFldFFax || pFldFTratamento || pFldFCidade || pFldFSite || pFldFEMail || pFldFQuem || pFldFQuemIndicou || pFldFReportECBOnly;
+    private bool HasAnyFieldChanged() => pFldFTopIndex || pFldFDescricao || pFldFContato || pFldFDtNasc || pFldFEndereco || pFldFBairro || pFldFPrivativo || pFldFAddContato || pFldFCEP || pFldFOAB || pFldFOBS || pFldFFone || pFldFFax || pFldFTratamento || pFldFCidade || pFldFSite || pFldFEMail || pFldFQuem || pFldFQuemIndicou || pFldFReportECBOnly || pFldFEtiqueta || pFldFAni || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFTopIndex || updateTool.Insert)
-            updateTool.Fields(DBEnderecosDicInfo.TopIndex, m_FTopIndex, ETiposCampos.FBoolean);
-        if (pFldFGUID)
-            updateTool.Fields(DBEnderecosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.TopIndex, FTopIndex, EGenericTypeFields.FBoolean);
         if (pFldFDescricao)
-            updateTool.Fields(DBEnderecosDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFContato)
-            updateTool.Fields(DBEnderecosDicInfo.Contato, m_FContato, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Contato, FContato, EGenericTypeFields.FString);
         if (pFldFDtNasc)
-            updateTool.Fields(DBEnderecosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
+            updateTool.Fields(DBEnderecosDicInfo.DtNasc, FDtNasc, EGenericTypeFields.FDate);
         if (pFldFEndereco)
-            updateTool.Fields(DBEnderecosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            updateTool.Fields(DBEnderecosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFPrivativo || updateTool.Insert)
-            updateTool.Fields(DBEnderecosDicInfo.Privativo, m_FPrivativo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEnderecosDicInfo.Privativo, FPrivativo, EGenericTypeFields.FBoolean);
         if (pFldFAddContato || updateTool.Insert)
-            updateTool.Fields(DBEnderecosDicInfo.AddContato, m_FAddContato, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEnderecosDicInfo.AddContato, FAddContato, EGenericTypeFields.FBoolean);
         if (pFldFCEP)
-            updateTool.Fields(DBEnderecosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFOAB)
-            updateTool.Fields(DBEnderecosDicInfo.OAB, m_FOAB, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.OAB, FOAB, EGenericTypeFields.FString);
         if (pFldFOBS)
-            updateTool.Fields(DBEnderecosDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBEnderecosDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            updateTool.Fields(DBEnderecosDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFTratamento)
-            updateTool.Fields(DBEnderecosDicInfo.Tratamento, m_FTratamento, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Tratamento, FTratamento, EGenericTypeFields.FString);
         if (pFldFCidade)
-            updateTool.Fields(DBEnderecosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBEnderecosDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFSite)
-            updateTool.Fields(DBEnderecosDicInfo.Site, m_FSite, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.Site, FSite, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBEnderecosDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFQuem)
-            updateTool.Fields(DBEnderecosDicInfo.Quem, m_FQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEnderecosDicInfo.Quem, FQuem, EGenericTypeFields.FNumber);
         if (pFldFQuemIndicou)
-            updateTool.Fields(DBEnderecosDicInfo.QuemIndicou, m_FQuemIndicou, ETiposCampos.FString);
+            updateTool.Fields(DBEnderecosDicInfo.QuemIndicou, FQuemIndicou, EGenericTypeFields.FString);
         if (pFldFReportECBOnly || updateTool.Insert)
-            updateTool.Fields(DBEnderecosDicInfo.ReportECBOnly, m_FReportECBOnly, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEnderecosDicInfo.ReportECBOnly, FReportECBOnly, EGenericTypeFields.FBoolean);
+        if (pFldFEtiqueta || updateTool.Insert)
+            updateTool.Fields(DBEnderecosDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
+        if (pFldFAni || updateTool.Insert)
+            updateTool.Fields(DBEnderecosDicInfo.Ani, FAni, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBEnderecosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBEnderecosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -190,24 +204,23 @@ public partial class DBEnderecos
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBEnderecosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEnderecosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBEnderecosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBEnderecosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBEnderecosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEnderecosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBEnderecosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBEnderecosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBEnderecosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBEnderecosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBEnderecosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

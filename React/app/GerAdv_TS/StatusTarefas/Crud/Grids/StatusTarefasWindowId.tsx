@@ -9,54 +9,61 @@ import { StatusTarefasService } from '../../Services/StatusTarefas.service';
 import { StatusTarefasApi } from '../../Apis/ApiStatusTarefas';
 import StatusTarefasWindow from './StatusTarefasWindow';
 import {StatusTarefasEmpty } from '@/app/GerAdv_TS/Models/StatusTarefas';
-interface StatusTarefasWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const StatusTarefasWindowId: React.FC<StatusTarefasWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const statustarefasService = useMemo(() => {
-  return new StatusTarefasService(
-  new StatusTarefasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IStatusTarefas | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(StatusTarefasEmpty() as IStatusTarefas);
-      return;
-    }
-    if (id) {
-      const response = await statustarefasService.fetchStatusTarefasById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <StatusTarefasWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedStatusTarefas={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface StatusTarefasWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const StatusTarefasWindowId: React.FC<StatusTarefasWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const statustarefasService = useMemo(() => {
+        return new StatusTarefasService(
+            new StatusTarefasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IStatusTarefas | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(StatusTarefasEmpty() as IStatusTarefas);
+                return;
+            }
+            if (id) {
+                 const response = await statustarefasService.fetchStatusTarefasById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <StatusTarefasWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedStatusTarefas={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default StatusTarefasWindowId;

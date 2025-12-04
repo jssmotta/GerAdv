@@ -28,8 +28,6 @@ public class AndamentosMDValidation : IAndamentosMDValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBAndamentosMDDicInfo.AmdNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBAndamentosMDDicInfo.AmdNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBAndamentosMDDicInfo.AmdGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBAndamentosMDDicInfo.AmdGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class AndamentosMDValidation : IAndamentosMDValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

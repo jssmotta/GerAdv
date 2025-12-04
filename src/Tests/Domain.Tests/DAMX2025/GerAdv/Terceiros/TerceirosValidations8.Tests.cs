@@ -79,8 +79,8 @@ public class TerceirosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockTerceirosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTerceiros>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Terceiross service mock
-        _ = _mockPosicaoOutrasPartesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PosicaoOutrasPartesResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockPosicaoOutrasPartesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PosicaoOutrasPartesResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -88,8 +88,8 @@ public class TerceirosValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockTerceirosService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTerceiros>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Terceiross service mock
-        _ = _mockPosicaoOutrasPartesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PosicaoOutrasPartesResponse { Id = 0 }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockPosicaoOutrasPartesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PosicaoOutrasPartesResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class TerceirosValidationTests : IDisposable
         // Arrange
         var terceiros = CreateValidTerceiros();
         terceiros.Situacao = 999;
-        _mockPosicaoOutrasPartesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PosicaoOutrasPartesResponse>(null));
+        _mockPosicaoOutrasPartesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PosicaoOutrasPartesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -190,7 +190,7 @@ public class TerceirosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockPosicaoOutrasPartesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockPosicaoOutrasPartesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -207,7 +207,7 @@ public class TerceirosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockPosicaoOutrasPartesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockPosicaoOutrasPartesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -227,7 +227,7 @@ public class TerceirosValidationTests : IDisposable
         var result = await _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockPosicaoOutrasPartesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockPosicaoOutrasPartesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Cidade
@@ -237,7 +237,7 @@ public class TerceirosValidationTests : IDisposable
         // Arrange
         var terceiros = CreateValidTerceiros();
         terceiros.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -254,7 +254,7 @@ public class TerceirosValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -271,7 +271,7 @@ public class TerceirosValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -291,7 +291,7 @@ public class TerceirosValidationTests : IDisposable
         var result = await _validation.ValidateReg(terceiros, _mockTerceirosService.Object, _mockPosicaoOutrasPartesReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockCidadeReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockCidadeReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

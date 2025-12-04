@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { ISMSAliceFormProps } from '../../Interfaces/interface.SMSAlice';
 import { SMSAliceService } from '../../Services/SMSAlice.service';
 import { useSMSAliceForm, useValidationsSMSAlice } from '../../Hooks/hookSMSAlice';
-import { SMSAliceEmpty } from '../../../Models/SMSAlice';
+import { SMSAliceEmpty } from '../../../Models/SMSAlice'; 
 import { SMSAliceForm } from '../Forms/SMSAlice';
+ 
 
 const SMSAliceInc: React.FC<ISMSAliceFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const smsaliceService = new SMSAliceService(
-  new SMSAliceApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadSMSAlice } = useSMSAliceForm(
-SMSAliceEmpty(), 
-smsaliceService
-);
-useEffect(() => {
-  loadSMSAlice(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedSMSAlice = await smsaliceService.saveSMSAlice(data);
-    if (savedSMSAlice.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedSMSAlice);
+  const smsaliceService = new SMSAliceService(
+    new SMSAliceApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadSMSAlice } = useSMSAliceForm(
+    SMSAliceEmpty(),
+    smsaliceService
+  );
+
+  useEffect(() => {
+    loadSMSAlice(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedSMSAlice = await smsaliceService.saveSMSAlice(data);
+
+      if (savedSMSAlice.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedSMSAlice);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadSMSAlice(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <SMSAliceForm
+        smsaliceData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadSMSAlice(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<SMSAliceForm
-smsaliceData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default SMSAliceInc;

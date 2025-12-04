@@ -23,7 +23,8 @@ public partial class ProCDAWhere(IFProCDAFactory procdaFactory) : IProCDAWhere
             Processo = dbRec.FProcesso,
             Nome = dbRec.FNome ?? string.Empty,
             NroInterno = dbRec.FNroInterno ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return procda;
     }

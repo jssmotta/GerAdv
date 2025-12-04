@@ -36,7 +36,7 @@ public class ProProcuradoresWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProProcuradores(int? Advogado = 1, string? Nome = "João", int? Processo = 1, string? Data = "27/05/2022", bool? Substabelecimento = false, bool? Procuracao = true)
+    private void SetupMockFProProcuradores(int? Advogado = 1, string? Nome = "João", int? Processo = 1, string? Data = "24/04/1975", bool? Substabelecimento = false, bool? Procuracao = true)
     {
         _mockFProProcuradores.Setup(f => f.FAdvogado).Returns(Advogado ?? 0);
         _mockFProProcuradores.Setup(f => f.FNome).Returns(Nome ?? string.Empty);
@@ -86,7 +86,7 @@ public class ProProcuradoresWhereTests : IDisposable
         result.Advogado.Should().Be(1);
         result.Nome.Should().Be("João");
         result.Processo.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Substabelecimento.Should().Be(false);
         result.Procuracao.Should().Be(true);
     }
@@ -220,7 +220,7 @@ public class ProProcuradoresWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProProcuradores(Advogado: 1, Nome: "João", Processo: 1, Data: "27/05/2022", Substabelecimento: false, Procuracao: true);
+        SetupMockFProProcuradores(Advogado: 1, Nome: "João", Processo: 1, Data: "24/04/1975", Substabelecimento: false, Procuracao: true);
         _mockProProcuradoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProProcuradores.Object);
         // Act
         var result = _proprocuradoresWhere.Read(where, parameters, _mockConnection.Object);
@@ -230,7 +230,7 @@ public class ProProcuradoresWhereTests : IDisposable
         result.Advogado.Should().Be(1);
         result.Nome.Should().Be("João");
         result.Processo.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Substabelecimento.Should().Be(false);
         result.Procuracao.Should().Be(true);
     }
@@ -251,7 +251,55 @@ public class ProProcuradoresWhereTests : IDisposable
         // Assert
         _mockProProcuradoresFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBProProcuradoresDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFProProcuradores(Data: testDate);
+        _mockProProcuradoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProProcuradores.Object);
+        // Act
+        var result = _proprocuradoresWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFProProcuradores(Data: null);
+        _mockProProcuradoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProProcuradores.Object);
+        // Act
+        var result = _proprocuradoresWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFProProcuradores(Data: dateString);
+        _mockProProcuradoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProProcuradores.Object);
+        // Act
+        var result = _proprocuradoresWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

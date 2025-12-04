@@ -31,9 +31,9 @@ public partial class OperadoresWhere(IFOperadoresFactory operadoresFactory) : IO
             EMail = dbRec.FEMail ?? string.Empty,
             Ativado = dbRec.FAtivado,
         };
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge.ToString(), out DateTime XSuporteMaxAge))
         {
-            operadores.SuporteMaxAge = dbRec.FSuporteMaxAge;
+            operadores.SuporteMaxAge = XSuporteMaxAge.ToString("dd/MM/yyyy");
             operadores.SuporteMaxAge_date = XSuporteMaxAge;
         }
 

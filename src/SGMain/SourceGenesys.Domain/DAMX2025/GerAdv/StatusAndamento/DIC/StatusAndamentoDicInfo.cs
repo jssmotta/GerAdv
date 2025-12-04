@@ -11,9 +11,9 @@ public static partial class DBStatusAndamentoDicInfo
     public const string CampoNome = "sanNome";
     public const string TablePrefix = "san";
     public const string Nome = "sanNome"; // LOCALIZACAO 170523
-    public const string GUID = "sanGUID"; // LOCALIZACAO 170523
     public const string Icone = "sanIcone"; // LOCALIZACAO 170523
     public const string Bold = "sanBold"; // LOCALIZACAO 170523
+    public const string Guid = "sanGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "sanQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "sanDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "sanQuemAtu"; // LOCALIZACAO 170523
@@ -35,44 +35,15 @@ public static partial class DBStatusAndamentoDicInfo
 
     public const string PTabelaNome = "StatusAndamento";
 #region PropriedadesDaTabela
-    public static DBInfoSystem SanNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "san"
-    };
-    public static DBInfoSystem SanGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "san"
-    };
-    public static DBInfoSystem SanIcone => new(0, PTabelaNome, CampoCodigo, Icone, "Icone", "Icone", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "san"
-    };
-    public static DBInfoSystem SanBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "san"
-    };
-    public static DBInfoSystem SanQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "san"
-    }; // DBI 11 
-    public static DBInfoSystem SanDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "san"
-    };
-    public static DBInfoSystem SanQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "san"
-    }; // DBI 11 
-    public static DBInfoSystem SanDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "san"
-    };
-    public static DBInfoSystem SanVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "san"
-    };
+    public static DBInfoSystem SanNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "san");
+    public static DBInfoSystem SanIcone => new(0, PTabelaNome, CampoCodigo, Icone, Icone, Icone, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "san");
+    public static DBInfoSystem SanBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "san", isRequired: true);
+    public static DBInfoSystem SanGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "san");
+    public static DBInfoSystem SanQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "san"); // DBI 11 
+    public static DBInfoSystem SanDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "san");
+    public static DBInfoSystem SanQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "san"); // DBI 11 
+    public static DBInfoSystem SanDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "san");
+    public static DBInfoSystem SanVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "san", isRequired: true);
 
 #endregion
     [Serializable]

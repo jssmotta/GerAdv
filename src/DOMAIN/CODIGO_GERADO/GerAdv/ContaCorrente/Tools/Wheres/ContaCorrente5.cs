@@ -21,7 +21,6 @@ public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFact
         {
             Id = dbRec.ID,
             CIAcordo = dbRec.FCIAcordo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Quitado = dbRec.FQuitado,
             IDContrato = dbRec.FIDContrato,
             QuitadoID = dbRec.FQuitadoID,
@@ -32,7 +31,6 @@ public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFact
             Processo = dbRec.FProcesso,
             ParcelaX = dbRec.FParcelaX,
             Valor = dbRec.FValor,
-            Data = dbRec.FData ?? string.Empty,
             Cliente = dbRec.FCliente,
             Historico = dbRec.FHistorico ?? string.Empty,
             Contrato = dbRec.FContrato,
@@ -44,16 +42,23 @@ public partial class ContaCorrenteWhere(IFContaCorrenteFactory contacorrenteFact
             ValorPrincipal = dbRec.FValorPrincipal,
             ParcelaPrincipalID = dbRec.FParcelaPrincipalID,
             Hide = dbRec.FHide,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtOriginal, out DateTime XDtOriginal))
+        if (DateTime.TryParse(dbRec.FDtOriginal.ToString(), out DateTime XDtOriginal))
         {
-            contacorrente.DtOriginal = dbRec.FDtOriginal;
+            contacorrente.DtOriginal = XDtOriginal.ToString("dd/MM/yyyy");
             contacorrente.DtOriginal_date = XDtOriginal;
         }
 
-        if (DateTime.TryParse(dbRec.FDataPgto, out DateTime XDataPgto))
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
         {
-            contacorrente.DataPgto = dbRec.FDataPgto;
+            contacorrente.Data = XData.ToString("dd/MM/yyyy");
+            contacorrente.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataPgto.ToString(), out DateTime XDataPgto))
+        {
+            contacorrente.DataPgto = XDataPgto.ToString("dd/MM/yyyy");
             contacorrente.DataPgto_date = XDataPgto;
         }
 

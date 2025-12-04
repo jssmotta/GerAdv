@@ -20,11 +20,7 @@ public static partial class DBTipoEMailDicInfo
 
     public const string PTabelaNome = "TipoEMail";
 #region PropriedadesDaTabela
-    public static DBInfoSystem TmlNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "tml"
-    };
+    public static DBInfoSystem TmlNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "tml", isRequired: true);
 
 #endregion
     [Serializable]

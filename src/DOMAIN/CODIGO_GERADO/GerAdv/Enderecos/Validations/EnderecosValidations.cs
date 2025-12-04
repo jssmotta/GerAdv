@@ -42,8 +42,6 @@ public class EnderecosValidation : IEnderecosValidation
             throw new SGValidationException($"Site deve ter no máximo {DBEnderecosDicInfo.EndSite.FTamanho} caracteres.");
         if (reg.QuemIndicou != null && reg.QuemIndicou.Length > DBEnderecosDicInfo.EndQuemIndicou.FTamanho)
             throw new SGValidationException($"QuemIndicou deve ter no máximo {DBEnderecosDicInfo.EndQuemIndicou.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBEnderecosDicInfo.EndGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBEnderecosDicInfo.EndGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -53,6 +51,8 @@ public class EnderecosValidation : IEnderecosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -72,7 +72,7 @@ public class EnderecosValidation : IEnderecosValidation
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

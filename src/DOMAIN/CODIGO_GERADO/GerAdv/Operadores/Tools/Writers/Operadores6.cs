@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IOperadoresWriter
 {
     Task<FOperadores> WriteAsync(Models.Operadores operadores, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(OperadoresResponse operadores, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(OperadoresResponse operadores, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OperadoresWriter(IFOperadoresFactory operadoresFactory) : IOperadoresWriter
 {
     private readonly IFOperadoresFactory _operadoresFactory = operadoresFactory ?? throw new ArgumentNullException(nameof(operadoresFactory));
-    public virtual async Task Delete(OperadoresResponse operadores, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(OperadoresResponse operadores, int operadorId, MsiSqlConnection? oCnn)
     {
         await _operadoresFactory.DeleteAsync(operadorId, operadores.Id, oCnn);
     }
@@ -40,8 +40,11 @@ public class OperadoresWriter(IFOperadoresFactory operadoresFactory) : IOperador
             dbRec.FSenha256 = operadores.Senha256.Encrypt();
         if (operadores.SuporteSenha256.Length > 0)
             dbRec.FSuporteSenha256 = operadores.SuporteSenha256.Encrypt();
-        if (operadores.SuporteMaxAge != null)
-            dbRec.FSuporteMaxAge = operadores.SuporteMaxAge.ToString();
+        if (operadores.SuporteMaxAge.NotIsEmpty())
+        {
+            dbRec.FSuporteMaxAge = DateOnly.FromDateTime(Convert.ToDateTime(operadores.SuporteMaxAge));
+        }
+
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

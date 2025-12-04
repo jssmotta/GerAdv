@@ -36,7 +36,21 @@ public class DBNEPalavrasChavesTests : IDisposable
         dt.Columns.Add("npcDtAtu", typeof(DateTime));
         dt.Columns.Add("npcVisto", typeof(bool));
         dt.Columns.Add("npcNome", typeof(string));
+        dt.Columns.Add("npcBold", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["npcCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBNEPalavrasChaves(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -57,7 +71,7 @@ public class DBNEPalavrasChavesTests : IDisposable
     {
         var instance = new DBNEPalavrasChaves();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("NEPalavrasChaves", instance.ITabelaName());
+        Assert.Equal("NEPalavrasChaves", instance.ITableName());
         Assert.Equal("npc", instance.Prefixo);
     }
 
@@ -75,29 +89,16 @@ public class DBNEPalavrasChavesTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["npcCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBNEPalavrasChaves(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("NEPalavrasChaves", cadastro.ITabelaName());
-        Assert.Equal("npcCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("npcNome", cadastro.ICampoNome());
-        Assert.Equal("npc", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("NEPalavrasChaves", cadastro.ITableName());
+        Assert.Equal("npcCodigo", cadastro.IFieldId());
+        Assert.Equal("npcNome", cadastro.IFieldNameDescription());
+        Assert.Equal("npc", cadastro.IPrefix());
     }
 
 #endregion
@@ -157,9 +158,9 @@ public class DBNEPalavrasChavesTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

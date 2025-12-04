@@ -36,9 +36,23 @@ public class DBRitoTests : IDisposable
         dt.Columns.Add("ritDtAtu", typeof(DateTime));
         dt.Columns.Add("ritVisto", typeof(bool));
         dt.Columns.Add("ritDescricao", typeof(string));
-        dt.Columns.Add("ritGUID", typeof(string));
         dt.Columns.Add("ritTop", typeof(string));
+        dt.Columns.Add("ritBold", typeof(string));
+        dt.Columns.Add("ritGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ritCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBRito(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -59,7 +73,7 @@ public class DBRitoTests : IDisposable
     {
         var instance = new DBRito();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Rito", instance.ITabelaName());
+        Assert.Equal("Rito", instance.ITableName());
         Assert.Equal("rit", instance.Prefixo);
     }
 
@@ -77,29 +91,16 @@ public class DBRitoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ritCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBRito(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Rito", cadastro.ITabelaName());
-        Assert.Equal("ritCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ritDescricao", cadastro.ICampoNome());
-        Assert.Equal("rit", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Rito", cadastro.ITableName());
+        Assert.Equal("ritCodigo", cadastro.IFieldId());
+        Assert.Equal("ritDescricao", cadastro.IFieldNameDescription());
+        Assert.Equal("rit", cadastro.IPrefix());
     }
 
 #endregion
@@ -159,9 +160,9 @@ public class DBRitoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -184,24 +185,6 @@ public class DBRitoTests : IDisposable
     }
 
     [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
-    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void Top_ShouldAcceptBooleanValues(bool value)
@@ -215,6 +198,24 @@ public class DBRitoTests : IDisposable
     {
         var instance = new DBRito();
         Assert.False(instance.FTop);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

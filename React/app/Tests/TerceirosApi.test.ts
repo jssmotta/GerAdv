@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { TerceirosApiError } from '../GerAdv_TS/Terceiros/Apis/ApiTerceiros';
+import { TerceirosApiError } from '@/app/GerAdv_TS/Terceiros/Apis/ApiTerceiros';
 import { TerceirosApi } from '@/app/GerAdv_TS/Terceiros/Apis/ApiTerceiros';
-import { FilterTerceiros } from '../GerAdv_TS/Terceiros/Filters/Terceiros';
-import { ITerceiros } from '../GerAdv_TS/Terceiros/Interfaces/interface.Terceiros';
-import { TerceirosTestEmpty } from '../GerAdv_TS/Models/Terceiros';
+import { FilterTerceiros } from '@/app/GerAdv_TS/Terceiros/Filters/Terceiros';
+import { ITerceiros } from '@/app/GerAdv_TS/Terceiros/Interfaces/interface.Terceiros';
+import { TerceirosTestEmpty } from '@/app/GerAdv_TS/Models/Terceiros';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('TerceirosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterTerceiros = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,21 @@ describe('TerceirosApi', () => {
   describe('addAndUpdate', () => {
     const mockTerceiros: ITerceiros = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+nome: 'João',
+situacao: 0,
+cidade: 0,
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+cep: '01234-567',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+email: 'test@email.com',
+class: 'A',
+varaforocomarca: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+sexo: false
     };
 
     it('should add new terceiros successfully', async () => {
@@ -487,7 +488,7 @@ describe('TerceirosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterTerceiros = { funcionario: 1 };
+      const mockFilter: FilterTerceiros = { : 1 };
       
       const result = terceirosApi.useFilter(mockFilter);
       

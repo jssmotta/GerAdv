@@ -31,8 +31,21 @@ public class DBProcessOutPutIDsTests : IDisposable
         // Campos obrigatórios Source Genesys
         dt.Columns.Add("poiCodigo", typeof(int));
         dt.Columns.Add("poiNome", typeof(string));
-        dt.Columns.Add("poiGUID", typeof(string));
+        dt.Columns.Add("poiGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["poiCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProcessOutPutIDs(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -53,7 +66,7 @@ public class DBProcessOutPutIDsTests : IDisposable
     {
         var instance = new DBProcessOutPutIDs();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProcessOutPutIDs", instance.ITabelaName());
+        Assert.Equal("ProcessOutPutIDs", instance.ITableName());
         Assert.Equal("poi", instance.Prefixo);
     }
 
@@ -71,29 +84,16 @@ public class DBProcessOutPutIDsTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["poiCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProcessOutPutIDs(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProcessOutPutIDs", cadastro.ITabelaName());
-        Assert.Equal("poiCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("poiNome", cadastro.ICampoNome());
-        Assert.Equal("poi", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProcessOutPutIDs", cadastro.ITableName());
+        Assert.Equal("poiCodigo", cadastro.IFieldId());
+        Assert.Equal("poiNome", cadastro.IFieldNameDescription());
+        Assert.Equal("poi", cadastro.IPrefix());
     }
 
 #endregion
@@ -153,9 +153,9 @@ public class DBProcessOutPutIDsTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -181,18 +181,18 @@ public class DBProcessOutPutIDsTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

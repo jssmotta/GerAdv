@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
+public partial class DBGUTPeriodicidadeStatus : VAuditor, ICrud
 {
 #region TableDefinition_GUTPeriodicidadeStatus
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -48,7 +48,7 @@ public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFGUTAtividade || pFldFDataRealizado || pFldFGUID))
+            if (!(pFldFGUTAtividade || pFldFDataRealizado || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -72,18 +72,17 @@ public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFGUTAtividade)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade, m_FGUTAtividade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.GUTAtividade, FGUTAtividade, EGenericTypeFields.FNumberNull);
         if (pFldFDataRealizado)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.DataRealizado, m_FDataRealizado, ETiposCampos.FDate);
-        if (pFldFGUID)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.DataRealizado, FDataRealizado, EGenericTypeFields.FDate);
+        if (pFldFGuid)
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_GUTPeriodicidadeStatus)
         if (clsW.HasUpdates)
         {
@@ -98,15 +97,15 @@ public partial class DBGUTPeriodicidadeStatus : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBGUTPeriodicidadeStatusDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

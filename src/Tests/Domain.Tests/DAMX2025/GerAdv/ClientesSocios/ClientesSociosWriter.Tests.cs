@@ -74,6 +74,7 @@ public class ClientesSociosWriterTests
         var result = await _clientessociosWriter.WriteAsync(clientessocios, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFClientesSocios.Object);
+        _mockFClientesSocios.VerifySet(x => x.FGuid = clientessocios.Guid, Times.Once);
         _mockFClientesSocios.VerifySet(x => x.FSomenteRepresentante = clientessocios.SomenteRepresentante, Times.Once);
         _mockFClientesSocios.VerifySet(x => x.FIdade = clientessocios.Idade, Times.Once);
         _mockFClientesSocios.VerifySet(x => x.FIsRepresentanteLegal = clientessocios.IsRepresentanteLegal, Times.Once);
@@ -109,7 +110,6 @@ public class ClientesSociosWriterTests
         _mockFClientesSocios.VerifySet(x => x.FTipo = clientessocios.Tipo, Times.Once);
         _mockFClientesSocios.VerifySet(x => x.FFax = clientessocios.Fax, Times.Once);
         _mockFClientesSocios.VerifySet(x => x.FClass = clientessocios.Class, Times.Once);
-        _mockFClientesSocios.VerifySet(x => x.FGUID = clientessocios.GUID, Times.Once);
         _mockFClientesSocios.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -198,7 +198,7 @@ public class ClientesSociosWriterTests
         var operadorId = 456;
         _mockClientesSociosFactory.Setup(x => x.DeleteAsync(operadorId, clientessociosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _clientessociosWriter.Delete(clientessociosResponse, operadorId, _mockConnection.Object);
+        await _clientessociosWriter.DeleteAsync(clientessociosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockClientesSociosFactory.Verify(x => x.DeleteAsync(operadorId, clientessociosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -214,7 +214,7 @@ public class ClientesSociosWriterTests
         var operadorId = 111;
         _mockClientesSociosFactory.Setup(x => x.DeleteAsync(operadorId, clientessociosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _clientessociosWriter.Delete(clientessociosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _clientessociosWriter.DeleteAsync(clientessociosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -231,7 +231,7 @@ public class ClientesSociosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockClientesSociosFactory.Setup(x => x.DeleteAsync(operadorId, clientessociosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _clientessociosWriter.Delete(clientessociosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _clientessociosWriter.DeleteAsync(clientessociosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -261,6 +261,7 @@ public class ClientesSociosWriterTests
         return new Models.ClientesSocios
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             SomenteRepresentante = false,
             Idade = 1,
             IsRepresentanteLegal = false,
@@ -295,8 +296,7 @@ public class ClientesSociosWriterTests
             SocioEmpresaAdminSomente = false,
             Tipo = false,
             Fax = "(11) 88888-9999",
-            Class = "A",
-            GUID = Guid.NewGuid().ToString()
+            Class = "A"
         };
     }
 #endregion

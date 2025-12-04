@@ -23,12 +23,6 @@ public partial class FGUTPeriodicidadeFactory : IFGUTPeriodicidadeFactory, IDisp
         return FGUTPeriodicidade.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGUTPeriodicidade> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FGUTPeriodicidade().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FGUTPeriodicidade> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FGUTPeriodicidadeFactory : IFGUTPeriodicidadeFactory, IDisp
         return FGUTPeriodicidade.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FGUTPeriodicidade> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FGUTPeriodicidade().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FGUTPeriodicidadeFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

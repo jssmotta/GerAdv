@@ -7,32 +7,20 @@ public partial class DBLigacoes
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFAssunto, pFldFAgeClienteAvisado, pFldFCelular, pFldFCliente, pFldFContato, pFldFDataRealizada, pFldFQuemID, pFldFTelefonista, pFldFUltimoAviso, pFldFHoraFinal, pFldFNome, pFldFQuemCodigo, pFldFSolicitante, pFldFPara, pFldFFone, pFldFRamal, pFldFParticular, pFldFRealizada, pFldFStatus, pFldFData, pFldFHora, pFldFUrgente, pFldFGUID, pFldFLigarPara, pFldFProcesso, pFldFStartScreen, pFldFEmotion, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FAgeClienteAvisado, m_FCliente, m_FQuemID, m_FTelefonista, m_FQuemCodigo, m_FSolicitante, m_FRamal, m_FProcesso, m_FEmotion;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FAssunto, m_FContato, m_FNome, m_FPara, m_FFone, m_FStatus, m_FGUID, m_FLigarPara;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDataRealizada, m_FUltimoAviso, m_FHoraFinal, m_FData, m_FHora;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FCelular, m_FParticular, m_FRealizada, m_FUrgente, m_FStartScreen, m_FBold;
+    private protected bool pFldFAssunto, pFldFAgeClienteAvisado, pFldFCelular, pFldFCliente, pFldFContato, pFldFDataRealizada, pFldFQuemID, pFldFTelefonista, pFldFUltimoAviso, pFldFHoraFinal, pFldFNome, pFldFQuemCodigo, pFldFSolicitante, pFldFPara, pFldFFone, pFldFRamal, pFldFParticular, pFldFRealizada, pFldFStatus, pFldFData, pFldFHora, pFldFUrgente, pFldFLigarPara, pFldFProcesso, pFldFStartScreen, pFldFEmotion, pFldFBold, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(200, ErrorMessage = "A propriedade FAssunto da tabela Ligacoes deve ter no máximo 200 caracteres.")]
+    [StringLength(200, ErrorMessage = "A propriedade FAssunto da tabela 'Ligacoes' deve ter no máximo 200 caracteres.")]
     public virtual string? FAssunto
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAssunto ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFAssunto = pFldFAssunto || !(m_FAssunto ?? string.Empty).Equals(value);
+            pFldFAssunto = pFldFAssunto || !(field ?? string.Empty).Equals(value);
             if (pFldFAssunto)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FAssunto = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+                field = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
             }
         }
     }
@@ -40,147 +28,165 @@ public partial class DBLigacoes
     public virtual int FAgeClienteAvisado
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAgeClienteAvisado;
+        get => field;
         set
         {
-            pFldFAgeClienteAvisado = pFldFAgeClienteAvisado || value != m_FAgeClienteAvisado;
+            pFldFAgeClienteAvisado = pFldFAgeClienteAvisado || value != field;
             if (pFldFAgeClienteAvisado)
-                m_FAgeClienteAvisado = value;
+                field = value;
         }
     }
 
     public virtual bool FCelular
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCelular;
+        get => field;
         set
         {
-            pFldFCelular = pFldFCelular || value != m_FCelular;
+            pFldFCelular = pFldFCelular || value != field;
             if (pFldFCelular)
-                m_FCelular = value;
+                field = value;
         }
     }
 
     public virtual int FCliente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCliente;
+        get => field;
         set
         {
-            pFldFCliente = pFldFCliente || value != m_FCliente;
+            pFldFCliente = pFldFCliente || value != field;
             if (pFldFCliente)
-                m_FCliente = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(200, ErrorMessage = "A propriedade FContato da tabela Ligacoes deve ter no máximo 200 caracteres.")]
+    [StringLength(200, ErrorMessage = "A propriedade FContato da tabela 'Ligacoes' deve ter no máximo 200 caracteres.")]
     public virtual string? FContato
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FContato ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFContato = pFldFContato || !(m_FContato ?? string.Empty).Equals(value);
+            pFldFContato = pFldFContato || !(field ?? string.Empty).Equals(value);
             if (pFldFContato)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FContato = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
+                field = trimmed.Length > 200 ? trimmed.AsSpan(0, 200).ToString() : trimmed;
             }
         }
     }
 
-    public virtual string? FDataRealizada
+    public virtual DateOnly? FDataRealizada
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataRealizada is null || m_FDataRealizada == DevourerOne.DDataZerada ? string.Empty : m_FDataRealizada.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataRealizada, m_FDataRealizada, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataRealizada = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataRealizada, m_FDataRealizada) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataRealizada = true;
+                field = value;
+            }
         }
     }
 
     public virtual int FQuemID
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FQuemID;
+        get => field;
         set
         {
-            pFldFQuemID = pFldFQuemID || value != m_FQuemID;
+            pFldFQuemID = pFldFQuemID || value != field;
             if (pFldFQuemID)
-                m_FQuemID = value;
+                field = value;
         }
     }
 
     public virtual int FTelefonista
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTelefonista;
+        get => field;
         set
         {
-            pFldFTelefonista = pFldFTelefonista || value != m_FTelefonista;
+            pFldFTelefonista = pFldFTelefonista || value != field;
             if (pFldFTelefonista)
-                m_FTelefonista = value;
+                field = value;
         }
     }
 
-    public virtual string? FUltimoAviso
+    public virtual DateOnly? FUltimoAviso
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FUltimoAviso is null || m_FUltimoAviso == DevourerOne.DDataZerada ? string.Empty : m_FUltimoAviso.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFUltimoAviso, m_FUltimoAviso, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFUltimoAviso = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFUltimoAviso, m_FUltimoAviso) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFUltimoAviso = true;
+                field = value;
+            }
         }
     }
 
-    public virtual string? FHoraFinal
+    public virtual TimeOnly? FHoraFinal
     {
-        // fdDate2 TRACE CODE
-        get => $"{m_FHoraFinal:HH:mm}";
+        get;
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (!value.HasValue)
             {
-                pFldFHoraFinal = pFldFHoraFinal || m_FHoraFinal != null;
-                m_FHoraFinal = null;
+                pFldFHoraFinal = pFldFHoraFinal || field != null;
+                field = null;
                 return;
             }
 
-            if (value.IsEquals(DevourerOne.PNow))
-            {
-                pFldFHoraFinal = true;
-                m_FHoraFinal = DevourerOne.DateTimeUtc;
-            }
-            else
-            {
-                if (value.IsEquals($"{m_FHoraFinal:HH:mm}"))
-                    return;
-                if (!DateTime.TryParse(value, out var dateTime))
-                    return;
-                pFldFHoraFinal = true;
-                m_FHoraFinal = dateTime;
-            }
+            // Se já tem o mesmo valor, não faz nada
+            if (field.HasValue && field.Value == value.Value)
+                return;
+            pFldFHoraFinal = true;
+            field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela Ligacoes deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela 'Ligacoes' deve ter no máximo 50 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -188,40 +194,40 @@ public partial class DBLigacoes
     public virtual int FQuemCodigo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FQuemCodigo;
+        get => field;
         set
         {
-            pFldFQuemCodigo = pFldFQuemCodigo || value != m_FQuemCodigo;
+            pFldFQuemCodigo = pFldFQuemCodigo || value != field;
             if (pFldFQuemCodigo)
-                m_FQuemCodigo = value;
+                field = value;
         }
     }
 
     public virtual int FSolicitante
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSolicitante;
+        get => field;
         set
         {
-            pFldFSolicitante = pFldFSolicitante || value != m_FSolicitante;
+            pFldFSolicitante = pFldFSolicitante || value != field;
             if (pFldFSolicitante)
-                m_FSolicitante = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FPara da tabela Ligacoes deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FPara da tabela 'Ligacoes' deve ter no máximo 100 caracteres.")]
     public virtual string? FPara
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPara ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFPara = pFldFPara || !(m_FPara ?? string.Empty).Equals(value);
+            pFldFPara = pFldFPara || !(field ?? string.Empty).Equals(value);
             if (pFldFPara)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FPara = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
@@ -230,48 +236,48 @@ public partial class DBLigacoes
     public virtual string? FFone
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFone ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFone = pFldFFone || !(m_FFone ?? string.Empty).Equals(value);
+            pFldFFone = pFldFFone || !(field ?? string.Empty).Equals(value);
             if (pFldFFone)
-                m_FFone = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual int FRamal
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRamal;
+        get => field;
         set
         {
-            pFldFRamal = pFldFRamal || value != m_FRamal;
+            pFldFRamal = pFldFRamal || value != field;
             if (pFldFRamal)
-                m_FRamal = value;
+                field = value;
         }
     }
 
     public virtual bool FParticular
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FParticular;
+        get => field;
         set
         {
-            pFldFParticular = pFldFParticular || value != m_FParticular;
+            pFldFParticular = pFldFParticular || value != field;
             if (pFldFParticular)
-                m_FParticular = value;
+                field = value;
         }
     }
 
     public virtual bool FRealizada
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRealizada;
+        get => field;
         set
         {
-            pFldFRealizada = pFldFRealizada || value != m_FRealizada;
+            pFldFRealizada = pFldFRealizada || value != field;
             if (pFldFRealizada)
-                m_FRealizada = value;
+                field = value;
         }
     }
 
@@ -279,99 +285,86 @@ public partial class DBLigacoes
     public virtual string? FStatus
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FStatus ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFStatus = pFldFStatus || !(m_FStatus ?? string.Empty).Equals(value);
+            pFldFStatus = pFldFStatus || !(field ?? string.Empty).Equals(value);
             if (pFldFStatus)
-                m_FStatus = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
-    public virtual string? FHora
+    public virtual TimeOnly? FHora
     {
-        // fdDate2 TRACE CODE
-        get => $"{m_FHora:HH:mm}";
+        get;
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (!value.HasValue)
             {
-                pFldFHora = pFldFHora || m_FHora != null;
-                m_FHora = null;
+                pFldFHora = pFldFHora || field != null;
+                field = null;
                 return;
             }
 
-            if (value.IsEquals(DevourerOne.PNow))
-            {
-                pFldFHora = true;
-                m_FHora = DevourerOne.DateTimeUtc;
-            }
-            else
-            {
-                if (value.IsEquals($"{m_FHora:HH:mm}"))
-                    return;
-                if (!DateTime.TryParse(value, out var dateTime))
-                    return;
-                pFldFHora = true;
-                m_FHora = dateTime;
-            }
+            // Se já tem o mesmo valor, não faz nada
+            if (field.HasValue && field.Value == value.Value)
+                return;
+            pFldFHora = true;
+            field = value;
         }
     }
 
     public virtual bool FUrgente
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FUrgente;
+        get => field;
         set
         {
-            pFldFUrgente = pFldFUrgente || value != m_FUrgente;
+            pFldFUrgente = pFldFUrgente || value != field;
             if (pFldFUrgente)
-                m_FUrgente = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Ligacoes deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FLigarPara da tabela Ligacoes deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FLigarPara da tabela 'Ligacoes' deve ter no máximo 255 caracteres.")]
     public virtual string? FLigarPara
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FLigarPara ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFLigarPara = pFldFLigarPara || !(m_FLigarPara ?? string.Empty).Equals(value);
+            pFldFLigarPara = pFldFLigarPara || !(field ?? string.Empty).Equals(value);
             if (pFldFLigarPara)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FLigarPara = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -379,60 +372,77 @@ public partial class DBLigacoes
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     public virtual bool FStartScreen
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FStartScreen;
+        get => field;
         set
         {
-            pFldFStartScreen = pFldFStartScreen || value != m_FStartScreen;
+            pFldFStartScreen = pFldFStartScreen || value != field;
             if (pFldFStartScreen)
-                m_FStartScreen = value;
+                field = value;
         }
     }
 
     public virtual int FEmotion
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEmotion;
+        get => field;
         set
         {
-            pFldFEmotion = pFldFEmotion || value != m_FEmotion;
+            pFldFEmotion = pFldFEmotion || value != field;
             if (pFldFEmotion)
-                m_FEmotion = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Ligacoes' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -442,9 +452,13 @@ public partial class DBLigacoes
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -9,25 +9,29 @@ public partial class DBOponentesRepLegalODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBOponentesRepLegalDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBOponentesRepLegalDicInfo.CampoCodigo;
+    public string IFieldId() => DBOponentesRepLegalDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBOponentesRepLegalDicInfo.TablePrefix;
+    public string IPrefix() => DBOponentesRepLegalDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBOponentesRepLegalDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBOponentesRepLegalDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -38,19 +42,19 @@ public partial class DBOponentesRepLegalODicInfo : IODicInfo
     public static string TTabelaNome => DBOponentesRepLegalDicInfo.TabelaNome;
     public static string TTablePrefix => DBOponentesRepLegalDicInfo.TablePrefix;
     public static ImmutableArray<DBInfoSystem> List => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao, DBOponentesRepLegalDicInfo.OprBold, DBOponentesRepLegalDicInfo.OprQuemCad, DBOponentesRepLegalDicInfo.OprDtCad, DBOponentesRepLegalDicInfo.OprQuemAtu, DBOponentesRepLegalDicInfo.OprDtAtu, DBOponentesRepLegalDicInfo.OprVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBOponentesRepLegalDicInfo.OprNome, DBOponentesRepLegalDicInfo.OprFone, DBOponentesRepLegalDicInfo.OprOponente, DBOponentesRepLegalDicInfo.OprSexo, DBOponentesRepLegalDicInfo.OprCPF, DBOponentesRepLegalDicInfo.OprRG, DBOponentesRepLegalDicInfo.OprEndereco, DBOponentesRepLegalDicInfo.OprBairro, DBOponentesRepLegalDicInfo.OprCEP, DBOponentesRepLegalDicInfo.OprCidade, DBOponentesRepLegalDicInfo.OprFax, DBOponentesRepLegalDicInfo.OprEMail, DBOponentesRepLegalDicInfo.OprSite, DBOponentesRepLegalDicInfo.OprObservacao, DBOponentesRepLegalDicInfo.OprBold];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["oprCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOponentesRepLegalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["oprCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBOponentesRepLegalDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

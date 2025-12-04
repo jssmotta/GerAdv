@@ -4,10 +4,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IDivisaoTribunalService
 {
+    Task<Filters.FilterDivisaoTribunal> FilterVoice([FromBody] Filters.FilterDivisaoTribunal filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<DivisaoTribunalResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterDivisaoTribunal filter, [FromRoute, Required] string uri = "");
     Task<DivisaoTribunalResponse?> AddAndUpdate(Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string uri = "");
     Task<DivisaoTribunalResponse?> Validation(Models.DivisaoTribunal? regDivisaoTribunal, [FromRoute, Required] string uri = "");
     Task<DivisaoTribunalResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<DivisaoTribunalResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<DivisaoTribunalResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

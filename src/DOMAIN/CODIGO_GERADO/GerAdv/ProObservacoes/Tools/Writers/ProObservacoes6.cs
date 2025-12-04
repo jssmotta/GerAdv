@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProObservacoesWriter
 {
     Task<FProObservacoes> WriteAsync(Models.ProObservacoes proobservacoes, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProObservacoesWriter(IFProObservacoesFactory proobservacoesFactory) : IProObservacoesWriter
 {
     private readonly IFProObservacoesFactory _proobservacoesFactory = proobservacoesFactory ?? throw new ArgumentNullException(nameof(proobservacoesFactory));
-    public virtual async Task Delete(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProObservacoesResponse proobservacoes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _proobservacoesFactory.DeleteAsync(operadorId, proobservacoes.Id, oCnn);
     }
@@ -26,8 +26,12 @@ public class ProObservacoesWriter(IFProObservacoesFactory proobservacoesFactory)
         dbRec.FProcesso = proobservacoes.Processo;
         dbRec.FNome = proobservacoes.Nome;
         dbRec.FObservacoes = proobservacoes.Observacoes;
-        dbRec.FData = proobservacoes.Data;
-        dbRec.FGUID = proobservacoes.GUID;
+        if (proobservacoes.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(proobservacoes.Data));
+        }
+
+        dbRec.FGuid = proobservacoes.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

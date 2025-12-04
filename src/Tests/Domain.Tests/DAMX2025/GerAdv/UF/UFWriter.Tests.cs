@@ -74,12 +74,12 @@ public class UFWriterTests
         var result = await _ufWriter.WriteAsync(uf, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFUF.Object);
+        _mockFUF.VerifySet(x => x.FGuid = uf.Guid, Times.Once);
         _mockFUF.VerifySet(x => x.FDDD = uf.DDD, Times.Once);
         _mockFUF.VerifySet(x => x.FID = uf.IdUF, Times.Once);
         _mockFUF.VerifySet(x => x.FPais = uf.Pais, Times.Once);
         _mockFUF.VerifySet(x => x.FTop = uf.Top, Times.Once);
         _mockFUF.VerifySet(x => x.FDescricao = uf.Descricao, Times.Once);
-        _mockFUF.VerifySet(x => x.FGUID = uf.GUID, Times.Once);
         _mockFUF.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -123,7 +123,7 @@ public class UFWriterTests
         var operadorId = 456;
         _mockUFFactory.Setup(x => x.DeleteAsync(operadorId, ufResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _ufWriter.Delete(ufResponse, operadorId, _mockConnection.Object);
+        await _ufWriter.DeleteAsync(ufResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockUFFactory.Verify(x => x.DeleteAsync(operadorId, ufResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -139,7 +139,7 @@ public class UFWriterTests
         var operadorId = 111;
         _mockUFFactory.Setup(x => x.DeleteAsync(operadorId, ufResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _ufWriter.Delete(ufResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _ufWriter.DeleteAsync(ufResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -156,7 +156,7 @@ public class UFWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockUFFactory.Setup(x => x.DeleteAsync(operadorId, ufResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ufWriter.Delete(ufResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _ufWriter.DeleteAsync(ufResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -186,12 +186,12 @@ public class UFWriterTests
         return new Models.UF
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             DDD = "AAAAAAAA",
             IdUF = "SP",
             Pais = 1,
             Top = false,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

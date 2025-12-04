@@ -6,61 +6,86 @@
 namespace MenphisSI.GerAdv.Services;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IFContatoCRMViewFactory contatocrmviewFactory, IContatoCRMViewReader reader, IContatoCRMViewValidation validation, IContatoCRMViewWriter writer, HybridCache cache, IMemoryCache memory) : IContatoCRMViewService, IDisposable
+public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IFContatoCRMViewFactory contatocrmviewFactory, IContatoCRMViewReader reader, IContatoCRMViewValidation validation, IContatoCRMViewWriter writer, IHybridCache cache, IMemoryCache memory, IConnectionService connectionService, IGenericVoiceFilterService<Filters.FilterContatoCRMView> voiceFilterService, IServicesFilter serviceFilter, IEntityService entityService) : IContatoCRMViewService, IDisposable
 {
     private readonly IOptions<AppSettings> _appSettings = appSettings;
-    private readonly HybridCache _cache = cache;
-    private readonly IMemoryCache _memoryCache = memory;
+    private readonly IHybridCache _cache = cache;
+    private readonly IMemoryCache _memoryCache = memory ?? throw new ArgumentNullException(nameof(memory));
+    private readonly IConnectionService _connectionService = connectionService ?? throw new ArgumentNullException(nameof(connectionService));
+    private readonly IGenericVoiceFilterService<Filters.FilterContatoCRMView> _voiceFilterService = voiceFilterService ?? throw new ArgumentNullException(nameof(voiceFilterService));
+    private readonly IServicesFilter servicesFilter = serviceFilter ?? throw new ArgumentNullException(nameof(serviceFilter));
     private bool _disposed;
+    private readonly IEntityService _entityService = entityService;
     private readonly IFContatoCRMViewFactory contatocrmviewFactory = contatocrmviewFactory;
     private readonly IContatoCRMViewReader reader = reader;
     private readonly IContatoCRMViewValidation validation = validation;
     private readonly IContatoCRMViewWriter writer = writer;
-    public async Task<IEnumerable<ContatoCRMViewResponseAll>> GetAll(int max, [FromRoute, Required] string uri, CancellationToken token = default)
+    public async Task<IEnumerable<ContatoCRMViewResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterContatoCRMView filtro, [FromRoute, Required] string uri)
     {
-        max = Math.Min(Math.Max(max, 1), BaseConsts.PMaxItens);
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ContatoCRMView: URI inválida");
         }
 
-        var entryOptions = new HybridCacheEntryOptions
-        {
-            Expiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache),
-            LocalCacheExpiration = TimeSpan.FromMinutes(BaseConsts.PMaxMinutesCache)
-        };
-        var cacheKey = $"{uri}-ContatoCRMView-GetAll-{max}";
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.Empty, [], uri, cancel), entryOptions, cancellationToken: token);
-        return result;
-    }
-
-    public async Task<IEnumerable<ContatoCRMViewResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterContatoCRMView filtro, [FromRoute, Required] string uri)
-    {
-        ThrowIfDisposed();
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
-        if (oCnn == null)
-        {
-            throw new DatabaseConnectionException();
-        }
-
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (max <= 0)
         {
             max = BaseConsts.PMaxItens;
         }
 
-        var filtroResult = filtro == null ? null : WFiltro(filtro!);
-        string where = filtroResult?.where ?? string.Empty;
-        List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
-        var filterHash = GetFilterHash(filtro);
-        var cacheKey = $"{uri}-{max}-ContatoCRMView-Filter-{where.GetHashCode2()}{filterHash}";
-        var entryOptions = new HybridCacheEntryOptions
+#pragma warning disable CS0168 // Variable is declared but never used
+
+        try
         {
-            Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
-            LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
-        };
-        var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: new());
-        return result;
+            var filtroResult = filtro == null ? null : servicesFilter.WFiltroContatoCRMView(filtro!);
+            string where = filtroResult?.where ?? string.Empty;
+            List<SqlParameter>? parameters = filtroResult?.parametros ?? [];
+            var filterHash = GenericVoiceFilterService<Filters.FilterContatoCRMView>.GetFilterHash(filtro);
+            var cacheKey = $"{uri}-{max}-ContatoCRMView-Filter-{where.GetHashCode2()}{filterHash}";
+            var entryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId),
+                LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxGetListSecondsCacheId)
+            };
+            var result = await _cache.GetOrCreateAsync(cacheKey, async cancel => await GetDataAllAsync(max, string.IsNullOrEmpty(where) ? string.Empty : TSql.Where + where, parameters, uri, cancel), entryOptions, cancellationToken: CancellationToken.None);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"ContatoCRMView - error on filtering.");
+        }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+    }
+
+    public async Task<Filters.FilterContatoCRMView> FilterVoice([FromBody] Filters.FilterContatoCRMView filtro, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri)
+    {
+        ThrowIfDisposed();
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
+        {
+            throw new Exception("ContatoCRMView: URI inválida");
+        }
+
+        try
+        {
+            // Se há mensagem de comando de voz, processar via OpenAI
+            Filters.FilterContatoCRMView? filtroProcessado = filtro;
+            if (message != null && !string.IsNullOrWhiteSpace(message.Message))
+            {
+                filtro = filtro ?? new Filters.FilterContatoCRMView();
+                filtroProcessado = await ProcessFilterVoiceCommandAsync(message, filtro, uri);
+            }
+
+            return filtroProcessado ?? new Filters.FilterContatoCRMView();
+        }
+        catch (Exception)
+        {
+            // _logger.Error(ex, ex.Message); // TODO
+            throw new Exception($"ContatoCRMView - error on creating filter.");
+        }
     }
 
     public async Task<ContatoCRMViewResponse?> GetById([FromQuery] int id, [FromRoute, Required] string uri, CancellationToken token)
@@ -76,7 +101,8 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             Expiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId),
             LocalCacheExpiration = TimeSpan.FromSeconds(BaseConsts.PMaxSecondsCacheId)
         };
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var scope = _connectionService.CreateConnectionScope(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         try
         {
             var result = await _cache.GetOrCreateAsync($"{uri}-ContatoCRMView-GetById-{id}", async cancel => await GetDataByIdAsync(id, oCnn, cancel), entryOptions, cancellationToken: token);
@@ -88,7 +114,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         }
     }
 
-    private async Task<ContatoCRMViewResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.Read(id, oCnn);
+    private async Task<ContatoCRMViewResponse?> GetDataByIdAsync(int id, MsiSqlConnection? oCnn, CancellationToken token) => await reader.ReadAsync(id, oCnn);
     public async Task<ContatoCRMViewResponse?> AddAndUpdate([FromBody] Models.ContatoCRMView? regContatoCRMView, [FromRoute, Required] string uri)
     {
         ThrowIfDisposed();
@@ -97,12 +123,13 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ContatoCRMView: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -137,12 +164,13 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             return null;
         }
 
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ContatoCRMView: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -170,7 +198,7 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             return new ContatoCRMViewResponse();
         }
 
-        return await reader.Read(regContatoCRMView.Id, oCnn);
+        return await reader.ReadAsync(regContatoCRMView.Id, oCnn);
     }
 
     public async Task<ContatoCRMViewResponse?> Delete([FromQuery] int? id, [FromRoute, Required] string uri)
@@ -181,12 +209,13 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
         }
 
         ThrowIfDisposed();
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("ContatoCRMView: URI inválida");
         }
 
-        using var oCnn = Configuracoes.GetConnectionByUriRw(uri);
+        using var scope = _connectionService.CreateConnectionScopeRw(uri);
+        using var oCnn = scope.Connection ?? throw new DatabaseConnectionException();
         if (oCnn == null)
         {
             return null;
@@ -209,12 +238,12 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
             throw new Exception("Erro inesperado ao validar 0x1!");
         }
 
-        var contatocrmview = await reader.Read(id ?? default, oCnn);
+        var contatocrmview = await reader.ReadAsync(id ?? default, oCnn);
         try
         {
             if (contatocrmview != null)
             {
-                await writer.Delete(contatocrmview, 0, oCnn);
+                await writer.DeleteAsync(contatocrmview, 0, oCnn);
                 if (_memoryCache is MemoryCache memCache)
                 {
                     memCache.Compact(1.0);
@@ -249,9 +278,6 @@ public partial class ContatoCRMViewService(IOptions<AppSettings> appSettings, IF
 
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 }

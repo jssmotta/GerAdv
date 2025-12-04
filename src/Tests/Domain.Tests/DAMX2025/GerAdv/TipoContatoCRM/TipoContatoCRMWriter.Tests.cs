@@ -74,8 +74,8 @@ public class TipoContatoCRMWriterTests
         var result = await _tipocontatocrmWriter.WriteAsync(tipocontatocrm, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoContatoCRM.Object);
+        _mockFTipoContatoCRM.VerifySet(x => x.FGuid = tipocontatocrm.Guid, Times.Once);
         _mockFTipoContatoCRM.VerifySet(x => x.FNome = tipocontatocrm.Nome, Times.Once);
-        _mockFTipoContatoCRM.VerifySet(x => x.FGUID = tipocontatocrm.GUID, Times.Once);
         _mockFTipoContatoCRM.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class TipoContatoCRMWriterTests
         var operadorId = 456;
         _mockTipoContatoCRMFactory.Setup(x => x.DeleteAsync(operadorId, tipocontatocrmResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipocontatocrmWriter.Delete(tipocontatocrmResponse, operadorId, _mockConnection.Object);
+        await _tipocontatocrmWriter.DeleteAsync(tipocontatocrmResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoContatoCRMFactory.Verify(x => x.DeleteAsync(operadorId, tipocontatocrmResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class TipoContatoCRMWriterTests
         var operadorId = 111;
         _mockTipoContatoCRMFactory.Setup(x => x.DeleteAsync(operadorId, tipocontatocrmResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipocontatocrmWriter.Delete(tipocontatocrmResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipocontatocrmWriter.DeleteAsync(tipocontatocrmResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class TipoContatoCRMWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoContatoCRMFactory.Setup(x => x.DeleteAsync(operadorId, tipocontatocrmResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipocontatocrmWriter.Delete(tipocontatocrmResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipocontatocrmWriter.DeleteAsync(tipocontatocrmResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class TipoContatoCRMWriterTests
         return new Models.TipoContatoCRM
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

@@ -14,6 +14,14 @@ public partial class DBProSucumbencia
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProSucumbencia
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,25 +142,25 @@ public partial class DBProSucumbencia
 
 #if (!NOTSTORED_ProSucumbencia)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFInstancia || pFldFData || pFldFNome || pFldFTipoOrigemSucumbencia || pFldFValor || pFldFPercentual || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFInstancia || pFldFData || pFldFNome || pFldFTipoOrigemSucumbencia || pFldFValor || pFldFPercentual || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFInstancia)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Instancia, m_FInstancia, ETiposCampos.FNumber);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Instancia, FInstancia, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFNome)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFTipoOrigemSucumbencia)
-            updateTool.Fields(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia, m_FTipoOrigemSucumbencia, ETiposCampos.FNumber);
+            updateTool.Fields(DBProSucumbenciaDicInfo.TipoOrigemSucumbencia, FTipoOrigemSucumbencia, EGenericTypeFields.FNumber);
         if (pFldFValor)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFPercentual)
-            updateTool.Fields(DBProSucumbenciaDicInfo.Percentual, m_FPercentual, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBProSucumbenciaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBProSucumbenciaDicInfo.Percentual, FPercentual, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            updateTool.Fields(DBProSucumbenciaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -164,24 +172,23 @@ public partial class DBProSucumbencia
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProSucumbenciaDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProSucumbenciaDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProSucumbenciaDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProSucumbenciaDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProSucumbenciaDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProSucumbenciaDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProSucumbenciaDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProSucumbenciaDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBProSucumbenciaDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProSucumbenciaDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBProSucumbenciaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

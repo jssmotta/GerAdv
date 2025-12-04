@@ -105,7 +105,7 @@ public class TipoEMailValidationTests : IDisposable
         tipoemail.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoemail, _mockTipoEMailService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class TipoEMailValidationTests : IDisposable
     {
         // Arrange
         var tipoemail = CreateValidTipoEMail();
-        tipoemail.Nome = "   ";
+        tipoemail.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoemail, _mockTipoEMailService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

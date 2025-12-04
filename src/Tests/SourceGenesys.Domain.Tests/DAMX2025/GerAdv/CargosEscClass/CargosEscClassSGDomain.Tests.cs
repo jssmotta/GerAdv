@@ -36,8 +36,21 @@ public class DBCargosEscClassTests : IDisposable
         dt.Columns.Add("cecDtAtu", typeof(DateTime));
         dt.Columns.Add("cecVisto", typeof(bool));
         dt.Columns.Add("cecNome", typeof(string));
-        dt.Columns.Add("cecGUID", typeof(string));
+        dt.Columns.Add("cecGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["cecCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBCargosEscClass(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -58,7 +71,7 @@ public class DBCargosEscClassTests : IDisposable
     {
         var instance = new DBCargosEscClass();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("CargosEscClass", instance.ITabelaName());
+        Assert.Equal("CargosEscClass", instance.ITableName());
         Assert.Equal("cec", instance.Prefixo);
     }
 
@@ -76,29 +89,16 @@ public class DBCargosEscClassTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["cecCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBCargosEscClass(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("CargosEscClass", cadastro.ITabelaName());
-        Assert.Equal("cecCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("cecNome", cadastro.ICampoNome());
-        Assert.Equal("cec", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("CargosEscClass", cadastro.ITableName());
+        Assert.Equal("cecCodigo", cadastro.IFieldId());
+        Assert.Equal("cecNome", cadastro.IFieldNameDescription());
+        Assert.Equal("cec", cadastro.IPrefix());
     }
 
 #endregion
@@ -158,9 +158,9 @@ public class DBCargosEscClassTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -186,18 +186,18 @@ public class DBCargosEscClassTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

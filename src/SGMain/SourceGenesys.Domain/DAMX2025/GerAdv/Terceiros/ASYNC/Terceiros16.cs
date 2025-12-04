@@ -14,6 +14,14 @@ public partial class DBTerceiros
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBTerceiros
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,39 +142,41 @@ public partial class DBTerceiros
 
 #if (!NOTSTORED_Terceiros)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFNome || pFldFSituacao || pFldFCidade || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFFone || pFldFFax || pFldFOBS || pFldFEMail || pFldFGUID || pFldFClass || pFldFVaraForoComarca || pFldFSexo;
+    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFNome || pFldFSituacao || pFldFCidade || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFFone || pFldFFax || pFldFOBS || pFldFEMail || pFldFClass || pFldFVaraForoComarca || pFldFSexo || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBTerceirosDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBTerceirosDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBTerceirosDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFSituacao)
-            updateTool.Fields(DBTerceirosDicInfo.Situacao, m_FSituacao, ETiposCampos.FNumber);
+            updateTool.Fields(DBTerceirosDicInfo.Situacao, FSituacao, EGenericTypeFields.FNumber);
         if (pFldFCidade)
-            updateTool.Fields(DBTerceirosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBTerceirosDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFEndereco)
-            updateTool.Fields(DBTerceirosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            updateTool.Fields(DBTerceirosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFCEP)
-            updateTool.Fields(DBTerceirosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBTerceirosDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            updateTool.Fields(DBTerceirosDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFOBS)
-            updateTool.Fields(DBTerceirosDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBTerceirosDicInfo.EMail, m_FEMail, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBTerceirosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFClass)
-            updateTool.Fields(DBTerceirosDicInfo.Class, m_FClass, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.Class, FClass, EGenericTypeFields.FString);
         if (pFldFVaraForoComarca)
-            updateTool.Fields(DBTerceirosDicInfo.VaraForoComarca, m_FVaraForoComarca, ETiposCampos.FString);
+            updateTool.Fields(DBTerceirosDicInfo.VaraForoComarca, FVaraForoComarca, EGenericTypeFields.FString);
         if (pFldFSexo || updateTool.Insert)
-            updateTool.Fields(DBTerceirosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBTerceirosDicInfo.Sexo, FSexo, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBTerceirosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBTerceirosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -178,24 +188,23 @@ public partial class DBTerceiros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBTerceirosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBTerceirosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBTerceirosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBTerceirosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBTerceirosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBTerceirosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBTerceirosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBTerceirosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBTerceirosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBTerceirosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBTerceirosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

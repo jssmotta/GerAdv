@@ -23,7 +23,7 @@ public class UFValidation : IUFValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var cidadeExists0 = await cidadeService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterCidade { UF = id ?? default }, uri);
         if (cidadeExists0 != null && cidadeExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Cidade associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Cidade associados a ele.");
         return true;
     }
 
@@ -35,8 +35,6 @@ public class UFValidation : IUFValidation
             throw new SGValidationException($"ID deve ter no máximo {DBUFDicInfo.UfID.FTamanho} caracteres.");
         if (reg.Descricao != null && reg.Descricao.Length > DBUFDicInfo.UfDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBUFDicInfo.UfDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBUFDicInfo.UfGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBUFDicInfo.UfGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -46,13 +44,15 @@ public class UFValidation : IUFValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.IdUF))
             throw new SGValidationException("ID é obrigatório");
+        if (reg.IdUF.Contains("%"))
+            throw new SGValidationException("ID possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         // Paises
         if (!reg.Pais.IsEmptyIDNumber())
         {
-            var regPaises = await paisesReader.Read(reg.Pais, oCnn);
+            var regPaises = await paisesReader.ReadAsync(reg.Pais, oCnn);
             if (regPaises == null || regPaises.Id != reg.Pais)
             {
                 throw new SGValidationException($"Paises não encontrado ({regPaises?.Id}).");

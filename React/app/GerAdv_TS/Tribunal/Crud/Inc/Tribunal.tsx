@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { ITribunalFormProps } from '../../Interfaces/interface.Tribunal';
 import { TribunalService } from '../../Services/Tribunal.service';
 import { useTribunalForm, useValidationsTribunal } from '../../Hooks/hookTribunal';
-import { TribunalEmpty } from '../../../Models/Tribunal';
+import { TribunalEmpty } from '../../../Models/Tribunal'; 
 import { TribunalForm } from '../Forms/Tribunal';
+ 
 
 const TribunalInc: React.FC<ITribunalFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const tribunalService = new TribunalService(
-  new TribunalApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadTribunal } = useTribunalForm(
-TribunalEmpty(), 
-tribunalService
-);
-useEffect(() => {
-  loadTribunal(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedTribunal = await tribunalService.saveTribunal(data);
-    if (savedTribunal.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedTribunal);
+  const tribunalService = new TribunalService(
+    new TribunalApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadTribunal } = useTribunalForm(
+    TribunalEmpty(),
+    tribunalService
+  );
+
+  useEffect(() => {
+    loadTribunal(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedTribunal = await tribunalService.saveTribunal(data);
+
+      if (savedTribunal.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedTribunal);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadTribunal(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <TribunalForm
+        tribunalData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadTribunal(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<TribunalForm
-tribunalData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default TribunalInc;

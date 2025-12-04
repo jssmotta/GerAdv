@@ -54,8 +54,7 @@ public partial class DBStatusHTrab
         // Checkpoint Carregar 
         try
         {
-            if (!DBNull.Value.Equals(getValue(DBStatusHTrabDicInfo.ResID)))
-                m_FResID = Convert.ToInt32(getValue(DBStatusHTrabDicInfo.ResID));
+            FDescricao = getValue(DBStatusHTrabDicInfo.Descricao)?.ToString() ?? string.Empty;
         }
         catch
         {
@@ -63,14 +62,15 @@ public partial class DBStatusHTrab
 
         try
         {
-            m_FDescricao = getValue(DBStatusHTrabDicInfo.Descricao)?.ToString() ?? string.Empty;
+            if (!DBNull.Value.Equals(getValue(DBStatusHTrabDicInfo.ResID)))
+                FResID = Convert.ToInt32(getValue(DBStatusHTrabDicInfo.ResID));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -94,7 +94,7 @@ public partial class DBStatusHTrab
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

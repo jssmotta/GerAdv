@@ -36,8 +36,22 @@ public class DBProTipoBaixaTests : IDisposable
         dt.Columns.Add("ptxDtAtu", typeof(DateTime));
         dt.Columns.Add("ptxVisto", typeof(bool));
         dt.Columns.Add("ptxNome", typeof(string));
-        dt.Columns.Add("ptxGUID", typeof(string));
+        dt.Columns.Add("ptxBold", typeof(string));
+        dt.Columns.Add("ptxGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ptxCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProTipoBaixa(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -58,7 +72,7 @@ public class DBProTipoBaixaTests : IDisposable
     {
         var instance = new DBProTipoBaixa();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProTipoBaixa", instance.ITabelaName());
+        Assert.Equal("ProTipoBaixa", instance.ITableName());
         Assert.Equal("ptx", instance.Prefixo);
     }
 
@@ -76,29 +90,16 @@ public class DBProTipoBaixaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ptxCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProTipoBaixa(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProTipoBaixa", cadastro.ITabelaName());
-        Assert.Equal("ptxCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ptxNome", cadastro.ICampoNome());
-        Assert.Equal("ptx", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProTipoBaixa", cadastro.ITableName());
+        Assert.Equal("ptxCodigo", cadastro.IFieldId());
+        Assert.Equal("ptxNome", cadastro.IFieldNameDescription());
+        Assert.Equal("ptx", cadastro.IPrefix());
     }
 
 #endregion
@@ -158,9 +159,9 @@ public class DBProTipoBaixaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -186,18 +187,18 @@ public class DBProTipoBaixaTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

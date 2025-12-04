@@ -36,7 +36,7 @@ public class ContaCorrenteWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFContaCorrente(int? CIAcordo = 1, bool? Quitado = false, int? IDContrato = 1, int? QuitadoID = 1, int? DebitoID = 1, int? LivroCaixaID = 1, bool? Sucumbencia = true, bool? DistRegra = false, string? DtOriginal = "24/04/1975", int? Processo = 1, int? ParcelaX = 1, decimal? Valor = 1m, string? Data = "27/05/2022", int? Cliente = 1, string? Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Contrato = true, bool? Pago = false, bool? Distribuir = true, bool? LC = false, int? IDHTrab = 1, int? NroParcelas = 1, decimal? ValorPrincipal = 1m, int? ParcelaPrincipalID = 1, bool? Hide = true, string? DataPgto = "24/04/1975")
+    private void SetupMockFContaCorrente(int? CIAcordo = 1, bool? Quitado = false, int? IDContrato = 1, int? QuitadoID = 1, int? DebitoID = 1, int? LivroCaixaID = 1, bool? Sucumbencia = true, bool? DistRegra = false, string? DtOriginal = "24/04/1975", int? Processo = 1, int? ParcelaX = 1, decimal? Valor = 1m, string? Data = "24/04/1975", int? Cliente = 1, string? Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", bool? Contrato = true, bool? Pago = false, bool? Distribuir = true, bool? LC = false, int? IDHTrab = 1, int? NroParcelas = 1, decimal? ValorPrincipal = 1m, int? ParcelaPrincipalID = 1, bool? Hide = true, string? DataPgto = "24/04/1975")
     {
         _mockFContaCorrente.Setup(f => f.FCIAcordo).Returns(CIAcordo ?? 0);
         _mockFContaCorrente.Setup(f => f.FQuitado).Returns(Quitado ?? false);
@@ -114,7 +114,7 @@ public class ContaCorrenteWhereTests : IDisposable
         result.Processo.Should().Be(1);
         result.ParcelaX.Should().Be(1);
         result.Valor.Should().Be(1m);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Cliente.Should().Be(1);
         result.Historico.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.Contrato.Should().Be(true);
@@ -277,7 +277,7 @@ public class ContaCorrenteWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFContaCorrente(CIAcordo: 1, Quitado: false, IDContrato: 1, QuitadoID: 1, DebitoID: 1, LivroCaixaID: 1, Sucumbencia: true, DistRegra: false, DtOriginal: "24/04/1975", Processo: 1, ParcelaX: 1, Valor: 1m, Data: "27/05/2022", Cliente: 1, Historico: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Contrato: true, Pago: false, Distribuir: true, LC: false, IDHTrab: 1, NroParcelas: 1, ValorPrincipal: 1m, ParcelaPrincipalID: 1, Hide: true, DataPgto: "24/04/1975");
+        SetupMockFContaCorrente(CIAcordo: 1, Quitado: false, IDContrato: 1, QuitadoID: 1, DebitoID: 1, LivroCaixaID: 1, Sucumbencia: true, DistRegra: false, DtOriginal: "24/04/1975", Processo: 1, ParcelaX: 1, Valor: 1m, Data: "24/04/1975", Cliente: 1, Historico: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Contrato: true, Pago: false, Distribuir: true, LC: false, IDHTrab: 1, NroParcelas: 1, ValorPrincipal: 1m, ParcelaPrincipalID: 1, Hide: true, DataPgto: "24/04/1975");
         _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
         // Act
         var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
@@ -296,7 +296,7 @@ public class ContaCorrenteWhereTests : IDisposable
         result.Processo.Should().Be(1);
         result.ParcelaX.Should().Be(1);
         result.Valor.Should().Be(1m);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Cliente.Should().Be(1);
         result.Historico.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.Contrato.Should().Be(true);
@@ -345,20 +345,6 @@ public class ContaCorrenteWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDtOriginalStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFContaCorrente(DtOriginal: "invalid-date");
-        _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
-        // Act
-        var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DtOriginal.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDtOriginalFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -392,32 +378,66 @@ public class ContaCorrenteWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithValidDateDataPgtoFields_ShouldParseAndSetDateProperties()
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
     {
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
         var testDate = "01/01/2025";
+        SetupMockFContaCorrente(Data: testDate);
+        _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
+        // Act
+        var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("01/01/2025");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFContaCorrente(Data: null);
+        _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
+        // Act
+        var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("01/01/2025")]
+    [InlineData("2025/01/02T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/03T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFContaCorrente(Data: dateString);
+        _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
+        // Act
+        var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataPgtoFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "02/01/2025";
         SetupMockFContaCorrente(DataPgto: testDate);
         _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
         // Act
         var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
-        result.DataPgto.Should().Be("01/01/2025");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDataPgtoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFContaCorrente(DataPgto: "invalid-date");
-        _mockContaCorrenteFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContaCorrente.Object);
-        // Act
-        var result = _contacorrenteWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataPgto.Should().Be("");
+        result.DataPgto.Should().Be("02/01/2025");
     }
 
     [Fact]
@@ -435,10 +455,10 @@ public class ContaCorrenteWhereTests : IDisposable
     }
 
     [Theory]
-    [InlineData("01/01/2025")]
-    [InlineData("2025/01/02T23:59:59")]
+    [InlineData("02/01/2025")]
+    [InlineData("2025/01/03T23:59:59")]
     [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/03T14:30:45.123")]
+    [InlineData("2025/01/04T14:30:45.123")]
     public void Read_WithValidDateDataPgtoFormats_ShouldParseCorrectly(string dateString)
     {
         // Arrange

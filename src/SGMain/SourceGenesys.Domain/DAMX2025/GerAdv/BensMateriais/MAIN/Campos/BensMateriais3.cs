@@ -7,35 +7,20 @@ public partial class DBBensMateriais
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFNome, pFldFBensClassificacao, pFldFDataCompra, pFldFDataFimDaGarantia, pFldFNFNRO, pFldFFornecedor, pFldFValorBem, pFldFNroSerieProduto, pFldFComprador, pFldFCidade, pFldFGarantiaLoja, pFldFDataTerminoDaGarantiaDaLoja, pFldFObservacoes, pFldFNomeVendedor, pFldFGUID, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FBensClassificacao, m_FFornecedor, m_FCidade;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FNFNRO, m_FNroSerieProduto, m_FComprador, m_FObservacoes, m_FNomeVendedor, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FDataCompra, m_FDataFimDaGarantia, m_FDataTerminoDaGarantiaDaLoja;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FGarantiaLoja, m_FBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected decimal m_FValorBem;
+    private protected bool pFldFNome, pFldFBensClassificacao, pFldFDataCompra, pFldFDataFimDaGarantia, pFldFNFNRO, pFldFFornecedor, pFldFValorBem, pFldFNroSerieProduto, pFldFComprador, pFldFCidade, pFldFGarantiaLoja, pFldFDataTerminoDaGarantiaDaLoja, pFldFObservacoes, pFldFNomeVendedor, pFldFBold, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela BensMateriais deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela 'BensMateriais' deve ter no máximo 80 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
@@ -43,52 +28,80 @@ public partial class DBBensMateriais
     public virtual int FBensClassificacao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBensClassificacao;
+        get => field;
         set
         {
-            pFldFBensClassificacao = pFldFBensClassificacao || value != m_FBensClassificacao;
+            pFldFBensClassificacao = pFldFBensClassificacao || value != field;
             if (pFldFBensClassificacao)
-                m_FBensClassificacao = value;
+                field = value;
         }
     }
 
-    public virtual string? FDataCompra
+    public virtual DateOnly? FDataCompra
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataCompra is null || m_FDataCompra == DevourerOne.DDataZerada ? string.Empty : m_FDataCompra.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataCompra, m_FDataCompra, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataCompra = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataCompra, m_FDataCompra) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataCompra = true;
+                field = value;
+            }
         }
     }
 
-    public virtual string? FDataFimDaGarantia
+    public virtual DateOnly? FDataFimDaGarantia
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataFimDaGarantia is null || m_FDataFimDaGarantia == DevourerOne.DDataZerada ? string.Empty : m_FDataFimDaGarantia.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataFimDaGarantia, m_FDataFimDaGarantia, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataFimDaGarantia = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataFimDaGarantia, m_FDataFimDaGarantia) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataFimDaGarantia = true;
+                field = value;
+            }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FNFNRO da tabela BensMateriais deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FNFNRO da tabela 'BensMateriais' deve ter no máximo 255 caracteres.")]
     public virtual string? FNFNRO
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNFNRO ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNFNRO = pFldFNFNRO || !(m_FNFNRO ?? string.Empty).Equals(value);
+            pFldFNFNRO = pFldFNFNRO || !(field ?? string.Empty).Equals(value);
             if (pFldFNFNRO)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNFNRO = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -96,58 +109,58 @@ public partial class DBBensMateriais
     public virtual int FFornecedor
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFornecedor;
+        get => field;
         set
         {
-            pFldFFornecedor = pFldFFornecedor || value != m_FFornecedor;
+            pFldFFornecedor = pFldFFornecedor || value != field;
             if (pFldFFornecedor)
-                m_FFornecedor = value;
+                field = value;
         }
     }
 
     public virtual decimal FValorBem
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FValorBem;
+        get => field;
         set
         {
-            if (value == m_FValorBem)
+            if (value == field)
                 return;
             pFldFValorBem = true;
-            m_FValorBem = value;
+            field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FNroSerieProduto da tabela BensMateriais deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FNroSerieProduto da tabela 'BensMateriais' deve ter no máximo 100 caracteres.")]
     public virtual string? FNroSerieProduto
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNroSerieProduto ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNroSerieProduto = pFldFNroSerieProduto || !(m_FNroSerieProduto ?? string.Empty).Equals(value);
+            pFldFNroSerieProduto = pFldFNroSerieProduto || !(field ?? string.Empty).Equals(value);
             if (pFldFNroSerieProduto)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNroSerieProduto = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FComprador da tabela BensMateriais deve ter no máximo 100 caracteres.")]
+    [StringLength(100, ErrorMessage = "A propriedade FComprador da tabela 'BensMateriais' deve ter no máximo 100 caracteres.")]
     public virtual string? FComprador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FComprador ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFComprador = pFldFComprador || !(m_FComprador ?? string.Empty).Equals(value);
+            pFldFComprador = pFldFComprador || !(field ?? string.Empty).Equals(value);
             if (pFldFComprador)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FComprador = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
             }
         }
     }
@@ -155,36 +168,50 @@ public partial class DBBensMateriais
     public virtual int FCidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidade;
+        get => field;
         set
         {
-            pFldFCidade = pFldFCidade || value != m_FCidade;
+            pFldFCidade = pFldFCidade || value != field;
             if (pFldFCidade)
-                m_FCidade = value;
+                field = value;
         }
     }
 
     public virtual bool FGarantiaLoja
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGarantiaLoja;
+        get => field;
         set
         {
-            pFldFGarantiaLoja = pFldFGarantiaLoja || value != m_FGarantiaLoja;
+            pFldFGarantiaLoja = pFldFGarantiaLoja || value != field;
             if (pFldFGarantiaLoja)
-                m_FGarantiaLoja = value;
+                field = value;
         }
     }
 
-    public virtual string? FDataTerminoDaGarantiaDaLoja
+    public virtual DateOnly? FDataTerminoDaGarantiaDaLoja
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDataTerminoDaGarantiaDaLoja is null || m_FDataTerminoDaGarantiaDaLoja == DevourerOne.DDataZerada ? string.Empty : m_FDataTerminoDaGarantiaDaLoja.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFDataTerminoDaGarantiaDaLoja, m_FDataTerminoDaGarantiaDaLoja, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFDataTerminoDaGarantiaDaLoja = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFDataTerminoDaGarantiaDaLoja, m_FDataTerminoDaGarantiaDaLoja) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFDataTerminoDaGarantiaDaLoja = true;
+                field = value;
+            }
         }
     }
 
@@ -192,45 +219,28 @@ public partial class DBBensMateriais
     public virtual string? FObservacoes
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObservacoes ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObservacoes = pFldFObservacoes || !(m_FObservacoes ?? string.Empty).Equals(value);
+            pFldFObservacoes = pFldFObservacoes || !(field ?? string.Empty).Equals(value);
             if (pFldFObservacoes)
-                m_FObservacoes = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FNomeVendedor da tabela BensMateriais deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FNomeVendedor da tabela 'BensMateriais' deve ter no máximo 255 caracteres.")]
     public virtual string? FNomeVendedor
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNomeVendedor ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNomeVendedor = pFldFNomeVendedor || !(m_FNomeVendedor ?? string.Empty).Equals(value);
+            pFldFNomeVendedor = pFldFNomeVendedor || !(field ?? string.Empty).Equals(value);
             if (pFldFNomeVendedor)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNomeVendedor = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
-            }
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela BensMateriais deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -238,24 +248,41 @@ public partial class DBBensMateriais
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'BensMateriais' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -265,9 +292,13 @@ public partial class DBBensMateriais
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

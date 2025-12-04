@@ -22,7 +22,7 @@ public class DBJusticaUpdate : IDisposable
         var justica = new DBJustica();
         // Assert
         justica.Should().NotBeNull();
-        justica.ITabelaName().Should().Be("Justica");
+        justica.ITableName().Should().Be("Justica");
         justica.ID.Should().Be(0);
     }
 
@@ -32,11 +32,11 @@ public class DBJusticaUpdate : IDisposable
         // Arrange
         var justica = new DBJustica
         {
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FNome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
-        // Assert - All properties should be set justica.FGUID.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        justica.FNome.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        // Assert - All properties should be set justica.FNome.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        justica.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -45,10 +45,10 @@ public class DBJusticaUpdate : IDisposable
         // Arrange
         var justica = new DBJustica();
         var longString = new string ('X', 300);
-        justica.FGUID = longString; // MAX: 100
         justica.FNome = longString; // MAX: 50
-        // Assert - All properties should be set justica.FGUID.Should().HaveLength(100);
-        justica.FNome.Should().HaveLength(50);
+        justica.FGuid = longString; // MAX: 100
+        // Assert - All properties should be set justica.FNome.Should().HaveLength(50);
+        justica.FGuid.Should().HaveLength(100);
     }
 
     [Theory]
@@ -148,7 +148,7 @@ public class DBJusticaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -162,7 +162,7 @@ public class DBJusticaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -178,7 +178,7 @@ public class DBJusticaUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -193,7 +193,7 @@ public class DBJusticaUpdate : IDisposable
         _instance.FNome = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -207,7 +207,7 @@ public class DBJusticaUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -221,7 +221,7 @@ public class DBJusticaUpdate : IDisposable
         _instance.FNome = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -235,7 +235,7 @@ public class DBJusticaUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FNome);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -261,7 +261,7 @@ public class DBJusticaUpdate : IDisposable
         _instance.FNome = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -275,23 +275,23 @@ public class DBJusticaUpdate : IDisposable
         _instance.FNome = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
+#region Testes de Guid
     [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
+    public void Guid_DefaultValue_ShouldBeEmpty()
     {
-        Assert.Equal(string.Empty, _instance.FGUID);
+        Assert.Equal(string.Empty, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
+    public void Guid_SetValidGuid_ShouldStore()
     {
         var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
     }
 
 #endregion

@@ -56,7 +56,7 @@ public class ProObservacoesValidationTests : IDisposable
             Processo = 0,
             Nome = "João",
             Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            Data = "27/05/2022"
+            Data = "24/04/1975"
         };
     }
 
@@ -101,6 +101,74 @@ public class ProObservacoesValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var proobservacoes = CreateValidProObservacoes();
+        proobservacoes.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(proobservacoes, _mockProObservacoesService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var proobservacoes = CreateValidProObservacoes();
+        proobservacoes.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proobservacoes, _mockProObservacoesService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var proobservacoes = CreateValidProObservacoes();
+        proobservacoes.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proobservacoes, _mockProObservacoesService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var proobservacoes = CreateValidProObservacoes();
+        proobservacoes.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proobservacoes, _mockProObservacoesService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var proobservacoes = CreateValidProObservacoes();
+        proobservacoes.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proobservacoes, _mockProObservacoesService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
     public virtual void Dispose()
     {
         _service?.Dispose();

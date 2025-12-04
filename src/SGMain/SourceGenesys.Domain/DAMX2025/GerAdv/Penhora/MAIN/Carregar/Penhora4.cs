@@ -54,8 +54,32 @@ public partial class DBPenhora
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBPenhoraDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBPenhoraDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBPenhoraDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.DataPenhora)))
-                m_FDataPenhora = Convert.ToDateTime(getValue(DBPenhoraDicInfo.DataPenhora));
+                FDataPenhora = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBPenhoraDicInfo.DataPenhora)));
         }
         catch
         {
@@ -82,7 +106,7 @@ public partial class DBPenhora
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.Master)))
-                m_FMaster = Convert.ToInt32(getValue(DBPenhoraDicInfo.Master));
+                FMaster = Convert.ToInt32(getValue(DBPenhoraDicInfo.Master));
         }
         catch
         {
@@ -91,7 +115,7 @@ public partial class DBPenhora
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.PenhoraStatus)))
-                m_FPenhoraStatus = Convert.ToInt32(getValue(DBPenhoraDicInfo.PenhoraStatus));
+                FPenhoraStatus = Convert.ToInt32(getValue(DBPenhoraDicInfo.PenhoraStatus));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBPenhora
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBPenhoraDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBPenhoraDicInfo.Processo));
         }
         catch
         {
@@ -109,7 +133,7 @@ public partial class DBPenhora
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBPenhoraDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBPenhoraDicInfo.QuemAtu));
         }
         catch
         {
@@ -118,7 +142,7 @@ public partial class DBPenhora
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBPenhoraDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBPenhoraDicInfo.QuemCad));
         }
         catch
         {
@@ -127,38 +151,14 @@ public partial class DBPenhora
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPenhoraDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBPenhoraDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBPenhoraDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBPenhoraDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBPenhoraDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBPenhoraDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -182,7 +182,7 @@ public partial class DBPenhora
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

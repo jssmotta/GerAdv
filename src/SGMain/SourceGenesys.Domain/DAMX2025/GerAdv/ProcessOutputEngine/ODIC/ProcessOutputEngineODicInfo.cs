@@ -9,25 +9,29 @@ public partial class DBProcessOutputEngineODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBProcessOutputEngineDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBProcessOutputEngineDicInfo.CampoCodigo;
+    public string IFieldId() => DBProcessOutputEngineDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBProcessOutputEngineDicInfo.TablePrefix;
+    public string IPrefix() => DBProcessOutputEngineDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IdIsIdentity() => true;
+    public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBProcessOutputEngineDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBProcessOutputEngineDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBProcessOutputEngineODicInfo : IODicInfo
     public static string TCampoNome => DBProcessOutputEngineDicInfo.CampoNome;
     public static string TTabelaNome => DBProcessOutputEngineDicInfo.TabelaNome;
     public static string TTablePrefix => DBProcessOutputEngineDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeGUID, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeGUID, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID];
+    public static ImmutableArray<DBInfoSystem> List => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID, DBProcessOutputEngineDicInfo.PoeGuid];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBProcessOutputEngineDicInfo.PoeNome, DBProcessOutputEngineDicInfo.PoeDatabase, DBProcessOutputEngineDicInfo.PoeTabela, DBProcessOutputEngineDicInfo.PoeCampo, DBProcessOutputEngineDicInfo.PoeValor, DBProcessOutputEngineDicInfo.PoeOutput, DBProcessOutputEngineDicInfo.PoeAdministrador, DBProcessOutputEngineDicInfo.PoeOutputSource, DBProcessOutputEngineDicInfo.PoeDisabledItem, DBProcessOutputEngineDicInfo.PoeIDModulo, DBProcessOutputEngineDicInfo.PoeIsOnlyProcesso, DBProcessOutputEngineDicInfo.PoeMyID, DBProcessOutputEngineDicInfo.PoeGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["poeCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessOutputEngineDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["poeCampo", "poeCodigo", "poeDatabase", "poeTabela", "poeValor"]);
         var result = campos.Where(campo => !campo.Equals(DBProcessOutputEngineDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

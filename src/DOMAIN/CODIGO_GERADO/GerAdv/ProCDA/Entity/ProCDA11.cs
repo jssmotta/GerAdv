@@ -23,12 +23,6 @@ public partial class FProCDAFactory : IFProCDAFactory, IDisposable
         return FProCDA.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProCDA> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FProCDA().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FProCDA> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FProCDAFactory : IFProCDAFactory, IDisposable
         return FProCDA.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FProCDA> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FProCDA().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FProCDAFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

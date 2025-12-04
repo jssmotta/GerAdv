@@ -36,8 +36,6 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
             throw new SGValidationException($"CEP deve ter no máximo {DBDivisaoTribunalDicInfo.DivCEP.FTamanho} caracteres.");
         if (reg.Andar != null && reg.Andar.Length > DBDivisaoTribunalDicInfo.DivAndar.FTamanho)
             throw new SGValidationException($"Andar deve ter no máximo {DBDivisaoTribunalDicInfo.DivAndar.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBDivisaoTribunalDicInfo.DivGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBDivisaoTribunalDicInfo.DivGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -61,7 +59,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {
-            var regJustica = await justicaReader.Read(reg.Justica, oCnn);
+            var regJustica = await justicaReader.ReadAsync(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
@@ -70,7 +68,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 
         // Area
         {
-            var regArea = await areaReader.Read(reg.Area, oCnn);
+            var regArea = await areaReader.ReadAsync(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
                 throw new SGValidationException($"Área não encontrado ({regArea?.Id}).");
@@ -79,7 +77,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 
         // Cidade
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");
@@ -89,7 +87,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
         // Foro
         if (!reg.Foro.IsEmptyIDNumber())
         {
-            var regForo = await foroReader.Read(reg.Foro, oCnn);
+            var regForo = await foroReader.ReadAsync(reg.Foro, oCnn);
             if (regForo == null || regForo.Id != reg.Foro)
             {
                 throw new SGValidationException($"Foro não encontrado ({regForo?.Id}).");
@@ -98,7 +96,7 @@ public class DivisaoTribunalValidation : IDivisaoTribunalValidation
 
         // Tribunal
         {
-            var regTribunal = await tribunalReader.Read(reg.Tribunal, oCnn);
+            var regTribunal = await tribunalReader.ReadAsync(reg.Tribunal, oCnn);
             if (regTribunal == null || regTribunal.Id != reg.Tribunal)
             {
                 throw new SGValidationException($"Tribunal não encontrado ({regTribunal?.Id}).");

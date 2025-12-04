@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IContaCorrenteWriter
 {
     Task<FContaCorrente> WriteAsync(Models.ContaCorrente contacorrente, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : IContaCorrenteWriter
 {
     private readonly IFContaCorrenteFactory _contacorrenteFactory = contacorrenteFactory ?? throw new ArgumentNullException(nameof(contacorrenteFactory));
-    public virtual async Task Delete(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ContaCorrenteResponse contacorrente, int operadorId, MsiSqlConnection? oCnn)
     {
         await _contacorrenteFactory.DeleteAsync(operadorId, contacorrente.Id, oCnn);
     }
@@ -24,7 +24,6 @@ public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : 
     {
         using var dbRec = await (contacorrente.Id.IsEmptyIDNumber() ? _contacorrenteFactory.CreateAsync() : _contacorrenteFactory.CreateFromIdAsync(contacorrente.Id, oCnn));
         dbRec.FCIAcordo = contacorrente.CIAcordo;
-        dbRec.FGUID = contacorrente.GUID;
         dbRec.FQuitado = contacorrente.Quitado;
         dbRec.FIDContrato = contacorrente.IDContrato;
         dbRec.FQuitadoID = contacorrente.QuitadoID;
@@ -32,12 +31,19 @@ public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : 
         dbRec.FLivroCaixaID = contacorrente.LivroCaixaID;
         dbRec.FSucumbencia = contacorrente.Sucumbencia;
         dbRec.FDistRegra = contacorrente.DistRegra;
-        if (contacorrente.DtOriginal != null)
-            dbRec.FDtOriginal = contacorrente.DtOriginal.ToString();
+        if (contacorrente.DtOriginal.NotIsEmpty())
+        {
+            dbRec.FDtOriginal = DateOnly.FromDateTime(Convert.ToDateTime(contacorrente.DtOriginal));
+        }
+
         dbRec.FProcesso = contacorrente.Processo;
         dbRec.FParcelaX = contacorrente.ParcelaX;
         dbRec.FValor = contacorrente.Valor;
-        dbRec.FData = contacorrente.Data;
+        if (contacorrente.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(contacorrente.Data));
+        }
+
         dbRec.FCliente = contacorrente.Cliente;
         dbRec.FHistorico = contacorrente.Historico;
         dbRec.FContrato = contacorrente.Contrato;
@@ -49,8 +55,12 @@ public class ContaCorrenteWriter(IFContaCorrenteFactory contacorrenteFactory) : 
         dbRec.FValorPrincipal = contacorrente.ValorPrincipal;
         dbRec.FParcelaPrincipalID = contacorrente.ParcelaPrincipalID;
         dbRec.FHide = contacorrente.Hide;
-        if (contacorrente.DataPgto != null)
-            dbRec.FDataPgto = contacorrente.DataPgto.ToString();
+        if (contacorrente.DataPgto.NotIsEmpty())
+        {
+            dbRec.FDataPgto = DateOnly.FromDateTime(Convert.ToDateTime(contacorrente.DataPgto));
+        }
+
+        dbRec.FGuid = contacorrente.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

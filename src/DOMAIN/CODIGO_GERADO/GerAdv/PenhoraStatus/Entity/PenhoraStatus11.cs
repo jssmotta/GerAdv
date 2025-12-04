@@ -23,12 +23,6 @@ public partial class FPenhoraStatusFactory : IFPenhoraStatusFactory, IDisposable
         return FPenhoraStatus.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FPenhoraStatus> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FPenhoraStatus().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FPenhoraStatus> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FPenhoraStatusFactory : IFPenhoraStatusFactory, IDisposable
         return FPenhoraStatus.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FPenhoraStatus> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FPenhoraStatus().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FPenhoraStatusFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

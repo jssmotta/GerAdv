@@ -9,54 +9,61 @@ import { ViaRecebimentoService } from '../../Services/ViaRecebimento.service';
 import { ViaRecebimentoApi } from '../../Apis/ApiViaRecebimento';
 import ViaRecebimentoWindow from './ViaRecebimentoWindow';
 import {ViaRecebimentoEmpty } from '@/app/GerAdv_TS/Models/ViaRecebimento';
-interface ViaRecebimentoWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ViaRecebimentoWindowId: React.FC<ViaRecebimentoWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const viarecebimentoService = useMemo(() => {
-  return new ViaRecebimentoService(
-  new ViaRecebimentoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IViaRecebimento | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ViaRecebimentoEmpty() as IViaRecebimento);
-      return;
-    }
-    if (id) {
-      const response = await viarecebimentoService.fetchViaRecebimentoById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ViaRecebimentoWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedViaRecebimento={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ViaRecebimentoWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ViaRecebimentoWindowId: React.FC<ViaRecebimentoWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const viarecebimentoService = useMemo(() => {
+        return new ViaRecebimentoService(
+            new ViaRecebimentoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IViaRecebimento | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ViaRecebimentoEmpty() as IViaRecebimento);
+                return;
+            }
+            if (id) {
+                 const response = await viarecebimentoService.fetchViaRecebimentoById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ViaRecebimentoWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedViaRecebimento={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ViaRecebimentoWindowId;

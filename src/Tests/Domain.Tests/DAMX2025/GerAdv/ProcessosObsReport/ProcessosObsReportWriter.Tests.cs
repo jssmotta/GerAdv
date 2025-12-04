@@ -74,11 +74,26 @@ public class ProcessosObsReportWriterTests
         var result = await _processosobsreportWriter.WriteAsync(processosobsreport, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProcessosObsReport.Object);
-        _mockFProcessosObsReport.VerifySet(x => x.FData = processosobsreport.Data, Times.Once);
+        _mockFProcessosObsReport.VerifySet(x => x.FData = processosobsreport.Data.ToString(), Times.Once);
         _mockFProcessosObsReport.VerifySet(x => x.FProcesso = processosobsreport.Processo, Times.Once);
         _mockFProcessosObsReport.VerifySet(x => x.FObservacao = processosobsreport.Observacao, Times.Once);
         _mockFProcessosObsReport.VerifySet(x => x.FHistorico = processosobsreport.Historico, Times.Once);
         _mockFProcessosObsReport.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var processosobsreport = CreateValidProcessosObsReportModel();
+        processosobsreport.Data = null;
+        var auditorQuem = 123;
+        _mockProcessosObsReportFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProcessosObsReport.Object);
+        _mockFProcessosObsReport.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _processosobsreportWriter.WriteAsync(processosobsreport, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProcessosObsReport.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -121,7 +136,7 @@ public class ProcessosObsReportWriterTests
         var operadorId = 456;
         _mockProcessosObsReportFactory.Setup(x => x.DeleteAsync(operadorId, processosobsreportResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _processosobsreportWriter.Delete(processosobsreportResponse, operadorId, _mockConnection.Object);
+        await _processosobsreportWriter.DeleteAsync(processosobsreportResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProcessosObsReportFactory.Verify(x => x.DeleteAsync(operadorId, processosobsreportResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +152,7 @@ public class ProcessosObsReportWriterTests
         var operadorId = 111;
         _mockProcessosObsReportFactory.Setup(x => x.DeleteAsync(operadorId, processosobsreportResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _processosobsreportWriter.Delete(processosobsreportResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _processosobsreportWriter.DeleteAsync(processosobsreportResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +169,7 @@ public class ProcessosObsReportWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProcessosObsReportFactory.Setup(x => x.DeleteAsync(operadorId, processosobsreportResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _processosobsreportWriter.Delete(processosobsreportResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _processosobsreportWriter.DeleteAsync(processosobsreportResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,7 +199,7 @@ public class ProcessosObsReportWriterTests
         return new Models.ProcessosObsReport
         {
             Id = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Processo = 1,
             Observacao = "Observação teste",
             Historico = 1

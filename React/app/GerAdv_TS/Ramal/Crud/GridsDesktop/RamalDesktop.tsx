@@ -5,10 +5,11 @@
 'use client';
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
-  Grid, 
-  GridColumn, 
-  GridSortChangeEvent, 
-  GridColumnReorderEvent, 
+  Grid,
+  GridColumn,
+  GridSortChangeEvent,
+  GridColumnReorderEvent,
+  GridToolbar,
 } from '@progress/kendo-react-grid';
 import { useRouter } from 'next/navigation';
 import { useSystemContext } from '@/app/context/SystemContext';
@@ -23,156 +24,200 @@ import { getExportColumnsPdf, useExportToPdf } from '@/app/hooks/useExportToPdf'
 import { orderBy } from '@progress/kendo-data-query';
 import { ExportButtons } from '@/app/components/Cruds/ExportButtons';
 import { useRamalGrid } from '../../Hooks/hookRamalGrid';
+import { useIOSScrollFallback } from '@/app/tools/iosScrollFallback';
+import '@/app/styles/grid-desktop-performance.css';
+import { PageTitle } from '@/app/components/PageTitle';
+
 interface RamalGridProps {
   data: IRamal[];
   onRowClick: (ramal: IRamal) => void;
   onDeleteClick: (e: any) => void;
+  toolbar: React.ReactNode;
   setSelectedId: (id: number | null) => void;
 }
+
 export const RamalGridDesktopComponent = React.memo(({
-  data, 
-  onRowClick, 
-  onDeleteClick, 
-  setSelectedId, 
-
+  data,
+  onRowClick,
+  onDeleteClick,
+  setSelectedId,
+  toolbar,
+  
 }: RamalGridProps) => {
+  
+  const router = useRouter();
+  const { systemContext } = useSystemContext();
+  const defaultHiddenColumns = [''];
 
-const router = useRouter();
-const { systemContext } = useSystemContext();
-const defaultHiddenColumns = [''];
-// ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['nome']);
-// Carregar ordem salva do localStorage na inicialização
-useEffect(() => {
-  try {
-    const savedOrder = localStorage.getItem(btoa('ramal-columns-order'));
-    if (savedOrder) {
-      const parsedOrder = JSON.parse(savedOrder);
-      if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
-        setColumnsOrder(parsedOrder);
+  // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
+  const [columnsOrder, setColumnsOrder] = useState<string[]>(['nome']);
+
+  // Carregar ordem salva do localStorage na inicialização
+  useEffect(() => {
+    try {
+      const savedOrder = localStorage.getItem(btoa('ramal-columns-order'));
+      if (savedOrder) {
+        const parsedOrder = JSON.parse(savedOrder);
+        if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
+          setColumnsOrder(parsedOrder);
+        }
       }
+    } catch (error) {
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.warn('Não foi possível carregar a ordem das colunas:', error);
     }
-  } catch (error) {
-  console.warn('Não foi possível carregar a ordem das colunas:', error);
-}
-}, []);
+  }, []);
 
-const openSearchCellLigacoes = (id: number) => {
-  router.push(`/pages/ligacoes/?ramal=${id}`);
+ 
+
+   
+const openSearchCellLigacoes = (id: number) => {     
+    router.push(`/pages/ligacoes/?ramal=${id}`);    
 };
+
 const SearchFromCellLigacoes = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellLigacoes(props.dataItem.id)}><span title='Pesquisar relacionados em Ligacoes'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
+    return (
+      <>
+        <td>
+            <div onClick={() => openSearchCellLigacoes(props.dataItem.id)}><span title='Pesquisar relacionados em Ligacoes'><SvgIcon icon={searchIcon} /></span></div>
+        </td>
+      </>
+    );
 };
-// ===== USO DO HOOK CENTRALIZADO =====
-const {
-  filteredData, 
-  sort, 
-  handleSortChange, 
-  page, 
-  handlePageChange, 
-  handleFilterChange, 
-  handleRowClick: hookHandleRowClick, 
-  RowNumberCell, 
-  DeleteRow, 
-} = useRamalGrid({
-data, 
-onRowClick, 
-onDeleteClick, 
-setSelectedId, 
-initialTake: 10, 
-useCustomSort: true, 
-});
-// ===== ORDENAÇÃO CUSTOMIZADA PARA DESKTOP =====
-const sortedData = useMemo(() => orderBy(filteredData, sort), [filteredData, sort]);
-const handleSortChangeCustom = useCallback((event: GridSortChangeEvent) => {
-  handleSortChange(event);
-}, [handleSortChange]);
+
+  // ===== USO DO HOOK CENTRALIZADO =====
+  const {
+    filteredData,
+    sort,
+    handleSortChange,
+    page,
+    handlePageChange,
+    handleFilterChange,
+    handleRowClick: hookHandleRowClick,
+    RowNumberCell,
+    DeleteRow,
+  } = useRamalGrid({
+    data,
+    onRowClick,
+    onDeleteClick,
+    setSelectedId,
+    initialTake: CRUD_CONSTANTS.PAGINATION.DEFAULT_TAKE,
+    useCustomSort: true,
+  });
+
+  // ===== ORDENAÇÃO CUSTOMIZADA PARA DESKTOP =====
+  const sortedData = useMemo(() => orderBy(filteredData, sort), [filteredData, sort]);
+
+  const handleSortChangeCustom = useCallback((event: GridSortChangeEvent) => {
+    handleSortChange(event);
+  }, [handleSortChange]);
+
 // ===== HANDLER PARA REORDENAÇÃO DE COLUNAS =====
 const handleColumnReorder = useCallback((event: GridColumnReorderEvent) => {
   if (event.columns) {
     const newOrder = event.columns
-    .filter((col: any) => col.field && columnsOrder.includes(col.field))
-    .map((col: any) => col.field);
+      .filter((col: any) => col.field && columnsOrder.includes(col.field))
+      .map((col: any) => col.field);
     setColumnsOrder(prevOrder => {
       if (newOrder.length > 0 && JSON.stringify(newOrder) !== JSON.stringify(prevOrder)) {
         // Salvar no localStorage
         try {
           localStorage.setItem(btoa('ramal-columns-order'), JSON.stringify(newOrder));
         } catch (error) {
-        console.warn('Não foi possível salvar a ordem das colunas:', error);
+          console.warn('Não foi possível salvar a ordem das colunas:', error);
+        }
+        return newOrder;
       }
-      return newOrder;
-    }
-    return prevOrder;
-  });
-}
+      return prevOrder;
+    });
+  }
 }, []);
-// ===== COMPONENTES ESPECÍFICOS DO DESKTOP =====
-const EditRow = useCallback((e: any) => {
-  return (
-  <td>
-    <span onClick={() => hookHandleRowClick(e)} title='Editar item'>
-      <SvgIcon icon={pencilIcon} />
-    </span>
-  </td>
-);
-}, [hookHandleRowClick]);
-// ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
-const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
 
-  'nome': (
-  <GridColumn
-  key='nome'
-  field='nome'
-  title='Nome'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.12 */
-  'id_edit_Ligacoes': (
-  <GridColumn
-  key='Ligacoes'
-  field='Ligacoes'
-  title='Ligacoes'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellLigacoes }}
-  />
-  ), /* Track G.03 */
-  // ← Colunas aqui
+  // ===== COMPONENTES ESPECÍFICOS DO DESKTOP =====
+  const EditRow = useCallback((e: any) => {
+    return (
+      <td>
+        <span onClick={() => hookHandleRowClick(e)} title='Editar item'>
+          <SvgIcon icon={pencilIcon} />
+        </span>
+      </td>
+    );
+  }, [hookHandleRowClick]); 
+
+  // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
+const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
+  
+                        'nome': (
+                                <GridColumn 
+                                  key='nome'
+                                  field='nome' 
+                                  title='Nome' 
+                                  sortable={true} 
+                                  filterable={true}  
+                                />
+                              ), /* Track G.12 */
+
+
+
+
+                        'id_edit_Ligacoes': (
+                                <GridColumn 
+                                  key='Ligacoes'
+                                  field='Ligacoes' 
+                                  title='Ligacoes' 
+                                  width={'65px'}
+                                  sortable={false} 
+                                  filterable={false}  
+                                  cells={{ data: SearchFromCellLigacoes }}
+                                />
+                              ), /* Track G.03 */
+
+
+ // ← Colunas aqui
 }), []);
-// ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
-const baseGridColumns = useMemo(() => [
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_Ligacoes'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Ligacoes'
-  cells={{ data: SearchFromCellLigacoes }}
-  />, 
-  ], [RowNumberCell, EditRow, DeleteRow]);
-  // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
-  const {
-    columnsState, 
-    initialized, 
-    handleColumnsStateChange
-  } = useHiddenColumns({
-  gridColumns: baseGridColumns, 
+
+	// ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
+	const baseGridColumns = useMemo(() => [
+		<GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+
+<GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
+ <GridColumn
+        field='id_edit_Ligacoes'
+        filterable={false}
+        sortable={false}
+        width={'65px'}
+        title='Ligacoes'
+        cells={{ data: SearchFromCellLigacoes }}
+      />,
+
+	], [RowNumberCell, EditRow, DeleteRow]);
+
+// ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
+const {
+  columnsState,
+  initialized,
+  handleColumnsStateChange
+} = useHiddenColumns({
+  gridColumns: baseGridColumns,
   columnMap: basicColumnMap, // ← Usar basicColumnMap ao invés de columnMap
-  systemContextId: systemContext?.Id, 
+  systemContextId: systemContext?.Id,
   tableName: 'ramal',
   defaultHiddenColumns
 });
+
+   // ===== APLICAR SCROLL FALLBACK PARA DESKTOP =====
+    useEffect(() => {
+      const cleanup = useIOSScrollFallback({
+        scrollSelector:
+          '.grid-desktop-crud.grid-desktop-clientes .k-grid-content',
+        waitForDOM: true,
+        retryDelay: 100,
+        debug: process.env.NEXT_PUBLIC_SHOW_LOG === '1',
+      });
+
+      return cleanup;
+    }, []);
+
 // ===== Helper para verificar se coluna está visível (APÓS INICIALIZAÇÃO DO HOOK) =====
 const isColumnVisible = useCallback((field: string) => {
   if (!columnsState) {
@@ -180,127 +225,147 @@ const isColumnVisible = useCallback((field: string) => {
     return !defaultHiddenColumns.includes(field);
   }
   const columnState = columnsState.find(state => state.field === field);
-  return columnState ? !columnState.hidden: true;
+  return columnState ? !columnState.hidden : true;
 }, [columnsState, defaultHiddenColumns]);
-// ===== FUNÇÃO PARA RESETAR ORDEM =====
-const resetColumnsOrder = useCallback(() => {
-  const defaultOrder = ['nome', 'precomeia', 'precointeira'];
-  setColumnsOrder(defaultOrder);
-  localStorage.removeItem(btoa('ramal-columns-order'));
-}, []);
-// ===== CONFIGURAÇÃO DE COLUNAS FINAIS (REORDENADAS + OCULTAS) =====
-const finalGridColumns = useMemo(() => {
-  // Montar array de colunas na ordem especificada
-  const finalColumns = [
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  <GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
-  <GridColumn
-  field='id_edit_Ligacoes'
-  filterable={false}
-  sortable={false}
-  width={'65px'}
-  title='Ligacoes'
-  cells={{ data: SearchFromCellLigacoes }}
-  />, 
 
-  // Colunas reordenáveis na ordem especificada
+  // ===== FUNÇÃO PARA RESETAR ORDEM =====
+  const resetColumnsOrder = useCallback(() => {
+    const defaultOrder = ['nome', 'precomeia', 'precointeira'];
+    setColumnsOrder(defaultOrder);
+    localStorage.removeItem(btoa('ramal-columns-order'));
+  }, []);
+
+  // ===== CONFIGURAÇÃO DE COLUNAS FINAIS (REORDENADAS + OCULTAS) =====
+  const finalGridColumns = useMemo(() => {        
+
+    // Montar array de colunas na ordem especificada
+    const finalColumns = [
+
+      <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+
+<GridColumn format='{0:n0}' hidden={true}  field='id' title='Código' sortable={true} filterable={true} width='55px' />,
+ <GridColumn
+        field='id_edit_Ligacoes'
+        filterable={false}
+        sortable={false}
+        width={'65px'}
+        title='Ligacoes'
+        cells={{ data: SearchFromCellLigacoes }}
+      />,
+
+      
+   // Colunas reordenáveis na ordem especificada
   ...columnsOrder.map(field => basicColumnMap[field]).filter(Boolean).map(column => {
     const props = (column as React.ReactElement<any>).props;
     return React.cloneElement(column, { ...props, hidden: !isColumnVisible(props.field) });
   }), 
-  // Colunas fixas do final (SEM hidden: !isColumnVisible)
-  <GridColumn
-  field='id_edit_row'
-  width={'55px'}
-  title='Editar registro'
-  sortable={false}
-  filterable={false}
-  cells={{ data: EditRow }}
-  reorderable={false}
-  />, 
-  <GridColumn
-  key='delete'
-  field='id_delete_row'
-  width={'55px'}
-  title='Excluir registro'
-  sortable={false}
-  filterable={false}
-  cells={{ data: DeleteRow }}
-  reorderable={false}
-  />
-];
 
-return finalColumns;
-}, [columnsOrder, isColumnVisible, RowNumberCell, EditRow, DeleteRow, basicColumnMap]);
+       // Colunas fixas do final (SEM hidden: !isColumnVisible)
+        <GridColumn
+          field='id_edit_row'
+          width={'55px'}
+          title='Editar registro'
+          sortable={false} 
+          filterable={false}
+          cells={{ data: EditRow }}
+          reorderable={false} 
+        />,
+        <GridColumn
+          key='delete'
+          field='id_delete_row'
+          width={'55px'}
+          title='Excluir registro'
+          sortable={false} 
+          filterable={false}
+          cells={{ data: DeleteRow }}
+          reorderable={false} 
+        />
+    ];
+    
+    return finalColumns;
+  }, [columnsOrder, isColumnVisible, RowNumberCell, EditRow, DeleteRow, basicColumnMap]);
+
 // ===== MENU DE COLUNAS SEPARADO (NÃO PASSADO PARA O GRID) =====
 const columnMenuComponent = GridColumnMenu({
   columnsState, 
   onColumnsStateChange: handleColumnsStateChange
 });
-// ===== CONFIGURAÇÕES DE EXPORTAÇÃO =====
-const exportColumns = getExportColumns(finalGridColumns, columnsState, ['id', 'index']);
-const { exportToExcel } = useExportToExcel({
-  filename: 'planilha-ramal',
-  columns: exportColumns, 
-  sheetName: 'Ramal'
-});
-const handleExportFiltered = useCallback(() => {
-  exportToExcel(filteredData, {
-    customFilename: `excel-Ramal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
-  });
-}, [exportToExcel, filteredData]);
-const exportColumnsPdf = getExportColumnsPdf(finalGridColumns, columnsState, ['id', 'index']);
-const { exportToPdf } = useExportToPdf({
-  filename: 'pdf-ramal',
-  columns: exportColumnsPdf, 
-  title: 'Ramal'
-});
-const handleExportFilteredPdf = useCallback(() => {
-  exportToPdf(filteredData, {
-    customFilename: `pdf-Ramal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
-  });
-}, [exportToPdf, filteredData]);
-// ===== DADOS PAGINADOS =====
-const paginatedSortedData = useMemo(() => {
-  if (!sortedData || sortedData.length === 0) {
-    return [];
-  }
-  return sortedData.slice(page.skip, page.skip + page.take);
-}, [sortedData, page.skip, page.take]);
-// ===== RENDER =====
-return (
-<>
-{initialized && (
-  <Grid
-  key={`ramal-grid-${JSON.stringify(columnsOrder)}-${JSON.stringify(columnsState)}`}
-  columnMenu={columnMenuComponent}
-  className='grid-desktop-crud grid-desktop-ramal'
-  data={paginatedSortedData}
-  skip={page.skip}
-  take={page.take}
-  total={sortedData.length}
-  pageable={{
-    pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES), 
-    buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT, 
-  }}
-  onPageChange={handlePageChange}
-  rowReorderable={true}
-  sortable={true}
-  sort={sort}
-  onSortChange={handleSortChangeCustom}
-  resizable={true}
-  reorderable={true}
-  onColumnReorder={handleColumnReorder}
-  filterable={true}
-  onFilterChange={handleFilterChange}
-  onRowDoubleClick={(e) => hookHandleRowClick(e)}
->
-{finalGridColumns}
-</Grid>
-)}
-<div style={{ marginTop: '10px' }}>
 
-</div>
-</>
-);
+  // ===== CONFIGURAÇÕES DE EXPORTAÇÃO =====
+  const exportColumns = getExportColumns(finalGridColumns, columnsState, ['id', 'index']);
+  const { exportToExcel } = useExportToExcel({
+    filename: 'planilha-ramal',
+    columns: exportColumns,
+    sheetName: 'Ramal'
+  });
+
+  const handleExportFiltered = useCallback(() => {
+    exportToExcel(filteredData, {
+      customFilename: `excel-Ramal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
+    });
+  }, [exportToExcel, filteredData]);
+
+  const exportColumnsPdf = getExportColumnsPdf(finalGridColumns, columnsState, ['id', 'index']);
+  const { exportToPdf } = useExportToPdf({
+    filename: 'pdf-ramal',
+    columns: exportColumnsPdf,
+    title: 'Ramal'
+  });
+
+  const handleExportFilteredPdf = useCallback(() => {
+    exportToPdf(filteredData, {
+      customFilename: `pdf-Ramal-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
+    });
+  }, [exportToPdf, filteredData]);
+
+  // ===== DADOS PAGINADOS =====
+  const paginatedSortedData = useMemo(() => {
+    if (!sortedData || sortedData.length === 0) {
+      return [];
+    }
+    return sortedData.slice(page.skip, page.skip + page.take);
+  }, [sortedData, page.skip, page.take]);
+
+  // ===== RENDER =====
+  return (
+    <>
+      {initialized && (
+        <Grid
+          key={`ramal-grid-${JSON.stringify(columnsOrder)}-${JSON.stringify(columnsState)}`}
+          columnMenu={columnMenuComponent}
+          className='grid-desktop-crud grid-desktop-ramal'
+          data={paginatedSortedData}
+          skip={page.skip}
+          take={page.take}
+          total={sortedData.length}
+          pageable={{
+            pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES),
+            buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT,
+          }}
+          onPageChange={handlePageChange}
+          rowReorderable={true}
+          sortable={true}
+          sort={sort}
+          onSortChange={handleSortChangeCustom}
+          resizable={true}
+          reorderable={true}
+          onColumnReorder={handleColumnReorder}
+          filterable={true}
+          onFilterChange={handleFilterChange}
+          onRowDoubleClick={(e) => hookHandleRowClick(e)}
+          scrollable='scrollable'
+        >
+            <GridToolbar>
+              {toolbar}
+              <PageTitle title='Ramal' />
+            </GridToolbar>
+          {finalGridColumns}
+        </Grid>
+      )}
+
+       <div style={{ marginTop: '10px' }}> 
+		  
+        </div>
+    </>
+  );
 });

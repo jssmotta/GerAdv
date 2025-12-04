@@ -13,7 +13,7 @@ public static partial class DBSMSAliceDicInfo
     public const string Operador = "smaOperador"; // LOCALIZACAO 170523
     public const string Nome = "smaNome"; // LOCALIZACAO 170523
     public const string TipoEMail = "smaTipoEMail"; // LOCALIZACAO 170523
-    public const string GUID = "smaGUID"; // LOCALIZACAO 170523
+    public const string Guid = "smaGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "smaQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "smaDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "smaQuemAtu"; // LOCALIZACAO 170523
@@ -35,49 +35,15 @@ public static partial class DBSMSAliceDicInfo
 
     public const string PTabelaNome = "SMSAlice";
 #region PropriedadesDaTabela
-    public static DBInfoSystem SmaOperador => new(0, PTabelaNome, CampoCodigo, Operador, "Operador", "Operador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    }; // DBI 11 
-    public static DBInfoSystem SmaNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    };
-    public static DBInfoSystem SmaTipoEMail => new(0, PTabelaNome, CampoCodigo, TipoEMail, "TipoEMail", "TipoEMail", ETipoDadosSysteminfo.SysteminfoForeingkey, DBTipoEMailDicInfo.CampoCodigo, DBTipoEMailDicInfo.TabelaNome, new DBTipoEMailODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    }; // DBI 11 
-    public static DBInfoSystem SmaGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    };
-    public static DBInfoSystem SmaQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    }; // DBI 11 
-    public static DBInfoSystem SmaDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    };
-    public static DBInfoSystem SmaQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "sma"
-    }; // DBI 11 
-    public static DBInfoSystem SmaDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "sma"
-    };
-    public static DBInfoSystem SmaVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "sma"
-    };
+    public static DBInfoSystem SmaOperador => new(0, PTabelaNome, CampoCodigo, Operador, Operador, Operador, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "sma", isRequired: true); // DBI 11 
+    public static DBInfoSystem SmaNome => new(0, PTabelaNome, CampoCodigo, Nome, 150, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "sma", isRequired: true);
+    public static DBInfoSystem SmaTipoEMail => new(0, PTabelaNome, CampoCodigo, TipoEMail, TipoEMail, TipoEMail, EDataTypeSystemInfo.SystemInfoForeingkey, DBTipoEMailDicInfo.CampoCodigo, DBTipoEMailDicInfo.TabelaNome, new DBTipoEMailODicInfo(), false, prefixo: "sma", isRequired: true); // DBI 11 
+    public static DBInfoSystem SmaGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "sma", isRequired: true);
+    public static DBInfoSystem SmaQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "sma", isRequired: true); // DBI 11 
+    public static DBInfoSystem SmaDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "sma", isRequired: true);
+    public static DBInfoSystem SmaQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "sma"); // DBI 11 
+    public static DBInfoSystem SmaDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "sma");
+    public static DBInfoSystem SmaVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "sma", isRequired: true);
 
 #endregion
     [Serializable]

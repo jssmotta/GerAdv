@@ -54,8 +54,24 @@ public partial class DBObjetos
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBObjetosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBObjetosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBObjetosDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBObjetosDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBObjetosDicInfo.Area));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBObjetos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBObjetosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBObjetosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBObjetosDicInfo.Bold));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBObjetos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBObjetosDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBObjetosDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBObjetosDicInfo.Justica));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBObjetos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBObjetosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBObjetosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBObjetosDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBObjetos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBObjetosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBObjetosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBObjetosDicInfo.QuemCad));
         }
         catch
         {
@@ -118,30 +134,14 @@ public partial class DBObjetos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBObjetosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBObjetosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBObjetosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBObjetosDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBObjetosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -165,7 +165,7 @@ public partial class DBObjetos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

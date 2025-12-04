@@ -54,8 +54,120 @@ public partial class DBOperador
         // Checkpoint Carregar 
         try
         {
+            FEMail = getValue(DBOperadorDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMailNet = getValue(DBOperadorDicInfo.EMailNet)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBOperadorDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FMinhaDescricao = getValue(DBOperadorDicInfo.MinhaDescricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNick = getValue(DBOperadorDicInfo.Nick)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBOperadorDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOnlineIP = getValue(DBOperadorDicInfo.OnlineIP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPasta = getValue(DBOperadorDicInfo.Pasta)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRamal = getValue(DBOperadorDicInfo.Ramal)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSenha256 = getValue(DBOperadorDicInfo.Senha256)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FStatusMessage = getValue(DBOperadorDicInfo.StatusMessage)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSuporteIpUltimoAcesso = getValue(DBOperadorDicInfo.SuporteIpUltimoAcesso)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSuporteNomeSolicitante = getValue(DBOperadorDicInfo.SuporteNomeSolicitante)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSuporteSenha256 = getValue(DBOperadorDicInfo.SuporteSenha256)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Basico)))
-                m_FBasico = Convert.ToBoolean(getValue(DBOperadorDicInfo.Basico));
+                FBasico = Convert.ToBoolean(getValue(DBOperadorDicInfo.Basico));
         }
         catch
         {
@@ -64,7 +176,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.CadCod)))
-                m_FCadCod = Convert.ToInt32(getValue(DBOperadorDicInfo.CadCod));
+                FCadCod = Convert.ToInt32(getValue(DBOperadorDicInfo.CadCod));
         }
         catch
         {
@@ -73,7 +185,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.CadID)))
-                m_FCadID = Convert.ToInt32(getValue(DBOperadorDicInfo.CadID));
+                FCadID = Convert.ToInt32(getValue(DBOperadorDicInfo.CadID));
         }
         catch
         {
@@ -82,7 +194,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Computador)))
-                m_FComputador = Convert.ToInt32(getValue(DBOperadorDicInfo.Computador));
+                FComputador = Convert.ToInt32(getValue(DBOperadorDicInfo.Computador));
         }
         catch
         {
@@ -91,7 +203,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.DataLimiteReset)))
-                m_FDataLimiteReset = Convert.ToDateTime(getValue(DBOperadorDicInfo.DataLimiteReset));
+                FDataLimiteReset = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBOperadorDicInfo.DataLimiteReset)));
         }
         catch
         {
@@ -118,7 +230,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.EMailConfirmado)))
-                m_FEMailConfirmado = Convert.ToBoolean(getValue(DBOperadorDicInfo.EMailConfirmado));
+                FEMailConfirmado = Convert.ToBoolean(getValue(DBOperadorDicInfo.EMailConfirmado));
         }
         catch
         {
@@ -127,7 +239,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Excluido)))
-                m_FExcluido = Convert.ToBoolean(getValue(DBOperadorDicInfo.Excluido));
+                FExcluido = Convert.ToBoolean(getValue(DBOperadorDicInfo.Excluido));
         }
         catch
         {
@@ -136,7 +248,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Externo)))
-                m_FExterno = Convert.ToBoolean(getValue(DBOperadorDicInfo.Externo));
+                FExterno = Convert.ToBoolean(getValue(DBOperadorDicInfo.Externo));
         }
         catch
         {
@@ -145,7 +257,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.IsFinanceiro)))
-                m_FIsFinanceiro = Convert.ToBoolean(getValue(DBOperadorDicInfo.IsFinanceiro));
+                FIsFinanceiro = Convert.ToBoolean(getValue(DBOperadorDicInfo.IsFinanceiro));
         }
         catch
         {
@@ -154,7 +266,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Master)))
-                m_FMaster = Convert.ToBoolean(getValue(DBOperadorDicInfo.Master));
+                FMaster = Convert.ToBoolean(getValue(DBOperadorDicInfo.Master));
         }
         catch
         {
@@ -163,7 +275,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.OnLine)))
-                m_FOnLine = Convert.ToBoolean(getValue(DBOperadorDicInfo.OnLine));
+                FOnLine = Convert.ToBoolean(getValue(DBOperadorDicInfo.OnLine));
         }
         catch
         {
@@ -172,7 +284,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBOperadorDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBOperadorDicInfo.QuemAtu));
         }
         catch
         {
@@ -181,7 +293,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBOperadorDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBOperadorDicInfo.QuemCad));
         }
         catch
         {
@@ -190,7 +302,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBOperadorDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBOperadorDicInfo.Sexo));
         }
         catch
         {
@@ -199,7 +311,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Situacao)))
-                m_FSituacao = Convert.ToBoolean(getValue(DBOperadorDicInfo.Situacao));
+                FSituacao = Convert.ToBoolean(getValue(DBOperadorDicInfo.Situacao));
         }
         catch
         {
@@ -208,7 +320,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.StatusId)))
-                m_FStatusId = Convert.ToInt32(getValue(DBOperadorDicInfo.StatusId));
+                FStatusId = Convert.ToInt32(getValue(DBOperadorDicInfo.StatusId));
         }
         catch
         {
@@ -217,7 +329,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.SuporteMaxAge)))
-                m_FSuporteMaxAge = Convert.ToDateTime(getValue(DBOperadorDicInfo.SuporteMaxAge));
+                FSuporteMaxAge = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBOperadorDicInfo.SuporteMaxAge)));
         }
         catch
         {
@@ -226,7 +338,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.SuporteUltimoAcesso)))
-                m_FSuporteUltimoAcesso = Convert.ToDateTime(getValue(DBOperadorDicInfo.SuporteUltimoAcesso));
+                FSuporteUltimoAcesso = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBOperadorDicInfo.SuporteUltimoAcesso)));
         }
         catch
         {
@@ -235,7 +347,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.SysOp)))
-                m_FSysOp = Convert.ToBoolean(getValue(DBOperadorDicInfo.SysOp));
+                FSysOp = Convert.ToBoolean(getValue(DBOperadorDicInfo.SysOp));
         }
         catch
         {
@@ -244,7 +356,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Telefonista)))
-                m_FTelefonista = Convert.ToBoolean(getValue(DBOperadorDicInfo.Telefonista));
+                FTelefonista = Convert.ToBoolean(getValue(DBOperadorDicInfo.Telefonista));
         }
         catch
         {
@@ -253,7 +365,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBOperadorDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBOperadorDicInfo.Top));
         }
         catch
         {
@@ -262,7 +374,7 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.UltimoLogoff)))
-                m_FUltimoLogoff = Convert.ToDateTime(getValue(DBOperadorDicInfo.UltimoLogoff));
+                FUltimoLogoff = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBOperadorDicInfo.UltimoLogoff)));
         }
         catch
         {
@@ -271,126 +383,14 @@ public partial class DBOperador
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBOperadorDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBOperadorDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMailNet = getValue(DBOperadorDicInfo.EMailNet)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBOperadorDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FMinhaDescricao = getValue(DBOperadorDicInfo.MinhaDescricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNick = getValue(DBOperadorDicInfo.Nick)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBOperadorDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOnlineIP = getValue(DBOperadorDicInfo.OnlineIP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPasta = getValue(DBOperadorDicInfo.Pasta)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRamal = getValue(DBOperadorDicInfo.Ramal)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSenha256 = getValue(DBOperadorDicInfo.Senha256)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FStatusMessage = getValue(DBOperadorDicInfo.StatusMessage)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSuporteIpUltimoAcesso = getValue(DBOperadorDicInfo.SuporteIpUltimoAcesso)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSuporteNomeSolicitante = getValue(DBOperadorDicInfo.SuporteNomeSolicitante)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSuporteSenha256 = getValue(DBOperadorDicInfo.SuporteSenha256)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBOperadorDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -414,7 +414,7 @@ public partial class DBOperador
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

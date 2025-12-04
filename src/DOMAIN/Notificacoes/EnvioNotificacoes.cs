@@ -15,6 +15,13 @@ public enum E_TIPO_ENVIO
 
 public class EnvioNotificacoes
 {
+    private readonly SendEmailApi _servicoEmail;
+
+    public EnvioNotificacoes(SendEmailApi servicoEmail)
+    {
+        _servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
+    }
+
     private string ConteudoHtml(string operador, E_TIPO_ENVIO tipo, string uri, MsiSqlConnection oCnn)
     {
         var ds = ObterCompromissos(oCnn, tipo, uri, operador);
@@ -171,7 +178,6 @@ ORDER BY vqaData;";
        // var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
         var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
       
-        var servicoEmail = new SendEmailApi();
         var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
         var count = 0;
 
@@ -206,7 +212,7 @@ ORDER BY vqaData;";
             };
 
 #if (!DEBUG)
-            _ = servicoEmail.Send(email);
+            _ = _servicoEmail.Send(email);
 #endif
             if (count == 0)
             {
@@ -223,7 +229,7 @@ ORDER BY vqaData;";
                         NomeDoMail = uri.ToUpper() + " - ADVOCATI.NET - MENPHIS - SISTEMAS INTELIGENTES",
                         Time2Live = 24
                     };
-                    _ = servicoEmail.Send(email2);
+                    _ = _servicoEmail.Send(email2);
                 }
 
             }

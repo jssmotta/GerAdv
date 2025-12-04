@@ -14,52 +14,64 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Area - triArea  
+        /// triArea - triArea  
         /// </summary>
         [JsonPropertyName("area")]
         public int Area { get; set; }
 
         /// <summary>
-        /// Justica - triJustica  
+        /// triJustica - triJustica  
         /// </summary>
         [JsonPropertyName("justica")]
         public int Justica { get; set; }
 
         /// <summary>
-        /// Instancia - triInstancia  
+        /// triInstancia - triInstancia  
         /// </summary>
         [JsonPropertyName("instancia")]
         public int Instancia { get; set; }
 
         /// <summary>
-        /// Nome - triNome - tamanho máximo: 50 
+        /// triNome - triNome - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// GUID - triGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Descricao - triDescricao - tamanho máximo: 50 
+        /// triDescricao - triDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// Sigla - triSigla - tamanho máximo: 20 
+        /// triSigla - triSigla - tamanho máximo: 20 
         /// </summary>
         [JsonPropertyName("sigla")]
         public string Sigla { get; set; } = "";
 
         /// <summary>
-        /// Web - triWeb - tamanho máximo: 255 
+        /// triWeb - triWeb - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("web")]
         public string Web { get; set; } = "";
+
+        /// <summary>
+        /// triEtiqueta - triEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// triBold - triBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// triGuid - triGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -72,60 +84,72 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Area - triArea  
+        /// triArea - triArea  
         /// </summary>
         [JsonPropertyName("area")]
         public int Area { get; set; }
 
         /// <summary>
-        /// Justica - triJustica  
+        /// triJustica - triJustica  
         /// </summary>
         [JsonPropertyName("justica")]
         public int Justica { get; set; }
 
         /// <summary>
-        /// Instancia - triInstancia  
+        /// triInstancia - triInstancia  
         /// </summary>
         [JsonPropertyName("instancia")]
         public int Instancia { get; set; }
 
         /// <summary>
-        /// Nome - triNome - tamanho máximo: 50 
+        /// triNome - triNome - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// GUID - triGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Descricao - triDescricao - tamanho máximo: 50 
+        /// triDescricao - triDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// Sigla - triSigla - tamanho máximo: 20 
+        /// triSigla - triSigla - tamanho máximo: 20 
         /// </summary>
         [JsonPropertyName("sigla")]
         public string Sigla { get; set; } = "";
 
         /// <summary>
-        /// Web - triWeb - tamanho máximo: 255 
+        /// triWeb - triWeb - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("web")]
         public string Web { get; set; } = "";
 
-        [JsonPropertyName("descricaoarea")]
-        public string DescricaoArea { get; set; } = string.Empty;
+        /// <summary>
+        /// triEtiqueta - triEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// triBold - triBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// triGuid - triGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
+
+        [JsonPropertyName("nomearea")]
+        public string NomeArea { get; set; } = string.Empty;
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;
 
-        [JsonPropertyName("nroprocessoinstancia")]
-        public string NroProcessoInstancia { get; set; } = string.Empty;
+        [JsonPropertyName("nomeinstancia")]
+        public string NomeInstancia { get; set; } = string.Empty;
     }
 }

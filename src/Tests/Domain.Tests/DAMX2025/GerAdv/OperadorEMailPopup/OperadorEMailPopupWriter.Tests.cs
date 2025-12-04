@@ -74,6 +74,7 @@ public class OperadorEMailPopupWriterTests
         var result = await _operadoremailpopupWriter.WriteAsync(operadoremailpopup, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFOperadorEMailPopup.Object);
+        _mockFOperadorEMailPopup.VerifySet(x => x.FGuid = operadoremailpopup.Guid, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FOperador = operadoremailpopup.Operador, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FNome = operadoremailpopup.Nome, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FSMTP = operadoremailpopup.SMTP, Times.Once);
@@ -84,7 +85,6 @@ public class OperadorEMailPopupWriterTests
         _mockFOperadorEMailPopup.VerifySet(x => x.FPortaSmtp = operadoremailpopup.PortaSmtp, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FPortaPop3 = operadoremailpopup.PortaPop3, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.FAssinatura = operadoremailpopup.Assinatura, Times.Once);
-        _mockFOperadorEMailPopup.VerifySet(x => x.FGUID = operadoremailpopup.GUID, Times.Once);
         _mockFOperadorEMailPopup.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -128,7 +128,7 @@ public class OperadorEMailPopupWriterTests
         var operadorId = 456;
         _mockOperadorEMailPopupFactory.Setup(x => x.DeleteAsync(operadorId, operadoremailpopupResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _operadoremailpopupWriter.Delete(operadoremailpopupResponse, operadorId, _mockConnection.Object);
+        await _operadoremailpopupWriter.DeleteAsync(operadoremailpopupResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockOperadorEMailPopupFactory.Verify(x => x.DeleteAsync(operadorId, operadoremailpopupResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -144,7 +144,7 @@ public class OperadorEMailPopupWriterTests
         var operadorId = 111;
         _mockOperadorEMailPopupFactory.Setup(x => x.DeleteAsync(operadorId, operadoremailpopupResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _operadoremailpopupWriter.Delete(operadoremailpopupResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _operadoremailpopupWriter.DeleteAsync(operadoremailpopupResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -161,7 +161,7 @@ public class OperadorEMailPopupWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockOperadorEMailPopupFactory.Setup(x => x.DeleteAsync(operadorId, operadoremailpopupResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _operadoremailpopupWriter.Delete(operadoremailpopupResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _operadoremailpopupWriter.DeleteAsync(operadoremailpopupResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -191,6 +191,7 @@ public class OperadorEMailPopupWriterTests
         return new Models.OperadorEMailPopup
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Operador = 1,
             Nome = "João",
             SMTP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -200,8 +201,7 @@ public class OperadorEMailPopupWriterTests
             Usuario = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             PortaSmtp = 1,
             PortaPop3 = 1,
-            Assinatura = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            GUID = Guid.NewGuid().ToString()
+            Assinatura = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
     }
 #endregion

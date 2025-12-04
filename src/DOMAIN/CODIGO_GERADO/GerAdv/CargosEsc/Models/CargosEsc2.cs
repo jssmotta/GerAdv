@@ -32,10 +32,10 @@ namespace MenphisSI.GerAdv.Models
         public int Classificacao { get; set; }
 
         /// <summary>
-        /// GUID - cgeGUID - tamanho máximo: 100 
+        /// GUID - cgeGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -66,9 +66,9 @@ namespace MenphisSI.GerAdv.Models.All
         public int Classificacao { get; set; }
 
         /// <summary>
-        /// GUID - cgeGUID - tamanho máximo: 100 
+        /// GUID - cgeGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

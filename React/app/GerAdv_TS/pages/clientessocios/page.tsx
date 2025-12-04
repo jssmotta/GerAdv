@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ClientesSociosGridAdapter } from '@/app/GerAdv_TS/ClientesSocios/Adapter/ClientesSociosGridAdapter';
 import ClientesSociosGridContainer from '@/app/GerAdv_TS/ClientesSocios/Components/ClientesSociosGridContainer';
+
 const ClientesSociosPage: React.FC = () => {
-  const ClientesSociosGrid = new ClientesSociosGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Clientes Socios' />
-    <ClientesSociosGridContainer grid={ClientesSociosGrid} />
-  </PageLayout>
-);
+    const ClientesSociosGrid = new ClientesSociosGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ClientesSociosGridContainer grid={ClientesSociosGrid} />
+        </PageLayout>
+    );
 };
+
 export default ClientesSociosPage;

@@ -74,8 +74,8 @@ public class TipoModeloDocumentoWriterTests
         var result = await _tipomodelodocumentoWriter.WriteAsync(tipomodelodocumento, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoModeloDocumento.Object);
+        _mockFTipoModeloDocumento.VerifySet(x => x.FGuid = tipomodelodocumento.Guid, Times.Once);
         _mockFTipoModeloDocumento.VerifySet(x => x.FNome = tipomodelodocumento.Nome, Times.Once);
-        _mockFTipoModeloDocumento.VerifySet(x => x.FGUID = tipomodelodocumento.GUID, Times.Once);
         _mockFTipoModeloDocumento.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class TipoModeloDocumentoWriterTests
         var operadorId = 456;
         _mockTipoModeloDocumentoFactory.Setup(x => x.DeleteAsync(operadorId, tipomodelodocumentoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipomodelodocumentoWriter.Delete(tipomodelodocumentoResponse, operadorId, _mockConnection.Object);
+        await _tipomodelodocumentoWriter.DeleteAsync(tipomodelodocumentoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoModeloDocumentoFactory.Verify(x => x.DeleteAsync(operadorId, tipomodelodocumentoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class TipoModeloDocumentoWriterTests
         var operadorId = 111;
         _mockTipoModeloDocumentoFactory.Setup(x => x.DeleteAsync(operadorId, tipomodelodocumentoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipomodelodocumentoWriter.Delete(tipomodelodocumentoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipomodelodocumentoWriter.DeleteAsync(tipomodelodocumentoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class TipoModeloDocumentoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoModeloDocumentoFactory.Setup(x => x.DeleteAsync(operadorId, tipomodelodocumentoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipomodelodocumentoWriter.Delete(tipomodelodocumentoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipomodelodocumentoWriter.DeleteAsync(tipomodelodocumentoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class TipoModeloDocumentoWriterTests
         return new Models.TipoModeloDocumento
         {
             Id = 0,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Nome = "João"
         };
     }
 #endregion

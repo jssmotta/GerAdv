@@ -23,12 +23,6 @@ public partial class FProcessosObsReportFactory : IFProcessosObsReportFactory, I
         return FProcessosObsReport.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProcessosObsReport> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FProcessosObsReport().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FProcessosObsReport> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FProcessosObsReportFactory : IFProcessosObsReportFactory, I
         return FProcessosObsReport.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FProcessosObsReport> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FProcessosObsReport().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FProcessosObsReportFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

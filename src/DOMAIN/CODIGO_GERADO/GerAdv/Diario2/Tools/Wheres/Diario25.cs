@@ -20,14 +20,25 @@ public partial class Diario2Where(IFDiario2Factory diario2Factory) : IDiario2Whe
         var diario2 = new Diario2Response
         {
             Id = dbRec.ID,
-            Data = dbRec.FData ?? string.Empty,
-            Hora = dbRec.FHora ?? string.Empty,
             Operador = dbRec.FOperador,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Ocorrencia = dbRec.FOcorrencia ?? string.Empty,
             Cliente = dbRec.FCliente,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            diario2.Data = XData.ToString("dd/MM/yyyy");
+            diario2.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora1))
+        {
+            diario2.Hora = XHora1.ToString("HH:mm");
+            diario2.Hora_date = XHora1;
+        }
+
         return diario2;
     }
 }

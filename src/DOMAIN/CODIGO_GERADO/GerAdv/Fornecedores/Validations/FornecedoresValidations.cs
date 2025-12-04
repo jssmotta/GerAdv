@@ -23,7 +23,7 @@ public class FornecedoresValidation : IFornecedoresValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var bensmateriaisExists0 = await bensmateriaisService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterBensMateriais { Fornecedor = id ?? default }, uri);
         if (bensmateriaisExists0 != null && bensmateriaisExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Bens Materiais associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Bens Materiais associados a ele.");
         return true;
     }
 
@@ -47,8 +47,6 @@ public class FornecedoresValidation : IFornecedoresValidation
             throw new SGValidationException($"CEP deve ter no máximo {DBFornecedoresDicInfo.ForCEP.FTamanho} caracteres.");
         if (reg.Site != null && reg.Site.Length > DBFornecedoresDicInfo.ForSite.FTamanho)
             throw new SGValidationException($"Site deve ter no máximo {DBFornecedoresDicInfo.ForSite.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBFornecedoresDicInfo.ForGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBFornecedoresDicInfo.ForGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -58,14 +56,16 @@ public class FornecedoresValidation : IFornecedoresValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.Email != null && reg.Email.Length > 0 && !reg.Email.IsValidEmail())
             throw new SGValidationException($"Email em formato inválido.");
-        if (reg.CPF != null && reg.CPF.Length > 0 && !reg.CPF.IsValidCpf())
+        if (reg.CPF != null && reg.CPF.ClearInputCnpj().Length > 0 && !reg.CPF.IsValidCpf())
             throw new SGValidationException("CPF inválido.");
-        if (!string.IsNullOrWhiteSpace(reg.CPF))
+        if (!string.IsNullOrWhiteSpace(reg.CPF?.ClearInputCnpj()))
         {
             var testaCpf = await IsCpfDuplicado(reg, service, uri);
             if (testaCpf.Item1 && testaCpf.Item2 != null)
@@ -78,14 +78,14 @@ public class FornecedoresValidation : IFornecedoresValidation
             }
         }
 
-        if (reg.CNPJ != null && reg.CNPJ.Length > 0 && !reg.CNPJ.IsValidCnpj())
+        if (reg.CNPJ != null && reg.CNPJ.ClearInputCnpj().Length > 0 && !reg.CNPJ.IsValidCnpj())
             throw new SGValidationException("CNPJ inválido.");
         if (!string.IsNullOrWhiteSpace(reg.CNPJ) && await IsCnpjDuplicado(reg, service, uri))
             throw new SGValidationException($"Fornecedor com cnpj {reg.CNPJ.MaskCnpj()} já cadastrado.");
         // Cidade
         if (!reg.Cidade.IsEmptyIDNumber())
         {
-            var regCidade = await cidadeReader.Read(reg.Cidade, oCnn);
+            var regCidade = await cidadeReader.ReadAsync(reg.Cidade, oCnn);
             if (regCidade == null || regCidade.Id != reg.Cidade)
             {
                 throw new SGValidationException($"Cidade não encontrado ({regCidade?.Id}).");

@@ -74,9 +74,9 @@ public class TribunalValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTribunal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Tribunals service mock
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
-        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockInstanciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new InstanciaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -84,9 +84,9 @@ public class TribunalValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockTribunalService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterTribunal>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Tribunals service mock
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
-        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockInstanciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new InstanciaResponse { Id = 0 }));
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class TribunalValidationTests : IDisposable
         // Arrange
         var tribunal = CreateValidTribunal();
         tribunal.Area = 999;
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -142,7 +142,7 @@ public class TribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -159,7 +159,7 @@ public class TribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAreaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAreaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
@@ -175,7 +175,7 @@ public class TribunalValidationTests : IDisposable
         // Arrange
         var tribunal = CreateValidTribunal();
         tribunal.Justica = 999;
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -192,7 +192,7 @@ public class TribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -209,7 +209,7 @@ public class TribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockJusticaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockJusticaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
@@ -229,7 +229,7 @@ public class TribunalValidationTests : IDisposable
         var result = await _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockJusticaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockJusticaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Instancia
@@ -239,7 +239,7 @@ public class TribunalValidationTests : IDisposable
         // Arrange
         var tribunal = CreateValidTribunal();
         tribunal.Instancia = 999;
-        _mockInstanciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.InstanciaResponse>(null));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.InstanciaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -256,7 +256,7 @@ public class TribunalValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockInstanciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -273,7 +273,7 @@ public class TribunalValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockInstanciaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
@@ -293,7 +293,7 @@ public class TribunalValidationTests : IDisposable
         var result = await _validation.ValidateReg(tribunal, _mockTribunalService.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockInstanciaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockInstanciaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

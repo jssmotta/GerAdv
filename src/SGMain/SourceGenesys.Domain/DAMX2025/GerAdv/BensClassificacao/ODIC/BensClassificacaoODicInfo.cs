@@ -9,25 +9,29 @@ public partial class DBBensClassificacaoODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBBensClassificacaoDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBBensClassificacaoDicInfo.CampoCodigo;
+    public string IFieldId() => DBBensClassificacaoDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBBensClassificacaoDicInfo.TablePrefix;
+    public string IPrefix() => DBBensClassificacaoDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBBensClassificacaoDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBBensClassificacaoDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBBensClassificacaoODicInfo : IODicInfo
     public static string TCampoNome => DBBensClassificacaoDicInfo.CampoNome;
     public static string TTabelaNome => DBBensClassificacaoDicInfo.TabelaNome;
     public static string TTablePrefix => DBBensClassificacaoDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsGUID, DBBensClassificacaoDicInfo.BcsBold, DBBensClassificacaoDicInfo.BcsQuemCad, DBBensClassificacaoDicInfo.BcsDtCad, DBBensClassificacaoDicInfo.BcsQuemAtu, DBBensClassificacaoDicInfo.BcsDtAtu, DBBensClassificacaoDicInfo.BcsVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsBold, DBBensClassificacaoDicInfo.BcsGuid, DBBensClassificacaoDicInfo.BcsQuemCad, DBBensClassificacaoDicInfo.BcsDtCad, DBBensClassificacaoDicInfo.BcsQuemAtu, DBBensClassificacaoDicInfo.BcsDtAtu, DBBensClassificacaoDicInfo.BcsVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBBensClassificacaoDicInfo.BcsNome, DBBensClassificacaoDicInfo.BcsBold, DBBensClassificacaoDicInfo.BcsGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["bcsCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBBensClassificacaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["bcsCodigo", "bcsNome"]);
         var result = campos.Where(campo => !campo.Equals(DBBensClassificacaoDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

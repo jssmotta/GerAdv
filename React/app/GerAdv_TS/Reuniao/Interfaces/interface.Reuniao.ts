@@ -18,6 +18,7 @@ export interface IReuniao {
 	horasaida: string,
 	horaretorno: string,
 	principaisdecisoes: string,
+	bold: boolean,
 }
 
 export interface IReuniaoFormProps {

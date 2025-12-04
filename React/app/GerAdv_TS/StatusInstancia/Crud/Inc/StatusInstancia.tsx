@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IStatusInstanciaFormProps } from '../../Interfaces/interface.StatusInstancia';
 import { StatusInstanciaService } from '../../Services/StatusInstancia.service';
 import { useStatusInstanciaForm, useValidationsStatusInstancia } from '../../Hooks/hookStatusInstancia';
-import { StatusInstanciaEmpty } from '../../../Models/StatusInstancia';
+import { StatusInstanciaEmpty } from '../../../Models/StatusInstancia'; 
 import { StatusInstanciaForm } from '../Forms/StatusInstancia';
+ 
 
 const StatusInstanciaInc: React.FC<IStatusInstanciaFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const statusinstanciaService = new StatusInstanciaService(
-  new StatusInstanciaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadStatusInstancia } = useStatusInstanciaForm(
-StatusInstanciaEmpty(), 
-statusinstanciaService
-);
-useEffect(() => {
-  loadStatusInstancia(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedStatusInstancia = await statusinstanciaService.saveStatusInstancia(data);
-    if (savedStatusInstancia.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedStatusInstancia);
+  const statusinstanciaService = new StatusInstanciaService(
+    new StatusInstanciaApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadStatusInstancia } = useStatusInstanciaForm(
+    StatusInstanciaEmpty(),
+    statusinstanciaService
+  );
+
+  useEffect(() => {
+    loadStatusInstancia(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedStatusInstancia = await statusinstanciaService.saveStatusInstancia(data);
+
+      if (savedStatusInstancia.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedStatusInstancia);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadStatusInstancia(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <StatusInstanciaForm
+        statusinstanciaData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadStatusInstancia(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<StatusInstanciaForm
-statusinstanciaData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default StatusInstanciaInc;

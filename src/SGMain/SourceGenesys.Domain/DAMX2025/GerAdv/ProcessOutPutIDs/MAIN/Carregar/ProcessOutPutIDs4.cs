@@ -54,7 +54,7 @@ public partial class DBProcessOutPutIDs
         // Checkpoint Carregar 
         try
         {
-            m_FGUID = getValue(DBProcessOutPutIDsDicInfo.GUID)?.ToString() ?? string.Empty;
+            FGuid = getValue(DBProcessOutPutIDsDicInfo.Guid)?.ToString() ?? string.Empty;
         }
         catch
         {
@@ -62,14 +62,14 @@ public partial class DBProcessOutPutIDs
 
         try
         {
-            m_FNome = getValue(DBProcessOutPutIDsDicInfo.Nome)?.ToString() ?? string.Empty;
+            FNome = getValue(DBProcessOutPutIDsDicInfo.Nome)?.ToString() ?? string.Empty;
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -93,7 +93,7 @@ public partial class DBProcessOutPutIDs
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

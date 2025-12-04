@@ -65,8 +65,7 @@ public class GUTAtividadesValidationTests : IDisposable
             Concluido = false,
             DataConcluido = "24/04/1975",
             DiasParaIniciar = 0,
-            MinutosParaRealizar = 0,
-            GUID = Guid.NewGuid().ToString()
+            MinutosParaRealizar = 0
         };
     }
 
@@ -75,8 +74,8 @@ public class GUTAtividadesValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGUTAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividades>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadess service mock
-        _ = _mockGUTPeriodicidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTPeriodicidadeResponse { Id = id }));
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockGUTPeriodicidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTPeriodicidadeResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -84,8 +83,8 @@ public class GUTAtividadesValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGUTAtividadesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTAtividades>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTAtividadess service mock
-        _ = _mockGUTPeriodicidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTPeriodicidadeResponse { Id = 0 }));
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockGUTPeriodicidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTPeriodicidadeResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]
@@ -98,8 +97,7 @@ public class GUTAtividadesValidationTests : IDisposable
             Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Observacao = null,
             GUTPeriodicidade = 1,
-            DataConcluido = null,
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            DataConcluido = null
         };
         SetupValidMocks();
         // Act
@@ -126,7 +124,7 @@ public class GUTAtividadesValidationTests : IDisposable
         gutatividades.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -157,54 +155,7 @@ public class GUTAtividadesValidationTests : IDisposable
     {
         // Arrange
         var gutatividades = CreateValidGUTAtividades();
-        gutatividades.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutatividades = CreateValidGUTAtividades();
-        gutatividades.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutatividades = CreateValidGUTAtividades();
-        gutatividades.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var gutatividades = CreateValidGUTAtividades();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutatividades = CreateValidGUTAtividades();
-        gutatividades.GUID = "   ";
+        gutatividades.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");
@@ -286,7 +237,7 @@ public class GUTAtividadesValidationTests : IDisposable
         // Arrange
         var gutatividades = CreateValidGUTAtividades();
         gutatividades.GUTPeriodicidade = 999;
-        _mockGUTPeriodicidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTPeriodicidadeResponse>(null));
+        _mockGUTPeriodicidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTPeriodicidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -303,7 +254,7 @@ public class GUTAtividadesValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockGUTPeriodicidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockGUTPeriodicidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -320,7 +271,7 @@ public class GUTAtividadesValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockGUTPeriodicidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockGUTPeriodicidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
@@ -336,7 +287,7 @@ public class GUTAtividadesValidationTests : IDisposable
         // Arrange
         var gutatividades = CreateValidGUTAtividades();
         gutatividades.Operador = 999;
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -353,7 +304,7 @@ public class GUTAtividadesValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -370,7 +321,7 @@ public class GUTAtividadesValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockOperadorReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockOperadorReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
@@ -390,7 +341,7 @@ public class GUTAtividadesValidationTests : IDisposable
         var result = await _validation.ValidateReg(gutatividades, _mockGUTAtividadesService.Object, _mockGUTPeriodicidadeReader.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockOperadorReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockOperadorReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

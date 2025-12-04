@@ -36,8 +36,21 @@ public class DBRegimeTributacaoTests : IDisposable
         dt.Columns.Add("rdtDtAtu", typeof(DateTime));
         dt.Columns.Add("rdtVisto", typeof(bool));
         dt.Columns.Add("rdtNome", typeof(string));
-        dt.Columns.Add("rdtGUID", typeof(string));
+        dt.Columns.Add("rdtGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["rdtCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBRegimeTributacao(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -58,7 +71,7 @@ public class DBRegimeTributacaoTests : IDisposable
     {
         var instance = new DBRegimeTributacao();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("RegimeTributacao", instance.ITabelaName());
+        Assert.Equal("RegimeTributacao", instance.ITableName());
         Assert.Equal("rdt", instance.Prefixo);
     }
 
@@ -76,29 +89,16 @@ public class DBRegimeTributacaoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["rdtCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBRegimeTributacao(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("RegimeTributacao", cadastro.ITabelaName());
-        Assert.Equal("rdtCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("rdtNome", cadastro.ICampoNome());
-        Assert.Equal("rdt", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("RegimeTributacao", cadastro.ITableName());
+        Assert.Equal("rdtCodigo", cadastro.IFieldId());
+        Assert.Equal("rdtNome", cadastro.IFieldNameDescription());
+        Assert.Equal("rdt", cadastro.IPrefix());
     }
 
 #endregion
@@ -158,9 +158,9 @@ public class DBRegimeTributacaoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -186,18 +186,18 @@ public class DBRegimeTributacaoTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

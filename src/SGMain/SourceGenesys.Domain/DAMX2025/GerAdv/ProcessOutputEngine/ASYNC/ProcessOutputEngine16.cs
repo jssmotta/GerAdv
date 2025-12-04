@@ -14,6 +14,14 @@ public partial class DBProcessOutputEngine
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProcessOutputEngine
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,51 +142,48 @@ public partial class DBProcessOutputEngine
 
 #if (!NOTSTORED_ProcessOutputEngine)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome || pFldFDatabase || pFldFTabela || pFldFCampo || pFldFValor || pFldFOutput || pFldFAdministrador || pFldFGUID || pFldFOutputSource || pFldFDisabledItem || pFldFIDModulo || pFldFIsOnlyProcesso || pFldFMyID;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFDatabase || pFldFTabela || pFldFCampo || pFldFValor || pFldFOutput || pFldFAdministrador || pFldFOutputSource || pFldFDisabledItem || pFldFIDModulo || pFldFIsOnlyProcesso || pFldFMyID || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFDatabase)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Database, m_FDatabase, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Database, FDatabase, EGenericTypeFields.FString);
         if (pFldFTabela)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Tabela, m_FTabela, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Tabela, FTabela, EGenericTypeFields.FString);
         if (pFldFCampo)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Campo, m_FCampo, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Campo, FCampo, EGenericTypeFields.FString);
         if (pFldFValor)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Valor, m_FValor, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Valor, FValor, EGenericTypeFields.FString);
         if (pFldFOutput)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Output, m_FOutput, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Output, FOutput, EGenericTypeFields.FString);
         if (pFldFAdministrador || updateTool.Insert)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.Administrador, m_FAdministrador, ETiposCampos.FBoolean);
-        if (pFldFGUID)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Administrador, FAdministrador, EGenericTypeFields.FBoolean);
         if (pFldFOutputSource)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.OutputSource, m_FOutputSource, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.OutputSource, FOutputSource, EGenericTypeFields.FNumber);
         if (pFldFDisabledItem || updateTool.Insert)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.DisabledItem, m_FDisabledItem, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.DisabledItem, FDisabledItem, EGenericTypeFields.FBoolean);
         if (pFldFIDModulo)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.IDModulo, m_FIDModulo, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.IDModulo, FIDModulo, EGenericTypeFields.FNumber);
         if (pFldFIsOnlyProcesso || updateTool.Insert)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.IsOnlyProcesso, m_FIsOnlyProcesso, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.IsOnlyProcesso, FIsOnlyProcesso, EGenericTypeFields.FBoolean);
         if (pFldFMyID)
-            updateTool.Fields(DBProcessOutputEngineDicInfo.MyID, m_FMyID, ETiposCampos.FNumber);
+            updateTool.Fields(DBProcessOutputEngineDicInfo.MyID, FMyID, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBProcessOutputEngineDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
 #if (!NOTSTORED_ProcessOutputEngine)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+        CreateGuid();
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

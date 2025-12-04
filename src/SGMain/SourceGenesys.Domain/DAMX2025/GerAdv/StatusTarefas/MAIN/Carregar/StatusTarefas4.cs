@@ -54,6 +54,22 @@ public partial class DBStatusTarefas
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBStatusTarefasDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBStatusTarefasDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBStatusTarefasDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBStatusTarefasDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBStatusTarefas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusTarefasDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBStatusTarefasDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBStatusTarefasDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBStatusTarefas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusTarefasDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBStatusTarefasDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBStatusTarefasDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBStatusTarefas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBStatusTarefasDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBStatusTarefasDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBStatusTarefasDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBStatusTarefasDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBStatusTarefasDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBStatusTarefas
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

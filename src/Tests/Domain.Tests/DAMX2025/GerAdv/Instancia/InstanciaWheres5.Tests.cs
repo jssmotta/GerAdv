@@ -36,7 +36,7 @@ public class InstanciaWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFInstancia(string? LiminarPedida = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Objeto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? StatusResultado = 1, bool? LiminarPendente = false, bool? InterpusemosRecurso = true, bool? LiminarConcedida = false, bool? LiminarNegada = true, int? Processo = 1, string? Data = "27/05/2022", bool? LiminarParcial = false, string? LiminarResultado = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? NroProcesso = "AAAAAAAAAAAAAAAAAAAAAAA", int? Divisao = 1, bool? LiminarCliente = true, int? Comarca = 1, int? SubDivisao = 1, bool? Principal = false, int? Acao = 1, int? Foro = 1, int? TipoRecurso = 1, string? ZKey = "AAAAAAAAAAAAAAAAAAAAAAA", int? ZKeyQuem = 1, string? ZKeyQuando = "24/04/1975", string? NroAntigo = "AAAAAAAAAAAAAAAAAAAAAAA", string? AccessCode = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Julgador = 1, string? ZKeyIA = "AAAAAAAAAAAAAAAAAAAAAAA")
+    private void SetupMockFInstancia(string? LiminarPedida = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Objeto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? StatusResultado = 1, bool? LiminarPendente = false, bool? InterpusemosRecurso = true, bool? LiminarConcedida = false, bool? LiminarNegada = true, int? Processo = 1, string? Data = "24/04/1975", bool? LiminarParcial = false, string? LiminarResultado = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? NroProcesso = "AAAAAAAAAAAAAAAAAAAAAAA", int? Divisao = 1, bool? LiminarCliente = true, int? Comarca = 1, int? SubDivisao = 1, bool? Principal = false, int? Acao = 1, int? Foro = 1, int? TipoRecurso = 1, string? ZKey = "AAAAAAAAAAAAAAAAAAAAAAA", int? ZKeyQuem = 1, string? ZKeyQuando = "24/04/1975", string? NroAntigo = "AAAAAAAAAAAAAAAAAAAAAAA", string? AccessCode = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Julgador = 1, string? ZKeyIA = "AAAAAAAAAAAAAAAAAAAAAAA")
     {
         _mockFInstancia.Setup(f => f.FLiminarPedida).Returns(LiminarPedida ?? string.Empty);
         _mockFInstancia.Setup(f => f.FObjeto).Returns(Objeto ?? string.Empty);
@@ -112,7 +112,7 @@ public class InstanciaWhereTests : IDisposable
         result.LiminarConcedida.Should().Be(false);
         result.LiminarNegada.Should().Be(true);
         result.Processo.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.LiminarParcial.Should().Be(false);
         result.LiminarResultado.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.NroProcesso.Should().Be("AAAAAAAAAAAAAAAAAAAAAAA");
@@ -283,7 +283,7 @@ public class InstanciaWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFInstancia(LiminarPedida: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Objeto: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", StatusResultado: 1, LiminarPendente: false, InterpusemosRecurso: true, LiminarConcedida: false, LiminarNegada: true, Processo: 1, Data: "27/05/2022", LiminarParcial: false, LiminarResultado: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", NroProcesso: "AAAAAAAAAAAAAAAAAAAAAAA", Divisao: 1, LiminarCliente: true, Comarca: 1, SubDivisao: 1, Principal: false, Acao: 1, Foro: 1, TipoRecurso: 1, ZKey: "AAAAAAAAAAAAAAAAAAAAAAA", ZKeyQuem: 1, ZKeyQuando: "24/04/1975", NroAntigo: "AAAAAAAAAAAAAAAAAAAAAAA", AccessCode: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Julgador: 1, ZKeyIA: "AAAAAAAAAAAAAAAAAAAAAAA");
+        SetupMockFInstancia(LiminarPedida: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Objeto: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", StatusResultado: 1, LiminarPendente: false, InterpusemosRecurso: true, LiminarConcedida: false, LiminarNegada: true, Processo: 1, Data: "24/04/1975", LiminarParcial: false, LiminarResultado: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", NroProcesso: "AAAAAAAAAAAAAAAAAAAAAAA", Divisao: 1, LiminarCliente: true, Comarca: 1, SubDivisao: 1, Principal: false, Acao: 1, Foro: 1, TipoRecurso: 1, ZKey: "AAAAAAAAAAAAAAAAAAAAAAA", ZKeyQuem: 1, ZKeyQuando: "24/04/1975", NroAntigo: "AAAAAAAAAAAAAAAAAAAAAAA", AccessCode: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Julgador: 1, ZKeyIA: "AAAAAAAAAAAAAAAAAAAAAAA");
         _mockInstanciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFInstancia.Object);
         // Act
         var result = _instanciaWhere.Read(where, parameters, _mockConnection.Object);
@@ -298,7 +298,7 @@ public class InstanciaWhereTests : IDisposable
         result.LiminarConcedida.Should().Be(false);
         result.LiminarNegada.Should().Be(true);
         result.Processo.Should().Be(1);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.LiminarParcial.Should().Be(false);
         result.LiminarResultado.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         result.NroProcesso.Should().Be("AAAAAAAAAAAAAAAAAAAAAAA");
@@ -338,32 +338,66 @@ public class InstanciaWhereTests : IDisposable
 
 #region DateTime Tests
     [Fact]
-    public void Read_WithValidDateZKeyQuandoFields_ShouldParseAndSetDateProperties()
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
     {
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
         var testDate = "31/12/2024";
+        SetupMockFInstancia(Data: testDate);
+        _mockInstanciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFInstancia.Object);
+        // Act
+        var result = _instanciaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFInstancia(Data: null);
+        _mockInstanciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFInstancia.Object);
+        // Act
+        var result = _instanciaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFInstancia(Data: dateString);
+        _mockInstanciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFInstancia.Object);
+        // Act
+        var result = _instanciaWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateZKeyQuandoFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "01/01/2025";
         SetupMockFInstancia(ZKeyQuando: testDate);
         _mockInstanciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFInstancia.Object);
         // Act
         var result = _instanciaWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
-        result.ZKeyQuando.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateZKeyQuandoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFInstancia(ZKeyQuando: "invalid-date");
-        _mockInstanciaFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFInstancia.Object);
-        // Act
-        var result = _instanciaWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.ZKeyQuando.Should().Be("");
+        result.ZKeyQuando.Should().Be("01/01/2025");
     }
 
     [Fact]
@@ -381,10 +415,10 @@ public class InstanciaWhereTests : IDisposable
     }
 
     [Theory]
-    [InlineData("31/12/2024")]
-    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("01/01/2025")]
+    [InlineData("2025/01/02T23:59:59")]
     [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/02T14:30:45.123")]
+    [InlineData("2025/01/03T14:30:45.123")]
     public void Read_WithValidDateZKeyQuandoFormats_ShouldParseCorrectly(string dateString)
     {
         // Arrange

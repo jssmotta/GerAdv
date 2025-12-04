@@ -30,8 +30,6 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
             throw new SGValidationException($"Nome deve ter no máximo {DBProSucumbenciaDicInfo.ScbNome.FTamanho} caracteres.");
         if (reg.Percentual != null && reg.Percentual.Length > DBProSucumbenciaDicInfo.ScbPercentual.FTamanho)
             throw new SGValidationException($"Percentual deve ter no máximo {DBProSucumbenciaDicInfo.ScbPercentual.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProSucumbenciaDicInfo.ScbGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProSucumbenciaDicInfo.ScbGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -41,6 +39,8 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -48,16 +48,30 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
             throw new SGValidationException("Processo é obrigatório.");
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
+        if (!DateTime.TryParse(reg.Data, out _))
+        {
+            throw new SGValidationException($"Data inválida: {reg.Data}");
+        }
+
+        if (reg.Data.IsEmpty())
+            throw new SGValidationException("Data é obrigatório.");
         if (reg.Nome.IsEmpty())
             throw new SGValidationException("Nome é obrigatório.");
         if (reg.TipoOrigemSucumbencia == 0)
             throw new SGValidationException("TipoOrigemSucumbencia é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Instancia
         if (!reg.Instancia.IsEmptyIDNumber())
         {
-            var regInstancia = await instanciaReader.Read(reg.Instancia, oCnn);
+            var regInstancia = await instanciaReader.ReadAsync(reg.Instancia, oCnn);
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
             {
                 throw new SGValidationException($"Instancia não encontrado ({regInstancia?.Id}).");
@@ -66,7 +80,7 @@ public class ProSucumbenciaValidation : IProSucumbenciaValidation
 
         // TipoOrigemSucumbencia
         {
-            var regTipoOrigemSucumbencia = await tipoorigemsucumbenciaReader.Read(reg.TipoOrigemSucumbencia, oCnn);
+            var regTipoOrigemSucumbencia = await tipoorigemsucumbenciaReader.ReadAsync(reg.TipoOrigemSucumbencia, oCnn);
             if (regTipoOrigemSucumbencia == null || regTipoOrigemSucumbencia.Id != reg.TipoOrigemSucumbencia)
             {
                 throw new SGValidationException($"Tipo Origem Sucumbencia não encontrado ({regTipoOrigemSucumbencia?.Id}).");

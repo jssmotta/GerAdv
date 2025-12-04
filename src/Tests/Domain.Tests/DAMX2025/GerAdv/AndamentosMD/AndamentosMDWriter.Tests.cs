@@ -74,12 +74,12 @@ public class AndamentosMDWriterTests
         var result = await _andamentosmdWriter.WriteAsync(andamentosmd, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFAndamentosMD.Object);
+        _mockFAndamentosMD.VerifySet(x => x.FGuid = andamentosmd.Guid, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FNome = andamentosmd.Nome, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FProcesso = andamentosmd.Processo, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FAndamento = andamentosmd.Andamento, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FPathFull = andamentosmd.PathFull, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.FUNC = andamentosmd.UNC, Times.Once);
-        _mockFAndamentosMD.VerifySet(x => x.FGUID = andamentosmd.GUID, Times.Once);
         _mockFAndamentosMD.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -123,7 +123,7 @@ public class AndamentosMDWriterTests
         var operadorId = 456;
         _mockAndamentosMDFactory.Setup(x => x.DeleteAsync(operadorId, andamentosmdResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _andamentosmdWriter.Delete(andamentosmdResponse, operadorId, _mockConnection.Object);
+        await _andamentosmdWriter.DeleteAsync(andamentosmdResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockAndamentosMDFactory.Verify(x => x.DeleteAsync(operadorId, andamentosmdResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -139,7 +139,7 @@ public class AndamentosMDWriterTests
         var operadorId = 111;
         _mockAndamentosMDFactory.Setup(x => x.DeleteAsync(operadorId, andamentosmdResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _andamentosmdWriter.Delete(andamentosmdResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _andamentosmdWriter.DeleteAsync(andamentosmdResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -156,7 +156,7 @@ public class AndamentosMDWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockAndamentosMDFactory.Setup(x => x.DeleteAsync(operadorId, andamentosmdResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _andamentosmdWriter.Delete(andamentosmdResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _andamentosmdWriter.DeleteAsync(andamentosmdResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -186,12 +186,12 @@ public class AndamentosMDWriterTests
         return new Models.AndamentosMD
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
             Processo = 1,
             Andamento = 1,
             PathFull = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            UNC = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            GUID = Guid.NewGuid().ToString()
+            UNC = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
     }
 #endregion

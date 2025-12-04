@@ -31,7 +31,7 @@ public partial class DBContatoCRMView
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,15 +134,15 @@ public partial class DBContatoCRMView
 
 #if (!NOTSTORED_ContatoCRMView)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFCGUID || pFldFData || pFldFIP;
+    private bool HasAnyFieldChanged() => pFldFGuid || pFldFData || pFldFIP;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFCGUID)
-            updateTool.Fields(DBContatoCRMViewDicInfo.CGUID, m_FCGUID, ETiposCampos.FString);
+        if (pFldFGuid)
+            updateTool.Fields(DBContatoCRMViewDicInfo.Guid, FGuid, EGenericTypeFields.FString);
         if (pFldFData)
-            updateTool.Fields(DBContatoCRMViewDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBContatoCRMViewDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFIP)
-            updateTool.Fields(DBContatoCRMViewDicInfo.IP, m_FIP, ETiposCampos.FString);
+            updateTool.Fields(DBContatoCRMViewDicInfo.IP, FIP, EGenericTypeFields.FString);
     }
 
 #endif
@@ -154,7 +154,7 @@ public partial class DBContatoCRMView
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

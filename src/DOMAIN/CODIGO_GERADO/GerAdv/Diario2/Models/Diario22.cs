@@ -31,17 +31,17 @@ namespace MenphisSI.GerAdv.Models
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Hora - diaHora  
         /// </summary>
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
 
-        /// <summary>
-        /// GUID - diaGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        [JsonPropertyName("hora_date")]
+        public DateTime? Hora_date { get; set; }
 
         /// <summary>
         /// Nome - diaNome - tamanho máximo: 150 
@@ -54,6 +54,18 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("ocorrencia")]
         public string Ocorrencia { get; set; } = "";
+
+        /// <summary>
+        /// Bold - diaBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - diaGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -83,17 +95,17 @@ namespace MenphisSI.GerAdv.Models.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Hora - diaHora  
         /// </summary>
         [JsonPropertyName("hora")]
         public string Hora { get; set; } = "";
 
-        /// <summary>
-        /// GUID - diaGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        [JsonPropertyName("hora_date")]
+        public DateTime? Hora_date { get; set; }
 
         /// <summary>
         /// Nome - diaNome - tamanho máximo: 150 
@@ -106,6 +118,18 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("ocorrencia")]
         public string Ocorrencia { get; set; } = "";
+
+        /// <summary>
+        /// Bold - diaBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - diaGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeoperador")]
         public string NomeOperador { get; set; } = string.Empty;

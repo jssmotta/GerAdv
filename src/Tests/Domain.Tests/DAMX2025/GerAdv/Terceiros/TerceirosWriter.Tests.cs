@@ -74,6 +74,7 @@ public class TerceirosWriterTests
         var result = await _terceirosWriter.WriteAsync(terceiros, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTerceiros.Object);
+        _mockFTerceiros.VerifySet(x => x.FGuid = terceiros.Guid, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FProcesso = terceiros.Processo, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FNome = terceiros.Nome, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FSituacao = terceiros.Situacao, Times.Once);
@@ -88,7 +89,6 @@ public class TerceirosWriterTests
         _mockFTerceiros.VerifySet(x => x.FClass = terceiros.Class, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FVaraForoComarca = terceiros.VaraForoComarca, Times.Once);
         _mockFTerceiros.VerifySet(x => x.FSexo = terceiros.Sexo, Times.Once);
-        _mockFTerceiros.VerifySet(x => x.FGUID = terceiros.GUID, Times.Once);
         _mockFTerceiros.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -132,7 +132,7 @@ public class TerceirosWriterTests
         var operadorId = 456;
         _mockTerceirosFactory.Setup(x => x.DeleteAsync(operadorId, terceirosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _terceirosWriter.Delete(terceirosResponse, operadorId, _mockConnection.Object);
+        await _terceirosWriter.DeleteAsync(terceirosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTerceirosFactory.Verify(x => x.DeleteAsync(operadorId, terceirosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -148,7 +148,7 @@ public class TerceirosWriterTests
         var operadorId = 111;
         _mockTerceirosFactory.Setup(x => x.DeleteAsync(operadorId, terceirosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _terceirosWriter.Delete(terceirosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _terceirosWriter.DeleteAsync(terceirosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -165,7 +165,7 @@ public class TerceirosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTerceirosFactory.Setup(x => x.DeleteAsync(operadorId, terceirosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _terceirosWriter.Delete(terceirosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _terceirosWriter.DeleteAsync(terceirosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -195,6 +195,7 @@ public class TerceirosWriterTests
         return new Models.Terceiros
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             Nome = "João",
             Situacao = 1,
@@ -208,8 +209,7 @@ public class TerceirosWriterTests
             EMail = "test@email.com",
             Class = "A",
             VaraForoComarca = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Sexo = false,
-            GUID = Guid.NewGuid().ToString()
+            Sexo = false
         };
     }
 #endregion

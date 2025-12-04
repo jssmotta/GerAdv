@@ -21,6 +21,7 @@ public partial class NEPalavrasChavesWhere(IFNEPalavrasChavesFactory nepalavrasc
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Bold = dbRec.FBold,
         };
         return nepalavraschaves;
     }

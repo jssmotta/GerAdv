@@ -7,6 +7,8 @@ import { TipoRecursoApi, TipoRecursoApiError } from '../Apis/ApiTipoRecurso';
 import { FilterTipoRecurso } from '../Filters/TipoRecurso';
 import { ITipoRecurso } from '../Interfaces/interface.TipoRecurso';
 import { TipoRecursoEmpty } from '../../Models/TipoRecurso';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
+import { AxiosResponse } from 'axios';
 
 export class TipoRecursoValidator {
   static validateTipoRecurso(tiporecurso: ITipoRecurso): { isValid: boolean; errors: string[] } {
@@ -29,6 +31,7 @@ export interface ITipoRecursoService {
   getAll: (filtro?: FilterTipoRecurso) => Promise<ITipoRecurso[]>;
   deleteTipoRecurso: (id: number) => Promise<void>;
   validateTipoRecurso: (tiporecurso: ITipoRecurso) => { isValid: boolean; errors: string[] };
+  filterVoice: (filtro?: FilterTipoRecurso, voiceCommand?: ICommandSpeakerRequest) => Promise<AxiosResponse>;
 }
 
 export class TipoRecursoService implements ITipoRecursoService {
@@ -94,15 +97,24 @@ export class TipoRecursoService implements ITipoRecursoService {
   ): Promise<ITipoRecurso[]> {
     try {
       // Carrega dados offline primeiro
-      const preloadResponse = await this.api.filterPreload(0, filtro ?? {});
-      const offlineData = preloadResponse?.data || [];
+      const preloadResponse = await this.api.filterPreload(0, (filtro ?? {}) as any);
+       // Normaliza offline
+      const offlineRaw = preloadResponse?.data;
+      const offlineData = Array.isArray(offlineRaw)
+        ? offlineRaw
+        : offlineRaw?.data ?? offlineRaw?.items ?? offlineRaw?.rows ?? [];
 
       if (onOnlineData) {
         // Busca dados online em background e envia via callback
-        this.api.filter(0, filtro ?? {})
+        this.api
+          .filter(0, (filtro ?? {}) as any)
           .then(response => {
-            if (response?.data) {
-              onOnlineData(response.data);
+            const raw = response?.data;
+            const onlineData = Array.isArray(raw)
+              ? raw
+              : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+            if (onlineData) {
+              onOnlineData(onlineData);
             }
           })
           .catch(error => {
@@ -114,8 +126,12 @@ export class TipoRecursoService implements ITipoRecursoService {
       } else {
         // Se não há callback, aguarda dados online e retorna
         try {
-          const onlineResponse = await this.api.filter(0, filtro ?? {});
-          return onlineResponse?.data || offlineData;
+          const onlineResponse = await this.api.filter(0, (filtro ?? {}) as any);
+          const raw = onlineResponse?.data;
+          const onlineData = Array.isArray(raw)
+            ? raw
+            : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+          return onlineData || offlineData;
         } catch (error) {
             if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
                 console.log('Error fetching online TipoRecurso');
@@ -147,5 +163,22 @@ export class TipoRecursoService implements ITipoRecursoService {
 
   validateTipoRecurso(tiporecurso: ITipoRecurso): { isValid: boolean; errors: string[] } {
     return TipoRecursoValidator.validateTipoRecurso(tiporecurso);
+  }
+
+  async filterVoice(filtro?: FilterTipoRecurso, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+    try {
+      const response = await this.api.filterVoice(filtro, voiceCommand);
+      return response;
+    } catch (error) {
+      if (error instanceof TipoRecursoApiError) {
+        throw error;
+      }
+      throw new TipoRecursoApiError(
+        'Erro ao processar filtro de voz',
+        500,
+        'VOICE_FILTER_ERROR',
+        error
+      );
+    }
   }
 }

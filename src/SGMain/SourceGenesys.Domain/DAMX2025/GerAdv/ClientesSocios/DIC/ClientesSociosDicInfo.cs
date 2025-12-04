@@ -11,7 +11,6 @@ public static partial class DBClientesSociosDicInfo
     public const string CampoNome = "cscNome";
     public const string TablePrefix = "csc";
     public const string SomenteRepresentante = "cscSomenteRepresentante"; // LOCALIZACAO 170523
-    public const string GUID = "cscGUID"; // LOCALIZACAO 170523
     public const string Idade = "cscIdade"; // LOCALIZACAO 170523
     public const string IsRepresentanteLegal = "cscIsRepresentanteLegal"; // LOCALIZACAO 170523
     public const string Qualificacao = "cscQualificacao"; // LOCALIZACAO 170523
@@ -49,6 +48,7 @@ public static partial class DBClientesSociosDicInfo
     public const string Etiqueta = "cscEtiqueta"; // LOCALIZACAO 170523
     public const string Ani = "cscAni"; // LOCALIZACAO 170523
     public const string Bold = "cscBold"; // LOCALIZACAO 170523
+    public const string Guid = "cscGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "cscQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "cscDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "cscQuemAtu"; // LOCALIZACAO 170523
@@ -105,188 +105,50 @@ public static partial class DBClientesSociosDicInfo
 
     public const string PTabelaNome = "ClientesSocios";
 #region PropriedadesDaTabela
-    public static DBInfoSystem CscSomenteRepresentante => new(0, PTabelaNome, CampoCodigo, SomenteRepresentante, "SomenteRepresentante", "SomenteRepresentante", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscIdade => new(0, PTabelaNome, CampoCodigo, Idade, "Idade", "Idade", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscIsRepresentanteLegal => new(0, PTabelaNome, CampoCodigo, IsRepresentanteLegal, "IsRepresentanteLegal", "IsRepresentanteLegal", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscQualificacao => new(0, PTabelaNome, CampoCodigo, Qualificacao, 100, "Qualificacao", "Qualificacao", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", ETipoDadosSysteminfo.SysteminfoDataNascimento)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscSite => new(0, PTabelaNome, CampoCodigo, Site, 150, "Site", "Site", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscRepresentanteLegal => new(0, PTabelaNome, CampoCodigo, RepresentanteLegal, 50, "RepresentanteLegal", "RepresentanteLegal", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "csc"
-    }; // DBI 11 
-    public static DBInfoSystem CscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "csc"
-    }; // DBI 11 
-    public static DBInfoSystem CscRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscParticipacao => new(0, PTabelaNome, CampoCodigo, Participacao, 10, "Participacao", "Participacao", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCargo => new(0, PTabelaNome, CampoCodigo, Cargo, 50, "Cargo", "Cargo", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscEMail => new(0, PTabelaNome, CampoCodigo, EMail, 60, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscObs => new(0, PTabelaNome, CampoCodigo, Obs, DevourerOne.PMaxSizeCampoMemo, "Obs", "Obs", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCNH => new(0, PTabelaNome, CampoCodigo, CNH, 100, "CNH", "CNH", ETipoDadosSysteminfo.SysteminfoTextCnh, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscDataContrato => new(0, PTabelaNome, CampoCodigo, DataContrato, "DataContrato", "DataContrato", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", ETipoDadosSysteminfo.SysteminfoTextCnpj, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, "InscEst", "InscEst", ETipoDadosSysteminfo.SysteminfoTextInscricao, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscSocioEmpresaAdminNome => new(0, PTabelaNome, CampoCodigo, SocioEmpresaAdminNome, 80, "SocioEmpresaAdminNome", "SocioEmpresaAdminNome", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscEnderecoSocio => new(0, PTabelaNome, CampoCodigo, EnderecoSocio, 80, "EnderecoSocio", "EnderecoSocio", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscBairroSocio => new(0, PTabelaNome, CampoCodigo, BairroSocio, 50, "BairroSocio", "BairroSocio", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCEPSocio => new(0, PTabelaNome, CampoCodigo, CEPSocio, 10, "CEPSocio", "CEPSocio", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscCidadeSocio => new(0, PTabelaNome, CampoCodigo, CidadeSocio, "CidadeSocio", "CidadeSocio", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscRGDataExp => new(0, PTabelaNome, CampoCodigo, RGDataExp, "RGDataExp", "RGDataExp", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscSocioEmpresaAdminSomente => new(0, PTabelaNome, CampoCodigo, SocioEmpresaAdminSomente, "SocioEmpresaAdminSomente", "SocioEmpresaAdminSomente", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscFax => new(0, PTabelaNome, CampoCodigo, Fax, 2048, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "csc"
-    }; // DBI 11 
-    public static DBInfoSystem CscDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "csc"
-    }; // DBI 11 
-    public static DBInfoSystem CscDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "csc"
-    };
-    public static DBInfoSystem CscVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "csc"
-    };
+    public static DBInfoSystem CscSomenteRepresentante => new(0, PTabelaNome, CampoCodigo, SomenteRepresentante, SomenteRepresentante, SomenteRepresentante, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "csc", isRequired: true);
+    public static DBInfoSystem CscIdade => new(0, PTabelaNome, CampoCodigo, Idade, Idade, Idade, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "csc");
+    public static DBInfoSystem CscIsRepresentanteLegal => new(0, PTabelaNome, CampoCodigo, IsRepresentanteLegal, IsRepresentanteLegal, IsRepresentanteLegal, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "csc", isRequired: true);
+    public static DBInfoSystem CscQualificacao => new(0, PTabelaNome, CampoCodigo, Qualificacao, 100, Qualificacao, Qualificacao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "csc", isRequired: true);
+    public static DBInfoSystem CscDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, DtNasc, DtNasc, EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "csc");
+    public static DBInfoSystem CscNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "csc");
+    public static DBInfoSystem CscSite => new(0, PTabelaNome, CampoCodigo, Site, 150, Site, Site, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscRepresentanteLegal => new(0, PTabelaNome, CampoCodigo, RepresentanteLegal, 50, RepresentanteLegal, RepresentanteLegal, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "csc"); // DBI 11 
+    public static DBInfoSystem CscEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "csc"); // DBI 11 
+    public static DBInfoSystem CscRG => new(0, PTabelaNome, CampoCodigo, RG, 30, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscParticipacao => new(0, PTabelaNome, CampoCodigo, Participacao, 10, Participacao, Participacao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCargo => new(0, PTabelaNome, CampoCodigo, Cargo, 50, Cargo, Cargo, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscEMail => new(0, PTabelaNome, CampoCodigo, EMail, 60, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscObs => new(0, PTabelaNome, CampoCodigo, Obs, DevourerOne.PMaxSizeCampoMemo, Obs, Obs, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCNH => new(0, PTabelaNome, CampoCodigo, CNH, 100, CNH, CNH, EDataTypeSystemInfo.SystemInfoTextCnh, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscDataContrato => new(0, PTabelaNome, CampoCodigo, DataContrato, DataContrato, DataContrato, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "csc");
+    public static DBInfoSystem CscCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, CNPJ, CNPJ, EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, InscEst, InscEst, EDataTypeSystemInfo.SystemInfoTextInscricao, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscSocioEmpresaAdminNome => new(0, PTabelaNome, CampoCodigo, SocioEmpresaAdminNome, 80, SocioEmpresaAdminNome, SocioEmpresaAdminNome, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscEnderecoSocio => new(0, PTabelaNome, CampoCodigo, EnderecoSocio, 80, EnderecoSocio, EnderecoSocio, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscBairroSocio => new(0, PTabelaNome, CampoCodigo, BairroSocio, 50, BairroSocio, BairroSocio, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCEPSocio => new(0, PTabelaNome, CampoCodigo, CEPSocio, 10, CEPSocio, CEPSocio, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscCidadeSocio => new(0, PTabelaNome, CampoCodigo, CidadeSocio, CidadeSocio, CidadeSocio, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "csc");
+    public static DBInfoSystem CscRGDataExp => new(0, PTabelaNome, CampoCodigo, RGDataExp, RGDataExp, RGDataExp, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "csc");
+    public static DBInfoSystem CscSocioEmpresaAdminSomente => new(0, PTabelaNome, CampoCodigo, SocioEmpresaAdminSomente, SocioEmpresaAdminSomente, SocioEmpresaAdminSomente, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "csc");
+    public static DBInfoSystem CscTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "csc");
+    public static DBInfoSystem CscFax => new(0, PTabelaNome, CampoCodigo, Fax, 2048, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "csc", isRequired: true);
+    public static DBInfoSystem CscAni => new(0, PTabelaNome, CampoCodigo, Ani, Ani, Ani, EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "csc");
+    public static DBInfoSystem CscBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "csc", isRequired: true);
+    public static DBInfoSystem CscGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "csc");
+    public static DBInfoSystem CscQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "csc"); // DBI 11 
+    public static DBInfoSystem CscDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "csc");
+    public static DBInfoSystem CscQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "csc"); // DBI 11 
+    public static DBInfoSystem CscDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "csc");
+    public static DBInfoSystem CscVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "csc", isRequired: true);
 
 #endregion
     [Serializable]

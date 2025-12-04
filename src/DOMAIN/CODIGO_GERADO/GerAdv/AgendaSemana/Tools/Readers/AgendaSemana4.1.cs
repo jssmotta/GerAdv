@@ -30,9 +30,17 @@ public partial class AgendaSemanaReader
 [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.Nome}]
                    FROM {DBAgendaSemana.PTabelaNome.dbo(oCnn)}
                    LEFT JOIN {DBFuncionariosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Funcionario}]
+LEFT JOIN {DBCargosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCargosDicInfo.PTabelaNome}].[{DBCargosDicInfo.CampoCodigo}]=[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Cargo}]
+LEFT JOIN {DBFuncaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBFuncaoDicInfo.PTabelaNome}].[{DBFuncaoDicInfo.CampoCodigo}]=[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Funcao}]
+LEFT JOIN {DBCidadeDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.CampoCodigo}]=[{DBFuncionariosDicInfo.PTabelaNome}].[{DBFuncionariosDicInfo.Cidade}]
+LEFT JOIN {DBUFDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.CampoCodigo}]=[{DBCidadeDicInfo.PTabelaNome}].[{DBCidadeDicInfo.UF}]
+LEFT JOIN {DBPaisesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBPaisesDicInfo.PTabelaNome}].[{DBPaisesDicInfo.CampoCodigo}]=[{DBUFDicInfo.PTabelaNome}].[{DBUFDicInfo.Pais}]
 LEFT JOIN {DBAdvogadosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Advogado}]
+LEFT JOIN {DBEscritoriosDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEscritoriosDicInfo.PTabelaNome}].[{DBEscritoriosDicInfo.CampoCodigo}]=[{DBAdvogadosDicInfo.PTabelaNome}].[{DBAdvogadosDicInfo.Escritorio}]
 LEFT JOIN {DBTipoCompromissoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBTipoCompromissoDicInfo.PTabelaNome}].[{DBTipoCompromissoDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.TipoCompromisso}]
 LEFT JOIN {DBClientesDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.CampoCodigo}]=[{DBAgendaSemanaDicInfo.PTabelaNome}].[{DBAgendaSemanaDicInfo.Cliente}]
+LEFT JOIN {DBRegimeTributacaoDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBRegimeTributacaoDicInfo.PTabelaNome}].[{DBRegimeTributacaoDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.RegimeTributacao}]
+LEFT JOIN {DBEnquadramentoEmpresaDicInfo.PTabelaNome.dbo(oCnn)} ON [{DBEnquadramentoEmpresaDicInfo.PTabelaNome}].[{DBEnquadramentoEmpresaDicInfo.CampoCodigo}]=[{DBClientesDicInfo.PTabelaNome}].[{DBClientesDicInfo.EnquadramentoEmpresa}]
  
                    {cWhere}
                    {orderQuery}

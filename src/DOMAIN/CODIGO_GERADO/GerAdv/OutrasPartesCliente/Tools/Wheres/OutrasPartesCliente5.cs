@@ -38,12 +38,15 @@ public partial class OutrasPartesClienteWhere(IFOutrasPartesClienteFactory outra
             Fax = dbRec.FFax ?? string.Empty,
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            outraspartescliente.DtNasc = dbRec.FDtNasc;
+            outraspartescliente.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             outraspartescliente.DtNasc_date = XDtNasc;
         }
 

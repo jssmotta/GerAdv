@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface INEPalavrasChavesWriter
 {
     Task<FNEPalavrasChaves> WriteAsync(Models.NEPalavrasChaves nepalavraschaves, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(NEPalavrasChavesResponse nepalavraschaves, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(NEPalavrasChavesResponse nepalavraschaves, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class NEPalavrasChavesWriter(IFNEPalavrasChavesFactory nepalavraschavesFactory) : INEPalavrasChavesWriter
 {
     private readonly IFNEPalavrasChavesFactory _nepalavraschavesFactory = nepalavraschavesFactory ?? throw new ArgumentNullException(nameof(nepalavraschavesFactory));
-    public virtual async Task Delete(NEPalavrasChavesResponse nepalavraschaves, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(NEPalavrasChavesResponse nepalavraschaves, int operadorId, MsiSqlConnection? oCnn)
     {
         await _nepalavraschavesFactory.DeleteAsync(operadorId, nepalavraschaves.Id, oCnn);
     }
@@ -24,6 +24,7 @@ public class NEPalavrasChavesWriter(IFNEPalavrasChavesFactory nepalavraschavesFa
     {
         using var dbRec = await (nepalavraschaves.Id.IsEmptyIDNumber() ? _nepalavraschavesFactory.CreateAsync() : _nepalavraschavesFactory.CreateFromIdAsync(nepalavraschaves.Id, oCnn));
         dbRec.FNome = nepalavraschaves.Nome;
+        dbRec.FBold = nepalavraschaves.Bold;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

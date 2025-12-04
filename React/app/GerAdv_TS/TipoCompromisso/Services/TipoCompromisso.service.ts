@@ -7,6 +7,8 @@ import { TipoCompromissoApi, TipoCompromissoApiError } from '../Apis/ApiTipoComp
 import { FilterTipoCompromisso } from '../Filters/TipoCompromisso';
 import { ITipoCompromisso } from '../Interfaces/interface.TipoCompromisso';
 import { TipoCompromissoEmpty } from '../../Models/TipoCompromisso';
+import { ICommandSpeakerRequest } from '@/app/models/ICommandSpeakerRequest';
+import { AxiosResponse } from 'axios';
 
 export class TipoCompromissoValidator {
   static validateTipoCompromisso(tipocompromisso: ITipoCompromisso): { isValid: boolean; errors: string[] } {
@@ -29,6 +31,7 @@ export interface ITipoCompromissoService {
   getAll: (filtro?: FilterTipoCompromisso) => Promise<ITipoCompromisso[]>;
   deleteTipoCompromisso: (id: number) => Promise<void>;
   validateTipoCompromisso: (tipocompromisso: ITipoCompromisso) => { isValid: boolean; errors: string[] };
+  filterVoice: (filtro?: FilterTipoCompromisso, voiceCommand?: ICommandSpeakerRequest) => Promise<AxiosResponse>;
 }
 
 export class TipoCompromissoService implements ITipoCompromissoService {
@@ -94,15 +97,24 @@ export class TipoCompromissoService implements ITipoCompromissoService {
   ): Promise<ITipoCompromisso[]> {
     try {
       // Carrega dados offline primeiro
-      const preloadResponse = await this.api.filterPreload(0, filtro ?? {});
-      const offlineData = preloadResponse?.data || [];
+      const preloadResponse = await this.api.filterPreload(0, (filtro ?? {}) as any);
+       // Normaliza offline
+      const offlineRaw = preloadResponse?.data;
+      const offlineData = Array.isArray(offlineRaw)
+        ? offlineRaw
+        : offlineRaw?.data ?? offlineRaw?.items ?? offlineRaw?.rows ?? [];
 
       if (onOnlineData) {
         // Busca dados online em background e envia via callback
-        this.api.filter(0, filtro ?? {})
+        this.api
+          .filter(0, (filtro ?? {}) as any)
           .then(response => {
-            if (response?.data) {
-              onOnlineData(response.data);
+            const raw = response?.data;
+            const onlineData = Array.isArray(raw)
+              ? raw
+              : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+            if (onlineData) {
+              onOnlineData(onlineData);
             }
           })
           .catch(error => {
@@ -114,8 +126,12 @@ export class TipoCompromissoService implements ITipoCompromissoService {
       } else {
         // Se não há callback, aguarda dados online e retorna
         try {
-          const onlineResponse = await this.api.filter(0, filtro ?? {});
-          return onlineResponse?.data || offlineData;
+          const onlineResponse = await this.api.filter(0, (filtro ?? {}) as any);
+          const raw = onlineResponse?.data;
+          const onlineData = Array.isArray(raw)
+            ? raw
+            : raw?.data ?? raw?.items ?? raw?.rows ?? [];
+          return onlineData || offlineData;
         } catch (error) {
             if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
                 console.log('Error fetching online TipoCompromisso');
@@ -147,5 +163,22 @@ export class TipoCompromissoService implements ITipoCompromissoService {
 
   validateTipoCompromisso(tipocompromisso: ITipoCompromisso): { isValid: boolean; errors: string[] } {
     return TipoCompromissoValidator.validateTipoCompromisso(tipocompromisso);
+  }
+
+  async filterVoice(filtro?: FilterTipoCompromisso, voiceCommand?: ICommandSpeakerRequest): Promise<AxiosResponse> {
+    try {
+      const response = await this.api.filterVoice(filtro, voiceCommand);
+      return response;
+    } catch (error) {
+      if (error instanceof TipoCompromissoApiError) {
+        throw error;
+      }
+      throw new TipoCompromissoApiError(
+        'Erro ao processar filtro de voz',
+        500,
+        'VOICE_FILTER_ERROR',
+        error
+      );
+    }
   }
 }

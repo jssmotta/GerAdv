@@ -18,12 +18,11 @@ export const useParceriaProcForm = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = useCallback((e: any) => {
-    const { name, value, type, checked } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));    
+ const handleChange = useCallback((e: any) => {
+    // Lazy require to avoid circular import surprises in SSR environments.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { genericHandleChange } = require('../../../tools/formUtils');
+    if (genericHandleChange) genericHandleChange(e, setData);
   }, []);
 
   const loadParceriaProc = useCallback(async (id: number) => {

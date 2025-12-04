@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IGUTMatrizService
 {
+    Task<Filters.FilterGUTMatriz> FilterVoice([FromBody] Filters.FilterGUTMatriz filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<GUTMatrizResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTMatriz filter, [FromRoute, Required] string uri = "");
     Task<GUTMatrizResponse?> AddAndUpdate(Models.GUTMatriz? regGUTMatriz, [FromRoute, Required] string uri = "");
     Task<GUTMatrizResponse?> Validation(Models.GUTMatriz? regGUTMatriz, [FromRoute, Required] string uri = "");

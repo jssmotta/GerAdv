@@ -29,13 +29,6 @@ public partial class FTipoEndereco : MenphisSI.SG.GerAdv.DBTipoEndereco, IDBTipo
     {
     }
 
-    public async Task<FTipoEndereco> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fTipoEndereco = new FTipoEndereco();
-        await fTipoEndereco.CarregarAsync(id, oCnn);
-        return fTipoEndereco;
-    }
-
     private FTipoEndereco(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -44,6 +37,13 @@ public partial class FTipoEndereco : MenphisSI.SG.GerAdv.DBTipoEndereco, IDBTipo
     public static FTipoEndereco CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FTipoEndereco(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+    }
+
+    public async Task<FTipoEndereco> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        var fTipoEndereco = new FTipoEndereco();
+        await fTipoEndereco.CarregarAsync(id, oCnn);
+        return fTipoEndereco;
     }
 
     // Initialize method to load data with parameters after DI construction
@@ -62,7 +62,7 @@ public partial class FTipoEndereco : MenphisSI.SG.GerAdv.DBTipoEndereco, IDBTipo
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
@@ -70,7 +70,7 @@ public partial class FTipoEndereco : MenphisSI.SG.GerAdv.DBTipoEndereco, IDBTipo
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

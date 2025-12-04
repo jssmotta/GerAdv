@@ -23,12 +23,6 @@ public partial class FRegimeTributacaoFactory : IFRegimeTributacaoFactory, IDisp
         return FRegimeTributacao.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FRegimeTributacao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FRegimeTributacao().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FRegimeTributacao> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FRegimeTributacaoFactory : IFRegimeTributacaoFactory, IDisp
         return FRegimeTributacao.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FRegimeTributacao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FRegimeTributacao().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FRegimeTributacaoFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

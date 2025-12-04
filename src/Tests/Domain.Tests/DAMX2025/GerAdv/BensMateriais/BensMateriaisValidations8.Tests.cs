@@ -81,9 +81,9 @@ public class BensMateriaisValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockBensMateriaisService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensMateriais>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the BensMateriaiss service mock
-        _ = _mockBensClassificacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new BensClassificacaoResponse { Id = id }));
-        _ = _mockFornecedoresReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FornecedoresResponse { Id = id }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockBensClassificacaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new BensClassificacaoResponse { Id = id }));
+        _ = _mockFornecedoresReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FornecedoresResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -91,9 +91,9 @@ public class BensMateriaisValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockBensMateriaisService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterBensMateriais>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the BensMateriaiss service mock
-        _ = _mockBensClassificacaoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new BensClassificacaoResponse { Id = 0 }));
-        _ = _mockFornecedoresReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FornecedoresResponse { Id = 0 }));
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockBensClassificacaoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new BensClassificacaoResponse { Id = 0 }));
+        _ = _mockFornecedoresReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FornecedoresResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
     }
 
     [Fact]
@@ -341,7 +341,7 @@ public class BensMateriaisValidationTests : IDisposable
         // Arrange
         var bensmateriais = CreateValidBensMateriais();
         bensmateriais.BensClassificacao = 999;
-        _mockBensClassificacaoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.BensClassificacaoResponse>(null));
+        _mockBensClassificacaoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.BensClassificacaoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -358,7 +358,7 @@ public class BensMateriaisValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockBensClassificacaoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockBensClassificacaoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -375,7 +375,7 @@ public class BensMateriaisValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockBensClassificacaoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockBensClassificacaoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -395,7 +395,7 @@ public class BensMateriaisValidationTests : IDisposable
         var result = await _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockBensClassificacaoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockBensClassificacaoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Fornecedores
@@ -405,7 +405,7 @@ public class BensMateriaisValidationTests : IDisposable
         // Arrange
         var bensmateriais = CreateValidBensMateriais();
         bensmateriais.Fornecedor = 999;
-        _mockFornecedoresReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.FornecedoresResponse>(null));
+        _mockFornecedoresReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.FornecedoresResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -422,7 +422,7 @@ public class BensMateriaisValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockFornecedoresReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockFornecedoresReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -439,7 +439,7 @@ public class BensMateriaisValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockFornecedoresReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockFornecedoresReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -459,7 +459,7 @@ public class BensMateriaisValidationTests : IDisposable
         var result = await _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockFornecedoresReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockFornecedoresReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Cidade
@@ -469,7 +469,7 @@ public class BensMateriaisValidationTests : IDisposable
         // Arrange
         var bensmateriais = CreateValidBensMateriais();
         bensmateriais.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -486,7 +486,7 @@ public class BensMateriaisValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object));
@@ -503,7 +503,7 @@ public class BensMateriaisValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
@@ -523,7 +523,7 @@ public class BensMateriaisValidationTests : IDisposable
         var result = await _validation.ValidateReg(bensmateriais, _mockBensMateriaisService.Object, _mockBensClassificacaoReader.Object, _mockFornecedoresReader.Object, _mockCidadeReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockCidadeReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockCidadeReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

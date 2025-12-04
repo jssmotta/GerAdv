@@ -23,12 +23,6 @@ public partial class FAgendaSemanaFactory : IFAgendaSemanaFactory, IDisposable
         return FAgendaSemana.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FAgendaSemana> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FAgendaSemana().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FAgendaSemana> CreateAsync()
     {
         ThrowIfDisposed();
@@ -42,16 +36,9 @@ public partial class FAgendaSemanaFactory : IFAgendaSemanaFactory, IDisposable
         return FAgendaSemana.CreateFromParameters(parameters, oCnn, cNome, fullSql, sqlWhere, join);
     }
 
-    public Task DeleteAsync(int operadorId, int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return FAgendaSemana.DeleteRecordAsync(operadorId, id, oCnn);
-    }
-
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FAgendaSemanaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

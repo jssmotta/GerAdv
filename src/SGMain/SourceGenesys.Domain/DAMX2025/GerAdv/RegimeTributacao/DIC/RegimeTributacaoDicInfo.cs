@@ -11,7 +11,7 @@ public static partial class DBRegimeTributacaoDicInfo
     public const string CampoNome = "rdtNome";
     public const string TablePrefix = "rdt";
     public const string Nome = "rdtNome"; // LOCALIZACAO 170523
-    public const string GUID = "rdtGUID"; // LOCALIZACAO 170523
+    public const string Guid = "rdtGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "rdtQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "rdtDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "rdtQuemAtu"; // LOCALIZACAO 170523
@@ -31,38 +31,13 @@ public static partial class DBRegimeTributacaoDicInfo
 
     public const string PTabelaNome = "RegimeTributacao";
 #region PropriedadesDaTabela
-    public static DBInfoSystem RdtNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "rdt"
-    };
-    public static DBInfoSystem RdtGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "rdt"
-    };
-    public static DBInfoSystem RdtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "rdt"
-    }; // DBI 11 
-    public static DBInfoSystem RdtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "rdt"
-    };
-    public static DBInfoSystem RdtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "rdt"
-    }; // DBI 11 
-    public static DBInfoSystem RdtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "rdt"
-    };
-    public static DBInfoSystem RdtVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        Prefixo = "rdt"
-    };
+    public static DBInfoSystem RdtNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "rdt", isRequired: true);
+    public static DBInfoSystem RdtGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "rdt", isRequired: true);
+    public static DBInfoSystem RdtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "rdt", isRequired: true); // DBI 11 
+    public static DBInfoSystem RdtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "rdt", isRequired: true);
+    public static DBInfoSystem RdtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "rdt"); // DBI 11 
+    public static DBInfoSystem RdtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "rdt");
+    public static DBInfoSystem RdtVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "rdt");
 
 #endregion
     [Serializable]

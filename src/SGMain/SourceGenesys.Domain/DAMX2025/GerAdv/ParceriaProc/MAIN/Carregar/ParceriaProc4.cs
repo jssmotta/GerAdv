@@ -54,8 +54,16 @@ public partial class DBParceriaProc
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBParceriaProcDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBParceriaProcDicInfo.Advogado)))
-                m_FAdvogado = Convert.ToInt32(getValue(DBParceriaProcDicInfo.Advogado));
+                FAdvogado = Convert.ToInt32(getValue(DBParceriaProcDicInfo.Advogado));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBParceriaProc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBParceriaProcDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBParceriaProcDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBParceriaProcDicInfo.Processo));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBParceriaProc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBParceriaProcDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBParceriaProcDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBParceriaProcDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +108,7 @@ public partial class DBParceriaProc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBParceriaProcDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBParceriaProcDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBParceriaProcDicInfo.QuemCad));
         }
         catch
         {
@@ -109,22 +117,14 @@ public partial class DBParceriaProc
         try
         {
             if (!DBNull.Value.Equals(getValue(DBParceriaProcDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBParceriaProcDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBParceriaProcDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBParceriaProcDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -148,7 +148,7 @@ public partial class DBParceriaProc
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -29,13 +29,6 @@ public partial class FCargosEscClass : MenphisSI.SG.GerAdv.DBCargosEscClass, IDB
     {
     }
 
-    public async Task<FCargosEscClass> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fCargosEscClass = new FCargosEscClass();
-        await fCargosEscClass.CarregarAsync(id, oCnn);
-        return fCargosEscClass;
-    }
-
     private FCargosEscClass(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -44,6 +37,13 @@ public partial class FCargosEscClass : MenphisSI.SG.GerAdv.DBCargosEscClass, IDB
     public static FCargosEscClass CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FCargosEscClass(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+    }
+
+    public async Task<FCargosEscClass> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        var fCargosEscClass = new FCargosEscClass();
+        await fCargosEscClass.CarregarAsync(id, oCnn);
+        return fCargosEscClass;
     }
 
     // Initialize method to load data with parameters after DI construction
@@ -62,7 +62,7 @@ public partial class FCargosEscClass : MenphisSI.SG.GerAdv.DBCargosEscClass, IDB
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
@@ -70,7 +70,7 @@ public partial class FCargosEscClass : MenphisSI.SG.GerAdv.DBCargosEscClass, IDB
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

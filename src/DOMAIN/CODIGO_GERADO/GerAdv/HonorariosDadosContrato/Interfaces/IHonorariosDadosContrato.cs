@@ -4,10 +4,12 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IHonorariosDadosContratoService
 {
+    Task<Filters.FilterHonorariosDadosContrato> FilterVoice([FromBody] Filters.FilterHonorariosDadosContrato filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<HonorariosDadosContratoResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterHonorariosDadosContrato filter, [FromRoute, Required] string uri = "");
     Task<HonorariosDadosContratoResponse?> AddAndUpdate(Models.HonorariosDadosContrato? regHonorariosDadosContrato, [FromRoute, Required] string uri = "");
     Task<HonorariosDadosContratoResponse?> Validation(Models.HonorariosDadosContrato? regHonorariosDadosContrato, [FromRoute, Required] string uri = "");
     Task<HonorariosDadosContratoResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<HonorariosDadosContratoResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<HonorariosDadosContratoResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

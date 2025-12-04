@@ -54,8 +54,16 @@ public partial class DBLivroCaixa
         // Checkpoint Carregar 
         try
         {
+            FHistorico = getValue(DBLivroCaixaDicInfo.Historico)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Ajuste)))
-                m_FAjuste = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Ajuste));
+                FAjuste = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Ajuste));
         }
         catch
         {
@@ -64,7 +72,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBLivroCaixaDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBLivroCaixaDicInfo.Data)));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Grupo)))
-                m_FGrupo = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.Grupo));
+                FGrupo = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.Grupo));
         }
         catch
         {
@@ -100,7 +108,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.IDDes)))
-                m_FIDDes = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.IDDes));
+                FIDDes = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.IDDes));
         }
         catch
         {
@@ -109,7 +117,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.IDHon)))
-                m_FIDHon = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.IDHon));
+                FIDHon = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.IDHon));
         }
         catch
         {
@@ -118,7 +126,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.IDHonParc)))
-                m_FIDHonParc = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.IDHonParc));
+                FIDHonParc = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.IDHonParc));
         }
         catch
         {
@@ -127,7 +135,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.IDHonSuc)))
-                m_FIDHonSuc = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.IDHonSuc));
+                FIDHonSuc = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.IDHonSuc));
         }
         catch
         {
@@ -136,7 +144,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Pessoal)))
-                m_FPessoal = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.Pessoal));
+                FPessoal = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.Pessoal));
         }
         catch
         {
@@ -145,7 +153,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Previsto)))
-                m_FPrevisto = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Previsto));
+                FPrevisto = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Previsto));
         }
         catch
         {
@@ -154,7 +162,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.Processo));
         }
         catch
         {
@@ -163,7 +171,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.QuemAtu));
         }
         catch
         {
@@ -172,7 +180,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBLivroCaixaDicInfo.QuemCad));
         }
         catch
         {
@@ -181,7 +189,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Tipo));
         }
         catch
         {
@@ -190,7 +198,7 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBLivroCaixaDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBLivroCaixaDicInfo.Valor));
         }
         catch
         {
@@ -199,22 +207,14 @@ public partial class DBLivroCaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBLivroCaixaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHistorico = getValue(DBLivroCaixaDicInfo.Historico)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBLivroCaixaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -238,7 +238,7 @@ public partial class DBLivroCaixa
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

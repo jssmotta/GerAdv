@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { CidadeApiError } from '../GerAdv_TS/Cidade/Apis/ApiCidade';
+import { CidadeApiError } from '@/app/GerAdv_TS/Cidade/Apis/ApiCidade';
 import { CidadeApi } from '@/app/GerAdv_TS/Cidade/Apis/ApiCidade';
-import { FilterCidade } from '../GerAdv_TS/Cidade/Filters/Cidade';
-import { ICidade } from '../GerAdv_TS/Cidade/Interfaces/interface.Cidade';
-import { CidadeTestEmpty } from '../GerAdv_TS/Models/Cidade';
+import { FilterCidade } from '@/app/GerAdv_TS/Cidade/Filters/Cidade';
+import { ICidade } from '@/app/GerAdv_TS/Cidade/Interfaces/interface.Cidade';
+import { CidadeTestEmpty } from '@/app/GerAdv_TS/Models/Cidade';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('CidadeApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterCidade = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,14 @@ describe('CidadeApi', () => {
   describe('addAndUpdate', () => {
     const mockCidade: ICidade = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+ddd: 'AAAAAAAA',
+top: false,
+comarca: true,
+capital: false,
+nome: 'João',
+uf: 1,
+sigla: 'AAAAAAAA'
     };
 
     it('should add new cidade successfully', async () => {
@@ -487,7 +481,7 @@ describe('CidadeApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterCidade = { funcionario: 1 };
+      const mockFilter: FilterCidade = { : 1 };
       
       const result = cidadeApi.useFilter(mockFilter);
       

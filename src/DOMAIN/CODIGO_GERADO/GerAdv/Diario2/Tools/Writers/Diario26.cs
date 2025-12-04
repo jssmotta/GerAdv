@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IDiario2Writer
 {
     Task<FDiario2> WriteAsync(Models.Diario2 diario2, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(Diario2Response diario2, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(Diario2Response diario2, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class Diario2Writer(IFDiario2Factory diario2Factory) : IDiario2Writer
 {
     private readonly IFDiario2Factory _diario2Factory = diario2Factory ?? throw new ArgumentNullException(nameof(diario2Factory));
-    public virtual async Task Delete(Diario2Response diario2, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(Diario2Response diario2, int operadorId, MsiSqlConnection? oCnn)
     {
         await _diario2Factory.DeleteAsync(operadorId, diario2.Id, oCnn);
     }
@@ -23,13 +23,22 @@ public class Diario2Writer(IFDiario2Factory diario2Factory) : IDiario2Writer
     public virtual async Task<FDiario2> WriteAsync(Models.Diario2 diario2, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (diario2.Id.IsEmptyIDNumber() ? _diario2Factory.CreateAsync() : _diario2Factory.CreateFromIdAsync(diario2.Id, oCnn));
-        dbRec.FData = diario2.Data;
-        dbRec.FHora = diario2.Hora;
+        if (diario2.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(diario2.Data));
+        }
+
+        if (diario2.Hora.NotIsEmpty())
+        {
+            dbRec.FHora = TimeOnly.FromDateTime(Convert.ToDateTime(diario2.Hora));
+        }
+
         dbRec.FOperador = diario2.Operador;
-        dbRec.FGUID = diario2.GUID;
         dbRec.FNome = diario2.Nome;
         dbRec.FOcorrencia = diario2.Ocorrencia;
         dbRec.FCliente = diario2.Cliente;
+        dbRec.FBold = diario2.Bold;
+        dbRec.FGuid = diario2.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

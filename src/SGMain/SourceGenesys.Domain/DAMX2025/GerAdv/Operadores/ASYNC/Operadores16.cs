@@ -31,7 +31,7 @@ public partial class DBOperadores
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,35 +138,35 @@ public partial class DBOperadores
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFEnviado || updateTool.Insert)
-            updateTool.Fields(DBOperadoresDicInfo.Enviado, m_FEnviado, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadoresDicInfo.Enviado, FEnviado, EGenericTypeFields.FBoolean);
         if (pFldFCasa || updateTool.Insert)
-            updateTool.Fields(DBOperadoresDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadoresDicInfo.Casa, FCasa, EGenericTypeFields.FBoolean);
         if (pFldFCasaID)
-            updateTool.Fields(DBOperadoresDicInfo.CasaID, m_FCasaID, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadoresDicInfo.CasaID, FCasaID, EGenericTypeFields.FNumber);
         if (pFldFCasaCodigo)
-            updateTool.Fields(DBOperadoresDicInfo.CasaCodigo, m_FCasaCodigo, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadoresDicInfo.CasaCodigo, FCasaCodigo, EGenericTypeFields.FNumber);
         if (pFldFIsNovo || updateTool.Insert)
-            updateTool.Fields(DBOperadoresDicInfo.IsNovo, m_FIsNovo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadoresDicInfo.IsNovo, FIsNovo, EGenericTypeFields.FBoolean);
         if (pFldFCliente)
-            updateTool.Fields(DBOperadoresDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadoresDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFGrupo)
-            updateTool.Fields(DBOperadoresDicInfo.Grupo, m_FGrupo, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadoresDicInfo.Grupo, FGrupo, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBOperadoresDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBOperadoresDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBOperadoresDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBOperadoresDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFSenha)
-            updateTool.Fields(DBOperadoresDicInfo.Senha, m_FSenha, ETiposCampos.FString);
+            updateTool.Fields(DBOperadoresDicInfo.Senha, FSenha, EGenericTypeFields.FString);
         if (pFldFAtivado || updateTool.Insert)
-            updateTool.Fields(DBOperadoresDicInfo.Ativado, m_FAtivado, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadoresDicInfo.Ativado, FAtivado, EGenericTypeFields.FBoolean);
         if (pFldFAtualizarSenha || updateTool.Insert)
-            updateTool.Fields(DBOperadoresDicInfo.AtualizarSenha, m_FAtualizarSenha, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadoresDicInfo.AtualizarSenha, FAtualizarSenha, EGenericTypeFields.FBoolean);
         if (pFldFSenha256)
-            updateTool.Fields(DBOperadoresDicInfo.Senha256, m_FSenha256, ETiposCampos.FString);
+            updateTool.Fields(DBOperadoresDicInfo.Senha256, FSenha256, EGenericTypeFields.FString);
         if (pFldFSuporteSenha256)
-            updateTool.Fields(DBOperadoresDicInfo.SuporteSenha256, m_FSuporteSenha256, ETiposCampos.FString);
+            updateTool.Fields(DBOperadoresDicInfo.SuporteSenha256, FSuporteSenha256, EGenericTypeFields.FString);
         if (pFldFSuporteMaxAge)
-            updateTool.Fields(DBOperadoresDicInfo.SuporteMaxAge, m_FSuporteMaxAge, ETiposCampos.FDate);
+            updateTool.Fields(DBOperadoresDicInfo.SuporteMaxAge, FSuporteMaxAge, EGenericTypeFields.FDate);
     }
 
 #endif
@@ -178,20 +178,20 @@ public partial class DBOperadores
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBOperadoresDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadoresDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBOperadoresDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBOperadoresDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBOperadoresDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOperadoresDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBOperadoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBOperadoresDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOperadoresDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBOperadoresDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -14,6 +14,7 @@ public partial class ContatoCRMViewController(IContatoCRMViewService contatocrmv
     private readonly IContatoCRMViewService _contatocrmviewService = contatocrmviewService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class ContatoCRMViewController(IContatoCRMViewService contatocrmv
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterContatoCRMView filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterContatoCRMView filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ContatoCRMView: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _contatocrmviewService.Filter(max, filtro, uri);
+        //_logger.Info("ContatoCRMView: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _contatocrmviewService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterContatoCRMViewWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("ContatoCRMView: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _contatocrmviewService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ContatoCRMView: GetById called with id = {0}, {1}", id, uri);
         var result = await _contatocrmviewService.GetById(id, uri, token);
         if (result == null)
@@ -52,6 +75,7 @@ public partial class ContatoCRMViewController(IContatoCRMViewService contatocrmv
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterContatoCRMView? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +89,8 @@ public partial class ContatoCRMViewController(IContatoCRMViewService contatocrmv
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(ContatoCRMViewResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ContatoCRMViewResponse), StatusCodes.Status201Created)]
@@ -107,6 +131,11 @@ public partial class ContatoCRMViewController(IContatoCRMViewService contatocrmv
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("ContatoCRMView: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _contatocrmviewService.Delete(id, uri);
@@ -126,6 +155,7 @@ public partial class ContatoCRMViewController(IContatoCRMViewService contatocrmv
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ContatoCRMView regContatoCRMView, [FromRoute, Required] string uri)
     {

@@ -54,31 +54,31 @@ public partial class DBContatoCRMView
         // Checkpoint Carregar 
         try
         {
+            FCGUID = getValue(DBContatoCRMViewDicInfo.CGUID)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FIP = getValue(DBContatoCRMViewDicInfo.IP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBContatoCRMViewDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBContatoCRMViewDicInfo.Data));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCGUID = getValue(DBContatoCRMViewDicInfo.CGUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FIP = getValue(DBContatoCRMViewDicInfo.IP)?.ToString() ?? string.Empty;
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBContatoCRMViewDicInfo.Data)));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -102,7 +102,7 @@ public partial class DBContatoCRMView
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

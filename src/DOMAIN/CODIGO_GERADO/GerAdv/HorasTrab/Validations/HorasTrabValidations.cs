@@ -36,8 +36,6 @@ public class HorasTrabValidation : IHorasTrabValidation
             throw new SGValidationException($"AnexoComp deve ter no máximo {DBHorasTrabDicInfo.HtbAnexoComp.FTamanho} caracteres.");
         if (reg.AnexoUNC != null && reg.AnexoUNC.Length > DBHorasTrabDicInfo.HtbAnexoUNC.FTamanho)
             throw new SGValidationException($"AnexoUNC deve ter no máximo {DBHorasTrabDicInfo.HtbAnexoUNC.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBHorasTrabDicInfo.HtbGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBHorasTrabDicInfo.HtbGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,13 +45,24 @@ public class HorasTrabValidation : IHorasTrabValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Clientes
         if (!reg.Cliente.IsEmptyIDNumber())
         {
-            var regClientes = await clientesReader.Read(reg.Cliente, oCnn);
+            var regClientes = await clientesReader.ReadAsync(reg.Cliente, oCnn);
             if (regClientes == null || regClientes.Id != reg.Cliente)
             {
                 throw new SGValidationException($"Clientes não encontrado ({regClientes?.Id}).");
@@ -63,7 +72,7 @@ public class HorasTrabValidation : IHorasTrabValidation
         // Advogados
         if (!reg.Advogado.IsEmptyIDNumber())
         {
-            var regAdvogados = await advogadosReader.Read(reg.Advogado, oCnn);
+            var regAdvogados = await advogadosReader.ReadAsync(reg.Advogado, oCnn);
             if (regAdvogados == null || regAdvogados.Id != reg.Advogado)
             {
                 throw new SGValidationException($"Advogados não encontrado ({regAdvogados?.Id}).");
@@ -73,7 +82,7 @@ public class HorasTrabValidation : IHorasTrabValidation
         // Funcionarios
         if (!reg.Funcionario.IsEmptyIDNumber())
         {
-            var regFuncionarios = await funcionariosReader.Read(reg.Funcionario, oCnn);
+            var regFuncionarios = await funcionariosReader.ReadAsync(reg.Funcionario, oCnn);
             if (regFuncionarios == null || regFuncionarios.Id != reg.Funcionario)
             {
                 throw new SGValidationException($"Colaborador não encontrado ({regFuncionarios?.Id}).");
@@ -83,7 +92,7 @@ public class HorasTrabValidation : IHorasTrabValidation
         // Servicos
         if (!reg.Servico.IsEmptyIDNumber())
         {
-            var regServicos = await servicosReader.Read(reg.Servico, oCnn);
+            var regServicos = await servicosReader.ReadAsync(reg.Servico, oCnn);
             if (regServicos == null || regServicos.Id != reg.Servico)
             {
                 throw new SGValidationException($"Serviço não encontrado ({regServicos?.Id}).");

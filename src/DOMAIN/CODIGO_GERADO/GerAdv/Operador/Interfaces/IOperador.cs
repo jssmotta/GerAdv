@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IOperadorService
 {
+    Task<Filters.FilterOperador> FilterVoice([FromBody] Filters.FilterOperador filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<OperadorResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterOperador filter, [FromRoute, Required] string uri = "");
     Task<OperadorResponse?> AddAndUpdate(Models.Operador? regOperador, [FromRoute, Required] string uri = "");
     Task<OperadorResponse?> Validation(Models.Operador? regOperador, [FromRoute, Required] string uri = "");
     Task<OperadorResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<OperadorResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<OperadorResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterOperador? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

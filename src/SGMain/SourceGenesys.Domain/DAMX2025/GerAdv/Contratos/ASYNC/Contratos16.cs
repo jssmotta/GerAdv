@@ -14,6 +14,14 @@ public partial class DBContratos
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBContratos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,67 +142,69 @@ public partial class DBContratos
 
 #if (!NOTSTORED_Contratos)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFCliente || pFldFAdvogado || pFldFDia || pFldFValor || pFldFDataInicio || pFldFDataTermino || pFldFOcultarRelatorio || pFldFPercEscritorio || pFldFValorConsultoria || pFldFGUID || pFldFTipoCobranca || pFldFProtestar || pFldFJuros || pFldFValorRealizavel || pFldFDOCUMENTO || pFldFEMail1 || pFldFEMail2 || pFldFEMail3 || pFldFPessoa1 || pFldFPessoa2 || pFldFPessoa3 || pFldFOBS || pFldFClienteContrato || pFldFIdExtrangeiro || pFldFChaveContrato || pFldFAvulso || pFldFSuspenso || pFldFMulta;
+    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFCliente || pFldFAdvogado || pFldFDia || pFldFValor || pFldFDataInicio || pFldFDataTermino || pFldFOcultarRelatorio || pFldFPercEscritorio || pFldFValorConsultoria || pFldFTipoCobranca || pFldFProtestar || pFldFJuros || pFldFValorRealizavel || pFldFDOCUMENTO || pFldFEMail1 || pFldFEMail2 || pFldFEMail3 || pFldFPessoa1 || pFldFPessoa2 || pFldFPessoa3 || pFldFOBS || pFldFClienteContrato || pFldFIdExtrangeiro || pFldFChaveContrato || pFldFAvulso || pFldFSuspenso || pFldFMulta || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBContratosDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFCliente)
-            updateTool.Fields(DBContratosDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFAdvogado)
-            updateTool.Fields(DBContratosDicInfo.Advogado, m_FAdvogado, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.Advogado, FAdvogado, EGenericTypeFields.FNumber);
         if (pFldFDia)
-            updateTool.Fields(DBContratosDicInfo.Dia, m_FDia, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.Dia, FDia, EGenericTypeFields.FNumber);
         if (pFldFValor)
-            updateTool.Fields(DBContratosDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBContratosDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFDataInicio)
-            updateTool.Fields(DBContratosDicInfo.DataInicio, m_FDataInicio, ETiposCampos.FDate);
+            updateTool.Fields(DBContratosDicInfo.DataInicio, FDataInicio, EGenericTypeFields.FDate);
         if (pFldFDataTermino)
-            updateTool.Fields(DBContratosDicInfo.DataTermino, m_FDataTermino, ETiposCampos.FDate);
+            updateTool.Fields(DBContratosDicInfo.DataTermino, FDataTermino, EGenericTypeFields.FDate);
         if (pFldFOcultarRelatorio || updateTool.Insert)
-            updateTool.Fields(DBContratosDicInfo.OcultarRelatorio, m_FOcultarRelatorio, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContratosDicInfo.OcultarRelatorio, FOcultarRelatorio, EGenericTypeFields.FBoolean);
         if (pFldFPercEscritorio)
-            updateTool.Fields(DBContratosDicInfo.PercEscritorio, m_FPercEscritorio, ETiposCampos.FDecimal);
+            updateTool.Fields(DBContratosDicInfo.PercEscritorio, FPercEscritorio, EGenericTypeFields.FDecimal);
         if (pFldFValorConsultoria)
-            updateTool.Fields(DBContratosDicInfo.ValorConsultoria, m_FValorConsultoria, ETiposCampos.FDecimal);
-        if (pFldFGUID)
-            updateTool.Fields(DBContratosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.ValorConsultoria, FValorConsultoria, EGenericTypeFields.FDecimal);
         if (pFldFTipoCobranca)
-            updateTool.Fields(DBContratosDicInfo.TipoCobranca, m_FTipoCobranca, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.TipoCobranca, FTipoCobranca, EGenericTypeFields.FNumber);
         if (pFldFProtestar)
-            updateTool.Fields(DBContratosDicInfo.Protestar, m_FProtestar, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.Protestar, FProtestar, EGenericTypeFields.FString);
         if (pFldFJuros)
-            updateTool.Fields(DBContratosDicInfo.Juros, m_FJuros, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.Juros, FJuros, EGenericTypeFields.FString);
         if (pFldFValorRealizavel)
-            updateTool.Fields(DBContratosDicInfo.ValorRealizavel, m_FValorRealizavel, ETiposCampos.FDecimal);
+            updateTool.Fields(DBContratosDicInfo.ValorRealizavel, FValorRealizavel, EGenericTypeFields.FDecimal);
         if (pFldFDOCUMENTO)
-            updateTool.Fields(DBContratosDicInfo.DOCUMENTO, m_FDOCUMENTO, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.DOCUMENTO, FDOCUMENTO, EGenericTypeFields.FString);
         if (pFldFEMail1)
-            updateTool.Fields(DBContratosDicInfo.EMail1, m_FEMail1, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.EMail1, FEMail1, EGenericTypeFields.FString);
         if (pFldFEMail2)
-            updateTool.Fields(DBContratosDicInfo.EMail2, m_FEMail2, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.EMail2, FEMail2, EGenericTypeFields.FString);
         if (pFldFEMail3)
-            updateTool.Fields(DBContratosDicInfo.EMail3, m_FEMail3, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.EMail3, FEMail3, EGenericTypeFields.FString);
         if (pFldFPessoa1)
-            updateTool.Fields(DBContratosDicInfo.Pessoa1, m_FPessoa1, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.Pessoa1, FPessoa1, EGenericTypeFields.FString);
         if (pFldFPessoa2)
-            updateTool.Fields(DBContratosDicInfo.Pessoa2, m_FPessoa2, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.Pessoa2, FPessoa2, EGenericTypeFields.FString);
         if (pFldFPessoa3)
-            updateTool.Fields(DBContratosDicInfo.Pessoa3, m_FPessoa3, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.Pessoa3, FPessoa3, EGenericTypeFields.FString);
         if (pFldFOBS)
-            updateTool.Fields(DBContratosDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFClienteContrato)
-            updateTool.Fields(DBContratosDicInfo.ClienteContrato, m_FClienteContrato, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.ClienteContrato, FClienteContrato, EGenericTypeFields.FNumber);
         if (pFldFIdExtrangeiro)
-            updateTool.Fields(DBContratosDicInfo.IdExtrangeiro, m_FIdExtrangeiro, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.IdExtrangeiro, FIdExtrangeiro, EGenericTypeFields.FNumber);
         if (pFldFChaveContrato)
-            updateTool.Fields(DBContratosDicInfo.ChaveContrato, m_FChaveContrato, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.ChaveContrato, FChaveContrato, EGenericTypeFields.FString);
         if (pFldFAvulso || updateTool.Insert)
-            updateTool.Fields(DBContratosDicInfo.Avulso, m_FAvulso, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContratosDicInfo.Avulso, FAvulso, EGenericTypeFields.FBoolean);
         if (pFldFSuspenso || updateTool.Insert)
-            updateTool.Fields(DBContratosDicInfo.Suspenso, m_FSuspenso, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContratosDicInfo.Suspenso, FSuspenso, EGenericTypeFields.FBoolean);
         if (pFldFMulta)
-            updateTool.Fields(DBContratosDicInfo.Multa, m_FMulta, ETiposCampos.FString);
+            updateTool.Fields(DBContratosDicInfo.Multa, FMulta, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBContratosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBContratosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -206,24 +216,23 @@ public partial class DBContratos
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBContratosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBContratosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBContratosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBContratosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBContratosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBContratosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBContratosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBContratosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBContratosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBContratosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -58,92 +58,26 @@ public static partial class DBOperadoresDicInfo
 
     public const string PTabelaNome = "Operadores";
 #region PropriedadesDaTabela
-    public static DBInfoSystem OperEnviado => new(0, PTabelaNome, CampoCodigo, Enviado, "Enviado", "Enviado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperCasa => new(0, PTabelaNome, CampoCodigo, Casa, "Casa", "Casa", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperCasaID => new(0, PTabelaNome, CampoCodigo, CasaID, "CasaID", "CasaID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperCasaCodigo => new(0, PTabelaNome, CampoCodigo, CasaCodigo, "CasaCodigo", "CasaCodigo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperIsNovo => new(0, PTabelaNome, CampoCodigo, IsNovo, "IsNovo", "IsNovo", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "oper"
-    }; // DBI 11 
-    public static DBInfoSystem OperGrupo => new(0, PTabelaNome, CampoCodigo, Grupo, "Grupo", "Grupo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperSenha => new(0, PTabelaNome, CampoCodigo, Senha, 10, "Senha", "Senha", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperAtivado => new(0, PTabelaNome, CampoCodigo, Ativado, "Ativado", "Ativado", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperAtualizarSenha => new(0, PTabelaNome, CampoCodigo, AtualizarSenha, "AtualizarSenha", "AtualizarSenha", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperSenha256 => new(0, PTabelaNome, CampoCodigo, Senha256, 4000, "Senha256", "Senha256", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperSuporteSenha256 => new(0, PTabelaNome, CampoCodigo, SuporteSenha256, 4000, "SuporteSenha256", "SuporteSenha256", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperSuporteMaxAge => new(0, PTabelaNome, CampoCodigo, SuporteMaxAge, "SuporteMaxAge", "SuporteMaxAge", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "oper"
-    }; // DBI 11 
-    public static DBInfoSystem OperDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "oper"
-    }; // DBI 11 
-    public static DBInfoSystem OperDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "oper"
-    };
-    public static DBInfoSystem OperVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "oper"
-    };
+    public static DBInfoSystem OperEnviado => new(0, PTabelaNome, CampoCodigo, Enviado, Enviado, Enviado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperCasa => new(0, PTabelaNome, CampoCodigo, Casa, Casa, Casa, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperCasaID => new(0, PTabelaNome, CampoCodigo, CasaID, CasaID, CasaID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
+    public static DBInfoSystem OperCasaCodigo => new(0, PTabelaNome, CampoCodigo, CasaCodigo, CasaCodigo, CasaCodigo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
+    public static DBInfoSystem OperIsNovo => new(0, PTabelaNome, CampoCodigo, IsNovo, IsNovo, IsNovo, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "oper"); // DBI 11 
+    public static DBInfoSystem OperGrupo => new(0, PTabelaNome, CampoCodigo, Grupo, Grupo, Grupo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oper");
+    public static DBInfoSystem OperNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "oper");
+    public static DBInfoSystem OperEMail => new(0, PTabelaNome, CampoCodigo, EMail, 150, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "oper");
+    public static DBInfoSystem OperSenha => new(0, PTabelaNome, CampoCodigo, Senha, 10, Senha, Senha, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
+    public static DBInfoSystem OperAtivado => new(0, PTabelaNome, CampoCodigo, Ativado, Ativado, Ativado, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperAtualizarSenha => new(0, PTabelaNome, CampoCodigo, AtualizarSenha, AtualizarSenha, AtualizarSenha, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oper", isRequired: true);
+    public static DBInfoSystem OperSenha256 => new(0, PTabelaNome, CampoCodigo, Senha256, 4000, Senha256, Senha256, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
+    public static DBInfoSystem OperSuporteSenha256 => new(0, PTabelaNome, CampoCodigo, SuporteSenha256, 4000, SuporteSenha256, SuporteSenha256, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oper");
+    public static DBInfoSystem OperSuporteMaxAge => new(0, PTabelaNome, CampoCodigo, SuporteMaxAge, SuporteMaxAge, SuporteMaxAge, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "oper");
+    public static DBInfoSystem OperQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "oper"); // DBI 11 
+    public static DBInfoSystem OperDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "oper");
+    public static DBInfoSystem OperQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "oper"); // DBI 11 
+    public static DBInfoSystem OperDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "oper");
+    public static DBInfoSystem OperVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "oper", isRequired: true);
 
 #endregion
     [Serializable]

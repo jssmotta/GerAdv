@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IBensMateriaisWriter
 {
     Task<FBensMateriais> WriteAsync(Models.BensMateriais bensmateriais, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class BensMateriaisWriter(IFBensMateriaisFactory bensmateriaisFactory) : IBensMateriaisWriter
 {
     private readonly IFBensMateriaisFactory _bensmateriaisFactory = bensmateriaisFactory ?? throw new ArgumentNullException(nameof(bensmateriaisFactory));
-    public virtual async Task Delete(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(BensMateriaisResponse bensmateriais, int operadorId, MsiSqlConnection? oCnn)
     {
         await _bensmateriaisFactory.DeleteAsync(operadorId, bensmateriais.Id, oCnn);
     }
@@ -25,10 +25,16 @@ public class BensMateriaisWriter(IFBensMateriaisFactory bensmateriaisFactory) : 
         using var dbRec = await (bensmateriais.Id.IsEmptyIDNumber() ? _bensmateriaisFactory.CreateAsync() : _bensmateriaisFactory.CreateFromIdAsync(bensmateriais.Id, oCnn));
         dbRec.FNome = bensmateriais.Nome;
         dbRec.FBensClassificacao = bensmateriais.BensClassificacao;
-        if (bensmateriais.DataCompra != null)
-            dbRec.FDataCompra = bensmateriais.DataCompra.ToString();
-        if (bensmateriais.DataFimDaGarantia != null)
-            dbRec.FDataFimDaGarantia = bensmateriais.DataFimDaGarantia.ToString();
+        if (bensmateriais.DataCompra.NotIsEmpty())
+        {
+            dbRec.FDataCompra = DateOnly.FromDateTime(Convert.ToDateTime(bensmateriais.DataCompra));
+        }
+
+        if (bensmateriais.DataFimDaGarantia.NotIsEmpty())
+        {
+            dbRec.FDataFimDaGarantia = DateOnly.FromDateTime(Convert.ToDateTime(bensmateriais.DataFimDaGarantia));
+        }
+
         dbRec.FNFNRO = bensmateriais.NFNRO;
         dbRec.FFornecedor = bensmateriais.Fornecedor;
         dbRec.FValorBem = bensmateriais.ValorBem;
@@ -36,11 +42,15 @@ public class BensMateriaisWriter(IFBensMateriaisFactory bensmateriaisFactory) : 
         dbRec.FComprador = bensmateriais.Comprador;
         dbRec.FCidade = bensmateriais.Cidade;
         dbRec.FGarantiaLoja = bensmateriais.GarantiaLoja;
-        if (bensmateriais.DataTerminoDaGarantiaDaLoja != null)
-            dbRec.FDataTerminoDaGarantiaDaLoja = bensmateriais.DataTerminoDaGarantiaDaLoja.ToString();
+        if (bensmateriais.DataTerminoDaGarantiaDaLoja.NotIsEmpty())
+        {
+            dbRec.FDataTerminoDaGarantiaDaLoja = DateOnly.FromDateTime(Convert.ToDateTime(bensmateriais.DataTerminoDaGarantiaDaLoja));
+        }
+
         dbRec.FObservacoes = bensmateriais.Observacoes;
         dbRec.FNomeVendedor = bensmateriais.NomeVendedor;
-        dbRec.FGUID = bensmateriais.GUID;
+        dbRec.FBold = bensmateriais.Bold;
+        dbRec.FGuid = bensmateriais.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

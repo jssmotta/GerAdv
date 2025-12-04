@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IViaRecebimentoWriter
 {
     Task<FViaRecebimento> WriteAsync(Models.ViaRecebimento viarecebimento, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ViaRecebimentoResponse viarecebimento, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ViaRecebimentoResponse viarecebimento, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ViaRecebimentoWriter(IFViaRecebimentoFactory viarecebimentoFactory) : IViaRecebimentoWriter
 {
     private readonly IFViaRecebimentoFactory _viarecebimentoFactory = viarecebimentoFactory ?? throw new ArgumentNullException(nameof(viarecebimentoFactory));
-    public virtual async Task Delete(ViaRecebimentoResponse viarecebimento, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ViaRecebimentoResponse viarecebimento, int operadorId, MsiSqlConnection? oCnn)
     {
         await _viarecebimentoFactory.DeleteAsync(operadorId, viarecebimento.Id, oCnn);
     }

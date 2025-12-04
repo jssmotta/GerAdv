@@ -32,12 +32,12 @@ public static partial class DBLigacoesDicInfo
     public const string Data = "ligData"; // LOCALIZACAO 170523
     public const string Hora = "ligHora"; // LOCALIZACAO 170523
     public const string Urgente = "ligUrgente"; // LOCALIZACAO 170523
-    public const string GUID = "ligGUID"; // LOCALIZACAO 170523
     public const string LigarPara = "ligLigarPara"; // LOCALIZACAO 170523
     public const string Processo = "ligProcesso"; // LOCALIZACAO 170523
     public const string StartScreen = "ligStartScreen"; // LOCALIZACAO 170523
     public const string Emotion = "ligEmotion"; // LOCALIZACAO 170523
     public const string Bold = "ligBold"; // LOCALIZACAO 170523
+    public const string Guid = "ligGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ligQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ligDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ligQuemAtu"; // LOCALIZACAO 170523
@@ -83,144 +83,39 @@ public static partial class DBLigacoesDicInfo
 
     public const string PTabelaNome = "Ligacoes";
 #region PropriedadesDaTabela
-    public static DBInfoSystem LigAssunto => new(0, PTabelaNome, CampoCodigo, Assunto, 200, "Assunto", "Assunto", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigAgeClienteAvisado => new(0, PTabelaNome, CampoCodigo, AgeClienteAvisado, "AgeClienteAvisado", "AgeClienteAvisado", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigCelular => new(0, PTabelaNome, CampoCodigo, Celular, "Celular", "Celular", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "lig"
-    }; // DBI 11 
-    public static DBInfoSystem LigContato => new(0, PTabelaNome, CampoCodigo, Contato, 200, "Contato", "Contato", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigDataRealizada => new(0, PTabelaNome, CampoCodigo, DataRealizada, "DataRealizada", "DataRealizada", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigQuemID => new(0, PTabelaNome, CampoCodigo, QuemID, "QuemID", "QuemID", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigTelefonista => new(0, PTabelaNome, CampoCodigo, Telefonista, "Telefonista", "Telefonista", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigUltimoAviso => new(0, PTabelaNome, CampoCodigo, UltimoAviso, "UltimoAviso", "UltimoAviso", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigHoraFinal => new(0, PTabelaNome, CampoCodigo, HoraFinal, "HoraFinal", "HoraFinal", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigQuemCodigo => new(0, PTabelaNome, CampoCodigo, QuemCodigo, "QuemCodigo", "QuemCodigo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigSolicitante => new(0, PTabelaNome, CampoCodigo, Solicitante, "Solicitante", "Solicitante", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigPara => new(0, PTabelaNome, CampoCodigo, Para, 100, "Para", "Para", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigRamal => new(0, PTabelaNome, CampoCodigo, Ramal, "Ramal", "Ramal", ETipoDadosSysteminfo.SysteminfoForeingkey, DBRamalDicInfo.CampoCodigo, DBRamalDicInfo.TabelaNome, new DBRamalODicInfo(), false)
-    {
-        Prefixo = "lig"
-    }; // DBI 11 
-    public static DBInfoSystem LigParticular => new(0, PTabelaNome, CampoCodigo, Particular, "Particular", "Particular", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigRealizada => new(0, PTabelaNome, CampoCodigo, Realizada, "Realizada", "Realizada", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigStatus => new(0, PTabelaNome, CampoCodigo, Status, DevourerOne.PMaxSizeCampoMemo, "Status", "Status", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigHora => new(0, PTabelaNome, CampoCodigo, Hora, "Hora", "Hora", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigUrgente => new(0, PTabelaNome, CampoCodigo, Urgente, "Urgente", "Urgente", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigLigarPara => new(0, PTabelaNome, CampoCodigo, LigarPara, 255, "LigarPara", "LigarPara", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigStartScreen => new(0, PTabelaNome, CampoCodigo, StartScreen, "StartScreen", "StartScreen", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigEmotion => new(0, PTabelaNome, CampoCodigo, Emotion, "Emotion", "Emotion", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "lig"
-    }; // DBI 11 
-    public static DBInfoSystem LigDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "lig"
-    }; // DBI 11 
-    public static DBInfoSystem LigDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "lig"
-    };
-    public static DBInfoSystem LigVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "lig"
-    };
+    public static DBInfoSystem LigAssunto => new(0, PTabelaNome, CampoCodigo, Assunto, 200, Assunto, Assunto, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigAgeClienteAvisado => new(0, PTabelaNome, CampoCodigo, AgeClienteAvisado, AgeClienteAvisado, AgeClienteAvisado, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigCelular => new(0, PTabelaNome, CampoCodigo, Celular, Celular, Celular, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "lig", isRequired: true);
+    public static DBInfoSystem LigCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "lig"); // DBI 11 
+    public static DBInfoSystem LigContato => new(0, PTabelaNome, CampoCodigo, Contato, 200, Contato, Contato, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigDataRealizada => new(0, PTabelaNome, CampoCodigo, DataRealizada, DataRealizada, DataRealizada, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "lig");
+    public static DBInfoSystem LigQuemID => new(0, PTabelaNome, CampoCodigo, QuemID, QuemID, QuemID, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigTelefonista => new(0, PTabelaNome, CampoCodigo, Telefonista, Telefonista, Telefonista, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigUltimoAviso => new(0, PTabelaNome, CampoCodigo, UltimoAviso, UltimoAviso, UltimoAviso, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "lig");
+    public static DBInfoSystem LigHoraFinal => new(0, PTabelaNome, CampoCodigo, HoraFinal, HoraFinal, HoraFinal, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "lig");
+    public static DBInfoSystem LigNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "lig");
+    public static DBInfoSystem LigQuemCodigo => new(0, PTabelaNome, CampoCodigo, QuemCodigo, QuemCodigo, QuemCodigo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigSolicitante => new(0, PTabelaNome, CampoCodigo, Solicitante, Solicitante, Solicitante, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigPara => new(0, PTabelaNome, CampoCodigo, Para, 100, Para, Para, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigRamal => new(0, PTabelaNome, CampoCodigo, Ramal, Ramal, Ramal, EDataTypeSystemInfo.SystemInfoForeingkey, DBRamalDicInfo.CampoCodigo, DBRamalDicInfo.TabelaNome, new DBRamalODicInfo(), false, prefixo: "lig"); // DBI 11 
+    public static DBInfoSystem LigParticular => new(0, PTabelaNome, CampoCodigo, Particular, Particular, Particular, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "lig", isRequired: true);
+    public static DBInfoSystem LigRealizada => new(0, PTabelaNome, CampoCodigo, Realizada, Realizada, Realizada, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "lig", isRequired: true);
+    public static DBInfoSystem LigStatus => new(0, PTabelaNome, CampoCodigo, Status, DevourerOne.PMaxSizeCampoMemo, Status, Status, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "lig");
+    public static DBInfoSystem LigHora => new(0, PTabelaNome, CampoCodigo, Hora, Hora, Hora, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "lig");
+    public static DBInfoSystem LigUrgente => new(0, PTabelaNome, CampoCodigo, Urgente, Urgente, Urgente, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "lig", isRequired: true);
+    public static DBInfoSystem LigLigarPara => new(0, PTabelaNome, CampoCodigo, LigarPara, 255, LigarPara, LigarPara, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigStartScreen => new(0, PTabelaNome, CampoCodigo, StartScreen, StartScreen, StartScreen, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "lig");
+    public static DBInfoSystem LigEmotion => new(0, PTabelaNome, CampoCodigo, Emotion, Emotion, Emotion, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "lig");
+    public static DBInfoSystem LigBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "lig", isRequired: true);
+    public static DBInfoSystem LigGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "lig");
+    public static DBInfoSystem LigQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "lig"); // DBI 11 
+    public static DBInfoSystem LigDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "lig");
+    public static DBInfoSystem LigQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "lig"); // DBI 11 
+    public static DBInfoSystem LigDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "lig");
+    public static DBInfoSystem LigVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "lig", isRequired: true);
 
 #endregion
     [Serializable]

@@ -2,7 +2,7 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ComboBox } from '@progress/kendo-react-dropdowns';
 import { ProObservacoesEmpty } from '../../Models/ProObservacoes';
 import { ProObservacoesApi } from '../Apis/ApiProObservacoes';
@@ -12,147 +12,179 @@ import ProObservacoesWindow from '../Crud/Grids/ProObservacoesWindow';
 import { IProObservacoes } from '../Interfaces/interface.ProObservacoes';
 import { pencilIcon, plusIcon, xIcon } from '@progress/kendo-svg-icons';
 import { SvgIcon } from '@progress/kendo-react-common';
-import { ActionAdicionar, ActionEditar } from '@/app/tools/crud';
+import { ActionAdicionar, ActionEditar, CRUD_CONSTANTS } from '@/app/tools/crud';
 import { ProObservacoesService } from '../Services/ProObservacoes.service';
 import { useProObservacoesComboBox } from '../Hooks/hookProObservacoes';
-const ProObservacoesComboBox: React.FC<DadosSelectProps> = ({
+import { getIcon, InputAwesomeIcon } from '@/app/tools/iconMapperInput'; 
+
+const ProObservacoesComboBox: React.FC<DadosSelectProps> = ({ 
   name, 
   value, 
   setValue, 
   label, 
-  dataForm, 
-  className, 
+  dataForm,
+  className,
 }) => {
-const cssDado = 'proobservacoesInput';
-const { systemContext } = useSystemContext();
-const proobservacoesService = new ProObservacoesService(
-new ProObservacoesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const {
-  options: filteredOptions, 
-  loading, 
-  selectedValue, 
-  handleFilter, 
-  handleValueChange, 
-  clearValue
-} = useProObservacoesComboBox(proobservacoesService);
+  const cssDado = 'proobservacoesInput';
+  const { systemContext } = useSystemContext();  
 
-const [isOpen, setIsOpen] = useState(false);
-const [editRecord, setEditRecord] = useState<IProObservacoes | null>(null);
-const [addRecord, setAddRecord] = useState<IProObservacoes | null>(null);
-const [action, setAction] = useState(ActionAdicionar);
-useEffect(() => {
-  if (typeof value === 'number' && value > 0 && !selectedValue) {
-    loadRecordForEdit(value);
-  } else if (!value) {
-  handleValueChange(null);
-  setAction(ActionAdicionar);
-}
-}, [value]);
+  const proobservacoesService = useMemo(() => {
+    return new ProObservacoesService(
+      new ProObservacoesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+    );
+  }, [systemContext?.Uri, systemContext?.Token]);
 
-const loadRecordForEdit = async (id: number) => {
-  try {
-    const record = await proobservacoesService.fetchProObservacoesById(id);
-    setEditRecord(record);
-    setAction(ActionEditar);
-    handleValueChange({ id: record.id, nome: record.nome });
-  } catch (error) {
-  if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
-    console.log('Erro ao carregar Pro Observacoes:');
-  }
-};
+  const {
+    options: filteredOptions,
+    loading,
+    selectedValue,
+    handleFilter,
+    handleValueChange,
+    clearValue
+  } = useProObservacoesComboBox(proobservacoesService);
+  
+  const [isOpen, setIsOpen] = useState(false);
+  const [editRecord, setEditRecord] = useState<IProObservacoes | null>(null);
+  const [addRecord, setAddRecord] = useState<IProObservacoes | null>(null);
+  const [action, setAction] = useState(ActionAdicionar);
 
-const handleComboChange = (e: any) => {
-  const newValue = e.target.value;
-
-  if (newValue && typeof newValue === 'object' && 'id' in newValue && 'nome' in newValue) {
-    handleValueChange(newValue);
-    setValue(newValue);
-    if (newValue.id > 0) {
-      loadRecordForEdit(newValue.id);
+    useEffect(() => {
+    if (typeof value === 'number' && value > 0 && !selectedValue) {
+      loadRecordForEdit(value);
+    } else if (!value && selectedValue) {
+      handleValueChange(null);
+      setAction(ActionAdicionar);
     }
-  } else if (typeof newValue === 'string' && newValue.trim() !== '') {
-  const tempValue = { id: 0, nome: newValue };
-  handleValueChange(tempValue);
+   }, [value]);
+  
+    // Sincronizar value prop com selectedValue apenas quando necess�rio
+  useEffect(() => {
+    if (value && typeof value === 'object' && 'id' in value && 'nome' in value) {
 
-  const matchingItem = filteredOptions.find(item =>
-    item.nome.toLowerCase() === newValue.toLowerCase()
-  );
+      if (!selectedValue || selectedValue.id !== value.id) {
+        handleValueChange(value);
+      }
+    } else if (typeof value === 'number' && value > 0 && filteredOptions.length > 0) {
+      const foundItem = filteredOptions.find(item => item.id === value);
+      if (foundItem && (!selectedValue || selectedValue.id !== foundItem.id)) {
+        handleValueChange(foundItem);
+      }
+    }
+  }, [value, filteredOptions]);
 
-  if (matchingItem) {
-    handleValueChange(matchingItem);
-    setValue(matchingItem);
-    loadRecordForEdit(matchingItem.id);
-  } else {
-  setAction(ActionAdicionar);
-  setEditRecord(null);
-}
-} else {
-handleClear();
-}
-};
-const handleFilterChange = (event: any) => {
-  const filter = event.filter.value;
-  handleFilter(filter);
-};
-const getCurrentInputValue = (): string => {
-  const inputElement = document.querySelector(`.${cssDado} input`) as HTMLInputElement;
-  return inputElement?.value || '';
-};
+  const loadRecordForEdit = async (id: number) => {
+    try {
+      const record = await proobservacoesService.fetchProObservacoesById(id);
+      setEditRecord(record);
+      setAction(ActionEditar); 
+      const valueToSet = { id: record.id, nome: record.nome };
+      handleValueChange(valueToSet);
 
-const handleClear = () => {
-  clearValue();
-  setValue(0);
-  setAction(ActionAdicionar);
-  setEditRecord(null);
-};
-const handleActionClick = () => {
-  if (action === ActionEditar && editRecord) {
+    } catch (error) {
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.log('Erro ao carregar Pro Observacoes:');
+    }
+  };
+  
+  const handleComboChange = (e: any) => {
+    const newValue = e.target.value;
+    
+    if (newValue && typeof newValue === 'object' && 'id' in newValue && 'nome' in newValue) {      
+      handleValueChange(newValue);
+      setValue(newValue);
+      if (newValue.id > 0) {
+        loadRecordForEdit(newValue.id);
+      }
+    } else if (typeof newValue === 'string' && newValue.trim() !== '') {       
+      
+      const matchingItem = filteredOptions.find(item => 
+        item.nome.toLowerCase() === newValue.toLowerCase()
+      );
+      
+      if (matchingItem) {
+        handleValueChange(matchingItem);
+        setValue(matchingItem);
+        loadRecordForEdit(matchingItem.id);
+      } else {
+        // Novo item a ser criado
+        const tempValue = { id: 0, nome: newValue };
+        handleValueChange(tempValue);
+        setValue(tempValue);
+        setAction(ActionAdicionar);
+        setEditRecord(null);
+      }
+    } else {    
+      handleClear();
+    }
+  };
+
+  const handleFilterChange = (event: any) => {
+    const filter = event.filter.value;
+    handleFilter(filter);
+  };
+
+  const getCurrentInputValue = (): string => {
+    const inputElement = document.querySelector(`.${cssDado} input`) as HTMLInputElement;
+    return inputElement?.value || '';
+  };
+  
+  const handleClear = () => {
+    clearValue();
+    setValue(null);
+    setAction(ActionAdicionar);
+    setEditRecord(null);
+  };
+
+  const handleActionClick = () => {
+    if (action === ActionEditar && editRecord) {
+      setIsOpen(true);
+      return;
+    }
+
+    const inputValue = getCurrentInputValue();
+    const newRecord = ProObservacoesEmpty();
+    newRecord.nome = inputValue.toUpperCase();
+    setAddRecord(newRecord);
+    setEditRecord(null);
     setIsOpen(true);
-    return;
-  }
-  const inputValue = getCurrentInputValue();
-  const newRecord = ProObservacoesEmpty();
-  newRecord.nome = inputValue.toUpperCase();
-  setAddRecord(newRecord);
-  setEditRecord(null);
-  setIsOpen(true);
-};
+  };
+  
+  const handleClose = () => {
+    setIsOpen(false);
+    setAddRecord(null);
+  };
 
-const handleClose = () => {
-  setIsOpen(false);
-  setAddRecord(null);
-};
-const handleSuccess = (newProObservacoes?: IProObservacoes) => {
-  if (newProObservacoes) {
-    setValue({ id: newProObservacoes.id, nome: newProObservacoes.nome });
-    loadRecordForEdit(newProObservacoes.id);
-    handleValueChange(newProObservacoes);
-  }
-  handleClose();
-};
-return (
-<>
+  const handleSuccess = (newProObservacoes?: IProObservacoes) => {
+    if (newProObservacoes) {            
+      setValue({ id: newProObservacoes.id, nome: newProObservacoes.nome });
+      loadRecordForEdit(newProObservacoes.id);
+      handleValueChange(newProObservacoes);
+    }
+    handleClose();
+  };   
 
+ const icon = getIcon(label); 
+
+  return (
+    <>      
+
+    
 <style jsx global>{`
-  .proobservacoesInput {
-    width: 360px;
-  }
+
   .proobservacoes-dropdown-popup-msi {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     z-index: 99999 !important;
     position: absolute !important;
-    background: white !important;
-    border: 1px solid #ccc !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    background: white !important;    
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
     max-height: 300px !important;
     overflow-y: auto !important;
     min-width: 200px !important;
     height: auto !important;
   }
-
+  
   .proobservacoes-dropdown-popup-msi .k-list {
     display: block !important;
     visibility: visible !important;
@@ -162,7 +194,7 @@ return (
     overflow-y: auto !important;
     height: auto !important;
   }
-
+  
   .proobservacoes-dropdown-popup-msi .k-list-item {
     display: block !important;
     visibility: visible !important;
@@ -174,65 +206,74 @@ return (
     border-bottom: 1px solid #eee !important;
     height: auto !important;
   }
-
-  .proobservacoes-dropdown-popup-msi .k-list-item: hover {
+  
+  .proobservacoes-dropdown-popup-msi .k-list-item:hover {
     background: #f0f0f0 !important;
-  }
-
+  }  
+  
   .proobservacoes-dropdown-popup-msi * {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     height: auto !important;
-  }
+  }   
+ 
+`}</style>
 
-  `}</style>
-  {(editRecord || addRecord) && isOpen && (
-    <ProObservacoesWindow
-    isOpen={isOpen}
-    onClose={handleClose}
-    onSuccess={handleSuccess}
-    onError={handleClose}
-    selectedProObservacoes={editRecord || addRecord || ProObservacoesEmpty()}
-    />
-    )}
-
-    <div className={`${cssDado} inputCombobox input-container ${className}`}>
-      <div className='comboboxLabel'>
-        <span className='k-floating-label'>{label}</span>
+      {(editRecord || addRecord) && isOpen && (
+        <ProObservacoesWindow
+          isOpen={isOpen}
+          onClose={handleClose}
+          onSuccess={handleSuccess}
+          onError={handleClose}
+          selectedProObservacoes={editRecord || addRecord || ProObservacoesEmpty()}
+        />
+      )}
+      
+      <div className={`${cssDado} input-msi-combobox input-container ${className} ${icon ? 'input-container-icon' : ''}`}>
+        
+        {icon && (
+         <InputAwesomeIcon icon={icon} />
+        )}
+        
+        <div className='comboboxLabel'>
+          <span className='k-floating-label'>{label}</span>
         </div>
         <div className='comboboxBox'>
           <ComboBox
-          name={name}
-          data={filteredOptions}
-          textField='nome'
-          dataItemKey='id'
-          value={selectedValue}
-          className={cssDado}
-          allowCustom={true}
-          filterable={true}
-          loading={loading}
-          aria-busy={loading}
-          onFilterChange={handleFilterChange}
-          onChange={handleComboChange}
-          style={{ height: '33px' }}
-          clearButton={true}
-          suggest={true}
-          popupSettings={{
-            className: 'proobservacoes-dropdown-popup-msi'
+            name={name}
+            data={filteredOptions || []}
+            textField='nome'
+            dataItemKey='id'
+            value={selectedValue}
+            className={cssDado}
+            allowCustom={true}
+            filterable={true}
+            loading={loading}
+            aria-busy={loading}
+            onFilterChange={handleFilterChange}
+            onChange={handleComboChange}
+            style={{ height: '33px' }}
+            clearButton={true}
+            suggest={true}
+            aria-label={`Campo de sele\u00e7\u00e3o para ${label}`}
+            popupSettings={{
+                className: 'proobservacoes-dropdown-popup-msi'
           }}
-          />
-
-          <label
-          title={action === 'Editar' ? 'Editar o item atual' : 'Incluir/Adicionar novo item'}
-          className={`${cssDado}-action-svg-label-${action.toLowerCase()}`}
-          onClick={handleActionClick}
-        >
-        <SvgIcon icon={action === 'Editar' ? pencilIcon : plusIcon} />
-      </label>
-    </div>
-  </div>
-</>
-);
+          />         
+          {className?.includes('inputSearch') && action !== 'Editar' ? null : 
+          <label 
+            title={action === 'Editar' ? 'Editar o item atual' : 'Incluir/Adicionar novo item'} 
+            className={`${cssDado}-action-svg-label-${action.toLowerCase()}`} 
+            onClick={handleActionClick}
+          >
+            <SvgIcon icon={action === 'Editar' ? pencilIcon : plusIcon} />
+          </label>
+          }
+        </div>
+      </div>
+    </>
+  );
 };
+
 export default ProObservacoesComboBox;

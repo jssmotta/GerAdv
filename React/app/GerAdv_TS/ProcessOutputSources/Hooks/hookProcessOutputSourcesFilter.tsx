@@ -9,100 +9,137 @@ import InputValor from '@/app/components/Inputs/InputValor';
 import InputComboFilterYesNo from '@/app/components/Inputs/InputComboFilterYesNo';
 import { FilterHandlers } from '@/app/components/Cruds/GenericFilterDialog';
 import { FilterProcessOutputSources } from '@/app/GerAdv_TS/ProcessOutputSources/Filters/ProcessOutputSources';
+import FilterDialogButton from '@/app/components/Cruds/FilterDialogButton';
+import InputGuid from '@/app/components/Inputs/InputGuid'
+
+
 interface UseProcessOutputSourcesFilterProps {
-  handleFetchWithFilter: (filtro?: FilterProcessOutputSources | undefined | null) => Promise<void>;
+    handleFetchWithFilter: (filtro?: FilterProcessOutputSources | undefined | null) => Promise<void>;
 }
+
 interface UseProcessOutputSourcesFilterReturn {
-  // Estados
-  showSearch: boolean;
-  windowFilter: FilterProcessOutputSources;
-  setWindowFilter: React.Dispatch<React.SetStateAction<FilterProcessOutputSources>>;
-  // Handlers do Dialog
-  handleSearch: () => void;
-  handleCloseSearch: () => void;
-  handleConfirmSearch: (filter: FilterProcessOutputSources) => Promise<void>;
-  // Render function
-  renderInputFilters: (handlers: FilterHandlers<FilterProcessOutputSources>) => React.ReactNode;
-  // Utilitários
-  clearFilter: () => void;
-  hasActiveFilter: boolean;
+    // Estados
+    showSearch: boolean;
+    windowFilter: FilterProcessOutputSources;
+    setWindowFilter: React.Dispatch<React.SetStateAction<FilterProcessOutputSources>>;
+
+    // Handlers do Dialog
+    handleSearch: () => void;
+    handleCloseSearch: () => void;
+    handleConfirmSearch: (filter: FilterProcessOutputSources) => Promise<void>;
+
+    // Render function
+    renderInputFilters: (handlers: FilterHandlers<FilterProcessOutputSources>) => React.ReactNode;
+
+    // Utilitários
+    clearFilter: () => void;
+    hasActiveFilter: boolean;
 }
+
 export const useProcessOutputSourcesFilter = ({ handleFetchWithFilter }: UseProcessOutputSourcesFilterProps): UseProcessOutputSourcesFilterReturn => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [windowFilter, setWindowFilter] = useState<FilterProcessOutputSources>({} as FilterProcessOutputSources);
-  // Handlers do Dialog
-  const handleSearch = () => {
-    setShowSearch(true);
-    const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterProcessOutputSources;
-    setWindowFilter(filterWildechar);
-  };
-  const handleCloseSearch = () => {
-    setShowSearch(false);
-  };
-  const handleConfirmSearch = async (filter: FilterProcessOutputSources) => {
-    await handleFetchWithFilter(filter);
-  };
-  // Função para limpar filtros
-  const clearFilter = () => {
-    setWindowFilter({});
-    sessionStorage.removeItem(btoa('ProcessOutputSourcesFilter'));
-    handleFetchWithFilter({});
-  };
-  // Verificar se há filtros ativos
-  const hasActiveFilter = Object.values(windowFilter).some(value =>
-    value !== undefined && value !== null && value !== '' && value !== -2147483648
-  );
-  // Função para renderizar os campos de filtro
-  const renderInputFilters = (handlers: FilterHandlers<FilterProcessOutputSources>) => (
-  <>
-  <InputInput
-  type='text'
-  id='nome'
-  name='nome'
-  value={handlers.windowFilter?.nome ?? ''}
-  onChange={handlers.handleInputChange}
-  placeholder='Informe Nome'
-  label='Nome'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro'
-  name='codigo_filtro'
-  value={handlers.windowFilter?.codigo_filtro ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código do cadastro'
-  label='Código (igual ou inicial)'
-  className='inputIncNome inputSearch'
-  />
-  <InputInput
-  type='text'
-  id='codigo_filtro_end'
-  name='codigo_filtro_end'
-  value={handlers.windowFilter?.codigo_filtro_end ?? ''}
-  onChange={handlers.handleInputChange}
-  dataForm={handlers.windowFilter}
-  placeholder='Código final do cadastro'
-  label='Código final'
-  disabled={handlers.windowFilter?.codigo_filtro ? false: true}
-  className='inputIncNome inputSearch'
-  />
-</>
-);
-return {
-  // Estados
-  showSearch, 
-  windowFilter, 
-  setWindowFilter, 
-  // Handlers
-  handleSearch, 
-  handleCloseSearch, 
-  handleConfirmSearch, 
-  // Render function
-  renderInputFilters, 
-  // Utilitários
-  clearFilter, 
-  hasActiveFilter
-};
+    const [showSearch, setShowSearch] = useState(false);
+    const [windowFilter, setWindowFilter] = useState<FilterProcessOutputSources>({} as FilterProcessOutputSources);
+
+    // Handlers do Dialog
+    const handleSearch = () => {
+        setShowSearch(true);
+        const filterWildechar = {...windowFilter, wildcardChar: '%' } as FilterProcessOutputSources;
+        setWindowFilter(filterWildechar);
+    };
+
+    const handleCloseSearch = () => {
+        setShowSearch(false);
+    };
+
+    const handleConfirmSearch = async (filter: FilterProcessOutputSources) => {
+        await handleFetchWithFilter(filter);
+    };
+
+    // Função para limpar filtros
+    const clearFilter = () => {
+        setWindowFilter({} as FilterProcessOutputSources);
+        sessionStorage.removeItem(btoa('ProcessOutputSourcesFilter'));
+        handleFetchWithFilter({} as FilterProcessOutputSources);
+    };
+
+    // Verificar se há filtros ativos
+    const hasActiveFilter = Object.values(windowFilter).some(value =>
+        value !== undefined && value !== null && value !== '' && value !== -2147483648
+    );
+
+    // Função para renderizar os campos de filtro
+    const renderInputFilters = (handlers: FilterHandlers<FilterProcessOutputSources>) => (        
+        <>
+        <InputInput
+                type='text'
+                id='nome'
+                name='nome'
+                value={handlers.windowFilter?.nome ?? ''}
+                 onChange={handlers.handleInputChange}
+                placeholder='Informe Nome'
+                label='Nome'
+                className='input-default-main inputSearch'
+                />
+<InputGuid
+                type='text'
+                id='guid'
+                name='guid'
+                value={handlers.windowFilter?.guid ?? ''}
+                 onChange={(value: string) =>
+          handlers.handleInputChange({ target: { name: 'guid', value } } as any)
+        }
+                placeholder='Informe GUID'
+                label='GUID'
+                className='input-default-main inputSearch'
+                />
+
+<InputInput
+                type='text'
+                id='codigo_filtro'
+                name='codigo_filtro'
+                value={handlers.windowFilter?.codigo_filtro ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código do cadastro'
+                label='Código (igual ou inicial)'
+                className='input-default-main inputSearch'
+                />
+<InputInput
+                type='text'
+                id='codigo_filtro_end'
+                name='codigo_filtro_end'
+                value={handlers.windowFilter?.codigo_filtro_end ?? ''}
+                onChange={handlers.handleInputChange}
+                dataForm={handlers.windowFilter}
+                placeholder='Código final do cadastro'
+                label='Código final'
+                disabled={handlers.windowFilter?.codigo_filtro ? false : true}
+                className='input-default-main inputSearch'
+                />
+
+        </>        
+    );
+
+
+    
+
+
+    return {
+        // Estados
+        showSearch,
+        windowFilter,
+        setWindowFilter,
+
+        // Handlers
+        handleSearch,
+        handleCloseSearch,
+        handleConfirmSearch,
+
+        // Render function
+        renderInputFilters,
+
+        // Utilitários
+        clearFilter,
+        hasActiveFilter
+    };
 };

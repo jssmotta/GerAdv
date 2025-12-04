@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { NENotasApiError } from '../GerAdv_TS/NENotas/Apis/ApiNENotas';
+import { NENotasApiError } from '@/app/GerAdv_TS/NENotas/Apis/ApiNENotas';
 import { NENotasApi } from '@/app/GerAdv_TS/NENotas/Apis/ApiNENotas';
-import { FilterNENotas } from '../GerAdv_TS/NENotas/Filters/NENotas';
-import { INENotas } from '../GerAdv_TS/NENotas/Interfaces/interface.NENotas';
-import { NENotasTestEmpty } from '../GerAdv_TS/Models/NENotas';
+import { FilterNENotas } from '@/app/GerAdv_TS/NENotas/Filters/NENotas';
+import { INENotas } from '@/app/GerAdv_TS/NENotas/Interfaces/interface.NENotas';
+import { NENotasTestEmpty } from '@/app/GerAdv_TS/Models/NENotas';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('NENotasApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterNENotas = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,18 @@ describe('NENotasApi', () => {
   describe('addAndUpdate', () => {
     const mockNENotas: INENotas = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+apenso: 0,
+precatoria: 0,
+instancia: 0,
+movpro: false,
+nome: 'João',
+notaexpedida: true,
+revisada: false,
+processo: 0,
+palavrachave: 0,
+data: '24/04/1975',
+notapublicada: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
     };
 
     it('should add new nenotas successfully', async () => {
@@ -487,7 +485,7 @@ describe('NENotasApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterNENotas = { funcionario: 1 };
+      const mockFilter: FilterNENotas = { : 1 };
       
       const result = nenotasApi.useFilter(mockFilter);
       

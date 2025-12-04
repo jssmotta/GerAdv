@@ -11,8 +11,8 @@ public static partial class DBBensClassificacaoDicInfo
     public const string CampoNome = "bcsNome";
     public const string TablePrefix = "bcs";
     public const string Nome = "bcsNome"; // LOCALIZACAO 170523
-    public const string GUID = "bcsGUID"; // LOCALIZACAO 170523
     public const string Bold = "bcsBold"; // LOCALIZACAO 170523
+    public const string Guid = "bcsGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "bcsQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "bcsDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "bcsQuemAtu"; // LOCALIZACAO 170523
@@ -33,40 +33,14 @@ public static partial class DBBensClassificacaoDicInfo
 
     public const string PTabelaNome = "BensClassificacao";
 #region PropriedadesDaTabela
-    public static DBInfoSystem BcsNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "bcs"
-    };
-    public static DBInfoSystem BcsGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "bcs"
-    };
-    public static DBInfoSystem BcsBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "bcs"
-    };
-    public static DBInfoSystem BcsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "bcs"
-    }; // DBI 11 
-    public static DBInfoSystem BcsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "bcs"
-    };
-    public static DBInfoSystem BcsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "bcs"
-    }; // DBI 11 
-    public static DBInfoSystem BcsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "bcs"
-    };
-    public static DBInfoSystem BcsVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "bcs"
-    };
+    public static DBInfoSystem BcsNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "bcs");
+    public static DBInfoSystem BcsBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "bcs", isRequired: true);
+    public static DBInfoSystem BcsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "bcs");
+    public static DBInfoSystem BcsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "bcs"); // DBI 11 
+    public static DBInfoSystem BcsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "bcs");
+    public static DBInfoSystem BcsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "bcs"); // DBI 11 
+    public static DBInfoSystem BcsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "bcs");
+    public static DBInfoSystem BcsVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "bcs", isRequired: true);
 
 #endregion
     [Serializable]

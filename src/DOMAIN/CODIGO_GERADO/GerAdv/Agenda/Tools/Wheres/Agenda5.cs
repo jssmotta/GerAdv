@@ -28,13 +28,10 @@ public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
             Oculto = dbRec.FOculto,
             CartaPrecatoria = dbRec.FCartaPrecatoria,
             Revisar = dbRec.FRevisar,
-            HrFinal = dbRec.FHrFinal ?? string.Empty,
             Advogado = dbRec.FAdvogado,
             EventoGerador = dbRec.FEventoGerador,
             Funcionario = dbRec.FFuncionario,
-            Data = dbRec.FData ?? string.Empty,
             EventoPrazo = dbRec.FEventoPrazo,
-            Hora = dbRec.FHora ?? string.Empty,
             Compromisso = dbRec.FCompromisso ?? string.Empty,
             TipoCompromisso = dbRec.FTipoCompromisso,
             Cliente = dbRec.FCliente,
@@ -50,7 +47,6 @@ public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
             Preposto = dbRec.FPreposto,
             QuemID = dbRec.FQuemID,
             QuemCodigo = dbRec.FQuemCodigo,
-            GUID = dbRec.FGUID ?? string.Empty,
             Status = dbRec.FStatus ?? string.Empty,
             Valor = dbRec.FValor,
             Decisao = dbRec.FDecisao ?? string.Empty,
@@ -58,16 +54,35 @@ public partial class AgendaWhere(IFAgendaFactory agendaFactory) : IAgendaWhere
             PrazoDias = dbRec.FPrazoDias,
             ProtocoloIntegrado = dbRec.FProtocoloIntegrado,
             UsuarioCiente = dbRec.FUsuarioCiente,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FEventoData, out DateTime XEventoData))
+        if (DateTime.TryParse(dbRec.FHrFinal?.ToString(), out DateTime XHrFinal1))
         {
-            agenda.EventoData = dbRec.FEventoData;
+            agenda.HrFinal = XHrFinal1.ToString("HH:mm");
+            agenda.HrFinal_date = XHrFinal1;
+        }
+
+        if (DateTime.TryParse(dbRec.FEventoData.ToString(), out DateTime XEventoData))
+        {
+            agenda.EventoData = XEventoData.ToString("dd/MM/yyyy");
             agenda.EventoData_date = XEventoData;
         }
 
-        if (DateTime.TryParse(dbRec.FDataInicioPrazo, out DateTime XDataInicioPrazo))
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
         {
-            agenda.DataInicioPrazo = dbRec.FDataInicioPrazo;
+            agenda.Data = XData.ToString("dd/MM/yyyy");
+            agenda.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FHora?.ToString(), out DateTime XHora1))
+        {
+            agenda.Hora = XHora1.ToString("HH:mm");
+            agenda.Hora_date = XHora1;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataInicioPrazo.ToString(), out DateTime XDataInicioPrazo))
+        {
+            agenda.DataInicioPrazo = XDataInicioPrazo.ToString("dd/MM/yyyy");
             agenda.DataInicioPrazo_date = XDataInicioPrazo;
         }
 

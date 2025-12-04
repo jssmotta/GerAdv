@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { PreClientesApiError } from '../GerAdv_TS/PreClientes/Apis/ApiPreClientes';
+import { PreClientesApiError } from '@/app/GerAdv_TS/PreClientes/Apis/ApiPreClientes';
 import { PreClientesApi } from '@/app/GerAdv_TS/PreClientes/Apis/ApiPreClientes';
-import { FilterPreClientes } from '../GerAdv_TS/PreClientes/Filters/PreClientes';
-import { IPreClientes } from '../GerAdv_TS/PreClientes/Interfaces/interface.PreClientes';
-import { PreClientesTestEmpty } from '../GerAdv_TS/Models/PreClientes';
+import { FilterPreClientes } from '@/app/GerAdv_TS/PreClientes/Filters/PreClientes';
+import { IPreClientes } from '@/app/GerAdv_TS/PreClientes/Interfaces/interface.PreClientes';
+import { PreClientesTestEmpty } from '@/app/GerAdv_TS/Models/PreClientes';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('PreClientesApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterPreClientes = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,40 @@ describe('PreClientesApi', () => {
   describe('addAndUpdate', () => {
     const mockPreClientes: IPreClientes = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+inativo: false,
+quemindicou: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+nome: 'João',
+adv: 0,
+idrep: 0,
+juridica: true,
+nomefantasia: 'João',
+class: 'A',
+tipo: false,
+dtnasc: '24/04/1975',
+inscest: 'AAAAAAAAAAAAA',
+qualificacao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+sexo: true,
+idade: 0,
+cnpj: '93016944000138',
+cpf: '544.506.718-13',
+rg: '12.345.678-9',
+tipocaptacao: false,
+observacao: 'Observação teste',
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+cidade: 0,
+cep: '01234-567',
+fax: '(11) 88888-9999',
+fone: '(11) 99999-9999',
+data: '24/04/1975',
+homepage: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+email: 'test@email.com',
+assistido: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+assrg: '12.345.678-9',
+asscpf: '544.506.718-13',
+assendereco: 'Rua das Flores, 123',
+cnh: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new preclientes successfully', async () => {
@@ -487,7 +507,7 @@ describe('PreClientesApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterPreClientes = { funcionario: 1 };
+      const mockFilter: FilterPreClientes = { : 1 };
       
       const result = preclientesApi.useFilter(mockFilter);
       

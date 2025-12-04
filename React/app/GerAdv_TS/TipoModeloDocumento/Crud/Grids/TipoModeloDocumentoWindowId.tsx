@@ -9,54 +9,61 @@ import { TipoModeloDocumentoService } from '../../Services/TipoModeloDocumento.s
 import { TipoModeloDocumentoApi } from '../../Apis/ApiTipoModeloDocumento';
 import TipoModeloDocumentoWindow from './TipoModeloDocumentoWindow';
 import {TipoModeloDocumentoEmpty } from '@/app/GerAdv_TS/Models/TipoModeloDocumento';
-interface TipoModeloDocumentoWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const TipoModeloDocumentoWindowId: React.FC<TipoModeloDocumentoWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const tipomodelodocumentoService = useMemo(() => {
-  return new TipoModeloDocumentoService(
-  new TipoModeloDocumentoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ITipoModeloDocumento | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(TipoModeloDocumentoEmpty() as ITipoModeloDocumento);
-      return;
-    }
-    if (id) {
-      const response = await tipomodelodocumentoService.fetchTipoModeloDocumentoById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <TipoModeloDocumentoWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedTipoModeloDocumento={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface TipoModeloDocumentoWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const TipoModeloDocumentoWindowId: React.FC<TipoModeloDocumentoWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const tipomodelodocumentoService = useMemo(() => {
+        return new TipoModeloDocumentoService(
+            new TipoModeloDocumentoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ITipoModeloDocumento | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(TipoModeloDocumentoEmpty() as ITipoModeloDocumento);
+                return;
+            }
+            if (id) {
+                 const response = await tipomodelodocumentoService.fetchTipoModeloDocumentoById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <TipoModeloDocumentoWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedTipoModeloDocumento={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default TipoModeloDocumentoWindowId;

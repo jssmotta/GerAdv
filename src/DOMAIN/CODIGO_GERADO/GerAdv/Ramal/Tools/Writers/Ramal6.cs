@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IRamalWriter
 {
     Task<FRamal> WriteAsync(Models.Ramal ramal, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(RamalResponse ramal, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(RamalResponse ramal, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class RamalWriter(IFRamalFactory ramalFactory) : IRamalWriter
 {
     private readonly IFRamalFactory _ramalFactory = ramalFactory ?? throw new ArgumentNullException(nameof(ramalFactory));
-    public virtual async Task Delete(RamalResponse ramal, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(RamalResponse ramal, int operadorId, MsiSqlConnection? oCnn)
     {
         await _ramalFactory.DeleteAsync(operadorId, ramal.Id, oCnn);
     }

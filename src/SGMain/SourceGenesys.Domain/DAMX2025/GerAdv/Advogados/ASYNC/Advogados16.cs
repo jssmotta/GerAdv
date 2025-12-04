@@ -14,6 +14,14 @@ public partial class DBAdvogados
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBAdvogados
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,81 +142,87 @@ public partial class DBAdvogados
 
 #if (!NOTSTORED_Advogados)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFCargo || pFldFEMailPro || pFldFCPF || pFldFNome || pFldFRG || pFldFCasa || pFldFNomeMae || pFldFEscritorio || pFldFGUID || pFldFEstagiario || pFldFOAB || pFldFNomeCompleto || pFldFEndereco || pFldFCidade || pFldFCEP || pFldFSexo || pFldFBairro || pFldFCTPSSerie || pFldFCTPS || pFldFFone || pFldFFax || pFldFComissao || pFldFDtInicio || pFldFDtFim || pFldFDtNasc || pFldFSalario || pFldFSecretaria || pFldFTextoProcuracao || pFldFEMail || pFldFEspecializacao || pFldFPasta || pFldFObservacao || pFldFContaBancaria || pFldFParcTop || pFldFClass || pFldFTop;
+    private bool HasAnyFieldChanged() => pFldFCargo || pFldFEMailPro || pFldFCPF || pFldFNome || pFldFRG || pFldFCasa || pFldFNomeMae || pFldFEscritorio || pFldFEstagiario || pFldFOAB || pFldFNomeCompleto || pFldFEndereco || pFldFCidade || pFldFCEP || pFldFSexo || pFldFBairro || pFldFCTPSSerie || pFldFCTPS || pFldFFone || pFldFFax || pFldFComissao || pFldFDtInicio || pFldFDtFim || pFldFDtNasc || pFldFSalario || pFldFSecretaria || pFldFTextoProcuracao || pFldFEMail || pFldFEspecializacao || pFldFPasta || pFldFObservacao || pFldFContaBancaria || pFldFParcTop || pFldFClass || pFldFTop || pFldFEtiqueta || pFldFAni || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFCargo)
-            updateTool.Fields(DBAdvogadosDicInfo.Cargo, m_FCargo, ETiposCampos.FNumber);
+            updateTool.Fields(DBAdvogadosDicInfo.Cargo, FCargo, EGenericTypeFields.FNumber);
         if (pFldFEMailPro)
-            updateTool.Fields(DBAdvogadosDicInfo.EMailPro, m_FEMailPro, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.EMailPro, FEMailPro, EGenericTypeFields.FString);
         if (pFldFCPF)
-            updateTool.Fields(DBAdvogadosDicInfo.CPF, m_FCPF, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.CPF, FCPF, EGenericTypeFields.FString);
         if (pFldFNome)
-            updateTool.Fields(DBAdvogadosDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFRG)
-            updateTool.Fields(DBAdvogadosDicInfo.RG, m_FRG, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.RG, FRG, EGenericTypeFields.FString);
         if (pFldFCasa || updateTool.Insert)
-            updateTool.Fields(DBAdvogadosDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAdvogadosDicInfo.Casa, FCasa, EGenericTypeFields.FBoolean);
         if (pFldFNomeMae)
-            updateTool.Fields(DBAdvogadosDicInfo.NomeMae, m_FNomeMae, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.NomeMae, FNomeMae, EGenericTypeFields.FString);
         if (pFldFEscritorio)
-            updateTool.Fields(DBAdvogadosDicInfo.Escritorio, m_FEscritorio, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBAdvogadosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Escritorio, FEscritorio, EGenericTypeFields.FNumber);
         if (pFldFEstagiario || updateTool.Insert)
-            updateTool.Fields(DBAdvogadosDicInfo.Estagiario, m_FEstagiario, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAdvogadosDicInfo.Estagiario, FEstagiario, EGenericTypeFields.FBoolean);
         if (pFldFOAB)
-            updateTool.Fields(DBAdvogadosDicInfo.OAB, m_FOAB, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.OAB, FOAB, EGenericTypeFields.FString);
         if (pFldFNomeCompleto)
-            updateTool.Fields(DBAdvogadosDicInfo.NomeCompleto, m_FNomeCompleto, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.NomeCompleto, FNomeCompleto, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            updateTool.Fields(DBAdvogadosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFCidade)
-            updateTool.Fields(DBAdvogadosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBAdvogadosDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFCEP)
-            updateTool.Fields(DBAdvogadosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFSexo || updateTool.Insert)
-            updateTool.Fields(DBAdvogadosDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAdvogadosDicInfo.Sexo, FSexo, EGenericTypeFields.FBoolean);
         if (pFldFBairro)
-            updateTool.Fields(DBAdvogadosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFCTPSSerie)
-            updateTool.Fields(DBAdvogadosDicInfo.CTPSSerie, m_FCTPSSerie, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.CTPSSerie, FCTPSSerie, EGenericTypeFields.FString);
         if (pFldFCTPS)
-            updateTool.Fields(DBAdvogadosDicInfo.CTPS, m_FCTPS, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.CTPS, FCTPS, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBAdvogadosDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            updateTool.Fields(DBAdvogadosDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFComissao)
-            updateTool.Fields(DBAdvogadosDicInfo.Comissao, m_FComissao, ETiposCampos.FNumber);
+            updateTool.Fields(DBAdvogadosDicInfo.Comissao, FComissao, EGenericTypeFields.FNumber);
         if (pFldFDtInicio)
-            updateTool.Fields(DBAdvogadosDicInfo.DtInicio, m_FDtInicio, ETiposCampos.FDate);
+            updateTool.Fields(DBAdvogadosDicInfo.DtInicio, FDtInicio, EGenericTypeFields.FDate);
         if (pFldFDtFim)
-            updateTool.Fields(DBAdvogadosDicInfo.DtFim, m_FDtFim, ETiposCampos.FDate);
+            updateTool.Fields(DBAdvogadosDicInfo.DtFim, FDtFim, EGenericTypeFields.FDate);
         if (pFldFDtNasc)
-            updateTool.Fields(DBAdvogadosDicInfo.DtNasc, m_FDtNasc, ETiposCampos.FDate);
+            updateTool.Fields(DBAdvogadosDicInfo.DtNasc, FDtNasc, EGenericTypeFields.FDate);
         if (pFldFSalario)
-            updateTool.Fields(DBAdvogadosDicInfo.Salario, m_FSalario, ETiposCampos.FDecimal);
+            updateTool.Fields(DBAdvogadosDicInfo.Salario, FSalario, EGenericTypeFields.FDecimal);
         if (pFldFSecretaria)
-            updateTool.Fields(DBAdvogadosDicInfo.Secretaria, m_FSecretaria, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Secretaria, FSecretaria, EGenericTypeFields.FString);
         if (pFldFTextoProcuracao)
-            updateTool.Fields(DBAdvogadosDicInfo.TextoProcuracao, m_FTextoProcuracao, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.TextoProcuracao, FTextoProcuracao, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBAdvogadosDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFEspecializacao)
-            updateTool.Fields(DBAdvogadosDicInfo.Especializacao, m_FEspecializacao, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Especializacao, FEspecializacao, EGenericTypeFields.FString);
         if (pFldFPasta)
-            updateTool.Fields(DBAdvogadosDicInfo.Pasta, m_FPasta, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Pasta, FPasta, EGenericTypeFields.FString);
         if (pFldFObservacao)
-            updateTool.Fields(DBAdvogadosDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFContaBancaria)
-            updateTool.Fields(DBAdvogadosDicInfo.ContaBancaria, m_FContaBancaria, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.ContaBancaria, FContaBancaria, EGenericTypeFields.FString);
         if (pFldFParcTop || updateTool.Insert)
-            updateTool.Fields(DBAdvogadosDicInfo.ParcTop, m_FParcTop, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAdvogadosDicInfo.ParcTop, FParcTop, EGenericTypeFields.FBoolean);
         if (pFldFClass)
-            updateTool.Fields(DBAdvogadosDicInfo.Class, m_FClass, ETiposCampos.FString);
+            updateTool.Fields(DBAdvogadosDicInfo.Class, FClass, EGenericTypeFields.FString);
         if (pFldFTop || updateTool.Insert)
-            updateTool.Fields(DBAdvogadosDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
+            updateTool.Fields(DBAdvogadosDicInfo.Top, FTop, EGenericTypeFields.FBoolean);
+        if (pFldFEtiqueta || updateTool.Insert)
+            updateTool.Fields(DBAdvogadosDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
+        if (pFldFAni || updateTool.Insert)
+            updateTool.Fields(DBAdvogadosDicInfo.Ani, FAni, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBAdvogadosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBAdvogadosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -220,24 +234,23 @@ public partial class DBAdvogados
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBAdvogadosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBAdvogadosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBAdvogadosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBAdvogadosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBAdvogadosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBAdvogadosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBAdvogadosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBAdvogadosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBAdvogadosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBAdvogadosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBAdvogadosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

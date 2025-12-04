@@ -74,12 +74,27 @@ public class ProResumosWriterTests
         var result = await _proresumosWriter.WriteAsync(proresumos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProResumos.Object);
+        _mockFProResumos.VerifySet(x => x.FGuid = proresumos.Guid, Times.Once);
         _mockFProResumos.VerifySet(x => x.FProcesso = proresumos.Processo, Times.Once);
-        _mockFProResumos.VerifySet(x => x.FData = proresumos.Data, Times.Once);
+        _mockFProResumos.VerifySet(x => x.FData = proresumos.Data.ToString(), Times.Once);
         _mockFProResumos.VerifySet(x => x.FResumo = proresumos.Resumo, Times.Once);
         _mockFProResumos.VerifySet(x => x.FTipoResumo = proresumos.TipoResumo, Times.Once);
-        _mockFProResumos.VerifySet(x => x.FGUID = proresumos.GUID, Times.Once);
         _mockFProResumos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var proresumos = CreateValidProResumosModel();
+        proresumos.Data = null;
+        var auditorQuem = 123;
+        _mockProResumosFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProResumos.Object);
+        _mockFProResumos.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _proresumosWriter.WriteAsync(proresumos, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProResumos.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -122,7 +137,7 @@ public class ProResumosWriterTests
         var operadorId = 456;
         _mockProResumosFactory.Setup(x => x.DeleteAsync(operadorId, proresumosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _proresumosWriter.Delete(proresumosResponse, operadorId, _mockConnection.Object);
+        await _proresumosWriter.DeleteAsync(proresumosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProResumosFactory.Verify(x => x.DeleteAsync(operadorId, proresumosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -138,7 +153,7 @@ public class ProResumosWriterTests
         var operadorId = 111;
         _mockProResumosFactory.Setup(x => x.DeleteAsync(operadorId, proresumosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _proresumosWriter.Delete(proresumosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _proresumosWriter.DeleteAsync(proresumosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -155,7 +170,7 @@ public class ProResumosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProResumosFactory.Setup(x => x.DeleteAsync(operadorId, proresumosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _proresumosWriter.Delete(proresumosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _proresumosWriter.DeleteAsync(proresumosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -185,11 +200,11 @@ public class ProResumosWriterTests
         return new Models.ProResumos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Resumo = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            TipoResumo = 1,
-            GUID = Guid.NewGuid().ToString()
+            TipoResumo = 1
         };
     }
 #endregion

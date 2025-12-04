@@ -14,6 +14,14 @@ public partial class DBGUTAtividades
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBGUTAtividades
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,29 +142,29 @@ public partial class DBGUTAtividades
 
 #if (!NOTSTORED_GUTAtividades)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome || pFldFObservacao || pFldFGUTGrupo || pFldFGUTPeriodicidade || pFldFOperador || pFldFGUID || pFldFConcluido || pFldFDataConcluido || pFldFDiasParaIniciar || pFldFMinutosParaRealizar;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFObservacao || pFldFGUTGrupo || pFldFGUTPeriodicidade || pFldFOperador || pFldFConcluido || pFldFDataConcluido || pFldFDiasParaIniciar || pFldFMinutosParaRealizar || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBGUTAtividadesDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBGUTAtividadesDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFObservacao)
-            updateTool.Fields(DBGUTAtividadesDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            updateTool.Fields(DBGUTAtividadesDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFGUTGrupo)
-            updateTool.Fields(DBGUTAtividadesDicInfo.GUTGrupo, m_FGUTGrupo, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesDicInfo.GUTGrupo, FGUTGrupo, EGenericTypeFields.FNumber);
         if (pFldFGUTPeriodicidade)
-            updateTool.Fields(DBGUTAtividadesDicInfo.GUTPeriodicidade, m_FGUTPeriodicidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesDicInfo.GUTPeriodicidade, FGUTPeriodicidade, EGenericTypeFields.FNumber);
         if (pFldFOperador)
-            updateTool.Fields(DBGUTAtividadesDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBGUTAtividadesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBGUTAtividadesDicInfo.Operador, FOperador, EGenericTypeFields.FNumber);
         if (pFldFConcluido || updateTool.Insert)
-            updateTool.Fields(DBGUTAtividadesDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
+            updateTool.Fields(DBGUTAtividadesDicInfo.Concluido, FConcluido, EGenericTypeFields.FBoolean);
         if (pFldFDataConcluido)
-            updateTool.Fields(DBGUTAtividadesDicInfo.DataConcluido, m_FDataConcluido, ETiposCampos.FDate);
+            updateTool.Fields(DBGUTAtividadesDicInfo.DataConcluido, FDataConcluido, EGenericTypeFields.FDate);
         if (pFldFDiasParaIniciar)
-            updateTool.Fields(DBGUTAtividadesDicInfo.DiasParaIniciar, m_FDiasParaIniciar, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesDicInfo.DiasParaIniciar, FDiasParaIniciar, EGenericTypeFields.FNumber);
         if (pFldFMinutosParaRealizar)
-            updateTool.Fields(DBGUTAtividadesDicInfo.MinutosParaRealizar, m_FMinutosParaRealizar, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesDicInfo.MinutosParaRealizar, FMinutosParaRealizar, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBGUTAtividadesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -168,24 +176,23 @@ public partial class DBGUTAtividades
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBGUTAtividadesDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBGUTAtividadesDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBGUTAtividadesDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBGUTAtividadesDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTAtividadesDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBGUTAtividadesDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBGUTAtividadesDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBGUTAtividadesDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBGUTAtividadesDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBGUTAtividadesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

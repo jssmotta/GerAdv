@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IProDespesasFormProps } from '../../Interfaces/interface.ProDespesas';
 import { ProDespesasService } from '../../Services/ProDespesas.service';
 import { useProDespesasForm, useValidationsProDespesas } from '../../Hooks/hookProDespesas';
-import { ProDespesasEmpty } from '../../../Models/ProDespesas';
+import { ProDespesasEmpty } from '../../../Models/ProDespesas'; 
 import { ProDespesasForm } from '../Forms/ProDespesas';
+ 
 
 const ProDespesasInc: React.FC<IProDespesasFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const prodespesasService = new ProDespesasService(
-  new ProDespesasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadProDespesas } = useProDespesasForm(
-ProDespesasEmpty(), 
-prodespesasService
-);
-useEffect(() => {
-  loadProDespesas(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedProDespesas = await prodespesasService.saveProDespesas(data);
-    if (savedProDespesas.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedProDespesas);
+  const prodespesasService = new ProDespesasService(
+    new ProDespesasApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadProDespesas } = useProDespesasForm(
+    ProDespesasEmpty(),
+    prodespesasService
+  );
+
+  useEffect(() => {
+    loadProDespesas(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedProDespesas = await prodespesasService.saveProDespesas(data);
+
+      if (savedProDespesas.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedProDespesas);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadProDespesas(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <ProDespesasForm
+        prodespesasData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadProDespesas(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<ProDespesasForm
-prodespesasData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default ProDespesasInc;

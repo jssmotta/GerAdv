@@ -20,7 +20,6 @@ public partial class PrepostosWhere(IFPrepostosFactory prepostosFactory) : IPrep
         var prepostos = new PrepostosResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Nome = dbRec.FNome ?? string.Empty,
             Funcao = dbRec.FFuncao,
             Setor = dbRec.FSetor,
@@ -46,28 +45,32 @@ public partial class PrepostosWhere(IFPrepostosFactory prepostosFactory) : IPrep
             Pai = dbRec.FPai ?? string.Empty,
             Mae = dbRec.FMae ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc.ToString(), out DateTime XDtNasc))
         {
-            prepostos.DtNasc = dbRec.FDtNasc;
+            prepostos.DtNasc = XDtNasc.ToString("dd/MM/yyyy");
             prepostos.DtNasc_date = XDtNasc;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Ini, out DateTime XPeriodo_Ini))
+        if (DateTime.TryParse(dbRec.FPeriodo_Ini.ToString(), out DateTime XPeriodo_Ini))
         {
-            prepostos.Periodo_Ini = dbRec.FPeriodo_Ini;
+            prepostos.Periodo_Ini = XPeriodo_Ini.ToString("dd/MM/yyyy");
             prepostos.Periodo_Ini_date = XPeriodo_Ini;
         }
 
-        if (DateTime.TryParse(dbRec.FPeriodo_Fim, out DateTime XPeriodo_Fim))
+        if (DateTime.TryParse(dbRec.FPeriodo_Fim.ToString(), out DateTime XPeriodo_Fim))
         {
-            prepostos.Periodo_Fim = dbRec.FPeriodo_Fim;
+            prepostos.Periodo_Fim = XPeriodo_Fim.ToString("dd/MM/yyyy");
             prepostos.Periodo_Fim_date = XPeriodo_Fim;
         }
 
-        if (DateTime.TryParse(dbRec.FCTPSDtEmissao, out DateTime XCTPSDtEmissao))
+        if (DateTime.TryParse(dbRec.FCTPSDtEmissao.ToString(), out DateTime XCTPSDtEmissao))
         {
-            prepostos.CTPSDtEmissao = dbRec.FCTPSDtEmissao;
+            prepostos.CTPSDtEmissao = XCTPSDtEmissao.ToString("dd/MM/yyyy");
             prepostos.CTPSDtEmissao_date = XCTPSDtEmissao;
         }
 

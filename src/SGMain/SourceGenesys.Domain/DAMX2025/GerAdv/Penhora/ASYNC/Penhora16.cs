@@ -14,6 +14,14 @@ public partial class DBPenhora
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBPenhora
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,23 +142,23 @@ public partial class DBPenhora
 
 #if (!NOTSTORED_Penhora)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFNome || pFldFDescricao || pFldFDataPenhora || pFldFPenhoraStatus || pFldFGUID || pFldFMaster;
+    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFNome || pFldFDescricao || pFldFDataPenhora || pFldFPenhoraStatus || pFldFMaster || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBPenhoraDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBPenhoraDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBPenhoraDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBPenhoraDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFDescricao)
-            updateTool.Fields(DBPenhoraDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBPenhoraDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFDataPenhora)
-            updateTool.Fields(DBPenhoraDicInfo.DataPenhora, m_FDataPenhora, ETiposCampos.FDate);
+            updateTool.Fields(DBPenhoraDicInfo.DataPenhora, FDataPenhora, EGenericTypeFields.FDate);
         if (pFldFPenhoraStatus)
-            updateTool.Fields(DBPenhoraDicInfo.PenhoraStatus, m_FPenhoraStatus, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBPenhoraDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBPenhoraDicInfo.PenhoraStatus, FPenhoraStatus, EGenericTypeFields.FNumber);
         if (pFldFMaster)
-            updateTool.Fields(DBPenhoraDicInfo.Master, m_FMaster, ETiposCampos.FNumber);
+            updateTool.Fields(DBPenhoraDicInfo.Master, FMaster, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBPenhoraDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -162,24 +170,23 @@ public partial class DBPenhora
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBPenhoraDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBPenhoraDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBPenhoraDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBPenhoraDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBPenhoraDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBPenhoraDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBPenhoraDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBPenhoraDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBPenhoraDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBPenhoraDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBPenhoraDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

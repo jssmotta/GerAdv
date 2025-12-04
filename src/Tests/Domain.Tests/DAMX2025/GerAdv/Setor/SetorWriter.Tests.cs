@@ -74,8 +74,8 @@ public class SetorWriterTests
         var result = await _setorWriter.WriteAsync(setor, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFSetor.Object);
+        _mockFSetor.VerifySet(x => x.FGuid = setor.Guid, Times.Once);
         _mockFSetor.VerifySet(x => x.FDescricao = setor.Descricao, Times.Once);
-        _mockFSetor.VerifySet(x => x.FGUID = setor.GUID, Times.Once);
         _mockFSetor.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class SetorWriterTests
         var operadorId = 456;
         _mockSetorFactory.Setup(x => x.DeleteAsync(operadorId, setorResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _setorWriter.Delete(setorResponse, operadorId, _mockConnection.Object);
+        await _setorWriter.DeleteAsync(setorResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockSetorFactory.Verify(x => x.DeleteAsync(operadorId, setorResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class SetorWriterTests
         var operadorId = 111;
         _mockSetorFactory.Setup(x => x.DeleteAsync(operadorId, setorResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _setorWriter.Delete(setorResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _setorWriter.DeleteAsync(setorResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class SetorWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockSetorFactory.Setup(x => x.DeleteAsync(operadorId, setorResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _setorWriter.Delete(setorResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _setorWriter.DeleteAsync(setorResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class SetorWriterTests
         return new Models.Setor
         {
             Id = 0,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

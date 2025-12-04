@@ -54,8 +54,64 @@ public partial class DBProcessOutputEngine
         // Checkpoint Carregar 
         try
         {
+            FCampo = getValue(DBProcessOutputEngineDicInfo.Campo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FDatabase = getValue(DBProcessOutputEngineDicInfo.Database)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBProcessOutputEngineDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBProcessOutputEngineDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOutput = getValue(DBProcessOutputEngineDicInfo.Output)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTabela = getValue(DBProcessOutputEngineDicInfo.Tabela)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FValor = getValue(DBProcessOutputEngineDicInfo.Valor)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProcessOutputEngineDicInfo.Administrador)))
-                m_FAdministrador = Convert.ToBoolean(getValue(DBProcessOutputEngineDicInfo.Administrador));
+                FAdministrador = Convert.ToBoolean(getValue(DBProcessOutputEngineDicInfo.Administrador));
         }
         catch
         {
@@ -64,7 +120,7 @@ public partial class DBProcessOutputEngine
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessOutputEngineDicInfo.DisabledItem)))
-                m_FDisabledItem = Convert.ToBoolean(getValue(DBProcessOutputEngineDicInfo.DisabledItem));
+                FDisabledItem = Convert.ToBoolean(getValue(DBProcessOutputEngineDicInfo.DisabledItem));
         }
         catch
         {
@@ -73,7 +129,7 @@ public partial class DBProcessOutputEngine
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessOutputEngineDicInfo.IDModulo)))
-                m_FIDModulo = Convert.ToInt32(getValue(DBProcessOutputEngineDicInfo.IDModulo));
+                FIDModulo = Convert.ToInt32(getValue(DBProcessOutputEngineDicInfo.IDModulo));
         }
         catch
         {
@@ -82,7 +138,7 @@ public partial class DBProcessOutputEngine
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessOutputEngineDicInfo.IsOnlyProcesso)))
-                m_FIsOnlyProcesso = Convert.ToBoolean(getValue(DBProcessOutputEngineDicInfo.IsOnlyProcesso));
+                FIsOnlyProcesso = Convert.ToBoolean(getValue(DBProcessOutputEngineDicInfo.IsOnlyProcesso));
         }
         catch
         {
@@ -91,7 +147,7 @@ public partial class DBProcessOutputEngine
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessOutputEngineDicInfo.MyID)))
-                m_FMyID = Convert.ToInt32(getValue(DBProcessOutputEngineDicInfo.MyID));
+                FMyID = Convert.ToInt32(getValue(DBProcessOutputEngineDicInfo.MyID));
         }
         catch
         {
@@ -100,70 +156,14 @@ public partial class DBProcessOutputEngine
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProcessOutputEngineDicInfo.OutputSource)))
-                m_FOutputSource = Convert.ToInt32(getValue(DBProcessOutputEngineDicInfo.OutputSource));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCampo = getValue(DBProcessOutputEngineDicInfo.Campo)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDatabase = getValue(DBProcessOutputEngineDicInfo.Database)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProcessOutputEngineDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBProcessOutputEngineDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOutput = getValue(DBProcessOutputEngineDicInfo.Output)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTabela = getValue(DBProcessOutputEngineDicInfo.Tabela)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FValor = getValue(DBProcessOutputEngineDicInfo.Valor)?.ToString() ?? string.Empty;
+                FOutputSource = Convert.ToInt32(getValue(DBProcessOutputEngineDicInfo.OutputSource));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -187,7 +187,7 @@ public partial class DBProcessOutputEngine
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

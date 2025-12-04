@@ -28,8 +28,6 @@ public class TiposAcaoValidation : ITiposAcaoValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBTiposAcaoDicInfo.TacNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBTiposAcaoDicInfo.TacNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTiposAcaoDicInfo.TacGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTiposAcaoDicInfo.TacGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class TiposAcaoValidation : ITiposAcaoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

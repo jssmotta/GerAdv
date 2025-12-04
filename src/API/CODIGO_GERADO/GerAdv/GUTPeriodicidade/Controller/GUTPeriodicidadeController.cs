@@ -14,6 +14,7 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     private readonly IGUTPeriodicidadeService _gutperiodicidadeService = gutperiodicidadeService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidade filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterGUTPeriodicidade filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("GUTPeriodicidade: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _gutperiodicidadeService.Filter(max, filtro, uri);
+        //_logger.Info("GUTPeriodicidade: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _gutperiodicidadeService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterGUTPeriodicidadeWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("GUTPeriodicidade: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _gutperiodicidadeService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("GUTPeriodicidade: GetById called with id = {0}, {1}", id, uri);
         var result = await _gutperiodicidadeService.GetById(id, uri, token);
         if (result == null)
@@ -51,7 +74,42 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
         return Ok(result);
     }
 
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(AuditorResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            //_logger.Info("GUTPeriodicidade: GetAuditor called with id = {0}, {1}", id, uri);
+            var result = await _gutperiodicidadeService.GetAuditor(id, uri, token);
+            if (result == null)
+            {
+                _logger.Warn("GetAuditor: No GUTPeriodicidade found with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GUTPeriodicidade: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            return StatusCode(500, new Error500 { success = false, data = "", message = "Erro 500 Auditor" });
+        }
+    }
+
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterGUTPeriodicidade? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +123,8 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(GUTPeriodicidadeResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(GUTPeriodicidadeResponse), StatusCodes.Status201Created)]
@@ -107,6 +165,11 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("GUTPeriodicidade: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _gutperiodicidadeService.Delete(id, uri);
@@ -126,6 +189,7 @@ public partial class GUTPeriodicidadeController(IGUTPeriodicidadeService gutperi
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.GUTPeriodicidade regGUTPeriodicidade, [FromRoute, Required] string uri)
     {

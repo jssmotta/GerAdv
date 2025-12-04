@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IObjetosService
 {
+    Task<Filters.FilterObjetos> FilterVoice([FromBody] Filters.FilterObjetos filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ObjetosResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterObjetos filter, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> AddAndUpdate(Models.Objetos? regObjetos, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> Validation(Models.Objetos? regObjetos, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<ObjetosResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<ObjetosResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterObjetos? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

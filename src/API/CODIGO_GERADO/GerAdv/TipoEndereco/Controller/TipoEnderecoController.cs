@@ -14,6 +14,7 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
     private readonly ITipoEnderecoService _tipoenderecoService = tipoenderecoService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoEndereco filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoEndereco filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoEndereco: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _tipoenderecoService.Filter(max, filtro, uri);
+        //_logger.Info("TipoEndereco: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _tipoenderecoService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterTipoEnderecoWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("TipoEndereco: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _tipoenderecoService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoEndereco: GetById called with id = {0}, {1}", id, uri);
         var result = await _tipoenderecoService.GetById(id, uri, token);
         if (result == null)
@@ -51,7 +74,42 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
         return Ok(result);
     }
 
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(AuditorResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            //_logger.Info("TipoEndereco: GetAuditor called with id = {0}, {1}", id, uri);
+            var result = await _tipoenderecoService.GetAuditor(id, uri, token);
+            if (result == null)
+            {
+                _logger.Warn("GetAuditor: No TipoEndereco found with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "TipoEndereco: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            return StatusCode(500, new Error500 { success = false, data = "", message = "Erro 500 Auditor" });
+        }
+    }
+
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoEndereco? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +123,8 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(TipoEnderecoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(TipoEnderecoResponse), StatusCodes.Status201Created)]
@@ -107,6 +165,11 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("TipoEndereco: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipoenderecoService.Delete(id, uri);
@@ -126,6 +189,7 @@ public partial class TipoEnderecoController(ITipoEnderecoService tipoenderecoSer
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoEndereco regTipoEndereco, [FromRoute, Required] string uri)
     {

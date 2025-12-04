@@ -4,15 +4,16 @@
 namespace MenphisSI.GerAdv.Interface.Readers;
 public partial interface ITipoModeloDocumentoReader
 {
-    Task<TipoModeloDocumentoResponse?> Read(int id, MsiSqlConnection? oCnn);
-    Task<Models.TipoModeloDocumento?> ReadM(int id, MsiSqlConnection? oCnn);
+    Task<TipoModeloDocumentoResponse?> ReadAsync(int id, MsiSqlConnection? oCnn);
+    Task<Models.TipoModeloDocumento?> ReadMAsync(int id, MsiSqlConnection? oCnn);
     TipoModeloDocumentoResponse? Read(FTipoModeloDocumento dbRec, MsiSqlConnection? oCnn);
     TipoModeloDocumentoResponse? Read(string where, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoModeloDocumentoResponse? Read(FTipoModeloDocumento dbRec);
-    Task<string> ReadStringAuditor(int id, string uri, MsiSqlConnection? oCnn);
-    Task<string> ReadStringAuditor(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<AuditorResponse?> ReadAuditorAsync(int id, string uri, MsiSqlConnection? oCnn);
+    Task<string> ReadStringAuditorAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, MsiSqlConnection? oCnn);
     TipoModeloDocumentoResponseAll? ReadAll(FTipoModeloDocumento dbRec, IDataRecord dr);
     TipoModeloDocumentoResponseAll? ReadAll(SG.GerAdv.DBTipoModeloDocumento dbRec, DataRow dr);
-    Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
-    Task<IEnumerable<TipoModeloDocumentoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
+    Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order);
+    Task<IEnumerable<TipoModeloDocumentoResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken);
 }

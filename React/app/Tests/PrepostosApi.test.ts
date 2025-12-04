@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { PrepostosApiError } from '../GerAdv_TS/Prepostos/Apis/ApiPrepostos';
+import { PrepostosApiError } from '@/app/GerAdv_TS/Prepostos/Apis/ApiPrepostos';
 import { PrepostosApi } from '@/app/GerAdv_TS/Prepostos/Apis/ApiPrepostos';
-import { FilterPrepostos } from '../GerAdv_TS/Prepostos/Filters/Prepostos';
-import { IPrepostos } from '../GerAdv_TS/Prepostos/Interfaces/interface.Prepostos';
-import { PrepostosTestEmpty } from '../GerAdv_TS/Models/Prepostos';
+import { FilterPrepostos } from '@/app/GerAdv_TS/Prepostos/Filters/Prepostos';
+import { IPrepostos } from '@/app/GerAdv_TS/Prepostos/Interfaces/interface.Prepostos';
+import { PrepostosTestEmpty } from '@/app/GerAdv_TS/Models/Prepostos';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('PrepostosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterPrepostos = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,36 @@ describe('PrepostosApi', () => {
   describe('addAndUpdate', () => {
     const mockPrepostos: IPrepostos = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+funcao: 0,
+setor: 0,
+dtnasc: '24/04/1975',
+qualificacao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+sexo: false,
+idade: 0,
+cpf: '544.506.718-13',
+rg: '12.345.678-9',
+periodo_ini: '24/04/1975',
+periodo_fim: '24/04/1975',
+registro: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+ctpsnumero: 'AAAAAAAAAAAAA',
+ctpsserie: 'AAAAAAAA',
+ctpsdtemissao: '24/04/1975',
+pis: 'AAAAAAAAAAAAAAAAAA',
+salario: 1m,
+liberaagenda: true,
+observacao: 'Observação teste',
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+cidade: 0,
+cep: '01234-567',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+email: 'test@email.com',
+pai: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+mae: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+class: 'A'
     };
 
     it('should add new prepostos successfully', async () => {
@@ -487,7 +503,7 @@ describe('PrepostosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterPrepostos = { funcionario: 1 };
+      const mockFilter: FilterPrepostos = { : 1 };
       
       const result = prepostosApi.useFilter(mockFilter);
       

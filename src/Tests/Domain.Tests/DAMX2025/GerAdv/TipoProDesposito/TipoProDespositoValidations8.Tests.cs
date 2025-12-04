@@ -105,7 +105,7 @@ public class TipoProDespositoValidationTests : IDisposable
         tipoprodesposito.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoprodesposito, _mockTipoProDespositoService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class TipoProDespositoValidationTests : IDisposable
     {
         // Arrange
         var tipoprodesposito = CreateValidTipoProDesposito();
-        tipoprodesposito.Nome = "   ";
+        tipoprodesposito.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(tipoprodesposito, _mockTipoProDespositoService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

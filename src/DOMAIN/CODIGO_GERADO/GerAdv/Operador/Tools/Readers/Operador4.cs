@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperadorReader
+public partial class OperadorReader(IFOperadorFactory operadorFactory, IConnectionService connection) : IOperadorReader
 {
     private readonly IFOperadorFactory _operadorFactory = operadorFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<OperadorResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBOperador.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<OperadorResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("operCodigo, operNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<OperadorResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBOperador.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<OperadorResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<OperadorResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
         return result;
     }
 
-    public async Task<OperadorResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<OperadorResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadorFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Operador?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Operador?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _operadorFactory.CreateFromIdAsync(id, oCnn);
         var operador = new Models.Operador
@@ -74,7 +80,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -82,29 +87,30 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
+        if (DateTime.TryParse(dbRec.FUltimoLogoff?.ToString(), out DateTime XUltimoLogoff14))
         {
-            operador.UltimoLogoff = dbRec.FUltimoLogoff;
-            operador.UltimoLogoff_date = XUltimoLogoff;
+            operador.UltimoLogoff = XUltimoLogoff14.ToString("dd/MM/yyyy");
+            operador.UltimoLogoff_date = XUltimoLogoff14;
         }
 
-        if (DateTime.TryParse(dbRec.FDataLimiteReset, out DateTime XDataLimiteReset))
+        if (DateTime.TryParse(dbRec.FDataLimiteReset?.ToString(), out DateTime XDataLimiteReset28))
         {
-            operador.DataLimiteReset = dbRec.FDataLimiteReset;
-            operador.DataLimiteReset_date = XDataLimiteReset;
+            operador.DataLimiteReset = XDataLimiteReset28.ToString("dd/MM/yyyy");
+            operador.DataLimiteReset_date = XDataLimiteReset28;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge?.ToString(), out DateTime XSuporteMaxAge30))
         {
-            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
-            operador.SuporteMaxAge_date = XSuporteMaxAge;
+            operador.SuporteMaxAge = XSuporteMaxAge30.ToString("dd/MM/yyyy");
+            operador.SuporteMaxAge_date = XSuporteMaxAge30;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out DateTime XSuporteUltimoAcesso))
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso?.ToString(), out DateTime XSuporteUltimoAcesso32))
         {
-            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso;
+            operador.SuporteUltimoAcesso = XSuporteUltimoAcesso32.ToString("dd/MM/yyyy");
+            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso32;
         }
 
         return operador;
@@ -151,7 +157,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -159,34 +164,30 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
+        if (DateTime.TryParse(dbRec.FUltimoLogoff?.ToString(), out DateTime XUltimoLogoff14))
         {
-            operador.UltimoLogoff = dbRec.FUltimoLogoff;
-            operador.UltimoLogoff_date = XUltimoLogoff;
+            operador.UltimoLogoff = XUltimoLogoff14.ToString("dd/MM/yyyy");
+            operador.UltimoLogoff_date = XUltimoLogoff14;
         }
 
-        if (DateTime.TryParse(dbRec.FDataLimiteReset, out DateTime XDataLimiteReset))
+        if (DateTime.TryParse(dbRec.FDataLimiteReset?.ToString(), out DateTime XDataLimiteReset28))
         {
-            operador.DataLimiteReset = dbRec.FDataLimiteReset;
-            operador.DataLimiteReset_date = XDataLimiteReset;
+            operador.DataLimiteReset = XDataLimiteReset28.ToString("dd/MM/yyyy");
+            operador.DataLimiteReset_date = XDataLimiteReset28;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge?.ToString(), out DateTime XSuporteMaxAge30))
         {
-            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
-            operador.SuporteMaxAge_date = XSuporteMaxAge;
+            operador.SuporteMaxAge = XSuporteMaxAge30.ToString("dd/MM/yyyy");
+            operador.SuporteMaxAge_date = XSuporteMaxAge30;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out DateTime XSuporteUltimoAcesso))
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso?.ToString(), out DateTime XSuporteUltimoAcesso32))
         {
-            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso;
-        }
-
-        if (dbRec.FSenha256.Equals("111111".GetHashCode2()))
-        {
-            operador.StatusMessage = "Senha Resetada";
+            operador.SuporteUltimoAcesso = XSuporteUltimoAcesso32.ToString("dd/MM/yyyy");
+            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso32;
         }
 
         return operador;
@@ -222,7 +223,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -230,34 +230,30 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
+        if (DateTime.TryParse(dbRec.FUltimoLogoff?.ToString(), out DateTime XUltimoLogoff14))
         {
-            operador.UltimoLogoff = dbRec.FUltimoLogoff;
-            operador.UltimoLogoff_date = XUltimoLogoff;
+            operador.UltimoLogoff = XUltimoLogoff14.ToString("dd/MM/yyyy");
+            operador.UltimoLogoff_date = XUltimoLogoff14;
         }
 
-        if (DateTime.TryParse(dbRec.FDataLimiteReset, out DateTime XDataLimiteReset))
+        if (DateTime.TryParse(dbRec.FDataLimiteReset?.ToString(), out DateTime XDataLimiteReset28))
         {
-            operador.DataLimiteReset = dbRec.FDataLimiteReset;
-            operador.DataLimiteReset_date = XDataLimiteReset;
+            operador.DataLimiteReset = XDataLimiteReset28.ToString("dd/MM/yyyy");
+            operador.DataLimiteReset_date = XDataLimiteReset28;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge?.ToString(), out DateTime XSuporteMaxAge30))
         {
-            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
-            operador.SuporteMaxAge_date = XSuporteMaxAge;
+            operador.SuporteMaxAge = XSuporteMaxAge30.ToString("dd/MM/yyyy");
+            operador.SuporteMaxAge_date = XSuporteMaxAge30;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out DateTime XSuporteUltimoAcesso))
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso?.ToString(), out DateTime XSuporteUltimoAcesso32))
         {
-            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso;
-        }
-
-        if (dbRec.FSenha256.Equals("111111".GetHashCode2()))
-        {
-            operador.StatusMessage = "Senha Resetada";
+            operador.SuporteUltimoAcesso = XSuporteUltimoAcesso32.ToString("dd/MM/yyyy");
+            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso32;
         }
 
         return operador;
@@ -293,7 +289,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -301,29 +296,30 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
+        if (DateTime.TryParse(dbRec.FUltimoLogoff?.ToString(), out DateTime XUltimoLogoff14))
         {
-            operador.UltimoLogoff = dbRec.FUltimoLogoff;
-            operador.UltimoLogoff_date = XUltimoLogoff;
+            operador.UltimoLogoff = XUltimoLogoff14.ToString("dd/MM/yyyy");
+            operador.UltimoLogoff_date = XUltimoLogoff14;
         }
 
-        if (DateTime.TryParse(dbRec.FDataLimiteReset, out DateTime XDataLimiteReset))
+        if (DateTime.TryParse(dbRec.FDataLimiteReset?.ToString(), out DateTime XDataLimiteReset28))
         {
-            operador.DataLimiteReset = dbRec.FDataLimiteReset;
-            operador.DataLimiteReset_date = XDataLimiteReset;
+            operador.DataLimiteReset = XDataLimiteReset28.ToString("dd/MM/yyyy");
+            operador.DataLimiteReset_date = XDataLimiteReset28;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge?.ToString(), out DateTime XSuporteMaxAge30))
         {
-            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
-            operador.SuporteMaxAge_date = XSuporteMaxAge;
+            operador.SuporteMaxAge = XSuporteMaxAge30.ToString("dd/MM/yyyy");
+            operador.SuporteMaxAge_date = XSuporteMaxAge30;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out DateTime XSuporteUltimoAcesso))
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso?.ToString(), out DateTime XSuporteUltimoAcesso32))
         {
-            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso;
+            operador.SuporteUltimoAcesso = XSuporteUltimoAcesso32.ToString("dd/MM/yyyy");
+            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso32;
         }
 
         return operador;
@@ -359,7 +355,6 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             StatusId = dbRec.FStatusId,
             StatusMessage = dbRec.FStatusMessage ?? string.Empty,
             IsFinanceiro = dbRec.FIsFinanceiro,
-            GUID = dbRec.FGUID ?? string.Empty,
             Top = dbRec.FTop,
             Sexo = dbRec.FSexo,
             Basico = dbRec.FBasico,
@@ -367,29 +362,30 @@ public partial class OperadorReader(IFOperadorFactory operadorFactory) : IOperad
             EMailConfirmado = dbRec.FEMailConfirmado,
             SuporteNomeSolicitante = dbRec.FSuporteNomeSolicitante ?? string.Empty,
             SuporteIpUltimoAcesso = dbRec.FSuporteIpUltimoAcesso ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FUltimoLogoff, out DateTime XUltimoLogoff))
+        if (DateTime.TryParse(dbRec.FUltimoLogoff?.ToString(), out DateTime XUltimoLogoff14))
         {
-            operador.UltimoLogoff = dbRec.FUltimoLogoff;
-            operador.UltimoLogoff_date = XUltimoLogoff;
+            operador.UltimoLogoff = XUltimoLogoff14.ToString("dd/MM/yyyy");
+            operador.UltimoLogoff_date = XUltimoLogoff14;
         }
 
-        if (DateTime.TryParse(dbRec.FDataLimiteReset, out DateTime XDataLimiteReset))
+        if (DateTime.TryParse(dbRec.FDataLimiteReset?.ToString(), out DateTime XDataLimiteReset28))
         {
-            operador.DataLimiteReset = dbRec.FDataLimiteReset;
-            operador.DataLimiteReset_date = XDataLimiteReset;
+            operador.DataLimiteReset = XDataLimiteReset28.ToString("dd/MM/yyyy");
+            operador.DataLimiteReset_date = XDataLimiteReset28;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteMaxAge, out DateTime XSuporteMaxAge))
+        if (DateTime.TryParse(dbRec.FSuporteMaxAge?.ToString(), out DateTime XSuporteMaxAge30))
         {
-            operador.SuporteMaxAge = dbRec.FSuporteMaxAge;
-            operador.SuporteMaxAge_date = XSuporteMaxAge;
+            operador.SuporteMaxAge = XSuporteMaxAge30.ToString("dd/MM/yyyy");
+            operador.SuporteMaxAge_date = XSuporteMaxAge30;
         }
 
-        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso, out DateTime XSuporteUltimoAcesso))
+        if (DateTime.TryParse(dbRec.FSuporteUltimoAcesso?.ToString(), out DateTime XSuporteUltimoAcesso32))
         {
-            operador.SuporteUltimoAcesso = dbRec.FSuporteUltimoAcesso;
-            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso;
+            operador.SuporteUltimoAcesso = XSuporteUltimoAcesso32.ToString("dd/MM/yyyy");
+            operador.SuporteUltimoAcesso_date = XSuporteUltimoAcesso32;
         }
 
         return operador;

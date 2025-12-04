@@ -28,8 +28,6 @@ public class CargosEscValidation : ICargosEscValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBCargosEscDicInfo.CgeNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBCargosEscDicInfo.CgeNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBCargosEscDicInfo.CgeGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBCargosEscDicInfo.CgeGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class CargosEscValidation : ICargosEscValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

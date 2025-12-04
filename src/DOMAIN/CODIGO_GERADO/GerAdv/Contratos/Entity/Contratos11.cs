@@ -23,12 +23,6 @@ public partial class FContratosFactory : IFContratosFactory, IDisposable
         return FContratos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FContratos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FContratos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FContratos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FContratosFactory : IFContratosFactory, IDisposable
         return FContratos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FContratos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FContratos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FContratosFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

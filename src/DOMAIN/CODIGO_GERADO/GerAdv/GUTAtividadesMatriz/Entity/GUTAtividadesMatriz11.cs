@@ -23,12 +23,6 @@ public partial class FGUTAtividadesMatrizFactory : IFGUTAtividadesMatrizFactory,
         return FGUTAtividadesMatriz.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FGUTAtividadesMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FGUTAtividadesMatriz().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FGUTAtividadesMatriz> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FGUTAtividadesMatrizFactory : IFGUTAtividadesMatrizFactory,
         return FGUTAtividadesMatriz.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FGUTAtividadesMatriz> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FGUTAtividadesMatriz().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FGUTAtividadesMatrizFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

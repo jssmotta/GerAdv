@@ -54,6 +54,134 @@ public partial class DBModelosDocumentos
         // Checkpoint Carregar 
         try
         {
+            FAssinatura = getValue(DBModelosDocumentosDicInfo.Assinatura)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCSS = getValue(DBModelosDocumentosDicInfo.CSS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FExtra1 = getValue(DBModelosDocumentosDicInfo.Extra1)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FExtra2 = getValue(DBModelosDocumentosDicInfo.Extra2)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FExtra3 = getValue(DBModelosDocumentosDicInfo.Extra3)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFooter = getValue(DBModelosDocumentosDicInfo.Footer)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBModelosDocumentosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHeader = getValue(DBModelosDocumentosDicInfo.Header)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBModelosDocumentosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObjeto = getValue(DBModelosDocumentosDicInfo.Objeto)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOutorgados = getValue(DBModelosDocumentosDicInfo.Outorgados)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOutorgante = getValue(DBModelosDocumentosDicInfo.Outorgante)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPoderes = getValue(DBModelosDocumentosDicInfo.Poderes)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRemuneracao = getValue(DBModelosDocumentosDicInfo.Remuneracao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTestemunhas = getValue(DBModelosDocumentosDicInfo.Testemunhas)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTitulo = getValue(DBModelosDocumentosDicInfo.Titulo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBModelosDocumentosDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBModelosDocumentosDicInfo.DtAtu));
         }
@@ -73,7 +201,7 @@ public partial class DBModelosDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBModelosDocumentosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBModelosDocumentosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBModelosDocumentosDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +210,7 @@ public partial class DBModelosDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBModelosDocumentosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBModelosDocumentosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBModelosDocumentosDicInfo.QuemCad));
         }
         catch
         {
@@ -91,7 +219,7 @@ public partial class DBModelosDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBModelosDocumentosDicInfo.TipoModeloDocumento)))
-                m_FTipoModeloDocumento = Convert.ToInt32(getValue(DBModelosDocumentosDicInfo.TipoModeloDocumento));
+                FTipoModeloDocumento = Convert.ToInt32(getValue(DBModelosDocumentosDicInfo.TipoModeloDocumento));
         }
         catch
         {
@@ -100,142 +228,14 @@ public partial class DBModelosDocumentos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBModelosDocumentosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBModelosDocumentosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssinatura = getValue(DBModelosDocumentosDicInfo.Assinatura)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCSS = getValue(DBModelosDocumentosDicInfo.CSS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FExtra1 = getValue(DBModelosDocumentosDicInfo.Extra1)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FExtra2 = getValue(DBModelosDocumentosDicInfo.Extra2)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FExtra3 = getValue(DBModelosDocumentosDicInfo.Extra3)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFooter = getValue(DBModelosDocumentosDicInfo.Footer)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBModelosDocumentosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHeader = getValue(DBModelosDocumentosDicInfo.Header)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBModelosDocumentosDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObjeto = getValue(DBModelosDocumentosDicInfo.Objeto)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOutorgados = getValue(DBModelosDocumentosDicInfo.Outorgados)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOutorgante = getValue(DBModelosDocumentosDicInfo.Outorgante)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPoderes = getValue(DBModelosDocumentosDicInfo.Poderes)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRemuneracao = getValue(DBModelosDocumentosDicInfo.Remuneracao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTestemunhas = getValue(DBModelosDocumentosDicInfo.Testemunhas)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTitulo = getValue(DBModelosDocumentosDicInfo.Titulo)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBModelosDocumentosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -259,7 +259,7 @@ public partial class DBModelosDocumentos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

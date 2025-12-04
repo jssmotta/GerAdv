@@ -54,8 +54,48 @@ public partial class DBTribunal
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBTribunalDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBTribunalDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBTribunalDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSigla = getValue(DBTribunalDicInfo.Sigla)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FWeb = getValue(DBTribunalDicInfo.Web)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBTribunalDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBTribunalDicInfo.Area));
         }
         catch
         {
@@ -64,7 +104,7 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBTribunalDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBTribunalDicInfo.Bold));
         }
         catch
         {
@@ -91,7 +131,7 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBTribunalDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBTribunalDicInfo.Etiqueta));
         }
         catch
         {
@@ -100,7 +140,7 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.Instancia)))
-                m_FInstancia = Convert.ToInt32(getValue(DBTribunalDicInfo.Instancia));
+                FInstancia = Convert.ToInt32(getValue(DBTribunalDicInfo.Instancia));
         }
         catch
         {
@@ -109,7 +149,7 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBTribunalDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBTribunalDicInfo.Justica));
         }
         catch
         {
@@ -118,7 +158,7 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTribunalDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTribunalDicInfo.QuemAtu));
         }
         catch
         {
@@ -127,7 +167,7 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTribunalDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTribunalDicInfo.QuemCad));
         }
         catch
         {
@@ -136,54 +176,14 @@ public partial class DBTribunal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTribunalDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTribunalDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBTribunalDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTribunalDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBTribunalDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSigla = getValue(DBTribunalDicInfo.Sigla)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FWeb = getValue(DBTribunalDicInfo.Web)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTribunalDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -207,7 +207,7 @@ public partial class DBTribunal
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

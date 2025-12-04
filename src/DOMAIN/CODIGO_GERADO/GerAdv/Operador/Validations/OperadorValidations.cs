@@ -23,38 +23,46 @@ public class OperadorValidation : IOperadorValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { Usuario = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Compromisso associados a ele.");
         var diario2Exists1 = await diario2Service.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterDiario2 { Operador = id ?? default }, uri);
         if (diario2Exists1 != null && diario2Exists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Diario2 associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Diario2 associados a ele.");
         var gutatividadesExists2 = await gutatividadesService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividades { Operador = id ?? default }, uri);
         if (gutatividadesExists2 != null && gutatividadesExists2.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela G U T Atividades associados a ele.");
         var operadoremailpopupExists3 = await operadoremailpopupService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorEMailPopup { Operador = id ?? default }, uri);
         if (operadoremailpopupExists3 != null && operadoremailpopupExists3.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador E Mail Popup associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Operador E Mail Popup associados a ele.");
         var operadorgruposagendaExists4 = await operadorgruposagendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterOperadorGruposAgenda { Operador = id ?? default }, uri);
         if (operadorgruposagendaExists4 != null && operadorgruposagendaExists4.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Operador Grupos Agenda associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Operador Grupos Agenda associados a ele.");
         var pontovirtualacessosExists5 = await pontovirtualacessosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterPontoVirtualAcessos { Operador = id ?? default }, uri);
         if (pontovirtualacessosExists5 != null && pontovirtualacessosExists5.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Ponto Virtual Acessos associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Ponto Virtual Acessos associados a ele.");
         var smsaliceExists6 = await smsaliceService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterSMSAlice { Operador = id ?? default }, uri);
         if (smsaliceExists6 != null && smsaliceExists6.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela S M S Alice associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela S M S Alice associados a ele.");
         return true;
     }
 
     private bool ValidSizes(Models.Operador reg)
     {
         if (reg.Nome != null && reg.Nome.Length > DBOperadorDicInfo.OperNome.FTamanho)
-            throw new SGValidationException($"Nome deve ter no máximo {DBOperadorDicInfo.OperNome.FTamanho} caracteres.");
+            throw new SGValidationException($"nome deve ter no máximo {DBOperadorDicInfo.OperNome.FTamanho} caracteres.");
         if (reg.Nick != null && reg.Nick.Length > DBOperadorDicInfo.OperNick.FTamanho)
-            throw new SGValidationException($"Nick deve ter no máximo {DBOperadorDicInfo.OperNick.FTamanho} caracteres.");
+            throw new SGValidationException($"nick deve ter no máximo {DBOperadorDicInfo.OperNick.FTamanho} caracteres.");
+        if (reg.Ramal != null && reg.Ramal.Length > DBOperadorDicInfo.OperRamal.FTamanho)
+            throw new SGValidationException($"ramal deve ter no máximo {DBOperadorDicInfo.OperRamal.FTamanho} caracteres.");
         if (reg.MinhaDescricao != null && reg.MinhaDescricao.Length > DBOperadorDicInfo.OperMinhaDescricao.FTamanho)
-            throw new SGValidationException($"MinhaDescricao deve ter no máximo {DBOperadorDicInfo.OperMinhaDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBOperadorDicInfo.OperGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBOperadorDicInfo.OperGUID.FTamanho} caracteres.");
+            throw new SGValidationException($"minhadescricao deve ter no máximo {DBOperadorDicInfo.OperMinhaDescricao.FTamanho} caracteres.");
+        if (reg.OnlineIP != null && reg.OnlineIP.Length > DBOperadorDicInfo.OperOnlineIP.FTamanho)
+            throw new SGValidationException($"onlineip deve ter no máximo {DBOperadorDicInfo.OperOnlineIP.FTamanho} caracteres.");
+        if (reg.StatusMessage != null && reg.StatusMessage.Length > DBOperadorDicInfo.OperStatusMessage.FTamanho)
+            throw new SGValidationException($"statusmessage deve ter no máximo {DBOperadorDicInfo.OperStatusMessage.FTamanho} caracteres.");
+        if (reg.SuporteNomeSolicitante != null && reg.SuporteNomeSolicitante.Length > DBOperadorDicInfo.OperSuporteNomeSolicitante.FTamanho)
+            throw new SGValidationException($"suportenomesolicitante deve ter no máximo {DBOperadorDicInfo.OperSuporteNomeSolicitante.FTamanho} caracteres.");
+        if (reg.SuporteIpUltimoAcesso != null && reg.SuporteIpUltimoAcesso.Length > DBOperadorDicInfo.OperSuporteIpUltimoAcesso.FTamanho)
+            throw new SGValidationException($"suporteipultimoacesso deve ter no máximo {DBOperadorDicInfo.OperSuporteIpUltimoAcesso.FTamanho} caracteres.");
         return true;
     }
 
@@ -64,19 +72,48 @@ public class OperadorValidation : IOperadorValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.EMail != null && reg.EMail.Length > 0 && !reg.EMail.IsValidEmail())
-            throw new SGValidationException($"EMail em formato inválido.");
+            throw new SGValidationException($"email em formato inválido.");
         if (reg.EMailNet != null && reg.EMailNet.Length > 0 && !reg.EMailNet.IsValidEmail())
-            throw new SGValidationException($"EMailNet em formato inválido.");
+            throw new SGValidationException($"emailnet em formato inválido.");
+        if (!string.IsNullOrWhiteSpace(reg.UltimoLogoff))
+        {
+            if (DateTime.TryParse(reg.UltimoLogoff, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("operUltimoLogoff não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(reg.DataLimiteReset))
         {
             if (DateTime.TryParse(reg.DataLimiteReset, out DateTime dataAntiga))
             {
                 if (dataAntiga < new DateTime(1900, 1, 1))
-                    throw new SGValidationException("DataLimiteReset não pode ser anterior a 01/01/1900.");
+                    throw new SGValidationException("operDataLimiteReset não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.SuporteMaxAge))
+        {
+            if (DateTime.TryParse(reg.SuporteMaxAge, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("operSuporteMaxAge não pode ser anterior a 01/01/1900.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(reg.SuporteUltimoAcesso))
+        {
+            if (DateTime.TryParse(reg.SuporteUltimoAcesso, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("operSuporteUltimoAcesso não pode ser anterior a 01/01/1900.");
             }
         }
 

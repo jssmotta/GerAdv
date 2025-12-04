@@ -35,11 +35,24 @@ public class DBProcessosObsReportTests : IDisposable
         dt.Columns.Add("prrQuemAtu", typeof(int));
         dt.Columns.Add("prrDtAtu", typeof(DateTime));
         dt.Columns.Add("prrVisto", typeof(bool));
-        dt.Columns.Add("prrData", typeof(string));
+        dt.Columns.Add("prrData", typeof(DateTime));
         dt.Columns.Add("prrProcesso", typeof(int));
         dt.Columns.Add("prrObservacao", typeof(string));
         dt.Columns.Add("prrHistorico", typeof(int));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["prrCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProcessosObsReport(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +73,7 @@ public class DBProcessosObsReportTests : IDisposable
     {
         var instance = new DBProcessosObsReport();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProcessosObsReport", instance.ITabelaName());
+        Assert.Equal("ProcessosObsReport", instance.ITableName());
         Assert.Equal("prr", instance.Prefixo);
     }
 
@@ -78,29 +91,16 @@ public class DBProcessosObsReportTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["prrCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProcessosObsReport(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProcessosObsReport", cadastro.ITabelaName());
-        Assert.Equal("prrCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("prrData", cadastro.ICampoNome());
-        Assert.Equal("prr", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProcessosObsReport", cadastro.ITableName());
+        Assert.Equal("prrCodigo", cadastro.IFieldId());
+        Assert.Equal("prrData", cadastro.IFieldNameDescription());
+        Assert.Equal("prr", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,12 +160,29 @@ public class DBProcessosObsReportTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBProcessosObsReport();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(1)]

@@ -10,65 +10,72 @@ import { IRito } from '../../Interfaces/interface.Rito';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { RitoEmpty } from '@/app/GerAdv_TS/Models/Rito';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface RitoWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedRito?: IRito;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedRito?: IRito;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const RitoWindow: React.FC<RitoWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedRito, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedRito,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Rito'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedRito?.id ?? 0).toString()}
->
-<RitoInc
-id={selectedRito?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Rito'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedRito?.id ?? 0).toString()}
+            >
+                <RitoInc
+                    id={selectedRito?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowRito: React.FC<RitoWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<RitoWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedRito={RitoEmpty()}>
-</RitoWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <RitoWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedRito={RitoEmpty()}>
+        </RitoWindow>
+    )
 };
+
 export default RitoWindow;

@@ -31,10 +31,23 @@ public class DBPontoVirtualAcessosTests : IDisposable
         // Campos obrigatórios Source Genesys
         dt.Columns.Add("pvaCodigo", typeof(int));
         dt.Columns.Add("pvaOperador", typeof(int));
-        dt.Columns.Add("pvaDataHora", typeof(string));
+        dt.Columns.Add("pvaDataHora", typeof(DateTime));
         dt.Columns.Add("pvaTipo", typeof(string));
         dt.Columns.Add("pvaOrigem", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["pvaCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBPontoVirtualAcessos(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -55,7 +68,7 @@ public class DBPontoVirtualAcessosTests : IDisposable
     {
         var instance = new DBPontoVirtualAcessos();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("PontoVirtualAcessos", instance.ITabelaName());
+        Assert.Equal("PontoVirtualAcessos", instance.ITableName());
         Assert.Equal("pva", instance.Prefixo);
     }
 
@@ -73,29 +86,16 @@ public class DBPontoVirtualAcessosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["pvaCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBPontoVirtualAcessos(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("PontoVirtualAcessos", cadastro.ITabelaName());
-        Assert.Equal("pvaCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("", cadastro.ICampoNome());
-        Assert.Equal("pva", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("PontoVirtualAcessos", cadastro.ITableName());
+        Assert.Equal("pvaCodigo", cadastro.IFieldId());
+        Assert.Equal("", cadastro.IFieldNameDescription());
+        Assert.Equal("pva", cadastro.IPrefix());
     }
 
 #endregion
@@ -155,9 +155,9 @@ public class DBPontoVirtualAcessosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -178,6 +178,23 @@ public class DBPontoVirtualAcessosTests : IDisposable
     {
         var instance = new DBPontoVirtualAcessos();
         Assert.Equal(0, instance.FOperador);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void DataHora_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FDataHora = dateString;
+        Assert.Equal(dateString, _instance.FDataHora);
+    }
+
+    [Fact]
+    public void DataHora_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBPontoVirtualAcessos();
+        Assert.Equal(string.Empty, instance.FDataHora);
     }
 
     [Theory]

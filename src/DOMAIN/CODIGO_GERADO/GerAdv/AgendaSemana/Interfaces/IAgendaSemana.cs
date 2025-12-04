@@ -3,10 +3,12 @@
 // This file is part of the Source Genesys project                     
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 
+// TRACK INTERFACE 01
 namespace MenphisSI.GerAdv.Interface;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 public partial interface IAgendaSemanaService
 {
+    Task<Filters.FilterAgendaSemana> FilterVoice([FromBody] Filters.FilterAgendaSemana filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<AgendaSemanaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaSemana filter, [FromRoute, Required] string uri = "");
 }

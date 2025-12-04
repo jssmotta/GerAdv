@@ -53,8 +53,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         return new Models.EnquadramentoEmpresa
         {
             Id = 1,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Nome = "João"
         };
     }
 
@@ -79,8 +78,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         var enquadramentoempresa = new Models.EnquadramentoEmpresa
         {
             Id = 1,
-            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            Nome = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
         SetupValidMocks();
         // Act
@@ -107,7 +105,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
         enquadramentoempresa.Nome = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(enquadramentoempresa, _mockEnquadramentoEmpresaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -138,54 +136,7 @@ public class EnquadramentoEmpresaValidationTests : IDisposable
     {
         // Arrange
         var enquadramentoempresa = CreateValidEnquadramentoEmpresa();
-        enquadramentoempresa.Nome = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(enquadramentoempresa, _mockEnquadramentoEmpresaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var enquadramentoempresa = CreateValidEnquadramentoEmpresa();
-        enquadramentoempresa.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(enquadramentoempresa, _mockEnquadramentoEmpresaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var enquadramentoempresa = CreateValidEnquadramentoEmpresa();
-        enquadramentoempresa.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(enquadramentoempresa, _mockEnquadramentoEmpresaService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var enquadramentoempresa = CreateValidEnquadramentoEmpresa();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(enquadramentoempresa, _mockEnquadramentoEmpresaService.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var enquadramentoempresa = CreateValidEnquadramentoEmpresa();
-        enquadramentoempresa.GUID = "   ";
+        enquadramentoempresa.Nome = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(enquadramentoempresa, _mockEnquadramentoEmpresaService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

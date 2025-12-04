@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITerceirosWriter
 {
     Task<FTerceiros> WriteAsync(Models.Terceiros terceiros, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TerceirosResponse terceiros, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TerceirosWriter(IFTerceirosFactory terceirosFactory) : ITerceirosWriter
 {
     private readonly IFTerceirosFactory _terceirosFactory = terceirosFactory ?? throw new ArgumentNullException(nameof(terceirosFactory));
-    public virtual async Task Delete(TerceirosResponse terceiros, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TerceirosResponse terceiros, int operadorId, MsiSqlConnection? oCnn)
     {
         await _terceirosFactory.DeleteAsync(operadorId, terceiros.Id, oCnn);
     }
@@ -34,10 +34,11 @@ public class TerceirosWriter(IFTerceirosFactory terceirosFactory) : ITerceirosWr
         dbRec.FFax = terceiros.Fax;
         dbRec.FOBS = terceiros.OBS;
         dbRec.FEMail = terceiros.EMail;
-        dbRec.FGUID = terceiros.GUID;
         dbRec.FClass = terceiros.Class;
         dbRec.FVaraForoComarca = terceiros.VaraForoComarca;
         dbRec.FSexo = terceiros.Sexo;
+        dbRec.FBold = terceiros.Bold;
+        dbRec.FGuid = terceiros.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

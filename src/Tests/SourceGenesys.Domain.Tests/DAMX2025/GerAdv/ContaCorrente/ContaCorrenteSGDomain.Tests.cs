@@ -36,7 +36,6 @@ public class DBContaCorrenteTests : IDisposable
         dt.Columns.Add("ctoDtAtu", typeof(DateTime));
         dt.Columns.Add("ctoVisto", typeof(bool));
         dt.Columns.Add("ctoCIAcordo", typeof(int));
-        dt.Columns.Add("ctoGUID", typeof(string));
         dt.Columns.Add("ctoQuitado", typeof(string));
         dt.Columns.Add("ctoIDContrato", typeof(int));
         dt.Columns.Add("ctoQuitadoID", typeof(int));
@@ -48,7 +47,7 @@ public class DBContaCorrenteTests : IDisposable
         dt.Columns.Add("ctoProcesso", typeof(int));
         dt.Columns.Add("ctoParcelaX", typeof(int));
         dt.Columns.Add("ctoValor", typeof(decimal));
-        dt.Columns.Add("ctoData", typeof(string));
+        dt.Columns.Add("ctoData", typeof(DateTime));
         dt.Columns.Add("ctoCliente", typeof(int));
         dt.Columns.Add("ctoHistorico", typeof(string));
         dt.Columns.Add("ctoContrato", typeof(string));
@@ -61,7 +60,21 @@ public class DBContaCorrenteTests : IDisposable
         dt.Columns.Add("ctoParcelaPrincipalID", typeof(int));
         dt.Columns.Add("ctoHide", typeof(string));
         dt.Columns.Add("ctoDataPgto", typeof(DateTime));
+        dt.Columns.Add("ctoGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ctoCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBContaCorrente(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -82,7 +95,7 @@ public class DBContaCorrenteTests : IDisposable
     {
         var instance = new DBContaCorrente();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ContaCorrente", instance.ITabelaName());
+        Assert.Equal("ContaCorrente", instance.ITableName());
         Assert.Equal("cto", instance.Prefixo);
     }
 
@@ -100,29 +113,16 @@ public class DBContaCorrenteTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ctoCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBContaCorrente(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ContaCorrente", cadastro.ITabelaName());
-        Assert.Equal("ctoCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ctoData", cadastro.ICampoNome());
-        Assert.Equal("cto", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ContaCorrente", cadastro.ITableName());
+        Assert.Equal("ctoCodigo", cadastro.IFieldId());
+        Assert.Equal("ctoData", cadastro.IFieldNameDescription());
+        Assert.Equal("cto", cadastro.IPrefix());
     }
 
 #endregion
@@ -182,9 +182,9 @@ public class DBContaCorrenteTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -205,24 +205,6 @@ public class DBContaCorrenteTests : IDisposable
     {
         var instance = new DBContaCorrente();
         Assert.Equal(0, instance.FCIAcordo);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
     }
 
     [Theory]
@@ -402,6 +384,23 @@ public class DBContaCorrenteTests : IDisposable
     {
         var instance = new DBContaCorrente();
         Assert.Equal(0, instance.FParcelaX);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBContaCorrente();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]
@@ -585,6 +584,24 @@ public class DBContaCorrenteTests : IDisposable
     {
         var instance = new DBContaCorrente();
         Assert.Equal(string.Empty, instance.FDataPgto);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

@@ -14,7 +14,7 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Id { get; set; }
 
         /// <summary>
-        /// BensClassificacao - bmtBensClassificacao  
+        /// Classificações de Bens - bmtBensClassificacao  
         /// </summary>
         [JsonPropertyName("bensclassificacao")]
         public int BensClassificacao { get; set; }
@@ -107,10 +107,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public string NomeVendedor { get; set; } = "";
 
         /// <summary>
-        /// GUID - bmtGUID - tamanho máximo: 100 
+        /// Bold - bmtBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - bmtGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -123,7 +129,7 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Id { get; set; }
 
         /// <summary>
-        /// BensClassificacao - bmtBensClassificacao  
+        /// Classificações de Bens - bmtBensClassificacao  
         /// </summary>
         [JsonPropertyName("bensclassificacao")]
         public int BensClassificacao { get; set; }
@@ -216,10 +222,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string NomeVendedor { get; set; } = "";
 
         /// <summary>
-        /// GUID - bmtGUID - tamanho máximo: 100 
+        /// Bold - bmtBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - bmtGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomebensclassificacao")]
         public string NomeBensClassificacao { get; set; } = string.Empty;

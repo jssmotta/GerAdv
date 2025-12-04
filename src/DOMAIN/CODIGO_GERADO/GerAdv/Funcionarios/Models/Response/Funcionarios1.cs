@@ -32,12 +32,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public int Cidade { get; set; }
 
         /// <summary>
-        /// GUID - funGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// EMailPro - funEMailPro - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("emailpro")]
@@ -193,6 +187,9 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// LiberaAgenda - funLiberaAgenda  
         /// </summary>
@@ -210,6 +207,30 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - funEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - funAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - funBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - funGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -240,12 +261,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public int Cidade { get; set; }
 
         /// <summary>
-        /// GUID - funGUID - tamanho máximo: 150 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// EMailPro - funEMailPro - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("emailpro")]
@@ -401,6 +416,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// LiberaAgenda - funLiberaAgenda  
         /// </summary>
@@ -418,6 +436,30 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("class")]
         public string Class { get; set; } = "";
+
+        /// <summary>
+        /// Etiqueta - funEtiqueta  
+        /// </summary>
+        [JsonPropertyName("etiqueta")]
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Ani - funAni  
+        /// </summary>
+        [JsonPropertyName("ani")]
+        public bool Ani { get; set; }
+
+        /// <summary>
+        /// Bold - funBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - funGuid - tamanho máximo: 150 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomecargos")]
         public string NomeCargos { get; set; } = string.Empty;

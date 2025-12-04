@@ -54,8 +54,48 @@ public partial class DBAgendaSemana
         // Checkpoint Carregar 
         try
         {
+            FCompromisso = getValue(DBAgendaSemanaDicInfo.Compromisso)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBAgendaSemanaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNomeCliente = getValue(DBAgendaSemanaDicInfo.NomeCliente)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FParaNome = getValue(DBAgendaSemanaDicInfo.ParaNome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTipo = getValue(DBAgendaSemanaDicInfo.Tipo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Advogado)))
-                m_FAdvogado = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.Advogado));
+                FAdvogado = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.Advogado));
         }
         catch
         {
@@ -64,7 +104,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.Cliente));
         }
         catch
         {
@@ -73,7 +113,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Concluido)))
-                m_FConcluido = Convert.ToBoolean(getValue(DBAgendaSemanaDicInfo.Concluido));
+                FConcluido = Convert.ToBoolean(getValue(DBAgendaSemanaDicInfo.Concluido));
         }
         catch
         {
@@ -82,7 +122,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBAgendaSemanaDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaSemanaDicInfo.Data)));
         }
         catch
         {
@@ -91,7 +131,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Funcionario)))
-                m_FFuncionario = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.Funcionario));
+                FFuncionario = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.Funcionario));
         }
         catch
         {
@@ -100,7 +140,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Hora)))
-                m_FHora = Convert.ToDateTime(getValue(DBAgendaSemanaDicInfo.Hora));
+                FHora = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaSemanaDicInfo.Hora)));
         }
         catch
         {
@@ -109,7 +149,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.HoraFinal)))
-                m_FHoraFinal = Convert.ToDateTime(getValue(DBAgendaSemanaDicInfo.HoraFinal));
+                FHoraFinal = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBAgendaSemanaDicInfo.HoraFinal)));
         }
         catch
         {
@@ -118,7 +158,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Importante)))
-                m_FImportante = Convert.ToBoolean(getValue(DBAgendaSemanaDicInfo.Importante));
+                FImportante = Convert.ToBoolean(getValue(DBAgendaSemanaDicInfo.Importante));
         }
         catch
         {
@@ -127,7 +167,7 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.Liberado)))
-                m_FLiberado = Convert.ToBoolean(getValue(DBAgendaSemanaDicInfo.Liberado));
+                FLiberado = Convert.ToBoolean(getValue(DBAgendaSemanaDicInfo.Liberado));
         }
         catch
         {
@@ -136,54 +176,14 @@ public partial class DBAgendaSemana
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAgendaSemanaDicInfo.TipoCompromisso)))
-                m_FTipoCompromisso = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.TipoCompromisso));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCompromisso = getValue(DBAgendaSemanaDicInfo.Compromisso)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBAgendaSemanaDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNomeCliente = getValue(DBAgendaSemanaDicInfo.NomeCliente)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FParaNome = getValue(DBAgendaSemanaDicInfo.ParaNome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTipo = getValue(DBAgendaSemanaDicInfo.Tipo)?.ToString() ?? string.Empty;
+                FTipoCompromisso = Convert.ToInt32(getValue(DBAgendaSemanaDicInfo.TipoCompromisso));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -207,7 +207,7 @@ public partial class DBAgendaSemana
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

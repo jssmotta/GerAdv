@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : IProValoresReader
+public partial class ProValoresReader(IFProValoresFactory provaloresFactory, IConnectionService connection) : IProValoresReader
 {
     private readonly IFProValoresFactory _provaloresFactory = provaloresFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prvCodigo, prvData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ProValoresResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProValores.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ProValoresResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prvCodigo, prvData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ProValoresResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBProValores.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ProValoresResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ProValoresResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
         return result;
     }
 
-    public async Task<ProValoresResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ProValoresResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _provaloresFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProValores?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.ProValores?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _provaloresFactory.CreateFromIdAsync(id, oCnn);
         var provalores = new Models.ProValores
@@ -58,7 +64,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             TipoValorProcesso = dbRec.FTipoValorProcesso,
             Indice = dbRec.FIndice ?? string.Empty,
             Ignorar = dbRec.FIgnorar,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             PercMulta = dbRec.FPercMulta,
             ValorMulta = dbRec.FValorMulta,
@@ -69,10 +74,16 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorFinal = dbRec.FValorFinal,
             Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData5))
         {
-            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
+            provalores.Data = XData5.ToString("dd/MM/yyyy");
+            provalores.Data_date = XData5;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao?.ToString(), out DateTime XDataUltimaCorrecao14))
+        {
+            provalores.DataUltimaCorrecao = XDataUltimaCorrecao14.ToString("dd/MM/yyyy");
+            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao14;
         }
 
         return provalores;
@@ -103,7 +114,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             TipoValorProcesso = dbRec.FTipoValorProcesso,
             Indice = dbRec.FIndice ?? string.Empty,
             Ignorar = dbRec.FIgnorar,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             PercMulta = dbRec.FPercMulta,
             ValorMulta = dbRec.FValorMulta,
@@ -114,10 +124,16 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorFinal = dbRec.FValorFinal,
             Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData5))
         {
-            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
+            provalores.Data = XData5.ToString("dd/MM/yyyy");
+            provalores.Data_date = XData5;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao?.ToString(), out DateTime XDataUltimaCorrecao14))
+        {
+            provalores.DataUltimaCorrecao = XDataUltimaCorrecao14.ToString("dd/MM/yyyy");
+            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao14;
         }
 
         return provalores;
@@ -137,7 +153,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             TipoValorProcesso = dbRec.FTipoValorProcesso,
             Indice = dbRec.FIndice ?? string.Empty,
             Ignorar = dbRec.FIgnorar,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             PercMulta = dbRec.FPercMulta,
             ValorMulta = dbRec.FValorMulta,
@@ -148,10 +163,16 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorFinal = dbRec.FValorFinal,
             Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData5))
         {
-            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
+            provalores.Data = XData5.ToString("dd/MM/yyyy");
+            provalores.Data_date = XData5;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao?.ToString(), out DateTime XDataUltimaCorrecao14))
+        {
+            provalores.DataUltimaCorrecao = XDataUltimaCorrecao14.ToString("dd/MM/yyyy");
+            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao14;
         }
 
         return provalores;
@@ -171,7 +192,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             TipoValorProcesso = dbRec.FTipoValorProcesso,
             Indice = dbRec.FIndice ?? string.Empty,
             Ignorar = dbRec.FIgnorar,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             PercMulta = dbRec.FPercMulta,
             ValorMulta = dbRec.FValorMulta,
@@ -182,10 +202,16 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorFinal = dbRec.FValorFinal,
             Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData5))
         {
-            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
+            provalores.Data = XData5.ToString("dd/MM/yyyy");
+            provalores.Data_date = XData5;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao?.ToString(), out DateTime XDataUltimaCorrecao14))
+        {
+            provalores.DataUltimaCorrecao = XDataUltimaCorrecao14.ToString("dd/MM/yyyy");
+            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao14;
         }
 
         return provalores;
@@ -205,7 +231,6 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             TipoValorProcesso = dbRec.FTipoValorProcesso,
             Indice = dbRec.FIndice ?? string.Empty,
             Ignorar = dbRec.FIgnorar,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             PercMulta = dbRec.FPercMulta,
             ValorMulta = dbRec.FValorMulta,
@@ -216,10 +241,16 @@ public partial class ProValoresReader(IFProValoresFactory provaloresFactory) : I
             ValorFinal = dbRec.FValorFinal,
             Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData5))
         {
-            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
-            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
+            provalores.Data = XData5.ToString("dd/MM/yyyy");
+            provalores.Data_date = XData5;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao?.ToString(), out DateTime XDataUltimaCorrecao14))
+        {
+            provalores.DataUltimaCorrecao = XDataUltimaCorrecao14.ToString("dd/MM/yyyy");
+            provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao14;
         }
 
         return provalores;

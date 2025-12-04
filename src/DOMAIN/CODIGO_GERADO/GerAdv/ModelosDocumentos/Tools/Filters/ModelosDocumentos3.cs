@@ -7,119 +7,149 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterModelosDocumentosWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de ModelosDocumentos padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterModelosDocumentos Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterModelosDocumentos
 {
+    [JsonPropertyName("filterTipoModeloDocumento")]
+    [Description("Filtro para a tabela TipoModeloDocumento")]
+    public FilterTipoModeloDocumento? FilterTipoModeloDocumento { get; set; } = new();
+
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("nome")]
+    [Description("Nome")]
     public string? Nome { get; set; } = string.Empty;
 
-    [JsonPropertyName("nome_end")]
-    public string? Nome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("remuneracao")]
+    [Description("Remuneracao")]
     public string? Remuneracao { get; set; } = string.Empty;
 
-    [JsonPropertyName("remuneracao_end")]
-    public string? Remuneracao_end { get; set; } = string.Empty;
-
     [JsonPropertyName("assinatura")]
+    [Description("Assinatura")]
     public string? Assinatura { get; set; } = string.Empty;
 
-    [JsonPropertyName("assinatura_end")]
-    public string? Assinatura_end { get; set; } = string.Empty;
-
     [JsonPropertyName("header")]
+    [Description("Header")]
     public string? Header { get; set; } = string.Empty;
 
-    [JsonPropertyName("header_end")]
-    public string? Header_end { get; set; } = string.Empty;
-
     [JsonPropertyName("footer")]
+    [Description("Footer")]
     public string? Footer { get; set; } = string.Empty;
 
-    [JsonPropertyName("footer_end")]
-    public string? Footer_end { get; set; } = string.Empty;
-
     [JsonPropertyName("extra1")]
+    [Description("Extra1")]
     public string? Extra1 { get; set; } = string.Empty;
 
-    [JsonPropertyName("extra1_end")]
-    public string? Extra1_end { get; set; } = string.Empty;
-
     [JsonPropertyName("extra2")]
+    [Description("Extra2")]
     public string? Extra2 { get; set; } = string.Empty;
 
-    [JsonPropertyName("extra2_end")]
-    public string? Extra2_end { get; set; } = string.Empty;
-
     [JsonPropertyName("extra3")]
+    [Description("Extra3")]
     public string? Extra3 { get; set; } = string.Empty;
 
-    [JsonPropertyName("extra3_end")]
-    public string? Extra3_end { get; set; } = string.Empty;
-
     [JsonPropertyName("outorgante")]
+    [Description("Outorgante")]
     public string? Outorgante { get; set; } = string.Empty;
 
-    [JsonPropertyName("outorgante_end")]
-    public string? Outorgante_end { get; set; } = string.Empty;
-
     [JsonPropertyName("outorgados")]
+    [Description("Outorgados")]
     public string? Outorgados { get; set; } = string.Empty;
 
-    [JsonPropertyName("outorgados_end")]
-    public string? Outorgados_end { get; set; } = string.Empty;
-
     [JsonPropertyName("poderes")]
+    [Description("Poderes")]
     public string? Poderes { get; set; } = string.Empty;
 
-    [JsonPropertyName("poderes_end")]
-    public string? Poderes_end { get; set; } = string.Empty;
-
     [JsonPropertyName("objeto")]
+    [Description("Objeto")]
     public string? Objeto { get; set; } = string.Empty;
 
-    [JsonPropertyName("objeto_end")]
-    public string? Objeto_end { get; set; } = string.Empty;
-
     [JsonPropertyName("titulo")]
+    [Description("Titulo")]
     public string? Titulo { get; set; } = string.Empty;
 
-    [JsonPropertyName("titulo_end")]
-    public string? Titulo_end { get; set; } = string.Empty;
-
     [JsonPropertyName("testemunhas")]
+    [Description("Testemunhas")]
     public string? Testemunhas { get; set; } = string.Empty;
 
-    [JsonPropertyName("testemunhas_end")]
-    public string? Testemunhas_end { get; set; } = string.Empty;
-
     [JsonPropertyName("tipomodelodocumento")]
+    [Description("TipoModeloDocumento -2147483648 para nada ou id")]
     public int TipoModeloDocumento { get; set; } = int.MinValue;
 
     [JsonPropertyName("tipomodelodocumento_end")]
+    [Description("TipoModeloDocumento -2147483648 para nada ou id para final do intervalo")]
     public int TipoModeloDocumento_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("css")]
+    [Description("CSS")]
     public string? CSS { get; set; } = string.Empty;
 
-    [JsonPropertyName("css_end")]
-    public string? CSS_end { get; set; } = string.Empty;
-
     [JsonPropertyName("guid")]
-    public string? GUID { get; set; } = string.Empty;
+    [Description("GUID")]
+    public string? Guid { get; set; } = string.Empty;
 
-    [JsonPropertyName("guid_end")]
-    public string? GUID_end { get; set; } = string.Empty;
+    [JsonPropertyName("quemcad")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id")]
+    public int QuemCad { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quemcad_end")]
+    [Description("Usuário de Cadastro -2147483648 para nada ou id para final do intervalo")]
+    public int QuemCad_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtcad")]
+    [Description("Data de Cadastro")]
+    public string? DtCad { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtcad_end")]
+    [Description("Data de Cadastro final para intervalo")]
+    public string? DtCad_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("quematu")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id")]
+    public int QuemAtu { get; set; } = int.MinValue;
+
+    [JsonPropertyName("quematu_end")]
+    [Description("Usuário de Atualização -2147483648 para nada ou id para final do intervalo")]
+    public int QuemAtu_end { get; set; } = int.MinValue;
+
+    [JsonPropertyName("dtatu")]
+    [Description("Data de Atualização")]
+    public string? DtAtu { get; set; } = string.Empty;
+
+    [JsonPropertyName("dtatu_end")]
+    [Description("Data de Atualização final para intervalo")]
+    public string? DtAtu_end { get; set; } = string.Empty;
+
+    [JsonPropertyName("visto")]
+    [Description("Visto -2147483648 para nada; 0 para não, 1 para sim")]
+    public int Visto { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

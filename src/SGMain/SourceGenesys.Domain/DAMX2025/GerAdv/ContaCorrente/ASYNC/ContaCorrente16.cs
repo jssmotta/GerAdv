@@ -14,6 +14,14 @@ public partial class DBContaCorrente
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBContaCorrente
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,61 +142,61 @@ public partial class DBContaCorrente
 
 #if (!NOTSTORED_ContaCorrente)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFCIAcordo || pFldFGUID || pFldFQuitado || pFldFIDContrato || pFldFQuitadoID || pFldFDebitoID || pFldFLivroCaixaID || pFldFSucumbencia || pFldFDistRegra || pFldFDtOriginal || pFldFProcesso || pFldFParcelaX || pFldFValor || pFldFData || pFldFCliente || pFldFHistorico || pFldFContrato || pFldFPago || pFldFDistribuir || pFldFLC || pFldFIDHTrab || pFldFNroParcelas || pFldFValorPrincipal || pFldFParcelaPrincipalID || pFldFHide || pFldFDataPgto;
+    private bool HasAnyFieldChanged() => pFldFCIAcordo || pFldFQuitado || pFldFIDContrato || pFldFQuitadoID || pFldFDebitoID || pFldFLivroCaixaID || pFldFSucumbencia || pFldFDistRegra || pFldFDtOriginal || pFldFProcesso || pFldFParcelaX || pFldFValor || pFldFData || pFldFCliente || pFldFHistorico || pFldFContrato || pFldFPago || pFldFDistribuir || pFldFLC || pFldFIDHTrab || pFldFNroParcelas || pFldFValorPrincipal || pFldFParcelaPrincipalID || pFldFHide || pFldFDataPgto || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFCIAcordo)
-            updateTool.Fields(DBContaCorrenteDicInfo.CIAcordo, m_FCIAcordo, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBContaCorrenteDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBContaCorrenteDicInfo.CIAcordo, FCIAcordo, EGenericTypeFields.FNumber);
         if (pFldFQuitado || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.Quitado, m_FQuitado, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.Quitado, FQuitado, EGenericTypeFields.FBoolean);
         if (pFldFIDContrato)
-            updateTool.Fields(DBContaCorrenteDicInfo.IDContrato, m_FIDContrato, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.IDContrato, FIDContrato, EGenericTypeFields.FNumber);
         if (pFldFQuitadoID)
-            updateTool.Fields(DBContaCorrenteDicInfo.QuitadoID, m_FQuitadoID, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.QuitadoID, FQuitadoID, EGenericTypeFields.FNumber);
         if (pFldFDebitoID)
-            updateTool.Fields(DBContaCorrenteDicInfo.DebitoID, m_FDebitoID, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.DebitoID, FDebitoID, EGenericTypeFields.FNumber);
         if (pFldFLivroCaixaID)
-            updateTool.Fields(DBContaCorrenteDicInfo.LivroCaixaID, m_FLivroCaixaID, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.LivroCaixaID, FLivroCaixaID, EGenericTypeFields.FNumber);
         if (pFldFSucumbencia || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.Sucumbencia, m_FSucumbencia, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.Sucumbencia, FSucumbencia, EGenericTypeFields.FBoolean);
         if (pFldFDistRegra || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.DistRegra, m_FDistRegra, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.DistRegra, FDistRegra, EGenericTypeFields.FBoolean);
         if (pFldFDtOriginal)
-            updateTool.Fields(DBContaCorrenteDicInfo.DtOriginal, m_FDtOriginal, ETiposCampos.FDate);
+            updateTool.Fields(DBContaCorrenteDicInfo.DtOriginal, FDtOriginal, EGenericTypeFields.FDate);
         if (pFldFProcesso)
-            updateTool.Fields(DBContaCorrenteDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFParcelaX)
-            updateTool.Fields(DBContaCorrenteDicInfo.ParcelaX, m_FParcelaX, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.ParcelaX, FParcelaX, EGenericTypeFields.FNumber);
         if (pFldFValor)
-            updateTool.Fields(DBContaCorrenteDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBContaCorrenteDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFData)
-            updateTool.Fields(DBContaCorrenteDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBContaCorrenteDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFCliente)
-            updateTool.Fields(DBContaCorrenteDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFHistorico)
-            updateTool.Fields(DBContaCorrenteDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
+            updateTool.Fields(DBContaCorrenteDicInfo.Historico, FHistorico, EGenericTypeFields.FString);
         if (pFldFContrato || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.Contrato, m_FContrato, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.Contrato, FContrato, EGenericTypeFields.FBoolean);
         if (pFldFPago || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.Pago, m_FPago, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.Pago, FPago, EGenericTypeFields.FBoolean);
         if (pFldFDistribuir || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.Distribuir, m_FDistribuir, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.Distribuir, FDistribuir, EGenericTypeFields.FBoolean);
         if (pFldFLC || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.LC, m_FLC, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.LC, FLC, EGenericTypeFields.FBoolean);
         if (pFldFIDHTrab)
-            updateTool.Fields(DBContaCorrenteDicInfo.IDHTrab, m_FIDHTrab, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.IDHTrab, FIDHTrab, EGenericTypeFields.FNumber);
         if (pFldFNroParcelas)
-            updateTool.Fields(DBContaCorrenteDicInfo.NroParcelas, m_FNroParcelas, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.NroParcelas, FNroParcelas, EGenericTypeFields.FNumber);
         if (pFldFValorPrincipal)
-            updateTool.Fields(DBContaCorrenteDicInfo.ValorPrincipal, m_FValorPrincipal, ETiposCampos.FDecimal);
+            updateTool.Fields(DBContaCorrenteDicInfo.ValorPrincipal, FValorPrincipal, EGenericTypeFields.FDecimal);
         if (pFldFParcelaPrincipalID)
-            updateTool.Fields(DBContaCorrenteDicInfo.ParcelaPrincipalID, m_FParcelaPrincipalID, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.ParcelaPrincipalID, FParcelaPrincipalID, EGenericTypeFields.FNumber);
         if (pFldFHide || updateTool.Insert)
-            updateTool.Fields(DBContaCorrenteDicInfo.Hide, m_FHide, ETiposCampos.FBoolean);
+            updateTool.Fields(DBContaCorrenteDicInfo.Hide, FHide, EGenericTypeFields.FBoolean);
         if (pFldFDataPgto)
-            updateTool.Fields(DBContaCorrenteDicInfo.DataPgto, m_FDataPgto, ETiposCampos.FDate);
+            updateTool.Fields(DBContaCorrenteDicInfo.DataPgto, FDataPgto, EGenericTypeFields.FDate);
+        if (pFldFGuid)
+            updateTool.Fields(DBContaCorrenteDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -200,24 +208,23 @@ public partial class DBContaCorrente
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBContaCorrenteDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBContaCorrenteDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBContaCorrenteDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBContaCorrenteDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBContaCorrenteDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBContaCorrenteDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBContaCorrenteDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBContaCorrenteDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBContaCorrenteDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBContaCorrenteDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

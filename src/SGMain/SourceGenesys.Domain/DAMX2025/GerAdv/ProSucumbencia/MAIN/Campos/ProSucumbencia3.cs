@@ -7,68 +7,70 @@ public partial class DBProSucumbencia
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFProcesso, pFldFInstancia, pFldFData, pFldFNome, pFldFTipoOrigemSucumbencia, pFldFValor, pFldFPercentual, pFldFGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FProcesso, m_FInstancia, m_FTipoOrigemSucumbencia;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FPercentual, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected DateTime? m_FData;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected decimal m_FValor;
+    private protected bool pFldFProcesso, pFldFInstancia, pFldFData, pFldFNome, pFldFTipoOrigemSucumbencia, pFldFValor, pFldFPercentual, pFldFGuid;
     public virtual int FProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProcesso;
+        get => field;
         set
         {
-            pFldFProcesso = pFldFProcesso || value != m_FProcesso;
+            pFldFProcesso = pFldFProcesso || value != field;
             if (pFldFProcesso)
-                m_FProcesso = value;
+                field = value;
         }
     }
 
     public virtual int FInstancia
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInstancia;
+        get => field;
         set
         {
-            pFldFInstancia = pFldFInstancia || value != m_FInstancia;
+            pFldFInstancia = pFldFInstancia || value != field;
             if (pFldFInstancia)
-                m_FInstancia = value;
+                field = value;
         }
     }
 
-    public virtual string? FData
+    public virtual DateOnly? FData
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FData is null || m_FData == DevourerOne.DDataZerada ? string.Empty : m_FData.Value.ToString("dd/MM/yyyy");
+        get;
         set
         {
-            if (DevourerOne.DateUp12(pFldFData, m_FData, value)is not (true, var changed, var data))
+            // Se o valor é nulo ou string vazia, limpa o campo
+            if (!value.HasValue)
+            {
+                if (field.HasValue)
+                {
+                    pFldFData = true;
+                    field = null;
+                }
+
                 return;
-            (pFldFData, m_FData) = (changed, data);
+            }
+
+            // Se o valor é diferente do atual, atualiza
+            if (!field.HasValue || field.Value != value.Value)
+            {
+                pFldFData = true;
+                field = value;
+            }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(2048, ErrorMessage = "A propriedade FNome da tabela ProSucumbencia deve ter no máximo 2048 caracteres.")]
+    [StringLength(2048, ErrorMessage = "A propriedade FNome da tabela 'ProSucumbencia' deve ter no máximo 2048 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
+                field = trimmed.Length > 2048 ? trimmed.AsSpan(0, 2048).ToString() : trimmed;
             }
         }
     }
@@ -76,71 +78,71 @@ public partial class DBProSucumbencia
     public virtual int FTipoOrigemSucumbencia
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipoOrigemSucumbencia;
+        get => field;
         set
         {
-            pFldFTipoOrigemSucumbencia = pFldFTipoOrigemSucumbencia || value != m_FTipoOrigemSucumbencia;
+            pFldFTipoOrigemSucumbencia = pFldFTipoOrigemSucumbencia || value != field;
             if (pFldFTipoOrigemSucumbencia)
-                m_FTipoOrigemSucumbencia = value;
+                field = value;
         }
     }
 
     public virtual decimal FValor
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FValor;
+        get => field;
         set
         {
-            if (value == m_FValor)
+            if (value == field)
                 return;
             pFldFValor = true;
-            m_FValor = value;
+            field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(5, ErrorMessage = "A propriedade FPercentual da tabela ProSucumbencia deve ter no máximo 5 caracteres.")]
+    [StringLength(5, ErrorMessage = "A propriedade FPercentual da tabela 'ProSucumbencia' deve ter no máximo 5 caracteres.")]
     public virtual string? FPercentual
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FPercentual ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFPercentual = pFldFPercentual || !(m_FPercentual ?? string.Empty).Equals(value);
+            pFldFPercentual = pFldFPercentual || !(field ?? string.Empty).Equals(value);
             if (pFldFPercentual)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FPercentual = trimmed.Length > 5 ? trimmed.AsSpan(0, 5).ToString() : trimmed;
+                field = trimmed.Length > 5 ? trimmed.AsSpan(0, 5).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FGUID da tabela ProSucumbencia deve ter no máximo 150 caracteres.")]
-    public virtual string? FGUID
+    [StringLength(150, ErrorMessage = "A propriedade FGuid da tabela 'ProSucumbencia' deve ter no máximo 150 caracteres.")]
+    public virtual string? FGuid
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
+        // Tracking Code: 24102025
+        get;
         set
         {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -150,9 +152,13 @@ public partial class DBProSucumbencia
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

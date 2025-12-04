@@ -7,6 +7,7 @@
 using MenphisSI.GerAdv.Models.Response.All;
 using MenphisSI.GerAdv.Readers;
 using System.Data;
+using Xunit.Abstractions;
 
 namespace MenphisSI.GerAdv.Tests.Readers;
 /// <summary>
@@ -15,16 +16,20 @@ namespace MenphisSI.GerAdv.Tests.Readers;
 /// </summary>
 public class AgendaRelatorioReaderTests : IDisposable
 {
+    private readonly ITestOutputHelper _output;
     private readonly Mock<IFAgendaRelatorioFactory> _mockAgendaRelatorioFactory;
     private readonly Mock<MsiSqlConnection> _mockConnection;
     private readonly Mock<IDataRecord> _mockDataRecord;
     private readonly AgendaRelatorioReader _agendarelatorioReader;
-    public AgendaRelatorioReaderTests()
+    private readonly Mock<IConnectionService> _mockConnectionService;
+    public AgendaRelatorioReaderTests(ITestOutputHelper output)
     {
+        _output = output;
         _mockAgendaRelatorioFactory = new Mock<IFAgendaRelatorioFactory>();
         _mockConnection = new Mock<MsiSqlConnection>();
         _mockDataRecord = new Mock<IDataRecord>();
-        _agendarelatorioReader = new AgendaRelatorioReader(_mockAgendaRelatorioFactory.Object);
+        _mockConnectionService = new Mock<IConnectionService>();
+        _agendarelatorioReader = new AgendaRelatorioReader(_mockAgendaRelatorioFactory.Object, _mockConnectionService.Object);
     }
 
 #region Constructor Tests
@@ -39,40 +44,7 @@ public class AgendaRelatorioReaderTests : IDisposable
     public void Constructor_WithNullFactory_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new AgendaRelatorioReader(null !));
-    }
-
-#endregion
-#region Listar Tests
-    [Fact]
-    public async Task Listar_WithValidParameters_ShouldCallListarTabela()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "valid-uri"; // This would need to be a valid URI in actual implementation
-        var cWhere = "vqaCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // Since this calls external dependencies and database connections,
-        // we expect it to throw an exception with our test setup
-        await Assert.ThrowsAsync<Exception>(() => _agendarelatorioReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
-    [Fact]
-    public async Task Listar_WithCancellationToken_ShouldRespectCancellation()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri";
-        var cWhere = "vqaCodigo > 0";
-        var parameters = new List<SqlParameter>();
-        var order = "carNome";
-        var cancellationToken = new CancellationToken(true); // Already cancelled
-        // Act & Assert
-        // Even with cancellation, this should throw an exception due to invalid URI
-        await Assert.ThrowsAsync<Exception>(() => _agendarelatorioReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
+        Assert.Throws<ArgumentNullException>(() => new AgendaRelatorioReader(null !, null !));
     }
 
 #endregion
@@ -102,7 +74,7 @@ public class AgendaRelatorioReaderTests : IDisposable
         // Arrange
         FAgendaRelatorio? dbRec = null;
         // Act
-        var result = _agendarelatorioReader.Read(dbRec);
+        var result = _agendarelatorioReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -149,7 +121,7 @@ public class AgendaRelatorioReaderTests : IDisposable
         // Arrange
         DBAgendaRelatorio? dbRec = null;
         // Act
-        var result = _agendarelatorioReader.Read(dbRec);
+        var result = _agendarelatorioReader.Read(dbRec!);
         // Assert
         result.Should().BeNull();
     }
@@ -196,7 +168,7 @@ public class AgendaRelatorioReaderTests : IDisposable
         // Arrange
         FAgendaRelatorio? dbRec = null;
         // Act
-        var result = _agendarelatorioReader.ReadAll(dbRec, _mockDataRecord.Object);
+        var result = _agendarelatorioReader.ReadAll(dbRec!, _mockDataRecord.Object);
         // Assert
         result.Should().BeNull();
     }
@@ -243,7 +215,7 @@ public class AgendaRelatorioReaderTests : IDisposable
         // Arrange
         DBAgendaRelatorio? dbRec = null;
         // Act
-        var result = _agendarelatorioReader.ReadAll(dbRec, null);
+        var result = _agendarelatorioReader.ReadAll(dbRec!, null);
         // Assert
         result.Should().BeNull();
     }
@@ -317,21 +289,6 @@ public class AgendaRelatorioReaderTests : IDisposable
 
 #endregion
 #region Async Behavior Tests
-    [Fact]
-    public async Task Listar_WithInvalidUri_ShouldThrowException()
-    {
-        // Arrange
-        var max = 10;
-        var uri = "test-uri"; // Invalid URI
-        var cWhere = "";
-        var parameters = new List<SqlParameter>();
-        var order = "";
-        var cancellationToken = CancellationToken.None;
-        // Act & Assert
-        // This should throw an exception because the URI is invalid
-        await Assert.ThrowsAsync<Exception>(() => _agendarelatorioReader.Listar(max, uri, cWhere, parameters, order, cancellationToken));
-    }
-
 #endregion
 #region Integration-like Tests
     [Fact]

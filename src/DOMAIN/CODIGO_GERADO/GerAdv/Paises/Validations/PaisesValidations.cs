@@ -23,7 +23,7 @@ public class PaisesValidation : IPaisesValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var ufExists0 = await ufService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterUF { Pais = id ?? default }, uri);
         if (ufExists0 != null && ufExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela UF associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela UF associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class PaisesValidation : IPaisesValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBPaisesDicInfo.PaiNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBPaisesDicInfo.PaiNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBPaisesDicInfo.PaiGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBPaisesDicInfo.PaiGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,6 +40,8 @@ public class PaisesValidation : IPaisesValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

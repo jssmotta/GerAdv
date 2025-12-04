@@ -22,29 +22,40 @@ public partial class ReuniaoWhere(IFReuniaoFactory reuniaoFactory) : IReuniaoWhe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
         {
-            reuniao.HoraInicial = dbRec.FHoraInicial;
+            reuniao.Data = XData.ToString("dd/MM/yyyy");
+            reuniao.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraInicial.ToString(), out DateTime XHoraInicial))
+        {
+            reuniao.HoraInicial = XHoraInicial.ToString("dd/MM/yyyy");
             reuniao.HoraInicial_date = XHoraInicial;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal1))
         {
-            reuniao.HoraSaida = dbRec.FHoraSaida;
+            reuniao.HoraFinal = XHoraFinal1.ToString("HH:mm");
+            reuniao.HoraFinal_date = XHoraFinal1;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraSaida.ToString(), out DateTime XHoraSaida))
+        {
+            reuniao.HoraSaida = XHoraSaida.ToString("dd/MM/yyyy");
             reuniao.HoraSaida_date = XHoraSaida;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraRetorno, out DateTime XHoraRetorno))
+        if (DateTime.TryParse(dbRec.FHoraRetorno.ToString(), out DateTime XHoraRetorno))
         {
-            reuniao.HoraRetorno = dbRec.FHoraRetorno;
+            reuniao.HoraRetorno = XHoraRetorno.ToString("dd/MM/yyyy");
             reuniao.HoraRetorno_date = XHoraRetorno;
         }
 

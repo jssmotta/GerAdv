@@ -14,85 +14,85 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// EMail - operEMail - tamanho máximo: 150 
+        /// operEMail - operEMail - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("email")]
         public string EMail { get; set; } = "";
 
         /// <summary>
-        /// Pasta - operPasta  
+        /// operPasta - operPasta  
         /// </summary>
         [JsonPropertyName("pasta")]
         public string Pasta { get; set; } = "";
 
         /// <summary>
-        /// Telefonista - operTelefonista  
+        /// operTelefonista - operTelefonista  
         /// </summary>
         [JsonPropertyName("telefonista")]
         public bool Telefonista { get; set; }
 
         /// <summary>
-        /// Master - operMaster  
+        /// operMaster - operMaster  
         /// </summary>
         [JsonPropertyName("master")]
         public bool Master { get; set; }
 
         /// <summary>
-        /// Nome - operNome - tamanho máximo: 40 
+        /// operNome - operNome - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// Nick - operNick - tamanho máximo: 50 
+        /// operNick - operNick - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("nick")]
         public string Nick { get; set; } = "";
 
         /// <summary>
-        /// Ramal - operRamal - tamanho máximo: 20 
+        /// operRamal - operRamal - tamanho máximo: 20 
         /// </summary>
         [JsonPropertyName("ramal")]
         public string Ramal { get; set; } = "";
 
         /// <summary>
-        /// CadID - operCadID  
+        /// operCadID - operCadID  
         /// </summary>
         [JsonPropertyName("cadid")]
         public int CadID { get; set; }
 
         /// <summary>
-        /// CadCod - operCadCod  
+        /// operCadCod - operCadCod  
         /// </summary>
         [JsonPropertyName("cadcod")]
         public int CadCod { get; set; }
 
         /// <summary>
-        /// Excluido - operExcluido  
+        /// operExcluido - operExcluido  
         /// </summary>
         [JsonPropertyName("excluido")]
         public bool Excluido { get; set; }
 
         /// <summary>
-        /// Situacao - operSituacao  
+        /// operSituacao - operSituacao  
         /// </summary>
         [JsonPropertyName("situacao")]
         public bool Situacao { get; set; }
 
         /// <summary>
-        /// Computador - operComputador  
+        /// operComputador - operComputador  
         /// </summary>
         [JsonPropertyName("computador")]
         public int Computador { get; set; }
 
         /// <summary>
-        /// MinhaDescricao - operMinhaDescricao - tamanho máximo: 255 
+        /// operMinhaDescricao - operMinhaDescricao - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("minhadescricao")]
         public string MinhaDescricao { get; set; } = "";
 
         /// <summary>
-        /// UltimoLogoff - operUltimoLogoff  
+        /// operUltimoLogoff - operUltimoLogoff  
         /// </summary>
         [JsonPropertyName("ultimologoff")]
         public string UltimoLogoff { get; set; } = "";
@@ -101,91 +101,85 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? UltimoLogoff_date { get; set; }
 
         /// <summary>
-        /// EMailNet - operEMailNet - tamanho máximo: 100 
+        /// operEMailNet - operEMailNet - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("emailnet")]
         public string EMailNet { get; set; } = "";
 
         /// <summary>
-        /// OnlineIP - operOnlineIP - tamanho máximo: 50 
+        /// operOnlineIP - operOnlineIP - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("onlineip")]
         public string OnlineIP { get; set; } = "";
 
         /// <summary>
-        /// OnLine - operOnLine  
+        /// operOnLine - operOnLine  
         /// </summary>
         [JsonPropertyName("online")]
         public bool OnLine { get; set; }
 
         /// <summary>
-        /// SysOp - operSysOp  
+        /// operSysOp - operSysOp  
         /// </summary>
         [JsonPropertyName("sysop")]
         public bool SysOp { get; set; }
 
         /// <summary>
-        /// StatusId - operStatusId  
+        /// operStatusId - operStatusId  
         /// </summary>
         [JsonPropertyName("statusid")]
         public int StatusId { get; set; }
 
         /// <summary>
-        /// StatusMessage - operStatusMessage - tamanho máximo: 1024 
+        /// operStatusMessage - operStatusMessage - tamanho máximo: 1024 
         /// </summary>
         [JsonPropertyName("statusmessage")]
         public string StatusMessage { get; set; } = "";
 
         /// <summary>
-        /// IsFinanceiro - operIsFinanceiro  
+        /// operIsFinanceiro - operIsFinanceiro  
         /// </summary>
         [JsonPropertyName("isfinanceiro")]
         public bool IsFinanceiro { get; set; }
 
         /// <summary>
-        /// GUID - operGUID - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Top - operTop  
+        /// operTop - operTop  
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
 
         /// <summary>
-        /// Sexo - operSexo  
+        /// operSexo - operSexo  
         /// </summary>
         [JsonPropertyName("sexo")]
         public bool Sexo { get; set; }
 
         /// <summary>
-        /// Basico - operBasico  
+        /// operBasico - operBasico  
         /// </summary>
         [JsonPropertyName("basico")]
         public bool Basico { get; set; }
 
         /// <summary>
-        /// Externo - operExterno  
+        /// operExterno - operExterno  
         /// </summary>
         [JsonPropertyName("externo")]
         public bool Externo { get; set; }
 
         /// <summary>
-        /// Senha256 - operSenha256 - tamanho máximo: 4000 
+        /// operSenha256 - operSenha256 - tamanho máximo: 4000 
         /// </summary>
         [JsonPropertyName("senha256")]
         public string Senha256 { get; set; } = "";
 
         /// <summary>
-        /// EMailConfirmado - operEMailConfirmado  
+        /// operEMailConfirmado - operEMailConfirmado  
         /// </summary>
         [JsonPropertyName("emailconfirmado")]
         public bool EMailConfirmado { get; set; }
 
         /// <summary>
-        /// DataLimiteReset - operDataLimiteReset  
+        /// operDataLimiteReset - operDataLimiteReset  
         /// </summary>
         [JsonPropertyName("datalimitereset")]
         public string DataLimiteReset { get; set; } = "";
@@ -194,13 +188,13 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? DataLimiteReset_date { get; set; }
 
         /// <summary>
-        /// SuporteSenha256 - operSuporteSenha256 - tamanho máximo: 4000 
+        /// operSuporteSenha256 - operSuporteSenha256 - tamanho máximo: 4000 
         /// </summary>
         [JsonPropertyName("suportesenha256")]
         public string SuporteSenha256 { get; set; } = "";
 
         /// <summary>
-        /// SuporteMaxAge - operSuporteMaxAge  
+        /// operSuporteMaxAge - operSuporteMaxAge  
         /// </summary>
         [JsonPropertyName("suportemaxage")]
         public string SuporteMaxAge { get; set; } = "";
@@ -209,13 +203,13 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? SuporteMaxAge_date { get; set; }
 
         /// <summary>
-        /// SuporteNomeSolicitante - operSuporteNomeSolicitante - tamanho máximo: 100 
+        /// operSuporteNomeSolicitante - operSuporteNomeSolicitante - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("suportenomesolicitante")]
         public string SuporteNomeSolicitante { get; set; } = "";
 
         /// <summary>
-        /// SuporteUltimoAcesso - operSuporteUltimoAcesso  
+        /// operSuporteUltimoAcesso - operSuporteUltimoAcesso  
         /// </summary>
         [JsonPropertyName("suporteultimoacesso")]
         public string SuporteUltimoAcesso { get; set; } = "";
@@ -224,10 +218,16 @@ namespace MenphisSI.GerAdv.Models
         public DateTime? SuporteUltimoAcesso_date { get; set; }
 
         /// <summary>
-        /// SuporteIpUltimoAcesso - operSuporteIpUltimoAcesso - tamanho máximo: 80 
+        /// operSuporteIpUltimoAcesso - operSuporteIpUltimoAcesso - tamanho máximo: 80 
         /// </summary>
         [JsonPropertyName("suporteipultimoacesso")]
         public string SuporteIpUltimoAcesso { get; set; } = "";
+
+        /// <summary>
+        /// operGuid - operGuid - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -240,85 +240,85 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// EMail - operEMail - tamanho máximo: 150 
+        /// operEMail - operEMail - tamanho máximo: 150 
         /// </summary>
         [JsonPropertyName("email")]
         public string EMail { get; set; } = "";
 
         /// <summary>
-        /// Pasta - operPasta  
+        /// operPasta - operPasta  
         /// </summary>
         [JsonPropertyName("pasta")]
         public string Pasta { get; set; } = "";
 
         /// <summary>
-        /// Telefonista - operTelefonista  
+        /// operTelefonista - operTelefonista  
         /// </summary>
         [JsonPropertyName("telefonista")]
         public bool Telefonista { get; set; }
 
         /// <summary>
-        /// Master - operMaster  
+        /// operMaster - operMaster  
         /// </summary>
         [JsonPropertyName("master")]
         public bool Master { get; set; }
 
         /// <summary>
-        /// Nome - operNome - tamanho máximo: 40 
+        /// operNome - operNome - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("nome")]
         public string Nome { get; set; } = "";
 
         /// <summary>
-        /// Nick - operNick - tamanho máximo: 50 
+        /// operNick - operNick - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("nick")]
         public string Nick { get; set; } = "";
 
         /// <summary>
-        /// Ramal - operRamal - tamanho máximo: 20 
+        /// operRamal - operRamal - tamanho máximo: 20 
         /// </summary>
         [JsonPropertyName("ramal")]
         public string Ramal { get; set; } = "";
 
         /// <summary>
-        /// CadID - operCadID  
+        /// operCadID - operCadID  
         /// </summary>
         [JsonPropertyName("cadid")]
         public int CadID { get; set; }
 
         /// <summary>
-        /// CadCod - operCadCod  
+        /// operCadCod - operCadCod  
         /// </summary>
         [JsonPropertyName("cadcod")]
         public int CadCod { get; set; }
 
         /// <summary>
-        /// Excluido - operExcluido  
+        /// operExcluido - operExcluido  
         /// </summary>
         [JsonPropertyName("excluido")]
         public bool Excluido { get; set; }
 
         /// <summary>
-        /// Situacao - operSituacao  
+        /// operSituacao - operSituacao  
         /// </summary>
         [JsonPropertyName("situacao")]
         public bool Situacao { get; set; }
 
         /// <summary>
-        /// Computador - operComputador  
+        /// operComputador - operComputador  
         /// </summary>
         [JsonPropertyName("computador")]
         public int Computador { get; set; }
 
         /// <summary>
-        /// MinhaDescricao - operMinhaDescricao - tamanho máximo: 255 
+        /// operMinhaDescricao - operMinhaDescricao - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("minhadescricao")]
         public string MinhaDescricao { get; set; } = "";
 
         /// <summary>
-        /// UltimoLogoff - operUltimoLogoff  
+        /// operUltimoLogoff - operUltimoLogoff  
         /// </summary>
         [JsonPropertyName("ultimologoff")]
         public string UltimoLogoff { get; set; } = "";
@@ -327,91 +327,85 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? UltimoLogoff_date { get; set; }
 
         /// <summary>
-        /// EMailNet - operEMailNet - tamanho máximo: 100 
+        /// operEMailNet - operEMailNet - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("emailnet")]
         public string EMailNet { get; set; } = "";
 
         /// <summary>
-        /// OnlineIP - operOnlineIP - tamanho máximo: 50 
+        /// operOnlineIP - operOnlineIP - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("onlineip")]
         public string OnlineIP { get; set; } = "";
 
         /// <summary>
-        /// OnLine - operOnLine  
+        /// operOnLine - operOnLine  
         /// </summary>
         [JsonPropertyName("online")]
         public bool OnLine { get; set; }
 
         /// <summary>
-        /// SysOp - operSysOp  
+        /// operSysOp - operSysOp  
         /// </summary>
         [JsonPropertyName("sysop")]
         public bool SysOp { get; set; }
 
         /// <summary>
-        /// StatusId - operStatusId  
+        /// operStatusId - operStatusId  
         /// </summary>
         [JsonPropertyName("statusid")]
         public int StatusId { get; set; }
 
         /// <summary>
-        /// StatusMessage - operStatusMessage - tamanho máximo: 1024 
+        /// operStatusMessage - operStatusMessage - tamanho máximo: 1024 
         /// </summary>
         [JsonPropertyName("statusmessage")]
         public string StatusMessage { get; set; } = "";
 
         /// <summary>
-        /// IsFinanceiro - operIsFinanceiro  
+        /// operIsFinanceiro - operIsFinanceiro  
         /// </summary>
         [JsonPropertyName("isfinanceiro")]
         public bool IsFinanceiro { get; set; }
 
         /// <summary>
-        /// GUID - operGUID - tamanho máximo: 50 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Top - operTop  
+        /// operTop - operTop  
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
 
         /// <summary>
-        /// Sexo - operSexo  
+        /// operSexo - operSexo  
         /// </summary>
         [JsonPropertyName("sexo")]
         public bool Sexo { get; set; }
 
         /// <summary>
-        /// Basico - operBasico  
+        /// operBasico - operBasico  
         /// </summary>
         [JsonPropertyName("basico")]
         public bool Basico { get; set; }
 
         /// <summary>
-        /// Externo - operExterno  
+        /// operExterno - operExterno  
         /// </summary>
         [JsonPropertyName("externo")]
         public bool Externo { get; set; }
 
         /// <summary>
-        /// Senha256 - operSenha256 - tamanho máximo: 4000 
+        /// operSenha256 - operSenha256 - tamanho máximo: 4000 
         /// </summary>
         [JsonPropertyName("senha256")]
         public string Senha256 { get; set; } = "";
 
         /// <summary>
-        /// EMailConfirmado - operEMailConfirmado  
+        /// operEMailConfirmado - operEMailConfirmado  
         /// </summary>
         [JsonPropertyName("emailconfirmado")]
         public bool EMailConfirmado { get; set; }
 
         /// <summary>
-        /// DataLimiteReset - operDataLimiteReset  
+        /// operDataLimiteReset - operDataLimiteReset  
         /// </summary>
         [JsonPropertyName("datalimitereset")]
         public string DataLimiteReset { get; set; } = "";
@@ -420,13 +414,13 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? DataLimiteReset_date { get; set; }
 
         /// <summary>
-        /// SuporteSenha256 - operSuporteSenha256 - tamanho máximo: 4000 
+        /// operSuporteSenha256 - operSuporteSenha256 - tamanho máximo: 4000 
         /// </summary>
         [JsonPropertyName("suportesenha256")]
         public string SuporteSenha256 { get; set; } = "";
 
         /// <summary>
-        /// SuporteMaxAge - operSuporteMaxAge  
+        /// operSuporteMaxAge - operSuporteMaxAge  
         /// </summary>
         [JsonPropertyName("suportemaxage")]
         public string SuporteMaxAge { get; set; } = "";
@@ -435,13 +429,13 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? SuporteMaxAge_date { get; set; }
 
         /// <summary>
-        /// SuporteNomeSolicitante - operSuporteNomeSolicitante - tamanho máximo: 100 
+        /// operSuporteNomeSolicitante - operSuporteNomeSolicitante - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("suportenomesolicitante")]
         public string SuporteNomeSolicitante { get; set; } = "";
 
         /// <summary>
-        /// SuporteUltimoAcesso - operSuporteUltimoAcesso  
+        /// operSuporteUltimoAcesso - operSuporteUltimoAcesso  
         /// </summary>
         [JsonPropertyName("suporteultimoacesso")]
         public string SuporteUltimoAcesso { get; set; } = "";
@@ -450,9 +444,15 @@ namespace MenphisSI.GerAdv.Models.All
         public DateTime? SuporteUltimoAcesso_date { get; set; }
 
         /// <summary>
-        /// SuporteIpUltimoAcesso - operSuporteIpUltimoAcesso - tamanho máximo: 80 
+        /// operSuporteIpUltimoAcesso - operSuporteIpUltimoAcesso - tamanho máximo: 80 
         /// </summary>
         [JsonPropertyName("suporteipultimoacesso")]
         public string SuporteIpUltimoAcesso { get; set; } = "";
+
+        /// <summary>
+        /// operGuid - operGuid - tamanho máximo: 50 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

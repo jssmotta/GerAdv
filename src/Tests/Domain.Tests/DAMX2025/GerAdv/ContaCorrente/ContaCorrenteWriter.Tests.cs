@@ -74,6 +74,7 @@ public class ContaCorrenteWriterTests
         var result = await _contacorrenteWriter.WriteAsync(contacorrente, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFContaCorrente.Object);
+        _mockFContaCorrente.VerifySet(x => x.FGuid = contacorrente.Guid, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FCIAcordo = contacorrente.CIAcordo, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FQuitado = contacorrente.Quitado, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FIDContrato = contacorrente.IDContrato, Times.Once);
@@ -86,7 +87,7 @@ public class ContaCorrenteWriterTests
         _mockFContaCorrente.VerifySet(x => x.FProcesso = contacorrente.Processo, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FParcelaX = contacorrente.ParcelaX, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FValor = contacorrente.Valor, Times.Once);
-        _mockFContaCorrente.VerifySet(x => x.FData = contacorrente.Data, Times.Once);
+        _mockFContaCorrente.VerifySet(x => x.FData = contacorrente.Data.ToString(), Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FCliente = contacorrente.Cliente, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FHistorico = contacorrente.Historico, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FContrato = contacorrente.Contrato, Times.Once);
@@ -99,7 +100,6 @@ public class ContaCorrenteWriterTests
         _mockFContaCorrente.VerifySet(x => x.FParcelaPrincipalID = contacorrente.ParcelaPrincipalID, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FHide = contacorrente.Hide, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.FDataPgto = contacorrente.DataPgto.ToString(), Times.Once);
-        _mockFContaCorrente.VerifySet(x => x.FGUID = contacorrente.GUID, Times.Once);
         _mockFContaCorrente.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -116,6 +116,21 @@ public class ContaCorrenteWriterTests
         await _contacorrenteWriter.WriteAsync(contacorrente, auditorQuem, _mockConnection.Object);
         // Assert
         _mockFContaCorrente.VerifySet(x => x.FDtOriginal = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var contacorrente = CreateValidContaCorrenteModel();
+        contacorrente.Data = null;
+        var auditorQuem = 123;
+        _mockContaCorrenteFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFContaCorrente.Object);
+        _mockFContaCorrente.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _contacorrenteWriter.WriteAsync(contacorrente, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFContaCorrente.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -173,7 +188,7 @@ public class ContaCorrenteWriterTests
         var operadorId = 456;
         _mockContaCorrenteFactory.Setup(x => x.DeleteAsync(operadorId, contacorrenteResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _contacorrenteWriter.Delete(contacorrenteResponse, operadorId, _mockConnection.Object);
+        await _contacorrenteWriter.DeleteAsync(contacorrenteResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockContaCorrenteFactory.Verify(x => x.DeleteAsync(operadorId, contacorrenteResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -189,7 +204,7 @@ public class ContaCorrenteWriterTests
         var operadorId = 111;
         _mockContaCorrenteFactory.Setup(x => x.DeleteAsync(operadorId, contacorrenteResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _contacorrenteWriter.Delete(contacorrenteResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _contacorrenteWriter.DeleteAsync(contacorrenteResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -206,7 +221,7 @@ public class ContaCorrenteWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockContaCorrenteFactory.Setup(x => x.DeleteAsync(operadorId, contacorrenteResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contacorrenteWriter.Delete(contacorrenteResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contacorrenteWriter.DeleteAsync(contacorrenteResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -236,6 +251,7 @@ public class ContaCorrenteWriterTests
         return new Models.ContaCorrente
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             CIAcordo = 1,
             Quitado = false,
             IDContrato = 1,
@@ -248,7 +264,7 @@ public class ContaCorrenteWriterTests
             Processo = 1,
             ParcelaX = 1,
             Valor = 1m,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Cliente = 1,
             Historico = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Contrato = false,
@@ -260,8 +276,7 @@ public class ContaCorrenteWriterTests
             ValorPrincipal = 1m,
             ParcelaPrincipalID = 1,
             Hide = false,
-            DataPgto = "24/04/1975",
-            GUID = Guid.NewGuid().ToString()
+            DataPgto = "24/04/1975"
         };
     }
 #endregion

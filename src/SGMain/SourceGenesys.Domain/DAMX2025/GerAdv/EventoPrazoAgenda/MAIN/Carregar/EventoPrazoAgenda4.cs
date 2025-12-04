@@ -54,8 +54,16 @@ public partial class DBEventoPrazoAgenda
         // Checkpoint Carregar 
         try
         {
+            FNome = getValue(DBEventoPrazoAgendaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBEventoPrazoAgendaDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBEventoPrazoAgendaDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBEventoPrazoAgendaDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBEventoPrazoAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEventoPrazoAgendaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBEventoPrazoAgendaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBEventoPrazoAgendaDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBEventoPrazoAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEventoPrazoAgendaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBEventoPrazoAgendaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBEventoPrazoAgendaDicInfo.QuemCad));
         }
         catch
         {
@@ -100,22 +108,14 @@ public partial class DBEventoPrazoAgenda
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEventoPrazoAgendaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBEventoPrazoAgendaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBEventoPrazoAgendaDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBEventoPrazoAgendaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -139,7 +139,7 @@ public partial class DBEventoPrazoAgenda
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

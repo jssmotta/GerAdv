@@ -22,7 +22,7 @@ public partial class GUTTipoWhere(IFGUTTipoFactory guttipoFactory) : IGUTTipoWhe
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Ordem = dbRec.FOrdem,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return guttipo;
     }

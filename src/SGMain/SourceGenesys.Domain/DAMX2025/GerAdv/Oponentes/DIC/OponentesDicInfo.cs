@@ -11,7 +11,6 @@ public static partial class DBOponentesDicInfo
     public const string CampoNome = "opoNome";
     public const string TablePrefix = "opo";
     public const string EMPFuncao = "opoEMPFuncao"; // LOCALIZACAO 170523
-    public const string GUID = "opoGUID"; // LOCALIZACAO 170523
     public const string CTPSNumero = "opoCTPSNumero"; // LOCALIZACAO 170523
     public const string Site = "opoSite"; // LOCALIZACAO 170523
     public const string CTPSSerie = "opoCTPSSerie"; // LOCALIZACAO 170523
@@ -40,6 +39,7 @@ public static partial class DBOponentesDicInfo
     public const string Top = "opoTop"; // LOCALIZACAO 170523
     public const string Etiqueta = "opoEtiqueta"; // LOCALIZACAO 170523
     public const string Bold = "opoBold"; // LOCALIZACAO 170523
+    public const string Guid = "opoGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "opoQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "opoDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "opoQuemAtu"; // LOCALIZACAO 170523
@@ -87,152 +87,41 @@ public static partial class DBOponentesDicInfo
 
     public const string PTabelaNome = "Oponentes";
 #region PropriedadesDaTabela
-    public static DBInfoSystem OpoEMPFuncao => new(0, PTabelaNome, CampoCodigo, EMPFuncao, "EMPFuncao", "EMPFuncao", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoCTPSNumero => new(0, PTabelaNome, CampoCodigo, CTPSNumero, 15, "CTPSNumero", "CTPSNumero", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoSite => new(0, PTabelaNome, CampoCodigo, Site, 150, "Site", "Site", ETipoDadosSysteminfo.SysteminfoTextWebsite, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoCTPSSerie => new(0, PTabelaNome, CampoCodigo, CTPSSerie, 10, "CTPSSerie", "CTPSSerie", ETipoDadosSysteminfo.SysteminfoTextCtpsserie, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoAdv => new(0, PTabelaNome, CampoCodigo, Adv, "Adv", "Adv", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoEMPCliente => new(0, PTabelaNome, CampoCodigo, EMPCliente, "EMPCliente", "EMPCliente", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoIDRep => new(0, PTabelaNome, CampoCodigo, IDRep, "IDRep", "IDRep", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoPIS => new(0, PTabelaNome, CampoCodigo, PIS, 20, "PIS", "PIS", ETipoDadosSysteminfo.SysteminfoTextPis, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoContato => new(0, PTabelaNome, CampoCodigo, Contato, DevourerOne.PMaxSizeCampoMemo, "Contato", "Contato", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, "CNPJ", "CNPJ", ETipoDadosSysteminfo.SysteminfoTextCnpj, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoRG => new(0, PTabelaNome, CampoCodigo, RG, 12, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoJuridica => new(0, PTabelaNome, CampoCodigo, Juridica, "Juridica", "Juridica", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoTipo => new(0, PTabelaNome, CampoCodigo, Tipo, "Tipo", "Tipo", ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa)
-    {
-        IsRequired = true,
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "opo"
-    }; // DBI 11 
-    public static DBInfoSystem OpoBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, "InscEst", "InscEst", ETipoDadosSysteminfo.SysteminfoTextInscricao, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoEMail => new(0, PTabelaNome, CampoCodigo, EMail, 100, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "opo"
-    }; // DBI 11 
-    public static DBInfoSystem OpoDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "opo"
-    }; // DBI 11 
-    public static DBInfoSystem OpoDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "opo"
-    };
-    public static DBInfoSystem OpoVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "opo"
-    };
+    public static DBInfoSystem OpoEMPFuncao => new(0, PTabelaNome, CampoCodigo, EMPFuncao, EMPFuncao, EMPFuncao, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "opo");
+    public static DBInfoSystem OpoCTPSNumero => new(0, PTabelaNome, CampoCodigo, CTPSNumero, 15, CTPSNumero, CTPSNumero, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoSite => new(0, PTabelaNome, CampoCodigo, Site, 150, Site, Site, EDataTypeSystemInfo.SystemInfoTextWebsite, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoCTPSSerie => new(0, PTabelaNome, CampoCodigo, CTPSSerie, 10, CTPSSerie, CTPSSerie, EDataTypeSystemInfo.SystemInfoTextCtpsSerie, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "opo");
+    public static DBInfoSystem OpoAdv => new(0, PTabelaNome, CampoCodigo, Adv, Adv, Adv, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "opo");
+    public static DBInfoSystem OpoEMPCliente => new(0, PTabelaNome, CampoCodigo, EMPCliente, EMPCliente, EMPCliente, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "opo");
+    public static DBInfoSystem OpoIDRep => new(0, PTabelaNome, CampoCodigo, IDRep, IDRep, IDRep, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "opo");
+    public static DBInfoSystem OpoPIS => new(0, PTabelaNome, CampoCodigo, PIS, 20, PIS, PIS, EDataTypeSystemInfo.SystemInfoTextPis, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoContato => new(0, PTabelaNome, CampoCodigo, Contato, DevourerOne.PMaxSizeCampoMemo, Contato, Contato, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoCNPJ => new(0, PTabelaNome, CampoCodigo, CNPJ, 14, CNPJ, CNPJ, EDataTypeSystemInfo.SystemInfoTextCnpj, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoRG => new(0, PTabelaNome, CampoCodigo, RG, 12, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoJuridica => new(0, PTabelaNome, CampoCodigo, Juridica, Juridica, Juridica, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "opo", isRequired: true);
+    public static DBInfoSystem OpoTipo => new(0, PTabelaNome, CampoCodigo, Tipo, Tipo, Tipo, EDataTypeSystemInfo.SystemInfoBooleanTypePerson, prefixo: "opo", isRequired: true);
+    public static DBInfoSystem OpoSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "opo", isRequired: true);
+    public static DBInfoSystem OpoCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "opo"); // DBI 11 
+    public static DBInfoSystem OpoBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoInscEst => new(0, PTabelaNome, CampoCodigo, InscEst, 15, InscEst, InscEst, EDataTypeSystemInfo.SystemInfoTextInscricao, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoEMail => new(0, PTabelaNome, CampoCodigo, EMail, 100, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "opo");
+    public static DBInfoSystem OpoEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "opo", isRequired: true);
+    public static DBInfoSystem OpoBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "opo", isRequired: true);
+    public static DBInfoSystem OpoGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "opo");
+    public static DBInfoSystem OpoQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "opo"); // DBI 11 
+    public static DBInfoSystem OpoDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "opo");
+    public static DBInfoSystem OpoQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "opo"); // DBI 11 
+    public static DBInfoSystem OpoDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "opo");
+    public static DBInfoSystem OpoVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "opo", isRequired: true);
 
 #endregion
     [Serializable]

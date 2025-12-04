@@ -36,7 +36,7 @@ public class LigacoesWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFLigacoes(string? Assunto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? AgeClienteAvisado = 1, bool? Celular = false, int? Cliente = 1, string? Contato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? DataRealizada = "24/04/1975", int? QuemID = 1, int? Telefonista = 1, string? UltimoAviso = "24/04/1975", string? HoraFinal = "27/05/2022", string? Nome = "João", int? QuemCodigo = 1, int? Solicitante = 1, string? Para = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Fone = "(11) 99999-9999", int? Ramal = 1, bool? Particular = true, bool? Realizada = false, string? Status = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Data = "27/05/2022", string? Hora = "27/05/2022", bool? Urgente = true, string? LigarPara = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Processo = 1, bool? StartScreen = false, int? Emotion = 1)
+    private void SetupMockFLigacoes(string? Assunto = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? AgeClienteAvisado = 1, bool? Celular = false, int? Cliente = 1, string? Contato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? DataRealizada = "24/04/1975", int? QuemID = 1, int? Telefonista = 1, string? UltimoAviso = "24/04/1975", string? HoraFinal = "04:04", string? Nome = "João", int? QuemCodigo = 1, int? Solicitante = 1, string? Para = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", string? Fone = "(11) 99999-9999", int? Ramal = 1, bool? Particular = true, bool? Realizada = false, string? Status = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", string? Data = "24/04/1975", string? Hora = "04:04", bool? Urgente = true, string? LigarPara = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Processo = 1, bool? StartScreen = false, int? Emotion = 1)
     {
         _mockFLigacoes.Setup(f => f.FAssunto).Returns(Assunto ?? string.Empty);
         _mockFLigacoes.Setup(f => f.FAgeClienteAvisado).Returns(AgeClienteAvisado ?? 0);
@@ -112,7 +112,7 @@ public class LigacoesWhereTests : IDisposable
         result.QuemID.Should().Be(1);
         result.Telefonista.Should().Be(1);
         result.UltimoAviso.Should().Be("24/04/1975");
-        result.HoraFinal.Should().Be("27/05/2022");
+        result.HoraFinal.Should().Be("04:04");
         result.Nome.Should().Be("João");
         result.QuemCodigo.Should().Be(1);
         result.Solicitante.Should().Be(1);
@@ -122,8 +122,8 @@ public class LigacoesWhereTests : IDisposable
         result.Particular.Should().Be(true);
         result.Realizada.Should().Be(false);
         result.Status.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        result.Data.Should().Be("27/05/2022");
-        result.Hora.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
+        result.Hora.Should().Be("04:04");
         result.Urgente.Should().Be(true);
         result.LigarPara.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Processo.Should().Be(1);
@@ -280,7 +280,7 @@ public class LigacoesWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFLigacoes(Assunto: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", AgeClienteAvisado: 1, Celular: false, Cliente: 1, Contato: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", DataRealizada: "24/04/1975", QuemID: 1, Telefonista: 1, UltimoAviso: "24/04/1975", HoraFinal: "27/05/2022", Nome: "João", QuemCodigo: 1, Solicitante: 1, Para: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Fone: "(11) 99999-9999", Ramal: 1, Particular: true, Realizada: false, Status: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Data: "27/05/2022", Hora: "27/05/2022", Urgente: true, LigarPara: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Processo: 1, StartScreen: false, Emotion: 1);
+        SetupMockFLigacoes(Assunto: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", AgeClienteAvisado: 1, Celular: false, Cliente: 1, Contato: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", DataRealizada: "24/04/1975", QuemID: 1, Telefonista: 1, UltimoAviso: "24/04/1975", HoraFinal: "04:04", Nome: "João", QuemCodigo: 1, Solicitante: 1, Para: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Fone: "(11) 99999-9999", Ramal: 1, Particular: true, Realizada: false, Status: "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", Data: "24/04/1975", Hora: "04:04", Urgente: true, LigarPara: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Processo: 1, StartScreen: false, Emotion: 1);
         _mockLigacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLigacoes.Object);
         // Act
         var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
@@ -296,7 +296,7 @@ public class LigacoesWhereTests : IDisposable
         result.QuemID.Should().Be(1);
         result.Telefonista.Should().Be(1);
         result.UltimoAviso.Should().Be("24/04/1975");
-        result.HoraFinal.Should().Be("27/05/2022");
+        result.HoraFinal.Should().Be("04:04");
         result.Nome.Should().Be("João");
         result.QuemCodigo.Should().Be(1);
         result.Solicitante.Should().Be(1);
@@ -306,8 +306,8 @@ public class LigacoesWhereTests : IDisposable
         result.Particular.Should().Be(true);
         result.Realizada.Should().Be(false);
         result.Status.Should().Be("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
-        result.Data.Should().Be("27/05/2022");
-        result.Hora.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
+        result.Hora.Should().Be("04:04");
         result.Urgente.Should().Be(true);
         result.LigarPara.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Processo.Should().Be(1);
@@ -346,20 +346,6 @@ public class LigacoesWhereTests : IDisposable
         var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.DataRealizada.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDataRealizadaStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFLigacoes(DataRealizada: "invalid-date");
-        _mockLigacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLigacoes.Object);
-        // Act
-        var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataRealizada.Should().Be("");
     }
 
     [Fact]
@@ -411,20 +397,6 @@ public class LigacoesWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateUltimoAvisoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFLigacoes(UltimoAviso: "invalid-date");
-        _mockLigacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLigacoes.Object);
-        // Act
-        var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.UltimoAviso.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateUltimoAvisoFields_ShouldNotSetDateProperties()
     {
         // Arrange
@@ -455,6 +427,54 @@ public class LigacoesWhereTests : IDisposable
         var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.UltimoAviso.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "02/01/2025";
+        SetupMockFLigacoes(Data: testDate);
+        _mockLigacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLigacoes.Object);
+        // Act
+        var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("02/01/2025");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFLigacoes(Data: null);
+        _mockLigacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLigacoes.Object);
+        // Act
+        var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("02/01/2025")]
+    [InlineData("2025/01/03T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/04T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFLigacoes(Data: dateString);
+        _mockLigacoesFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFLigacoes.Object);
+        // Act
+        var result = _ligacoesWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
     }
 #endregion
 #endregion

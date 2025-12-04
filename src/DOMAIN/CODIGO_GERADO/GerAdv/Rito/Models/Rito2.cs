@@ -14,22 +14,28 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Descricao - ritDescricao - tamanho máximo: 20 
+        /// ritDescricao - ritDescricao - tamanho máximo: 20 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// GUID - ritGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Top - ritTop  
+        /// ritTop - ritTop  
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// ritBold - ritBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// ritGuid - ritGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -42,21 +48,27 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Descricao - ritDescricao - tamanho máximo: 20 
+        /// ritDescricao - ritDescricao - tamanho máximo: 20 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// GUID - ritGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Top - ritTop  
+        /// ritTop - ritTop  
         /// </summary>
         [JsonPropertyName("top")]
         public bool Top { get; set; }
+
+        /// <summary>
+        /// ritBold - ritBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// ritGuid - ritGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }

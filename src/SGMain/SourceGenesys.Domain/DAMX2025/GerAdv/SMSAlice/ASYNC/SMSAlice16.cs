@@ -14,6 +14,14 @@ public partial class DBSMSAlice
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBSMSAlice
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,17 +142,17 @@ public partial class DBSMSAlice
 
 #if (!NOTSTORED_SMSAlice)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFOperador || pFldFNome || pFldFTipoEMail || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFOperador || pFldFNome || pFldFTipoEMail || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFOperador)
-            updateTool.Fields(DBSMSAliceDicInfo.Operador, m_FOperador, ETiposCampos.FNumber);
+            updateTool.Fields(DBSMSAliceDicInfo.Operador, FOperador, EGenericTypeFields.FNumber);
         if (pFldFNome)
-            updateTool.Fields(DBSMSAliceDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBSMSAliceDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFTipoEMail)
-            updateTool.Fields(DBSMSAliceDicInfo.TipoEMail, m_FTipoEMail, ETiposCampos.FNumber);
-        if (pFldFGUID)
-            updateTool.Fields(DBSMSAliceDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBSMSAliceDicInfo.TipoEMail, FTipoEMail, EGenericTypeFields.FNumber);
+        if (pFldFGuid)
+            updateTool.Fields(DBSMSAliceDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -156,24 +164,23 @@ public partial class DBSMSAlice
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBSMSAliceDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBSMSAliceDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBSMSAliceDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBSMSAliceDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBSMSAliceDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBSMSAliceDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBSMSAliceDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBSMSAliceDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBSMSAliceDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBSMSAliceDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBSMSAliceDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

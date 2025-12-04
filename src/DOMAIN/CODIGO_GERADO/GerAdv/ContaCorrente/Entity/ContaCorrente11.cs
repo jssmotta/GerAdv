@@ -23,12 +23,6 @@ public partial class FContaCorrenteFactory : IFContaCorrenteFactory, IDisposable
         return FContaCorrente.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FContaCorrente> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FContaCorrente().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FContaCorrente> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FContaCorrenteFactory : IFContaCorrenteFactory, IDisposable
         return FContaCorrente.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FContaCorrente> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FContaCorrente().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FContaCorrenteFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

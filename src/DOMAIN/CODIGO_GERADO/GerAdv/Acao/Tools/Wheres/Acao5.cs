@@ -20,10 +20,10 @@ public partial class AcaoWhere(IFAcaoFactory acaoFactory) : IAcaoWhere
         var acao = new AcaoResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Justica = dbRec.FJustica,
             Area = dbRec.FArea,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return acao;
     }

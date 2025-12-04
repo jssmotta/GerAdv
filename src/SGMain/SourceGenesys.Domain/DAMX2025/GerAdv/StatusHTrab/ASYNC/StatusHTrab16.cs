@@ -31,7 +31,7 @@ public partial class DBStatusHTrab
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,9 +138,9 @@ public partial class DBStatusHTrab
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFDescricao)
-            updateTool.Fields(DBStatusHTrabDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBStatusHTrabDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFResID)
-            updateTool.Fields(DBStatusHTrabDicInfo.ResID, m_FResID, ETiposCampos.FNumber);
+            updateTool.Fields(DBStatusHTrabDicInfo.ResID, FResID, EGenericTypeFields.FNumber);
     }
 
 #endif
@@ -152,7 +152,7 @@ public partial class DBStatusHTrab
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

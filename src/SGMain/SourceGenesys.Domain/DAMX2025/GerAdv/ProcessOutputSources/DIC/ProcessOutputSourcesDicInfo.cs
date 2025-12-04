@@ -11,7 +11,7 @@ public static partial class DBProcessOutputSourcesDicInfo
     public const string CampoNome = "posNome";
     public const string TablePrefix = "pos";
     public const string Nome = "posNome"; // LOCALIZACAO 170523
-    public const string GUID = "posGUID"; // LOCALIZACAO 170523
+    public const string Guid = "posGuid"; // LOCALIZACAO 170523
     public static string GetNameFieldByENum(NomesCamposTabela idField) => ((int)idField) switch
     {
         1 => Nome,
@@ -21,14 +21,8 @@ public static partial class DBProcessOutputSourcesDicInfo
 
     public const string PTabelaNome = "ProcessOutputSources";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PosNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pos"
-    };
-    public static DBInfoSystem PosGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "pos"
-    };
+    public static DBInfoSystem PosNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "pos");
+    public static DBInfoSystem PosGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pos");
 
 #endregion
     [Serializable]

@@ -23,12 +23,6 @@ public partial class FOperadorGruposFactory : IFOperadorGruposFactory, IDisposab
         return FOperadorGrupos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOperadorGrupos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FOperadorGrupos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FOperadorGrupos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FOperadorGruposFactory : IFOperadorGruposFactory, IDisposab
         return FOperadorGrupos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FOperadorGrupos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FOperadorGrupos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FOperadorGruposFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IProcessOutputEngineWriter
 {
     Task<FProcessOutputEngine> WriteAsync(Models.ProcessOutputEngine processoutputengine, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ProcessOutputEngineWriter(IFProcessOutputEngineFactory processoutputengineFactory) : IProcessOutputEngineWriter
 {
     private readonly IFProcessOutputEngineFactory _processoutputengineFactory = processoutputengineFactory ?? throw new ArgumentNullException(nameof(processoutputengineFactory));
-    public virtual async Task Delete(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ProcessOutputEngineResponse processoutputengine, int operadorId, MsiSqlConnection? oCnn)
     {
         await _processoutputengineFactory.DeleteAsync(operadorId, processoutputengine.Id, oCnn);
     }
@@ -30,12 +30,12 @@ public class ProcessOutputEngineWriter(IFProcessOutputEngineFactory processoutpu
         dbRec.FValor = processoutputengine.Valor;
         dbRec.FOutput = processoutputengine.Output;
         dbRec.FAdministrador = processoutputengine.Administrador;
-        dbRec.FGUID = processoutputengine.GUID;
         dbRec.FOutputSource = processoutputengine.OutputSource;
         dbRec.FDisabledItem = processoutputengine.DisabledItem;
         dbRec.FIDModulo = processoutputengine.IDModulo;
         dbRec.FIsOnlyProcesso = processoutputengine.IsOnlyProcesso;
         dbRec.FMyID = processoutputengine.MyID;
+        dbRec.FGuid = processoutputengine.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

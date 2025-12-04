@@ -26,8 +26,6 @@ public class ContatoCRMViewValidation : IContatoCRMViewValidation
 
     private bool ValidSizes(Models.ContatoCRMView reg)
     {
-        if (reg.CGUID != null && reg.CGUID.Length > DBContatoCRMViewDicInfo.CcwCGUID.FTamanho)
-            throw new SGValidationException($"CGUID deve ter no máximo {DBContatoCRMViewDicInfo.CcwCGUID.FTamanho} caracteres.");
         if (reg.IP != null && reg.IP.Length > DBContatoCRMViewDicInfo.CcwIP.FTamanho)
             throw new SGValidationException($"IP deve ter no máximo {DBContatoCRMViewDicInfo.CcwIP.FTamanho} caracteres.");
         return true;
@@ -39,15 +37,31 @@ public class ContatoCRMViewValidation : IContatoCRMViewValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Data))
             throw new SGValidationException("Data é obrigatório");
+        if (reg.Data.Contains("%"))
+            throw new SGValidationException("Data possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
-        if (reg.CGUID.IsEmpty())
-            throw new SGValidationException("CGUID é obrigatório.");
+        if (reg.Data.IsEmpty())
+            throw new SGValidationException("Data é obrigatório.");
+        if (!DateTime.TryParse(reg.Data, out _))
+        {
+            throw new SGValidationException($"Data inválida: {reg.Data}");
+        }
+
         if (reg.Data.IsEmpty())
             throw new SGValidationException("Data é obrigatório.");
         if (reg.IP.IsEmpty())
             throw new SGValidationException("IP é obrigatório.");
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         await Task.Delay(0);
         return true;
     }

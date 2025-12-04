@@ -5,12 +5,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { JusticaGridAdapter } from '@/app/GerAdv_TS/Justica/Adapter/JusticaGridAdapter';
+
 // Mock JusticaGrid component
 jest.mock('@/app/GerAdv_TS/Justica/Crud/Grids/JusticaGrid', () => () => <div data-testid='justica-grid-mock' />);
+
 describe('JusticaGridAdapter', () => {
-  it('should render JusticaGrid component', () => {
-    const adapter = new JusticaGridAdapter();
-    const { getByTestId } = render(<>{adapter.render()}</>);
-    expect(getByTestId('justica-grid-mock')).toBeInTheDocument();
-  });
+    it('should render JusticaGrid component', () => {
+        const adapter = new JusticaGridAdapter();
+        const { getByTestId } = render(<>{adapter.render()}</>);
+        expect(getByTestId('justica-grid-mock')).toBeInTheDocument();
+    });
 });

@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IPenhoraWriter
 {
     Task<FPenhora> WriteAsync(Models.Penhora penhora, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(PenhoraResponse penhora, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(PenhoraResponse penhora, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PenhoraWriter(IFPenhoraFactory penhoraFactory) : IPenhoraWriter
 {
     private readonly IFPenhoraFactory _penhoraFactory = penhoraFactory ?? throw new ArgumentNullException(nameof(penhoraFactory));
-    public virtual async Task Delete(PenhoraResponse penhora, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(PenhoraResponse penhora, int operadorId, MsiSqlConnection? oCnn)
     {
         await _penhoraFactory.DeleteAsync(operadorId, penhora.Id, oCnn);
     }
@@ -26,11 +26,14 @@ public class PenhoraWriter(IFPenhoraFactory penhoraFactory) : IPenhoraWriter
         dbRec.FProcesso = penhora.Processo;
         dbRec.FNome = penhora.Nome;
         dbRec.FDescricao = penhora.Descricao;
-        if (penhora.DataPenhora != null)
-            dbRec.FDataPenhora = penhora.DataPenhora.ToString();
+        if (penhora.DataPenhora.NotIsEmpty())
+        {
+            dbRec.FDataPenhora = DateOnly.FromDateTime(Convert.ToDateTime(penhora.DataPenhora));
+        }
+
         dbRec.FPenhoraStatus = penhora.PenhoraStatus;
-        dbRec.FGUID = penhora.GUID;
         dbRec.FMaster = penhora.Master;
+        dbRec.FGuid = penhora.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

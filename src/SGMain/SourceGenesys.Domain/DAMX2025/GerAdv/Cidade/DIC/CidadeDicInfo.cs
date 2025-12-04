@@ -17,7 +17,7 @@ public static partial class DBCidadeDicInfo
     public const string Nome = "cidNome"; // LOCALIZACAO 170523
     public const string UF = "cidUF"; // LOCALIZACAO 170523
     public const string Sigla = "cidSigla"; // LOCALIZACAO 170523
-    public const string GUID = "cidGUID"; // LOCALIZACAO 170523
+    public const string Guid = "cidGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "cidQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "cidDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "cidQuemAtu"; // LOCALIZACAO 170523
@@ -43,64 +43,19 @@ public static partial class DBCidadeDicInfo
 
     public const string PTabelaNome = "Cidade";
 #region PropriedadesDaTabela
-    public static DBInfoSystem CidDDD => new(0, PTabelaNome, CampoCodigo, DDD, 10, "DDD", "DDD", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidComarca => new(0, PTabelaNome, CampoCodigo, Comarca, "Comarca", "Comarca", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidCapital => new(0, PTabelaNome, CampoCodigo, Capital, "Capital", "Capital", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidNome => new(0, PTabelaNome, CampoCodigo, Nome, 40, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidUF => new(0, PTabelaNome, CampoCodigo, UF, "UF", "UF", ETipoDadosSysteminfo.SysteminfoForeingkey, DBUFDicInfo.CampoCodigo, DBUFDicInfo.TabelaNome, new DBUFODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "cid"
-    }; // DBI 11 
-    public static DBInfoSystem CidSigla => new(0, PTabelaNome, CampoCodigo, Sigla, 10, "Sigla", "Sigla", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cid"
-    }; // DBI 11 
-    public static DBInfoSystem CidDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "cid"
-    }; // DBI 11 
-    public static DBInfoSystem CidDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "cid"
-    };
-    public static DBInfoSystem CidVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "cid"
-    };
+    public static DBInfoSystem CidDDD => new(0, PTabelaNome, CampoCodigo, DDD, 10, DDD, DDD, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cid");
+    public static DBInfoSystem CidTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cid", isRequired: true);
+    public static DBInfoSystem CidComarca => new(0, PTabelaNome, CampoCodigo, Comarca, Comarca, Comarca, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cid", isRequired: true);
+    public static DBInfoSystem CidCapital => new(0, PTabelaNome, CampoCodigo, Capital, Capital, Capital, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "cid", isRequired: true);
+    public static DBInfoSystem CidNome => new(0, PTabelaNome, CampoCodigo, Nome, 40, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "cid", isRequired: true);
+    public static DBInfoSystem CidUF => new(0, PTabelaNome, CampoCodigo, UF, UF, UF, EDataTypeSystemInfo.SystemInfoForeingkey, DBUFDicInfo.CampoCodigo, DBUFDicInfo.TabelaNome, new DBUFODicInfo(), false, prefixo: "cid", isRequired: true); // DBI 11 
+    public static DBInfoSystem CidSigla => new(0, PTabelaNome, CampoCodigo, Sigla, 10, Sigla, Sigla, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "cid");
+    public static DBInfoSystem CidGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "cid");
+    public static DBInfoSystem CidQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cid"); // DBI 11 
+    public static DBInfoSystem CidDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "cid");
+    public static DBInfoSystem CidQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "cid"); // DBI 11 
+    public static DBInfoSystem CidDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "cid");
+    public static DBInfoSystem CidVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "cid", isRequired: true);
 
 #endregion
     [Serializable]

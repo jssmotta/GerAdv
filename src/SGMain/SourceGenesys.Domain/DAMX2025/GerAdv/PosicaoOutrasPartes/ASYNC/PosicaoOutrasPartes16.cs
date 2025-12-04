@@ -14,6 +14,14 @@ public partial class DBPosicaoOutrasPartes
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBPosicaoOutrasPartes
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,13 +142,15 @@ public partial class DBPosicaoOutrasPartes
 
 #if (!NOTSTORED_PosicaoOutrasPartes)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFDescricao || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFDescricao || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFDescricao)
-            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -152,24 +162,23 @@ public partial class DBPosicaoOutrasPartes
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBPosicaoOutrasPartesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

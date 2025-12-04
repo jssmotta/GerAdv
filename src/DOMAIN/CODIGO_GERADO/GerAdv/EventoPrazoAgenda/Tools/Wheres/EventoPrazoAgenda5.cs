@@ -21,6 +21,7 @@ public partial class EventoPrazoAgendaWhere(IFEventoPrazoAgendaFactory eventopra
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
+            Bold = dbRec.FBold,
         };
         return eventoprazoagenda;
     }

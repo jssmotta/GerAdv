@@ -23,12 +23,6 @@ public partial class FProcessOutputEngineFactory : IFProcessOutputEngineFactory,
         return FProcessOutputEngine.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FProcessOutputEngine> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FProcessOutputEngine().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FProcessOutputEngine> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FProcessOutputEngineFactory : IFProcessOutputEngineFactory,
         return FProcessOutputEngine.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FProcessOutputEngine> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FProcessOutputEngine().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FProcessOutputEngineFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

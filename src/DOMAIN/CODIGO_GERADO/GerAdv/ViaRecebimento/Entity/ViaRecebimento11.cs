@@ -23,12 +23,6 @@ public partial class FViaRecebimentoFactory : IFViaRecebimentoFactory, IDisposab
         return FViaRecebimento.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FViaRecebimento> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FViaRecebimento().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FViaRecebimento> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FViaRecebimentoFactory : IFViaRecebimentoFactory, IDisposab
         return FViaRecebimento.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FViaRecebimento> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FViaRecebimento().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FViaRecebimentoFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

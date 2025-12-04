@@ -24,21 +24,9 @@ public static partial class DBContatoCRMViewDicInfo
 
     public const string PTabelaNome = "ContatoCRMView";
 #region PropriedadesDaTabela
-    public static DBInfoSystem CcwCGUID => new(0, PTabelaNome, CampoCodigo, CGUID, 100, "CGUID", "CGUID", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "ccw"
-    };
-    public static DBInfoSystem CcwData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "ccw"
-    };
-    public static DBInfoSystem CcwIP => new(0, PTabelaNome, CampoCodigo, IP, 50, "IP", "IP", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "ccw"
-    };
+    public static DBInfoSystem CcwCGUID => new(0, PTabelaNome, CampoCodigo, CGUID, 100, CGUID, CGUID, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ccw", isRequired: true);
+    public static DBInfoSystem CcwData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "ccw", isRequired: true);
+    public static DBInfoSystem CcwIP => new(0, PTabelaNome, CampoCodigo, IP, 50, IP, IP, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "ccw", isRequired: true);
 
 #endregion
     [Serializable]

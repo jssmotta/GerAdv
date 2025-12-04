@@ -75,8 +75,23 @@ public class ContatoCRMViewWriterTests
         // Assert
         result.Should().Be(_mockFContatoCRMView.Object);
         _mockFContatoCRMView.VerifySet(x => x.FCGUID = contatocrmview.CGUID, Times.Once);
-        _mockFContatoCRMView.VerifySet(x => x.FData = contatocrmview.Data, Times.Once);
+        _mockFContatoCRMView.VerifySet(x => x.FData = contatocrmview.Data.ToString(), Times.Once);
         _mockFContatoCRMView.VerifySet(x => x.FIP = contatocrmview.IP, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var contatocrmview = CreateValidContatoCRMViewModel();
+        contatocrmview.Data = null;
+        var auditorQuem = 123;
+        _mockContatoCRMViewFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFContatoCRMView.Object);
+        _mockFContatoCRMView.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _contatocrmviewWriter.WriteAsync(contatocrmview, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFContatoCRMView.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -119,7 +134,7 @@ public class ContatoCRMViewWriterTests
         var operadorId = 456;
         _mockContatoCRMViewFactory.Setup(x => x.DeleteAsync(operadorId, contatocrmviewResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _contatocrmviewWriter.Delete(contatocrmviewResponse, operadorId, _mockConnection.Object);
+        await _contatocrmviewWriter.DeleteAsync(contatocrmviewResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockContatoCRMViewFactory.Verify(x => x.DeleteAsync(operadorId, contatocrmviewResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +150,7 @@ public class ContatoCRMViewWriterTests
         var operadorId = 111;
         _mockContatoCRMViewFactory.Setup(x => x.DeleteAsync(operadorId, contatocrmviewResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _contatocrmviewWriter.Delete(contatocrmviewResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _contatocrmviewWriter.DeleteAsync(contatocrmviewResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +167,7 @@ public class ContatoCRMViewWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockContatoCRMViewFactory.Setup(x => x.DeleteAsync(operadorId, contatocrmviewResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contatocrmviewWriter.Delete(contatocrmviewResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _contatocrmviewWriter.DeleteAsync(contatocrmviewResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -183,7 +198,7 @@ public class ContatoCRMViewWriterTests
         {
             Id = 0,
             CGUID = Guid.NewGuid().ToString(),
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }

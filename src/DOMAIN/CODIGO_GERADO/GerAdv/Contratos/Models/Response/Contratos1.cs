@@ -80,12 +80,6 @@ namespace MenphisSI.GerAdv.Models.Response
         public decimal ValorConsultoria { get; set; }
 
         /// <summary>
-        /// GUID - cttGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// TipoCobranca - cttTipoCobranca  
         /// </summary>
         [JsonPropertyName("tipocobranca")]
@@ -192,6 +186,18 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("multa")]
         public string Multa { get; set; } = "";
+
+        /// <summary>
+        /// Bold - cttBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - cttGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -270,12 +276,6 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public decimal ValorConsultoria { get; set; }
 
         /// <summary>
-        /// GUID - cttGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
         /// TipoCobranca - cttTipoCobranca  
         /// </summary>
         [JsonPropertyName("tipocobranca")]
@@ -382,6 +382,18 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("multa")]
         public string Multa { get; set; } = "";
+
+        /// <summary>
+        /// Bold - cttBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - cttGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

@@ -14,6 +14,7 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     private readonly IViaRecebimentoService _viarecebimentoService = viarecebimentoService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterViaRecebimento filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterViaRecebimento filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("ViaRecebimento: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _viarecebimentoService.Filter(max, filtro, uri);
+        //_logger.Info("ViaRecebimento: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _viarecebimentoService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterViaRecebimentoWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("ViaRecebimento: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _viarecebimentoService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("ViaRecebimento: GetById called with id = {0}, {1}", id, uri);
         var result = await _viarecebimentoService.GetById(id, uri, token);
         if (result == null)
@@ -52,6 +75,7 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterViaRecebimento? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +89,8 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(ViaRecebimentoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ViaRecebimentoResponse), StatusCodes.Status201Created)]
@@ -107,6 +131,11 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("ViaRecebimento: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _viarecebimentoService.Delete(id, uri);
@@ -126,6 +155,7 @@ public partial class ViaRecebimentoController(IViaRecebimentoService viarecebime
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.ViaRecebimento regViaRecebimento, [FromRoute, Required] string uri)
     {

@@ -21,8 +21,8 @@ public static partial class DBReuniaoDicInfo
     public const string HoraSaida = "renHoraSaida"; // LOCALIZACAO 170523
     public const string HoraRetorno = "renHoraRetorno"; // LOCALIZACAO 170523
     public const string PrincipaisDecisoes = "renPrincipaisDecisoes"; // LOCALIZACAO 170523
-    public const string GUID = "renGUID"; // LOCALIZACAO 170523
     public const string Bold = "renBold"; // LOCALIZACAO 170523
+    public const string Guid = "renGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "renQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "renDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "renQuemAtu"; // LOCALIZACAO 170523
@@ -53,81 +53,24 @@ public static partial class DBReuniaoDicInfo
 
     public const string PTabelaNome = "Reuniao";
 #region PropriedadesDaTabela
-    public static DBInfoSystem RenCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "ren"
-    }; // DBI 11 
-    public static DBInfoSystem RenIDAgenda => new(0, PTabelaNome, CampoCodigo, IDAgenda, "IDAgenda", "IDAgenda", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenData => new(0, PTabelaNome, CampoCodigo, Data, -1, "Data", "Data", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenPauta => new(0, PTabelaNome, CampoCodigo, Pauta, DevourerOne.PMaxSizeCampoMemo, "Pauta", "Pauta", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenATA => new(0, PTabelaNome, CampoCodigo, ATA, DevourerOne.PMaxSizeCampoMemo, "ATA", "ATA", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenHoraInicial => new(0, PTabelaNome, CampoCodigo, HoraInicial, "HoraInicial", "HoraInicial", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenHoraFinal => new(0, PTabelaNome, CampoCodigo, HoraFinal, "HoraFinal", "HoraFinal", ETipoDadosSysteminfo.SysteminfoTime)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenExterna => new(0, PTabelaNome, CampoCodigo, Externa, "Externa", "Externa", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenHoraSaida => new(0, PTabelaNome, CampoCodigo, HoraSaida, "HoraSaida", "HoraSaida", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenHoraRetorno => new(0, PTabelaNome, CampoCodigo, HoraRetorno, "HoraRetorno", "HoraRetorno", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenPrincipaisDecisoes => new(0, PTabelaNome, CampoCodigo, PrincipaisDecisoes, DevourerOne.PMaxSizeCampoMemo, "PrincipaisDecisoes", "PrincipaisDecisoes", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ren"
-    }; // DBI 11 
-    public static DBInfoSystem RenDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ren"
-    }; // DBI 11 
-    public static DBInfoSystem RenDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ren"
-    };
-    public static DBInfoSystem RenVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "ren"
-    };
+    public static DBInfoSystem RenCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "ren"); // DBI 11 
+    public static DBInfoSystem RenIDAgenda => new(0, PTabelaNome, CampoCodigo, IDAgenda, IDAgenda, IDAgenda, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "ren");
+    public static DBInfoSystem RenData => new(0, PTabelaNome, CampoCodigo, Data, -1, Data, Data, EDataTypeSystemInfo.SystemInfoDateOnly, true, true, false, prefixo: "ren");
+    public static DBInfoSystem RenPauta => new(0, PTabelaNome, CampoCodigo, Pauta, DevourerOne.PMaxSizeCampoMemo, Pauta, Pauta, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "ren");
+    public static DBInfoSystem RenATA => new(0, PTabelaNome, CampoCodigo, ATA, DevourerOne.PMaxSizeCampoMemo, ATA, ATA, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "ren");
+    public static DBInfoSystem RenHoraInicial => new(0, PTabelaNome, CampoCodigo, HoraInicial, HoraInicial, HoraInicial, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "ren");
+    public static DBInfoSystem RenHoraFinal => new(0, PTabelaNome, CampoCodigo, HoraFinal, HoraFinal, HoraFinal, EDataTypeSystemInfo.SystemInfoTimeOnly, prefixo: "ren");
+    public static DBInfoSystem RenExterna => new(0, PTabelaNome, CampoCodigo, Externa, Externa, Externa, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "ren", isRequired: true);
+    public static DBInfoSystem RenHoraSaida => new(0, PTabelaNome, CampoCodigo, HoraSaida, HoraSaida, HoraSaida, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "ren");
+    public static DBInfoSystem RenHoraRetorno => new(0, PTabelaNome, CampoCodigo, HoraRetorno, HoraRetorno, HoraRetorno, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "ren");
+    public static DBInfoSystem RenPrincipaisDecisoes => new(0, PTabelaNome, CampoCodigo, PrincipaisDecisoes, DevourerOne.PMaxSizeCampoMemo, PrincipaisDecisoes, PrincipaisDecisoes, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "ren");
+    public static DBInfoSystem RenBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "ren", isRequired: true);
+    public static DBInfoSystem RenGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ren");
+    public static DBInfoSystem RenQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ren"); // DBI 11 
+    public static DBInfoSystem RenDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ren");
+    public static DBInfoSystem RenQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ren"); // DBI 11 
+    public static DBInfoSystem RenDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ren");
+    public static DBInfoSystem RenVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ren", isRequired: true);
 
 #endregion
     [Serializable]

@@ -38,11 +38,25 @@ public class DBProProcuradoresTests : IDisposable
         dt.Columns.Add("papAdvogado", typeof(int));
         dt.Columns.Add("papNome", typeof(string));
         dt.Columns.Add("papProcesso", typeof(int));
-        dt.Columns.Add("papData", typeof(string));
+        dt.Columns.Add("papData", typeof(DateTime));
         dt.Columns.Add("papSubstabelecimento", typeof(string));
         dt.Columns.Add("papProcuracao", typeof(string));
-        dt.Columns.Add("papGUID", typeof(string));
+        dt.Columns.Add("papBold", typeof(string));
+        dt.Columns.Add("papGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["papCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProProcuradores(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -63,7 +77,7 @@ public class DBProProcuradoresTests : IDisposable
     {
         var instance = new DBProProcuradores();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProProcuradores", instance.ITabelaName());
+        Assert.Equal("ProProcuradores", instance.ITableName());
         Assert.Equal("pap", instance.Prefixo);
     }
 
@@ -81,29 +95,16 @@ public class DBProProcuradoresTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["papCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProProcuradores(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProProcuradores", cadastro.ITabelaName());
-        Assert.Equal("papCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("papNome", cadastro.ICampoNome());
-        Assert.Equal("pap", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProProcuradores", cadastro.ITableName());
+        Assert.Equal("papCodigo", cadastro.IFieldId());
+        Assert.Equal("papNome", cadastro.IFieldNameDescription());
+        Assert.Equal("pap", cadastro.IPrefix());
     }
 
 #endregion
@@ -163,9 +164,9 @@ public class DBProProcuradoresTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -226,6 +227,23 @@ public class DBProProcuradoresTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBProProcuradores();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void Substabelecimento_ShouldAcceptBooleanValues(bool value)
@@ -261,18 +279,18 @@ public class DBProProcuradoresTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

@@ -54,8 +54,24 @@ public partial class DBTipoContatoCRM
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBTipoContatoCRMDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBTipoContatoCRMDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTipoContatoCRMDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBTipoContatoCRMDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBTipoContatoCRMDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBTipoContatoCRM
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoContatoCRMDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTipoContatoCRMDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTipoContatoCRMDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBTipoContatoCRM
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoContatoCRMDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTipoContatoCRMDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTipoContatoCRMDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBTipoContatoCRM
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoContatoCRMDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTipoContatoCRMDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTipoContatoCRMDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBTipoContatoCRMDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTipoContatoCRMDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBTipoContatoCRM
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

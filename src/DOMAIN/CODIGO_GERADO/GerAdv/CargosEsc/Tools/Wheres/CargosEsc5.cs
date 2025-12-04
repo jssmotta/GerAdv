@@ -23,7 +23,7 @@ public partial class CargosEscWhere(IFCargosEscFactory cargosescFactory) : ICarg
             Percentual = dbRec.FPercentual,
             Nome = dbRec.FNome ?? string.Empty,
             Classificacao = dbRec.FClassificacao,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return cargosesc;
     }

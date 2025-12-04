@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { AgendaSemanaApiError } from '../GerAdv_TS/AgendaSemana/Apis/ApiAgendaSemana';
+import { AgendaSemanaApiError } from '@/app/GerAdv_TS/AgendaSemana/Apis/ApiAgendaSemana';
 import { AgendaSemanaApi } from '@/app/GerAdv_TS/AgendaSemana/Apis/ApiAgendaSemana';
-import { FilterAgendaSemana } from '../GerAdv_TS/AgendaSemana/Filters/AgendaSemana';
-import { IAgendaSemana } from '../GerAdv_TS/AgendaSemana/Interfaces/interface.AgendaSemana';
-import { AgendaSemanaTestEmpty } from '../GerAdv_TS/Models/AgendaSemana';
+import { FilterAgendaSemana } from '@/app/GerAdv_TS/AgendaSemana/Filters/AgendaSemana';
+import { IAgendaSemana } from '@/app/GerAdv_TS/AgendaSemana/Interfaces/interface.AgendaSemana';
+import { AgendaSemanaTestEmpty } from '@/app/GerAdv_TS/Models/AgendaSemana';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -89,8 +89,7 @@ describe('AgendaSemanaApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterAgendaSemana = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -135,19 +134,22 @@ describe('AgendaSemanaApi', () => {
   describe('addAndUpdate', () => {
     const mockAgendaSemana: IAgendaSemana = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+paranome: 'João',
+data: '24/04/1975',
+funcionario: 0,
+advogado: 0,
+hora: '04:04',
+tipocompromisso: 0,
+compromisso: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+concluido: false,
+liberado: true,
+importante: false,
+horafinal: '04:04',
+nome: 'João',
+cliente: 0,
+nomecliente: 'João',
+tipo: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new agendasemana successfully', async () => {
@@ -290,7 +292,7 @@ describe('AgendaSemanaApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterAgendaSemana = { funcionario: 1 };
+      const mockFilter: FilterAgendaSemana = { : 1 };
       
       const result = agendasemanaApi.useFilter(mockFilter);
       

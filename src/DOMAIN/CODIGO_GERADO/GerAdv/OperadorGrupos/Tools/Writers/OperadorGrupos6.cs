@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IOperadorGruposWriter
 {
     Task<FOperadorGrupos> WriteAsync(Models.OperadorGrupos operadorgrupos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(OperadorGruposResponse operadorgrupos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(OperadorGruposResponse operadorgrupos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OperadorGruposWriter(IFOperadorGruposFactory operadorgruposFactory) : IOperadorGruposWriter
 {
     private readonly IFOperadorGruposFactory _operadorgruposFactory = operadorgruposFactory ?? throw new ArgumentNullException(nameof(operadorgruposFactory));
-    public virtual async Task Delete(OperadorGruposResponse operadorgrupos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(OperadorGruposResponse operadorgrupos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _operadorgruposFactory.DeleteAsync(operadorId, operadorgrupos.Id, oCnn);
     }

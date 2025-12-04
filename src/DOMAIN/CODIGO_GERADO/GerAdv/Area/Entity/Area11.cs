@@ -23,12 +23,6 @@ public partial class FAreaFactory : IFAreaFactory, IDisposable
         return FArea.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FArea> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FArea().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FArea> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FAreaFactory : IFAreaFactory, IDisposable
         return FArea.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FArea> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FArea().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FAreaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

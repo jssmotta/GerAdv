@@ -31,6 +31,9 @@ namespace MenphisSI.GerAdv.Models.Response
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Pauta - renPauta  
         /// </summary>
@@ -57,6 +60,9 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
+
+        [JsonPropertyName("horafinal_date")]
+        public DateTime? HoraFinal_date { get; set; }
 
         /// <summary>
         /// Externa - renExterna  
@@ -89,10 +95,16 @@ namespace MenphisSI.GerAdv.Models.Response
         public string PrincipaisDecisoes { get; set; } = "";
 
         /// <summary>
-        /// GUID - renGUID - tamanho máximo: 100 
+        /// Bold - renBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - renGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -122,6 +134,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
 
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
+
         /// <summary>
         /// Pauta - renPauta  
         /// </summary>
@@ -148,6 +163,9 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("horafinal")]
         public string HoraFinal { get; set; } = "";
+
+        [JsonPropertyName("horafinal_date")]
+        public DateTime? HoraFinal_date { get; set; }
 
         /// <summary>
         /// Externa - renExterna  
@@ -180,10 +198,16 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public string PrincipaisDecisoes { get; set; } = "";
 
         /// <summary>
-        /// GUID - renGUID - tamanho máximo: 100 
+        /// Bold - renBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - renGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

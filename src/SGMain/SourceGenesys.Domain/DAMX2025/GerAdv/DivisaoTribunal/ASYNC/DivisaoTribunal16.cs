@@ -14,6 +14,14 @@ public partial class DBDivisaoTribunal
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBDivisaoTribunal
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,41 +142,45 @@ public partial class DBDivisaoTribunal
 
 #if (!NOTSTORED_DivisaoTribunal)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUID || pFldFNumCodigo || pFldFJustica || pFldFNomeEspecial || pFldFArea || pFldFCidade || pFldFForo || pFldFTribunal || pFldFCodigoDiv || pFldFEndereco || pFldFFone || pFldFFax || pFldFCEP || pFldFObs || pFldFEMail || pFldFAndar;
+    private bool HasAnyFieldChanged() => pFldFNumCodigo || pFldFJustica || pFldFNomeEspecial || pFldFArea || pFldFCidade || pFldFForo || pFldFTribunal || pFldFCodigoDiv || pFldFEndereco || pFldFFone || pFldFFax || pFldFCEP || pFldFObs || pFldFEMail || pFldFAndar || pFldFEtiqueta || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFGUID)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFNumCodigo)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.NumCodigo, m_FNumCodigo, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.NumCodigo, FNumCodigo, EGenericTypeFields.FNumber);
         if (pFldFJustica)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Justica, m_FJustica, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Justica, FJustica, EGenericTypeFields.FNumber);
         if (pFldFNomeEspecial)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.NomeEspecial, m_FNomeEspecial, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.NomeEspecial, FNomeEspecial, EGenericTypeFields.FString);
         if (pFldFArea)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Area, m_FArea, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Area, FArea, EGenericTypeFields.FNumber);
         if (pFldFCidade)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFForo)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Foro, m_FForo, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Foro, FForo, EGenericTypeFields.FNumber);
         if (pFldFTribunal)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Tribunal, m_FTribunal, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Tribunal, FTribunal, EGenericTypeFields.FNumber);
         if (pFldFCodigoDiv)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.CodigoDiv, m_FCodigoDiv, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.CodigoDiv, FCodigoDiv, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFCEP)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFObs)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Obs, m_FObs, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Obs, FObs, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFAndar)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.Andar, m_FAndar, ETiposCampos.FString);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Andar, FAndar, EGenericTypeFields.FString);
+        if (pFldFEtiqueta || updateTool.Insert)
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -180,24 +192,23 @@ public partial class DBDivisaoTribunal
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBDivisaoTribunalDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBDivisaoTribunalDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBDivisaoTribunalDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBDivisaoTribunalDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBDivisaoTribunalDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBDivisaoTribunalDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

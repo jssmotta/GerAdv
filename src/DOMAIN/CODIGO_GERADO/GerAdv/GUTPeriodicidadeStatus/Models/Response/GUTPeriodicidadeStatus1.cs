@@ -29,10 +29,10 @@ namespace MenphisSI.GerAdv.Models.Response
         public DateTime? DataRealizado_date { get; set; }
 
         /// <summary>
-        /// GUID - pgsGUID - tamanho máximo: 50 
+        /// GUID - pgsGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -60,10 +60,10 @@ namespace MenphisSI.GerAdv.Models.Response.All
         public DateTime? DataRealizado_date { get; set; }
 
         /// <summary>
-        /// GUID - pgsGUID - tamanho máximo: 50 
+        /// GUID - pgsGuid - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomegutatividades")]
         public string NomeGUTAtividades { get; set; } = string.Empty;

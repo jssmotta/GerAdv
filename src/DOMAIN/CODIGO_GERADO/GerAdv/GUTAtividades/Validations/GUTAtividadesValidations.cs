@@ -23,10 +23,10 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var gutatividadesmatrizExists0 = await gutatividadesmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTAtividadesMatriz { GUTAtividade = id ?? default }, uri);
         if (gutatividadesmatrizExists0 != null && gutatividadesmatrizExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Atividades Matriz associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela G U T Atividades Matriz associados a ele.");
         var gutperiodicidadestatusExists1 = await gutperiodicidadestatusService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTPeriodicidadeStatus { GUTAtividade = id ?? default }, uri);
         if (gutperiodicidadestatusExists1 != null && gutperiodicidadestatusExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Periodicidade Status associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela G U T Periodicidade Status associados a ele.");
         return true;
     }
 
@@ -34,8 +34,6 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBGUTAtividadesDicInfo.AgtNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBGUTAtividadesDicInfo.AgtNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBGUTAtividadesDicInfo.AgtGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBGUTAtividadesDicInfo.AgtGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -45,13 +43,13 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.GUTPeriodicidade == 0)
             throw new SGValidationException("GUTPeriodicidade é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         if (!string.IsNullOrWhiteSpace(reg.DataConcluido))
         {
             if (DateTime.TryParse(reg.DataConcluido, out DateTime dataAntiga))
@@ -63,7 +61,7 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
 
         // GUTPeriodicidade
         {
-            var regGUTPeriodicidade = await gutperiodicidadeReader.Read(reg.GUTPeriodicidade, oCnn);
+            var regGUTPeriodicidade = await gutperiodicidadeReader.ReadAsync(reg.GUTPeriodicidade, oCnn);
             if (regGUTPeriodicidade == null || regGUTPeriodicidade.Id != reg.GUTPeriodicidade)
             {
                 throw new SGValidationException($"G U T Periodicidade não encontrado ({regGUTPeriodicidade?.Id}).");
@@ -73,7 +71,7 @@ public class GUTAtividadesValidation : IGUTAtividadesValidation
         // Operador
         if (!reg.Operador.IsEmptyIDNumber())
         {
-            var regOperador = await operadorReader.Read(reg.Operador, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");

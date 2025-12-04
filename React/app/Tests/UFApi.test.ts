@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { UFApiError } from '../GerAdv_TS/UF/Apis/ApiUF';
+import { UFApiError } from '@/app/GerAdv_TS/UF/Apis/ApiUF';
 import { UFApi } from '@/app/GerAdv_TS/UF/Apis/ApiUF';
-import { FilterUF } from '../GerAdv_TS/UF/Filters/UF';
-import { IUF } from '../GerAdv_TS/UF/Interfaces/interface.UF';
-import { UFTestEmpty } from '../GerAdv_TS/Models/UF';
+import { FilterUF } from '@/app/GerAdv_TS/UF/Filters/UF';
+import { IUF } from '@/app/GerAdv_TS/UF/Interfaces/interface.UF';
+import { UFTestEmpty } from '@/app/GerAdv_TS/Models/UF';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('UFApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterUF = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,12 @@ describe('UFApi', () => {
   describe('addAndUpdate', () => {
     const mockUF: IUF = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+ddd: 'AAAAAAAA',
+iduf: 'SP',
+pais: 0,
+top: false,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new uf successfully', async () => {
@@ -487,7 +479,7 @@ describe('UFApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterUF = { funcionario: 1 };
+      const mockFilter: FilterUF = { : 1 };
       
       const result = ufApi.useFilter(mockFilter);
       

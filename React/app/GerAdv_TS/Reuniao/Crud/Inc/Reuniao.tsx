@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IReuniaoFormProps } from '../../Interfaces/interface.Reuniao';
 import { ReuniaoService } from '../../Services/Reuniao.service';
 import { useReuniaoForm, useValidationsReuniao } from '../../Hooks/hookReuniao';
-import { ReuniaoEmpty } from '../../../Models/Reuniao';
+import { ReuniaoEmpty } from '../../../Models/Reuniao'; 
 import { ReuniaoForm } from '../Forms/Reuniao';
+ 
 
 const ReuniaoInc: React.FC<IReuniaoFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const reuniaoService = new ReuniaoService(
-  new ReuniaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadReuniao } = useReuniaoForm(
-ReuniaoEmpty(), 
-reuniaoService
-);
-useEffect(() => {
-  loadReuniao(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedReuniao = await reuniaoService.saveReuniao(data);
-    if (savedReuniao.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedReuniao);
+  const reuniaoService = new ReuniaoService(
+    new ReuniaoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadReuniao } = useReuniaoForm(
+    ReuniaoEmpty(),
+    reuniaoService
+  );
+
+  useEffect(() => {
+    loadReuniao(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedReuniao = await reuniaoService.saveReuniao(data);
+
+      if (savedReuniao.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedReuniao);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadReuniao(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <ReuniaoForm
+        reuniaoData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadReuniao(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<ReuniaoForm
-reuniaoData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default ReuniaoInc;

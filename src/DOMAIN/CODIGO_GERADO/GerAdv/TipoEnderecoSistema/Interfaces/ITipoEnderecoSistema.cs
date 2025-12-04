@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface ITipoEnderecoSistemaService
 {
+    Task<Filters.FilterTipoEnderecoSistema> FilterVoice([FromBody] Filters.FilterTipoEnderecoSistema filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<TipoEnderecoSistemaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoEnderecoSistema filter, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoSistemaResponse?> AddAndUpdate(Models.TipoEnderecoSistema? regTipoEnderecoSistema, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoSistemaResponse?> Validation(Models.TipoEnderecoSistema? regTipoEnderecoSistema, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoSistemaResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<TipoEnderecoSistemaResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<TipoEnderecoSistemaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoEnderecoSistema? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

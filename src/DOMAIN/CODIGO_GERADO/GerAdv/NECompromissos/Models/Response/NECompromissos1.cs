@@ -36,6 +36,12 @@ namespace MenphisSI.GerAdv.Models.Response
         /// </summary>
         [JsonPropertyName("textocompromisso")]
         public string TextoCompromisso { get; set; } = "";
+
+        /// <summary>
+        /// Bold - ncpBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
     }
 }
 
@@ -70,6 +76,12 @@ namespace MenphisSI.GerAdv.Models.Response.All
         /// </summary>
         [JsonPropertyName("textocompromisso")]
         public string TextoCompromisso { get; set; } = "";
+
+        /// <summary>
+        /// Bold - ncpBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
 
         [JsonPropertyName("descricaotipocompromisso")]
         public string DescricaoTipoCompromisso { get; set; } = string.Empty;

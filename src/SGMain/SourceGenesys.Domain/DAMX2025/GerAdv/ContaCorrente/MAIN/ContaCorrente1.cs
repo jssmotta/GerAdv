@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBContaCorrente : VAuditor, ICadastros
+public partial class DBContaCorrente : VAuditor, ICrud
 {
 #region TableDefinition_ContaCorrente
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBContaCorrente : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBContaCorrente : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_ContaCorrente
@@ -62,7 +62,7 @@ public partial class DBContaCorrente : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFCIAcordo || pFldFGUID || pFldFQuitado || pFldFIDContrato || pFldFQuitadoID || pFldFDebitoID || pFldFLivroCaixaID || pFldFSucumbencia || pFldFDistRegra || pFldFDtOriginal || pFldFProcesso || pFldFParcelaX || pFldFValor || pFldFData || pFldFCliente || pFldFHistorico || pFldFContrato || pFldFPago || pFldFDistribuir || pFldFLC || pFldFIDHTrab || pFldFNroParcelas || pFldFValorPrincipal || pFldFParcelaPrincipalID || pFldFHide || pFldFDataPgto))
+            if (!(pFldFCIAcordo || pFldFQuitado || pFldFIDContrato || pFldFQuitadoID || pFldFDebitoID || pFldFLivroCaixaID || pFldFSucumbencia || pFldFDistRegra || pFldFDtOriginal || pFldFProcesso || pFldFParcelaX || pFldFValor || pFldFData || pFldFCliente || pFldFHistorico || pFldFContrato || pFldFPago || pFldFDistribuir || pFldFLC || pFldFIDHTrab || pFldFNroParcelas || pFldFValorPrincipal || pFldFParcelaPrincipalID || pFldFHide || pFldFDataPgto || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,64 +92,63 @@ public partial class DBContaCorrente : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFCIAcordo)
-            clsW.Fields(DBContaCorrenteDicInfo.CIAcordo, m_FCIAcordo, ETiposCampos.FNumberNull);
-        if (pFldFGUID)
-            clsW.Fields(DBContaCorrenteDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBContaCorrenteDicInfo.CIAcordo, FCIAcordo, EGenericTypeFields.FNumberNull);
         if (pFldFQuitado || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Quitado, m_FQuitado, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Quitado, FQuitado, EGenericTypeFields.FBoolean);
         if (pFldFIDContrato)
-            clsW.Fields(DBContaCorrenteDicInfo.IDContrato, m_FIDContrato, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.IDContrato, FIDContrato, EGenericTypeFields.FNumberNull);
         if (pFldFQuitadoID)
-            clsW.Fields(DBContaCorrenteDicInfo.QuitadoID, m_FQuitadoID, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.QuitadoID, FQuitadoID, EGenericTypeFields.FNumberNull);
         if (pFldFDebitoID)
-            clsW.Fields(DBContaCorrenteDicInfo.DebitoID, m_FDebitoID, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.DebitoID, FDebitoID, EGenericTypeFields.FNumberNull);
         if (pFldFLivroCaixaID)
-            clsW.Fields(DBContaCorrenteDicInfo.LivroCaixaID, m_FLivroCaixaID, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.LivroCaixaID, FLivroCaixaID, EGenericTypeFields.FNumberNull);
         if (pFldFSucumbencia || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Sucumbencia, m_FSucumbencia, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Sucumbencia, FSucumbencia, EGenericTypeFields.FBoolean);
         if (pFldFDistRegra || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.DistRegra, m_FDistRegra, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.DistRegra, FDistRegra, EGenericTypeFields.FBoolean);
         if (pFldFDtOriginal)
-            clsW.Fields(DBContaCorrenteDicInfo.DtOriginal, m_FDtOriginal, ETiposCampos.FDate);
+            clsW.Fields(DBContaCorrenteDicInfo.DtOriginal, FDtOriginal, EGenericTypeFields.FDate);
         if (pFldFProcesso)
-            clsW.Fields(DBContaCorrenteDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFParcelaX)
-            clsW.Fields(DBContaCorrenteDicInfo.ParcelaX, m_FParcelaX, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.ParcelaX, FParcelaX, EGenericTypeFields.FNumberNull);
         if (pFldFValor)
-            clsW.Fields(DBContaCorrenteDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            clsW.Fields(DBContaCorrenteDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFData)
-            clsW.Fields(DBContaCorrenteDicInfo.Data, m_FData, ETiposCampos.FDate);
+            clsW.Fields(DBContaCorrenteDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFCliente)
-            clsW.Fields(DBContaCorrenteDicInfo.Cliente, m_FCliente, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.Cliente, FCliente, EGenericTypeFields.FNumberNull);
         if (pFldFHistorico)
-            clsW.Fields(DBContaCorrenteDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
+            clsW.Fields(DBContaCorrenteDicInfo.Historico, FHistorico, EGenericTypeFields.FString);
         if (pFldFContrato || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Contrato, m_FContrato, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Contrato, FContrato, EGenericTypeFields.FBoolean);
         if (pFldFPago || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Pago, m_FPago, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Pago, FPago, EGenericTypeFields.FBoolean);
         if (pFldFDistribuir || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Distribuir, m_FDistribuir, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Distribuir, FDistribuir, EGenericTypeFields.FBoolean);
         if (pFldFLC || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.LC, m_FLC, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.LC, FLC, EGenericTypeFields.FBoolean);
         if (pFldFIDHTrab)
-            clsW.Fields(DBContaCorrenteDicInfo.IDHTrab, m_FIDHTrab, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.IDHTrab, FIDHTrab, EGenericTypeFields.FNumberNull);
         if (pFldFNroParcelas)
-            clsW.Fields(DBContaCorrenteDicInfo.NroParcelas, m_FNroParcelas, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.NroParcelas, FNroParcelas, EGenericTypeFields.FNumberNull);
         if (pFldFValorPrincipal)
-            clsW.Fields(DBContaCorrenteDicInfo.ValorPrincipal, m_FValorPrincipal, ETiposCampos.FDecimal);
+            clsW.Fields(DBContaCorrenteDicInfo.ValorPrincipal, FValorPrincipal, EGenericTypeFields.FDecimal);
         if (pFldFParcelaPrincipalID)
-            clsW.Fields(DBContaCorrenteDicInfo.ParcelaPrincipalID, m_FParcelaPrincipalID, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.ParcelaPrincipalID, FParcelaPrincipalID, EGenericTypeFields.FNumberNull);
         if (pFldFHide || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Hide, m_FHide, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Hide, FHide, EGenericTypeFields.FBoolean);
         if (pFldFDataPgto)
-            clsW.Fields(DBContaCorrenteDicInfo.DataPgto, m_FDataPgto, ETiposCampos.FDate);
+            clsW.Fields(DBContaCorrenteDicInfo.DataPgto, FDataPgto, EGenericTypeFields.FDate);
+        if (pFldFGuid)
+            clsW.Fields(DBContaCorrenteDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_ContaCorrente)
         if (clsW.HasUpdates)
         {
@@ -164,15 +163,15 @@ public partial class DBContaCorrente : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBContaCorrenteDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBContaCorrenteDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBContaCorrenteDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBContaCorrenteDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBContaCorrenteDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBContaCorrenteDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBContaCorrenteDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBContaCorrenteDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBContaCorrenteDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -196,7 +195,7 @@ public partial class DBContaCorrente : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

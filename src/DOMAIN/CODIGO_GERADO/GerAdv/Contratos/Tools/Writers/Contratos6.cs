@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IContratosWriter
 {
     Task<FContratos> WriteAsync(Models.Contratos contratos, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ContratosResponse contratos, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWriter
 {
     private readonly IFContratosFactory _contratosFactory = contratosFactory ?? throw new ArgumentNullException(nameof(contratosFactory));
-    public virtual async Task Delete(ContratosResponse contratos, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ContratosResponse contratos, int operadorId, MsiSqlConnection? oCnn)
     {
         await _contratosFactory.DeleteAsync(operadorId, contratos.Id, oCnn);
     }
@@ -28,14 +28,19 @@ public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWr
         dbRec.FAdvogado = contratos.Advogado;
         dbRec.FDia = contratos.Dia;
         dbRec.FValor = contratos.Valor;
-        if (contratos.DataInicio != null)
-            dbRec.FDataInicio = contratos.DataInicio.ToString();
-        if (contratos.DataTermino != null)
-            dbRec.FDataTermino = contratos.DataTermino.ToString();
+        if (contratos.DataInicio.NotIsEmpty())
+        {
+            dbRec.FDataInicio = DateOnly.FromDateTime(Convert.ToDateTime(contratos.DataInicio));
+        }
+
+        if (contratos.DataTermino.NotIsEmpty())
+        {
+            dbRec.FDataTermino = DateOnly.FromDateTime(Convert.ToDateTime(contratos.DataTermino));
+        }
+
         dbRec.FOcultarRelatorio = contratos.OcultarRelatorio;
         dbRec.FPercEscritorio = contratos.PercEscritorio;
         dbRec.FValorConsultoria = contratos.ValorConsultoria;
-        dbRec.FGUID = contratos.GUID;
         dbRec.FTipoCobranca = contratos.TipoCobranca;
         dbRec.FProtestar = contratos.Protestar;
         dbRec.FJuros = contratos.Juros;
@@ -54,6 +59,8 @@ public class ContratosWriter(IFContratosFactory contratosFactory) : IContratosWr
         dbRec.FAvulso = contratos.Avulso;
         dbRec.FSuspenso = contratos.Suspenso;
         dbRec.FMulta = contratos.Multa;
+        dbRec.FBold = contratos.Bold;
+        dbRec.FGuid = contratos.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

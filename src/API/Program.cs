@@ -1,6 +1,8 @@
 using Domain.BaseCommon.Helpers;
 using MenphisSI;
 using MenphisSI.GerAdv.HealthCheck;
+using MenphisSI.GerEntityTools.Entity;
+using MenphisSI.GerEntityTools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +67,15 @@ try
     });
 
     var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+    // Register HttpClient
+    builder.Services.AddHttpClient();
+
+    // Register email and notification services
+    builder.Services.AddScoped<IEntityService, EntityServices>();
+    builder.Services.AddScoped<SendEmailApi>();
+    builder.Services.AddScoped<EnvioNotificacoes>();
+    builder.Services.AddScoped<EnvioNotificacoesAniversariantes>();
 
     MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
     MenphisSI.GerEntityTools.Helper.Token.InitializeConfiguration(builder.Configuration);

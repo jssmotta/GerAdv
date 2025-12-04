@@ -10,65 +10,72 @@ import { IOutrasPartesCliente } from '../../Interfaces/interface.OutrasPartesCli
 import { useIsMobile } from '@/app/context/MobileContext';
 import { OutrasPartesClienteEmpty } from '@/app/GerAdv_TS/Models/OutrasPartesCliente';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface OutrasPartesClienteWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedOutrasPartesCliente?: IOutrasPartesCliente;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedOutrasPartesCliente?: IOutrasPartesCliente;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const OutrasPartesClienteWindow: React.FC<OutrasPartesClienteWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedOutrasPartesCliente, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedOutrasPartesCliente,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Outras Partes Cliente'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={743}
-  newWidth={1250}
-  mobile={isMobile}
-  id={(selectedOutrasPartesCliente?.id ?? 0).toString()}
->
-<OutrasPartesClienteInc
-id={selectedOutrasPartesCliente?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Outras Partes Cliente'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={749}
+                newWidth={1250}
+                mobile={isMobile}
+                id={(selectedOutrasPartesCliente?.id ?? 0).toString()}
+            >
+                <OutrasPartesClienteInc
+                    id={selectedOutrasPartesCliente?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowOutrasPartesCliente: React.FC<OutrasPartesClienteWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<OutrasPartesClienteWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedOutrasPartesCliente={OutrasPartesClienteEmpty()}>
-</OutrasPartesClienteWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <OutrasPartesClienteWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedOutrasPartesCliente={OutrasPartesClienteEmpty()}>
+        </OutrasPartesClienteWindow>
+    )
 };
+
 export default OutrasPartesClienteWindow;

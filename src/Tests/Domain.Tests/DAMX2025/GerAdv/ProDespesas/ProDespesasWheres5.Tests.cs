@@ -36,7 +36,7 @@ public class ProDespesasWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProDespesas(int? LigacaoID = 1, int? Cliente = 1, bool? Corrigido = false, string? Data = "27/05/2022", decimal? ValorOriginal = 1m, int? Processo = 1, int? Quitado = 1, string? DataCorrecao = "24/04/1975", decimal? Valor = 1m, bool? Tipo = true, string? Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? LivroCaixa = false)
+    private void SetupMockFProDespesas(int? LigacaoID = 1, int? Cliente = 1, bool? Corrigido = false, string? Data = "24/04/1975", decimal? ValorOriginal = 1m, int? Processo = 1, int? Quitado = 1, string? DataCorrecao = "24/04/1975", decimal? Valor = 1m, bool? Tipo = true, string? Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", bool? LivroCaixa = false)
     {
         _mockFProDespesas.Setup(f => f.FLigacaoID).Returns(LigacaoID ?? 0);
         _mockFProDespesas.Setup(f => f.FCliente).Returns(Cliente ?? 0);
@@ -92,7 +92,7 @@ public class ProDespesasWhereTests : IDisposable
         result.LigacaoID.Should().Be(1);
         result.Cliente.Should().Be(1);
         result.Corrigido.Should().Be(false);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.ValorOriginal.Should().Be(1m);
         result.Processo.Should().Be(1);
         result.Quitado.Should().Be(1);
@@ -238,7 +238,7 @@ public class ProDespesasWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProDespesas(LigacaoID: 1, Cliente: 1, Corrigido: false, Data: "27/05/2022", ValorOriginal: 1m, Processo: 1, Quitado: 1, DataCorrecao: "24/04/1975", Valor: 1m, Tipo: true, Historico: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", LivroCaixa: false);
+        SetupMockFProDespesas(LigacaoID: 1, Cliente: 1, Corrigido: false, Data: "24/04/1975", ValorOriginal: 1m, Processo: 1, Quitado: 1, DataCorrecao: "24/04/1975", Valor: 1m, Tipo: true, Historico: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", LivroCaixa: false);
         _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
         // Act
         var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
@@ -248,7 +248,7 @@ public class ProDespesasWhereTests : IDisposable
         result.LigacaoID.Should().Be(1);
         result.Cliente.Should().Be(1);
         result.Corrigido.Should().Be(false);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.ValorOriginal.Should().Be(1m);
         result.Processo.Should().Be(1);
         result.Quitado.Should().Be(1);
@@ -278,32 +278,66 @@ public class ProDespesasWhereTests : IDisposable
 
 #region DateTime Tests
     [Fact]
-    public void Read_WithValidDateDataCorrecaoFields_ShouldParseAndSetDateProperties()
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
     {
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
         var testDate = "31/12/2024";
+        SetupMockFProDespesas(Data: testDate);
+        _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
+        // Act
+        var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFProDespesas(Data: null);
+        _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
+        // Act
+        var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFProDespesas(Data: dateString);
+        _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
+        // Act
+        var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataCorrecaoFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "01/01/2025";
         SetupMockFProDespesas(DataCorrecao: testDate);
         _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
         // Act
         var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
-        result.DataCorrecao.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDataCorrecaoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFProDespesas(DataCorrecao: "invalid-date");
-        _mockProDespesasFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProDespesas.Object);
-        // Act
-        var result = _prodespesasWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataCorrecao.Should().Be("");
+        result.DataCorrecao.Should().Be("01/01/2025");
     }
 
     [Fact]
@@ -321,10 +355,10 @@ public class ProDespesasWhereTests : IDisposable
     }
 
     [Theory]
-    [InlineData("31/12/2024")]
-    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("01/01/2025")]
+    [InlineData("2025/01/02T23:59:59")]
     [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/02T14:30:45.123")]
+    [InlineData("2025/01/03T14:30:45.123")]
     public void Read_WithValidDateDataCorrecaoFormats_ShouldParseCorrectly(string dateString)
     {
         // Arrange

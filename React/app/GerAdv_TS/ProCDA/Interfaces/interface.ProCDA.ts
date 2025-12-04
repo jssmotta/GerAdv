@@ -10,6 +10,7 @@ export interface IProCDA {
 	processo: number,
 	nome: string,
 	nrointerno: string,
+	bold: boolean,
 }
 
 export interface IProCDAFormProps {

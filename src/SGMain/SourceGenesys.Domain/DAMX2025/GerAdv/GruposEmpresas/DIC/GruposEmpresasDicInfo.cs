@@ -16,9 +16,9 @@ public static partial class DBGruposEmpresasDicInfo
     public const string Descricao = "grpDescricao"; // LOCALIZACAO 170523
     public const string Observacoes = "grpObservacoes"; // LOCALIZACAO 170523
     public const string Cliente = "grpCliente"; // LOCALIZACAO 170523
-    public const string GUID = "grpGUID"; // LOCALIZACAO 170523
     public const string Icone = "grpIcone"; // LOCALIZACAO 170523
     public const string DespesaUnificada = "grpDespesaUnificada"; // LOCALIZACAO 170523
+    public const string Guid = "grpGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "grpQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "grpDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "grpQuemAtu"; // LOCALIZACAO 170523
@@ -45,65 +45,20 @@ public static partial class DBGruposEmpresasDicInfo
 
     public const string PTabelaNome = "GruposEmpresas";
 #region PropriedadesDaTabela
-    public static DBInfoSystem GrpEMail => new(0, PTabelaNome, CampoCodigo, EMail, 255, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpInativo => new(0, PTabelaNome, CampoCodigo, Inativo, "Inativo", "Inativo", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpOponente => new(0, PTabelaNome, CampoCodigo, Oponente, "Oponente", "Oponente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOponentesDicInfo.CampoCodigo, DBOponentesDicInfo.TabelaNome, new DBOponentesODicInfo(), false)
-    {
-        Prefixo = "grp"
-    }; // DBI 11 
-    public static DBInfoSystem GrpDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpObservacoes => new(0, PTabelaNome, CampoCodigo, Observacoes, DevourerOne.PMaxSizeCampoMemo, "Observacoes", "Observacoes", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpCliente => new(0, PTabelaNome, CampoCodigo, Cliente, "Cliente", "Cliente", ETipoDadosSysteminfo.SysteminfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false)
-    {
-        Prefixo = "grp"
-    }; // DBI 11 
-    public static DBInfoSystem GrpGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpIcone => new(0, PTabelaNome, CampoCodigo, Icone, 255, "Icone", "Icone", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpDespesaUnificada => new(0, PTabelaNome, CampoCodigo, DespesaUnificada, "DespesaUnificada", "DespesaUnificada", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "grp"
-    }; // DBI 11 
-    public static DBInfoSystem GrpDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "grp"
-    }; // DBI 11 
-    public static DBInfoSystem GrpDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "grp"
-    };
-    public static DBInfoSystem GrpVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "grp"
-    };
+    public static DBInfoSystem GrpEMail => new(0, PTabelaNome, CampoCodigo, EMail, 255, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "grp");
+    public static DBInfoSystem GrpInativo => new(0, PTabelaNome, CampoCodigo, Inativo, Inativo, Inativo, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "grp", isRequired: true);
+    public static DBInfoSystem GrpOponente => new(0, PTabelaNome, CampoCodigo, Oponente, Oponente, Oponente, EDataTypeSystemInfo.SystemInfoForeingkey, DBOponentesDicInfo.CampoCodigo, DBOponentesDicInfo.TabelaNome, new DBOponentesODicInfo(), false, prefixo: "grp"); // DBI 11 
+    public static DBInfoSystem GrpDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 50, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "grp");
+    public static DBInfoSystem GrpObservacoes => new(0, PTabelaNome, CampoCodigo, Observacoes, DevourerOne.PMaxSizeCampoMemo, Observacoes, Observacoes, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "grp");
+    public static DBInfoSystem GrpCliente => new(0, PTabelaNome, CampoCodigo, Cliente, Cliente, Cliente, EDataTypeSystemInfo.SystemInfoForeingkey, DBClientesDicInfo.CampoCodigo, DBClientesDicInfo.TabelaNome, new DBClientesODicInfo(), false, prefixo: "grp"); // DBI 11 
+    public static DBInfoSystem GrpIcone => new(0, PTabelaNome, CampoCodigo, Icone, 255, Icone, Icone, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "grp");
+    public static DBInfoSystem GrpDespesaUnificada => new(0, PTabelaNome, CampoCodigo, DespesaUnificada, DespesaUnificada, DespesaUnificada, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "grp", isRequired: true);
+    public static DBInfoSystem GrpGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "grp");
+    public static DBInfoSystem GrpQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "grp"); // DBI 11 
+    public static DBInfoSystem GrpDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "grp");
+    public static DBInfoSystem GrpQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "grp"); // DBI 11 
+    public static DBInfoSystem GrpDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "grp");
+    public static DBInfoSystem GrpVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "grp", isRequired: true);
 
 #endregion
     [Serializable]

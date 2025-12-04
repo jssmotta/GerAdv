@@ -54,8 +54,16 @@ public partial class DBNECompromissos
         // Checkpoint Carregar 
         try
         {
+            FTextoCompromisso = getValue(DBNECompromissosDicInfo.TextoCompromisso)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBNECompromissosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBNECompromissosDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBNECompromissos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.PalavraChave)))
-                m_FPalavraChave = Convert.ToInt32(getValue(DBNECompromissosDicInfo.PalavraChave));
+                FPalavraChave = Convert.ToInt32(getValue(DBNECompromissosDicInfo.PalavraChave));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBNECompromissos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.Provisionar)))
-                m_FProvisionar = Convert.ToBoolean(getValue(DBNECompromissosDicInfo.Provisionar));
+                FProvisionar = Convert.ToBoolean(getValue(DBNECompromissosDicInfo.Provisionar));
         }
         catch
         {
@@ -100,7 +108,7 @@ public partial class DBNECompromissos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBNECompromissosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBNECompromissosDicInfo.QuemAtu));
         }
         catch
         {
@@ -109,7 +117,7 @@ public partial class DBNECompromissos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBNECompromissosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBNECompromissosDicInfo.QuemCad));
         }
         catch
         {
@@ -118,7 +126,7 @@ public partial class DBNECompromissos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.TipoCompromisso)))
-                m_FTipoCompromisso = Convert.ToInt32(getValue(DBNECompromissosDicInfo.TipoCompromisso));
+                FTipoCompromisso = Convert.ToInt32(getValue(DBNECompromissosDicInfo.TipoCompromisso));
         }
         catch
         {
@@ -127,22 +135,14 @@ public partial class DBNECompromissos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBNECompromissosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBNECompromissosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTextoCompromisso = getValue(DBNECompromissosDicInfo.TextoCompromisso)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBNECompromissosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -166,7 +166,7 @@ public partial class DBNECompromissos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

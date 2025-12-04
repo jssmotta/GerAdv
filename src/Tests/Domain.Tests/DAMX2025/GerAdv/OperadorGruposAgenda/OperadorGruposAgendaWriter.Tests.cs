@@ -74,10 +74,10 @@ public class OperadorGruposAgendaWriterTests
         var result = await _operadorgruposagendaWriter.WriteAsync(operadorgruposagenda, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFOperadorGruposAgenda.Object);
+        _mockFOperadorGruposAgenda.VerifySet(x => x.FGuid = operadorgruposagenda.Guid, Times.Once);
         _mockFOperadorGruposAgenda.VerifySet(x => x.FSQLWhere = operadorgruposagenda.SQLWhere, Times.Once);
         _mockFOperadorGruposAgenda.VerifySet(x => x.FNome = operadorgruposagenda.Nome, Times.Once);
         _mockFOperadorGruposAgenda.VerifySet(x => x.FOperador = operadorgruposagenda.Operador, Times.Once);
-        _mockFOperadorGruposAgenda.VerifySet(x => x.FGUID = operadorgruposagenda.GUID, Times.Once);
         _mockFOperadorGruposAgenda.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class OperadorGruposAgendaWriterTests
         var operadorId = 456;
         _mockOperadorGruposAgendaFactory.Setup(x => x.DeleteAsync(operadorId, operadorgruposagendaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _operadorgruposagendaWriter.Delete(operadorgruposagendaResponse, operadorId, _mockConnection.Object);
+        await _operadorgruposagendaWriter.DeleteAsync(operadorgruposagendaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockOperadorGruposAgendaFactory.Verify(x => x.DeleteAsync(operadorId, operadorgruposagendaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class OperadorGruposAgendaWriterTests
         var operadorId = 111;
         _mockOperadorGruposAgendaFactory.Setup(x => x.DeleteAsync(operadorId, operadorgruposagendaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _operadorgruposagendaWriter.Delete(operadorgruposagendaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _operadorgruposagendaWriter.DeleteAsync(operadorgruposagendaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class OperadorGruposAgendaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockOperadorGruposAgendaFactory.Setup(x => x.DeleteAsync(operadorId, operadorgruposagendaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _operadorgruposagendaWriter.Delete(operadorgruposagendaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _operadorgruposagendaWriter.DeleteAsync(operadorgruposagendaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class OperadorGruposAgendaWriterTests
         return new Models.OperadorGruposAgenda
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             SQLWhere = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Nome = "João",
-            Operador = 1,
-            GUID = Guid.NewGuid().ToString()
+            Operador = 1
         };
     }
 #endregion

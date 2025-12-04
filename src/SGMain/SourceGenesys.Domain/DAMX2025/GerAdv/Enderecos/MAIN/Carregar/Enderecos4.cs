@@ -54,8 +54,120 @@ public partial class DBEnderecos
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBEnderecosDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBEnderecosDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FContato = getValue(DBEnderecosDicInfo.Contato)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FDescricao = getValue(DBEnderecosDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBEnderecosDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBEnderecosDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBEnderecosDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBEnderecosDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBEnderecosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOAB = getValue(DBEnderecosDicInfo.OAB)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOBS = getValue(DBEnderecosDicInfo.OBS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQuemIndicou = getValue(DBEnderecosDicInfo.QuemIndicou)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBEnderecosDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FTratamento = getValue(DBEnderecosDicInfo.Tratamento)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.AddContato)))
-                m_FAddContato = Convert.ToBoolean(getValue(DBEnderecosDicInfo.AddContato));
+                FAddContato = Convert.ToBoolean(getValue(DBEnderecosDicInfo.AddContato));
         }
         catch
         {
@@ -64,7 +176,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Ani));
         }
         catch
         {
@@ -73,7 +185,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +194,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBEnderecosDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBEnderecosDicInfo.Cidade));
         }
         catch
         {
@@ -109,7 +221,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBEnderecosDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBEnderecosDicInfo.DtNasc)));
         }
         catch
         {
@@ -118,7 +230,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Etiqueta));
         }
         catch
         {
@@ -127,7 +239,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Privativo)))
-                m_FPrivativo = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Privativo));
+                FPrivativo = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Privativo));
         }
         catch
         {
@@ -136,7 +248,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Quem)))
-                m_FQuem = Convert.ToInt32(getValue(DBEnderecosDicInfo.Quem));
+                FQuem = Convert.ToInt32(getValue(DBEnderecosDicInfo.Quem));
         }
         catch
         {
@@ -145,7 +257,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBEnderecosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBEnderecosDicInfo.QuemAtu));
         }
         catch
         {
@@ -154,7 +266,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBEnderecosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBEnderecosDicInfo.QuemCad));
         }
         catch
         {
@@ -163,7 +275,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.ReportECBOnly)))
-                m_FReportECBOnly = Convert.ToBoolean(getValue(DBEnderecosDicInfo.ReportECBOnly));
+                FReportECBOnly = Convert.ToBoolean(getValue(DBEnderecosDicInfo.ReportECBOnly));
         }
         catch
         {
@@ -172,7 +284,7 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.TopIndex)))
-                m_FTopIndex = Convert.ToBoolean(getValue(DBEnderecosDicInfo.TopIndex));
+                FTopIndex = Convert.ToBoolean(getValue(DBEnderecosDicInfo.TopIndex));
         }
         catch
         {
@@ -181,126 +293,14 @@ public partial class DBEnderecos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEnderecosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBEnderecosDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBEnderecosDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FContato = getValue(DBEnderecosDicInfo.Contato)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBEnderecosDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBEnderecosDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBEnderecosDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBEnderecosDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBEnderecosDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBEnderecosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOAB = getValue(DBEnderecosDicInfo.OAB)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOBS = getValue(DBEnderecosDicInfo.OBS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQuemIndicou = getValue(DBEnderecosDicInfo.QuemIndicou)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBEnderecosDicInfo.Site)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FTratamento = getValue(DBEnderecosDicInfo.Tratamento)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBEnderecosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -324,7 +324,7 @@ public partial class DBEnderecos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

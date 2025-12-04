@@ -23,12 +23,6 @@ public partial class FReuniaoFactory : IFReuniaoFactory, IDisposable
         return FReuniao.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FReuniao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FReuniao().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FReuniao> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FReuniaoFactory : IFReuniaoFactory, IDisposable
         return FReuniao.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FReuniao> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FReuniao().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FReuniaoFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

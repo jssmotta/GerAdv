@@ -54,8 +54,40 @@ public partial class DBReuniao
         // Checkpoint Carregar 
         try
         {
+            FATA = getValue(DBReuniaoDicInfo.ATA)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBReuniaoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPauta = getValue(DBReuniaoDicInfo.Pauta)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPrincipaisDecisoes = getValue(DBReuniaoDicInfo.PrincipaisDecisoes)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBReuniaoDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBReuniaoDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +96,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBReuniaoDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBReuniaoDicInfo.Cliente));
         }
         catch
         {
@@ -73,7 +105,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBReuniaoDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBReuniaoDicInfo.Data)));
         }
         catch
         {
@@ -100,7 +132,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.Externa)))
-                m_FExterna = Convert.ToBoolean(getValue(DBReuniaoDicInfo.Externa));
+                FExterna = Convert.ToBoolean(getValue(DBReuniaoDicInfo.Externa));
         }
         catch
         {
@@ -109,7 +141,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.HoraFinal)))
-                m_FHoraFinal = Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraFinal));
+                FHoraFinal = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraFinal)));
         }
         catch
         {
@@ -118,7 +150,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.HoraInicial)))
-                m_FHoraInicial = Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraInicial));
+                FHoraInicial = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraInicial)));
         }
         catch
         {
@@ -127,7 +159,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.HoraRetorno)))
-                m_FHoraRetorno = Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraRetorno));
+                FHoraRetorno = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraRetorno)));
         }
         catch
         {
@@ -136,7 +168,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.HoraSaida)))
-                m_FHoraSaida = Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraSaida));
+                FHoraSaida = TimeOnly.FromDateTime(Convert.ToDateTime(getValue(DBReuniaoDicInfo.HoraSaida)));
         }
         catch
         {
@@ -145,7 +177,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.IDAgenda)))
-                m_FIDAgenda = Convert.ToInt32(getValue(DBReuniaoDicInfo.IDAgenda));
+                FIDAgenda = Convert.ToInt32(getValue(DBReuniaoDicInfo.IDAgenda));
         }
         catch
         {
@@ -154,7 +186,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBReuniaoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBReuniaoDicInfo.QuemAtu));
         }
         catch
         {
@@ -163,7 +195,7 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBReuniaoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBReuniaoDicInfo.QuemCad));
         }
         catch
         {
@@ -172,46 +204,14 @@ public partial class DBReuniao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBReuniaoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBReuniaoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FATA = getValue(DBReuniaoDicInfo.ATA)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBReuniaoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPauta = getValue(DBReuniaoDicInfo.Pauta)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPrincipaisDecisoes = getValue(DBReuniaoDicInfo.PrincipaisDecisoes)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBReuniaoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -235,7 +235,7 @@ public partial class DBReuniao
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

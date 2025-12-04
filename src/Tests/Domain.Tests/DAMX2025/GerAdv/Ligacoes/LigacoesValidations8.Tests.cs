@@ -66,7 +66,7 @@ public class LigacoesValidationTests : IDisposable
             QuemID = 0,
             Telefonista = 0,
             UltimoAviso = "24/04/1975",
-            HoraFinal = "27/05/2022",
+            HoraFinal = "04:04",
             Nome = "João",
             QuemCodigo = 0,
             Solicitante = 0,
@@ -76,8 +76,8 @@ public class LigacoesValidationTests : IDisposable
             Particular = true,
             Realizada = false,
             Status = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            Data = "27/05/2022",
-            Hora = "27/05/2022",
+            Data = "24/04/1975",
+            Hora = "04:04",
             Urgente = true,
             LigarPara = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 0,
@@ -91,8 +91,8 @@ public class LigacoesValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockLigacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLigacoes>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Ligacoess service mock
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
-        _ = _mockRamalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RamalResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockRamalReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new RamalResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -100,8 +100,8 @@ public class LigacoesValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockLigacoesService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterLigacoes>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Ligacoess service mock
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
-        _ = _mockRamalReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new RamalResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockRamalReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new RamalResponse { Id = 0 }));
     }
 
     [Fact]
@@ -280,6 +280,210 @@ public class LigacoesValidationTests : IDisposable
     }
 
 #endregion
+#region HoraFinal Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithHoraFinalBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.HoraFinal = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidHoraFinal_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.HoraFinal = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullHoraFinal_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.HoraFinal = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateHoraFinalFormat_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.HoraFinal = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyHoraFinal_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.HoraFinal = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
+#region Hora Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithHoraBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Hora = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidHora_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Hora = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullHora_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Hora = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateHoraFormat_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Hora = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyHora_ShouldPass()
+    {
+        // Arrange
+        var ligacoes = CreateValidLigacoes();
+        ligacoes.Hora = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region Foreign Key Validation Tests - Clientes
     [Fact]
     public async Task ValidateReg_WithInvalidClientes_ShouldThrowSGValidationException()
@@ -287,7 +491,7 @@ public class LigacoesValidationTests : IDisposable
         // Arrange
         var ligacoes = CreateValidLigacoes();
         ligacoes.Cliente = 999;
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
@@ -304,7 +508,7 @@ public class LigacoesValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
@@ -321,7 +525,7 @@ public class LigacoesValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockClientesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockClientesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
@@ -341,7 +545,7 @@ public class LigacoesValidationTests : IDisposable
         var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockClientesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockClientesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Ramal
@@ -351,7 +555,7 @@ public class LigacoesValidationTests : IDisposable
         // Arrange
         var ligacoes = CreateValidLigacoes();
         ligacoes.Ramal = 999;
-        _mockRamalReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.RamalResponse>(null));
+        _mockRamalReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.RamalResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
@@ -368,7 +572,7 @@ public class LigacoesValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockRamalReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockRamalReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object));
@@ -385,7 +589,7 @@ public class LigacoesValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockRamalReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockRamalReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
@@ -405,7 +609,7 @@ public class LigacoesValidationTests : IDisposable
         var result = await _validation.ValidateReg(ligacoes, _mockLigacoesService.Object, _mockClientesReader.Object, _mockRamalReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockRamalReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockRamalReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

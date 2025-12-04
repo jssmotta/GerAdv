@@ -54,6 +54,22 @@ public partial class DBTipoEndereco
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBTipoEnderecoDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBTipoEnderecoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBTipoEnderecoDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBTipoEndereco
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTipoEnderecoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTipoEnderecoDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBTipoEndereco
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTipoEnderecoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTipoEnderecoDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBTipoEndereco
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoEnderecoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTipoEnderecoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBTipoEnderecoDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTipoEnderecoDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTipoEnderecoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBTipoEndereco
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

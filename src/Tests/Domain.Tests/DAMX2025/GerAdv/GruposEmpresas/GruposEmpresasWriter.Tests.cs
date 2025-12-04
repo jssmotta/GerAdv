@@ -74,6 +74,7 @@ public class GruposEmpresasWriterTests
         var result = await _gruposempresasWriter.WriteAsync(gruposempresas, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFGruposEmpresas.Object);
+        _mockFGruposEmpresas.VerifySet(x => x.FGuid = gruposempresas.Guid, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FEMail = gruposempresas.EMail, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FInativo = gruposempresas.Inativo, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FOponente = gruposempresas.Oponente, Times.Once);
@@ -82,7 +83,6 @@ public class GruposEmpresasWriterTests
         _mockFGruposEmpresas.VerifySet(x => x.FCliente = gruposempresas.Cliente, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FIcone = gruposempresas.Icone, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.FDespesaUnificada = gruposempresas.DespesaUnificada, Times.Once);
-        _mockFGruposEmpresas.VerifySet(x => x.FGUID = gruposempresas.GUID, Times.Once);
         _mockFGruposEmpresas.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -126,7 +126,7 @@ public class GruposEmpresasWriterTests
         var operadorId = 456;
         _mockGruposEmpresasFactory.Setup(x => x.DeleteAsync(operadorId, gruposempresasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _gruposempresasWriter.Delete(gruposempresasResponse, operadorId, _mockConnection.Object);
+        await _gruposempresasWriter.DeleteAsync(gruposempresasResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockGruposEmpresasFactory.Verify(x => x.DeleteAsync(operadorId, gruposempresasResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -142,7 +142,7 @@ public class GruposEmpresasWriterTests
         var operadorId = 111;
         _mockGruposEmpresasFactory.Setup(x => x.DeleteAsync(operadorId, gruposempresasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _gruposempresasWriter.Delete(gruposempresasResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _gruposempresasWriter.DeleteAsync(gruposempresasResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -159,7 +159,7 @@ public class GruposEmpresasWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockGruposEmpresasFactory.Setup(x => x.DeleteAsync(operadorId, gruposempresasResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gruposempresasWriter.Delete(gruposempresasResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _gruposempresasWriter.DeleteAsync(gruposempresasResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -189,6 +189,7 @@ public class GruposEmpresasWriterTests
         return new Models.GruposEmpresas
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             EMail = "test@email.com",
             Inativo = false,
             Oponente = 1,
@@ -196,8 +197,7 @@ public class GruposEmpresasWriterTests
             Observacoes = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Cliente = 1,
             Icone = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            DespesaUnificada = false,
-            GUID = Guid.NewGuid().ToString()
+            DespesaUnificada = false
         };
     }
 #endregion

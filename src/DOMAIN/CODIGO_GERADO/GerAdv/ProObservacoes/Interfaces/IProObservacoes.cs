@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProObservacoesService
 {
+    Task<Filters.FilterProObservacoes> FilterVoice([FromBody] Filters.FilterProObservacoes filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ProObservacoesResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProObservacoes filter, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> AddAndUpdate(Models.ProObservacoes? regProObservacoes, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> Validation(Models.ProObservacoes? regProObservacoes, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<ProObservacoesResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<ProObservacoesResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterProObservacoes? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

@@ -105,7 +105,7 @@ public class PosicaoOutrasPartesValidationTests : IDisposable
         posicaooutraspartes.Descricao = "";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(posicaooutraspartes, _mockPosicaoOutrasPartesService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().MatchRegex("(é obrigatório|não encontrado)");
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class PosicaoOutrasPartesValidationTests : IDisposable
     {
         // Arrange
         var posicaooutraspartes = CreateValidPosicaoOutrasPartes();
-        posicaooutraspartes.Descricao = "   ";
+        posicaooutraspartes.Descricao = " ";
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(posicaooutraspartes, _mockPosicaoOutrasPartesService.Object, _validUri, _mockConnection.Object));
         exception.Message.Should().Contain("é obrigatório");

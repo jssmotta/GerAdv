@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ForoApiError } from '../GerAdv_TS/Foro/Apis/ApiForo';
+import { ForoApiError } from '@/app/GerAdv_TS/Foro/Apis/ApiForo';
 import { ForoApi } from '@/app/GerAdv_TS/Foro/Apis/ApiForo';
-import { FilterForo } from '../GerAdv_TS/Foro/Filters/Foro';
-import { IForo } from '../GerAdv_TS/Foro/Interfaces/interface.Foro';
-import { ForoTestEmpty } from '../GerAdv_TS/Models/Foro';
+import { FilterForo } from '@/app/GerAdv_TS/Foro/Filters/Foro';
+import { IForo } from '@/app/GerAdv_TS/Foro/Interfaces/interface.Foro';
+import { ForoTestEmpty } from '@/app/GerAdv_TS/Models/Foro';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ForoApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterForo = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,20 @@ describe('ForoApi', () => {
   describe('addAndUpdate', () => {
     const mockForo: IForo = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+email: 'test@email.com',
+nome: 'João',
+unico: false,
+cidade: 0,
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+cep: '01234-567',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+unicoconfirmado: true,
+web: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new foro successfully', async () => {
@@ -487,7 +487,7 @@ describe('ForoApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterForo = { funcionario: 1 };
+      const mockFilter: FilterForo = { : 1 };
       
       const result = foroApi.useFilter(mockFilter);
       

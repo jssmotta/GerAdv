@@ -31,7 +31,7 @@ public partial class DBOponentesRepLegal
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,37 +134,39 @@ public partial class DBOponentesRepLegal
 
 #if (!NOTSTORED_OponentesRepLegal)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFNome || pFldFFone || pFldFOponente || pFldFSexo || pFldFCPF || pFldFRG || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFCidade || pFldFFax || pFldFEMail || pFldFSite || pFldFObservacao;
+    private bool HasAnyFieldChanged() => pFldFNome || pFldFFone || pFldFOponente || pFldFSexo || pFldFCPF || pFldFRG || pFldFEndereco || pFldFBairro || pFldFCEP || pFldFCidade || pFldFFax || pFldFEMail || pFldFSite || pFldFObservacao || pFldFBold;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFNome)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFOponente)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Oponente, m_FOponente, ETiposCampos.FNumber);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Oponente, FOponente, EGenericTypeFields.FNumber);
         if (pFldFSexo || updateTool.Insert)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Sexo, m_FSexo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Sexo, FSexo, EGenericTypeFields.FBoolean);
         if (pFldFCPF)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.CPF, m_FCPF, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.CPF, FCPF, EGenericTypeFields.FString);
         if (pFldFRG)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.RG, m_FRG, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.RG, FRG, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFCEP)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFCidade)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFFax)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFSite)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Site, m_FSite, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Site, FSite, EGenericTypeFields.FString);
         if (pFldFObservacao)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBOponentesRepLegalDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
     }
 
 #endif
@@ -176,20 +178,20 @@ public partial class DBOponentesRepLegal
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBOponentesRepLegalDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBOponentesRepLegalDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBOponentesRepLegalDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBOponentesRepLegalDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

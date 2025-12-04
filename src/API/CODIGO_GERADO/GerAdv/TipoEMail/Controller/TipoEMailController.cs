@@ -14,6 +14,7 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
     private readonly ITipoEMailService _tipoemailService = tipoemailService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterTipoEMail filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterTipoEMail filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("TipoEMail: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _tipoemailService.Filter(max, filtro, uri);
+        //_logger.Info("TipoEMail: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _tipoemailService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterTipoEMailWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("TipoEMail: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _tipoemailService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("TipoEMail: GetById called with id = {0}, {1}", id, uri);
         var result = await _tipoemailService.GetById(id, uri, token);
         if (result == null)
@@ -52,6 +75,7 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterTipoEMail? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +89,8 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(TipoEMailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(TipoEMailResponse), StatusCodes.Status201Created)]
@@ -107,6 +131,11 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("TipoEMail: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _tipoemailService.Delete(id, uri);
@@ -126,6 +155,7 @@ public partial class TipoEMailController(ITipoEMailService tipoemailService) : C
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.TipoEMail regTipoEMail, [FromRoute, Required] string uri)
     {

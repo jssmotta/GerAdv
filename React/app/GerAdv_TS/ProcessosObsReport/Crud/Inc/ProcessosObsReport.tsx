@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IProcessosObsReportFormProps } from '../../Interfaces/interface.ProcessosObsReport';
 import { ProcessosObsReportService } from '../../Services/ProcessosObsReport.service';
 import { useProcessosObsReportForm, useValidationsProcessosObsReport } from '../../Hooks/hookProcessosObsReport';
-import { ProcessosObsReportEmpty } from '../../../Models/ProcessosObsReport';
+import { ProcessosObsReportEmpty } from '../../../Models/ProcessosObsReport'; 
 import { ProcessosObsReportForm } from '../Forms/ProcessosObsReport';
+ 
 
 const ProcessosObsReportInc: React.FC<IProcessosObsReportFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const processosobsreportService = new ProcessosObsReportService(
-  new ProcessosObsReportApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadProcessosObsReport } = useProcessosObsReportForm(
-ProcessosObsReportEmpty(), 
-processosobsreportService
-);
-useEffect(() => {
-  loadProcessosObsReport(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedProcessosObsReport = await processosobsreportService.saveProcessosObsReport(data);
-    if (savedProcessosObsReport.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedProcessosObsReport);
+  const processosobsreportService = new ProcessosObsReportService(
+    new ProcessosObsReportApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadProcessosObsReport } = useProcessosObsReportForm(
+    ProcessosObsReportEmpty(),
+    processosobsreportService
+  );
+
+  useEffect(() => {
+    loadProcessosObsReport(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedProcessosObsReport = await processosobsreportService.saveProcessosObsReport(data);
+
+      if (savedProcessosObsReport.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedProcessosObsReport);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadProcessosObsReport(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <ProcessosObsReportForm
+        processosobsreportData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadProcessosObsReport(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<ProcessosObsReportForm
-processosobsreportData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default ProcessosObsReportInc;

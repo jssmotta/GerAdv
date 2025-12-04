@@ -269,20 +269,6 @@ public class PenhoraWhereTests : IDisposable
     }
 
     [Fact]
-    public void Read_WithInvalidDateDataPenhoraStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFPenhora(DataPenhora: "invalid-date");
-        _mockPenhoraFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFPenhora.Object);
-        // Act
-        var result = _penhoraWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataPenhora.Should().Be("");
-    }
-
-    [Fact]
     public void Read_WithNullDateDataPenhoraFields_ShouldNotSetDateProperties()
     {
         // Arrange

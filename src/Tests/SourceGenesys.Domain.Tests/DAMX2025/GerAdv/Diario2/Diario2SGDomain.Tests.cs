@@ -35,14 +35,28 @@ public class DBDiario2Tests : IDisposable
         dt.Columns.Add("diaQuemAtu", typeof(int));
         dt.Columns.Add("diaDtAtu", typeof(DateTime));
         dt.Columns.Add("diaVisto", typeof(bool));
-        dt.Columns.Add("diaData", typeof(string));
-        dt.Columns.Add("diaHora", typeof(string));
+        dt.Columns.Add("diaData", typeof(DateTime));
+        dt.Columns.Add("diaHora", typeof(DateTime));
         dt.Columns.Add("diaOperador", typeof(int));
-        dt.Columns.Add("diaGUID", typeof(string));
         dt.Columns.Add("diaNome", typeof(string));
         dt.Columns.Add("diaOcorrencia", typeof(string));
         dt.Columns.Add("diaCliente", typeof(int));
+        dt.Columns.Add("diaBold", typeof(string));
+        dt.Columns.Add("diaGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["diaCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBDiario2(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -63,7 +77,7 @@ public class DBDiario2Tests : IDisposable
     {
         var instance = new DBDiario2();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Diario2", instance.ITabelaName());
+        Assert.Equal("Diario2", instance.ITableName());
         Assert.Equal("dia", instance.Prefixo);
     }
 
@@ -81,29 +95,16 @@ public class DBDiario2Tests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["diaCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBDiario2(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Diario2", cadastro.ITabelaName());
-        Assert.Equal("diaCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("diaData", cadastro.ICampoNome());
-        Assert.Equal("dia", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Diario2", cadastro.ITableName());
+        Assert.Equal("diaCodigo", cadastro.IFieldId());
+        Assert.Equal("diaData", cadastro.IFieldNameDescription());
+        Assert.Equal("dia", cadastro.IPrefix());
     }
 
 #endregion
@@ -163,12 +164,46 @@ public class DBDiario2Tests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBDiario2();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void Hora_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHora = dateString;
+        Assert.Equal(expected, _instance.FHora);
+    }
+
+    [Fact]
+    public void Hora_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBDiario2();
+        Assert.Equal(string.Empty, instance.FHora);
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -186,24 +221,6 @@ public class DBDiario2Tests : IDisposable
     {
         var instance = new DBDiario2();
         Assert.Equal(0, instance.FOperador);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 150 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 150);
     }
 
     [Theory]
@@ -259,6 +276,24 @@ public class DBDiario2Tests : IDisposable
     {
         var instance = new DBDiario2();
         Assert.Equal(0, instance.FCliente);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 150 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 150);
     }
 
     public virtual void Dispose()

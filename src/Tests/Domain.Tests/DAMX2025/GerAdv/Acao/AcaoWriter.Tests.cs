@@ -74,10 +74,10 @@ public class AcaoWriterTests
         var result = await _acaoWriter.WriteAsync(acao, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFAcao.Object);
+        _mockFAcao.VerifySet(x => x.FGuid = acao.Guid, Times.Once);
         _mockFAcao.VerifySet(x => x.FJustica = acao.Justica, Times.Once);
         _mockFAcao.VerifySet(x => x.FArea = acao.Area, Times.Once);
         _mockFAcao.VerifySet(x => x.FDescricao = acao.Descricao, Times.Once);
-        _mockFAcao.VerifySet(x => x.FGUID = acao.GUID, Times.Once);
         _mockFAcao.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class AcaoWriterTests
         var operadorId = 456;
         _mockAcaoFactory.Setup(x => x.DeleteAsync(operadorId, acaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _acaoWriter.Delete(acaoResponse, operadorId, _mockConnection.Object);
+        await _acaoWriter.DeleteAsync(acaoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockAcaoFactory.Verify(x => x.DeleteAsync(operadorId, acaoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class AcaoWriterTests
         var operadorId = 111;
         _mockAcaoFactory.Setup(x => x.DeleteAsync(operadorId, acaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _acaoWriter.Delete(acaoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _acaoWriter.DeleteAsync(acaoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class AcaoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockAcaoFactory.Setup(x => x.DeleteAsync(operadorId, acaoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _acaoWriter.Delete(acaoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _acaoWriter.DeleteAsync(acaoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class AcaoWriterTests
         return new Models.Acao
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Justica = 1,
             Area = 1,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

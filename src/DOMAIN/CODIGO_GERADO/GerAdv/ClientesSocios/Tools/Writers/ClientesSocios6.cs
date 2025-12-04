@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IClientesSociosWriter
 {
     Task<FClientesSocios> WriteAsync(Models.ClientesSocios clientessocios, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory) : IClientesSociosWriter
 {
     private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory ?? throw new ArgumentNullException(nameof(clientessociosFactory));
-    public virtual async Task Delete(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(ClientesSociosResponse clientessocios, int operadorId, MsiSqlConnection? oCnn)
     {
         await _clientessociosFactory.DeleteAsync(operadorId, clientessocios.Id, oCnn);
     }
@@ -24,13 +24,15 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
     {
         using var dbRec = await (clientessocios.Id.IsEmptyIDNumber() ? _clientessociosFactory.CreateAsync() : _clientessociosFactory.CreateFromIdAsync(clientessocios.Id, oCnn));
         dbRec.FSomenteRepresentante = clientessocios.SomenteRepresentante;
-        dbRec.FGUID = clientessocios.GUID;
         dbRec.FIdade = clientessocios.Idade;
         dbRec.FIsRepresentanteLegal = clientessocios.IsRepresentanteLegal;
         dbRec.FQualificacao = clientessocios.Qualificacao;
         dbRec.FSexo = clientessocios.Sexo;
-        if (clientessocios.DtNasc != null)
-            dbRec.FDtNasc = clientessocios.DtNasc.ToString();
+        if (clientessocios.DtNasc.NotIsEmpty())
+        {
+            dbRec.FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(clientessocios.DtNasc));
+        }
+
         dbRec.FNome = clientessocios.Nome;
         dbRec.FSite = clientessocios.Site;
         dbRec.FRepresentanteLegal = clientessocios.RepresentanteLegal;
@@ -47,8 +49,11 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
         dbRec.FEMail = clientessocios.EMail;
         dbRec.FObs = clientessocios.Obs;
         dbRec.FCNH = clientessocios.CNH;
-        if (clientessocios.DataContrato != null)
-            dbRec.FDataContrato = clientessocios.DataContrato.ToString();
+        if (clientessocios.DataContrato.NotIsEmpty())
+        {
+            dbRec.FDataContrato = DateOnly.FromDateTime(Convert.ToDateTime(clientessocios.DataContrato));
+        }
+
         dbRec.FCNPJ = clientessocios.CNPJ.ClearInputCnpj();
         dbRec.FInscEst = clientessocios.InscEst;
         dbRec.FSocioEmpresaAdminNome = clientessocios.SocioEmpresaAdminNome;
@@ -56,12 +61,19 @@ public class ClientesSociosWriter(IFClientesSociosFactory clientessociosFactory)
         dbRec.FBairroSocio = clientessocios.BairroSocio;
         dbRec.FCEPSocio = clientessocios.CEPSocio;
         dbRec.FCidadeSocio = clientessocios.CidadeSocio;
-        if (clientessocios.RGDataExp != null)
-            dbRec.FRGDataExp = clientessocios.RGDataExp.ToString();
+        if (clientessocios.RGDataExp.NotIsEmpty())
+        {
+            dbRec.FRGDataExp = DateOnly.FromDateTime(Convert.ToDateTime(clientessocios.RGDataExp));
+        }
+
         dbRec.FSocioEmpresaAdminSomente = clientessocios.SocioEmpresaAdminSomente;
         dbRec.FTipo = clientessocios.Tipo;
         dbRec.FFax = clientessocios.Fax;
         dbRec.FClass = clientessocios.Class;
+        dbRec.FEtiqueta = clientessocios.Etiqueta;
+        dbRec.FAni = clientessocios.Ani;
+        dbRec.FBold = clientessocios.Bold;
+        dbRec.FGuid = clientessocios.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

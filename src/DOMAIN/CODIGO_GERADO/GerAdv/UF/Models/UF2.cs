@@ -38,16 +38,16 @@ namespace MenphisSI.GerAdv.Models
         public bool Top { get; set; }
 
         /// <summary>
-        /// Descricao - ufDescricao - tamanho máximo: 40 
+        /// Descrições - ufDescricao - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// GUID - ufGUID - tamanho máximo: 100 
+        /// GUID - ufGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -84,16 +84,16 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Top { get; set; }
 
         /// <summary>
-        /// Descricao - ufDescricao - tamanho máximo: 40 
+        /// Descrições - ufDescricao - tamanho máximo: 40 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
 
         /// <summary>
-        /// GUID - ufGUID - tamanho máximo: 100 
+        /// GUID - ufGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomepaises")]
         public string NomePaises { get; set; } = string.Empty;

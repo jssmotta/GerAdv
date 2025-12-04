@@ -58,7 +58,7 @@ public class ProProcuradoresValidationTests : IDisposable
             Advogado = 0,
             Nome = "João",
             Processo = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Substabelecimento = false,
             Procuracao = true
         };
@@ -69,7 +69,7 @@ public class ProProcuradoresValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockProProcuradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProProcuradores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProProcuradoress service mock
-        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = id }));
+        _ = _mockAdvogadosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AdvogadosResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -77,7 +77,7 @@ public class ProProcuradoresValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockProProcuradoresService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterProProcuradores>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the ProProcuradoress service mock
-        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = 0 }));
+        _ = _mockAdvogadosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AdvogadosResponse { Id = 0 }));
     }
 
     [Fact]
@@ -108,6 +108,74 @@ public class ProProcuradoresValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var proprocuradores = CreateValidProProcuradores();
+        proprocuradores.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var proprocuradores = CreateValidProProcuradores();
+        proprocuradores.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var proprocuradores = CreateValidProProcuradores();
+        proprocuradores.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var proprocuradores = CreateValidProProcuradores();
+        proprocuradores.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var proprocuradores = CreateValidProProcuradores();
+        proprocuradores.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region Foreign Key Validation Tests - Advogados
     [Fact]
     public async Task ValidateReg_WithInvalidAdvogados_ShouldThrowSGValidationException()
@@ -115,7 +183,7 @@ public class ProProcuradoresValidationTests : IDisposable
         // Arrange
         var proprocuradores = CreateValidProProcuradores();
         proprocuradores.Advogado = 999;
-        _mockAdvogadosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AdvogadosResponse>(null));
+        _mockAdvogadosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AdvogadosResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object));
@@ -132,7 +200,7 @@ public class ProProcuradoresValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAdvogadosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAdvogadosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object));
@@ -149,7 +217,7 @@ public class ProProcuradoresValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAdvogadosReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAdvogadosReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object);
@@ -169,7 +237,7 @@ public class ProProcuradoresValidationTests : IDisposable
         var result = await _validation.ValidateReg(proprocuradores, _mockProProcuradoresService.Object, _mockAdvogadosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockAdvogadosReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockAdvogadosReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBOperadorEMailPopup : VAuditor, ICadastros
+public partial class DBOperadorEMailPopup : VAuditor, ICrud
 {
 #region TableDefinition_OperadorEMailPopup
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBOperadorEMailPopup : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBOperadorEMailPopup : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_OperadorEMailPopup
@@ -62,7 +62,7 @@ public partial class DBOperadorEMailPopup : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFOperador || pFldFNome || pFldFSenha || pFldFSMTP || pFldFPOP3 || pFldFAutenticacao || pFldFDescricao || pFldFUsuario || pFldFGUID || pFldFPortaSmtp || pFldFPortaPop3 || pFldFAssinatura || pFldFSenha256))
+            if (!(pFldFOperador || pFldFNome || pFldFSenha || pFldFSMTP || pFldFPOP3 || pFldFAutenticacao || pFldFDescricao || pFldFUsuario || pFldFPortaSmtp || pFldFPortaPop3 || pFldFAssinatura || pFldFSenha256 || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,38 +92,37 @@ public partial class DBOperadorEMailPopup : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFOperador)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Operador, m_FOperador, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Operador, FOperador, EGenericTypeFields.FNumberNull);
         if (pFldFNome)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFSenha)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Senha, m_FSenha, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Senha, FSenha, EGenericTypeFields.FString);
         if (pFldFSMTP)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.SMTP, m_FSMTP, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.SMTP, FSMTP, EGenericTypeFields.FString);
         if (pFldFPOP3)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.POP3, m_FPOP3, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.POP3, FPOP3, EGenericTypeFields.FString);
         if (pFldFAutenticacao || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Autenticacao, m_FAutenticacao, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Autenticacao, FAutenticacao, EGenericTypeFields.FBoolean);
         if (pFldFDescricao)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFUsuario)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Usuario, m_FUsuario, ETiposCampos.FString);
-        if (pFldFGUID)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Usuario, FUsuario, EGenericTypeFields.FString);
         if (pFldFPortaSmtp)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.PortaSmtp, m_FPortaSmtp, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.PortaSmtp, FPortaSmtp, EGenericTypeFields.FNumberNull);
         if (pFldFPortaPop3)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.PortaPop3, m_FPortaPop3, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.PortaPop3, FPortaPop3, EGenericTypeFields.FNumberNull);
         if (pFldFAssinatura)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Assinatura, m_FAssinatura, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Assinatura, FAssinatura, EGenericTypeFields.FString);
         if (pFldFSenha256)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Senha256, m_FSenha256, ETiposCampos.FString);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Senha256, FSenha256, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_OperadorEMailPopup)
         if (clsW.HasUpdates)
         {
@@ -138,15 +137,15 @@ public partial class DBOperadorEMailPopup : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBOperadorEMailPopupDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBOperadorEMailPopupDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBOperadorEMailPopupDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -170,7 +169,7 @@ public partial class DBOperadorEMailPopup : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

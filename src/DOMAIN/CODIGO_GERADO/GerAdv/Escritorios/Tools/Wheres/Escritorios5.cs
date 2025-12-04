@@ -20,7 +20,6 @@ public partial class EscritoriosWhere(IFEscritoriosFactory escritoriosFactory) :
         var escritorios = new EscritoriosResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             CNPJ = dbRec.FCNPJ ?? string.Empty,
             Casa = dbRec.FCasa,
             Parceria = dbRec.FParceria,
@@ -40,6 +39,9 @@ public partial class EscritoriosWhere(IFEscritoriosFactory escritoriosFactory) :
             InscEst = dbRec.FInscEst ?? string.Empty,
             Correspondente = dbRec.FCorrespondente,
             Top = dbRec.FTop,
+            Etiqueta = dbRec.FEtiqueta,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return escritorios;
     }

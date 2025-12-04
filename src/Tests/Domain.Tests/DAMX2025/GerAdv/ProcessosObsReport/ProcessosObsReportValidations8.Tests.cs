@@ -53,7 +53,7 @@ public class ProcessosObsReportValidationTests : IDisposable
         return new Models.ProcessosObsReport
         {
             Id = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Processo = 1,
             Observacao = "Observação teste",
             Historico = 0
@@ -101,34 +101,27 @@ public class ProcessosObsReportValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required Data Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyData_ShouldThrowSGValidationException()
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
     {
         // Arrange
         var processosobsreport = CreateValidProcessosObsReport();
-        processosobsreport.Data = "";
+        processosobsreport.Data = invalidDate;
+        SetupValidMocks();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(processosobsreport, _mockProcessosObsReportService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
+        exception.Message.Should().Contain("01/01/1900.");
     }
 
     [Fact]
-    public async Task ValidateReg_WithNullData_ShouldThrowSGValidationException()
+    public async Task ValidateReg_WithValidData_ShouldPass()
     {
         // Arrange
         var processosobsreport = CreateValidProcessosObsReport();
-        processosobsreport.Data = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(processosobsreport, _mockProcessosObsReportService.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataData_ShouldReturnTrue()
-    {
-        // Arrange
-        var processosobsreport = CreateValidProcessosObsReport();
+        processosobsreport.Data = "01/01/1990";
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(processosobsreport, _mockProcessosObsReportService.Object, _validUri, _mockConnection.Object);
@@ -137,13 +130,15 @@ public class ProcessosObsReportValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateReg_WithWhitespaceData_ShouldThrowSGValidationException()
+    public async Task ValidateReg_WithEmptyData_ShouldNotPass()
     {
         // Arrange
         var processosobsreport = CreateValidProcessosObsReport();
-        processosobsreport.Data = "   ";
-        // Act & Assert
+        processosobsreport.Data = "";
+        SetupValidMocks();
+        // Act       
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(processosobsreport, _mockProcessosObsReportService.Object, _validUri, _mockConnection.Object));
+        // Assert
         exception.Message.Should().Contain("é obrigatório");
     }
 

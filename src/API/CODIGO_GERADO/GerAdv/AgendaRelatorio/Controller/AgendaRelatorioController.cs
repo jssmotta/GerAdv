@@ -14,16 +14,32 @@ public partial class AgendaRelatorioController(IAgendaRelatorioService agendarel
     private readonly IAgendaRelatorioService _agendarelatorioService = agendarelatorioService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterAgendaRelatorio filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterAgendaRelatorio filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("AgendaRelatorio: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _agendarelatorioService.Filter(max, filtro, uri);
+        //_logger.Info("AgendaRelatorio: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _agendarelatorioService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterAgendaRelatorioWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("AgendaRelatorio: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _agendarelatorioService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 }

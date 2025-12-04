@@ -20,7 +20,7 @@ namespace MenphisSI.GerAdv.Models
         public bool Cobrar { get; set; }
 
         /// <summary>
-        /// Descricao - serDescricao - tamanho máximo: 200 
+        /// Descrições - serDescricao - tamanho máximo: 200 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -32,10 +32,10 @@ namespace MenphisSI.GerAdv.Models
         public bool Basico { get; set; }
 
         /// <summary>
-        /// GUID - serGUID - tamanho máximo: 100 
+        /// GUID - serGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -54,7 +54,7 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Cobrar { get; set; }
 
         /// <summary>
-        /// Descricao - serDescricao - tamanho máximo: 200 
+        /// Descrições - serDescricao - tamanho máximo: 200 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -66,9 +66,9 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Basico { get; set; }
 
         /// <summary>
-        /// GUID - serGUID - tamanho máximo: 100 
+        /// GUID - serGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBForo : VAuditor, ICadastros
+public partial class DBForo : VAuditor, ICrud
 {
 #region TableDefinition_Foro
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBForo : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBForo : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_Foro
@@ -93,35 +93,35 @@ public partial class DBForo : VAuditor, ICadastros
         }
 
         if (pFldFEMail)
-            clsW.Fields(DBForoDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFNome)
-            clsW.Fields(DBForoDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFUnico || ID.IsEmptyIDNumber())
-            clsW.Fields(DBForoDicInfo.Unico, m_FUnico, ETiposCampos.FBoolean);
+            clsW.Fields(DBForoDicInfo.Unico, FUnico, EGenericTypeFields.FBoolean);
         if (pFldFCidade)
-            clsW.Fields(DBForoDicInfo.Cidade, m_FCidade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBForoDicInfo.Cidade, FCidade, EGenericTypeFields.FNumberNull);
         if (pFldFSite)
-            clsW.Fields(DBForoDicInfo.Site, m_FSite, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Site, FSite, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            clsW.Fields(DBForoDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFBairro)
-            clsW.Fields(DBForoDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFFone)
-            clsW.Fields(DBForoDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            clsW.Fields(DBForoDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFCEP)
-            clsW.Fields(DBForoDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFOBS)
-            clsW.Fields(DBForoDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFUnicoConfirmado || ID.IsEmptyIDNumber())
-            clsW.Fields(DBForoDicInfo.UnicoConfirmado, m_FUnicoConfirmado, ETiposCampos.FBoolean);
+            clsW.Fields(DBForoDicInfo.UnicoConfirmado, FUnicoConfirmado, EGenericTypeFields.FBoolean);
         if (pFldFWeb)
-            clsW.Fields(DBForoDicInfo.Web, m_FWeb, ETiposCampos.FString);
+            clsW.Fields(DBForoDicInfo.Web, FWeb, EGenericTypeFields.FString);
         if (pFldFEtiqueta || ID.IsEmptyIDNumber())
-            clsW.Fields(DBForoDicInfo.Etiqueta, m_FEtiqueta, ETiposCampos.FBoolean);
+            clsW.Fields(DBForoDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
         if (pFldFBold || ID.IsEmptyIDNumber())
-            clsW.Fields(DBForoDicInfo.Bold, m_FBold, ETiposCampos.FBoolean);
+            clsW.Fields(DBForoDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Foro)
         if (clsW.HasUpdates)
         {
@@ -136,15 +136,15 @@ public partial class DBForo : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBForoDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBForoDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBForoDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBForoDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBForoDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBForoDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBForoDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBForoDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBForoDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBForoDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -168,7 +168,7 @@ public partial class DBForo : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

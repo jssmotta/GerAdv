@@ -74,10 +74,10 @@ public class SMSAliceWriterTests
         var result = await _smsaliceWriter.WriteAsync(smsalice, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFSMSAlice.Object);
+        _mockFSMSAlice.VerifySet(x => x.FGuid = smsalice.Guid, Times.Once);
         _mockFSMSAlice.VerifySet(x => x.FOperador = smsalice.Operador, Times.Once);
         _mockFSMSAlice.VerifySet(x => x.FNome = smsalice.Nome, Times.Once);
         _mockFSMSAlice.VerifySet(x => x.FTipoEMail = smsalice.TipoEMail, Times.Once);
-        _mockFSMSAlice.VerifySet(x => x.FGUID = smsalice.GUID, Times.Once);
         _mockFSMSAlice.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class SMSAliceWriterTests
         var operadorId = 456;
         _mockSMSAliceFactory.Setup(x => x.DeleteAsync(operadorId, smsaliceResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _smsaliceWriter.Delete(smsaliceResponse, operadorId, _mockConnection.Object);
+        await _smsaliceWriter.DeleteAsync(smsaliceResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockSMSAliceFactory.Verify(x => x.DeleteAsync(operadorId, smsaliceResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class SMSAliceWriterTests
         var operadorId = 111;
         _mockSMSAliceFactory.Setup(x => x.DeleteAsync(operadorId, smsaliceResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _smsaliceWriter.Delete(smsaliceResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _smsaliceWriter.DeleteAsync(smsaliceResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class SMSAliceWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockSMSAliceFactory.Setup(x => x.DeleteAsync(operadorId, smsaliceResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _smsaliceWriter.Delete(smsaliceResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _smsaliceWriter.DeleteAsync(smsaliceResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class SMSAliceWriterTests
         return new Models.SMSAlice
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Operador = 1,
             Nome = "João",
-            TipoEMail = 1,
-            GUID = Guid.NewGuid().ToString()
+            TipoEMail = 1
         };
     }
 #endregion

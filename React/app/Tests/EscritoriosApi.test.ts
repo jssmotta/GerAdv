@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { EscritoriosApiError } from '../GerAdv_TS/Escritorios/Apis/ApiEscritorios';
+import { EscritoriosApiError } from '@/app/GerAdv_TS/Escritorios/Apis/ApiEscritorios';
 import { EscritoriosApi } from '@/app/GerAdv_TS/Escritorios/Apis/ApiEscritorios';
-import { FilterEscritorios } from '../GerAdv_TS/Escritorios/Filters/Escritorios';
-import { IEscritorios } from '../GerAdv_TS/Escritorios/Interfaces/interface.Escritorios';
-import { EscritoriosTestEmpty } from '../GerAdv_TS/Models/Escritorios';
+import { FilterEscritorios } from '@/app/GerAdv_TS/Escritorios/Filters/Escritorios';
+import { IEscritorios } from '@/app/GerAdv_TS/Escritorios/Interfaces/interface.Escritorios';
+import { EscritoriosTestEmpty } from '@/app/GerAdv_TS/Models/Escritorios';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('EscritoriosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterEscritorios = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,26 @@ describe('EscritoriosApi', () => {
   describe('addAndUpdate', () => {
     const mockEscritorios: IEscritorios = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+cnpj: '93016944000138',
+casa: false,
+parceria: true,
+nome: 'João',
+oab: 'AAAAAAAAAAAAA',
+endereco: 'Rua das Flores, 123',
+cidade: 0,
+bairro: 'Centro',
+cep: '01234-567',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+email: 'test@email.com',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+advresponsavel: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+secretaria: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+inscest: 'AAAAAAAAAAAAA',
+correspondente: false,
+top: true
     };
 
     it('should add new escritorios successfully', async () => {
@@ -487,7 +493,7 @@ describe('EscritoriosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterEscritorios = { funcionario: 1 };
+      const mockFilter: FilterEscritorios = { : 1 };
       
       const result = escritoriosApi.useFilter(mockFilter);
       

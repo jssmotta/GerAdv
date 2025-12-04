@@ -74,8 +74,8 @@ public class PosicaoOutrasPartesWriterTests
         var result = await _posicaooutraspartesWriter.WriteAsync(posicaooutraspartes, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFPosicaoOutrasPartes.Object);
+        _mockFPosicaoOutrasPartes.VerifySet(x => x.FGuid = posicaooutraspartes.Guid, Times.Once);
         _mockFPosicaoOutrasPartes.VerifySet(x => x.FDescricao = posicaooutraspartes.Descricao, Times.Once);
-        _mockFPosicaoOutrasPartes.VerifySet(x => x.FGUID = posicaooutraspartes.GUID, Times.Once);
         _mockFPosicaoOutrasPartes.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class PosicaoOutrasPartesWriterTests
         var operadorId = 456;
         _mockPosicaoOutrasPartesFactory.Setup(x => x.DeleteAsync(operadorId, posicaooutraspartesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _posicaooutraspartesWriter.Delete(posicaooutraspartesResponse, operadorId, _mockConnection.Object);
+        await _posicaooutraspartesWriter.DeleteAsync(posicaooutraspartesResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockPosicaoOutrasPartesFactory.Verify(x => x.DeleteAsync(operadorId, posicaooutraspartesResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class PosicaoOutrasPartesWriterTests
         var operadorId = 111;
         _mockPosicaoOutrasPartesFactory.Setup(x => x.DeleteAsync(operadorId, posicaooutraspartesResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _posicaooutraspartesWriter.Delete(posicaooutraspartesResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _posicaooutraspartesWriter.DeleteAsync(posicaooutraspartesResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class PosicaoOutrasPartesWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockPosicaoOutrasPartesFactory.Setup(x => x.DeleteAsync(operadorId, posicaooutraspartesResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _posicaooutraspartesWriter.Delete(posicaooutraspartesResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _posicaooutraspartesWriter.DeleteAsync(posicaooutraspartesResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class PosicaoOutrasPartesWriterTests
         return new Models.PosicaoOutrasPartes
         {
             Id = 0,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

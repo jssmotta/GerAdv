@@ -74,6 +74,7 @@ public class OutrasPartesClienteWriterTests
         var result = await _outraspartesclienteWriter.WriteAsync(outraspartescliente, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFOutrasPartesCliente.Object);
+        _mockFOutrasPartesCliente.VerifySet(x => x.FGuid = outraspartescliente.Guid, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FNome = outraspartescliente.Nome, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FTerceirizado = outraspartescliente.Terceirizado, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FClientePrincipal = outraspartescliente.ClientePrincipal, Times.Once);
@@ -94,7 +95,6 @@ public class OutrasPartesClienteWriterTests
         _mockFOutrasPartesCliente.VerifySet(x => x.FEMail = outraspartescliente.EMail, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FSite = outraspartescliente.Site, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.FClass = outraspartescliente.Class, Times.Once);
-        _mockFOutrasPartesCliente.VerifySet(x => x.FGUID = outraspartescliente.GUID, Times.Once);
         _mockFOutrasPartesCliente.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -153,7 +153,7 @@ public class OutrasPartesClienteWriterTests
         var operadorId = 456;
         _mockOutrasPartesClienteFactory.Setup(x => x.DeleteAsync(operadorId, outraspartesclienteResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _outraspartesclienteWriter.Delete(outraspartesclienteResponse, operadorId, _mockConnection.Object);
+        await _outraspartesclienteWriter.DeleteAsync(outraspartesclienteResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockOutrasPartesClienteFactory.Verify(x => x.DeleteAsync(operadorId, outraspartesclienteResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -169,7 +169,7 @@ public class OutrasPartesClienteWriterTests
         var operadorId = 111;
         _mockOutrasPartesClienteFactory.Setup(x => x.DeleteAsync(operadorId, outraspartesclienteResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _outraspartesclienteWriter.Delete(outraspartesclienteResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _outraspartesclienteWriter.DeleteAsync(outraspartesclienteResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -186,7 +186,7 @@ public class OutrasPartesClienteWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockOutrasPartesClienteFactory.Setup(x => x.DeleteAsync(operadorId, outraspartesclienteResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _outraspartesclienteWriter.Delete(outraspartesclienteResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _outraspartesclienteWriter.DeleteAsync(outraspartesclienteResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -216,6 +216,7 @@ public class OutrasPartesClienteWriterTests
         return new Models.OutrasPartesCliente
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Nome = "João",
             Terceirizado = false,
             ClientePrincipal = 1,
@@ -235,8 +236,7 @@ public class OutrasPartesClienteWriterTests
             Fax = "(11) 88888-9999",
             EMail = "test@email.com",
             Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Class = "A",
-            GUID = Guid.NewGuid().ToString()
+            Class = "A"
         };
     }
 #endregion

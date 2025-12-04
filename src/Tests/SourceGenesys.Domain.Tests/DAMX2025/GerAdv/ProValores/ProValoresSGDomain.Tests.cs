@@ -39,7 +39,7 @@ public class DBProValoresTests : IDisposable
         dt.Columns.Add("prvTipoValorProcesso", typeof(int));
         dt.Columns.Add("prvIndice", typeof(string));
         dt.Columns.Add("prvIgnorar", typeof(string));
-        dt.Columns.Add("prvData", typeof(string));
+        dt.Columns.Add("prvData", typeof(DateTime));
         dt.Columns.Add("prvValorOriginal", typeof(decimal));
         dt.Columns.Add("prvPercMulta", typeof(decimal));
         dt.Columns.Add("prvValorMulta", typeof(decimal));
@@ -51,6 +51,19 @@ public class DBProValoresTests : IDisposable
         dt.Columns.Add("prvDataUltimaCorrecao", typeof(DateTime));
         dt.Columns.Add("prvGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["prvCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBProValores(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -71,7 +84,7 @@ public class DBProValoresTests : IDisposable
     {
         var instance = new DBProValores();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ProValores", instance.ITabelaName());
+        Assert.Equal("ProValores", instance.ITableName());
         Assert.Equal("prv", instance.Prefixo);
     }
 
@@ -89,29 +102,16 @@ public class DBProValoresTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["prvCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBProValores(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ProValores", cadastro.ITabelaName());
-        Assert.Equal("prvCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("prvData", cadastro.ICampoNome());
-        Assert.Equal("prv", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ProValores", cadastro.ITableName());
+        Assert.Equal("prvCodigo", cadastro.IFieldId());
+        Assert.Equal("prvData", cadastro.IFieldNameDescription());
+        Assert.Equal("prv", cadastro.IPrefix());
     }
 
 #endregion
@@ -171,9 +171,9 @@ public class DBProValoresTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -247,6 +247,23 @@ public class DBProValoresTests : IDisposable
     {
         var instance = new DBProValores();
         Assert.False(instance.FIgnorar);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBProValores();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]

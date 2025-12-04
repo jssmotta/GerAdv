@@ -20,8 +20,8 @@ public partial class TipoEnderecoWhere(IFTipoEnderecoFactory tipoenderecoFactory
         var tipoendereco = new TipoEnderecoResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tipoendereco;
     }

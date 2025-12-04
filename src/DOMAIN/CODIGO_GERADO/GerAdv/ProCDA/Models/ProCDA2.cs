@@ -32,10 +32,16 @@ namespace MenphisSI.GerAdv.Models
         public string NroInterno { get; set; } = "";
 
         /// <summary>
-        /// GUID - pcdGUID - tamanho máximo: 100 
+        /// Bold - pcdBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - pcdGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -66,9 +72,15 @@ namespace MenphisSI.GerAdv.Models.All
         public string NroInterno { get; set; } = "";
 
         /// <summary>
-        /// GUID - pcdGUID - tamanho máximo: 100 
+        /// Bold - pcdBold  
+        /// </summary>
+        [JsonPropertyName("bold")]
+        public bool Bold { get; set; }
+
+        /// <summary>
+        /// GUID - pcdGuid - tamanho máximo: 100 
         /// </summary>
         [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
+        public string Guid { get; set; } = "";
     }
 }

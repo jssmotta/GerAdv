@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IGUTAtividadesWriter
 {
     Task<FGUTAtividades> WriteAsync(Models.GUTAtividades gutatividades, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class GUTAtividadesWriter(IFGUTAtividadesFactory gutatividadesFactory) : IGUTAtividadesWriter
 {
     private readonly IFGUTAtividadesFactory _gutatividadesFactory = gutatividadesFactory ?? throw new ArgumentNullException(nameof(gutatividadesFactory));
-    public virtual async Task Delete(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(GUTAtividadesResponse gutatividades, int operadorId, MsiSqlConnection? oCnn)
     {
         await _gutatividadesFactory.DeleteAsync(operadorId, gutatividades.Id, oCnn);
     }
@@ -28,12 +28,15 @@ public class GUTAtividadesWriter(IFGUTAtividadesFactory gutatividadesFactory) : 
         dbRec.FGUTGrupo = gutatividades.GUTGrupo;
         dbRec.FGUTPeriodicidade = gutatividades.GUTPeriodicidade;
         dbRec.FOperador = gutatividades.Operador;
-        dbRec.FGUID = gutatividades.GUID;
         dbRec.FConcluido = gutatividades.Concluido;
-        if (gutatividades.DataConcluido != null)
-            dbRec.FDataConcluido = gutatividades.DataConcluido.ToString();
+        if (gutatividades.DataConcluido.NotIsEmpty())
+        {
+            dbRec.FDataConcluido = DateOnly.FromDateTime(Convert.ToDateTime(gutatividades.DataConcluido));
+        }
+
         dbRec.FDiasParaIniciar = gutatividades.DiasParaIniciar;
         dbRec.FMinutosParaRealizar = gutatividades.MinutosParaRealizar;
+        dbRec.FGuid = gutatividades.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -64,7 +64,7 @@ public class NENotasValidationTests : IDisposable
             Revisada = false,
             Processo = 0,
             PalavraChave = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             NotaPublicada = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
     }
@@ -74,7 +74,7 @@ public class NENotasValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockNENotasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNENotas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NENotass service mock
-        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = id }));
+        _ = _mockInstanciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new InstanciaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -82,7 +82,7 @@ public class NENotasValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockNENotasService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterNENotas>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the NENotass service mock
-        _ = _mockInstanciaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new InstanciaResponse { Id = 0 }));
+        _ = _mockInstanciaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new InstanciaResponse { Id = 0 }));
     }
 
     [Fact]
@@ -115,6 +115,74 @@ public class NENotasValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var nenotas = CreateValidNENotas();
+        nenotas.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var nenotas = CreateValidNENotas();
+        nenotas.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var nenotas = CreateValidNENotas();
+        nenotas.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var nenotas = CreateValidNENotas();
+        nenotas.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var nenotas = CreateValidNENotas();
+        nenotas.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region Foreign Key Validation Tests - Instancia
     [Fact]
     public async Task ValidateReg_WithInvalidInstancia_ShouldThrowSGValidationException()
@@ -122,7 +190,7 @@ public class NENotasValidationTests : IDisposable
         // Arrange
         var nenotas = CreateValidNENotas();
         nenotas.Instancia = 999;
-        _mockInstanciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.InstanciaResponse>(null));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.InstanciaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -139,7 +207,7 @@ public class NENotasValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockInstanciaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object));
@@ -156,7 +224,7 @@ public class NENotasValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockInstanciaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockInstanciaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
@@ -176,7 +244,7 @@ public class NENotasValidationTests : IDisposable
         var result = await _validation.ValidateReg(nenotas, _mockNENotasService.Object, _mockInstanciaReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockInstanciaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockInstanciaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

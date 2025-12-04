@@ -29,13 +29,6 @@ public partial class FGUTTipo : MenphisSI.SG.GerAdv.DBGUTTipo, IDBGUTTipo
     {
     }
 
-    public async Task<FGUTTipo> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fGUTTipo = new FGUTTipo();
-        await fGUTTipo.CarregarAsync(id, oCnn);
-        return fGUTTipo;
-    }
-
     private FGUTTipo(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -44,6 +37,13 @@ public partial class FGUTTipo : MenphisSI.SG.GerAdv.DBGUTTipo, IDBGUTTipo
     public static FGUTTipo CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FGUTTipo(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+    }
+
+    public async Task<FGUTTipo> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        var fGUTTipo = new FGUTTipo();
+        await fGUTTipo.CarregarAsync(id, oCnn);
+        return fGUTTipo;
     }
 
     // Initialize method to load data with parameters after DI construction
@@ -62,7 +62,7 @@ public partial class FGUTTipo : MenphisSI.SG.GerAdv.DBGUTTipo, IDBGUTTipo
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
@@ -70,7 +70,7 @@ public partial class FGUTTipo : MenphisSI.SG.GerAdv.DBGUTTipo, IDBGUTTipo
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

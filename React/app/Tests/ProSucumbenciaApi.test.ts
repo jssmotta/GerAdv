@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProSucumbenciaApiError } from '../GerAdv_TS/ProSucumbencia/Apis/ApiProSucumbencia';
+import { ProSucumbenciaApiError } from '@/app/GerAdv_TS/ProSucumbencia/Apis/ApiProSucumbencia';
 import { ProSucumbenciaApi } from '@/app/GerAdv_TS/ProSucumbencia/Apis/ApiProSucumbencia';
-import { FilterProSucumbencia } from '../GerAdv_TS/ProSucumbencia/Filters/ProSucumbencia';
-import { IProSucumbencia } from '../GerAdv_TS/ProSucumbencia/Interfaces/interface.ProSucumbencia';
-import { ProSucumbenciaTestEmpty } from '../GerAdv_TS/Models/ProSucumbencia';
+import { FilterProSucumbencia } from '@/app/GerAdv_TS/ProSucumbencia/Filters/ProSucumbencia';
+import { IProSucumbencia } from '@/app/GerAdv_TS/ProSucumbencia/Interfaces/interface.ProSucumbencia';
+import { ProSucumbenciaTestEmpty } from '@/app/GerAdv_TS/Models/ProSucumbencia';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProSucumbenciaApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProSucumbencia = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,14 @@ describe('ProSucumbenciaApi', () => {
   describe('addAndUpdate', () => {
     const mockProSucumbencia: IProSucumbencia = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 1,
+instancia: 0,
+data: '24/04/1975',
+nome: 'João',
+tipoorigemsucumbencia: 1,
+valor: 1m,
+percentual: 'AAA'
     };
 
     it('should add new prosucumbencia successfully', async () => {
@@ -487,7 +481,7 @@ describe('ProSucumbenciaApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProSucumbencia = { funcionario: 1 };
+      const mockFilter: FilterProSucumbencia = { : 1 };
       
       const result = prosucumbenciaApi.useFilter(mockFilter);
       

@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IRitoWriter
 {
     Task<FRito> WriteAsync(Models.Rito rito, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(RitoResponse rito, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(RitoResponse rito, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class RitoWriter(IFRitoFactory ritoFactory) : IRitoWriter
 {
     private readonly IFRitoFactory _ritoFactory = ritoFactory ?? throw new ArgumentNullException(nameof(ritoFactory));
-    public virtual async Task Delete(RitoResponse rito, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(RitoResponse rito, int operadorId, MsiSqlConnection? oCnn)
     {
         await _ritoFactory.DeleteAsync(operadorId, rito.Id, oCnn);
     }
@@ -24,8 +24,9 @@ public class RitoWriter(IFRitoFactory ritoFactory) : IRitoWriter
     {
         using var dbRec = await (rito.Id.IsEmptyIDNumber() ? _ritoFactory.CreateAsync() : _ritoFactory.CreateFromIdAsync(rito.Id, oCnn));
         dbRec.FDescricao = rito.Descricao;
-        dbRec.FGUID = rito.GUID;
         dbRec.FTop = rito.Top;
+        dbRec.FBold = rito.Bold;
+        dbRec.FGuid = rito.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

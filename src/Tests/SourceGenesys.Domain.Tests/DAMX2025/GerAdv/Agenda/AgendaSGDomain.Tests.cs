@@ -43,14 +43,14 @@ public class DBAgendaTests : IDisposable
         dt.Columns.Add("ageOculto", typeof(int));
         dt.Columns.Add("ageCartaPrecatoria", typeof(int));
         dt.Columns.Add("ageRevisar", typeof(string));
-        dt.Columns.Add("ageHrFinal", typeof(string));
+        dt.Columns.Add("ageHrFinal", typeof(DateTime));
         dt.Columns.Add("ageAdvogado", typeof(int));
         dt.Columns.Add("ageEventoGerador", typeof(int));
         dt.Columns.Add("ageEventoData", typeof(DateTime));
         dt.Columns.Add("ageFuncionario", typeof(int));
-        dt.Columns.Add("ageData", typeof(string));
+        dt.Columns.Add("ageData", typeof(DateTime));
         dt.Columns.Add("ageEventoPrazo", typeof(int));
-        dt.Columns.Add("ageHora", typeof(string));
+        dt.Columns.Add("ageHora", typeof(DateTime));
         dt.Columns.Add("ageCompromisso", typeof(string));
         dt.Columns.Add("ageTipoCompromisso", typeof(int));
         dt.Columns.Add("ageCliente", typeof(int));
@@ -66,7 +66,6 @@ public class DBAgendaTests : IDisposable
         dt.Columns.Add("agePreposto", typeof(int));
         dt.Columns.Add("ageQuemID", typeof(int));
         dt.Columns.Add("ageQuemCodigo", typeof(int));
-        dt.Columns.Add("ageGUID", typeof(string));
         dt.Columns.Add("ageStatus", typeof(string));
         dt.Columns.Add("ageValor", typeof(decimal));
         dt.Columns.Add("ageDecisao", typeof(string));
@@ -75,7 +74,21 @@ public class DBAgendaTests : IDisposable
         dt.Columns.Add("ageProtocoloIntegrado", typeof(int));
         dt.Columns.Add("ageDataInicioPrazo", typeof(DateTime));
         dt.Columns.Add("ageUsuarioCiente", typeof(string));
+        dt.Columns.Add("ageGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ageCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBAgenda(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -96,7 +109,7 @@ public class DBAgendaTests : IDisposable
     {
         var instance = new DBAgenda();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Agenda", instance.ITabelaName());
+        Assert.Equal("Agenda", instance.ITableName());
         Assert.Equal("age", instance.Prefixo);
     }
 
@@ -114,29 +127,16 @@ public class DBAgendaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ageCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBAgenda(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Agenda", cadastro.ITabelaName());
-        Assert.Equal("ageCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ageData", cadastro.ICampoNome());
-        Assert.Equal("age", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Agenda", cadastro.ITableName());
+        Assert.Equal("ageCodigo", cadastro.IFieldId());
+        Assert.Equal("ageData", cadastro.IFieldNameDescription());
+        Assert.Equal("age", cadastro.IPrefix());
     }
 
 #endregion
@@ -196,9 +196,9 @@ public class DBAgendaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -346,6 +346,23 @@ public class DBAgendaTests : IDisposable
     }
 
     [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HrFinal_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHrFinal = dateString;
+        Assert.Equal(expected, _instance.FHrFinal);
+    }
+
+    [Fact]
+    public void HrFinal_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBAgenda();
+        Assert.Equal(string.Empty, instance.FHrFinal);
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(-1)]
@@ -420,6 +437,23 @@ public class DBAgendaTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBAgenda();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(-1)]
@@ -436,6 +470,23 @@ public class DBAgendaTests : IDisposable
     {
         var instance = new DBAgenda();
         Assert.Equal(0, instance.FEventoPrazo);
+    }
+
+    [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void Hora_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHora = dateString;
+        Assert.Equal(expected, _instance.FHora);
+    }
+
+    [Fact]
+    public void Hora_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBAgenda();
+        Assert.Equal(string.Empty, instance.FHora);
     }
 
     [Theory]
@@ -709,24 +760,6 @@ public class DBAgendaTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
     public void Status_ShouldTrimAndHandleNulls(string input, string expected)
     {
         _instance.FStatus = input;
@@ -839,6 +872,24 @@ public class DBAgendaTests : IDisposable
     {
         var instance = new DBAgenda();
         Assert.False(instance.FUsuarioCiente);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

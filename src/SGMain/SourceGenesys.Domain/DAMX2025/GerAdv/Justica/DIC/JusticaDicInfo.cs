@@ -10,9 +10,9 @@ public static partial class DBJusticaDicInfo
     public const string CampoCodigo = "jusCodigo";
     public const string CampoNome = "jusNome";
     public const string TablePrefix = "jus";
-    public const string GUID = "jusGUID"; // LOCALIZACAO 170523
     public const string Nome = "jusNome"; // LOCALIZACAO 170523
     public const string Bold = "jusBold"; // LOCALIZACAO 170523
+    public const string Guid = "jusGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "jusQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "jusDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "jusQuemAtu"; // LOCALIZACAO 170523
@@ -33,40 +33,14 @@ public static partial class DBJusticaDicInfo
 
     public const string PTabelaNome = "Justica";
 #region PropriedadesDaTabela
-    public static DBInfoSystem JusGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "jus"
-    };
-    public static DBInfoSystem JusNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "jus"
-    };
-    public static DBInfoSystem JusBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "jus"
-    };
-    public static DBInfoSystem JusQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "jus"
-    }; // DBI 11 
-    public static DBInfoSystem JusDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "jus"
-    };
-    public static DBInfoSystem JusQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "jus"
-    }; // DBI 11 
-    public static DBInfoSystem JusDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "jus"
-    };
-    public static DBInfoSystem JusVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "jus"
-    };
+    public static DBInfoSystem JusNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "jus");
+    public static DBInfoSystem JusBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "jus", isRequired: true);
+    public static DBInfoSystem JusGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "jus");
+    public static DBInfoSystem JusQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "jus"); // DBI 11 
+    public static DBInfoSystem JusDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "jus");
+    public static DBInfoSystem JusQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "jus"); // DBI 11 
+    public static DBInfoSystem JusDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "jus");
+    public static DBInfoSystem JusVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "jus", isRequired: true);
 
 #endregion
     [Serializable]

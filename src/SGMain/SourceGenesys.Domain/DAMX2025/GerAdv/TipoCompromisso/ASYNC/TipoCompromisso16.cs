@@ -14,6 +14,14 @@ public partial class DBTipoCompromisso
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBTipoCompromisso
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,17 +142,19 @@ public partial class DBTipoCompromisso
 
 #if (!NOTSTORED_TipoCompromisso)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUID || pFldFIcone || pFldFDescricao || pFldFFinanceiro;
+    private bool HasAnyFieldChanged() => pFldFIcone || pFldFDescricao || pFldFFinanceiro || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFGUID)
-            updateTool.Fields(DBTipoCompromissoDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFIcone)
-            updateTool.Fields(DBTipoCompromissoDicInfo.Icone, m_FIcone, ETiposCampos.FNumber);
+            updateTool.Fields(DBTipoCompromissoDicInfo.Icone, FIcone, EGenericTypeFields.FNumber);
         if (pFldFDescricao)
-            updateTool.Fields(DBTipoCompromissoDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBTipoCompromissoDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFFinanceiro || updateTool.Insert)
-            updateTool.Fields(DBTipoCompromissoDicInfo.Financeiro, m_FFinanceiro, ETiposCampos.FBoolean);
+            updateTool.Fields(DBTipoCompromissoDicInfo.Financeiro, FFinanceiro, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBTipoCompromissoDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBTipoCompromissoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -156,24 +166,23 @@ public partial class DBTipoCompromisso
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBTipoCompromissoDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBTipoCompromissoDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBTipoCompromissoDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBTipoCompromissoDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBTipoCompromissoDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBTipoCompromissoDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBTipoCompromissoDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBTipoCompromissoDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBTipoCompromissoDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBTipoCompromissoDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBTipoCompromissoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

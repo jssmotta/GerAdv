@@ -7,86 +7,101 @@ namespace MenphisSI.GerAdv.Filters;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
 [Serializable]
+public class FilterProcessOutputEngineWithVoiceRequest
+{
+    /// <summary>
+    /// Filtro de ProcessOutputEngine padrão
+    /// </summary>
+    [JsonPropertyName("filter")]
+    public Filters.FilterProcessOutputEngine Filter { get; set; } = new();
+
+    /// <summary>
+    /// Comando de voz opcional para processamento via AI
+    /// </summary>
+    [JsonPropertyName("voiceCommand")]
+    public CommandSpeakerRequest? VoiceCommand { get; set; }
+}
+
+[Serializable]
 public partial record FilterProcessOutputEngine
 {
     [JsonPropertyName("logicalOperator")]
+    [Description(" ' AND ' OU ' OR ' ")]
     public string? LogicalOperator { get; set; } = TSql.And;
 
     [JsonPropertyName("wildcardChar")]
-    public char? WildcardChar { get; set; } = '\0';
+    [Description("Vazio ou '%'")]
+    public char? WildcardChar { get; set; } = '%';
 
     [JsonPropertyName("nome")]
+    [Description("Nome")]
     public string? Nome { get; set; } = string.Empty;
 
-    [JsonPropertyName("nome_end")]
-    public string? Nome_end { get; set; } = string.Empty;
-
     [JsonPropertyName("database")]
+    [Description("Database")]
     public string? Database { get; set; } = string.Empty;
 
-    [JsonPropertyName("database_end")]
-    public string? Database_end { get; set; } = string.Empty;
-
     [JsonPropertyName("tabela")]
+    [Description("Tabela")]
     public string? Tabela { get; set; } = string.Empty;
 
-    [JsonPropertyName("tabela_end")]
-    public string? Tabela_end { get; set; } = string.Empty;
-
     [JsonPropertyName("campo")]
+    [Description("Campo")]
     public string? Campo { get; set; } = string.Empty;
 
-    [JsonPropertyName("campo_end")]
-    public string? Campo_end { get; set; } = string.Empty;
-
     [JsonPropertyName("valor")]
+    [Description("Valor")]
     public string? Valor { get; set; } = string.Empty;
 
-    [JsonPropertyName("valor_end")]
-    public string? Valor_end { get; set; } = string.Empty;
-
     [JsonPropertyName("output")]
+    [Description("Output")]
     public string? Output { get; set; } = string.Empty;
 
-    [JsonPropertyName("output_end")]
-    public string? Output_end { get; set; } = string.Empty;
-
     [JsonPropertyName("administrador")]
+    [Description("Administrador -2147483648 para nada; 0 para não, 1 para sim")]
     public int Administrador { get; set; } = int.MinValue;
 
-    [JsonPropertyName("guid")]
-    public string? GUID { get; set; } = string.Empty;
-
-    [JsonPropertyName("guid_end")]
-    public string? GUID_end { get; set; } = string.Empty;
-
     [JsonPropertyName("outputsource")]
+    [Description("OutputSource -2147483648 para nada ou id")]
     public int OutputSource { get; set; } = int.MinValue;
 
     [JsonPropertyName("outputsource_end")]
+    [Description("OutputSource -2147483648 para nada ou id para final do intervalo")]
     public int OutputSource_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("disableditem")]
+    [Description("DisabledItem -2147483648 para nada; 0 para não, 1 para sim")]
     public int DisabledItem { get; set; } = int.MinValue;
 
     [JsonPropertyName("idmodulo")]
+    [Description("IDModulo -2147483648 para nada ou id")]
     public int IDModulo { get; set; } = int.MinValue;
 
     [JsonPropertyName("idmodulo_end")]
+    [Description("IDModulo -2147483648 para nada ou id para final do intervalo")]
     public int IDModulo_end { get; set; } = int.MinValue;
 
     [JsonPropertyName("isonlyprocesso")]
+    [Description("IsOnlyProcesso -2147483648 para nada; 0 para não, 1 para sim")]
     public int IsOnlyProcesso { get; set; } = int.MinValue;
 
     [JsonPropertyName("myid")]
+    [Description("MyID -2147483648 para nada ou id")]
     public int MyID { get; set; } = int.MinValue;
 
     [JsonPropertyName("myid_end")]
+    [Description("MyID -2147483648 para nada ou id para final do intervalo")]
     public int MyID_end { get; set; } = int.MinValue;
 
+    [JsonPropertyName("guid")]
+    [Description("GUID")]
+    public string? Guid { get; set; } = string.Empty;
+
     [JsonPropertyName("codigo_filtro")]
+    [Description("Código inicial")]
     public int Codigo_filtro { get; set; } = int.MinValue;
 
     [JsonPropertyName("codigo_filtro_end")]
+    [Description("Código final do intervalo")]
     public int Codigo_filtro_end { get; set; } = int.MinValue;
 }

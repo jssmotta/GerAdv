@@ -7,41 +7,32 @@ public partial class DBFornecedores
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFGrupo, pFldFNome, pFldFSubGrupo, pFldFTipo, pFldFSexo, pFldFCNPJ, pFldFInscEst, pFldFCPF, pFldFRG, pFldFEndereco, pFldFBairro, pFldFCEP, pFldFCidade, pFldFFone, pFldFFax, pFldFEmail, pFldFSite, pFldFObs, pFldFProdutos, pFldFContatos, pFldFGUID, pFldFEtiqueta, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FGrupo, m_FSubGrupo, m_FCidade;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FCNPJ, m_FInscEst, m_FCPF, m_FRG, m_FEndereco, m_FBairro, m_FCEP, m_FFone, m_FFax, m_FEmail, m_FSite, m_FObs, m_FProdutos, m_FContatos, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FTipo, m_FSexo, m_FEtiqueta, m_FBold;
+    private protected bool pFldFGrupo, pFldFNome, pFldFSubGrupo, pFldFTipo, pFldFSexo, pFldFCNPJ, pFldFInscEst, pFldFCPF, pFldFRG, pFldFEndereco, pFldFBairro, pFldFCEP, pFldFCidade, pFldFFone, pFldFFax, pFldFEmail, pFldFSite, pFldFObs, pFldFProdutos, pFldFContatos, pFldFEtiqueta, pFldFBold, pFldFGuid;
     public virtual int FGrupo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGrupo;
+        get => field;
         set
         {
-            pFldFGrupo = pFldFGrupo || value != m_FGrupo;
+            pFldFGrupo = pFldFGrupo || value != field;
             if (pFldFGrupo)
-                m_FGrupo = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela Fornecedores deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FNome da tabela 'Fornecedores' deve ter no máximo 80 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
@@ -49,82 +40,82 @@ public partial class DBFornecedores
     public virtual int FSubGrupo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSubGrupo;
+        get => field;
         set
         {
-            pFldFSubGrupo = pFldFSubGrupo || value != m_FSubGrupo;
+            pFldFSubGrupo = pFldFSubGrupo || value != field;
             if (pFldFSubGrupo)
-                m_FSubGrupo = value;
+                field = value;
         }
     }
 
     public virtual bool FTipo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTipo;
+        get => field;
         set
         {
-            pFldFTipo = pFldFTipo || value != m_FTipo;
+            pFldFTipo = pFldFTipo || value != field;
             if (pFldFTipo)
-                m_FTipo = value;
+                field = value;
         }
     }
 
     public virtual bool FSexo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSexo;
+        get => field;
         set
         {
-            pFldFSexo = pFldFSexo || value != m_FSexo;
+            pFldFSexo = pFldFSexo || value != field;
             if (pFldFSexo)
-                m_FSexo = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(14, ErrorMessage = "A propriedade FCNPJ da tabela Fornecedores deve ter no máximo 14 caracteres.")]
+    [StringLength(14, ErrorMessage = "A propriedade FCNPJ da tabela 'Fornecedores' deve ter no máximo 14 caracteres.")]
     public virtual string? FCNPJ
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCNPJ ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCNPJ = pFldFCNPJ || !(m_FCNPJ ?? string.Empty).Equals(value);
+            pFldFCNPJ = pFldFCNPJ || !(field ?? string.Empty).Equals(value);
             if (pFldFCNPJ)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCNPJ = trimmed.Length > 14 ? trimmed.AsSpan(0, 14).ToString() : trimmed;
+                field = trimmed.Length > 14 ? trimmed.AsSpan(0, 14).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(15, ErrorMessage = "A propriedade FInscEst da tabela Fornecedores deve ter no máximo 15 caracteres.")]
+    [StringLength(15, ErrorMessage = "A propriedade FInscEst da tabela 'Fornecedores' deve ter no máximo 15 caracteres.")]
     public virtual string? FInscEst
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInscEst ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFInscEst = pFldFInscEst || !(m_FInscEst ?? string.Empty).Equals(value);
+            pFldFInscEst = pFldFInscEst || !(field ?? string.Empty).Equals(value);
             if (pFldFInscEst)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FInscEst = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
+                field = trimmed.Length > 15 ? trimmed.AsSpan(0, 15).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela Fornecedores deve ter no máximo 11 caracteres.")]
+    [StringLength(11, ErrorMessage = "A propriedade FCPF da tabela 'Fornecedores' deve ter no máximo 11 caracteres.")]
     public virtual string? FCPF
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCPF ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCPF = pFldFCPF || !(m_FCPF ?? string.Empty).Equals(value);
+            pFldFCPF = pFldFCPF || !(field ?? string.Empty).Equals(value);
             if (pFldFCPF)
             {
                 var trimmed = (value?.Trim() ?? string.Empty).ClearInputCpf();
@@ -135,77 +126,75 @@ public partial class DBFornecedores
                 }
 
                 if (valueCpf.Length == 0 || valueCpf.IsValidCpf())
-                    m_FCPF = valueCpf;
-                else
-                    throw new ArgumentException("CPF inválido ou não informado corretamente.", nameof(value));
+                    field = valueCpf;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela Fornecedores deve ter no máximo 30 caracteres.")]
+    [StringLength(30, ErrorMessage = "A propriedade FRG da tabela 'Fornecedores' deve ter no máximo 30 caracteres.")]
     public virtual string? FRG
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FRG ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFRG = pFldFRG || !(m_FRG ?? string.Empty).Equals(value);
+            pFldFRG = pFldFRG || !(field ?? string.Empty).Equals(value);
             if (pFldFRG)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FRG = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
+                field = trimmed.Length > 30 ? trimmed.AsSpan(0, 30).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela Fornecedores deve ter no máximo 80 caracteres.")]
+    [StringLength(80, ErrorMessage = "A propriedade FEndereco da tabela 'Fornecedores' deve ter no máximo 80 caracteres.")]
     public virtual string? FEndereco
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEndereco ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEndereco = pFldFEndereco || !(m_FEndereco ?? string.Empty).Equals(value);
+            pFldFEndereco = pFldFEndereco || !(field ?? string.Empty).Equals(value);
             if (pFldFEndereco)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEndereco = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
+                field = trimmed.Length > 80 ? trimmed.AsSpan(0, 80).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela Fornecedores deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FBairro da tabela 'Fornecedores' deve ter no máximo 50 caracteres.")]
     public virtual string? FBairro
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBairro ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFBairro = pFldFBairro || !(m_FBairro ?? string.Empty).Equals(value);
+            pFldFBairro = pFldFBairro || !(field ?? string.Empty).Equals(value);
             if (pFldFBairro)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FBairro = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela Fornecedores deve ter no máximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "A propriedade FCEP da tabela 'Fornecedores' deve ter no máximo 10 caracteres.")]
     public virtual string? FCEP
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCEP ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCEP = pFldFCEP || !(m_FCEP ?? string.Empty).Equals(value);
+            pFldFCEP = pFldFCEP || !(field ?? string.Empty).Equals(value);
             if (pFldFCEP)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCEP = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
+                field = trimmed.Length > 10 ? trimmed.AsSpan(0, 10).ToString() : trimmed;
             }
         }
     }
@@ -213,12 +202,12 @@ public partial class DBFornecedores
     public virtual int FCidade
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCidade;
+        get => field;
         set
         {
-            pFldFCidade = pFldFCidade || value != m_FCidade;
+            pFldFCidade = pFldFCidade || value != field;
             if (pFldFCidade)
-                m_FCidade = value;
+                field = value;
         }
     }
 
@@ -226,12 +215,12 @@ public partial class DBFornecedores
     public virtual string? FFone
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFone ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFone = pFldFFone || !(m_FFone ?? string.Empty).Equals(value);
+            pFldFFone = pFldFFone || !(field ?? string.Empty).Equals(value);
             if (pFldFFone)
-                m_FFone = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -239,48 +228,45 @@ public partial class DBFornecedores
     public virtual string? FFax
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FFax ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFFax = pFldFFax || !(m_FFax ?? string.Empty).Equals(value);
+            pFldFFax = pFldFFax || !(field ?? string.Empty).Equals(value);
             if (pFldFFax)
-                m_FFax = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FEmail da tabela Fornecedores deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FEmail da tabela 'Fornecedores' deve ter no máximo 150 caracteres.")]
     public virtual string? FEmail
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEmail ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFEmail = pFldFEmail || !(m_FEmail ?? string.Empty).Equals(value);
+            pFldFEmail = pFldFEmail || !(field ?? string.Empty).Equals(value);
             if (pFldFEmail)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FEmail = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
-                if (m_FEmail.IsValidEmail())
-                    return;
-                throw new ArgumentException("E-mail inválido ou não informado corretamente.", nameof(value));
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FSite da tabela Fornecedores deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FSite da tabela 'Fornecedores' deve ter no máximo 150 caracteres.")]
     public virtual string? FSite
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSite ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSite = pFldFSite || !(m_FSite ?? string.Empty).Equals(value);
+            pFldFSite = pFldFSite || !(field ?? string.Empty).Equals(value);
             if (pFldFSite)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSite = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
@@ -289,12 +275,12 @@ public partial class DBFornecedores
     public virtual string? FObs
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FObs ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFObs = pFldFObs || !(m_FObs ?? string.Empty).Equals(value);
+            pFldFObs = pFldFObs || !(field ?? string.Empty).Equals(value);
             if (pFldFObs)
-                m_FObs = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -302,12 +288,12 @@ public partial class DBFornecedores
     public virtual string? FProdutos
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FProdutos ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFProdutos = pFldFProdutos || !(m_FProdutos ?? string.Empty).Equals(value);
+            pFldFProdutos = pFldFProdutos || !(field ?? string.Empty).Equals(value);
             if (pFldFProdutos)
-                m_FProdutos = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
@@ -315,65 +301,65 @@ public partial class DBFornecedores
     public virtual string? FContatos
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FContatos ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFContatos = pFldFContatos || !(m_FContatos ?? string.Empty).Equals(value);
+            pFldFContatos = pFldFContatos || !(field ?? string.Empty).Equals(value);
             if (pFldFContatos)
-                m_FContatos = value.trim().FixAbc() ?? string.Empty;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Fornecedores deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual bool FEtiqueta
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEtiqueta;
+        get => field;
         set
         {
-            pFldFEtiqueta = pFldFEtiqueta || value != m_FEtiqueta;
+            pFldFEtiqueta = pFldFEtiqueta || value != field;
             if (pFldFEtiqueta)
-                m_FEtiqueta = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Fornecedores' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -383,9 +369,13 @@ public partial class DBFornecedores
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

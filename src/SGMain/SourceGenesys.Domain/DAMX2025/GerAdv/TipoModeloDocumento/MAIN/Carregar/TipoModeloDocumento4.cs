@@ -54,6 +54,22 @@ public partial class DBTipoModeloDocumento
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBTipoModeloDocumentoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBTipoModeloDocumentoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTipoModeloDocumentoDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBTipoModeloDocumentoDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBTipoModeloDocumento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoModeloDocumentoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTipoModeloDocumentoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTipoModeloDocumentoDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBTipoModeloDocumento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoModeloDocumentoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTipoModeloDocumentoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTipoModeloDocumentoDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBTipoModeloDocumento
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoModeloDocumentoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTipoModeloDocumentoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTipoModeloDocumentoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBTipoModeloDocumentoDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTipoModeloDocumentoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBTipoModeloDocumento
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

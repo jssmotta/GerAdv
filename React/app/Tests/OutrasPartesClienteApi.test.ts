@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { OutrasPartesClienteApiError } from '../GerAdv_TS/OutrasPartesCliente/Apis/ApiOutrasPartesCliente';
+import { OutrasPartesClienteApiError } from '@/app/GerAdv_TS/OutrasPartesCliente/Apis/ApiOutrasPartesCliente';
 import { OutrasPartesClienteApi } from '@/app/GerAdv_TS/OutrasPartesCliente/Apis/ApiOutrasPartesCliente';
-import { FilterOutrasPartesCliente } from '../GerAdv_TS/OutrasPartesCliente/Filters/OutrasPartesCliente';
-import { IOutrasPartesCliente } from '../GerAdv_TS/OutrasPartesCliente/Interfaces/interface.OutrasPartesCliente';
-import { OutrasPartesClienteTestEmpty } from '../GerAdv_TS/Models/OutrasPartesCliente';
+import { FilterOutrasPartesCliente } from '@/app/GerAdv_TS/OutrasPartesCliente/Filters/OutrasPartesCliente';
+import { IOutrasPartesCliente } from '@/app/GerAdv_TS/OutrasPartesCliente/Interfaces/interface.OutrasPartesCliente';
+import { OutrasPartesClienteTestEmpty } from '@/app/GerAdv_TS/Models/OutrasPartesCliente';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('OutrasPartesClienteApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterOutrasPartesCliente = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,27 @@ describe('OutrasPartesClienteApi', () => {
   describe('addAndUpdate', () => {
     const mockOutrasPartesCliente: IOutrasPartesCliente = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+terceirizado: false,
+clienteprincipal: 0,
+tipo: true,
+sexo: false,
+dtnasc: '24/04/1975',
+cpf: '544.506.718-13',
+rg: '12.345.678-9',
+cnpj: '93016944000138',
+inscest: 'AAAAAAAAAAAAA',
+nomefantasia: 'João',
+endereco: 'Rua das Flores, 123',
+cidade: 0,
+cep: '01234-567',
+bairro: 'Centro',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+email: 'test@email.com',
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+class: 'A'
     };
 
     it('should add new outraspartescliente successfully', async () => {
@@ -487,7 +494,7 @@ describe('OutrasPartesClienteApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterOutrasPartesCliente = { funcionario: 1 };
+      const mockFilter: FilterOutrasPartesCliente = { : 1 };
       
       const result = outraspartesclienteApi.useFilter(mockFilter);
       

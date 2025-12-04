@@ -73,7 +73,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockOperadorEMailPopupService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorEMailPopup>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorEMailPopups service mock
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -81,7 +81,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockOperadorEMailPopupService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterOperadorEMailPopup>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the OperadorEMailPopups service mock
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = 0 }));
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         // Arrange
         var operadoremailpopup = CreateValidOperadorEMailPopup();
         operadoremailpopup.Operador = 999;
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadoremailpopup, _mockOperadorEMailPopupService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -139,7 +139,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(operadoremailpopup, _mockOperadorEMailPopupService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object));
@@ -156,7 +156,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockOperadorReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockOperadorReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(operadoremailpopup, _mockOperadorEMailPopupService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
@@ -176,7 +176,7 @@ public class OperadorEMailPopupValidationTests : IDisposable
         var result = await _validation.ValidateReg(operadoremailpopup, _mockOperadorEMailPopupService.Object, _mockOperadorReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockOperadorReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockOperadorReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

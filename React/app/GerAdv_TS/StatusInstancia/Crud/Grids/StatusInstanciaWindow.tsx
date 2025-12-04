@@ -10,65 +10,72 @@ import { IStatusInstancia } from '../../Interfaces/interface.StatusInstancia';
 import { useIsMobile } from '@/app/context/MobileContext';
 import { StatusInstanciaEmpty } from '@/app/GerAdv_TS/Models/StatusInstancia';
 import { useWindow } from '@/app/hooks/useWindows';
+
 interface StatusInstanciaWindowProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dimensions?: { width: number; height: number };
-  selectedStatusInstancia?: IStatusInstancia;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    dimensions?: { width: number; height: number };    
+    selectedStatusInstancia?: IStatusInstancia;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
 }
+
 const StatusInstanciaWindow: React.FC<StatusInstanciaWindowProps> = ({
-  isOpen, 
-  onClose, 
-  dimensions, 
-  selectedStatusInstancia, 
-  onSuccess, 
-  onError, 
+    isOpen,
+    onClose,
+    dimensions,    
+    selectedStatusInstancia,
+    onSuccess,
+    onError,
 }) => {
+    
+    const isMobile = useIsMobile();
+    const dimensionsEmpty = useWindow();    
 
-const isMobile = useIsMobile();
-const dimensionsEmpty = useWindow();
-if (!isOpen)
-  return null;
-  return (
-  <>
+    if (!isOpen)
+        return null;
 
-  <EditWindow
-  tableTitle='Status Instancia'
-  isOpen={isOpen}
-  onClose={onClose}
-  dimensions={dimensions ?? dimensionsEmpty}
-  newHeight={560}
-  newWidth={900}
-  mobile={isMobile}
-  id={(selectedStatusInstancia?.id ?? 0).toString()}
->
-<StatusInstanciaInc
-id={selectedStatusInstancia?.id ?? 0}
-onClose={onClose}
-onSuccess={onSuccess}
-onError={onError}
-/>
-</EditWindow>
-
-</>
-);
+    return (
+        <>
+             
+            <EditWindow
+                tableTitle='Status Instancia'
+                isOpen={isOpen}
+                onClose={onClose}
+                dimensions={dimensions ?? dimensionsEmpty}
+                newHeight={560}
+                newWidth={900}
+                mobile={isMobile}
+                id={(selectedStatusInstancia?.id ?? 0).toString()}
+            >
+                <StatusInstanciaInc
+                    id={selectedStatusInstancia?.id ?? 0}
+                    onClose={onClose}
+                    onSuccess={onSuccess}
+                    onError={onError}
+                />
+            </EditWindow>
+            
+        </>
+    );
 };
+
 export const NewWindowStatusInstancia: React.FC<StatusInstanciaWindowProps> = ({
-  isOpen, 
-  onClose, 
+    isOpen,
+    onClose,
 }) => {
-const dimensions = useWindow();
-return (
-<StatusInstanciaWindow
-isOpen={isOpen}
-onClose={onClose}
-dimensions={dimensions}
-onSuccess={onClose}
-onError={onClose}
-selectedStatusInstancia={StatusInstanciaEmpty()}>
-</StatusInstanciaWindow>
-)
+
+    const dimensions = useWindow();
+    return (
+        <StatusInstanciaWindow
+            isOpen={isOpen}
+            onClose={onClose}
+            dimensions={dimensions}          
+            onSuccess={onClose}
+            onError={onClose}
+            selectedStatusInstancia={StatusInstanciaEmpty()}>
+        </StatusInstanciaWindow>
+    )
 };
+
 export default StatusInstanciaWindow;

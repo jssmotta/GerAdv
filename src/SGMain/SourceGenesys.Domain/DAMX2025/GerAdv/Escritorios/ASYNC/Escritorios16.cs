@@ -14,6 +14,14 @@ public partial class DBEscritorios
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBEscritorios
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,49 +142,53 @@ public partial class DBEscritorios
 
 #if (!NOTSTORED_Escritorios)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUID || pFldFCNPJ || pFldFCasa || pFldFParceria || pFldFNome || pFldFOAB || pFldFEndereco || pFldFCidade || pFldFBairro || pFldFCEP || pFldFFone || pFldFFax || pFldFSite || pFldFEMail || pFldFOBS || pFldFAdvResponsavel || pFldFSecretaria || pFldFInscEst || pFldFCorrespondente || pFldFTop;
+    private bool HasAnyFieldChanged() => pFldFCNPJ || pFldFCasa || pFldFParceria || pFldFNome || pFldFOAB || pFldFEndereco || pFldFCidade || pFldFBairro || pFldFCEP || pFldFFone || pFldFFax || pFldFSite || pFldFEMail || pFldFOBS || pFldFAdvResponsavel || pFldFSecretaria || pFldFInscEst || pFldFCorrespondente || pFldFTop || pFldFEtiqueta || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFGUID)
-            updateTool.Fields(DBEscritoriosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFCNPJ)
-            updateTool.Fields(DBEscritoriosDicInfo.CNPJ, m_FCNPJ, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.CNPJ, FCNPJ, EGenericTypeFields.FString);
         if (pFldFCasa || updateTool.Insert)
-            updateTool.Fields(DBEscritoriosDicInfo.Casa, m_FCasa, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEscritoriosDicInfo.Casa, FCasa, EGenericTypeFields.FBoolean);
         if (pFldFParceria || updateTool.Insert)
-            updateTool.Fields(DBEscritoriosDicInfo.Parceria, m_FParceria, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEscritoriosDicInfo.Parceria, FParceria, EGenericTypeFields.FBoolean);
         if (pFldFNome)
-            updateTool.Fields(DBEscritoriosDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFOAB)
-            updateTool.Fields(DBEscritoriosDicInfo.OAB, m_FOAB, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.OAB, FOAB, EGenericTypeFields.FString);
         if (pFldFEndereco)
-            updateTool.Fields(DBEscritoriosDicInfo.Endereco, m_FEndereco, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Endereco, FEndereco, EGenericTypeFields.FString);
         if (pFldFCidade)
-            updateTool.Fields(DBEscritoriosDicInfo.Cidade, m_FCidade, ETiposCampos.FNumber);
+            updateTool.Fields(DBEscritoriosDicInfo.Cidade, FCidade, EGenericTypeFields.FNumber);
         if (pFldFBairro)
-            updateTool.Fields(DBEscritoriosDicInfo.Bairro, m_FBairro, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Bairro, FBairro, EGenericTypeFields.FString);
         if (pFldFCEP)
-            updateTool.Fields(DBEscritoriosDicInfo.CEP, m_FCEP, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.CEP, FCEP, EGenericTypeFields.FString);
         if (pFldFFone)
-            updateTool.Fields(DBEscritoriosDicInfo.Fone, m_FFone, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Fone, FFone, EGenericTypeFields.FString);
         if (pFldFFax)
-            updateTool.Fields(DBEscritoriosDicInfo.Fax, m_FFax, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Fax, FFax, EGenericTypeFields.FString);
         if (pFldFSite)
-            updateTool.Fields(DBEscritoriosDicInfo.Site, m_FSite, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Site, FSite, EGenericTypeFields.FString);
         if (pFldFEMail)
-            updateTool.Fields(DBEscritoriosDicInfo.EMail, m_FEMail, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.EMail, FEMail, EGenericTypeFields.FString);
         if (pFldFOBS)
-            updateTool.Fields(DBEscritoriosDicInfo.OBS, m_FOBS, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.OBS, FOBS, EGenericTypeFields.FString);
         if (pFldFAdvResponsavel)
-            updateTool.Fields(DBEscritoriosDicInfo.AdvResponsavel, m_FAdvResponsavel, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.AdvResponsavel, FAdvResponsavel, EGenericTypeFields.FString);
         if (pFldFSecretaria)
-            updateTool.Fields(DBEscritoriosDicInfo.Secretaria, m_FSecretaria, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.Secretaria, FSecretaria, EGenericTypeFields.FString);
         if (pFldFInscEst)
-            updateTool.Fields(DBEscritoriosDicInfo.InscEst, m_FInscEst, ETiposCampos.FString);
+            updateTool.Fields(DBEscritoriosDicInfo.InscEst, FInscEst, EGenericTypeFields.FString);
         if (pFldFCorrespondente || updateTool.Insert)
-            updateTool.Fields(DBEscritoriosDicInfo.Correspondente, m_FCorrespondente, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEscritoriosDicInfo.Correspondente, FCorrespondente, EGenericTypeFields.FBoolean);
         if (pFldFTop || updateTool.Insert)
-            updateTool.Fields(DBEscritoriosDicInfo.Top, m_FTop, ETiposCampos.FBoolean);
+            updateTool.Fields(DBEscritoriosDicInfo.Top, FTop, EGenericTypeFields.FBoolean);
+        if (pFldFEtiqueta || updateTool.Insert)
+            updateTool.Fields(DBEscritoriosDicInfo.Etiqueta, FEtiqueta, EGenericTypeFields.FBoolean);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBEscritoriosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBEscritoriosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -188,24 +200,23 @@ public partial class DBEscritorios
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBEscritoriosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEscritoriosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBEscritoriosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBEscritoriosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBEscritoriosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBEscritoriosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBEscritoriosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBEscritoriosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBEscritoriosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBEscritoriosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBEscritoriosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

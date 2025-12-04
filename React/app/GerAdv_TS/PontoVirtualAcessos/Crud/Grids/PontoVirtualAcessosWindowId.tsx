@@ -9,54 +9,61 @@ import { PontoVirtualAcessosService } from '../../Services/PontoVirtualAcessos.s
 import { PontoVirtualAcessosApi } from '../../Apis/ApiPontoVirtualAcessos';
 import PontoVirtualAcessosWindow from './PontoVirtualAcessosWindow';
 import {PontoVirtualAcessosEmpty } from '@/app/GerAdv_TS/Models/PontoVirtualAcessos';
-interface PontoVirtualAcessosWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const PontoVirtualAcessosWindowId: React.FC<PontoVirtualAcessosWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const pontovirtualacessosService = useMemo(() => {
-  return new PontoVirtualAcessosService(
-  new PontoVirtualAcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IPontoVirtualAcessos | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(PontoVirtualAcessosEmpty() as IPontoVirtualAcessos);
-      return;
-    }
-    if (id) {
-      const response = await pontovirtualacessosService.fetchPontoVirtualAcessosById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <PontoVirtualAcessosWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedPontoVirtualAcessos={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface PontoVirtualAcessosWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const PontoVirtualAcessosWindowId: React.FC<PontoVirtualAcessosWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const pontovirtualacessosService = useMemo(() => {
+        return new PontoVirtualAcessosService(
+            new PontoVirtualAcessosApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IPontoVirtualAcessos | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(PontoVirtualAcessosEmpty() as IPontoVirtualAcessos);
+                return;
+            }
+            if (id) {
+                 const response = await pontovirtualacessosService.fetchPontoVirtualAcessosById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <PontoVirtualAcessosWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedPontoVirtualAcessos={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default PontoVirtualAcessosWindowId;

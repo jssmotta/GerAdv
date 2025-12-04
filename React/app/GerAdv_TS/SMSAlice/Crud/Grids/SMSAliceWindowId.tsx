@@ -9,54 +9,61 @@ import { SMSAliceService } from '../../Services/SMSAlice.service';
 import { SMSAliceApi } from '../../Apis/ApiSMSAlice';
 import SMSAliceWindow from './SMSAliceWindow';
 import {SMSAliceEmpty } from '@/app/GerAdv_TS/Models/SMSAlice';
-interface SMSAliceWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const SMSAliceWindowId: React.FC<SMSAliceWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const smsaliceService = useMemo(() => {
-  return new SMSAliceService(
-  new SMSAliceApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<ISMSAlice | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(SMSAliceEmpty() as ISMSAlice);
-      return;
-    }
-    if (id) {
-      const response = await smsaliceService.fetchSMSAliceById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <SMSAliceWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedSMSAlice={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface SMSAliceWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const SMSAliceWindowId: React.FC<SMSAliceWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const smsaliceService = useMemo(() => {
+        return new SMSAliceService(
+            new SMSAliceApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<ISMSAlice | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(SMSAliceEmpty() as ISMSAlice);
+                return;
+            }
+            if (id) {
+                 const response = await smsaliceService.fetchSMSAliceById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <SMSAliceWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedSMSAlice={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default SMSAliceWindowId;

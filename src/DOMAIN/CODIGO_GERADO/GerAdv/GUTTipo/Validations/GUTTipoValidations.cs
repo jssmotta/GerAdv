@@ -23,7 +23,7 @@ public class GUTTipoValidation : IGUTTipoValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var gutmatrizExists0 = await gutmatrizService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterGUTMatriz { GUTTipo = id ?? default }, uri);
         if (gutmatrizExists0 != null && gutmatrizExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela G U T Matriz associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela G U T Matriz associados a ele.");
         return true;
     }
 
@@ -31,8 +31,6 @@ public class GUTTipoValidation : IGUTTipoValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBGUTTipoDicInfo.GttNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBGUTTipoDicInfo.GttNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBGUTTipoDicInfo.GttGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBGUTTipoDicInfo.GttGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -42,13 +40,13 @@ public class GUTTipoValidation : IGUTTipoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         if (reg.Ordem == 0)
             throw new SGValidationException("Ordem é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         await Task.Delay(0);
         return true;
     }

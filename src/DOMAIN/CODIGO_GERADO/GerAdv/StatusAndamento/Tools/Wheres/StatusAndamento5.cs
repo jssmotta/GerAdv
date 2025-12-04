@@ -21,8 +21,9 @@ public partial class StatusAndamentoWhere(IFStatusAndamentoFactory statusandamen
         {
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return statusandamento;
     }

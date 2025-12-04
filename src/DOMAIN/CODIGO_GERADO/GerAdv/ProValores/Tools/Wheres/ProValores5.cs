@@ -24,7 +24,6 @@ public partial class ProValoresWhere(IFProValoresFactory provaloresFactory) : IP
             TipoValorProcesso = dbRec.FTipoValorProcesso,
             Indice = dbRec.FIndice ?? string.Empty,
             Ignorar = dbRec.FIgnorar,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             PercMulta = dbRec.FPercMulta,
             ValorMulta = dbRec.FValorMulta,
@@ -35,9 +34,15 @@ public partial class ProValoresWhere(IFProValoresFactory provaloresFactory) : IP
             ValorFinal = dbRec.FValorFinal,
             Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao, out DateTime XDataUltimaCorrecao))
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
         {
-            provalores.DataUltimaCorrecao = dbRec.FDataUltimaCorrecao;
+            provalores.Data = XData.ToString("dd/MM/yyyy");
+            provalores.Data_date = XData;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataUltimaCorrecao.ToString(), out DateTime XDataUltimaCorrecao))
+        {
+            provalores.DataUltimaCorrecao = XDataUltimaCorrecao.ToString("dd/MM/yyyy");
             provalores.DataUltimaCorrecao_date = XDataUltimaCorrecao;
         }
 

@@ -54,8 +54,40 @@ public partial class DBAndamentosMD
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBAndamentosMDDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBAndamentosMDDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPathFull = getValue(DBAndamentosMDDicInfo.PathFull)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FUNC = getValue(DBAndamentosMDDicInfo.UNC)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAndamentosMDDicInfo.Andamento)))
-                m_FAndamento = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.Andamento));
+                FAndamento = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.Andamento));
         }
         catch
         {
@@ -82,7 +114,7 @@ public partial class DBAndamentosMD
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAndamentosMDDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.Processo));
         }
         catch
         {
@@ -91,7 +123,7 @@ public partial class DBAndamentosMD
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAndamentosMDDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +132,7 @@ public partial class DBAndamentosMD
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAndamentosMDDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBAndamentosMDDicInfo.QuemCad));
         }
         catch
         {
@@ -109,46 +141,14 @@ public partial class DBAndamentosMD
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAndamentosMDDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBAndamentosMDDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBAndamentosMDDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBAndamentosMDDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPathFull = getValue(DBAndamentosMDDicInfo.PathFull)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FUNC = getValue(DBAndamentosMDDicInfo.UNC)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBAndamentosMDDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -172,7 +172,7 @@ public partial class DBAndamentosMD
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -14,6 +14,8 @@ export interface ITribunal {
 	descricao: string,
 	sigla: string,
 	web: string,
+	etiqueta: boolean,
+	bold: boolean,
 }
 
 export interface ITribunalFormProps {

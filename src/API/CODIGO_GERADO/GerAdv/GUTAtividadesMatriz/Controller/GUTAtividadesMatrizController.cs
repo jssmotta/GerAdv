@@ -14,6 +14,7 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     private readonly IGUTAtividadesMatrizService _gutatividadesmatrizService = gutatividadesmatrizService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterGUTAtividadesMatriz filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterGUTAtividadesMatriz filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("GUTAtividadesMatriz: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _gutatividadesmatrizService.Filter(max, filtro, uri);
+        //_logger.Info("GUTAtividadesMatriz: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _gutatividadesmatrizService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterGUTAtividadesMatrizWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("GUTAtividadesMatriz: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _gutatividadesmatrizService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("GUTAtividadesMatriz: GetById called with id = {0}, {1}", id, uri);
         var result = await _gutatividadesmatrizService.GetById(id, uri, token);
         if (result == null)
@@ -51,8 +74,42 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
         return Ok(result);
     }
 
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(AuditorResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
     [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            //_logger.Info("GUTAtividadesMatriz: GetAuditor called with id = {0}, {1}", id, uri);
+            var result = await _gutatividadesmatrizService.GetAuditor(id, uri, token);
+            if (result == null)
+            {
+                _logger.Warn("GetAuditor: No GUTAtividadesMatriz found with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "GUTAtividadesMatriz: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            return StatusCode(500, new Error500 { success = false, data = "", message = "Erro 500 Auditor" });
+        }
+    }
+
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(GUTAtividadesMatrizResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(GUTAtividadesMatrizResponse), StatusCodes.Status201Created)]
@@ -93,6 +150,11 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("GUTAtividadesMatriz: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _gutatividadesmatrizService.Delete(id, uri);
@@ -112,6 +174,7 @@ public partial class GUTAtividadesMatrizController(IGUTAtividadesMatrizService g
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.GUTAtividadesMatriz regGUTAtividadesMatriz, [FromRoute, Required] string uri)
     {

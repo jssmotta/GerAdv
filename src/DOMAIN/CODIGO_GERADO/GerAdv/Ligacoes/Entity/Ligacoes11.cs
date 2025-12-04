@@ -23,12 +23,6 @@ public partial class FLigacoesFactory : IFLigacoesFactory, IDisposable
         return FLigacoes.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FLigacoes> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FLigacoes().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FLigacoes> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FLigacoesFactory : IFLigacoesFactory, IDisposable
         return FLigacoes.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FLigacoes> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FLigacoes().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FLigacoesFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

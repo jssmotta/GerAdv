@@ -7,29 +7,20 @@ public partial class DBTribunal
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFNome, pFldFArea, pFldFGUID, pFldFJustica, pFldFDescricao, pFldFInstancia, pFldFSigla, pFldFWeb, pFldFEtiqueta, pFldFBold;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FArea, m_FJustica, m_FInstancia;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FGUID, m_FDescricao, m_FSigla, m_FWeb;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FEtiqueta, m_FBold;
+    private protected bool pFldFNome, pFldFArea, pFldFJustica, pFldFDescricao, pFldFInstancia, pFldFSigla, pFldFWeb, pFldFEtiqueta, pFldFBold, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela Tribunal deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FNome da tabela 'Tribunal' deve ter no máximo 50 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -37,57 +28,40 @@ public partial class DBTribunal
     public virtual int FArea
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FArea;
+        get => field;
         set
         {
-            pFldFArea = pFldFArea || value != m_FArea;
+            pFldFArea = pFldFArea || value != field;
             if (pFldFArea)
-                m_FArea = value;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela Tribunal deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
+                field = value;
         }
     }
 
     public virtual int FJustica
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FJustica;
+        get => field;
         set
         {
-            pFldFJustica = pFldFJustica || value != m_FJustica;
+            pFldFJustica = pFldFJustica || value != field;
             if (pFldFJustica)
-                m_FJustica = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(50, ErrorMessage = "A propriedade FDescricao da tabela Tribunal deve ter no máximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A propriedade FDescricao da tabela 'Tribunal' deve ter no máximo 50 caracteres.")]
     public virtual string? FDescricao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDescricao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
+            pFldFDescricao = pFldFDescricao || !(field ?? string.Empty).Equals(value);
             if (pFldFDescricao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FDescricao = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
+                field = trimmed.Length > 50 ? trimmed.AsSpan(0, 50).ToString() : trimmed;
             }
         }
     }
@@ -95,45 +69,45 @@ public partial class DBTribunal
     public virtual int FInstancia
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FInstancia;
+        get => field;
         set
         {
-            pFldFInstancia = pFldFInstancia || value != m_FInstancia;
+            pFldFInstancia = pFldFInstancia || value != field;
             if (pFldFInstancia)
-                m_FInstancia = value;
+                field = value;
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(20, ErrorMessage = "A propriedade FSigla da tabela Tribunal deve ter no máximo 20 caracteres.")]
+    [StringLength(20, ErrorMessage = "A propriedade FSigla da tabela 'Tribunal' deve ter no máximo 20 caracteres.")]
     public virtual string? FSigla
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FSigla ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFSigla = pFldFSigla || !(m_FSigla ?? string.Empty).Equals(value);
+            pFldFSigla = pFldFSigla || !(field ?? string.Empty).Equals(value);
             if (pFldFSigla)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FSigla = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
+                field = trimmed.Length > 20 ? trimmed.AsSpan(0, 20).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FWeb da tabela Tribunal deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FWeb da tabela 'Tribunal' deve ter no máximo 255 caracteres.")]
     public virtual string? FWeb
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FWeb ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFWeb = pFldFWeb || !(m_FWeb ?? string.Empty).Equals(value);
+            pFldFWeb = pFldFWeb || !(field ?? string.Empty).Equals(value);
             if (pFldFWeb)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FWeb = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -141,36 +115,53 @@ public partial class DBTribunal
     public virtual bool FEtiqueta
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FEtiqueta;
+        get => field;
         set
         {
-            pFldFEtiqueta = pFldFEtiqueta || value != m_FEtiqueta;
+            pFldFEtiqueta = pFldFEtiqueta || value != field;
             if (pFldFEtiqueta)
-                m_FEtiqueta = value;
+                field = value;
         }
     }
 
     public virtual bool FBold
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FBold;
+        get => field;
         set
         {
-            pFldFBold = pFldFBold || value != m_FBold;
+            pFldFBold = pFldFBold || value != field;
             if (pFldFBold)
-                m_FBold = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'Tribunal' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
     public void SetAuditor(int usuarioId) => AuditorQuem = usuarioId;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -180,9 +171,13 @@ public partial class DBTribunal
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

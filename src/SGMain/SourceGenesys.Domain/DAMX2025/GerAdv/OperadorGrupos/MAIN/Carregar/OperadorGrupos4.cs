@@ -54,6 +54,14 @@ public partial class DBOperadorGrupos
         // Checkpoint Carregar 
         try
         {
+            FNome = getValue(DBOperadorGruposDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBOperadorGruposDicInfo.DtAtu));
         }
@@ -73,7 +81,7 @@ public partial class DBOperadorGrupos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBOperadorGruposDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBOperadorGruposDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBOperadorGrupos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBOperadorGruposDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBOperadorGruposDicInfo.QuemCad));
         }
         catch
         {
@@ -91,22 +99,14 @@ public partial class DBOperadorGrupos
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorGruposDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBOperadorGruposDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBOperadorGruposDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBOperadorGruposDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -130,7 +130,7 @@ public partial class DBOperadorGrupos
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

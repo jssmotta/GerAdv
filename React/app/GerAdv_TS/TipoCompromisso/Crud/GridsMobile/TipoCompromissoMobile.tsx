@@ -5,10 +5,11 @@
 'use client';
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
-  Grid, 
-  GridColumn, 
-  GridSortChangeEvent, 
-  GridColumnReorderEvent, 
+  Grid,
+  GridColumn,
+  GridSortChangeEvent,
+  GridColumnReorderEvent,
+  GridToolbar,
 } from '@progress/kendo-react-grid';
 import { useRouter } from 'next/navigation';
 import { useSystemContext } from '@/app/context/SystemContext';
@@ -24,170 +25,188 @@ import { orderBy } from '@progress/kendo-data-query';
 import { ExportButtons } from '@/app/components/Cruds/ExportButtons';
 import { useTipoCompromissoGrid } from '../../Hooks/hookTipoCompromissoGrid';
 import '@/app/styles/MobileCrudGrid.css';
+import { useIOSScrollFallback } from '@/app/tools/iosScrollFallback';
+import { PageTitle } from '@/app/components/PageTitle';
+
 interface TipoCompromissoGridProps {
   data: ITipoCompromisso[];
   onRowClick: (tipocompromisso: ITipoCompromisso) => void;
   onDeleteClick: (e: any) => void;
+  toolbar: React.ReactNode;
   setSelectedId: (id: number | null) => void;
 }
+
 export const TipoCompromissoGridMobileComponent = React.memo(({
-  data, 
-  onRowClick, 
-  onDeleteClick, 
-  setSelectedId, 
-
+  data,
+  onRowClick,
+  onDeleteClick,
+  setSelectedId,
+  toolbar,
+  
 }: TipoCompromissoGridProps) => {
+  
+  const router = useRouter();
+  const { systemContext } = useSystemContext();
+  const defaultHiddenColumns = [''];
 
-const router = useRouter();
-const { systemContext } = useSystemContext();
-const defaultHiddenColumns = [''];
-// ===== ESTADO LOCAL PARA REORDENAÇÃO =====
-const [columnsOrder, setColumnsOrder] = useState<string[]>(['descricao']);
-// Carregar ordem salva do localStorage na inicialização
-useEffect(() => {
-  try {
-    const savedOrder = localStorage.getItem(btoa('tipocompromisso-columns-order-mobile'));
-    if (savedOrder) {
-      const parsedOrder = JSON.parse(savedOrder);
-      if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
-        setColumnsOrder(parsedOrder);
+  // ===== ESTADO LOCAL PARA REORDENAÇÃO =====
+  const [columnsOrder, setColumnsOrder] = useState<string[]>(['descricao']);
+
+  // Carregar ordem salva do localStorage na inicialização
+  useEffect(() => {
+    try {
+      const savedOrder = localStorage.getItem(btoa('tipocompromisso-columns-order-mobile'));
+      if (savedOrder) {
+        const parsedOrder = JSON.parse(savedOrder);
+        if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
+          setColumnsOrder(parsedOrder);
+        }
       }
+    } catch (error) {
+    if (process.env.NEXT_PUBLIC_SHOW_LOG === '1')
+      console.warn('Não foi possível carregar a ordem das colunas:', error);
     }
-  } catch (error) {
-  console.warn('Não foi possível carregar a ordem das colunas:', error);
-}
-}, []);
+  }, []);
 
-const openSearchCellAgenda = (id: number) => {
-  router.push(`/pages/agenda/?tipocompromisso=${id}`);
+   
+const openSearchCellAgenda = (id: number) => {     
+    router.push(`/pages/agenda/?tipocompromisso=${id}`);    
 };
+
 const SearchFromCellAgenda = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellAgenda(props.dataItem.id)}><span title='Pesquisar relacionados em Compromisso'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
+    return (
+      <>
+        <td>
+            <div onClick={() => openSearchCellAgenda(props.dataItem.id)}><span title='Pesquisar relacionados em Compromisso'><SvgIcon icon={searchIcon} /></span></div>
+        </td>
+      </>
+    );
+}; 
+const openSearchCellNECompromissos = (id: number) => {     
+    router.push(`/pages/necompromissos/?tipocompromisso=${id}`);    
 };
-const openSearchCellNECompromissos = (id: number) => {
-  router.push(`/pages/necompromissos/?tipocompromisso=${id}`);
-};
+
 const SearchFromCellNECompromissos = (props: any) => {
-  return (
-  <>
-  <td>
-    <div onClick={() => openSearchCellNECompromissos(props.dataItem.id)}><span title='Pesquisar relacionados em N E Compromissos'><SvgIcon icon={searchIcon} /></span></div>
-  </td>
-</>
-);
+    return (
+      <>
+        <td>
+            <div onClick={() => openSearchCellNECompromissos(props.dataItem.id)}><span title='Pesquisar relacionados em N E Compromissos'><SvgIcon icon={searchIcon} /></span></div>
+        </td>
+      </>
+    );
 };
-// ===== USO DO HOOK CENTRALIZADO =====
-const {
-  filteredData, 
-  sort, 
-  handleSortChange, 
-  page, 
-  handlePageChange, 
-  handleFilterChange, 
-  handleRowClick: hookHandleRowClick, 
-  RowNumberCell, 
-  DeleteRow, 
-} = useTipoCompromissoGrid({
-data, 
-onRowClick, 
-onDeleteClick, 
-setSelectedId, 
-initialTake: 10, 
-useCustomSort: true, 
-});
-// ===== ORDENAÇÃO CUSTOMIZADA PARA DESKTOP =====
-const sortedData = useMemo(() => orderBy(filteredData, sort), [filteredData, sort]);
-const handleSortChangeCustom = useCallback((event: GridSortChangeEvent) => {
-  handleSortChange(event);
-}, [handleSortChange]);
+
+  // ===== USO DO HOOK CENTRALIZADO =====
+  const {
+    filteredData,
+    sort,
+    handleSortChange,
+    page,
+    handlePageChange,
+    handleFilterChange,
+    handleRowClick: hookHandleRowClick,
+    RowNumberCell,
+    DeleteRow,
+  } = useTipoCompromissoGrid({
+    data,
+    onRowClick,
+    onDeleteClick,
+    setSelectedId,
+    initialTake: CRUD_CONSTANTS.PAGINATION.DEFAULT_TAKE,
+    useCustomSort: true,
+  });
+
+  // ===== ORDENAÇÃO CUSTOMIZADA PARA DESKTOP =====
+  const sortedData = useMemo(() => orderBy(filteredData, sort), [filteredData, sort]);
+
+  const handleSortChangeCustom = useCallback((event: GridSortChangeEvent) => {
+    handleSortChange(event);
+  }, [handleSortChange]);
+
 // ===== HANDLER PARA REORDENAÇÃO DE COLUNAS =====
 const handleColumnReorder = useCallback((event: GridColumnReorderEvent) => {
   if (event.columns) {
     const newOrder = event.columns
-    .filter((col: any) => col.field && columnsOrder.includes(col.field))
-    .map((col: any) => col.field);
+      .filter((col: any) => col.field && columnsOrder.includes(col.field))
+      .map((col: any) => col.field);
     setColumnsOrder(prevOrder => {
       if (newOrder.length > 0 && JSON.stringify(newOrder) !== JSON.stringify(prevOrder)) {
         // Salvar no localStorage
         try {
           localStorage.setItem(btoa('tipocompromisso-columns-order-mobile'), JSON.stringify(newOrder));
         } catch (error) {
-        console.warn('Não foi possível salvar a ordem das colunas:', error);
+          console.warn('Não foi possível salvar a ordem das colunas:', error);
+        }
+        return newOrder;
       }
-      return newOrder;
-    }
-    return prevOrder;
-  });
-}
+      return prevOrder;
+    });
+  }
 }, []);
-// ===== COMPONENTES ESPECÍFICOS DO DESKTOP =====
-const EditRow = useCallback((e: any) => {
-  return (
-  <td>
-    <span onClick={() => hookHandleRowClick(e)} title='Editar item'>
-      <SvgIcon icon={pencilIcon} />
-    </span>
-  </td>
-);
-}, [hookHandleRowClick]);
-// ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
-const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
 
-  'descricao': (
-  <GridColumn
-  key='descricao'
-  field='descricao'
-  title='Descricao'
-  sortable={true}
-  filterable={true}
-  />
-  ), /* Track G.12 */
-  'id_edit_Agenda': (
-  <GridColumn
-  key='Agenda'
-  field='Agenda'
-  title='Compromisso'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellAgenda }}
-  />
-  ), /* Track G.03 */
-  'id_edit_NECompromissos': (
-  <GridColumn
-  key='NECompromissos'
-  field='NECompromissos'
-  title='N E Compromissos'
-  width={'65px'}
-  sortable={false}
-  filterable={false}
-  cells={{ data: SearchFromCellNECompromissos }}
-  />
-  ), /* Track G.03 */
-  // ← Colunas aqui
+  // ===== COMPONENTES ESPECÍFICOS DO DESKTOP =====
+  const EditRow = useCallback((e: any) => {
+    return (
+      <td>
+        <span onClick={() => hookHandleRowClick(e)} title='Editar item'>
+          <SvgIcon icon={pencilIcon} />
+        </span>
+      </td>
+    );
+  }, [hookHandleRowClick]); 
+
+  // ===== DEFINIR COLUMN MAP BÁSICO (SEM DEPENDÊNCIA DO HOOK) =====
+const basicColumnMap: Record<string, React.ReactElement> = useMemo(() => ({
+  
+                        'descricao': (
+                                <GridColumn 
+                                  key='descricao'
+                                  field='descricao' 
+                                  title='Descricao' 
+                                  sortable={true} 
+                                  filterable={true}  
+                                />
+                              ), /* Track G.12 */
+
+
+
+ // ← Colunas aqui
 }), []);
+
+
 // ===== CONFIGURAÇÃO DE COLUNAS BASE (PARA HIDDEN COLUMNS) =====
 const baseGridColumns = useMemo(() => [
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
-  ], [RowNumberCell, EditRow, DeleteRow]);
-  // ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
-  const {
-    columnsState, 
-    initialized, 
-    handleColumnsStateChange
-  } = useHiddenColumns({
-  gridColumns: baseGridColumns, 
+	<GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+
+], [RowNumberCell, EditRow, DeleteRow]);
+
+// ===== GERENCIAMENTO DE COLUNAS OCULTAS (SEM INTERFERIR NA REORDENAÇÃO) =====
+const {
+  columnsState,
+  initialized,
+  handleColumnsStateChange
+} = useHiddenColumns({
+  gridColumns: baseGridColumns,
   columnMap: basicColumnMap, // ← Usar basicColumnMap ao invés de columnMap
-  systemContextId: systemContext?.Id, 
+  systemContextId: systemContext?.Id,
   tableName: 'tipocompromisso',
   defaultHiddenColumns
 });
+
+
+
+// FALLBACK: manual touch-scroll for iOS (enhanced for bottom controls)
+useEffect(() => {
+    const cleanup = useIOSScrollFallback({
+    scrollSelector: '.grid-mobile-crud.grid-mobile-tipocompromisso .k-grid-content',
+    waitForDOM: true,
+    retryDelay: 100,
+    debug: process.env.NEXT_PUBLIC_SHOW_LOG === '1'
+    });
+
+    return cleanup;
+}, []);
+
 // ===== Helper para verificar se coluna está visível (APÓS INICIALIZAÇÃO DO HOOK) =====
 const isColumnVisible = useCallback((field: string) => {
   if (!columnsState) {
@@ -195,97 +214,118 @@ const isColumnVisible = useCallback((field: string) => {
     return !defaultHiddenColumns.includes(field);
   }
   const columnState = columnsState.find(state => state.field === field);
-  return columnState ? !columnState.hidden: true;
+  return columnState ? !columnState.hidden : true;
 }, [columnsState, defaultHiddenColumns]);
-// ===== FUNÇÃO PARA RESETAR ORDEM =====
-const resetColumnsOrder = useCallback(() => {
-  const defaultOrder = ['nome', 'precomeia', 'precointeira'];
-  setColumnsOrder(defaultOrder);
-  localStorage.removeItem(btoa('tipocompromisso-columns-order-mobile'));
-}, []);
-// ===== CONFIGURAÇÃO DE COLUNAS FINAIS (REORDENADAS + OCULTAS) =====
-const finalGridColumns = useMemo(() => {
-  // Montar array de colunas na ordem especificada
-  const finalColumns = [
-  <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
 
-  // Colunas reordenáveis na ordem especificada
-  ...Object.values(basicColumnMap).map((column: any) => {
+  // ===== FUNÇÃO PARA RESETAR ORDEM =====
+  const resetColumnsOrder = useCallback(() => {
+    const defaultOrder = ['nome', 'precomeia', 'precointeira'];
+    setColumnsOrder(defaultOrder);
+    localStorage.removeItem(btoa('tipocompromisso-columns-order-mobile'));
+  }, []);
+
+  // ===== CONFIGURAÇÃO DE COLUNAS FINAIS (REORDENADAS + OCULTAS) =====
+  const finalGridColumns = useMemo(() => {        
+
+    // Montar array de colunas na ordem especificada
+    const finalColumns = [
+
+      <GridColumn format='{0:n0}' field='index' title='#' sortable={false} filterable={false} width='55px' cells={{ data: RowNumberCell }} />,
+
+      
+   // Colunas reordenáveis na ordem especificada
+   ...Object.values(basicColumnMap).map((column: any) => {
     const props = (column as React.ReactElement<any>).props;
     return React.cloneElement(column, { ...props });
-  }), 
-];
+  }),
 
-return finalColumns;
-}, [columnsOrder, isColumnVisible, RowNumberCell, EditRow, DeleteRow, basicColumnMap]);
+    ];
+    
+    return finalColumns;
+  }, [columnsOrder, isColumnVisible, RowNumberCell, EditRow, DeleteRow, basicColumnMap]);
+
 // ===== MENU DE COLUNAS SEPARADO (NÃO PASSADO PARA O GRID) =====
 const columnMenuComponent = GridColumnMenu({
   columnsState, 
   onColumnsStateChange: handleColumnsStateChange
 });
-// ===== CONFIGURAÇÕES DE EXPORTAÇÃO =====
-const exportColumns = getExportColumns(finalGridColumns, columnsState, ['id', 'index']);
-const { exportToExcel } = useExportToExcel({
-  filename: 'planilha-tipocompromisso',
-  columns: exportColumns, 
-  sheetName: 'TipoCompromisso'
-});
-const handleExportFiltered = useCallback(() => {
-  exportToExcel(filteredData, {
-    customFilename: `excel-TipoCompromisso-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
-  });
-}, [exportToExcel, filteredData]);
-const exportColumnsPdf = getExportColumnsPdf(finalGridColumns, columnsState, ['id', 'index']);
-const { exportToPdf } = useExportToPdf({
-  filename: 'pdf-tipocompromisso',
-  columns: exportColumnsPdf, 
-  title: 'TipoCompromisso'
-});
-const handleExportFilteredPdf = useCallback(() => {
-  exportToPdf(filteredData, {
-    customFilename: `pdf-TipoCompromisso-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
-  });
-}, [exportToPdf, filteredData]);
-// ===== DADOS PAGINADOS =====
-const paginatedSortedData = useMemo(() => {
-  if (!sortedData || sortedData.length === 0) {
-    return [];
-  }
-  return sortedData.slice(page.skip, page.skip + page.take);
-}, [sortedData, page.skip, page.take]);
-// ===== RENDER =====
-return (
-<>
-{initialized && (
-  <Grid
-  className='grid-mobile-crud grid-mobile-tipocompromisso'
-  key={`tipocompromisso-grid-${JSON.stringify(columnsOrder)}-${JSON.stringify(columnsState)}`}
-  data={paginatedSortedData}
-  skip={page.skip}
-  take={page.take}
-  total={sortedData.length}
-  pageable={{
-    pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES), 
-    buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT, 
-  }}
-  onPageChange={handlePageChange}
-  rowReorderable={true}
-  sortable={true}
-  sort={sort}
-  onSortChange={handleSortChangeCustom}
-  resizable={true}
-  reorderable={true}
-  onColumnReorder={handleColumnReorder}
-  filterable={false}
-  onFilterChange={handleFilterChange}
-  onRowClick={(e) => hookHandleRowClick(e)}
->
-{finalGridColumns}
-</Grid>
-)}
-<div style={{ marginTop: '10px' }}>
 
-</div>
-</>
-);
+  // ===== CONFIGURAÇÕES DE EXPORTAÇÃO =====
+  const exportColumns = getExportColumns(finalGridColumns, columnsState, ['id', 'index']);
+  const { exportToExcel } = useExportToExcel({
+    filename: 'planilha-tipocompromisso',
+    columns: exportColumns,
+    sheetName: 'TipoCompromisso'
+  });
+
+  const handleExportFiltered = useCallback(() => {
+    exportToExcel(filteredData, {
+      customFilename: `excel-TipoCompromisso-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
+    });
+  }, [exportToExcel, filteredData]);
+
+  const exportColumnsPdf = getExportColumnsPdf(finalGridColumns, columnsState, ['id', 'index']);
+  const { exportToPdf } = useExportToPdf({
+    filename: 'pdf-tipocompromisso',
+    columns: exportColumnsPdf,
+    title: 'TipoCompromisso'
+  });
+
+  const handleExportFilteredPdf = useCallback(() => {
+    exportToPdf(filteredData, {
+      customFilename: `pdf-TipoCompromisso-${new Date().toISOString().replace('T', '_').substring(0, 16).replace(':', '-')}`,
+    });
+  }, [exportToPdf, filteredData]);
+
+  // ===== DADOS PAGINADOS =====
+  const paginatedSortedData = useMemo(() => {
+    if (!sortedData || sortedData.length === 0) {
+      return [];
+    }
+    return sortedData.slice(page.skip, page.skip + page.take);
+  }, [sortedData, page.skip, page.take]);
+
+  // ===== RENDER =====
+  return (
+    <>
+      {initialized && (
+      <>
+        <PageTitle title='Tipo Compromisso' />
+        <Grid
+          className='grid-mobile-crud grid-mobile-tipocompromisso'
+          key={`tipocompromisso-grid-${JSON.stringify(columnsOrder)}-${JSON.stringify(columnsState)}`}               
+          data={paginatedSortedData}
+          skip={page.skip}
+          take={page.take}
+          total={sortedData.length}
+          pageable={{
+            pageSizes: Array.from(CRUD_CONSTANTS.PAGINATION.PAGE_SIZES),
+            buttonCount: CRUD_CONSTANTS.PAGINATION.BUTTON_COUNT,
+          }}
+          onPageChange={handlePageChange}
+          rowReorderable={true}
+          sortable={true}
+          sort={sort}
+          onSortChange={handleSortChangeCustom}
+          resizable={true}
+          reorderable={true}
+          onColumnReorder={handleColumnReorder}
+          filterable={false}
+          onFilterChange={handleFilterChange}
+          onRowClick={(e) => hookHandleRowClick(e)}
+          scrollable='scrollable'
+        >
+          {finalGridColumns}
+           <GridToolbar>
+              {toolbar}              
+            </GridToolbar>
+        </Grid>
+     </>
+      )}
+
+       <div style={{ marginTop: '10px' }}> 
+		  
+        </div>
+    </>
+  );
 });

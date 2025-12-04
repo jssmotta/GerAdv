@@ -31,7 +31,7 @@ public partial class DBGUTMatriz
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,11 +138,11 @@ public partial class DBGUTMatriz
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFDescricao)
-            updateTool.Fields(DBGUTMatrizDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            updateTool.Fields(DBGUTMatrizDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFGUTTipo)
-            updateTool.Fields(DBGUTMatrizDicInfo.GUTTipo, m_FGUTTipo, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTMatrizDicInfo.GUTTipo, FGUTTipo, EGenericTypeFields.FNumber);
         if (pFldFValor)
-            updateTool.Fields(DBGUTMatrizDicInfo.Valor, m_FValor, ETiposCampos.FNumber);
+            updateTool.Fields(DBGUTMatrizDicInfo.Valor, FValor, EGenericTypeFields.FNumber);
     }
 
 #endif
@@ -154,7 +154,7 @@ public partial class DBGUTMatriz
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

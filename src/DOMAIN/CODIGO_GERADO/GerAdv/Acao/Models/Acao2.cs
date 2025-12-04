@@ -14,28 +14,28 @@ namespace MenphisSI.GerAdv.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Justica - acaJustica  
+        /// Justiças - acaJustica  
         /// </summary>
         [JsonPropertyName("justica")]
         public int Justica { get; set; }
 
         /// <summary>
-        /// Area - acaArea  
+        /// Áreas - acaArea  
         /// </summary>
         [JsonPropertyName("area")]
         public int Area { get; set; }
 
         /// <summary>
-        /// GUID - acaGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Descricao - acaDescricao - tamanho máximo: 255 
+        /// Descrições - acaDescricao - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
+
+        /// <summary>
+        /// GUID - acaGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -48,28 +48,28 @@ namespace MenphisSI.GerAdv.Models.All
         public int Id { get; set; }
 
         /// <summary>
-        /// Justica - acaJustica  
+        /// Justiças - acaJustica  
         /// </summary>
         [JsonPropertyName("justica")]
         public int Justica { get; set; }
 
         /// <summary>
-        /// Area - acaArea  
+        /// Áreas - acaArea  
         /// </summary>
         [JsonPropertyName("area")]
         public int Area { get; set; }
 
         /// <summary>
-        /// GUID - acaGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
-
-        /// <summary>
-        /// Descricao - acaDescricao - tamanho máximo: 255 
+        /// Descrições - acaDescricao - tamanho máximo: 255 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
+
+        /// <summary>
+        /// GUID - acaGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomejustica")]
         public string NomeJustica { get; set; } = string.Empty;

@@ -9,25 +9,29 @@ public partial class DBCargosEscODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBCargosEscDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBCargosEscDicInfo.CampoCodigo;
+    public string IFieldId() => DBCargosEscDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBCargosEscDicInfo.TablePrefix;
+    public string IPrefix() => DBCargosEscDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBCargosEscDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBCargosEscDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBCargosEscODicInfo : IODicInfo
     public static string TCampoNome => DBCargosEscDicInfo.CampoNome;
     public static string TTabelaNome => DBCargosEscDicInfo.TabelaNome;
     public static string TTablePrefix => DBCargosEscDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGUID, DBCargosEscDicInfo.CgeQuemCad, DBCargosEscDicInfo.CgeDtCad, DBCargosEscDicInfo.CgeQuemAtu, DBCargosEscDicInfo.CgeDtAtu, DBCargosEscDicInfo.CgeVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGUID];
+    public static ImmutableArray<DBInfoSystem> List => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGuid, DBCargosEscDicInfo.CgeQuemCad, DBCargosEscDicInfo.CgeDtCad, DBCargosEscDicInfo.CgeQuemAtu, DBCargosEscDicInfo.CgeDtAtu, DBCargosEscDicInfo.CgeVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBCargosEscDicInfo.CgePercentual, DBCargosEscDicInfo.CgeNome, DBCargosEscDicInfo.CgeClassificacao, DBCargosEscDicInfo.CgeGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["cgeCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBCargosEscDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["cgeCodigo", "cgeNome"]);
         var result = campos.Where(campo => !campo.Equals(DBCargosEscDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

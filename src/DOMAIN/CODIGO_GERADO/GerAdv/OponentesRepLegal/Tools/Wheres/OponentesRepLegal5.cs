@@ -34,6 +34,7 @@ public partial class OponentesRepLegalWhere(IFOponentesRepLegalFactory oponentes
             EMail = dbRec.FEMail ?? string.Empty,
             Site = dbRec.FSite ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
+            Bold = dbRec.FBold,
         };
         return oponentesreplegal;
     }

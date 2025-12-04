@@ -29,13 +29,6 @@ public partial class FStatusInstancia : MenphisSI.SG.GerAdv.DBStatusInstancia, I
     {
     }
 
-    public async Task<FStatusInstancia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fStatusInstancia = new FStatusInstancia();
-        await fStatusInstancia.CarregarAsync(id, oCnn);
-        return fStatusInstancia;
-    }
-
     private FStatusInstancia(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -44,6 +37,13 @@ public partial class FStatusInstancia : MenphisSI.SG.GerAdv.DBStatusInstancia, I
     public static FStatusInstancia CreateFromParameters(List<SqlParameter>? parameters, MsiSqlConnection? oCnn, in string? cNome = "", string? fullSql = "", string sqlWhere = "", in string join = "")
     {
         return new FStatusInstancia(parameters, cNome, oCnn, fullSql, sqlWhere, join);
+    }
+
+    public async Task<FStatusInstancia> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        var fStatusInstancia = new FStatusInstancia();
+        await fStatusInstancia.CarregarAsync(id, oCnn);
+        return fStatusInstancia;
     }
 
     // Initialize method to load data with parameters after DI construction
@@ -62,7 +62,7 @@ public partial class FStatusInstancia : MenphisSI.SG.GerAdv.DBStatusInstancia, I
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
@@ -70,7 +70,7 @@ public partial class FStatusInstancia : MenphisSI.SG.GerAdv.DBStatusInstancia, I
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

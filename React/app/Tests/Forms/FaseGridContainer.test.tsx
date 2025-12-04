@@ -6,14 +6,17 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { IGridComponent } from '@/app/interfaces/IGridComponent';
 import FaseGridContainer from '@/app/GerAdv_TS/Fase/Components/FaseGridContainer';
+
 describe('FaseGridContainer', () => {
-  it('renders the grid component output', () => {
-    // Mock grid with a render method
-    const mockGrid: IGridComponent = {
-      render: () => <div data-testid='mock-grid'>Mock Grid Content</div>
-    };
-    render(<FaseGridContainer grid={mockGrid} />);
-    // Assert the mock grid content is rendered
-    expect(screen.getByTestId('mock-grid')).toHaveTextContent('Mock Grid Content');
-  });
+    it('renders the grid component output', () => {
+        // Mock grid with a render method
+        const mockGrid: IGridComponent = {
+            render: () => <div data-testid='mock-grid'>Mock Grid Content</div>
+        };
+
+        render(<FaseGridContainer grid={mockGrid} />);
+
+        // Assert the mock grid content is rendered
+        expect(screen.getByTestId('mock-grid')).toHaveTextContent('Mock Grid Content');
+    });
 });

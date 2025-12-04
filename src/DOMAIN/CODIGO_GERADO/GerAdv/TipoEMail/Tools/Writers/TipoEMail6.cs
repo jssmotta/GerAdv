@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITipoEMailWriter
 {
     Task<FTipoEMail> WriteAsync(Models.TipoEMail tipoemail, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TipoEMailResponse tipoemail, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TipoEMailResponse tipoemail, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoEMailWriter(IFTipoEMailFactory tipoemailFactory) : ITipoEMailWriter
 {
     private readonly IFTipoEMailFactory _tipoemailFactory = tipoemailFactory ?? throw new ArgumentNullException(nameof(tipoemailFactory));
-    public virtual async Task Delete(TipoEMailResponse tipoemail, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TipoEMailResponse tipoemail, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipoemailFactory.DeleteAsync(operadorId, tipoemail.Id, oCnn);
     }

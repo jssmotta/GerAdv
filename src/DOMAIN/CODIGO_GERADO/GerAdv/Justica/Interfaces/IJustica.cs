@@ -4,11 +4,13 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IJusticaService
 {
+    Task<Filters.FilterJustica> FilterVoice([FromBody] Filters.FilterJustica filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<JusticaResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterJustica filter, [FromRoute, Required] string uri = "");
     Task<JusticaResponse?> AddAndUpdate(Models.Justica? regJustica, [FromRoute, Required] string uri = "");
     Task<JusticaResponse?> Validation(Models.Justica? regJustica, [FromRoute, Required] string uri = "");
     Task<JusticaResponse?> Delete(int? id, [FromRoute, Required] string uri = "");
     Task<JusticaResponse?> GetById(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
+    Task<AuditorResponse?> GetAuditor(int id, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<JusticaResponseAll>> GetAll(int max, [FromRoute, Required] string uri = "", CancellationToken token = default);
     Task<IEnumerable<NomeID>> GetListN([FromQuery] int max, [FromBody] Filters.FilterJustica? filter, [FromRoute, Required] string uri = "", CancellationToken token = default);
 }

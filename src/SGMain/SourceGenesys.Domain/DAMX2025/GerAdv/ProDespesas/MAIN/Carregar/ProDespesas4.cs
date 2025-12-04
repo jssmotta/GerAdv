@@ -54,8 +54,24 @@ public partial class DBProDespesas
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProDespesasDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FHistorico = getValue(DBProDespesasDicInfo.Historico)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBProDespesasDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBProDespesasDicInfo.Cliente));
         }
         catch
         {
@@ -64,7 +80,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Corrigido)))
-                m_FCorrigido = Convert.ToBoolean(getValue(DBProDespesasDicInfo.Corrigido));
+                FCorrigido = Convert.ToBoolean(getValue(DBProDespesasDicInfo.Corrigido));
         }
         catch
         {
@@ -73,7 +89,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Data)))
-                m_FData = Convert.ToDateTime(getValue(DBProDespesasDicInfo.Data));
+                FData = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProDespesasDicInfo.Data)));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.DataCorrecao)))
-                m_FDataCorrecao = Convert.ToDateTime(getValue(DBProDespesasDicInfo.DataCorrecao));
+                FDataCorrecao = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBProDespesasDicInfo.DataCorrecao)));
         }
         catch
         {
@@ -109,7 +125,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.LigacaoID)))
-                m_FLigacaoID = Convert.ToInt32(getValue(DBProDespesasDicInfo.LigacaoID));
+                FLigacaoID = Convert.ToInt32(getValue(DBProDespesasDicInfo.LigacaoID));
         }
         catch
         {
@@ -118,7 +134,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.LivroCaixa)))
-                m_FLivroCaixa = Convert.ToBoolean(getValue(DBProDespesasDicInfo.LivroCaixa));
+                FLivroCaixa = Convert.ToBoolean(getValue(DBProDespesasDicInfo.LivroCaixa));
         }
         catch
         {
@@ -127,7 +143,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Processo)))
-                m_FProcesso = Convert.ToInt32(getValue(DBProDespesasDicInfo.Processo));
+                FProcesso = Convert.ToInt32(getValue(DBProDespesasDicInfo.Processo));
         }
         catch
         {
@@ -136,7 +152,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProDespesasDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProDespesasDicInfo.QuemAtu));
         }
         catch
         {
@@ -145,7 +161,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProDespesasDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProDespesasDicInfo.QuemCad));
         }
         catch
         {
@@ -154,7 +170,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Quitado)))
-                m_FQuitado = Convert.ToInt32(getValue(DBProDespesasDicInfo.Quitado));
+                FQuitado = Convert.ToInt32(getValue(DBProDespesasDicInfo.Quitado));
         }
         catch
         {
@@ -163,7 +179,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBProDespesasDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBProDespesasDicInfo.Tipo));
         }
         catch
         {
@@ -172,7 +188,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Valor)))
-                m_FValor = Convert.ToDecimal(getValue(DBProDespesasDicInfo.Valor));
+                FValor = Convert.ToDecimal(getValue(DBProDespesasDicInfo.Valor));
         }
         catch
         {
@@ -181,7 +197,7 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.ValorOriginal)))
-                m_FValorOriginal = Convert.ToDecimal(getValue(DBProDespesasDicInfo.ValorOriginal));
+                FValorOriginal = Convert.ToDecimal(getValue(DBProDespesasDicInfo.ValorOriginal));
         }
         catch
         {
@@ -190,30 +206,14 @@ public partial class DBProDespesas
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProDespesasDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProDespesasDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProDespesasDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FHistorico = getValue(DBProDespesasDicInfo.Historico)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProDespesasDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -237,7 +237,7 @@ public partial class DBProDespesas
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

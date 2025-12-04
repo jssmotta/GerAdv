@@ -11,6 +11,7 @@ export interface IProResumos {
 	data: string,
 	resumo: string,
 	tiporesumo: number,
+	bold: boolean,
 }
 
 export interface IProResumosFormProps {

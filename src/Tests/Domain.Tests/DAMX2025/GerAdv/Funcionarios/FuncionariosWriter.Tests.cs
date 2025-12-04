@@ -74,6 +74,7 @@ public class FuncionariosWriterTests
         var result = await _funcionariosWriter.WriteAsync(funcionarios, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFFuncionarios.Object);
+        _mockFFuncionarios.VerifySet(x => x.FGuid = funcionarios.Guid, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FEMailPro = funcionarios.EMailPro, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FCargo = funcionarios.Cargo, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FNome = funcionarios.Nome, Times.Once);
@@ -100,11 +101,10 @@ public class FuncionariosWriterTests
         _mockFFuncionarios.VerifySet(x => x.FSalario = funcionarios.Salario, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FCTPSDtEmissao = funcionarios.CTPSDtEmissao.ToString(), Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FDtNasc = funcionarios.DtNasc.ToString(), Times.Once);
-        _mockFFuncionarios.VerifySet(x => x.FData = funcionarios.Data, Times.Once);
+        _mockFFuncionarios.VerifySet(x => x.FData = funcionarios.Data.ToString(), Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FLiberaAgenda = funcionarios.LiberaAgenda, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FPasta = funcionarios.Pasta, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.FClass = funcionarios.Class, Times.Once);
-        _mockFFuncionarios.VerifySet(x => x.FGUID = funcionarios.GUID, Times.Once);
         _mockFFuncionarios.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -169,6 +169,21 @@ public class FuncionariosWriterTests
     }
 
     [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var funcionarios = CreateValidFuncionariosModel();
+        funcionarios.Data = null;
+        var auditorQuem = 123;
+        _mockFuncionariosFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFFuncionarios.Object);
+        _mockFFuncionarios.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _funcionariosWriter.WriteAsync(funcionarios, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFFuncionarios.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
+    }
+
+    [Fact]
     public async Task WriteAsync_WhenFactoryThrowsException_ShouldPropagateException()
     {
         // Arrange
@@ -208,7 +223,7 @@ public class FuncionariosWriterTests
         var operadorId = 456;
         _mockFuncionariosFactory.Setup(x => x.DeleteAsync(operadorId, funcionariosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _funcionariosWriter.Delete(funcionariosResponse, operadorId, _mockConnection.Object);
+        await _funcionariosWriter.DeleteAsync(funcionariosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockFuncionariosFactory.Verify(x => x.DeleteAsync(operadorId, funcionariosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -224,7 +239,7 @@ public class FuncionariosWriterTests
         var operadorId = 111;
         _mockFuncionariosFactory.Setup(x => x.DeleteAsync(operadorId, funcionariosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _funcionariosWriter.Delete(funcionariosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _funcionariosWriter.DeleteAsync(funcionariosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -241,7 +256,7 @@ public class FuncionariosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockFuncionariosFactory.Setup(x => x.DeleteAsync(operadorId, funcionariosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _funcionariosWriter.Delete(funcionariosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _funcionariosWriter.DeleteAsync(funcionariosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -271,6 +286,7 @@ public class FuncionariosWriterTests
         return new Models.Funcionarios
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             EMailPro = "test@email.com",
             Cargo = 1,
             Nome = "João",
@@ -297,11 +313,10 @@ public class FuncionariosWriterTests
             Salario = 1m,
             CTPSDtEmissao = "24/04/1975",
             DtNasc = "24/04/1975",
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             LiberaAgenda = false,
             Pasta = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Class = "A",
-            GUID = Guid.NewGuid().ToString()
+            Class = "A"
         };
     }
 #endregion

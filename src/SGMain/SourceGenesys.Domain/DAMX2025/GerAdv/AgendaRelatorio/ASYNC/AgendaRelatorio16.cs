@@ -32,7 +32,7 @@ public partial class DBAgendaRelatorio
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -160,16 +160,16 @@ public partial class DBAgendaRelatorio
 
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFvqaData) updateTool.Fields(DBAgendaRelatorioDicInfo.vqaData, m_FvqaData, ETiposCampos.FDate);
-if (pFldFvqaProcesso) updateTool.Fields(DBAgendaRelatorioDicInfo.vqaProcesso, m_FvqaProcesso, ETiposCampos.FNumber);
-if (pFldFxxxParaNome) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxParaNome, m_FxxxParaNome, ETiposCampos.FString);
-if (pFldFxxxParaPessoas) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxParaPessoas, m_FxxxParaPessoas, ETiposCampos.FString);
-if (pFldFxxxBoxAudiencia) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxBoxAudiencia, m_FxxxBoxAudiencia, ETiposCampos.FString);
-if (pFldFxxxBoxAudienciaMobile) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxBoxAudienciaMobile, m_FxxxBoxAudienciaMobile, ETiposCampos.FString);
-if (pFldFxxxNomeAdvogado) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeAdvogado, m_FxxxNomeAdvogado, ETiposCampos.FString);
-if (pFldFxxxNomeForo) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeForo, m_FxxxNomeForo, ETiposCampos.FString);
-if (pFldFxxxNomeJustica) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeJustica, m_FxxxNomeJustica, ETiposCampos.FString);
-if (pFldFxxxNomeArea) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeArea, m_FxxxNomeArea, ETiposCampos.FString);
+        if (pFldFvqaData) updateTool.Fields(DBAgendaRelatorioDicInfo.vqaData, FvqaData, EGenericTypeFields.FDate);
+if (pFldFvqaProcesso) updateTool.Fields(DBAgendaRelatorioDicInfo.vqaProcesso, FvqaProcesso, EGenericTypeFields.FNumber);
+if (pFldFxxxParaNome) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxParaNome, FxxxParaNome, EGenericTypeFields.FString);
+if (pFldFxxxParaPessoas) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxParaPessoas, FxxxParaPessoas, EGenericTypeFields.FString);
+if (pFldFxxxBoxAudiencia) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxBoxAudiencia, FxxxBoxAudiencia, EGenericTypeFields.FString);
+if (pFldFxxxBoxAudienciaMobile) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxBoxAudienciaMobile, FxxxBoxAudienciaMobile, EGenericTypeFields.FString);
+if (pFldFxxxNomeAdvogado) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeAdvogado, FxxxNomeAdvogado, EGenericTypeFields.FString);
+if (pFldFxxxNomeForo) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeForo, FxxxNomeForo, EGenericTypeFields.FString);
+if (pFldFxxxNomeJustica) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeJustica, FxxxNomeJustica, EGenericTypeFields.FString);
+if (pFldFxxxNomeArea) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeArea, FxxxNomeArea, EGenericTypeFields.FString);
 
     }
 
@@ -177,7 +177,7 @@ if (pFldFxxxNomeArea) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeArea, m_
 #if (!NOTSTORED_AgendaRelatorio)
     private void ConfigureAuditorFields(DBToolWTable32Async updateTool)
     {    
-         
+        
     }
 
     private async Task<int> GravaNewIdAsync(
@@ -187,7 +187,7 @@ if (pFldFxxxNomeArea) updateTool.Fields(DBAgendaRelatorioDicInfo.xxxNomeArea, m_
         CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
 
         return result == "OK" ? 0 : -3;

@@ -23,12 +23,6 @@ public partial class FUFFactory : IFUFFactory, IDisposable
         return FUF.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FUF> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FUF().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FUF> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FUFFactory : IFUFFactory, IDisposable
         return FUF.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FUF> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FUF().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FUFFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IOutrasPartesClienteFormProps } from '../../Interfaces/interface.OutrasPartesCliente';
 import { OutrasPartesClienteService } from '../../Services/OutrasPartesCliente.service';
 import { useOutrasPartesClienteForm, useValidationsOutrasPartesCliente } from '../../Hooks/hookOutrasPartesCliente';
-import { OutrasPartesClienteEmpty } from '../../../Models/OutrasPartesCliente';
+import { OutrasPartesClienteEmpty } from '../../../Models/OutrasPartesCliente'; 
 import { OutrasPartesClienteForm } from '../Forms/OutrasPartesCliente';
+ 
 
 const OutrasPartesClienteInc: React.FC<IOutrasPartesClienteFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const outraspartesclienteService = new OutrasPartesClienteService(
-  new OutrasPartesClienteApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadOutrasPartesCliente } = useOutrasPartesClienteForm(
-OutrasPartesClienteEmpty(), 
-outraspartesclienteService
-);
-useEffect(() => {
-  loadOutrasPartesCliente(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedOutrasPartesCliente = await outraspartesclienteService.saveOutrasPartesCliente(data);
-    if (savedOutrasPartesCliente.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedOutrasPartesCliente);
+  const outraspartesclienteService = new OutrasPartesClienteService(
+    new OutrasPartesClienteApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadOutrasPartesCliente } = useOutrasPartesClienteForm(
+    OutrasPartesClienteEmpty(),
+    outraspartesclienteService
+  );
+
+  useEffect(() => {
+    loadOutrasPartesCliente(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedOutrasPartesCliente = await outraspartesclienteService.saveOutrasPartesCliente(data);
+
+      if (savedOutrasPartesCliente.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedOutrasPartesCliente);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadOutrasPartesCliente(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <OutrasPartesClienteForm
+        outraspartesclienteData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadOutrasPartesCliente(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<OutrasPartesClienteForm
-outraspartesclienteData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default OutrasPartesClienteInc;

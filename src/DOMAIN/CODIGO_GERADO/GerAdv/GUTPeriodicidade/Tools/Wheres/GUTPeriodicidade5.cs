@@ -22,7 +22,7 @@ public partial class GUTPeriodicidadeWhere(IFGUTPeriodicidadeFactory gutperiodic
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             IntervaloDias = dbRec.FIntervaloDias,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return gutperiodicidade;
     }

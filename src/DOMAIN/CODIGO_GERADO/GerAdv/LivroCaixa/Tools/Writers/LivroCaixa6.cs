@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ILivroCaixaWriter
 {
     Task<FLivroCaixa> WriteAsync(Models.LivroCaixa livrocaixa, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class LivroCaixaWriter(IFLivroCaixaFactory livrocaixaFactory) : ILivroCaixaWriter
 {
     private readonly IFLivroCaixaFactory _livrocaixaFactory = livrocaixaFactory ?? throw new ArgumentNullException(nameof(livrocaixaFactory));
-    public virtual async Task Delete(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(LivroCaixaResponse livrocaixa, int operadorId, MsiSqlConnection? oCnn)
     {
         await _livrocaixaFactory.DeleteAsync(operadorId, livrocaixa.Id, oCnn);
     }
@@ -29,7 +29,11 @@ public class LivroCaixaWriter(IFLivroCaixaFactory livrocaixaFactory) : ILivroCai
         dbRec.FIDHon = livrocaixa.IDHon;
         dbRec.FIDHonParc = livrocaixa.IDHonParc;
         dbRec.FIDHonSuc = livrocaixa.IDHonSuc;
-        dbRec.FData = livrocaixa.Data;
+        if (livrocaixa.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(livrocaixa.Data));
+        }
+
         dbRec.FProcesso = livrocaixa.Processo;
         dbRec.FValor = livrocaixa.Valor;
         dbRec.FTipo = livrocaixa.Tipo;

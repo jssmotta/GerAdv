@@ -18,7 +18,6 @@ public static partial class DBAdvogadosDicInfo
     public const string Casa = "advCasa"; // LOCALIZACAO 170523
     public const string NomeMae = "advNomeMae"; // LOCALIZACAO 170523
     public const string Escritorio = "advEscritorio"; // LOCALIZACAO 170523
-    public const string GUID = "advGUID"; // LOCALIZACAO 170523
     public const string Estagiario = "advEstagiario"; // LOCALIZACAO 170523
     public const string OAB = "advOAB"; // LOCALIZACAO 170523
     public const string NomeCompleto = "advNomeCompleto"; // LOCALIZACAO 170523
@@ -49,6 +48,7 @@ public static partial class DBAdvogadosDicInfo
     public const string Etiqueta = "advEtiqueta"; // LOCALIZACAO 170523
     public const string Ani = "advAni"; // LOCALIZACAO 170523
     public const string Bold = "advBold"; // LOCALIZACAO 170523
+    public const string Guid = "advGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "advQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "advDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "advQuemAtu"; // LOCALIZACAO 170523
@@ -105,190 +105,50 @@ public static partial class DBAdvogadosDicInfo
 
     public const string PTabelaNome = "Advogados";
 #region PropriedadesDaTabela
-    public static DBInfoSystem AdvCargo => new(0, PTabelaNome, CampoCodigo, Cargo, "Cargo", "Cargo", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false)
-    {
-        Prefixo = "adv"
-    }; // DBI 11 
-    public static DBInfoSystem AdvEMailPro => new(0, PTabelaNome, CampoCodigo, EMailPro, 255, "EMailPro", "EMailPro", ETipoDadosSysteminfo.SysteminfoTextEmailPro, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, "CPF", "CPF", ETipoDadosSysteminfo.SysteminfoTextCpf, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvRG => new(0, PTabelaNome, CampoCodigo, RG, 30, "RG", "RG", ETipoDadosSysteminfo.SysteminfoTextRG, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvCasa => new(0, PTabelaNome, CampoCodigo, Casa, "Casa", "Casa", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvNomeMae => new(0, PTabelaNome, CampoCodigo, NomeMae, 80, "NomeMae", "NomeMae", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvEscritorio => new(0, PTabelaNome, CampoCodigo, Escritorio, "Escritorio", "Escritorio", ETipoDadosSysteminfo.SysteminfoForeingkey, DBEscritoriosDicInfo.CampoCodigo, DBEscritoriosDicInfo.TabelaNome, new DBEscritoriosODicInfo(), false)
-    {
-        Prefixo = "adv"
-    }; // DBI 11 
-    public static DBInfoSystem AdvGUID => new(0, PTabelaNome, CampoCodigo, GUID, 150, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvEstagiario => new(0, PTabelaNome, CampoCodigo, Estagiario, "Estagiario", "Estagiario", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvOAB => new(0, PTabelaNome, CampoCodigo, OAB, 12, "OAB", "OAB", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvNomeCompleto => new(0, PTabelaNome, CampoCodigo, NomeCompleto, 50, "NomeCompleto", "NomeCompleto", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, "Endereço", "Endereço", ETipoDadosSysteminfo.SysteminfoTextEndereco, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvCidade => new(0, PTabelaNome, CampoCodigo, Cidade, "Cidade", "Cidade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false)
-    {
-        Prefixo = "adv"
-    }; // DBI 11 
-    public static DBInfoSystem AdvCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, "CEP", "CEP", ETipoDadosSysteminfo.SysteminfoTextCep, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvSexo => new(0, PTabelaNome, CampoCodigo, Sexo, "Sexo", "Sexo", ETipoDadosSysteminfo.SysteminfoBooleanSexo)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, "Bairro", "Bairro", ETipoDadosSysteminfo.SysteminfoTextBairro, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvCTPSSerie => new(0, PTabelaNome, CampoCodigo, CTPSSerie, 10, "CTPSSerie", "CTPSSerie", ETipoDadosSysteminfo.SysteminfoTextCtpsserie, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvCTPS => new(0, PTabelaNome, CampoCodigo, CTPS, 15, "CTPS", "CTPS", ETipoDadosSysteminfo.SysteminfoTextCtps, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, "Fone", "Fone", ETipoDadosSysteminfo.SysteminfoTextFone, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, "Fax", "Fax", ETipoDadosSysteminfo.SysteminfoTextFax, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvComissao => new(0, PTabelaNome, CampoCodigo, Comissao, "Comissao", "Comissao", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvDtInicio => new(0, PTabelaNome, CampoCodigo, DtInicio, "DtInicio", "DtInicio", ETipoDadosSysteminfo.SysteminfoDataInicio)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvDtFim => new(0, PTabelaNome, CampoCodigo, DtFim, "DtFim", "DtFim", ETipoDadosSysteminfo.SysteminfoDataTermino)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, "DtNasc", "DtNasc", ETipoDadosSysteminfo.SysteminfoDataNascimento)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvSalario => new(0, PTabelaNome, CampoCodigo, Salario, "Salario", "Salario", ETipoDadosSysteminfo.SysteminfoDoubleSalario)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvSecretaria => new(0, PTabelaNome, CampoCodigo, Secretaria, 20, "Secretaria", "Secretaria", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvTextoProcuracao => new(0, PTabelaNome, CampoCodigo, TextoProcuracao, 200, "TextoProcuracao", "TextoProcuracao", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvEMail => new(0, PTabelaNome, CampoCodigo, EMail, 100, "EMail", "EMail", ETipoDadosSysteminfo.SysteminfoTextEmail, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvEspecializacao => new(0, PTabelaNome, CampoCodigo, Especializacao, DevourerOne.PMaxSizeCampoMemo, "Especializacao", "Especializacao", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvPasta => new(0, PTabelaNome, CampoCodigo, Pasta, 200, "Pasta", "Pasta", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, "Observacao", "Observacao", ETipoDadosSysteminfo.SysteminfoMemoObservacao, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvContaBancaria => new(0, PTabelaNome, CampoCodigo, ContaBancaria, DevourerOne.PMaxSizeCampoMemo, "ContaBancaria", "ContaBancaria", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvParcTop => new(0, PTabelaNome, CampoCodigo, ParcTop, "ParcTop", "ParcTop", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvClass => new(0, PTabelaNome, CampoCodigo, Class, 1, "Class", "Class", ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar, true, false, false)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvTop => new(0, PTabelaNome, CampoCodigo, Top, "Top", "Top", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, "Etiqueta", "Etiqueta", ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvAni => new(0, PTabelaNome, CampoCodigo, Ani, "Ani", "Ani", ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "adv"
-    }; // DBI 11 
-    public static DBInfoSystem AdvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "adv"
-    }; // DBI 11 
-    public static DBInfoSystem AdvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "adv"
-    };
-    public static DBInfoSystem AdvVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "adv"
-    };
+    public static DBInfoSystem AdvCargo => new(0, PTabelaNome, CampoCodigo, Cargo, Cargo, Cargo, EDataTypeSystemInfo.SystemInfoForeingkey, DBCargosDicInfo.CampoCodigo, DBCargosDicInfo.TabelaNome, new DBCargosODicInfo(), false, prefixo: "adv"); // DBI 11 
+    public static DBInfoSystem AdvEMailPro => new(0, PTabelaNome, CampoCodigo, EMailPro, 255, EMailPro, EMailPro, EDataTypeSystemInfo.SystemInfoTextEmailPro, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvCPF => new(0, PTabelaNome, CampoCodigo, CPF, 11, CPF, CPF, EDataTypeSystemInfo.SystemInfoTextCpf, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "adv");
+    public static DBInfoSystem AdvRG => new(0, PTabelaNome, CampoCodigo, RG, 30, RG, RG, EDataTypeSystemInfo.SystemInfoTextRG, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvCasa => new(0, PTabelaNome, CampoCodigo, Casa, Casa, Casa, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvNomeMae => new(0, PTabelaNome, CampoCodigo, NomeMae, 80, NomeMae, NomeMae, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvEscritorio => new(0, PTabelaNome, CampoCodigo, Escritorio, Escritorio, Escritorio, EDataTypeSystemInfo.SystemInfoForeingkey, DBEscritoriosDicInfo.CampoCodigo, DBEscritoriosDicInfo.TabelaNome, new DBEscritoriosODicInfo(), false, prefixo: "adv"); // DBI 11 
+    public static DBInfoSystem AdvEstagiario => new(0, PTabelaNome, CampoCodigo, Estagiario, Estagiario, Estagiario, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvOAB => new(0, PTabelaNome, CampoCodigo, OAB, 12, OAB, OAB, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvNomeCompleto => new(0, PTabelaNome, CampoCodigo, NomeCompleto, 50, NomeCompleto, NomeCompleto, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvEndereco => new(0, PTabelaNome, CampoCodigo, Endereco, 80, Endereco, Endereco, EDataTypeSystemInfo.SystemInfoTextAddress, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvCidade => new(0, PTabelaNome, CampoCodigo, Cidade, Cidade, Cidade, EDataTypeSystemInfo.SystemInfoForeingkey, DBCidadeDicInfo.CampoCodigo, DBCidadeDicInfo.TabelaNome, new DBCidadeODicInfo(), false, prefixo: "adv"); // DBI 11 
+    public static DBInfoSystem AdvCEP => new(0, PTabelaNome, CampoCodigo, CEP, 10, CEP, CEP, EDataTypeSystemInfo.SystemInfoTextCep, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvSexo => new(0, PTabelaNome, CampoCodigo, Sexo, Sexo, Sexo, EDataTypeSystemInfo.SystemInfoBooleanSex, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvBairro => new(0, PTabelaNome, CampoCodigo, Bairro, 50, Bairro, Bairro, EDataTypeSystemInfo.SystemInfoTextDistrict, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvCTPSSerie => new(0, PTabelaNome, CampoCodigo, CTPSSerie, 10, CTPSSerie, CTPSSerie, EDataTypeSystemInfo.SystemInfoTextCtpsSerie, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvCTPS => new(0, PTabelaNome, CampoCodigo, CTPS, 15, CTPS, CTPS, EDataTypeSystemInfo.SystemInfoTextCtps, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvFone => new(0, PTabelaNome, CampoCodigo, Fone, DevourerOne.PMaxSizeCampoMemo, Fone, Fone, EDataTypeSystemInfo.SystemInfoTextPhoneNumber, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvFax => new(0, PTabelaNome, CampoCodigo, Fax, DevourerOne.PMaxSizeCampoMemo, Fax, Fax, EDataTypeSystemInfo.SystemInfoTextFax, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvComissao => new(0, PTabelaNome, CampoCodigo, Comissao, Comissao, Comissao, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "adv");
+    public static DBInfoSystem AdvDtInicio => new(0, PTabelaNome, CampoCodigo, DtInicio, DtInicio, DtInicio, EDataTypeSystemInfo.SystemInfoDateStart, prefixo: "adv");
+    public static DBInfoSystem AdvDtFim => new(0, PTabelaNome, CampoCodigo, DtFim, DtFim, DtFim, EDataTypeSystemInfo.SystemInfoDateEnds, prefixo: "adv");
+    public static DBInfoSystem AdvDtNasc => new(0, PTabelaNome, CampoCodigo, DtNasc, DtNasc, DtNasc, EDataTypeSystemInfo.SystemInfoDateBirthday, prefixo: "adv");
+    public static DBInfoSystem AdvSalario => new(0, PTabelaNome, CampoCodigo, Salario, Salario, Salario, EDataTypeSystemInfo.SystemInfoNumberSalary, prefixo: "adv");
+    public static DBInfoSystem AdvSecretaria => new(0, PTabelaNome, CampoCodigo, Secretaria, 20, Secretaria, Secretaria, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvTextoProcuracao => new(0, PTabelaNome, CampoCodigo, TextoProcuracao, 200, TextoProcuracao, TextoProcuracao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvEMail => new(0, PTabelaNome, CampoCodigo, EMail, 100, EMail, EMail, EDataTypeSystemInfo.SystemInfoTextEmail, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvEspecializacao => new(0, PTabelaNome, CampoCodigo, Especializacao, DevourerOne.PMaxSizeCampoMemo, Especializacao, Especializacao, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvPasta => new(0, PTabelaNome, CampoCodigo, Pasta, 200, Pasta, Pasta, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvObservacao => new(0, PTabelaNome, CampoCodigo, Observacao, DevourerOne.PMaxSizeCampoMemo, Observacao, Observacao, EDataTypeSystemInfo.SystemInfoMemoObservations, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvContaBancaria => new(0, PTabelaNome, CampoCodigo, ContaBancaria, DevourerOne.PMaxSizeCampoMemo, ContaBancaria, ContaBancaria, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvParcTop => new(0, PTabelaNome, CampoCodigo, ParcTop, ParcTop, ParcTop, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvClass => new(0, PTabelaNome, CampoCodigo, Class, 1, Class, Class, EDataTypeSystemInfo.SystemInfoTextClassificationStar, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvTop => new(0, PTabelaNome, CampoCodigo, Top, Top, Top, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "adv");
+    public static DBInfoSystem AdvEtiqueta => new(0, PTabelaNome, CampoCodigo, Etiqueta, Etiqueta, Etiqueta, EDataTypeSystemInfo.SystemInfoBooleanTag, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvAni => new(0, PTabelaNome, CampoCodigo, Ani, Ani, Ani, EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "adv", isRequired: true);
+    public static DBInfoSystem AdvGuid => new(0, PTabelaNome, CampoCodigo, Guid, 150, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "adv");
+    public static DBInfoSystem AdvQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "adv"); // DBI 11 
+    public static DBInfoSystem AdvDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "adv");
+    public static DBInfoSystem AdvQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "adv"); // DBI 11 
+    public static DBInfoSystem AdvDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "adv");
+    public static DBInfoSystem AdvVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "adv", isRequired: true);
 
 #endregion
     [Serializable]

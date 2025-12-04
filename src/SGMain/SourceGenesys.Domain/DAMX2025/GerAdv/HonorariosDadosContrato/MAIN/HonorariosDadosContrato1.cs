@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBHonorariosDadosContrato : VAuditor, ICadastros
+public partial class DBHonorariosDadosContrato : VAuditor, ICrud
 {
 #region TableDefinition_HonorariosDadosContrato
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBHonorariosDadosContrato : VAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBHonorariosDadosContrato : VAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -48,7 +48,7 @@ public partial class DBHonorariosDadosContrato : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFCliente || pFldFFixo || pFldFVariavel || pFldFPercSucesso || pFldFProcesso || pFldFArquivoContrato || pFldFTextoContrato || pFldFValorFixo || pFldFObservacao || pFldFGuid || pFldFDataContrato))
+            if (!(pFldFCliente || pFldFFixo || pFldFVariavel || pFldFPercSucesso || pFldFProcesso || pFldFArquivoContrato || pFldFTextoContrato || pFldFValorFixo || pFldFObservacao || pFldFDataContrato || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -72,34 +72,33 @@ public partial class DBHonorariosDadosContrato : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGuid))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGuid = Guid.NewGuid().ToString();
-            pFldFGuid = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFCliente)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Cliente, m_FCliente, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Cliente, FCliente, EGenericTypeFields.FNumberNull);
         if (pFldFFixo || ID.IsEmptyIDNumber())
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Fixo, m_FFixo, ETiposCampos.FBoolean);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Fixo, FFixo, EGenericTypeFields.FBoolean);
         if (pFldFVariavel || ID.IsEmptyIDNumber())
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Variavel, m_FVariavel, ETiposCampos.FBoolean);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Variavel, FVariavel, EGenericTypeFields.FBoolean);
         if (pFldFPercSucesso)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.PercSucesso, m_FPercSucesso, ETiposCampos.FDecimal);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.PercSucesso, FPercSucesso, EGenericTypeFields.FDecimal);
         if (pFldFProcesso)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFArquivoContrato)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.ArquivoContrato, m_FArquivoContrato, ETiposCampos.FString);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.ArquivoContrato, FArquivoContrato, EGenericTypeFields.FString);
         if (pFldFTextoContrato)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.TextoContrato, m_FTextoContrato, ETiposCampos.FString);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.TextoContrato, FTextoContrato, EGenericTypeFields.FString);
         if (pFldFValorFixo)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.ValorFixo, m_FValorFixo, ETiposCampos.FDecimal);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.ValorFixo, FValorFixo, EGenericTypeFields.FDecimal);
         if (pFldFObservacao)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
-        if (pFldFGuid)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Guid, m_FGuid, ETiposCampos.FString);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFDataContrato)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.DataContrato, m_FDataContrato, ETiposCampos.FDate);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.DataContrato, FDataContrato, EGenericTypeFields.FDate);
+        if (pFldFGuid)
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_HonorariosDadosContrato)
         if (clsW.HasUpdates)
         {
@@ -114,15 +113,15 @@ public partial class DBHonorariosDadosContrato : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBHonorariosDadosContratoDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBHonorariosDadosContratoDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

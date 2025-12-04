@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { AgendaRelatorioApiError } from '../GerAdv_TS/AgendaRelatorio/Apis/ApiAgendaRelatorio';
+import { AgendaRelatorioApiError } from '@/app/GerAdv_TS/AgendaRelatorio/Apis/ApiAgendaRelatorio';
 import { AgendaRelatorioApi } from '@/app/GerAdv_TS/AgendaRelatorio/Apis/ApiAgendaRelatorio';
-import { FilterAgendaRelatorio } from '../GerAdv_TS/AgendaRelatorio/Filters/AgendaRelatorio';
-import { IAgendaRelatorio } from '../GerAdv_TS/AgendaRelatorio/Interfaces/interface.AgendaRelatorio';
-import { AgendaRelatorioTestEmpty } from '../GerAdv_TS/Models/AgendaRelatorio';
+import { FilterAgendaRelatorio } from '@/app/GerAdv_TS/AgendaRelatorio/Filters/AgendaRelatorio';
+import { IAgendaRelatorio } from '@/app/GerAdv_TS/AgendaRelatorio/Interfaces/interface.AgendaRelatorio';
+import { AgendaRelatorioTestEmpty } from '@/app/GerAdv_TS/Models/AgendaRelatorio';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -89,8 +89,7 @@ describe('AgendaRelatorioApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterAgendaRelatorio = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -135,19 +134,17 @@ describe('AgendaRelatorioApi', () => {
   describe('addAndUpdate', () => {
     const mockAgendaRelatorio: IAgendaRelatorio = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+vqadata: '24/04/1975',
+vqaprocesso: 0,
+xxxparanome: 'João',
+xxxparapessoas: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+xxxboxaudiencia: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+xxxboxaudienciamobile: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+xxxnomeadvogado: 'João',
+xxxnomeforo: 'João',
+xxxnomejustica: 'João',
+xxxnomearea: 'João'
     };
 
     it('should add new agendarelatorio successfully', async () => {
@@ -290,7 +287,7 @@ describe('AgendaRelatorioApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterAgendaRelatorio = { funcionario: 1 };
+      const mockFilter: FilterAgendaRelatorio = { : 1 };
       
       const result = agendarelatorioApi.useFilter(mockFilter);
       

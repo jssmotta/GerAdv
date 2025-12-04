@@ -74,11 +74,26 @@ public class DocumentosWriterTests
         var result = await _documentosWriter.WriteAsync(documentos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFDocumentos.Object);
+        _mockFDocumentos.VerifySet(x => x.FGuid = documentos.Guid, Times.Once);
         _mockFDocumentos.VerifySet(x => x.FProcesso = documentos.Processo, Times.Once);
-        _mockFDocumentos.VerifySet(x => x.FData = documentos.Data, Times.Once);
+        _mockFDocumentos.VerifySet(x => x.FData = documentos.Data.ToString(), Times.Once);
         _mockFDocumentos.VerifySet(x => x.FObservacao = documentos.Observacao, Times.Once);
-        _mockFDocumentos.VerifySet(x => x.FGUID = documentos.GUID, Times.Once);
         _mockFDocumentos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var documentos = CreateValidDocumentosModel();
+        documentos.Data = null;
+        var auditorQuem = 123;
+        _mockDocumentosFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFDocumentos.Object);
+        _mockFDocumentos.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _documentosWriter.WriteAsync(documentos, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFDocumentos.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -121,7 +136,7 @@ public class DocumentosWriterTests
         var operadorId = 456;
         _mockDocumentosFactory.Setup(x => x.DeleteAsync(operadorId, documentosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _documentosWriter.Delete(documentosResponse, operadorId, _mockConnection.Object);
+        await _documentosWriter.DeleteAsync(documentosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockDocumentosFactory.Verify(x => x.DeleteAsync(operadorId, documentosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +152,7 @@ public class DocumentosWriterTests
         var operadorId = 111;
         _mockDocumentosFactory.Setup(x => x.DeleteAsync(operadorId, documentosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _documentosWriter.Delete(documentosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _documentosWriter.DeleteAsync(documentosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +169,7 @@ public class DocumentosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockDocumentosFactory.Setup(x => x.DeleteAsync(operadorId, documentosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _documentosWriter.Delete(documentosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _documentosWriter.DeleteAsync(documentosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +199,10 @@ public class DocumentosWriterTests
         return new Models.Documentos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
-            Data = "27/05/2022",
-            Observacao = "Observação teste",
-            GUID = Guid.NewGuid().ToString()
+            Data = "24/04/1975",
+            Observacao = "Observação teste"
         };
     }
 #endregion

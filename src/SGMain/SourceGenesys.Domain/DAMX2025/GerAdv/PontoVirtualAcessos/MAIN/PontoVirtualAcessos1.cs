@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBPontoVirtualAcessos : VNoAuditor, ICadastros
+public partial class DBPontoVirtualAcessos : VNoAuditor, ICrud
 {
 #region TableDefinition_PontoVirtualAcessos
     [XmlIgnore]
@@ -26,9 +26,9 @@ public partial class DBPontoVirtualAcessos : VNoAuditor, ICadastros
         {
             if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
             {
-                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+                using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
                 if (ds != null)
-                    CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                    LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
             }
             else
             {
@@ -39,7 +39,7 @@ public partial class DBPontoVirtualAcessos : VNoAuditor, ICadastros
         {
             using var ds = ConfiguracoesDBT.GetDataTable(fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -75,13 +75,13 @@ public partial class DBPontoVirtualAcessos : VNoAuditor, ICadastros
         }
 
         if (pFldFOperador)
-            clsW.Fields(DBPontoVirtualAcessosDicInfo.Operador, m_FOperador, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPontoVirtualAcessosDicInfo.Operador, FOperador, EGenericTypeFields.FNumberNull);
         if (pFldFDataHora)
-            clsW.Fields(DBPontoVirtualAcessosDicInfo.DataHora, m_FDataHora, ETiposCampos.FDate);
+            clsW.Fields(DBPontoVirtualAcessosDicInfo.DataHora, FDataHora, EGenericTypeFields.FDate);
         if (pFldFTipo || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPontoVirtualAcessosDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
+            clsW.Fields(DBPontoVirtualAcessosDicInfo.Tipo, FTipo, EGenericTypeFields.FBoolean);
         if (pFldFOrigem)
-            clsW.Fields(DBPontoVirtualAcessosDicInfo.Origem, m_FOrigem, ETiposCampos.FString);
+            clsW.Fields(DBPontoVirtualAcessosDicInfo.Origem, FOrigem, EGenericTypeFields.FString);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);

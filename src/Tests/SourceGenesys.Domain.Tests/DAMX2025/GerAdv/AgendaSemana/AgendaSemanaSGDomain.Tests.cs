@@ -31,21 +31,34 @@ public class DBAgendaSemanaTests : IDisposable
         // Campos obrigatórios Source Genesys
         dt.Columns.Add("xxxCodigo", typeof(int));
         dt.Columns.Add("xxxParaNome", typeof(string));
-        dt.Columns.Add("xxxData", typeof(string));
+        dt.Columns.Add("xxxData", typeof(DateTime));
         dt.Columns.Add("xxxFuncionario", typeof(int));
         dt.Columns.Add("xxxAdvogado", typeof(int));
-        dt.Columns.Add("xxxHora", typeof(string));
+        dt.Columns.Add("xxxHora", typeof(DateTime));
         dt.Columns.Add("xxxTipoCompromisso", typeof(int));
         dt.Columns.Add("xxxCompromisso", typeof(string));
         dt.Columns.Add("xxxConcluido", typeof(string));
         dt.Columns.Add("xxxLiberado", typeof(string));
         dt.Columns.Add("xxxImportante", typeof(string));
-        dt.Columns.Add("xxxHoraFinal", typeof(string));
+        dt.Columns.Add("xxxHoraFinal", typeof(DateTime));
         dt.Columns.Add("xxxNome", typeof(string));
         dt.Columns.Add("xxxCliente", typeof(int));
         dt.Columns.Add("xxxNomeCliente", typeof(string));
         dt.Columns.Add("xxxTipo", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["xxxCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBAgendaSemana(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -66,7 +79,7 @@ public class DBAgendaSemanaTests : IDisposable
     {
         var instance = new DBAgendaSemana();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("AgendaSemana", instance.ITabelaName());
+        Assert.Equal("AgendaSemana", instance.ITableName());
         Assert.Equal("xxx", instance.Prefixo);
     }
 
@@ -82,19 +95,6 @@ public class DBAgendaSemanaTests : IDisposable
     {
         var instance = new DBAgendaSemana((SqlDataReader)null);
         Assert.Equal(0, instance.ID);
-    }
-
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["xxxCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBAgendaSemana(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
     }
 
 #endregion
@@ -154,9 +154,9 @@ public class DBAgendaSemanaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnTrue()
+    public void IsStoredProcedureOrView_ShouldReturnTrue()
     {
-        Assert.True(_instance.IIsStoredProcedureOrView());
+        Assert.True(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -176,6 +176,23 @@ public class DBAgendaSemanaTests : IDisposable
         var longString = new string ('A', 60 + 10);
         _instance.FParaNome = longString;
         Assert.True(_instance.FParaNome.Length <= 60);
+    }
+
+    [Theory]
+    [InlineData("01/01/2000 00:00:00")]
+    [InlineData("31/12/2023 00:00:00")]
+    [InlineData("15/08/2024 00:00:00")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBAgendaSemana();
+        Assert.Equal(string.Empty, instance.FData);
     }
 
     [Theory]
@@ -214,6 +231,23 @@ public class DBAgendaSemanaTests : IDisposable
     {
         var instance = new DBAgendaSemana();
         Assert.Equal(0, instance.FAdvogado);
+    }
+
+    [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void Hora_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHora = dateString;
+        Assert.Equal(expected, _instance.FHora);
+    }
+
+    [Fact]
+    public void Hora_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBAgendaSemana();
+        Assert.Equal(string.Empty, instance.FHora);
     }
 
     [Theory]
@@ -291,6 +325,23 @@ public class DBAgendaSemanaTests : IDisposable
     {
         var instance = new DBAgendaSemana();
         Assert.False(instance.FImportante);
+    }
+
+    [Theory]
+    [InlineData("07/12/2024 14:29:03", "14:29")]
+    [InlineData("22/01/2025 09:58:02", "09:58")]
+    [InlineData("23/04/2025 11:51:29", "11:51")]
+    public void HoraFinal_ShouldFormatDateCorrectly(string dateString, string expected)
+    {
+        _instance.FHoraFinal = dateString;
+        Assert.Equal(expected, _instance.FHoraFinal);
+    }
+
+    [Fact]
+    public void HoraFinal_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBAgendaSemana();
+        Assert.Equal(string.Empty, instance.FHoraFinal);
     }
 
     [Theory]

@@ -54,6 +54,38 @@ public partial class DBUF
         // Checkpoint Carregar 
         try
         {
+            FDDD = getValue(DBUFDicInfo.DDD)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FDescricao = getValue(DBUFDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBUFDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FID = getValue(DBUFDicInfo.ID)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBUFDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBUFDicInfo.DtAtu));
         }
@@ -73,7 +105,7 @@ public partial class DBUF
         try
         {
             if (!DBNull.Value.Equals(getValue(DBUFDicInfo.Pais)))
-                m_FPais = Convert.ToInt32(getValue(DBUFDicInfo.Pais));
+                FPais = Convert.ToInt32(getValue(DBUFDicInfo.Pais));
         }
         catch
         {
@@ -82,7 +114,7 @@ public partial class DBUF
         try
         {
             if (!DBNull.Value.Equals(getValue(DBUFDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBUFDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBUFDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +123,7 @@ public partial class DBUF
         try
         {
             if (!DBNull.Value.Equals(getValue(DBUFDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBUFDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBUFDicInfo.QuemCad));
         }
         catch
         {
@@ -100,7 +132,7 @@ public partial class DBUF
         try
         {
             if (!DBNull.Value.Equals(getValue(DBUFDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBUFDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBUFDicInfo.Top));
         }
         catch
         {
@@ -109,46 +141,14 @@ public partial class DBUF
         try
         {
             if (!DBNull.Value.Equals(getValue(DBUFDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBUFDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDDD = getValue(DBUFDicInfo.DDD)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBUFDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBUFDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FID = getValue(DBUFDicInfo.ID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBUFDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -172,7 +172,7 @@ public partial class DBUF
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

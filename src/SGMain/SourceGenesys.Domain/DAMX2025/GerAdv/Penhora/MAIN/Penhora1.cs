@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBPenhora : VAuditor, ICadastros
+public partial class DBPenhora : VAuditor, ICrud
 {
 #region TableDefinition_Penhora
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBPenhora : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBPenhora : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_Penhora
@@ -62,7 +62,7 @@ public partial class DBPenhora : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFProcesso || pFldFNome || pFldFDescricao || pFldFDataPenhora || pFldFPenhoraStatus || pFldFGUID || pFldFMaster))
+            if (!(pFldFProcesso || pFldFNome || pFldFDescricao || pFldFDataPenhora || pFldFPenhoraStatus || pFldFMaster || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,26 +92,25 @@ public partial class DBPenhora : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFProcesso)
-            clsW.Fields(DBPenhoraDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPenhoraDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFNome)
-            clsW.Fields(DBPenhoraDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBPenhoraDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFDescricao)
-            clsW.Fields(DBPenhoraDicInfo.Descricao, m_FDescricao, ETiposCampos.FString);
+            clsW.Fields(DBPenhoraDicInfo.Descricao, FDescricao, EGenericTypeFields.FString);
         if (pFldFDataPenhora)
-            clsW.Fields(DBPenhoraDicInfo.DataPenhora, m_FDataPenhora, ETiposCampos.FDate);
+            clsW.Fields(DBPenhoraDicInfo.DataPenhora, FDataPenhora, EGenericTypeFields.FDate);
         if (pFldFPenhoraStatus)
-            clsW.Fields(DBPenhoraDicInfo.PenhoraStatus, m_FPenhoraStatus, ETiposCampos.FNumberNull);
-        if (pFldFGUID)
-            clsW.Fields(DBPenhoraDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBPenhoraDicInfo.PenhoraStatus, FPenhoraStatus, EGenericTypeFields.FNumberNull);
         if (pFldFMaster)
-            clsW.Fields(DBPenhoraDicInfo.Master, m_FMaster, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPenhoraDicInfo.Master, FMaster, EGenericTypeFields.FNumberNull);
+        if (pFldFGuid)
+            clsW.Fields(DBPenhoraDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Penhora)
         if (clsW.HasUpdates)
         {
@@ -126,15 +125,15 @@ public partial class DBPenhora : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBPenhoraDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPenhoraDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBPenhoraDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBPenhoraDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBPenhoraDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBPenhoraDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBPenhoraDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBPenhoraDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBPenhoraDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBPenhoraDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -158,7 +157,7 @@ public partial class DBPenhora : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

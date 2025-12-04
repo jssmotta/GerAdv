@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBInstancia : VAuditor, ICadastros
+public partial class DBInstancia : VAuditor, ICrud
 {
 #region TableDefinition_Instancia
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBInstancia : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBInstancia : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_Instancia
@@ -62,7 +62,7 @@ public partial class DBInstancia : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFGUID || pFldFLiminarPedida || pFldFObjeto || pFldFStatusResultado || pFldFLiminarPendente || pFldFInterpusemosRecurso || pFldFLiminarConcedida || pFldFLiminarNegada || pFldFProcesso || pFldFData || pFldFLiminarParcial || pFldFLiminarResultado || pFldFNroProcesso || pFldFDivisao || pFldFLiminarCliente || pFldFComarca || pFldFSubDivisao || pFldFPrincipal || pFldFAcao || pFldFForo || pFldFTipoRecurso || pFldFZKey || pFldFZKeyQuem || pFldFZKeyQuando || pFldFNroAntigo || pFldFAccessCode || pFldFJulgador || pFldFZKeyIA))
+            if (!(pFldFLiminarPedida || pFldFObjeto || pFldFStatusResultado || pFldFLiminarPendente || pFldFInterpusemosRecurso || pFldFLiminarConcedida || pFldFLiminarNegada || pFldFProcesso || pFldFData || pFldFLiminarParcial || pFldFLiminarResultado || pFldFNroProcesso || pFldFDivisao || pFldFLiminarCliente || pFldFComarca || pFldFSubDivisao || pFldFPrincipal || pFldFAcao || pFldFForo || pFldFTipoRecurso || pFldFZKey || pFldFZKeyQuem || pFldFZKeyQuando || pFldFNroAntigo || pFldFAccessCode || pFldFJulgador || pFldFZKeyIA || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -86,68 +86,67 @@ public partial class DBInstancia : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
-        if (pFldFGUID)
-            clsW.Fields(DBInstanciaDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFLiminarPedida)
-            clsW.Fields(DBInstanciaDicInfo.LiminarPedida, m_FLiminarPedida, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.LiminarPedida, FLiminarPedida, EGenericTypeFields.FString);
         if (pFldFObjeto)
-            clsW.Fields(DBInstanciaDicInfo.Objeto, m_FObjeto, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.Objeto, FObjeto, EGenericTypeFields.FString);
         if (pFldFStatusResultado)
-            clsW.Fields(DBInstanciaDicInfo.StatusResultado, m_FStatusResultado, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.StatusResultado, FStatusResultado, EGenericTypeFields.FNumberNull);
         if (pFldFLiminarPendente || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.LiminarPendente, m_FLiminarPendente, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.LiminarPendente, FLiminarPendente, EGenericTypeFields.FBoolean);
         if (pFldFInterpusemosRecurso || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.InterpusemosRecurso, m_FInterpusemosRecurso, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.InterpusemosRecurso, FInterpusemosRecurso, EGenericTypeFields.FBoolean);
         if (pFldFLiminarConcedida || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.LiminarConcedida, m_FLiminarConcedida, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.LiminarConcedida, FLiminarConcedida, EGenericTypeFields.FBoolean);
         if (pFldFLiminarNegada || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.LiminarNegada, m_FLiminarNegada, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.LiminarNegada, FLiminarNegada, EGenericTypeFields.FBoolean);
         if (pFldFProcesso)
-            clsW.Fields(DBInstanciaDicInfo.Processo, m_FProcesso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.Processo, FProcesso, EGenericTypeFields.FNumberNull);
         if (pFldFData)
-            clsW.Fields(DBInstanciaDicInfo.Data, m_FData, ETiposCampos.FDate);
+            clsW.Fields(DBInstanciaDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFLiminarParcial || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.LiminarParcial, m_FLiminarParcial, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.LiminarParcial, FLiminarParcial, EGenericTypeFields.FBoolean);
         if (pFldFLiminarResultado)
-            clsW.Fields(DBInstanciaDicInfo.LiminarResultado, m_FLiminarResultado, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.LiminarResultado, FLiminarResultado, EGenericTypeFields.FString);
         if (pFldFNroProcesso)
-            clsW.Fields(DBInstanciaDicInfo.NroProcesso, m_FNroProcesso, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.NroProcesso, FNroProcesso, EGenericTypeFields.FString);
         if (pFldFDivisao)
-            clsW.Fields(DBInstanciaDicInfo.Divisao, m_FDivisao, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.Divisao, FDivisao, EGenericTypeFields.FNumberNull);
         if (pFldFLiminarCliente || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.LiminarCliente, m_FLiminarCliente, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.LiminarCliente, FLiminarCliente, EGenericTypeFields.FBoolean);
         if (pFldFComarca)
-            clsW.Fields(DBInstanciaDicInfo.Comarca, m_FComarca, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.Comarca, FComarca, EGenericTypeFields.FNumberNull);
         if (pFldFSubDivisao)
-            clsW.Fields(DBInstanciaDicInfo.SubDivisao, m_FSubDivisao, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.SubDivisao, FSubDivisao, EGenericTypeFields.FNumberNull);
         if (pFldFPrincipal || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.Principal, m_FPrincipal, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.Principal, FPrincipal, EGenericTypeFields.FBoolean);
         if (pFldFAcao)
-            clsW.Fields(DBInstanciaDicInfo.Acao, m_FAcao, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.Acao, FAcao, EGenericTypeFields.FNumberNull);
         if (pFldFForo)
-            clsW.Fields(DBInstanciaDicInfo.Foro, m_FForo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.Foro, FForo, EGenericTypeFields.FNumberNull);
         if (pFldFTipoRecurso)
-            clsW.Fields(DBInstanciaDicInfo.TipoRecurso, m_FTipoRecurso, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.TipoRecurso, FTipoRecurso, EGenericTypeFields.FNumberNull);
         if (pFldFZKey)
-            clsW.Fields(DBInstanciaDicInfo.ZKey, m_FZKey, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.ZKey, FZKey, EGenericTypeFields.FString);
         if (pFldFZKeyQuem)
-            clsW.Fields(DBInstanciaDicInfo.ZKeyQuem, m_FZKeyQuem, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.ZKeyQuem, FZKeyQuem, EGenericTypeFields.FNumberNull);
         if (pFldFZKeyQuando)
-            clsW.Fields(DBInstanciaDicInfo.ZKeyQuando, m_FZKeyQuando, ETiposCampos.FDate);
+            clsW.Fields(DBInstanciaDicInfo.ZKeyQuando, FZKeyQuando, EGenericTypeFields.FDate);
         if (pFldFNroAntigo)
-            clsW.Fields(DBInstanciaDicInfo.NroAntigo, m_FNroAntigo, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.NroAntigo, FNroAntigo, EGenericTypeFields.FString);
         if (pFldFAccessCode)
-            clsW.Fields(DBInstanciaDicInfo.AccessCode, m_FAccessCode, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.AccessCode, FAccessCode, EGenericTypeFields.FString);
         if (pFldFJulgador)
-            clsW.Fields(DBInstanciaDicInfo.Julgador, m_FJulgador, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.Julgador, FJulgador, EGenericTypeFields.FNumberNull);
         if (pFldFZKeyIA)
-            clsW.Fields(DBInstanciaDicInfo.ZKeyIA, m_FZKeyIA, ETiposCampos.FString);
+            clsW.Fields(DBInstanciaDicInfo.ZKeyIA, FZKeyIA, EGenericTypeFields.FString);
+        if (pFldFGuid)
+            clsW.Fields(DBInstanciaDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_Instancia)
         if (clsW.HasUpdates)
         {
@@ -162,15 +161,15 @@ public partial class DBInstancia : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBInstanciaDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBInstanciaDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBInstanciaDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBInstanciaDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBInstanciaDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBInstanciaDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBInstanciaDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBInstanciaDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBInstanciaDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -194,7 +193,7 @@ public partial class DBInstancia : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

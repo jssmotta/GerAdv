@@ -28,8 +28,6 @@ public class StatusInstanciaValidation : IStatusInstanciaValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBStatusInstanciaDicInfo.IstNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBStatusInstanciaDicInfo.IstNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBStatusInstanciaDicInfo.IstGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBStatusInstanciaDicInfo.IstGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class StatusInstanciaValidation : IStatusInstanciaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

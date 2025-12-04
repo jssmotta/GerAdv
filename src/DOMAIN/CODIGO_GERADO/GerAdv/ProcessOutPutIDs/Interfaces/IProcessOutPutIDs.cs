@@ -4,6 +4,7 @@
 namespace MenphisSI.GerAdv.Interface;
 public partial interface IProcessOutPutIDsService
 {
+    Task<Filters.FilterProcessOutPutIDs> FilterVoice([FromBody] Filters.FilterProcessOutPutIDs filter, [FromBody] CommandSpeakerRequest? message, [FromRoute, Required] string uri = "");
     Task<IEnumerable<ProcessOutPutIDsResponseAll>> Filter([FromQuery] int max, [FromBody] Filters.FilterProcessOutPutIDs filter, [FromRoute, Required] string uri = "");
     Task<ProcessOutPutIDsResponse?> AddAndUpdate(Models.ProcessOutPutIDs? regProcessOutPutIDs, [FromRoute, Required] string uri = "");
     Task<ProcessOutPutIDsResponse?> Validation(Models.ProcessOutPutIDs? regProcessOutPutIDs, [FromRoute, Required] string uri = "");

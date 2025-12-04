@@ -29,13 +29,6 @@ public partial class FAgendaSemana : MenphisSI.SG.GerAdv.DBAgendaSemana, IDBAgen
     {
     }
 
-    public async Task<FAgendaSemana> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        var fAgendaSemana = new FAgendaSemana();
-        await fAgendaSemana.CarregarAsync(id, oCnn);
-        return fAgendaSemana;
-    }
-
     private FAgendaSemana(List<SqlParameter>? parameters, in string? cNome = "", MsiSqlConnection? oCnn = null, string? fullSql = "", string sqlWhere = "", in string join = "") : base(parameters, cNome, oCnn, fullSql, sqlWhere, join)
     {
     }
@@ -62,7 +55,7 @@ public partial class FAgendaSemana : MenphisSI.SG.GerAdv.DBAgendaSemana, IDBAgen
         {
             using var ds = ConfiguracoesDBT.GetDataTable(parameters, string.IsNullOrEmpty(fullSql) ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join} WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
         else
         {
@@ -70,7 +63,7 @@ public partial class FAgendaSemana : MenphisSI.SG.GerAdv.DBAgendaSemana, IDBAgen
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.Trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count == 0 ? null : ds.Rows[0]);
         }
     }
 }

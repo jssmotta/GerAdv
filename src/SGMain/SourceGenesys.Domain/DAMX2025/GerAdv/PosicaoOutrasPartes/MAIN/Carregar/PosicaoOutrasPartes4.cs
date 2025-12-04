@@ -54,8 +54,24 @@ public partial class DBPosicaoOutrasPartes
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBPosicaoOutrasPartesDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBPosicaoOutrasPartesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBPosicaoOutrasPartesDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBPosicaoOutrasPartesDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBPosicaoOutrasPartesDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBPosicaoOutrasPartes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPosicaoOutrasPartesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBPosicaoOutrasPartesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBPosicaoOutrasPartesDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBPosicaoOutrasPartes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPosicaoOutrasPartesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBPosicaoOutrasPartesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBPosicaoOutrasPartesDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBPosicaoOutrasPartes
         try
         {
             if (!DBNull.Value.Equals(getValue(DBPosicaoOutrasPartesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBPosicaoOutrasPartesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBPosicaoOutrasPartesDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBPosicaoOutrasPartesDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBPosicaoOutrasPartesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBPosicaoOutrasPartes
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -56,8 +56,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         {
             Id = 1,
             GUTAtividade = 1,
-            DataRealizado = "24/04/1975",
-            GUID = Guid.NewGuid().ToString()
+            DataRealizado = "24/04/1975"
         };
     }
 
@@ -66,7 +65,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGUTPeriodicidadeStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidadeStatus>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTPeriodicidadeStatuss service mock
-        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = id }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTAtividadesResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -74,7 +73,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockGUTPeriodicidadeStatusService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterGUTPeriodicidadeStatus>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the GUTPeriodicidadeStatuss service mock
-        _ = _mockGUTAtividadesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new GUTAtividadesResponse { Id = 0 }));
+        _ = _mockGUTAtividadesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new GUTAtividadesResponse { Id = 0 }));
     }
 
     [Fact]
@@ -85,8 +84,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         {
             Id = 1,
             GUTAtividade = 1,
-            DataRealizado = "27/05/2022",
-            GUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            DataRealizado = "27/05/2022"
         };
         SetupValidMocks();
         // Act
@@ -104,53 +102,6 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
-#region ValidateReg Required GUID Method Tests 
-    [Fact]
-    public async Task ValidateReg_WithEmptyGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutperiodicidadestatus = CreateValidGUTPeriodicidadeStatus();
-        gutperiodicidadestatus.GUID = "";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithNullGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutperiodicidadestatus = CreateValidGUTPeriodicidadeStatus();
-        gutperiodicidadestatus.GUID = null;
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithValidDataGUID_ShouldReturnTrue()
-    {
-        // Arrange
-        var gutperiodicidadestatus = CreateValidGUTPeriodicidadeStatus();
-        SetupValidMocks();
-        // Act
-        var result = await _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object);
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task ValidateReg_WithWhitespaceGUID_ShouldThrowSGValidationException()
-    {
-        // Arrange
-        var gutperiodicidadestatus = CreateValidGUTPeriodicidadeStatus();
-        gutperiodicidadestatus.GUID = "   ";
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
-        exception.Message.Should().Contain("é obrigatório");
-    }
-
-#endregion
 #region Foreign Key Validation Tests - GUTAtividades
     [Fact]
     public async Task ValidateReg_WithInvalidGUTAtividades_ShouldThrowSGValidationException()
@@ -158,7 +109,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         // Arrange
         var gutperiodicidadestatus = CreateValidGUTPeriodicidadeStatus();
         gutperiodicidadestatus.GUTAtividade = 999;
-        _mockGUTAtividadesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTAtividadesResponse>(null));
+        _mockGUTAtividadesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.GUTAtividadesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
@@ -175,7 +126,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockGUTAtividadesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockGUTAtividadesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object));
@@ -192,7 +143,7 @@ public class GUTPeriodicidadeStatusValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockGUTAtividadesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockGUTAtividadesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(gutperiodicidadestatus, _mockGUTPeriodicidadeStatusService.Object, _mockGUTAtividadesReader.Object, _validUri, _mockConnection.Object);

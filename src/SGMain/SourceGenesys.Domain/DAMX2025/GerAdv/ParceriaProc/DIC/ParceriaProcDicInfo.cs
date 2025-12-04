@@ -11,8 +11,8 @@ public static partial class DBParceriaProcDicInfo
     public const string CampoNome = "";
     public const string TablePrefix = "par";
     public const string Advogado = "parAdvogado"; // LOCALIZACAO 170523
-    public const string GUID = "parGUID"; // LOCALIZACAO 170523
     public const string Processo = "parProcesso"; // LOCALIZACAO 170523
+    public const string Guid = "parGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "parQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "parDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "parQuemAtu"; // LOCALIZACAO 170523
@@ -33,39 +33,14 @@ public static partial class DBParceriaProcDicInfo
 
     public const string PTabelaNome = "ParceriaProc";
 #region PropriedadesDaTabela
-    public static DBInfoSystem ParAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, "Advogado", "Advogado", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false)
-    {
-        Prefixo = "par"
-    }; // DBI 11 
-    public static DBInfoSystem ParGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "par"
-    };
-    public static DBInfoSystem ParProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "par"
-    };
-    public static DBInfoSystem ParQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "par"
-    }; // DBI 11 
-    public static DBInfoSystem ParDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "par"
-    };
-    public static DBInfoSystem ParQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "par"
-    }; // DBI 11 
-    public static DBInfoSystem ParDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "par"
-    };
-    public static DBInfoSystem ParVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "par"
-    };
+    public static DBInfoSystem ParAdvogado => new(0, PTabelaNome, CampoCodigo, Advogado, Advogado, Advogado, EDataTypeSystemInfo.SystemInfoForeingkey, DBAdvogadosDicInfo.CampoCodigo, DBAdvogadosDicInfo.TabelaNome, new DBAdvogadosODicInfo(), false, prefixo: "par"); // DBI 11 
+    public static DBInfoSystem ParProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "par");
+    public static DBInfoSystem ParGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "par");
+    public static DBInfoSystem ParQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "par"); // DBI 11 
+    public static DBInfoSystem ParDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "par");
+    public static DBInfoSystem ParQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "par"); // DBI 11 
+    public static DBInfoSystem ParDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "par");
+    public static DBInfoSystem ParVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "par", isRequired: true);
 
 #endregion
     [Serializable]

@@ -74,10 +74,10 @@ public class ObjetosWriterTests
         var result = await _objetosWriter.WriteAsync(objetos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFObjetos.Object);
+        _mockFObjetos.VerifySet(x => x.FGuid = objetos.Guid, Times.Once);
         _mockFObjetos.VerifySet(x => x.FJustica = objetos.Justica, Times.Once);
         _mockFObjetos.VerifySet(x => x.FArea = objetos.Area, Times.Once);
         _mockFObjetos.VerifySet(x => x.FNome = objetos.Nome, Times.Once);
-        _mockFObjetos.VerifySet(x => x.FGUID = objetos.GUID, Times.Once);
         _mockFObjetos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class ObjetosWriterTests
         var operadorId = 456;
         _mockObjetosFactory.Setup(x => x.DeleteAsync(operadorId, objetosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _objetosWriter.Delete(objetosResponse, operadorId, _mockConnection.Object);
+        await _objetosWriter.DeleteAsync(objetosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockObjetosFactory.Verify(x => x.DeleteAsync(operadorId, objetosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class ObjetosWriterTests
         var operadorId = 111;
         _mockObjetosFactory.Setup(x => x.DeleteAsync(operadorId, objetosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _objetosWriter.Delete(objetosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _objetosWriter.DeleteAsync(objetosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class ObjetosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockObjetosFactory.Setup(x => x.DeleteAsync(operadorId, objetosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _objetosWriter.Delete(objetosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _objetosWriter.DeleteAsync(objetosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class ObjetosWriterTests
         return new Models.Objetos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Justica = 1,
             Area = 1,
-            Nome = "João",
-            GUID = Guid.NewGuid().ToString()
+            Nome = "João"
         };
     }
 #endregion

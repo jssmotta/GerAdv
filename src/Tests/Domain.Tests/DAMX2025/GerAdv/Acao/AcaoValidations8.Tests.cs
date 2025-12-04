@@ -68,8 +68,8 @@ public class AcaoValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAcao>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Acaos service mock
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -77,8 +77,8 @@ public class AcaoValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockAcaoService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAcao>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Acaos service mock
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = 0 }));
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class AcaoValidationTests : IDisposable
         // Arrange
         var acao = CreateValidAcao();
         acao.Justica = 999;
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object));
@@ -130,7 +130,7 @@ public class AcaoValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object));
@@ -147,7 +147,7 @@ public class AcaoValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockJusticaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockJusticaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object);
@@ -167,7 +167,7 @@ public class AcaoValidationTests : IDisposable
         var result = await _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockJusticaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockJusticaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Area
@@ -177,7 +177,7 @@ public class AcaoValidationTests : IDisposable
         // Arrange
         var acao = CreateValidAcao();
         acao.Area = 999;
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object));
@@ -194,7 +194,7 @@ public class AcaoValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object));
@@ -211,7 +211,7 @@ public class AcaoValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAreaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAreaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object);
@@ -231,7 +231,7 @@ public class AcaoValidationTests : IDisposable
         var result = await _validation.ValidateReg(acao, _mockAcaoService.Object, _mockJusticaReader.Object, _mockAreaReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockAreaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockAreaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

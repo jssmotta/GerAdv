@@ -14,6 +14,14 @@ public partial class DBProResumos
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProResumos
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,19 +142,21 @@ public partial class DBProResumos
 
 #if (!NOTSTORED_ProResumos)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFData || pFldFResumo || pFldFGUID || pFldFTipoResumo;
+    private bool HasAnyFieldChanged() => pFldFProcesso || pFldFData || pFldFResumo || pFldFTipoResumo || pFldFBold || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFProcesso)
-            updateTool.Fields(DBProResumosDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProResumosDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBProResumosDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBProResumosDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFResumo)
-            updateTool.Fields(DBProResumosDicInfo.Resumo, m_FResumo, ETiposCampos.FString);
-        if (pFldFGUID)
-            updateTool.Fields(DBProResumosDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBProResumosDicInfo.Resumo, FResumo, EGenericTypeFields.FString);
         if (pFldFTipoResumo)
-            updateTool.Fields(DBProResumosDicInfo.TipoResumo, m_FTipoResumo, ETiposCampos.FNumber);
+            updateTool.Fields(DBProResumosDicInfo.TipoResumo, FTipoResumo, EGenericTypeFields.FNumber);
+        if (pFldFBold || updateTool.Insert)
+            updateTool.Fields(DBProResumosDicInfo.Bold, FBold, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBProResumosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -158,24 +168,23 @@ public partial class DBProResumos
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProResumosDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProResumosDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProResumosDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProResumosDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProResumosDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProResumosDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProResumosDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProResumosDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBProResumosDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProResumosDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBProResumosDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

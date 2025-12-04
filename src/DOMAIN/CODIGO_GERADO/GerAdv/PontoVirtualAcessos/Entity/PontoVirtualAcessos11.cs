@@ -23,12 +23,6 @@ public partial class FPontoVirtualAcessosFactory : IFPontoVirtualAcessosFactory,
         return FPontoVirtualAcessos.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FPontoVirtualAcessos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FPontoVirtualAcessos().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FPontoVirtualAcessos> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FPontoVirtualAcessosFactory : IFPontoVirtualAcessosFactory,
         return FPontoVirtualAcessos.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FPontoVirtualAcessos> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FPontoVirtualAcessos().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FPontoVirtualAcessosFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { BensMateriaisApiError } from '../GerAdv_TS/BensMateriais/Apis/ApiBensMateriais';
+import { BensMateriaisApiError } from '@/app/GerAdv_TS/BensMateriais/Apis/ApiBensMateriais';
 import { BensMateriaisApi } from '@/app/GerAdv_TS/BensMateriais/Apis/ApiBensMateriais';
-import { FilterBensMateriais } from '../GerAdv_TS/BensMateriais/Filters/BensMateriais';
-import { IBensMateriais } from '../GerAdv_TS/BensMateriais/Interfaces/interface.BensMateriais';
-import { BensMateriaisTestEmpty } from '../GerAdv_TS/Models/BensMateriais';
+import { FilterBensMateriais } from '@/app/GerAdv_TS/BensMateriais/Filters/BensMateriais';
+import { IBensMateriais } from '@/app/GerAdv_TS/BensMateriais/Interfaces/interface.BensMateriais';
+import { BensMateriaisTestEmpty } from '@/app/GerAdv_TS/Models/BensMateriais';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('BensMateriaisApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterBensMateriais = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,21 @@ describe('BensMateriaisApi', () => {
   describe('addAndUpdate', () => {
     const mockBensMateriais: IBensMateriais = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+nome: 'João',
+bensclassificacao: 0,
+datacompra: '24/04/1975',
+datafimdagarantia: '24/04/1975',
+nfnro: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+fornecedor: 0,
+valorbem: 1m,
+nroserieproduto: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+comprador: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+cidade: 0,
+garantialoja: false,
+dataterminodagarantiadaloja: '24/04/1975',
+observacoes: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+nomevendedor: 'João'
     };
 
     it('should add new bensmateriais successfully', async () => {
@@ -487,7 +488,7 @@ describe('BensMateriaisApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterBensMateriais = { funcionario: 1 };
+      const mockFilter: FilterBensMateriais = { : 1 };
       
       const result = bensmateriaisApi.useFilter(mockFilter);
       

@@ -54,8 +54,80 @@ public partial class DBOperadorEMailPopup
         // Checkpoint Carregar 
         try
         {
+            FAssinatura = getValue(DBOperadorEMailPopupDicInfo.Assinatura)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FDescricao = getValue(DBOperadorEMailPopupDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBOperadorEMailPopupDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBOperadorEMailPopupDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FPOP3 = getValue(DBOperadorEMailPopupDicInfo.POP3)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSenha = getValue(DBOperadorEMailPopupDicInfo.Senha)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSenha256 = getValue(DBOperadorEMailPopupDicInfo.Senha256)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSMTP = getValue(DBOperadorEMailPopupDicInfo.SMTP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FUsuario = getValue(DBOperadorEMailPopupDicInfo.Usuario)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.Autenticacao)))
-                m_FAutenticacao = Convert.ToBoolean(getValue(DBOperadorEMailPopupDicInfo.Autenticacao));
+                FAutenticacao = Convert.ToBoolean(getValue(DBOperadorEMailPopupDicInfo.Autenticacao));
         }
         catch
         {
@@ -82,7 +154,7 @@ public partial class DBOperadorEMailPopup
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.Operador)))
-                m_FOperador = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.Operador));
+                FOperador = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.Operador));
         }
         catch
         {
@@ -91,7 +163,7 @@ public partial class DBOperadorEMailPopup
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.PortaPop3)))
-                m_FPortaPop3 = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.PortaPop3));
+                FPortaPop3 = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.PortaPop3));
         }
         catch
         {
@@ -100,7 +172,7 @@ public partial class DBOperadorEMailPopup
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.PortaSmtp)))
-                m_FPortaSmtp = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.PortaSmtp));
+                FPortaSmtp = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.PortaSmtp));
         }
         catch
         {
@@ -109,7 +181,7 @@ public partial class DBOperadorEMailPopup
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.QuemAtu));
         }
         catch
         {
@@ -118,7 +190,7 @@ public partial class DBOperadorEMailPopup
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBOperadorEMailPopupDicInfo.QuemCad));
         }
         catch
         {
@@ -127,86 +199,14 @@ public partial class DBOperadorEMailPopup
         try
         {
             if (!DBNull.Value.Equals(getValue(DBOperadorEMailPopupDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBOperadorEMailPopupDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAssinatura = getValue(DBOperadorEMailPopupDicInfo.Assinatura)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBOperadorEMailPopupDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBOperadorEMailPopupDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBOperadorEMailPopupDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FPOP3 = getValue(DBOperadorEMailPopupDicInfo.POP3)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSenha = getValue(DBOperadorEMailPopupDicInfo.Senha)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSenha256 = getValue(DBOperadorEMailPopupDicInfo.Senha256)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSMTP = getValue(DBOperadorEMailPopupDicInfo.SMTP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FUsuario = getValue(DBOperadorEMailPopupDicInfo.Usuario)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBOperadorEMailPopupDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -230,7 +230,7 @@ public partial class DBOperadorEMailPopup
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

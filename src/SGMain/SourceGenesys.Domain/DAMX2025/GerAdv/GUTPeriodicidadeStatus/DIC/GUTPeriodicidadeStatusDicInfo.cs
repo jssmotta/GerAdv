@@ -12,7 +12,7 @@ public static partial class DBGUTPeriodicidadeStatusDicInfo
     public const string TablePrefix = "pgs";
     public const string GUTAtividade = "pgsGUTAtividade"; // LOCALIZACAO 170523
     public const string DataRealizado = "pgsDataRealizado"; // LOCALIZACAO 170523
-    public const string GUID = "pgsGUID"; // LOCALIZACAO 170523
+    public const string Guid = "pgsGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "pgsQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "pgsDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "pgsQuemAtu"; // LOCALIZACAO 170523
@@ -33,44 +33,14 @@ public static partial class DBGUTPeriodicidadeStatusDicInfo
 
     public const string PTabelaNome = "GUTPeriodicidadeStatus";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PgsGUTAtividade => new(0, PTabelaNome, CampoCodigo, GUTAtividade, "GUTAtividade", "GUTAtividade", ETipoDadosSysteminfo.SysteminfoForeingkey, DBGUTAtividadesDicInfo.CampoCodigo, DBGUTAtividadesDicInfo.TabelaNome, new DBGUTAtividadesODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "pgs"
-    }; // DBI 11 
-    public static DBInfoSystem PgsDataRealizado => new(0, PTabelaNome, CampoCodigo, DataRealizado, "DataRealizado", "DataRealizado", ETipoDadosSysteminfo.SysteminfoDatetime)
-    {
-        IsRequired = true,
-        Prefixo = "pgs"
-    };
-    public static DBInfoSystem PgsGUID => new(0, PTabelaNome, CampoCodigo, GUID, 50, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "pgs"
-    };
-    public static DBInfoSystem PgsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "pgs"
-    }; // DBI 11 
-    public static DBInfoSystem PgsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "pgs"
-    };
-    public static DBInfoSystem PgsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pgs"
-    }; // DBI 11 
-    public static DBInfoSystem PgsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pgs"
-    };
-    public static DBInfoSystem PgsVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pgs"
-    };
+    public static DBInfoSystem PgsGUTAtividade => new(0, PTabelaNome, CampoCodigo, GUTAtividade, GUTAtividade, GUTAtividade, EDataTypeSystemInfo.SystemInfoForeingkey, DBGUTAtividadesDicInfo.CampoCodigo, DBGUTAtividadesDicInfo.TabelaNome, new DBGUTAtividadesODicInfo(), false, prefixo: "pgs", isRequired: true); // DBI 11 
+    public static DBInfoSystem PgsDataRealizado => new(0, PTabelaNome, CampoCodigo, DataRealizado, DataRealizado, DataRealizado, EDataTypeSystemInfo.SystemInfoDateOnly, prefixo: "pgs", isRequired: true);
+    public static DBInfoSystem PgsGuid => new(0, PTabelaNome, CampoCodigo, Guid, 50, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pgs", isRequired: true);
+    public static DBInfoSystem PgsQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pgs", isRequired: true); // DBI 11 
+    public static DBInfoSystem PgsDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pgs", isRequired: true);
+    public static DBInfoSystem PgsQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pgs"); // DBI 11 
+    public static DBInfoSystem PgsDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pgs");
+    public static DBInfoSystem PgsVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pgs", isRequired: true);
 
 #endregion
     [Serializable]

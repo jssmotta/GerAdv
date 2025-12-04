@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ProResumosApiError } from '../GerAdv_TS/ProResumos/Apis/ApiProResumos';
+import { ProResumosApiError } from '@/app/GerAdv_TS/ProResumos/Apis/ApiProResumos';
 import { ProResumosApi } from '@/app/GerAdv_TS/ProResumos/Apis/ApiProResumos';
-import { FilterProResumos } from '../GerAdv_TS/ProResumos/Filters/ProResumos';
-import { IProResumos } from '../GerAdv_TS/ProResumos/Interfaces/interface.ProResumos';
-import { ProResumosTestEmpty } from '../GerAdv_TS/Models/ProResumos';
+import { FilterProResumos } from '@/app/GerAdv_TS/ProResumos/Filters/ProResumos';
+import { IProResumos } from '@/app/GerAdv_TS/ProResumos/Interfaces/interface.ProResumos';
+import { ProResumosTestEmpty } from '@/app/GerAdv_TS/Models/ProResumos';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ProResumosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterProResumos = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,11 @@ describe('ProResumosApi', () => {
   describe('addAndUpdate', () => {
     const mockProResumos: IProResumos = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+data: '24/04/1975',
+resumo: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+tiporesumo: 0
     };
 
     it('should add new proresumos successfully', async () => {
@@ -487,7 +478,7 @@ describe('ProResumosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterProResumos = { funcionario: 1 };
+      const mockFilter: FilterProResumos = { : 1 };
       
       const result = proresumosApi.useFilter(mockFilter);
       

@@ -79,14 +79,14 @@ public class AgendaValidationTests : IDisposable
             Oculto = 0,
             CartaPrecatoria = 0,
             Revisar = false,
-            HrFinal = "27/05/2022",
+            HrFinal = "24/04/1975",
             Advogado = 0,
             EventoGerador = 0,
             EventoData = "24/04/1975",
             Funcionario = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             EventoPrazo = 0,
-            Hora = "27/05/2022",
+            Hora = "04:04",
             Compromisso = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             TipoCompromisso = 0,
             Cliente = 0,
@@ -118,15 +118,15 @@ public class AgendaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Agendas service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = id }));
-        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = id }));
-        _ = _mockFuncionariosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncionariosResponse { Id = id }));
-        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = id }));
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = id }));
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = id }));
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = id }));
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = id }));
-        _ = _mockPrepostosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PrepostosResponse { Id = id }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = id }));
+        _ = _mockAdvogadosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AdvogadosResponse { Id = id }));
+        _ = _mockFuncionariosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncionariosResponse { Id = id }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoCompromissoResponse { Id = id }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = id }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = id }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = id }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = id }));
+        _ = _mockPrepostosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PrepostosResponse { Id = id }));
     }
 
     private void SetupValidMocksInvalid()
@@ -134,15 +134,15 @@ public class AgendaValidationTests : IDisposable
         // Setup default valid responses for all mocks
         _mockAgendaService.Setup(x => x.Filter(It.IsAny<int>(), It.IsAny<FilterAgenda>(), It.IsAny<string>())).ReturnsAsync([]);
         // Setup other mocks but don't override the Agendas service mock
-        _ = _mockCidadeReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new CidadeResponse { Id = 0 }));
-        _ = _mockAdvogadosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AdvogadosResponse { Id = 0 }));
-        _ = _mockFuncionariosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new FuncionariosResponse { Id = 0 }));
-        _ = _mockTipoCompromissoReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new TipoCompromissoResponse { Id = 0 }));
-        _ = _mockClientesReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new ClientesResponse { Id = 0 }));
-        _ = _mockAreaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new AreaResponse { Id = 0 }));
-        _ = _mockJusticaReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new JusticaResponse { Id = 0 }));
-        _ = _mockOperadorReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new OperadorResponse { Id = 0 }));
-        _ = _mockPrepostosReader.Setup(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static (id, conn) => Task.FromResult(new PrepostosResponse { Id = 0 }));
+        _ = _mockCidadeReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new CidadeResponse { Id = 0 }));
+        _ = _mockAdvogadosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AdvogadosResponse { Id = 0 }));
+        _ = _mockFuncionariosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new FuncionariosResponse { Id = 0 }));
+        _ = _mockTipoCompromissoReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new TipoCompromissoResponse { Id = 0 }));
+        _ = _mockClientesReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new ClientesResponse { Id = 0 }));
+        _ = _mockAreaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new AreaResponse { Id = 0 }));
+        _ = _mockJusticaReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new JusticaResponse { Id = 0 }));
+        _ = _mockOperadorReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new OperadorResponse { Id = 0 }));
+        _ = _mockPrepostosReader.Setup(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>())).Returns<int, MsiSqlConnection>(valueFunction: static async (id, conn) => await Task.FromResult(new PrepostosResponse { Id = 0 }));
     }
 
     [Fact]
@@ -183,6 +183,74 @@ public class AgendaValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
+#region HrFinal Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithHrFinalBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.HrFinal = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidHrFinal_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.HrFinal = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullHrFinal_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.HrFinal = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateHrFinalFormat_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.HrFinal = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyHrFinal_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.HrFinal = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
 #region EventoData Validation Tests
     [Theory]
     [InlineData("01/01/1899")]
@@ -243,6 +311,142 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.EventoData = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
+#region Hora Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithHoraBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Hora = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidHora_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Hora = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullHora_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Hora = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateHoraFormat_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Hora = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyHora_ShouldPass()
+    {
+        // Arrange
+        var agenda = CreateValidAgenda();
+        agenda.Hora = "";
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -326,7 +530,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Cidade = 999;
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.CidadeResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -343,7 +547,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockCidadeReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockCidadeReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -360,7 +564,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockCidadeReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockCidadeReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -380,7 +584,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockCidadeReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockCidadeReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Advogados
@@ -390,7 +594,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Advogado = 999;
-        _mockAdvogadosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AdvogadosResponse>(null));
+        _mockAdvogadosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AdvogadosResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -407,7 +611,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAdvogadosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAdvogadosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -424,7 +628,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAdvogadosReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAdvogadosReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -444,7 +648,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockAdvogadosReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockAdvogadosReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Funcionarios
@@ -454,7 +658,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Funcionario = 999;
-        _mockFuncionariosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.FuncionariosResponse>(null));
+        _mockFuncionariosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.FuncionariosResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -471,7 +675,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockFuncionariosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockFuncionariosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -488,7 +692,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockFuncionariosReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockFuncionariosReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -508,7 +712,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockFuncionariosReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockFuncionariosReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - TipoCompromisso
@@ -518,7 +722,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.TipoCompromisso = 999;
-        _mockTipoCompromissoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoCompromissoResponse>(null));
+        _mockTipoCompromissoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.TipoCompromissoResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -535,7 +739,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockTipoCompromissoReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockTipoCompromissoReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -552,7 +756,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockTipoCompromissoReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockTipoCompromissoReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -572,7 +776,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockTipoCompromissoReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockTipoCompromissoReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Clientes
@@ -582,7 +786,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Cliente = 999;
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.ClientesResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -599,7 +803,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockClientesReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockClientesReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -616,7 +820,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockClientesReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockClientesReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -636,7 +840,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockClientesReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockClientesReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Area
@@ -646,7 +850,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Area = 999;
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.AreaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -663,7 +867,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockAreaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockAreaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -680,7 +884,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockAreaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockAreaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -700,7 +904,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockAreaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockAreaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Justica
@@ -710,7 +914,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Justica = 999;
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.JusticaResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -727,7 +931,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockJusticaReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockJusticaReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -744,7 +948,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockJusticaReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockJusticaReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -764,7 +968,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockJusticaReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockJusticaReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Operador
@@ -774,7 +978,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Usuario = 999;
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.OperadorResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -791,7 +995,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockOperadorReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockOperadorReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -808,7 +1012,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockOperadorReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockOperadorReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -828,7 +1032,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockOperadorReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockOperadorReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
 #region Foreign Key Validation Tests - Prepostos
@@ -838,7 +1042,7 @@ public class AgendaValidationTests : IDisposable
         // Arrange
         var agenda = CreateValidAgenda();
         agenda.Preposto = 999;
-        _mockPrepostosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PrepostosResponse>(null));
+        _mockPrepostosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult<Models.Response.PrepostosResponse>(null));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -855,7 +1059,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 888
         }; // Different ID
-        _mockPrepostosReader.Setup(x => x.Read(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
+        _mockPrepostosReader.Setup(x => x.ReadAsync(999, _mockConnection.Object)).Returns(Task.FromResult(reg888));
         SetupValidMocksInvalid();
         // Act & Assert
         var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object));
@@ -872,7 +1076,7 @@ public class AgendaValidationTests : IDisposable
         {
             Id = 123
         };
-        _mockPrepostosReader.Setup(x => x.Read(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
+        _mockPrepostosReader.Setup(x => x.ReadAsync(123, _mockConnection.Object)).Returns(Task.FromResult(reg123));
         SetupValidMocks();
         // Act
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
@@ -892,7 +1096,7 @@ public class AgendaValidationTests : IDisposable
         var result = await _validation.ValidateReg(agenda, _mockAgendaService.Object, _mockCidadeReader.Object, _mockAdvogadosReader.Object, _mockFuncionariosReader.Object, _mockTipoCompromissoReader.Object, _mockClientesReader.Object, _mockAreaReader.Object, _mockJusticaReader.Object, _mockOperadorReader.Object, _mockPrepostosReader.Object, _validUri, _mockConnection.Object);
         // Assert
         result.Should().BeTrue();
-        _mockPrepostosReader.Verify(x => x.Read(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
+        _mockPrepostosReader.Verify(x => x.ReadAsync(It.IsAny<int>(), It.IsAny<MsiSqlConnection>()), Times.Never);
     }
 
     public virtual void Dispose()

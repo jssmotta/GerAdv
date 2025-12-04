@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IOperadorWriter
 {
     Task<FOperador> WriteAsync(Models.Operador operador, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(OperadorResponse operador, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(OperadorResponse operador, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
 {
     private readonly IFOperadorFactory _operadorFactory = operadorFactory ?? throw new ArgumentNullException(nameof(operadorFactory));
-    public virtual async Task Delete(OperadorResponse operador, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(OperadorResponse operador, int operadorId, MsiSqlConnection? oCnn)
     {
         await _operadorFactory.DeleteAsync(operadorId, operador.Id, oCnn);
     }
@@ -36,8 +36,11 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         dbRec.FSituacao = operador.Situacao;
         dbRec.FComputador = operador.Computador;
         dbRec.FMinhaDescricao = operador.MinhaDescricao;
-        if (operador.UltimoLogoff != null)
-            dbRec.FUltimoLogoff = operador.UltimoLogoff.ToString();
+        if (operador.UltimoLogoff.NotIsEmpty())
+        {
+            dbRec.FUltimoLogoff = DateOnly.FromDateTime(Convert.ToDateTime(operador.UltimoLogoff));
+        }
+
         dbRec.FEMailNet = operador.EMailNet;
         dbRec.FOnlineIP = operador.OnlineIP;
         dbRec.FOnLine = operador.OnLine;
@@ -45,7 +48,6 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         dbRec.FStatusId = operador.StatusId;
         dbRec.FStatusMessage = operador.StatusMessage;
         dbRec.FIsFinanceiro = operador.IsFinanceiro;
-        dbRec.FGUID = operador.GUID;
         dbRec.FTop = operador.Top;
         dbRec.FSexo = operador.Sexo;
         dbRec.FBasico = operador.Basico;
@@ -53,16 +55,26 @@ public class OperadorWriter(IFOperadorFactory operadorFactory) : IOperadorWriter
         if (operador.Senha256.Length > 0)
             dbRec.FSenha256 = operador.Senha256.GetHashCode2();
         dbRec.FEMailConfirmado = operador.EMailConfirmado;
-        if (operador.DataLimiteReset != null)
-            dbRec.FDataLimiteReset = operador.DataLimiteReset.ToString();
+        if (operador.DataLimiteReset.NotIsEmpty())
+        {
+            dbRec.FDataLimiteReset = DateOnly.FromDateTime(Convert.ToDateTime(operador.DataLimiteReset));
+        }
+
         if (operador.SuporteSenha256.Length > 0)
             dbRec.FSuporteSenha256 = operador.SuporteSenha256.Encrypt();
-        if (operador.SuporteMaxAge != null)
-            dbRec.FSuporteMaxAge = operador.SuporteMaxAge.ToString();
+        if (operador.SuporteMaxAge.NotIsEmpty())
+        {
+            dbRec.FSuporteMaxAge = DateOnly.FromDateTime(Convert.ToDateTime(operador.SuporteMaxAge));
+        }
+
         dbRec.FSuporteNomeSolicitante = operador.SuporteNomeSolicitante;
-        if (operador.SuporteUltimoAcesso != null)
-            dbRec.FSuporteUltimoAcesso = operador.SuporteUltimoAcesso.ToString();
+        if (operador.SuporteUltimoAcesso.NotIsEmpty())
+        {
+            dbRec.FSuporteUltimoAcesso = DateOnly.FromDateTime(Convert.ToDateTime(operador.SuporteUltimoAcesso));
+        }
+
         dbRec.FSuporteIpUltimoAcesso = operador.SuporteIpUltimoAcesso;
+        dbRec.FGuid = operador.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

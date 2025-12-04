@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { TipoProDespositoGridAdapter } from '@/app/GerAdv_TS/TipoProDesposito/Adapter/TipoProDespositoGridAdapter';
 import TipoProDespositoGridContainer from '@/app/GerAdv_TS/TipoProDesposito/Components/TipoProDespositoGridContainer';
+
 const TipoProDespositoPage: React.FC = () => {
-  const TipoProDespositoGrid = new TipoProDespositoGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Tipo Pro Desposito' />
-    <TipoProDespositoGridContainer grid={TipoProDespositoGrid} />
-  </PageLayout>
-);
+    const TipoProDespositoGrid = new TipoProDespositoGridAdapter();
+
+    return (
+        <PageLayout>            
+            <TipoProDespositoGridContainer grid={TipoProDespositoGrid} />
+        </PageLayout>
+    );
 };
+
 export default TipoProDespositoPage;

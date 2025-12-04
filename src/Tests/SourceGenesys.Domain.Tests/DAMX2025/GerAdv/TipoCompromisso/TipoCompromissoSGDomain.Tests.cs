@@ -35,11 +35,25 @@ public class DBTipoCompromissoTests : IDisposable
         dt.Columns.Add("tipQuemAtu", typeof(int));
         dt.Columns.Add("tipDtAtu", typeof(DateTime));
         dt.Columns.Add("tipVisto", typeof(bool));
-        dt.Columns.Add("tipGUID", typeof(string));
         dt.Columns.Add("tipIcone", typeof(int));
         dt.Columns.Add("tipDescricao", typeof(string));
         dt.Columns.Add("tipFinanceiro", typeof(string));
+        dt.Columns.Add("tipBold", typeof(string));
+        dt.Columns.Add("tipGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["tipCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTipoCompromisso(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +74,7 @@ public class DBTipoCompromissoTests : IDisposable
     {
         var instance = new DBTipoCompromisso();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("TipoCompromisso", instance.ITabelaName());
+        Assert.Equal("TipoCompromisso", instance.ITableName());
         Assert.Equal("tip", instance.Prefixo);
     }
 
@@ -78,29 +92,16 @@ public class DBTipoCompromissoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["tipCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTipoCompromisso(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("TipoCompromisso", cadastro.ITabelaName());
-        Assert.Equal("tipCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("tipDescricao", cadastro.ICampoNome());
-        Assert.Equal("tip", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("TipoCompromisso", cadastro.ITableName());
+        Assert.Equal("tipCodigo", cadastro.IFieldId());
+        Assert.Equal("tipDescricao", cadastro.IFieldNameDescription());
+        Assert.Equal("tip", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,30 +161,12 @@ public class DBTipoCompromissoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -235,6 +218,24 @@ public class DBTipoCompromissoTests : IDisposable
     {
         var instance = new DBTipoCompromisso();
         Assert.False(instance.FFinanceiro);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

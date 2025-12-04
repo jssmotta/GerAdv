@@ -11,7 +11,7 @@ public static partial class DBEnquadramentoEmpresaDicInfo
     public const string CampoNome = "eqeNome";
     public const string TablePrefix = "eqe";
     public const string Nome = "eqeNome"; // LOCALIZACAO 170523
-    public const string GUID = "eqeGUID"; // LOCALIZACAO 170523
+    public const string Guid = "eqeGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "eqeQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "eqeDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "eqeQuemAtu"; // LOCALIZACAO 170523
@@ -31,38 +31,13 @@ public static partial class DBEnquadramentoEmpresaDicInfo
 
     public const string PTabelaNome = "EnquadramentoEmpresa";
 #region PropriedadesDaTabela
-    public static DBInfoSystem EqeNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        IsRequired = true,
-        Prefixo = "eqe"
-    };
-    public static DBInfoSystem EqeGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        IsRequired = true,
-        Prefixo = "eqe"
-    };
-    public static DBInfoSystem EqeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        IsRequired = true,
-        Prefixo = "eqe"
-    }; // DBI 11 
-    public static DBInfoSystem EqeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        IsRequired = true,
-        Prefixo = "eqe"
-    };
-    public static DBInfoSystem EqeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "eqe"
-    }; // DBI 11 
-    public static DBInfoSystem EqeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "eqe"
-    };
-    public static DBInfoSystem EqeVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        Prefixo = "eqe"
-    };
+    public static DBInfoSystem EqeNome => new(0, PTabelaNome, CampoCodigo, Nome, 50, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "eqe", isRequired: true);
+    public static DBInfoSystem EqeGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "eqe", isRequired: true);
+    public static DBInfoSystem EqeQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "eqe", isRequired: true); // DBI 11 
+    public static DBInfoSystem EqeDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "eqe", isRequired: true);
+    public static DBInfoSystem EqeQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "eqe"); // DBI 11 
+    public static DBInfoSystem EqeDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "eqe");
+    public static DBInfoSystem EqeVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "eqe");
 
 #endregion
     [Serializable]

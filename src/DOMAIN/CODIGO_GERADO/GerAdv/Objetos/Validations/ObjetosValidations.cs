@@ -28,8 +28,6 @@ public class ObjetosValidation : IObjetosValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBObjetosDicInfo.OjtNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBObjetosDicInfo.OjtNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBObjetosDicInfo.OjtGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBObjetosDicInfo.OjtGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,13 +37,15 @@ public class ObjetosValidation : IObjetosValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         // Justica
         if (!reg.Justica.IsEmptyIDNumber())
         {
-            var regJustica = await justicaReader.Read(reg.Justica, oCnn);
+            var regJustica = await justicaReader.ReadAsync(reg.Justica, oCnn);
             if (regJustica == null || regJustica.Id != reg.Justica)
             {
                 throw new SGValidationException($"Justiça não encontrado ({regJustica?.Id}).");
@@ -55,7 +55,7 @@ public class ObjetosValidation : IObjetosValidation
         // Area
         if (!reg.Area.IsEmptyIDNumber())
         {
-            var regArea = await areaReader.Read(reg.Area, oCnn);
+            var regArea = await areaReader.ReadAsync(reg.Area, oCnn);
             if (regArea == null || regArea.Id != reg.Area)
             {
                 throw new SGValidationException($"Área não encontrado ({regArea?.Id}).");

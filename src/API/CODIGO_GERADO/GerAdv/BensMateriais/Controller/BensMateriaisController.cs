@@ -14,6 +14,7 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
     private readonly IBensMateriaisService _bensmateriaisService = bensmateriaisService;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     [HttpGet]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetAll([FromQuery] int max, [FromRoute, Required] string uri)
     {
@@ -23,23 +24,45 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
-    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] Filters.FilterBensMateriais filtro, [FromRoute, Required] string uri)
+    public async Task<IActionResult> Filter([FromQuery] int max, [FromBody] MenphisSI.GerAdv.Filters.FilterBensMateriais filter, [FromRoute, Required] string uri)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        //_logger.Info("BensMateriais: Filter called max {0} with filtro = {1}, {2}", max, filtro, uri);
-        var result = await _bensmateriaisService.Filter(max, filtro, uri);
+        //_logger.Info("BensMateriais: Filter called max {0} with filtro = {1}, {2}", max, filter, uri);
+        var result = await _bensmateriaisService.Filter(max, filter, uri);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> FilterVoice([FromBody] MenphisSI.GerAdv.Filters.FilterBensMateriaisWithVoiceRequest request, [FromRoute, Required] string uri)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        //_logger.Info("BensMateriais: Filter called with {0} filtro = {1}", request, uri);
+        var result = await _bensmateriaisService.FilterVoice(request.Filter, request.VoiceCommand, uri);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetById(int id, [FromRoute, Required] string uri, CancellationToken token = default)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         //_logger.Info("BensMateriais: GetById called with id = {0}, {1}", id, uri);
         var result = await _bensmateriaisService.GetById(id, uri, token);
         if (result == null)
@@ -51,7 +74,42 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
         return Ok(result);
     }
 
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(AuditorResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Error500), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting("DefaultPolicy")]
+    [Authorize]
+    public async Task<IActionResult> GetAuditor(int id, [FromRoute, Required] string uri, CancellationToken token = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            //_logger.Info("BensMateriais: GetAuditor called with id = {0}, {1}", id, uri);
+            var result = await _bensmateriaisService.GetAuditor(id, uri, token);
+            if (result == null)
+            {
+                _logger.Warn("GetAuditor: No BensMateriais found with id = {0}, {1}", id, uri);
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "BensMateriais: GetAuditor failed with exception for id = {0}, {1}", id, uri);
+            return StatusCode(500, new Error500 { success = false, data = "", message = "Erro 500 Auditor" });
+        }
+    }
+
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> GetListN([FromQuery] int max, [FromBody] Filters.FilterBensMateriais? filtro, [FromRoute, Required] string uri)
     {
@@ -65,8 +123,8 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
         return Ok(result);
     }
 
-    [EnableRateLimiting("DefaultPolicy")]
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     [ProducesResponseType(typeof(BensMateriaisResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BensMateriaisResponse), StatusCodes.Status201Created)]
@@ -107,6 +165,11 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
     public async Task<IActionResult> Delete([FromQuery] int id, [FromRoute, Required] string uri)
     {
         //_logger.Info("BensMateriais: Delete called with id = {0}, {2}", id, uri);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var result = await _bensmateriaisService.Delete(id, uri);
@@ -126,6 +189,7 @@ public partial class BensMateriaisController(IBensMateriaisService bensmateriais
     }
 
     [HttpPost]
+    [EnableRateLimiting("DefaultPolicy")]
     [Authorize]
     public async Task<IActionResult> Validation([FromBody] Models.BensMateriais regBensMateriais, [FromRoute, Required] string uri)
     {

@@ -8,25 +8,19 @@ public partial class DBGUTMatriz
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
     private protected bool pFldFDescricao, pFldFGUTTipo, pFldFValor;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FGUTTipo, m_FValor;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FDescricao;
     // Tracking Code: 20250503
-    [StringLength(150, ErrorMessage = "A propriedade FDescricao da tabela GUTMatriz deve ter no máximo 150 caracteres.")]
+    [StringLength(150, ErrorMessage = "A propriedade FDescricao da tabela 'GUTMatriz' deve ter no máximo 150 caracteres.")]
     public virtual string? FDescricao
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDescricao ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDescricao = pFldFDescricao || !(m_FDescricao ?? string.Empty).Equals(value);
+            pFldFDescricao = pFldFDescricao || !(field ?? string.Empty).Equals(value);
             if (pFldFDescricao)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FDescricao = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
+                field = trimmed.Length > 150 ? trimmed.AsSpan(0, 150).ToString() : trimmed;
             }
         }
     }
@@ -34,24 +28,24 @@ public partial class DBGUTMatriz
     public virtual int FGUTTipo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUTTipo;
+        get => field;
         set
         {
-            pFldFGUTTipo = pFldFGUTTipo || value != m_FGUTTipo;
+            pFldFGUTTipo = pFldFGUTTipo || value != field;
             if (pFldFGUTTipo)
-                m_FGUTTipo = value;
+                field = value;
         }
     }
 
     public virtual int FValor
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FValor;
+        get => field;
         set
         {
-            pFldFValor = pFldFValor || value != m_FValor;
+            pFldFValor = pFldFValor || value != field;
             if (pFldFValor)
-                m_FValor = value;
+                field = value;
         }
     }
 
@@ -63,13 +57,13 @@ public partial class DBGUTMatriz
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -79,9 +73,13 @@ public partial class DBGUTMatriz
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -36,6 +36,19 @@ public class DBGUTMatrizTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["gutCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBGUTMatriz(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -54,7 +67,7 @@ public class DBGUTMatrizTests : IDisposable
     {
         var instance = new DBGUTMatriz();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("GUTMatriz", instance.ITabelaName());
+        Assert.Equal("GUTMatriz", instance.ITableName());
         Assert.Equal("gut", instance.Prefixo);
     }
 
@@ -72,29 +85,16 @@ public class DBGUTMatrizTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["gutCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBGUTMatriz(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("GUTMatriz", cadastro.ITabelaName());
-        Assert.Equal("gutCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("gutDescricao", cadastro.ICampoNome());
-        Assert.Equal("gut", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("GUTMatriz", cadastro.ITableName());
+        Assert.Equal("gutCodigo", cadastro.IFieldId());
+        Assert.Equal("gutDescricao", cadastro.IFieldNameDescription());
+        Assert.Equal("gut", cadastro.IPrefix());
     }
 
 #endregion
@@ -154,9 +154,9 @@ public class DBGUTMatrizTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

@@ -39,6 +39,19 @@ public class DBFuncaoTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["funCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBFuncao(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -57,7 +70,7 @@ public class DBFuncaoTests : IDisposable
     {
         var instance = new DBFuncao();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Funcao", instance.ITabelaName());
+        Assert.Equal("Funcao", instance.ITableName());
         Assert.Equal("fun", instance.Prefixo);
     }
 
@@ -75,29 +88,16 @@ public class DBFuncaoTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["funCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBFuncao(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Funcao", cadastro.ITabelaName());
-        Assert.Equal("funCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("funDescricao", cadastro.ICampoNome());
-        Assert.Equal("fun", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Funcao", cadastro.ITableName());
+        Assert.Equal("funCodigo", cadastro.IFieldId());
+        Assert.Equal("funDescricao", cadastro.IFieldNameDescription());
+        Assert.Equal("fun", cadastro.IPrefix());
     }
 
 #endregion
@@ -157,9 +157,9 @@ public class DBFuncaoTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

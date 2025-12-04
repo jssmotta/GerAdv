@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : IProResumosReader
+public partial class ProResumosReader(IFProResumosFactory proresumosFactory, IConnectionService connection) : IProResumosReader
 {
     private readonly IFProResumosFactory _proresumosFactory = proresumosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prsCodigo, prsData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ProResumosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProResumos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ProResumosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("prsCodigo, prsData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ProResumosResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBProResumos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ProResumosResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ProResumosResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,24 +48,30 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         return result;
     }
 
-    public async Task<ProResumosResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ProResumosResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _proresumosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProResumos?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.ProResumos?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _proresumosFactory.CreateFromIdAsync(id, oCnn);
         var proresumos = new Models.ProResumos
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData2))
+        {
+            proresumos.Data = XData2.ToString("dd/MM/yyyy");
+            proresumos.Data_date = XData2;
+        }
+
         return proresumos;
     }
 
@@ -85,11 +97,17 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData2))
+        {
+            proresumos.Data = XData2.ToString("dd/MM/yyyy");
+            proresumos.Data_date = XData2;
+        }
+
         return proresumos;
     }
 
@@ -104,11 +122,17 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData2))
+        {
+            proresumos.Data = XData2.ToString("dd/MM/yyyy");
+            proresumos.Data_date = XData2;
+        }
+
         return proresumos;
     }
 
@@ -123,11 +147,17 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData2))
+        {
+            proresumos.Data = XData2.ToString("dd/MM/yyyy");
+            proresumos.Data_date = XData2;
+        }
+
         return proresumos;
     }
 
@@ -142,11 +172,17 @@ public partial class ProResumosReader(IFProResumosFactory proresumosFactory) : I
         {
             Id = dbRec.ID,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Resumo = dbRec.FResumo ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
             TipoResumo = dbRec.FTipoResumo,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData2))
+        {
+            proresumos.Data = XData2.ToString("dd/MM/yyyy");
+            proresumos.Data_date = XData2;
+        }
+
         return proresumos;
     }
 }

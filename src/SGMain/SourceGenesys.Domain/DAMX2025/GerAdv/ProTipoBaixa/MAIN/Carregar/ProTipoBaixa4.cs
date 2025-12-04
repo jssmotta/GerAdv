@@ -54,8 +54,24 @@ public partial class DBProTipoBaixa
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBProTipoBaixaDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBProTipoBaixaDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBProTipoBaixaDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBProTipoBaixaDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBProTipoBaixaDicInfo.Bold));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBProTipoBaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProTipoBaixaDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBProTipoBaixaDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBProTipoBaixaDicInfo.QuemAtu));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBProTipoBaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProTipoBaixaDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBProTipoBaixaDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBProTipoBaixaDicInfo.QuemCad));
         }
         catch
         {
@@ -100,30 +116,14 @@ public partial class DBProTipoBaixa
         try
         {
             if (!DBNull.Value.Equals(getValue(DBProTipoBaixaDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBProTipoBaixaDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBProTipoBaixaDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBProTipoBaixaDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBProTipoBaixaDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -147,7 +147,7 @@ public partial class DBProTipoBaixa
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

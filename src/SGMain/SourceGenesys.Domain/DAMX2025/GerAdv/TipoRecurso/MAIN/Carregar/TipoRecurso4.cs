@@ -54,8 +54,24 @@ public partial class DBTipoRecurso
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBTipoRecursoDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBTipoRecursoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBTipoRecursoDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.Area));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBTipoRecurso
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoRecursoDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.Justica));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBTipoRecurso
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoRecursoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBTipoRecurso
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoRecursoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBTipoRecursoDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBTipoRecurso
         try
         {
             if (!DBNull.Value.Equals(getValue(DBTipoRecursoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBTipoRecursoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBTipoRecursoDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBTipoRecursoDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBTipoRecursoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBTipoRecurso
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -54,8 +54,16 @@ public partial class DBGUTMatriz
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBGUTMatrizDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGUTMatrizDicInfo.GUTTipo)))
-                m_FGUTTipo = Convert.ToInt32(getValue(DBGUTMatrizDicInfo.GUTTipo));
+                FGUTTipo = Convert.ToInt32(getValue(DBGUTMatrizDicInfo.GUTTipo));
         }
         catch
         {
@@ -64,22 +72,14 @@ public partial class DBGUTMatriz
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTMatrizDicInfo.Valor)))
-                m_FValor = Convert.ToInt32(getValue(DBGUTMatrizDicInfo.Valor));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBGUTMatrizDicInfo.Descricao)?.ToString() ?? string.Empty;
+                FValor = Convert.ToInt32(getValue(DBGUTMatrizDicInfo.Valor));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -103,7 +103,7 @@ public partial class DBGUTMatriz
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

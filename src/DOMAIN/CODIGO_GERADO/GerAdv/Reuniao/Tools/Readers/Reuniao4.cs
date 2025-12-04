@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoReader
+public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory, IConnectionService connection) : IReuniaoReader
 {
     private readonly IFReuniaoFactory _reuniaoFactory = reuniaoFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("renCodigo, renData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ReuniaoResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBReuniao.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ReuniaoResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("renCodigo, renData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ReuniaoResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBReuniao.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ReuniaoResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ReuniaoResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,13 +48,13 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
         return result;
     }
 
-    public async Task<ReuniaoResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ReuniaoResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _reuniaoFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Reuniao?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Reuniao?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _reuniaoFactory.CreateFromIdAsync(id, oCnn);
         var reuniao = new Models.Reuniao
@@ -56,30 +62,41 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData3))
         {
-            reuniao.HoraInicial = dbRec.FHoraInicial;
-            reuniao.HoraInicial_date = XHoraInicial;
+            reuniao.Data = XData3.ToString("dd/MM/yyyy");
+            reuniao.Data_date = XData3;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))
+        if (DateTime.TryParse(dbRec.FHoraInicial?.ToString(), out DateTime XHoraInicial6))
         {
-            reuniao.HoraSaida = dbRec.FHoraSaida;
-            reuniao.HoraSaida_date = XHoraSaida;
+            reuniao.HoraInicial = XHoraInicial6.ToString("dd/MM/yyyy");
+            reuniao.HoraInicial_date = XHoraInicial6;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraRetorno, out DateTime XHoraRetorno))
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal7))
         {
-            reuniao.HoraRetorno = dbRec.FHoraRetorno;
-            reuniao.HoraRetorno_date = XHoraRetorno;
+            reuniao.HoraFinal = XHoraFinal7.ToString("HH:mm");
+            reuniao.HoraFinal_date = XHoraFinal7;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraSaida?.ToString(), out DateTime XHoraSaida9))
+        {
+            reuniao.HoraSaida = XHoraSaida9.ToString("dd/MM/yyyy");
+            reuniao.HoraSaida_date = XHoraSaida9;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraRetorno?.ToString(), out DateTime XHoraRetorno10))
+        {
+            reuniao.HoraRetorno = XHoraRetorno10.ToString("dd/MM/yyyy");
+            reuniao.HoraRetorno_date = XHoraRetorno10;
         }
 
         return reuniao;
@@ -108,30 +125,41 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData3))
         {
-            reuniao.HoraInicial = dbRec.FHoraInicial;
-            reuniao.HoraInicial_date = XHoraInicial;
+            reuniao.Data = XData3.ToString("dd/MM/yyyy");
+            reuniao.Data_date = XData3;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))
+        if (DateTime.TryParse(dbRec.FHoraInicial?.ToString(), out DateTime XHoraInicial6))
         {
-            reuniao.HoraSaida = dbRec.FHoraSaida;
-            reuniao.HoraSaida_date = XHoraSaida;
+            reuniao.HoraInicial = XHoraInicial6.ToString("dd/MM/yyyy");
+            reuniao.HoraInicial_date = XHoraInicial6;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraRetorno, out DateTime XHoraRetorno))
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal7))
         {
-            reuniao.HoraRetorno = dbRec.FHoraRetorno;
-            reuniao.HoraRetorno_date = XHoraRetorno;
+            reuniao.HoraFinal = XHoraFinal7.ToString("HH:mm");
+            reuniao.HoraFinal_date = XHoraFinal7;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraSaida?.ToString(), out DateTime XHoraSaida9))
+        {
+            reuniao.HoraSaida = XHoraSaida9.ToString("dd/MM/yyyy");
+            reuniao.HoraSaida_date = XHoraSaida9;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraRetorno?.ToString(), out DateTime XHoraRetorno10))
+        {
+            reuniao.HoraRetorno = XHoraRetorno10.ToString("dd/MM/yyyy");
+            reuniao.HoraRetorno_date = XHoraRetorno10;
         }
 
         return reuniao;
@@ -149,30 +177,41 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData3))
         {
-            reuniao.HoraInicial = dbRec.FHoraInicial;
-            reuniao.HoraInicial_date = XHoraInicial;
+            reuniao.Data = XData3.ToString("dd/MM/yyyy");
+            reuniao.Data_date = XData3;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))
+        if (DateTime.TryParse(dbRec.FHoraInicial?.ToString(), out DateTime XHoraInicial6))
         {
-            reuniao.HoraSaida = dbRec.FHoraSaida;
-            reuniao.HoraSaida_date = XHoraSaida;
+            reuniao.HoraInicial = XHoraInicial6.ToString("dd/MM/yyyy");
+            reuniao.HoraInicial_date = XHoraInicial6;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraRetorno, out DateTime XHoraRetorno))
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal7))
         {
-            reuniao.HoraRetorno = dbRec.FHoraRetorno;
-            reuniao.HoraRetorno_date = XHoraRetorno;
+            reuniao.HoraFinal = XHoraFinal7.ToString("HH:mm");
+            reuniao.HoraFinal_date = XHoraFinal7;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraSaida?.ToString(), out DateTime XHoraSaida9))
+        {
+            reuniao.HoraSaida = XHoraSaida9.ToString("dd/MM/yyyy");
+            reuniao.HoraSaida_date = XHoraSaida9;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraRetorno?.ToString(), out DateTime XHoraRetorno10))
+        {
+            reuniao.HoraRetorno = XHoraRetorno10.ToString("dd/MM/yyyy");
+            reuniao.HoraRetorno_date = XHoraRetorno10;
         }
 
         return reuniao;
@@ -190,30 +229,41 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData3))
         {
-            reuniao.HoraInicial = dbRec.FHoraInicial;
-            reuniao.HoraInicial_date = XHoraInicial;
+            reuniao.Data = XData3.ToString("dd/MM/yyyy");
+            reuniao.Data_date = XData3;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))
+        if (DateTime.TryParse(dbRec.FHoraInicial?.ToString(), out DateTime XHoraInicial6))
         {
-            reuniao.HoraSaida = dbRec.FHoraSaida;
-            reuniao.HoraSaida_date = XHoraSaida;
+            reuniao.HoraInicial = XHoraInicial6.ToString("dd/MM/yyyy");
+            reuniao.HoraInicial_date = XHoraInicial6;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraRetorno, out DateTime XHoraRetorno))
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal7))
         {
-            reuniao.HoraRetorno = dbRec.FHoraRetorno;
-            reuniao.HoraRetorno_date = XHoraRetorno;
+            reuniao.HoraFinal = XHoraFinal7.ToString("HH:mm");
+            reuniao.HoraFinal_date = XHoraFinal7;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraSaida?.ToString(), out DateTime XHoraSaida9))
+        {
+            reuniao.HoraSaida = XHoraSaida9.ToString("dd/MM/yyyy");
+            reuniao.HoraSaida_date = XHoraSaida9;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraRetorno?.ToString(), out DateTime XHoraRetorno10))
+        {
+            reuniao.HoraRetorno = XHoraRetorno10.ToString("dd/MM/yyyy");
+            reuniao.HoraRetorno_date = XHoraRetorno10;
         }
 
         try
@@ -239,30 +289,41 @@ public partial class ReuniaoReader(IFReuniaoFactory reuniaoFactory) : IReuniaoRe
             Id = dbRec.ID,
             Cliente = dbRec.FCliente,
             IDAgenda = dbRec.FIDAgenda,
-            Data = dbRec.FData ?? string.Empty,
             Pauta = dbRec.FPauta ?? string.Empty,
             ATA = dbRec.FATA ?? string.Empty,
-            HoraFinal = dbRec.FHoraFinal ?? string.Empty,
             Externa = dbRec.FExterna,
             PrincipaisDecisoes = dbRec.FPrincipaisDecisoes ?? string.Empty,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FHoraInicial, out DateTime XHoraInicial))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData3))
         {
-            reuniao.HoraInicial = dbRec.FHoraInicial;
-            reuniao.HoraInicial_date = XHoraInicial;
+            reuniao.Data = XData3.ToString("dd/MM/yyyy");
+            reuniao.Data_date = XData3;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraSaida, out DateTime XHoraSaida))
+        if (DateTime.TryParse(dbRec.FHoraInicial?.ToString(), out DateTime XHoraInicial6))
         {
-            reuniao.HoraSaida = dbRec.FHoraSaida;
-            reuniao.HoraSaida_date = XHoraSaida;
+            reuniao.HoraInicial = XHoraInicial6.ToString("dd/MM/yyyy");
+            reuniao.HoraInicial_date = XHoraInicial6;
         }
 
-        if (DateTime.TryParse(dbRec.FHoraRetorno, out DateTime XHoraRetorno))
+        if (DateTime.TryParse(dbRec.FHoraFinal?.ToString(), out DateTime XHoraFinal7))
         {
-            reuniao.HoraRetorno = dbRec.FHoraRetorno;
-            reuniao.HoraRetorno_date = XHoraRetorno;
+            reuniao.HoraFinal = XHoraFinal7.ToString("HH:mm");
+            reuniao.HoraFinal_date = XHoraFinal7;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraSaida?.ToString(), out DateTime XHoraSaida9))
+        {
+            reuniao.HoraSaida = XHoraSaida9.ToString("dd/MM/yyyy");
+            reuniao.HoraSaida_date = XHoraSaida9;
+        }
+
+        if (DateTime.TryParse(dbRec.FHoraRetorno?.ToString(), out DateTime XHoraRetorno10))
+        {
+            reuniao.HoraRetorno = XHoraRetorno10.ToString("dd/MM/yyyy");
+            reuniao.HoraRetorno_date = XHoraRetorno10;
         }
 
         try

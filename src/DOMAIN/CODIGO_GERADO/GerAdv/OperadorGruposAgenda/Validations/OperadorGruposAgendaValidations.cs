@@ -28,8 +28,6 @@ public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBOperadorGruposAgendaDicInfo.GroNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBOperadorGruposAgendaDicInfo.GroNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBOperadorGruposAgendaDicInfo.GroGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBOperadorGruposAgendaDicInfo.GroGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
@@ -46,11 +46,9 @@ public class OperadorGruposAgendaValidation : IOperadorGruposAgendaValidation
             throw new SGValidationException("SQLWhere é obrigatório.");
         if (reg.Operador == 0)
             throw new SGValidationException("Operador é obrigatório.");
-        if (reg.GUID.IsEmpty())
-            throw new SGValidationException("GUID é obrigatório.");
         // Operador
         {
-            var regOperador = await operadorReader.Read(reg.Operador, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");

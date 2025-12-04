@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { DocumentosApiError } from '../GerAdv_TS/Documentos/Apis/ApiDocumentos';
+import { DocumentosApiError } from '@/app/GerAdv_TS/Documentos/Apis/ApiDocumentos';
 import { DocumentosApi } from '@/app/GerAdv_TS/Documentos/Apis/ApiDocumentos';
-import { FilterDocumentos } from '../GerAdv_TS/Documentos/Filters/Documentos';
-import { IDocumentos } from '../GerAdv_TS/Documentos/Interfaces/interface.Documentos';
-import { DocumentosTestEmpty } from '../GerAdv_TS/Models/Documentos';
+import { FilterDocumentos } from '@/app/GerAdv_TS/Documentos/Filters/Documentos';
+import { IDocumentos } from '@/app/GerAdv_TS/Documentos/Interfaces/interface.Documentos';
+import { DocumentosTestEmpty } from '@/app/GerAdv_TS/Models/Documentos';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('DocumentosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterDocumentos = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('DocumentosApi', () => {
   describe('addAndUpdate', () => {
     const mockDocumentos: IDocumentos = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+processo: 0,
+data: '24/04/1975',
+observacao: 'Observação teste'
     };
 
     it('should add new documentos successfully', async () => {
@@ -487,7 +477,7 @@ describe('DocumentosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterDocumentos = { funcionario: 1 };
+      const mockFilter: FilterDocumentos = { : 1 };
       
       const result = documentosApi.useFilter(mockFilter);
       

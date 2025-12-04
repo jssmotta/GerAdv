@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITipoContatoCRMWriter
 {
     Task<FTipoContatoCRM> WriteAsync(Models.TipoContatoCRM tipocontatocrm, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoContatoCRMWriter(IFTipoContatoCRMFactory tipocontatocrmFactory) : ITipoContatoCRMWriter
 {
     private readonly IFTipoContatoCRMFactory _tipocontatocrmFactory = tipocontatocrmFactory ?? throw new ArgumentNullException(nameof(tipocontatocrmFactory));
-    public virtual async Task Delete(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TipoContatoCRMResponse tipocontatocrm, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipocontatocrmFactory.DeleteAsync(operadorId, tipocontatocrm.Id, oCnn);
     }
@@ -24,7 +24,8 @@ public class TipoContatoCRMWriter(IFTipoContatoCRMFactory tipocontatocrmFactory)
     {
         using var dbRec = await (tipocontatocrm.Id.IsEmptyIDNumber() ? _tipocontatocrmFactory.CreateAsync() : _tipocontatocrmFactory.CreateFromIdAsync(tipocontatocrm.Id, oCnn));
         dbRec.FNome = tipocontatocrm.Nome;
-        dbRec.FGUID = tipocontatocrm.GUID;
+        dbRec.FBold = tipocontatocrm.Bold;
+        dbRec.FGuid = tipocontatocrm.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { ProDespesasGridAdapter } from '@/app/GerAdv_TS/ProDespesas/Adapter/ProDespesasGridAdapter';
 import ProDespesasGridContainer from '@/app/GerAdv_TS/ProDespesas/Components/ProDespesasGridContainer';
+
 const ProDespesasPage: React.FC = () => {
-  const ProDespesasGrid = new ProDespesasGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Pro Despesas' />
-    <ProDespesasGridContainer grid={ProDespesasGrid} />
-  </PageLayout>
-);
+    const ProDespesasGrid = new ProDespesasGridAdapter();
+
+    return (
+        <PageLayout>            
+            <ProDespesasGridContainer grid={ProDespesasGrid} />
+        </PageLayout>
+    );
 };
+
 export default ProDespesasPage;

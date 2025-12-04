@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IHorasTrabWriter
 {
     Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWriter
 {
     private readonly IFHorasTrabFactory _horastrabFactory = horastrabFactory ?? throw new ArgumentNullException(nameof(horastrabFactory));
-    public virtual async Task Delete(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(HorasTrabResponse horastrab, int operadorId, MsiSqlConnection? oCnn)
     {
         await _horastrabFactory.DeleteAsync(operadorId, horastrab.Id, oCnn);
     }
@@ -23,11 +23,14 @@ public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWr
     public virtual async Task<FHorasTrab> WriteAsync(Models.HorasTrab horastrab, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (horastrab.Id.IsEmptyIDNumber() ? _horastrabFactory.CreateAsync() : _horastrabFactory.CreateFromIdAsync(horastrab.Id, oCnn));
-        dbRec.FGUID = horastrab.GUID;
         dbRec.FIDContatoCRM = horastrab.IDContatoCRM;
         dbRec.FHonorario = horastrab.Honorario;
         dbRec.FIDAgenda = horastrab.IDAgenda;
-        dbRec.FData = horastrab.Data;
+        if (horastrab.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(horastrab.Data));
+        }
+
         dbRec.FCliente = horastrab.Cliente;
         dbRec.FStatus = horastrab.Status;
         dbRec.FProcesso = horastrab.Processo;
@@ -42,6 +45,7 @@ public class HorasTrabWriter(IFHorasTrabFactory horastrabFactory) : IHorasTrabWr
         dbRec.FAnexoComp = horastrab.AnexoComp;
         dbRec.FAnexoUNC = horastrab.AnexoUNC;
         dbRec.FServico = horastrab.Servico;
+        dbRec.FGuid = horastrab.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

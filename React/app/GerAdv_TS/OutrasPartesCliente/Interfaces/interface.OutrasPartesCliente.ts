@@ -27,6 +27,9 @@ export interface IOutrasPartesCliente {
 	email: string,
 	site: string,
 	class: string,
+	etiqueta: boolean,
+	ani: boolean,
+	bold: boolean,
 }
 
 export interface IOutrasPartesClienteFormProps {

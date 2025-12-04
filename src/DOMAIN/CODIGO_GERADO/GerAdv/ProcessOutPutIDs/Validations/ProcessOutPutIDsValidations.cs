@@ -28,8 +28,6 @@ public class ProcessOutPutIDsValidation : IProcessOutPutIDsValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBProcessOutPutIDsDicInfo.PoiNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBProcessOutPutIDsDicInfo.PoiNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProcessOutPutIDsDicInfo.PoiGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProcessOutPutIDsDicInfo.PoiGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,6 +37,8 @@ public class ProcessOutPutIDsValidation : IProcessOutPutIDsValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

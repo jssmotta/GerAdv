@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { ITipoModeloDocumentoFormProps } from '../../Interfaces/interface.TipoModeloDocumento';
 import { TipoModeloDocumentoService } from '../../Services/TipoModeloDocumento.service';
 import { useTipoModeloDocumentoForm, useValidationsTipoModeloDocumento } from '../../Hooks/hookTipoModeloDocumento';
-import { TipoModeloDocumentoEmpty } from '../../../Models/TipoModeloDocumento';
+import { TipoModeloDocumentoEmpty } from '../../../Models/TipoModeloDocumento'; 
 import { TipoModeloDocumentoForm } from '../Forms/TipoModeloDocumento';
+ 
 
 const TipoModeloDocumentoInc: React.FC<ITipoModeloDocumentoFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const tipomodelodocumentoService = new TipoModeloDocumentoService(
-  new TipoModeloDocumentoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadTipoModeloDocumento } = useTipoModeloDocumentoForm(
-TipoModeloDocumentoEmpty(), 
-tipomodelodocumentoService
-);
-useEffect(() => {
-  loadTipoModeloDocumento(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedTipoModeloDocumento = await tipomodelodocumentoService.saveTipoModeloDocumento(data);
-    if (savedTipoModeloDocumento.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedTipoModeloDocumento);
+  const tipomodelodocumentoService = new TipoModeloDocumentoService(
+    new TipoModeloDocumentoApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadTipoModeloDocumento } = useTipoModeloDocumentoForm(
+    TipoModeloDocumentoEmpty(),
+    tipomodelodocumentoService
+  );
+
+  useEffect(() => {
+    loadTipoModeloDocumento(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedTipoModeloDocumento = await tipomodelodocumentoService.saveTipoModeloDocumento(data);
+
+      if (savedTipoModeloDocumento.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedTipoModeloDocumento);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadTipoModeloDocumento(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <TipoModeloDocumentoForm
+        tipomodelodocumentoData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadTipoModeloDocumento(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<TipoModeloDocumentoForm
-tipomodelodocumentoData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default TipoModeloDocumentoInc;

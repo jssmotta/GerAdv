@@ -36,9 +36,8 @@ public class ProValoresWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProValores(string? Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", int? Processo = 1, int? TipoValorProcesso = 1, string? Indice = "AAAAAAAAAAAAAAAAAA", bool? Ignorar = false, string? Data = "27/05/2022", decimal? ValorOriginal = 1m, decimal? PercMulta = 1m, decimal? ValorMulta = 1m, decimal? PercJuros = 1m, decimal? ValorOriginalCorrigidoIndice = 1m, decimal? ValorMultaCorrigido = 1m, decimal? ValorJurosCorrigido = 1m, decimal? ValorFinal = 1m, string? DataUltimaCorrecao = "24/04/1975")
+    private void SetupMockFProValores(int? Processo = 1, int? TipoValorProcesso = 1, string? Indice = "AAAAAAAAAAAAAAAAAA", bool? Ignorar = false, string? Data = "24/04/1975", decimal? ValorOriginal = 1m, decimal? PercMulta = 1m, decimal? ValorMulta = 1m, decimal? PercJuros = 1m, decimal? ValorOriginalCorrigidoIndice = 1m, decimal? ValorMultaCorrigido = 1m, decimal? ValorJurosCorrigido = 1m, decimal? ValorFinal = 1m, string? DataUltimaCorrecao = "24/04/1975")
     {
-        _mockFProValores.Setup(f => f.FGuid).Returns(Guid ?? string.Empty);
         _mockFProValores.Setup(f => f.FProcesso).Returns(Processo ?? 0);
         _mockFProValores.Setup(f => f.FTipoValorProcesso).Returns(TipoValorProcesso ?? 0);
         _mockFProValores.Setup(f => f.FIndice).Returns(Indice ?? string.Empty);
@@ -92,12 +91,11 @@ public class ProValoresWhereTests : IDisposable
         var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
-        result.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Processo.Should().Be(1);
         result.TipoValorProcesso.Should().Be(1);
         result.Indice.Should().Be("AAAAAAAAAAAAAAAAAA");
         result.Ignorar.Should().Be(false);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.ValorOriginal.Should().Be(1m);
         result.PercMulta.Should().Be(1m);
         result.ValorMulta.Should().Be(1m);
@@ -117,12 +115,11 @@ public class ProValoresWhereTests : IDisposable
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
-        SetupMockFProValores(Guid: null, Processo: null, TipoValorProcesso: null, Indice: null, Ignorar: null, Data: null, ValorOriginal: null, PercMulta: null, ValorMulta: null, PercJuros: null, ValorOriginalCorrigidoIndice: null, ValorMultaCorrigido: null, ValorJurosCorrigido: null, ValorFinal: null, DataUltimaCorrecao: null);
+        SetupMockFProValores(Processo: null, TipoValorProcesso: null, Indice: null, Ignorar: null, Data: null, ValorOriginal: null, PercMulta: null, ValorMulta: null, PercJuros: null, ValorOriginalCorrigidoIndice: null, ValorMultaCorrigido: null, ValorJurosCorrigido: null, ValorFinal: null, DataUltimaCorrecao: null);
         _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
         // Act
         var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
-        result.Guid.Should().Be(string.Empty);
         result.Processo.Should().Be(0);
         result.TipoValorProcesso.Should().Be(0);
         result.Indice.Should().Be(string.Empty);
@@ -247,19 +244,18 @@ public class ProValoresWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProValores(Guid: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Processo: 1, TipoValorProcesso: 1, Indice: "AAAAAAAAAAAAAAAAAA", Ignorar: false, Data: "27/05/2022", ValorOriginal: 1m, PercMulta: 1m, ValorMulta: 1m, PercJuros: 1m, ValorOriginalCorrigidoIndice: 1m, ValorMultaCorrigido: 1m, ValorJurosCorrigido: 1m, ValorFinal: 1m, DataUltimaCorrecao: "24/04/1975");
+        SetupMockFProValores(Processo: 1, TipoValorProcesso: 1, Indice: "AAAAAAAAAAAAAAAAAA", Ignorar: false, Data: "24/04/1975", ValorOriginal: 1m, PercMulta: 1m, ValorMulta: 1m, PercJuros: 1m, ValorOriginalCorrigidoIndice: 1m, ValorMultaCorrigido: 1m, ValorJurosCorrigido: 1m, ValorFinal: 1m, DataUltimaCorrecao: "24/04/1975");
         _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
         // Act
         var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
         // Assert - Verify all properties are correctly mapped
         result.Should().NotBeNull();
         // Basic properties        
-        result.Guid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         result.Processo.Should().Be(1);
         result.TipoValorProcesso.Should().Be(1);
         result.Indice.Should().Be("AAAAAAAAAAAAAAAAAA");
         result.Ignorar.Should().Be(false);
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.ValorOriginal.Should().Be(1m);
         result.PercMulta.Should().Be(1m);
         result.ValorMulta.Should().Be(1m);
@@ -290,32 +286,66 @@ public class ProValoresWhereTests : IDisposable
 
 #region DateTime Tests
     [Fact]
-    public void Read_WithValidDateDataUltimaCorrecaoFields_ShouldParseAndSetDateProperties()
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
     {
         // Arrange
         var where = "Id = @Id";
         var parameters = CreateTestParameters();
         var testDate = "31/12/2024";
+        SetupMockFProValores(Data: testDate);
+        _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
+        // Act
+        var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFProValores(Data: null);
+        _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
+        // Act
+        var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFProValores(Data: dateString);
+        _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
+        // Act
+        var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
+
+    [Fact]
+    public void Read_WithValidDateDataUltimaCorrecaoFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "01/01/2025";
         SetupMockFProValores(DataUltimaCorrecao: testDate);
         _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
         // Act
         var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
-        result.DataUltimaCorrecao.Should().Be("31/12/2024");
-    }
-
-    [Fact]
-    public void Read_WithInvalidDateDataUltimaCorrecaoStrings_ShouldNotSetDateProperties()
-    {
-        // Arrange
-        var where = "Id = @Id";
-        var parameters = CreateTestParameters();
-        SetupMockFProValores(DataUltimaCorrecao: "invalid-date");
-        _mockProValoresFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProValores.Object);
-        // Act
-        var result = _provaloresWhere.Read(where, parameters, _mockConnection.Object);
-        // Assert
-        result.DataUltimaCorrecao.Should().Be("");
+        result.DataUltimaCorrecao.Should().Be("01/01/2025");
     }
 
     [Fact]
@@ -333,10 +363,10 @@ public class ProValoresWhereTests : IDisposable
     }
 
     [Theory]
-    [InlineData("31/12/2024")]
-    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("01/01/2025")]
+    [InlineData("2025/01/02T23:59:59")]
     [InlineData("2000-02-29")] // Leap year
-    [InlineData("2025/01/02T14:30:45.123")]
+    [InlineData("2025/01/03T14:30:45.123")]
     public void Read_WithValidDateDataUltimaCorrecaoFormats_ShouldParseCorrectly(string dateString)
     {
         // Arrange

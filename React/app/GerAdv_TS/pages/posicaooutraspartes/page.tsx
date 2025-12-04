@@ -2,17 +2,19 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 'use client';
-import { PageLayout } from '@/app/components/Cruds/PageLayout';
-import { PageTitle } from '@/app/components/PageTitle';
+import { PageLayout } from '@/app/components/Cruds/PageLayout'; 
+import { PageTitle } from '@/app/components/PageTitle'; 
 import { PosicaoOutrasPartesGridAdapter } from '@/app/GerAdv_TS/PosicaoOutrasPartes/Adapter/PosicaoOutrasPartesGridAdapter';
 import PosicaoOutrasPartesGridContainer from '@/app/GerAdv_TS/PosicaoOutrasPartes/Components/PosicaoOutrasPartesGridContainer';
+
 const PosicaoOutrasPartesPage: React.FC = () => {
-  const PosicaoOutrasPartesGrid = new PosicaoOutrasPartesGridAdapter();
-  return (
-  <PageLayout>
-    <PageTitle title='Posicao Outras Partes' />
-    <PosicaoOutrasPartesGridContainer grid={PosicaoOutrasPartesGrid} />
-  </PageLayout>
-);
+    const PosicaoOutrasPartesGrid = new PosicaoOutrasPartesGridAdapter();
+
+    return (
+        <PageLayout>            
+            <PosicaoOutrasPartesGridContainer grid={PosicaoOutrasPartesGrid} />
+        </PageLayout>
+    );
 };
+
 export default PosicaoOutrasPartesPage;

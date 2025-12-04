@@ -14,6 +14,14 @@ public partial class DBGraph
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBGraph
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,17 +142,17 @@ public partial class DBGraph
 
 #if (!NOTSTORED_Graph)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFTabela || pFldFTabelaId || pFldFImagem || pFldFGUID;
+    private bool HasAnyFieldChanged() => pFldFTabela || pFldFTabelaId || pFldFImagem || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFTabela)
-            updateTool.Fields(DBGraphDicInfo.Tabela, m_FTabela, ETiposCampos.FString);
+            updateTool.Fields(DBGraphDicInfo.Tabela, FTabela, EGenericTypeFields.FString);
         if (pFldFTabelaId)
-            updateTool.Fields(DBGraphDicInfo.TabelaId, m_FTabelaId, ETiposCampos.FNumber);
+            updateTool.Fields(DBGraphDicInfo.TabelaId, FTabelaId, EGenericTypeFields.FNumber);
         if (pFldFImagem)
-            updateTool.Fields(DBGraphDicInfo.Imagem, m_FImagem, ETiposCampos.FByteArray);
-        if (pFldFGUID)
-            updateTool.Fields(DBGraphDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            updateTool.Fields(DBGraphDicInfo.Imagem, FImagem, EGenericTypeFields.FByteArray);
+        if (pFldFGuid)
+            updateTool.Fields(DBGraphDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -156,24 +164,23 @@ public partial class DBGraph
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBGraphDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGraphDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBGraphDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBGraphDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBGraphDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBGraphDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBGraphDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBGraphDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBGraphDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBGraphDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBGraphDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

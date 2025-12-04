@@ -74,15 +74,30 @@ public class ProSucumbenciaWriterTests
         var result = await _prosucumbenciaWriter.WriteAsync(prosucumbencia, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProSucumbencia.Object);
+        _mockFProSucumbencia.VerifySet(x => x.FGuid = prosucumbencia.Guid, Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.FProcesso = prosucumbencia.Processo, Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.FInstancia = prosucumbencia.Instancia, Times.Once);
-        _mockFProSucumbencia.VerifySet(x => x.FData = prosucumbencia.Data, Times.Once);
+        _mockFProSucumbencia.VerifySet(x => x.FData = prosucumbencia.Data.ToString(), Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.FNome = prosucumbencia.Nome, Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.FTipoOrigemSucumbencia = prosucumbencia.TipoOrigemSucumbencia, Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.FValor = prosucumbencia.Valor, Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.FPercentual = prosucumbencia.Percentual, Times.Once);
-        _mockFProSucumbencia.VerifySet(x => x.FGUID = prosucumbencia.GUID, Times.Once);
         _mockFProSucumbencia.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var prosucumbencia = CreateValidProSucumbenciaModel();
+        prosucumbencia.Data = null;
+        var auditorQuem = 123;
+        _mockProSucumbenciaFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProSucumbencia.Object);
+        _mockFProSucumbencia.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _prosucumbenciaWriter.WriteAsync(prosucumbencia, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProSucumbencia.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -125,7 +140,7 @@ public class ProSucumbenciaWriterTests
         var operadorId = 456;
         _mockProSucumbenciaFactory.Setup(x => x.DeleteAsync(operadorId, prosucumbenciaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _prosucumbenciaWriter.Delete(prosucumbenciaResponse, operadorId, _mockConnection.Object);
+        await _prosucumbenciaWriter.DeleteAsync(prosucumbenciaResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProSucumbenciaFactory.Verify(x => x.DeleteAsync(operadorId, prosucumbenciaResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -141,7 +156,7 @@ public class ProSucumbenciaWriterTests
         var operadorId = 111;
         _mockProSucumbenciaFactory.Setup(x => x.DeleteAsync(operadorId, prosucumbenciaResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _prosucumbenciaWriter.Delete(prosucumbenciaResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _prosucumbenciaWriter.DeleteAsync(prosucumbenciaResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -158,7 +173,7 @@ public class ProSucumbenciaWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProSucumbenciaFactory.Setup(x => x.DeleteAsync(operadorId, prosucumbenciaResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _prosucumbenciaWriter.Delete(prosucumbenciaResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _prosucumbenciaWriter.DeleteAsync(prosucumbenciaResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -188,14 +203,14 @@ public class ProSucumbenciaWriterTests
         return new Models.ProSucumbencia
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Processo = 1,
             Instancia = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Nome = "João",
             TipoOrigemSucumbencia = 1,
             Valor = 1m,
-            Percentual = "AAA",
-            GUID = Guid.NewGuid().ToString()
+            Percentual = "AAA"
         };
     }
 #endregion

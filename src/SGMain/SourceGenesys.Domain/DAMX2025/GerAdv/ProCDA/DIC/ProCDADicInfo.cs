@@ -13,8 +13,8 @@ public static partial class DBProCDADicInfo
     public const string Processo = "pcdProcesso"; // LOCALIZACAO 170523
     public const string Nome = "pcdNome"; // LOCALIZACAO 170523
     public const string NroInterno = "pcdNroInterno"; // LOCALIZACAO 170523
-    public const string GUID = "pcdGUID"; // LOCALIZACAO 170523
     public const string Bold = "pcdBold"; // LOCALIZACAO 170523
+    public const string Guid = "pcdGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "pcdQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "pcdDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "pcdQuemAtu"; // LOCALIZACAO 170523
@@ -37,48 +37,16 @@ public static partial class DBProCDADicInfo
 
     public const string PTabelaNome = "ProCDA";
 #region PropriedadesDaTabela
-    public static DBInfoSystem PcdProcesso => new(0, PTabelaNome, CampoCodigo, Processo, "Processo", "Processo", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdNroInterno => new(0, PTabelaNome, CampoCodigo, NroInterno, 255, "NroInterno", "NroInterno", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pcd"
-    }; // DBI 11 
-    public static DBInfoSystem PcdDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "pcd"
-    }; // DBI 11 
-    public static DBInfoSystem PcdDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "pcd"
-    };
-    public static DBInfoSystem PcdVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "pcd"
-    };
+    public static DBInfoSystem PcdProcesso => new(0, PTabelaNome, CampoCodigo, Processo, Processo, Processo, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "pcd");
+    public static DBInfoSystem PcdNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "pcd");
+    public static DBInfoSystem PcdNroInterno => new(0, PTabelaNome, CampoCodigo, NroInterno, 255, NroInterno, NroInterno, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "pcd");
+    public static DBInfoSystem PcdBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "pcd", isRequired: true);
+    public static DBInfoSystem PcdGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "pcd");
+    public static DBInfoSystem PcdQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pcd"); // DBI 11 
+    public static DBInfoSystem PcdDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "pcd");
+    public static DBInfoSystem PcdQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "pcd"); // DBI 11 
+    public static DBInfoSystem PcdDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "pcd");
+    public static DBInfoSystem PcdVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "pcd", isRequired: true);
 
 #endregion
     [Serializable]

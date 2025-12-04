@@ -8,6 +8,7 @@ export interface IProTipoBaixa {
     id: number;
  
 	nome: string,
+	bold: boolean,
 }
 
 export interface IProTipoBaixaFormProps {

@@ -54,8 +54,200 @@ public partial class DBClientesSocios
         // Checkpoint Carregar 
         try
         {
+            FBairro = getValue(DBClientesSociosDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FBairroSocio = getValue(DBClientesSociosDicInfo.BairroSocio)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCargo = getValue(DBClientesSociosDicInfo.Cargo)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBClientesSociosDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEPSocio = getValue(DBClientesSociosDicInfo.CEPSocio)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FClass = getValue(DBClientesSociosDicInfo.Class)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNH = getValue(DBClientesSociosDicInfo.CNH)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNPJ = getValue(DBClientesSociosDicInfo.CNPJ)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCPF = getValue(DBClientesSociosDicInfo.CPF)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBClientesSociosDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBClientesSociosDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEnderecoSocio = getValue(DBClientesSociosDicInfo.EnderecoSocio)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBClientesSociosDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBClientesSociosDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBClientesSociosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FInscEst = getValue(DBClientesSociosDicInfo.InscEst)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBClientesSociosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObs = getValue(DBClientesSociosDicInfo.Obs)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FParticipacao = getValue(DBClientesSociosDicInfo.Participacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FQualificacao = getValue(DBClientesSociosDicInfo.Qualificacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRepresentanteLegal = getValue(DBClientesSociosDicInfo.RepresentanteLegal)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FRG = getValue(DBClientesSociosDicInfo.RG)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBClientesSociosDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSocioEmpresaAdminNome = getValue(DBClientesSociosDicInfo.SocioEmpresaAdminNome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Ani)))
-                m_FAni = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Ani));
+                FAni = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Ani));
         }
         catch
         {
@@ -64,7 +256,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Bold));
         }
         catch
         {
@@ -73,7 +265,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBClientesSociosDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBClientesSociosDicInfo.Cidade));
         }
         catch
         {
@@ -82,7 +274,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.CidadeSocio)))
-                m_FCidadeSocio = Convert.ToInt32(getValue(DBClientesSociosDicInfo.CidadeSocio));
+                FCidadeSocio = Convert.ToInt32(getValue(DBClientesSociosDicInfo.CidadeSocio));
         }
         catch
         {
@@ -91,7 +283,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Cliente)))
-                m_FCliente = Convert.ToInt32(getValue(DBClientesSociosDicInfo.Cliente));
+                FCliente = Convert.ToInt32(getValue(DBClientesSociosDicInfo.Cliente));
         }
         catch
         {
@@ -100,7 +292,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.DataContrato)))
-                m_FDataContrato = Convert.ToDateTime(getValue(DBClientesSociosDicInfo.DataContrato));
+                FDataContrato = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBClientesSociosDicInfo.DataContrato)));
         }
         catch
         {
@@ -127,7 +319,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.DtNasc)))
-                m_FDtNasc = Convert.ToDateTime(getValue(DBClientesSociosDicInfo.DtNasc));
+                FDtNasc = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBClientesSociosDicInfo.DtNasc)));
         }
         catch
         {
@@ -136,7 +328,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Etiqueta));
         }
         catch
         {
@@ -145,7 +337,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Idade)))
-                m_FIdade = Convert.ToInt32(getValue(DBClientesSociosDicInfo.Idade));
+                FIdade = Convert.ToInt32(getValue(DBClientesSociosDicInfo.Idade));
         }
         catch
         {
@@ -154,7 +346,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.IsRepresentanteLegal)))
-                m_FIsRepresentanteLegal = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.IsRepresentanteLegal));
+                FIsRepresentanteLegal = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.IsRepresentanteLegal));
         }
         catch
         {
@@ -163,7 +355,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBClientesSociosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBClientesSociosDicInfo.QuemAtu));
         }
         catch
         {
@@ -172,7 +364,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBClientesSociosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBClientesSociosDicInfo.QuemCad));
         }
         catch
         {
@@ -181,7 +373,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.RGDataExp)))
-                m_FRGDataExp = Convert.ToDateTime(getValue(DBClientesSociosDicInfo.RGDataExp));
+                FRGDataExp = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBClientesSociosDicInfo.RGDataExp)));
         }
         catch
         {
@@ -190,7 +382,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Sexo)))
-                m_FSexo = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Sexo));
+                FSexo = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Sexo));
         }
         catch
         {
@@ -199,7 +391,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.SocioEmpresaAdminSomente)))
-                m_FSocioEmpresaAdminSomente = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.SocioEmpresaAdminSomente));
+                FSocioEmpresaAdminSomente = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.SocioEmpresaAdminSomente));
         }
         catch
         {
@@ -208,7 +400,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.SomenteRepresentante)))
-                m_FSomenteRepresentante = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.SomenteRepresentante));
+                FSomenteRepresentante = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.SomenteRepresentante));
         }
         catch
         {
@@ -217,7 +409,7 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Tipo)))
-                m_FTipo = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Tipo));
+                FTipo = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Tipo));
         }
         catch
         {
@@ -226,206 +418,14 @@ public partial class DBClientesSocios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBClientesSociosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBClientesSociosDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairroSocio = getValue(DBClientesSociosDicInfo.BairroSocio)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCargo = getValue(DBClientesSociosDicInfo.Cargo)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBClientesSociosDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEPSocio = getValue(DBClientesSociosDicInfo.CEPSocio)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FClass = getValue(DBClientesSociosDicInfo.Class)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNH = getValue(DBClientesSociosDicInfo.CNH)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNPJ = getValue(DBClientesSociosDicInfo.CNPJ)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCPF = getValue(DBClientesSociosDicInfo.CPF)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBClientesSociosDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBClientesSociosDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEnderecoSocio = getValue(DBClientesSociosDicInfo.EnderecoSocio)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBClientesSociosDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBClientesSociosDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBClientesSociosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FInscEst = getValue(DBClientesSociosDicInfo.InscEst)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBClientesSociosDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObs = getValue(DBClientesSociosDicInfo.Obs)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FParticipacao = getValue(DBClientesSociosDicInfo.Participacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FQualificacao = getValue(DBClientesSociosDicInfo.Qualificacao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRepresentanteLegal = getValue(DBClientesSociosDicInfo.RepresentanteLegal)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FRG = getValue(DBClientesSociosDicInfo.RG)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBClientesSociosDicInfo.Site)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSocioEmpresaAdminNome = getValue(DBClientesSociosDicInfo.SocioEmpresaAdminNome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBClientesSociosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -449,7 +449,7 @@ public partial class DBClientesSocios
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

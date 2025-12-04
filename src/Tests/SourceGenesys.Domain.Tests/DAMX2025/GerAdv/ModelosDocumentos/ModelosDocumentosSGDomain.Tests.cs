@@ -51,8 +51,21 @@ public class DBModelosDocumentosTests : IDisposable
         dt.Columns.Add("mdcTestemunhas", typeof(string));
         dt.Columns.Add("mdcTipoModeloDocumento", typeof(int));
         dt.Columns.Add("mdcCSS", typeof(string));
-        dt.Columns.Add("mdcGUID", typeof(string));
+        dt.Columns.Add("mdcGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["mdcCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBModelosDocumentos(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -73,7 +86,7 @@ public class DBModelosDocumentosTests : IDisposable
     {
         var instance = new DBModelosDocumentos();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("ModelosDocumentos", instance.ITabelaName());
+        Assert.Equal("ModelosDocumentos", instance.ITableName());
         Assert.Equal("mdc", instance.Prefixo);
     }
 
@@ -91,29 +104,16 @@ public class DBModelosDocumentosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["mdcCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBModelosDocumentos(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("ModelosDocumentos", cadastro.ITabelaName());
-        Assert.Equal("mdcCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("mdcNome", cadastro.ICampoNome());
-        Assert.Equal("mdc", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("ModelosDocumentos", cadastro.ITableName());
+        Assert.Equal("mdcCodigo", cadastro.IFieldId());
+        Assert.Equal("mdcNome", cadastro.IFieldNameDescription());
+        Assert.Equal("mdc", cadastro.IPrefix());
     }
 
 #endregion
@@ -173,9 +173,9 @@ public class DBModelosDocumentosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -368,18 +368,18 @@ public class DBModelosDocumentosTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

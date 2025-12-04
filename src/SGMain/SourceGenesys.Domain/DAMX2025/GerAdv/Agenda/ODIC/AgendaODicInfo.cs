@@ -9,25 +9,29 @@ public partial class DBAgendaODicInfo : IODicInfo
     public ImmutableArray<DBInfoSystem> IListFields() => List;
     public ImmutableArray<DBInfoSystem> IFieldsRaw() => ListWithoutAuditor;
     public ImmutableArray<DBInfoSystem> IPkFields() => ListPk();
-    public ImmutableArray<DBInfoSystem> IPkIndicesFields() => ListPkIndices();
+    public ImmutableArray<DBInfoSystem> IPkIndexFields() => ListPkIndices();
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITabelaNome() => DBAgendaDicInfo.TabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => DBAgendaDicInfo.CampoCodigo;
+    public string IFieldId() => DBAgendaDicInfo.CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => DBAgendaDicInfo.TablePrefix;
+    public string IPrefix() => DBAgendaDicInfo.TablePrefix;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IdIsIdentity() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => DBAgendaDicInfo.CampoNome;
+    public bool IsView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string IFieldNameDescription() => DBAgendaDicInfo.CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string NameSpace() => nameof(GerAdv);
     private static readonly FrozenDictionary<string, DBInfoSystem> _fieldLookup = List.ToFrozenDictionary(f => f.FNome, StringComparer.OrdinalIgnoreCase);
@@ -37,20 +41,20 @@ public partial class DBAgendaODicInfo : IODicInfo
     public static string TCampoNome => DBAgendaDicInfo.CampoNome;
     public static string TTabelaNome => DBAgendaDicInfo.TabelaNome;
     public static string TTablePrefix => DBAgendaDicInfo.TablePrefix;
-    public static ImmutableArray<DBInfoSystem> List => [DBAgendaDicInfo.AgeIDCOB, DBAgendaDicInfo.AgeClienteAvisado, DBAgendaDicInfo.AgeRevisarP2, DBAgendaDicInfo.AgeIDNE, DBAgendaDicInfo.AgeCidade, DBAgendaDicInfo.AgeOculto, DBAgendaDicInfo.AgeCartaPrecatoria, DBAgendaDicInfo.AgeRevisar, DBAgendaDicInfo.AgeHrFinal, DBAgendaDicInfo.AgeAdvogado, DBAgendaDicInfo.AgeEventoGerador, DBAgendaDicInfo.AgeEventoData, DBAgendaDicInfo.AgeFuncionario, DBAgendaDicInfo.AgeData, DBAgendaDicInfo.AgeEventoPrazo, DBAgendaDicInfo.AgeHora, DBAgendaDicInfo.AgeCompromisso, DBAgendaDicInfo.AgeTipoCompromisso, DBAgendaDicInfo.AgeCliente, DBAgendaDicInfo.AgeLiberado, DBAgendaDicInfo.AgeImportante, DBAgendaDicInfo.AgeConcluido, DBAgendaDicInfo.AgeArea, DBAgendaDicInfo.AgeJustica, DBAgendaDicInfo.AgeProcesso, DBAgendaDicInfo.AgeIDHistorico, DBAgendaDicInfo.AgeIDInsProcesso, DBAgendaDicInfo.AgeUsuario, DBAgendaDicInfo.AgePreposto, DBAgendaDicInfo.AgeQuemID, DBAgendaDicInfo.AgeQuemCodigo, DBAgendaDicInfo.AgeGUID, DBAgendaDicInfo.AgeStatus, DBAgendaDicInfo.AgeValor, DBAgendaDicInfo.AgeDecisao, DBAgendaDicInfo.AgeSempre, DBAgendaDicInfo.AgePrazoDias, DBAgendaDicInfo.AgeProtocoloIntegrado, DBAgendaDicInfo.AgeDataInicioPrazo, DBAgendaDicInfo.AgeUsuarioCiente, DBAgendaDicInfo.AgeQuemCad, DBAgendaDicInfo.AgeDtCad, DBAgendaDicInfo.AgeQuemAtu, DBAgendaDicInfo.AgeDtAtu, DBAgendaDicInfo.AgeVisto];
-    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAgendaDicInfo.AgeIDCOB, DBAgendaDicInfo.AgeClienteAvisado, DBAgendaDicInfo.AgeRevisarP2, DBAgendaDicInfo.AgeIDNE, DBAgendaDicInfo.AgeCidade, DBAgendaDicInfo.AgeOculto, DBAgendaDicInfo.AgeCartaPrecatoria, DBAgendaDicInfo.AgeRevisar, DBAgendaDicInfo.AgeHrFinal, DBAgendaDicInfo.AgeAdvogado, DBAgendaDicInfo.AgeEventoGerador, DBAgendaDicInfo.AgeEventoData, DBAgendaDicInfo.AgeFuncionario, DBAgendaDicInfo.AgeData, DBAgendaDicInfo.AgeEventoPrazo, DBAgendaDicInfo.AgeHora, DBAgendaDicInfo.AgeCompromisso, DBAgendaDicInfo.AgeTipoCompromisso, DBAgendaDicInfo.AgeCliente, DBAgendaDicInfo.AgeLiberado, DBAgendaDicInfo.AgeImportante, DBAgendaDicInfo.AgeConcluido, DBAgendaDicInfo.AgeArea, DBAgendaDicInfo.AgeJustica, DBAgendaDicInfo.AgeProcesso, DBAgendaDicInfo.AgeIDHistorico, DBAgendaDicInfo.AgeIDInsProcesso, DBAgendaDicInfo.AgeUsuario, DBAgendaDicInfo.AgePreposto, DBAgendaDicInfo.AgeQuemID, DBAgendaDicInfo.AgeQuemCodigo, DBAgendaDicInfo.AgeGUID, DBAgendaDicInfo.AgeStatus, DBAgendaDicInfo.AgeValor, DBAgendaDicInfo.AgeDecisao, DBAgendaDicInfo.AgeSempre, DBAgendaDicInfo.AgePrazoDias, DBAgendaDicInfo.AgeProtocoloIntegrado, DBAgendaDicInfo.AgeDataInicioPrazo, DBAgendaDicInfo.AgeUsuarioCiente];
+    public static ImmutableArray<DBInfoSystem> List => [DBAgendaDicInfo.AgeIDCOB, DBAgendaDicInfo.AgeClienteAvisado, DBAgendaDicInfo.AgeRevisarP2, DBAgendaDicInfo.AgeIDNE, DBAgendaDicInfo.AgeCidade, DBAgendaDicInfo.AgeOculto, DBAgendaDicInfo.AgeCartaPrecatoria, DBAgendaDicInfo.AgeRevisar, DBAgendaDicInfo.AgeHrFinal, DBAgendaDicInfo.AgeAdvogado, DBAgendaDicInfo.AgeEventoGerador, DBAgendaDicInfo.AgeEventoData, DBAgendaDicInfo.AgeFuncionario, DBAgendaDicInfo.AgeData, DBAgendaDicInfo.AgeEventoPrazo, DBAgendaDicInfo.AgeHora, DBAgendaDicInfo.AgeCompromisso, DBAgendaDicInfo.AgeTipoCompromisso, DBAgendaDicInfo.AgeCliente, DBAgendaDicInfo.AgeLiberado, DBAgendaDicInfo.AgeImportante, DBAgendaDicInfo.AgeConcluido, DBAgendaDicInfo.AgeArea, DBAgendaDicInfo.AgeJustica, DBAgendaDicInfo.AgeProcesso, DBAgendaDicInfo.AgeIDHistorico, DBAgendaDicInfo.AgeIDInsProcesso, DBAgendaDicInfo.AgeUsuario, DBAgendaDicInfo.AgePreposto, DBAgendaDicInfo.AgeQuemID, DBAgendaDicInfo.AgeQuemCodigo, DBAgendaDicInfo.AgeStatus, DBAgendaDicInfo.AgeValor, DBAgendaDicInfo.AgeDecisao, DBAgendaDicInfo.AgeSempre, DBAgendaDicInfo.AgePrazoDias, DBAgendaDicInfo.AgeProtocoloIntegrado, DBAgendaDicInfo.AgeDataInicioPrazo, DBAgendaDicInfo.AgeUsuarioCiente, DBAgendaDicInfo.AgeGuid, DBAgendaDicInfo.AgeQuemCad, DBAgendaDicInfo.AgeDtCad, DBAgendaDicInfo.AgeQuemAtu, DBAgendaDicInfo.AgeDtAtu, DBAgendaDicInfo.AgeVisto];
+    public static ImmutableArray<DBInfoSystem> ListWithoutAuditor => [DBAgendaDicInfo.AgeIDCOB, DBAgendaDicInfo.AgeClienteAvisado, DBAgendaDicInfo.AgeRevisarP2, DBAgendaDicInfo.AgeIDNE, DBAgendaDicInfo.AgeCidade, DBAgendaDicInfo.AgeOculto, DBAgendaDicInfo.AgeCartaPrecatoria, DBAgendaDicInfo.AgeRevisar, DBAgendaDicInfo.AgeHrFinal, DBAgendaDicInfo.AgeAdvogado, DBAgendaDicInfo.AgeEventoGerador, DBAgendaDicInfo.AgeEventoData, DBAgendaDicInfo.AgeFuncionario, DBAgendaDicInfo.AgeData, DBAgendaDicInfo.AgeEventoPrazo, DBAgendaDicInfo.AgeHora, DBAgendaDicInfo.AgeCompromisso, DBAgendaDicInfo.AgeTipoCompromisso, DBAgendaDicInfo.AgeCliente, DBAgendaDicInfo.AgeLiberado, DBAgendaDicInfo.AgeImportante, DBAgendaDicInfo.AgeConcluido, DBAgendaDicInfo.AgeArea, DBAgendaDicInfo.AgeJustica, DBAgendaDicInfo.AgeProcesso, DBAgendaDicInfo.AgeIDHistorico, DBAgendaDicInfo.AgeIDInsProcesso, DBAgendaDicInfo.AgeUsuario, DBAgendaDicInfo.AgePreposto, DBAgendaDicInfo.AgeQuemID, DBAgendaDicInfo.AgeQuemCodigo, DBAgendaDicInfo.AgeStatus, DBAgendaDicInfo.AgeValor, DBAgendaDicInfo.AgeDecisao, DBAgendaDicInfo.AgeSempre, DBAgendaDicInfo.AgePrazoDias, DBAgendaDicInfo.AgeProtocoloIntegrado, DBAgendaDicInfo.AgeDataInicioPrazo, DBAgendaDicInfo.AgeUsuarioCiente, DBAgendaDicInfo.AgeGuid];
 
     public static ImmutableArray<DBInfoSystem> ListPk()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["ageCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBAgendaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 
     public static ImmutableArray<DBInfoSystem> ListPkIndices()
     {
         ImmutableArray<string> campos = ImmutableArray.CreateRange(["ageCodigo"]);
         var result = campos.Where(campo => !campo.Equals(DBAgendaDicInfo.CampoCodigo)).Select(campo => List.FirstOrDefault(t => t.FNome == campo)).Where(item => item != null).Cast<DBInfoSystem>().Distinct().ToList();
-        return result.Count > 0 ? [..result] : ImmutableArray<DBInfoSystem>.Empty;
+        return result.Count > 0 ? [..result] : [];
     }
 }

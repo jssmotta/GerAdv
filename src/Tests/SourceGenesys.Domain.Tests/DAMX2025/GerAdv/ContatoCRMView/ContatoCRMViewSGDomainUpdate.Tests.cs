@@ -22,7 +22,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         var contatocrmview = new DBContatoCRMView();
         // Assert
         contatocrmview.Should().NotBeNull();
-        contatocrmview.ITabelaName().Should().Be("ContatoCRMView");
+        contatocrmview.ITableName().Should().Be("ContatoCRMView");
         contatocrmview.ID.Should().Be(0);
     }
 
@@ -129,7 +129,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FIP);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -143,7 +143,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FIP);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -159,7 +159,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FIP);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -174,7 +174,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         _instance.FIP = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -188,7 +188,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         _instance.FIP = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -202,7 +202,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         _instance.FIP = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -216,7 +216,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FIP);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -242,7 +242,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         _instance.FIP = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -256,7 +256,7 @@ public class DBContatoCRMViewUpdate : IDisposable
         _instance.FIP = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

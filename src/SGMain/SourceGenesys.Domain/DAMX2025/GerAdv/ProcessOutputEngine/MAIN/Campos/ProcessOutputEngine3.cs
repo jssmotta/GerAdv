@@ -7,97 +7,88 @@ public partial class DBProcessOutputEngine
 {
     [XmlIgnore]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool pFldFNome, pFldFDatabase, pFldFTabela, pFldFCampo, pFldFValor, pFldFOutput, pFldFAdministrador, pFldFGUID, pFldFOutputSource, pFldFDisabledItem, pFldFIDModulo, pFldFIsOnlyProcesso, pFldFMyID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected int m_FOutputSource, m_FIDModulo, m_FMyID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected string? m_FNome, m_FDatabase, m_FTabela, m_FCampo, m_FValor, m_FOutput, m_FGUID;
-    [XmlIgnore]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    private protected bool m_FAdministrador, m_FDisabledItem, m_FIsOnlyProcesso;
+    private protected bool pFldFNome, pFldFDatabase, pFldFTabela, pFldFCampo, pFldFValor, pFldFOutput, pFldFAdministrador, pFldFOutputSource, pFldFDisabledItem, pFldFIDModulo, pFldFIsOnlyProcesso, pFldFMyID, pFldFGuid;
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FNome da tabela 'ProcessOutputEngine' deve ter no máximo 255 caracteres.")]
     public virtual string? FNome
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FNome ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFNome = pFldFNome || !(m_FNome ?? string.Empty).Equals(value);
+            pFldFNome = pFldFNome || !(field ?? string.Empty).Equals(value);
             if (pFldFNome)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FNome = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FDatabase da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FDatabase da tabela 'ProcessOutputEngine' deve ter no máximo 255 caracteres.")]
     public virtual string? FDatabase
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDatabase ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFDatabase = pFldFDatabase || !(m_FDatabase ?? string.Empty).Equals(value);
+            pFldFDatabase = pFldFDatabase || !(field ?? string.Empty).Equals(value);
             if (pFldFDatabase)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FDatabase = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FTabela da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FTabela da tabela 'ProcessOutputEngine' deve ter no máximo 255 caracteres.")]
     public virtual string? FTabela
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FTabela ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFTabela = pFldFTabela || !(m_FTabela ?? string.Empty).Equals(value);
+            pFldFTabela = pFldFTabela || !(field ?? string.Empty).Equals(value);
             if (pFldFTabela)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FTabela = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FCampo da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FCampo da tabela 'ProcessOutputEngine' deve ter no máximo 255 caracteres.")]
     public virtual string? FCampo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FCampo ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFCampo = pFldFCampo || !(m_FCampo ?? string.Empty).Equals(value);
+            pFldFCampo = pFldFCampo || !(field ?? string.Empty).Equals(value);
             if (pFldFCampo)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FCampo = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
 
     // Tracking Code: 20250503
-    [StringLength(255, ErrorMessage = "A propriedade FValor da tabela ProcessOutputEngine deve ter no máximo 255 caracteres.")]
+    [StringLength(255, ErrorMessage = "A propriedade FValor da tabela 'ProcessOutputEngine' deve ter no máximo 255 caracteres.")]
     public virtual string? FValor
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FValor ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFValor = pFldFValor || !(m_FValor ?? string.Empty).Equals(value);
+            pFldFValor = pFldFValor || !(field ?? string.Empty).Equals(value);
             if (pFldFValor)
             {
                 var trimmed = value?.Trim() ?? string.Empty;
-                m_FValor = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
+                field = trimmed.Length > 255 ? trimmed.AsSpan(0, 255).ToString() : trimmed;
             }
         }
     }
@@ -106,101 +97,101 @@ public partial class DBProcessOutputEngine
     public virtual string? FOutput
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOutput ?? string.Empty;
+        get => field ?? string.Empty;
         set
         {
-            pFldFOutput = pFldFOutput || !(m_FOutput ?? string.Empty).Equals(value);
+            pFldFOutput = pFldFOutput || !(field ?? string.Empty).Equals(value);
             if (pFldFOutput)
-                m_FOutput = value.trim().FixAbc() ?? string.Empty;
+                field = value.trim().FixAbc() ?? string.Empty;
         }
     }
 
     public virtual bool FAdministrador
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FAdministrador;
+        get => field;
         set
         {
-            pFldFAdministrador = pFldFAdministrador || value != m_FAdministrador;
+            pFldFAdministrador = pFldFAdministrador || value != field;
             if (pFldFAdministrador)
-                m_FAdministrador = value;
-        }
-    }
-
-    // Tracking Code: 20250503
-    [StringLength(100, ErrorMessage = "A propriedade FGUID da tabela ProcessOutputEngine deve ter no máximo 100 caracteres.")]
-    public virtual string? FGUID
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FGUID ?? string.Empty;
-        set
-        {
-            pFldFGUID = pFldFGUID || !(m_FGUID ?? string.Empty).Equals(value);
-            if (pFldFGUID)
-            {
-                var trimmed = value?.Trim() ?? string.Empty;
-                m_FGUID = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
-            }
+                field = value;
         }
     }
 
     public virtual int FOutputSource
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FOutputSource;
+        get => field;
         set
         {
-            pFldFOutputSource = pFldFOutputSource || value != m_FOutputSource;
+            pFldFOutputSource = pFldFOutputSource || value != field;
             if (pFldFOutputSource)
-                m_FOutputSource = value;
+                field = value;
         }
     }
 
     public virtual bool FDisabledItem
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FDisabledItem;
+        get => field;
         set
         {
-            pFldFDisabledItem = pFldFDisabledItem || value != m_FDisabledItem;
+            pFldFDisabledItem = pFldFDisabledItem || value != field;
             if (pFldFDisabledItem)
-                m_FDisabledItem = value;
+                field = value;
         }
     }
 
     public virtual int FIDModulo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIDModulo;
+        get => field;
         set
         {
-            pFldFIDModulo = pFldFIDModulo || value != m_FIDModulo;
+            pFldFIDModulo = pFldFIDModulo || value != field;
             if (pFldFIDModulo)
-                m_FIDModulo = value;
+                field = value;
         }
     }
 
     public virtual bool FIsOnlyProcesso
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FIsOnlyProcesso;
+        get => field;
         set
         {
-            pFldFIsOnlyProcesso = pFldFIsOnlyProcesso || value != m_FIsOnlyProcesso;
+            pFldFIsOnlyProcesso = pFldFIsOnlyProcesso || value != field;
             if (pFldFIsOnlyProcesso)
-                m_FIsOnlyProcesso = value;
+                field = value;
         }
     }
 
     public virtual int FMyID
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => m_FMyID;
+        get => field;
         set
         {
-            pFldFMyID = pFldFMyID || value != m_FMyID;
+            pFldFMyID = pFldFMyID || value != field;
             if (pFldFMyID)
-                m_FMyID = value;
+                field = value;
+        }
+    }
+
+    // Tracking Code: 20250503
+    [StringLength(100, ErrorMessage = "A propriedade FGuid da tabela 'ProcessOutputEngine' deve ter no máximo 100 caracteres.")]
+    public virtual string? FGuid
+    {
+        // Tracking Code: 24102025
+        get;
+        set
+        {
+            pFldFGuid = pFldFGuid || !(field ?? string.Empty).Equals(value);
+            if (pFldFGuid)
+            {
+                var trimmed = value?.Trim() ?? string.Empty;
+                field = trimmed.Length > 100 ? trimmed.AsSpan(0, 100).ToString() : trimmed;
+            }
         }
     }
 
@@ -212,25 +203,29 @@ public partial class DBProcessOutputEngine
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ITabelaName() => PTabelaNome;
+    public string ITableName() => PTabelaNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoCodigo() => CampoCodigo;
+    public string IFieldId() => CampoCodigo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ICampoNome() => CampoNome;
+    public string IFieldNameDescription() => CampoNome;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string IPrefixo() => PTabelaPrefixo;
+    public string IPrefix() => PTabelaPrefixo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ITypeFieldCode() => "int";
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IdIsIdentity() => true;
+    public bool IdIsIdentity() => false;
 #pragma warning disable CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasAuditor() => false;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool HasGuid() => true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasNameId() => true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IIsStoredProcedureOrView() => false;
+    public bool IsStoredProcedureOrView() => false;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsView() => false;
 #pragma warning restore CA1822 // Mark members as static
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

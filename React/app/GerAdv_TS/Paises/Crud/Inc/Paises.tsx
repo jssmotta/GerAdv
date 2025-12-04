@@ -13,66 +13,79 @@ import { NotificationComponent } from '@/app/components/Cruds/NotificationCompon
 import { IPaisesFormProps } from '../../Interfaces/interface.Paises';
 import { PaisesService } from '../../Services/Paises.service';
 import { usePaisesForm, useValidationsPaises } from '../../Hooks/hookPaises';
-import { PaisesEmpty } from '../../../Models/Paises';
+import { PaisesEmpty } from '../../../Models/Paises'; 
 import { PaisesForm } from '../Forms/Paises';
+ 
 
 const PaisesInc: React.FC<IPaisesFormProps> = ({ id, onClose, onError, onSuccess }) => {
   const { systemContext } = useSystemContext();
   const isMobile = useIsMobile();
   const router = useRouter();
-  const paisesService = new PaisesService(
-  new PaisesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-const notificationService = new NotificationService();
-const { data, handleChange, loadPaises } = usePaisesForm(
-PaisesEmpty(), 
-paisesService
-);
-useEffect(() => {
-  loadPaises(id);
-}, [id]);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const savedPaises = await paisesService.savePaises(data);
-    if (savedPaises.id) {
-      notificationService.showNotification('Registro salvo com sucesso!', 'success');
-      const PDelayApiWrite = 333;
-      setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(savedPaises);
+  const paisesService = new PaisesService(
+    new PaisesApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+  );
+  const notificationService = new NotificationService();
+
+  const { data, handleChange, loadPaises } = usePaisesForm(
+    PaisesEmpty(),
+    paisesService
+  );
+
+  useEffect(() => {
+    loadPaises(id);
+  }, [id]);
+   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {      
+
+      const savedPaises = await paisesService.savePaises(data);
+
+      if (savedPaises.id) {
+        notificationService.showNotification('Registro salvo com sucesso!', 'success');      
+
+            const PDelayApiWrite = 333;
+
+            setTimeout(() => {
+               if (onSuccess) {
+               onSuccess(savedPaises);
+            }
+
+        }, PDelayApiWrite);
+      } else {
+         if (onError) {
+          onError();
         }
-      }, PDelayApiWrite);
-    } else {
-    if (onError) {
-      onError();
+        notificationService.showNotification('Error salvando registro.', 'error');
+      }
+    } catch (error) {
+        if (onError) {
+          onError();
+        }
+      notificationService.showNotification('Error salvando registro.', 'error');
     }
-    notificationService.showNotification('Error salvando registro.', 'error');
-  }
-} catch (error) {
-if (onError) {
-  onError();
-}
-notificationService.showNotification('Error salvando registro.', 'error');
-}
+  };
+
+  const handleReload = () => {
+    loadPaises(id);
+  };
+
+  return (
+    <>
+      <NotificationComponent notificationService={notificationService} />
+      <PaisesForm
+        paisesData={data}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onClose={onClose}
+        onError={onError}
+        onReload={handleReload}
+        onSuccess={onSuccess}
+      />
+    </>
+  );
 };
-const handleReload = () => {
-  loadPaises(id);
-};
-return (
-<>
-<NotificationComponent notificationService={notificationService} />
-<PaisesForm
-paisesData={data}
-onChange={handleChange}
-onSubmit={handleSubmit}
-onClose={onClose}
-onError={onError}
-onReload={handleReload}
-onSuccess={onSuccess}
-/>
-</>
-);
-};
+
 export default PaisesInc;

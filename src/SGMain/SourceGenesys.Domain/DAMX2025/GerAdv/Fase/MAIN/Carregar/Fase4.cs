@@ -54,8 +54,24 @@ public partial class DBFase
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBFaseDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBFaseDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBFaseDicInfo.Area)))
-                m_FArea = Convert.ToInt32(getValue(DBFaseDicInfo.Area));
+                FArea = Convert.ToInt32(getValue(DBFaseDicInfo.Area));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBFase
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFaseDicInfo.Justica)))
-                m_FJustica = Convert.ToInt32(getValue(DBFaseDicInfo.Justica));
+                FJustica = Convert.ToInt32(getValue(DBFaseDicInfo.Justica));
         }
         catch
         {
@@ -91,7 +107,7 @@ public partial class DBFase
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFaseDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBFaseDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBFaseDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +116,7 @@ public partial class DBFase
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFaseDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBFaseDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBFaseDicInfo.QuemCad));
         }
         catch
         {
@@ -109,30 +125,14 @@ public partial class DBFase
         try
         {
             if (!DBNull.Value.Equals(getValue(DBFaseDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBFaseDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBFaseDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBFaseDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBFaseDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -156,7 +156,7 @@ public partial class DBFase
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

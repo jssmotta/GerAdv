@@ -20,10 +20,11 @@ public partial class TipoCompromissoWhere(IFTipoCompromissoFactory tipocompromis
         var tipocompromisso = new TipoCompromissoResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Icone = dbRec.FIcone,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Financeiro = dbRec.FFinanceiro,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tipocompromisso;
     }

@@ -38,8 +38,22 @@ public class DBObjetosTests : IDisposable
         dt.Columns.Add("ojtJustica", typeof(int));
         dt.Columns.Add("ojtArea", typeof(int));
         dt.Columns.Add("ojtNome", typeof(string));
-        dt.Columns.Add("ojtGUID", typeof(string));
+        dt.Columns.Add("ojtBold", typeof(string));
+        dt.Columns.Add("ojtGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["ojtCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBObjetos(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -60,7 +74,7 @@ public class DBObjetosTests : IDisposable
     {
         var instance = new DBObjetos();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Objetos", instance.ITabelaName());
+        Assert.Equal("Objetos", instance.ITableName());
         Assert.Equal("ojt", instance.Prefixo);
     }
 
@@ -78,29 +92,16 @@ public class DBObjetosTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["ojtCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBObjetos(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Objetos", cadastro.ITabelaName());
-        Assert.Equal("ojtCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("ojtNome", cadastro.ICampoNome());
-        Assert.Equal("ojt", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Objetos", cadastro.ITableName());
+        Assert.Equal("ojtCodigo", cadastro.IFieldId());
+        Assert.Equal("ojtNome", cadastro.IFieldNameDescription());
+        Assert.Equal("ojt", cadastro.IPrefix());
     }
 
 #endregion
@@ -160,9 +161,9 @@ public class DBObjetosTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -226,18 +227,18 @@ public class DBObjetosTests : IDisposable
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
     {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
     }
 
     [Fact]
-    public void GUID_ShouldRespectMaxLength()
+    public void Guid_ShouldRespectMaxLength()
     {
         var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

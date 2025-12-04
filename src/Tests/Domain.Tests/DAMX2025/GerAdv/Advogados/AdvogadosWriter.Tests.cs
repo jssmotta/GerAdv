@@ -74,6 +74,7 @@ public class AdvogadosWriterTests
         var result = await _advogadosWriter.WriteAsync(advogados, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFAdvogados.Object);
+        _mockFAdvogados.VerifySet(x => x.FGuid = advogados.Guid, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FCargo = advogados.Cargo, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FEMailPro = advogados.EMailPro, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FCPF = It.IsAny<string>(), Times.Once); // CPF é limpo pelo ClearInputCpf()
@@ -109,7 +110,6 @@ public class AdvogadosWriterTests
         _mockFAdvogados.VerifySet(x => x.FParcTop = advogados.ParcTop, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FClass = advogados.Class, Times.Once);
         _mockFAdvogados.VerifySet(x => x.FTop = advogados.Top, Times.Once);
-        _mockFAdvogados.VerifySet(x => x.FGUID = advogados.GUID, Times.Once);
         _mockFAdvogados.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -198,7 +198,7 @@ public class AdvogadosWriterTests
         var operadorId = 456;
         _mockAdvogadosFactory.Setup(x => x.DeleteAsync(operadorId, advogadosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _advogadosWriter.Delete(advogadosResponse, operadorId, _mockConnection.Object);
+        await _advogadosWriter.DeleteAsync(advogadosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockAdvogadosFactory.Verify(x => x.DeleteAsync(operadorId, advogadosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -214,7 +214,7 @@ public class AdvogadosWriterTests
         var operadorId = 111;
         _mockAdvogadosFactory.Setup(x => x.DeleteAsync(operadorId, advogadosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _advogadosWriter.Delete(advogadosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _advogadosWriter.DeleteAsync(advogadosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -231,7 +231,7 @@ public class AdvogadosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockAdvogadosFactory.Setup(x => x.DeleteAsync(operadorId, advogadosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _advogadosWriter.Delete(advogadosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _advogadosWriter.DeleteAsync(advogadosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -261,6 +261,7 @@ public class AdvogadosWriterTests
         return new Models.Advogados
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Cargo = 1,
             EMailPro = "test@email.com",
             CPF = "544.506.718-13",
@@ -295,8 +296,7 @@ public class AdvogadosWriterTests
             ContaBancaria = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             ParcTop = false,
             Class = "A",
-            Top = false,
-            GUID = Guid.NewGuid().ToString()
+            Top = false
         };
     }
 #endregion

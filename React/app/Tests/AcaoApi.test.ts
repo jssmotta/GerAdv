@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { AcaoApiError } from '../GerAdv_TS/Acao/Apis/ApiAcao';
+import { AcaoApiError } from '@/app/GerAdv_TS/Acao/Apis/ApiAcao';
 import { AcaoApi } from '@/app/GerAdv_TS/Acao/Apis/ApiAcao';
-import { FilterAcao } from '../GerAdv_TS/Acao/Filters/Acao';
-import { IAcao } from '../GerAdv_TS/Acao/Interfaces/interface.Acao';
-import { AcaoTestEmpty } from '../GerAdv_TS/Models/Acao';
+import { FilterAcao } from '@/app/GerAdv_TS/Acao/Filters/Acao';
+import { IAcao } from '@/app/GerAdv_TS/Acao/Interfaces/interface.Acao';
+import { AcaoTestEmpty } from '@/app/GerAdv_TS/Models/Acao';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('AcaoApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterAcao = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,10 @@ describe('AcaoApi', () => {
   describe('addAndUpdate', () => {
     const mockAcao: IAcao = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+justica: 0,
+area: 0,
+descricao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     };
 
     it('should add new acao successfully', async () => {
@@ -487,7 +477,7 @@ describe('AcaoApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterAcao = { funcionario: 1 };
+      const mockFilter: FilterAcao = { : 1 };
       
       const result = acaoApi.useFilter(mockFilter);
       

@@ -31,7 +31,7 @@ public partial class DBNENotas
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -138,27 +138,27 @@ public partial class DBNENotas
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
         if (pFldFApenso)
-            updateTool.Fields(DBNENotasDicInfo.Apenso, m_FApenso, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.Apenso, FApenso, EGenericTypeFields.FNumber);
         if (pFldFPrecatoria)
-            updateTool.Fields(DBNENotasDicInfo.Precatoria, m_FPrecatoria, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.Precatoria, FPrecatoria, EGenericTypeFields.FNumber);
         if (pFldFInstancia)
-            updateTool.Fields(DBNENotasDicInfo.Instancia, m_FInstancia, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.Instancia, FInstancia, EGenericTypeFields.FNumber);
         if (pFldFMovPro || updateTool.Insert)
-            updateTool.Fields(DBNENotasDicInfo.MovPro, m_FMovPro, ETiposCampos.FBoolean);
+            updateTool.Fields(DBNENotasDicInfo.MovPro, FMovPro, EGenericTypeFields.FBoolean);
         if (pFldFNome)
-            updateTool.Fields(DBNENotasDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            updateTool.Fields(DBNENotasDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFNotaExpedida || updateTool.Insert)
-            updateTool.Fields(DBNENotasDicInfo.NotaExpedida, m_FNotaExpedida, ETiposCampos.FBoolean);
+            updateTool.Fields(DBNENotasDicInfo.NotaExpedida, FNotaExpedida, EGenericTypeFields.FBoolean);
         if (pFldFRevisada || updateTool.Insert)
-            updateTool.Fields(DBNENotasDicInfo.Revisada, m_FRevisada, ETiposCampos.FBoolean);
+            updateTool.Fields(DBNENotasDicInfo.Revisada, FRevisada, EGenericTypeFields.FBoolean);
         if (pFldFProcesso)
-            updateTool.Fields(DBNENotasDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFPalavraChave)
-            updateTool.Fields(DBNENotasDicInfo.PalavraChave, m_FPalavraChave, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.PalavraChave, FPalavraChave, EGenericTypeFields.FNumber);
         if (pFldFData)
-            updateTool.Fields(DBNENotasDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBNENotasDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFNotaPublicada)
-            updateTool.Fields(DBNENotasDicInfo.NotaPublicada, m_FNotaPublicada, ETiposCampos.FString);
+            updateTool.Fields(DBNENotasDicInfo.NotaPublicada, FNotaPublicada, EGenericTypeFields.FString);
     }
 
 #endif
@@ -170,20 +170,20 @@ public partial class DBNENotas
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBNENotasDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBNENotasDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBNENotasDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBNENotasDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBNENotasDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBNENotasDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBNENotasDicInfo.Visto, false, ETiposCampos.FBoolean);
+            updateTool.Fields(DBNENotasDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBNENotasDicInfo.Visto, false, EGenericTypeFields.FBoolean);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

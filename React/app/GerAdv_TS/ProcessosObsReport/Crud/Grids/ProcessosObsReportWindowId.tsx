@@ -9,54 +9,61 @@ import { ProcessosObsReportService } from '../../Services/ProcessosObsReport.ser
 import { ProcessosObsReportApi } from '../../Apis/ApiProcessosObsReport';
 import ProcessosObsReportWindow from './ProcessosObsReportWindow';
 import {ProcessosObsReportEmpty } from '@/app/GerAdv_TS/Models/ProcessosObsReport';
-interface ProcessosObsReportWindowIdProps {
-  isOpen: boolean;
-  onClose: () => void;
-  id?: number;
-  onSuccess: (registro?: any) => void;
-  onError: () => void;
-}
-const ProcessosObsReportWindowId: React.FC<ProcessosObsReportWindowIdProps> = ({
-  isOpen, 
-  onClose, 
-  id, 
-  onSuccess, 
-  onError, 
-}) => {
-const { systemContext } = useSystemContext();
-const processosobsreportService = useMemo(() => {
-  return new ProcessosObsReportService(
-  new ProcessosObsReportApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
-);
-}, [systemContext?.Uri, systemContext?.Token]);
-const [data, setData] = React.useState<IProcessosObsReport | null>(null);
-useEffect(() => {
-  const fetchData = async () => {
-    if (id !== null && id === 0) {
-      setData(ProcessosObsReportEmpty() as IProcessosObsReport);
-      return;
-    }
-    if (id) {
-      const response = await processosobsreportService.fetchProcessosObsReportById(id??0);
-      setData(response);
-    }
-  };
-  fetchData();
-}, [isOpen]);
 
-if (!isOpen)
-  return null;
-  return (
-  <>
-  {data && (
-    <ProcessosObsReportWindow
-    isOpen={isOpen}
-    onClose={onClose}
-    selectedProcessosObsReport={data}
-    onSuccess={onSuccess}
-    onError={onError} />
-    )}
-  </>
-);
+interface ProcessosObsReportWindowIdProps {
+    isOpen: boolean; 
+    onClose: () => void;    
+    id?: number;
+    onSuccess: (registro?: any) => void;
+    onError: () => void;
+}
+
+const ProcessosObsReportWindowId: React.FC<ProcessosObsReportWindowIdProps> = ({
+    isOpen,
+    onClose,    
+    id,
+    onSuccess,
+    onError,
+}) => {
+
+    const { systemContext } = useSystemContext(); 
+    const processosobsreportService = useMemo(() => {
+        return new ProcessosObsReportService(
+            new ProcessosObsReportApi(systemContext?.Uri ?? '', systemContext?.Token ?? '')
+        );
+    }, [systemContext?.Uri, systemContext?.Token]);
+
+    const [data, setData] = React.useState<IProcessosObsReport | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id !== null && id === 0) {
+                setData(ProcessosObsReportEmpty() as IProcessosObsReport);
+                return;
+            }
+            if (id) {
+                 const response = await processosobsreportService.fetchProcessosObsReportById(id??0);
+                setData(response);
+            }
+        };
+        fetchData();
+    }, [isOpen]);
+     
+     if (!isOpen)
+        return null;
+
+    return (
+        <>
+            {data && (
+                <ProcessosObsReportWindow 
+                    isOpen={isOpen}
+                    onClose={onClose}                    
+                    selectedProcessosObsReport={data} 
+                    onSuccess={onSuccess} 
+                    onError={onError} />
+            )}
+        </>
+    );
 };
+
 export default ProcessosObsReportWindowId;

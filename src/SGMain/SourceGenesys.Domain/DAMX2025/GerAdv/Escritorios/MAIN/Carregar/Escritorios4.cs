@@ -54,8 +54,128 @@ public partial class DBEscritorios
         // Checkpoint Carregar 
         try
         {
+            FAdvResponsavel = getValue(DBEscritoriosDicInfo.AdvResponsavel)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FBairro = getValue(DBEscritoriosDicInfo.Bairro)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCEP = getValue(DBEscritoriosDicInfo.CEP)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FCNPJ = getValue(DBEscritoriosDicInfo.CNPJ)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEMail = getValue(DBEscritoriosDicInfo.EMail)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FEndereco = getValue(DBEscritoriosDicInfo.Endereco)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFax = getValue(DBEscritoriosDicInfo.Fax)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FFone = getValue(DBEscritoriosDicInfo.Fone)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBEscritoriosDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FInscEst = getValue(DBEscritoriosDicInfo.InscEst)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBEscritoriosDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOAB = getValue(DBEscritoriosDicInfo.OAB)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FOBS = getValue(DBEscritoriosDicInfo.OBS)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSecretaria = getValue(DBEscritoriosDicInfo.Secretaria)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSite = getValue(DBEscritoriosDicInfo.Site)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Bold)))
-                m_FBold = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Bold));
+                FBold = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Bold));
         }
         catch
         {
@@ -64,7 +184,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Casa)))
-                m_FCasa = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Casa));
+                FCasa = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Casa));
         }
         catch
         {
@@ -73,7 +193,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Cidade)))
-                m_FCidade = Convert.ToInt32(getValue(DBEscritoriosDicInfo.Cidade));
+                FCidade = Convert.ToInt32(getValue(DBEscritoriosDicInfo.Cidade));
         }
         catch
         {
@@ -82,7 +202,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Correspondente)))
-                m_FCorrespondente = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Correspondente));
+                FCorrespondente = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Correspondente));
         }
         catch
         {
@@ -109,7 +229,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Etiqueta)))
-                m_FEtiqueta = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Etiqueta));
+                FEtiqueta = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Etiqueta));
         }
         catch
         {
@@ -118,7 +238,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Parceria)))
-                m_FParceria = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Parceria));
+                FParceria = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Parceria));
         }
         catch
         {
@@ -127,7 +247,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBEscritoriosDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBEscritoriosDicInfo.QuemAtu));
         }
         catch
         {
@@ -136,7 +256,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBEscritoriosDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBEscritoriosDicInfo.QuemCad));
         }
         catch
         {
@@ -145,7 +265,7 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Top));
         }
         catch
         {
@@ -154,134 +274,14 @@ public partial class DBEscritorios
         try
         {
             if (!DBNull.Value.Equals(getValue(DBEscritoriosDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FAdvResponsavel = getValue(DBEscritoriosDicInfo.AdvResponsavel)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FBairro = getValue(DBEscritoriosDicInfo.Bairro)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCEP = getValue(DBEscritoriosDicInfo.CEP)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FCNPJ = getValue(DBEscritoriosDicInfo.CNPJ)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEMail = getValue(DBEscritoriosDicInfo.EMail)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FEndereco = getValue(DBEscritoriosDicInfo.Endereco)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFax = getValue(DBEscritoriosDicInfo.Fax)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FFone = getValue(DBEscritoriosDicInfo.Fone)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBEscritoriosDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FInscEst = getValue(DBEscritoriosDicInfo.InscEst)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBEscritoriosDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOAB = getValue(DBEscritoriosDicInfo.OAB)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FOBS = getValue(DBEscritoriosDicInfo.OBS)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSecretaria = getValue(DBEscritoriosDicInfo.Secretaria)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSite = getValue(DBEscritoriosDicInfo.Site)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBEscritoriosDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -305,7 +305,7 @@ public partial class DBEscritorios
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

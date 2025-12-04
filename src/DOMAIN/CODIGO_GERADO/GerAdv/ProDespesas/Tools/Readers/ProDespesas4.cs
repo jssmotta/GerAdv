@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) : IProDespesasReader
+public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory, IConnectionService connection) : IProDespesasReader
 {
     private readonly IFProDespesasFactory _prodespesasFactory = prodespesasFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("desCodigo, desData", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ProDespesasResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBProDespesas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ProDespesasResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("desCodigo, desData", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ProDespesasResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBProDespesas.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ProDespesasResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ProDespesasResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,23 +48,21 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         return result;
     }
 
-    public async Task<ProDespesasResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ProDespesasResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _prodespesasFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ProDespesas?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.ProDespesas?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _prodespesasFactory.CreateFromIdAsync(id, oCnn);
         var prodespesas = new Models.ProDespesas
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -66,11 +70,18 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
         {
-            prodespesas.DataCorrecao = dbRec.FDataCorrecao;
-            prodespesas.DataCorrecao_date = XDataCorrecao;
+            prodespesas.Data = XData4.ToString("dd/MM/yyyy");
+            prodespesas.Data_date = XData4;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataCorrecao?.ToString(), out DateTime XDataCorrecao8))
+        {
+            prodespesas.DataCorrecao = XDataCorrecao8.ToString("dd/MM/yyyy");
+            prodespesas.DataCorrecao_date = XDataCorrecao8;
         }
 
         return prodespesas;
@@ -97,11 +108,9 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         var prodespesas = new ProDespesasResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -109,11 +118,18 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
         {
-            prodespesas.DataCorrecao = dbRec.FDataCorrecao;
-            prodespesas.DataCorrecao_date = XDataCorrecao;
+            prodespesas.Data = XData4.ToString("dd/MM/yyyy");
+            prodespesas.Data_date = XData4;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataCorrecao?.ToString(), out DateTime XDataCorrecao8))
+        {
+            prodespesas.DataCorrecao = XDataCorrecao8.ToString("dd/MM/yyyy");
+            prodespesas.DataCorrecao_date = XDataCorrecao8;
         }
 
         return prodespesas;
@@ -129,11 +145,9 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         var prodespesas = new ProDespesasResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -141,11 +155,18 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
         {
-            prodespesas.DataCorrecao = dbRec.FDataCorrecao;
-            prodespesas.DataCorrecao_date = XDataCorrecao;
+            prodespesas.Data = XData4.ToString("dd/MM/yyyy");
+            prodespesas.Data_date = XData4;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataCorrecao?.ToString(), out DateTime XDataCorrecao8))
+        {
+            prodespesas.DataCorrecao = XDataCorrecao8.ToString("dd/MM/yyyy");
+            prodespesas.DataCorrecao_date = XDataCorrecao8;
         }
 
         return prodespesas;
@@ -161,11 +182,9 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         var prodespesas = new ProDespesasResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -173,11 +192,18 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
         {
-            prodespesas.DataCorrecao = dbRec.FDataCorrecao;
-            prodespesas.DataCorrecao_date = XDataCorrecao;
+            prodespesas.Data = XData4.ToString("dd/MM/yyyy");
+            prodespesas.Data_date = XData4;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataCorrecao?.ToString(), out DateTime XDataCorrecao8))
+        {
+            prodespesas.DataCorrecao = XDataCorrecao8.ToString("dd/MM/yyyy");
+            prodespesas.DataCorrecao_date = XDataCorrecao8;
         }
 
         try
@@ -201,11 +227,9 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
         var prodespesas = new ProDespesasResponseAll
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             LigacaoID = dbRec.FLigacaoID,
             Cliente = dbRec.FCliente,
             Corrigido = dbRec.FCorrigido,
-            Data = dbRec.FData ?? string.Empty,
             ValorOriginal = dbRec.FValorOriginal,
             Processo = dbRec.FProcesso,
             Quitado = dbRec.FQuitado,
@@ -213,11 +237,18 @@ public partial class ProDespesasReader(IFProDespesasFactory prodespesasFactory) 
             Tipo = dbRec.FTipo,
             Historico = dbRec.FHistorico ?? string.Empty,
             LivroCaixa = dbRec.FLivroCaixa,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDataCorrecao, out DateTime XDataCorrecao))
+        if (DateTime.TryParse(dbRec.FData?.ToString(), out DateTime XData4))
         {
-            prodespesas.DataCorrecao = dbRec.FDataCorrecao;
-            prodespesas.DataCorrecao_date = XDataCorrecao;
+            prodespesas.Data = XData4.ToString("dd/MM/yyyy");
+            prodespesas.Data_date = XData4;
+        }
+
+        if (DateTime.TryParse(dbRec.FDataCorrecao?.ToString(), out DateTime XDataCorrecao8))
+        {
+            prodespesas.DataCorrecao = XDataCorrecao8.ToString("dd/MM/yyyy");
+            prodespesas.DataCorrecao_date = XDataCorrecao8;
         }
 
         try

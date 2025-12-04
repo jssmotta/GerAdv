@@ -54,6 +54,14 @@ public partial class DBGUTAtividadesMatriz
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBGUTAtividadesMatrizDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesMatrizDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBGUTAtividadesMatrizDicInfo.DtAtu));
         }
@@ -73,7 +81,7 @@ public partial class DBGUTAtividadesMatriz
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesMatrizDicInfo.GUTAtividade)))
-                m_FGUTAtividade = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.GUTAtividade));
+                FGUTAtividade = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.GUTAtividade));
         }
         catch
         {
@@ -82,7 +90,7 @@ public partial class DBGUTAtividadesMatriz
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesMatrizDicInfo.GUTMatriz)))
-                m_FGUTMatriz = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.GUTMatriz));
+                FGUTMatriz = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.GUTMatriz));
         }
         catch
         {
@@ -91,7 +99,7 @@ public partial class DBGUTAtividadesMatriz
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesMatrizDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +108,7 @@ public partial class DBGUTAtividadesMatriz
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesMatrizDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGUTAtividadesMatrizDicInfo.QuemCad));
         }
         catch
         {
@@ -109,22 +117,14 @@ public partial class DBGUTAtividadesMatriz
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesMatrizDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGUTAtividadesMatrizDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGUTAtividadesMatrizDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGUTAtividadesMatrizDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -148,7 +148,7 @@ public partial class DBGUTAtividadesMatriz
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

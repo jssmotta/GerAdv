@@ -54,8 +54,40 @@ public partial class DBCidade
         // Checkpoint Carregar 
         try
         {
+            FDDD = getValue(DBCidadeDicInfo.DDD)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBCidadeDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBCidadeDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FSigla = getValue(DBCidadeDicInfo.Sigla)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.Capital)))
-                m_FCapital = Convert.ToBoolean(getValue(DBCidadeDicInfo.Capital));
+                FCapital = Convert.ToBoolean(getValue(DBCidadeDicInfo.Capital));
         }
         catch
         {
@@ -64,7 +96,7 @@ public partial class DBCidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.Comarca)))
-                m_FComarca = Convert.ToBoolean(getValue(DBCidadeDicInfo.Comarca));
+                FComarca = Convert.ToBoolean(getValue(DBCidadeDicInfo.Comarca));
         }
         catch
         {
@@ -91,7 +123,7 @@ public partial class DBCidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBCidadeDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBCidadeDicInfo.QuemAtu));
         }
         catch
         {
@@ -100,7 +132,7 @@ public partial class DBCidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBCidadeDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBCidadeDicInfo.QuemCad));
         }
         catch
         {
@@ -109,7 +141,7 @@ public partial class DBCidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.Top)))
-                m_FTop = Convert.ToBoolean(getValue(DBCidadeDicInfo.Top));
+                FTop = Convert.ToBoolean(getValue(DBCidadeDicInfo.Top));
         }
         catch
         {
@@ -118,7 +150,7 @@ public partial class DBCidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.UF)))
-                m_FUF = Convert.ToInt32(getValue(DBCidadeDicInfo.UF));
+                FUF = Convert.ToInt32(getValue(DBCidadeDicInfo.UF));
         }
         catch
         {
@@ -127,46 +159,14 @@ public partial class DBCidade
         try
         {
             if (!DBNull.Value.Equals(getValue(DBCidadeDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBCidadeDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDDD = getValue(DBCidadeDicInfo.DDD)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBCidadeDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBCidadeDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FSigla = getValue(DBCidadeDicInfo.Sigla)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBCidadeDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -190,7 +190,7 @@ public partial class DBCidade
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

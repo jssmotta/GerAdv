@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { AdvogadosApiError } from '../GerAdv_TS/Advogados/Apis/ApiAdvogados';
+import { AdvogadosApiError } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
 import { AdvogadosApi } from '@/app/GerAdv_TS/Advogados/Apis/ApiAdvogados';
-import { FilterAdvogados } from '../GerAdv_TS/Advogados/Filters/Advogados';
-import { IAdvogados } from '../GerAdv_TS/Advogados/Interfaces/interface.Advogados';
-import { AdvogadosTestEmpty } from '../GerAdv_TS/Models/Advogados';
+import { FilterAdvogados } from '@/app/GerAdv_TS/Advogados/Filters/Advogados';
+import { IAdvogados } from '@/app/GerAdv_TS/Advogados/Interfaces/interface.Advogados';
+import { AdvogadosTestEmpty } from '@/app/GerAdv_TS/Models/Advogados';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('AdvogadosApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterAdvogados = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,42 @@ describe('AdvogadosApi', () => {
   describe('addAndUpdate', () => {
     const mockAdvogados: IAdvogados = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+cargo: 0,
+emailpro: 'test@email.com',
+cpf: '544.506.718-13',
+nome: 'João',
+rg: '12.345.678-9',
+casa: false,
+nomemae: 'João',
+escritorio: 0,
+estagiario: true,
+oab: 'AAAAAAAAAA',
+nomecompleto: 'João',
+endereco: 'Rua das Flores, 123',
+cidade: 0,
+cep: '01234-567',
+sexo: false,
+bairro: 'Centro',
+ctpsserie: 'AAAAAAAA',
+ctps: 'AAAAAAAAAAAAA',
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+comissao: 0,
+dtinicio: '24/04/1975',
+dtfim: '24/04/1975',
+dtnasc: '24/04/1975',
+salario: 1m,
+secretaria: 'AAAAAAAAAAAAAAAAAA',
+textoprocuracao: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+email: 'test@email.com',
+especializacao: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+pasta: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+observacao: 'Observação teste',
+contabancaria: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+parctop: true,
+class: 'A',
+top: false
     };
 
     it('should add new advogados successfully', async () => {
@@ -487,7 +509,7 @@ describe('AdvogadosApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterAdvogados = { funcionario: 1 };
+      const mockFilter: FilterAdvogados = { : 1 };
       
       const result = advogadosApi.useFilter(mockFilter);
       

@@ -36,7 +36,7 @@ public class ContatoCRMViewWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFContatoCRMView(string? Data = "27/05/2022", string? IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    private void SetupMockFContatoCRMView(string? Data = "24/04/1975", string? IP = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     {
         _mockFContatoCRMView.Setup(f => f.FData).Returns(Data ?? string.Empty);
         _mockFContatoCRMView.Setup(f => f.FIP).Returns(IP ?? string.Empty);
@@ -79,7 +79,7 @@ public class ContatoCRMViewWhereTests : IDisposable
         var result = _contatocrmviewWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.IP.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
@@ -208,14 +208,14 @@ public class ContatoCRMViewWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFContatoCRMView(Data: "27/05/2022", IP: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        SetupMockFContatoCRMView(Data: "24/04/1975", IP: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         _mockContatoCRMViewFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContatoCRMView.Object);
         // Act
         var result = _contatocrmviewWhere.Read(where, parameters, _mockConnection.Object);
         // Assert - Verify all properties are correctly mapped
         result.Should().NotBeNull();
         // Basic properties        
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.IP.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
@@ -235,7 +235,55 @@ public class ContatoCRMViewWhereTests : IDisposable
         // Assert
         _mockContatoCRMViewFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBContatoCRMViewDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFContatoCRMView(Data: testDate);
+        _mockContatoCRMViewFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContatoCRMView.Object);
+        // Act
+        var result = _contatocrmviewWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFContatoCRMView(Data: null);
+        _mockContatoCRMViewFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContatoCRMView.Object);
+        // Act
+        var result = _contatocrmviewWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFContatoCRMView(Data: dateString);
+        _mockContatoCRMViewFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFContatoCRMView.Object);
+        // Act
+        var result = _contatocrmviewWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

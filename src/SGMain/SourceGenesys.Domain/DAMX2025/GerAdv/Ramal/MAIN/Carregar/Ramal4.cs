@@ -54,6 +54,22 @@ public partial class DBRamal
         // Checkpoint Carregar 
         try
         {
+            FNome = getValue(DBRamalDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObs = getValue(DBRamalDicInfo.Obs)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBRamalDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBRamal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBRamalDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBRamalDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBRamal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBRamalDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBRamalDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBRamal
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRamalDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBRamalDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBRamalDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObs = getValue(DBRamalDicInfo.Obs)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBRamalDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBRamal
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

@@ -23,12 +23,6 @@ public partial class FOperadoresFactory : IFOperadoresFactory, IDisposable
         return FOperadores.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FOperadores> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FOperadores().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FOperadores> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FOperadoresFactory : IFOperadoresFactory, IDisposable
         return FOperadores.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FOperadores> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FOperadores().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FOperadoresFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

@@ -54,6 +54,22 @@ public partial class DBAtividades
         // Checkpoint Carregar 
         try
         {
+            FDescricao = getValue(DBAtividadesDicInfo.Descricao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FGuid = getValue(DBAtividadesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBAtividadesDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBAtividadesDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAtividadesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBAtividadesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBAtividadesDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAtividadesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBAtividadesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBAtividadesDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBAtividadesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBAtividadesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FDescricao = getValue(DBAtividadesDicInfo.Descricao)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBAtividadesDicInfo.GUID)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBAtividadesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBAtividades
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

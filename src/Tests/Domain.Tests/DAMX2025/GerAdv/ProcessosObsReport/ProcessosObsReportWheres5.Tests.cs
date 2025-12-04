@@ -36,7 +36,7 @@ public class ProcessosObsReportWhereTests : IDisposable
         };
     }
 
-    private void SetupMockFProcessosObsReport(string? Data = "27/05/2022", int? Processo = 1, string? Observacao = "Observação teste", int? Historico = 1)
+    private void SetupMockFProcessosObsReport(string? Data = "24/04/1975", int? Processo = 1, string? Observacao = "Observação teste", int? Historico = 1)
     {
         _mockFProcessosObsReport.Setup(f => f.FData).Returns(Data ?? string.Empty);
         _mockFProcessosObsReport.Setup(f => f.FProcesso).Returns(Processo ?? 0);
@@ -81,7 +81,7 @@ public class ProcessosObsReportWhereTests : IDisposable
         var result = _processosobsreportWhere.Read(where, parameters, _mockConnection.Object);
         // Assert
         result.Should().NotBeNull();
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Processo.Should().Be(1);
         result.Observacao.Should().Be("Observação teste");
         result.Historico.Should().Be(1);
@@ -214,14 +214,14 @@ public class ProcessosObsReportWhereTests : IDisposable
         {
             new SqlParameter("@Id", 123),
         };
-        SetupMockFProcessosObsReport(Data: "27/05/2022", Processo: 1, Observacao: "Observação teste", Historico: 1);
+        SetupMockFProcessosObsReport(Data: "24/04/1975", Processo: 1, Observacao: "Observação teste", Historico: 1);
         _mockProcessosObsReportFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProcessosObsReport.Object);
         // Act
         var result = _processosobsreportWhere.Read(where, parameters, _mockConnection.Object);
         // Assert - Verify all properties are correctly mapped
         result.Should().NotBeNull();
         // Basic properties        
-        result.Data.Should().Be("27/05/2022");
+        result.Data.Should().Be("24/04/1975");
         result.Processo.Should().Be(1);
         result.Observacao.Should().Be("Observação teste");
         result.Historico.Should().Be(1);
@@ -243,7 +243,55 @@ public class ProcessosObsReportWhereTests : IDisposable
         // Assert
         _mockProcessosObsReportFactory.Verify(f => f.CreateFromParameters(It.Is<List<SqlParameter>>(p => p.Count == 1 && p.Any(param => param.ParameterName == $"@{DBProcessosObsReportDicInfo.CampoNome}")), _mockConnection.Object, "", "", where, ""), Times.Once);
     }
+
 #region DateTime Tests
+    [Fact]
+    public void Read_WithValidDateDataFields_ShouldParseAndSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var testDate = "31/12/2024";
+        SetupMockFProcessosObsReport(Data: testDate);
+        _mockProcessosObsReportFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProcessosObsReport.Object);
+        // Act
+        var result = _processosobsreportWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be("31/12/2024");
+    }
+
+    [Fact]
+    public void Read_WithNullDateDataFields_ShouldNotSetDateProperties()
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        SetupMockFProcessosObsReport(Data: null);
+        _mockProcessosObsReportFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProcessosObsReport.Object);
+        // Act
+        var result = _processosobsreportWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(string.Empty);
+    }
+
+    [Theory]
+    [InlineData("31/12/2024")]
+    [InlineData("2025/01/01T23:59:59")]
+    [InlineData("2000-02-29")] // Leap year
+    [InlineData("2025/01/02T14:30:45.123")]
+    public void Read_WithValidDateDataFormats_ShouldParseCorrectly(string dateString)
+    {
+        // Arrange
+        var where = "Id = @Id";
+        var parameters = CreateTestParameters();
+        var expectedDate = DateTime.Parse(dateString);
+        SetupMockFProcessosObsReport(Data: dateString);
+        _mockProcessosObsReportFactory.Setup(f => f.CreateFromParameters(parameters, _mockConnection.Object, "", "", where, "")).Returns(_mockFProcessosObsReport.Object);
+        // Act
+        var result = _processosobsreportWhere.Read(where, parameters, _mockConnection.Object);
+        // Assert
+        result.Data.Should().Be(dateString);
+    }
 #endregion
 #endregion
 }

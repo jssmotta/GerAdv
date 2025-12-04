@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ILigacoesWriter
 {
     Task<FLigacoes> WriteAsync(Models.Ligacoes ligacoes, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
 {
     private readonly IFLigacoesFactory _ligacoesFactory = ligacoesFactory ?? throw new ArgumentNullException(nameof(ligacoesFactory));
-    public virtual async Task Delete(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(LigacoesResponse ligacoes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _ligacoesFactory.DeleteAsync(operadorId, ligacoes.Id, oCnn);
     }
@@ -28,13 +28,23 @@ public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
         dbRec.FCelular = ligacoes.Celular;
         dbRec.FCliente = ligacoes.Cliente;
         dbRec.FContato = ligacoes.Contato;
-        if (ligacoes.DataRealizada != null)
-            dbRec.FDataRealizada = ligacoes.DataRealizada.ToString();
+        if (ligacoes.DataRealizada.NotIsEmpty())
+        {
+            dbRec.FDataRealizada = DateOnly.FromDateTime(Convert.ToDateTime(ligacoes.DataRealizada));
+        }
+
         dbRec.FQuemID = ligacoes.QuemID;
         dbRec.FTelefonista = ligacoes.Telefonista;
-        if (ligacoes.UltimoAviso != null)
-            dbRec.FUltimoAviso = ligacoes.UltimoAviso.ToString();
-        dbRec.FHoraFinal = ligacoes.HoraFinal;
+        if (ligacoes.UltimoAviso.NotIsEmpty())
+        {
+            dbRec.FUltimoAviso = DateOnly.FromDateTime(Convert.ToDateTime(ligacoes.UltimoAviso));
+        }
+
+        if (ligacoes.HoraFinal.NotIsEmpty())
+        {
+            dbRec.FHoraFinal = TimeOnly.FromDateTime(Convert.ToDateTime(ligacoes.HoraFinal));
+        }
+
         dbRec.FNome = ligacoes.Nome;
         dbRec.FQuemCodigo = ligacoes.QuemCodigo;
         dbRec.FSolicitante = ligacoes.Solicitante;
@@ -44,14 +54,23 @@ public class LigacoesWriter(IFLigacoesFactory ligacoesFactory) : ILigacoesWriter
         dbRec.FParticular = ligacoes.Particular;
         dbRec.FRealizada = ligacoes.Realizada;
         dbRec.FStatus = ligacoes.Status;
-        dbRec.FData = ligacoes.Data;
-        dbRec.FHora = ligacoes.Hora;
+        if (ligacoes.Data.NotIsEmpty())
+        {
+            dbRec.FData = DateOnly.FromDateTime(Convert.ToDateTime(ligacoes.Data));
+        }
+
+        if (ligacoes.Hora.NotIsEmpty())
+        {
+            dbRec.FHora = TimeOnly.FromDateTime(Convert.ToDateTime(ligacoes.Hora));
+        }
+
         dbRec.FUrgente = ligacoes.Urgente;
-        dbRec.FGUID = ligacoes.GUID;
         dbRec.FLigarPara = ligacoes.LigarPara;
         dbRec.FProcesso = ligacoes.Processo;
         dbRec.FStartScreen = ligacoes.StartScreen;
         dbRec.FEmotion = ligacoes.Emotion;
+        dbRec.FBold = ligacoes.Bold;
+        dbRec.FGuid = ligacoes.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

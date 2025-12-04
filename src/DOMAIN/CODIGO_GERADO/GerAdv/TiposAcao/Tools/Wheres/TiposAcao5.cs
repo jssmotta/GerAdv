@@ -22,7 +22,8 @@ public partial class TiposAcaoWhere(IFTiposAcaoFactory tiposacaoFactory) : ITipo
             Id = dbRec.ID,
             Nome = dbRec.FNome ?? string.Empty,
             Inativo = dbRec.FInativo,
-            GUID = dbRec.FGUID ?? string.Empty,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return tiposacao;
     }

@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IPosicaoOutrasPartesWriter
 {
     Task<FPosicaoOutrasPartes> WriteAsync(Models.PosicaoOutrasPartes posicaooutraspartes, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PosicaoOutrasPartesWriter(IFPosicaoOutrasPartesFactory posicaooutraspartesFactory) : IPosicaoOutrasPartesWriter
 {
     private readonly IFPosicaoOutrasPartesFactory _posicaooutraspartesFactory = posicaooutraspartesFactory ?? throw new ArgumentNullException(nameof(posicaooutraspartesFactory));
-    public virtual async Task Delete(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(PosicaoOutrasPartesResponse posicaooutraspartes, int operadorId, MsiSqlConnection? oCnn)
     {
         await _posicaooutraspartesFactory.DeleteAsync(operadorId, posicaooutraspartes.Id, oCnn);
     }
@@ -24,7 +24,8 @@ public class PosicaoOutrasPartesWriter(IFPosicaoOutrasPartesFactory posicaooutra
     {
         using var dbRec = await (posicaooutraspartes.Id.IsEmptyIDNumber() ? _posicaooutraspartesFactory.CreateAsync() : _posicaooutraspartesFactory.CreateFromIdAsync(posicaooutraspartes.Id, oCnn));
         dbRec.FDescricao = posicaooutraspartes.Descricao;
-        dbRec.FGUID = posicaooutraspartes.GUID;
+        dbRec.FBold = posicaooutraspartes.Bold;
+        dbRec.FGuid = posicaooutraspartes.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

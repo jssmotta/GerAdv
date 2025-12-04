@@ -54,6 +54,22 @@ public partial class DBRegimeTributacao
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBRegimeTributacaoDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBRegimeTributacaoDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBRegimeTributacaoDicInfo.DtAtu)))
                 m_FDtAtu = Convert.ToDateTime(getValue(DBRegimeTributacaoDicInfo.DtAtu));
         }
@@ -73,7 +89,7 @@ public partial class DBRegimeTributacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRegimeTributacaoDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBRegimeTributacaoDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBRegimeTributacaoDicInfo.QuemAtu));
         }
         catch
         {
@@ -82,7 +98,7 @@ public partial class DBRegimeTributacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRegimeTributacaoDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBRegimeTributacaoDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBRegimeTributacaoDicInfo.QuemCad));
         }
         catch
         {
@@ -91,30 +107,14 @@ public partial class DBRegimeTributacao
         try
         {
             if (!DBNull.Value.Equals(getValue(DBRegimeTributacaoDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBRegimeTributacaoDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBRegimeTributacaoDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBRegimeTributacaoDicInfo.Nome)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBRegimeTributacaoDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -138,7 +138,7 @@ public partial class DBRegimeTributacao
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

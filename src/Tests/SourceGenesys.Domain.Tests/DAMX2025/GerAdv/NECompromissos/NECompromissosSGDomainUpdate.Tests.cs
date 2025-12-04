@@ -22,7 +22,7 @@ public class DBNECompromissosUpdate : IDisposable
         var necompromissos = new DBNECompromissos();
         // Assert
         necompromissos.Should().NotBeNull();
-        necompromissos.ITabelaName().Should().Be("NECompromissos");
+        necompromissos.ITableName().Should().Be("NECompromissos");
         necompromissos.ID.Should().Be(0);
     }
 
@@ -99,7 +99,7 @@ public class DBNECompromissosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FTextoCompromisso);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -113,7 +113,7 @@ public class DBNECompromissosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FTextoCompromisso);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -129,7 +129,7 @@ public class DBNECompromissosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FTextoCompromisso);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -144,7 +144,7 @@ public class DBNECompromissosUpdate : IDisposable
         _instance.FTextoCompromisso = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -158,7 +158,7 @@ public class DBNECompromissosUpdate : IDisposable
         _instance.FTextoCompromisso = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -172,7 +172,7 @@ public class DBNECompromissosUpdate : IDisposable
         _instance.FTextoCompromisso = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -186,7 +186,7 @@ public class DBNECompromissosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FTextoCompromisso);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -212,7 +212,7 @@ public class DBNECompromissosUpdate : IDisposable
         _instance.FTextoCompromisso = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -226,7 +226,7 @@ public class DBNECompromissosUpdate : IDisposable
         _instance.FTextoCompromisso = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 

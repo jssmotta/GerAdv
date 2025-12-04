@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { FornecedoresApiError } from '../GerAdv_TS/Fornecedores/Apis/ApiFornecedores';
+import { FornecedoresApiError } from '@/app/GerAdv_TS/Fornecedores/Apis/ApiFornecedores';
 import { FornecedoresApi } from '@/app/GerAdv_TS/Fornecedores/Apis/ApiFornecedores';
-import { FilterFornecedores } from '../GerAdv_TS/Fornecedores/Filters/Fornecedores';
-import { IFornecedores } from '../GerAdv_TS/Fornecedores/Interfaces/interface.Fornecedores';
-import { FornecedoresTestEmpty } from '../GerAdv_TS/Models/Fornecedores';
+import { FilterFornecedores } from '@/app/GerAdv_TS/Fornecedores/Filters/Fornecedores';
+import { IFornecedores } from '@/app/GerAdv_TS/Fornecedores/Interfaces/interface.Fornecedores';
+import { FornecedoresTestEmpty } from '@/app/GerAdv_TS/Models/Fornecedores';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('FornecedoresApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterFornecedores = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,27 @@ describe('FornecedoresApi', () => {
   describe('addAndUpdate', () => {
     const mockFornecedores: IFornecedores = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+grupo: 0,
+nome: 'João',
+subgrupo: 0,
+tipo: false,
+sexo: true,
+cnpj: '93016944000138',
+inscest: 'AAAAAAAAAAAAA',
+cpf: '544.506.718-13',
+rg: '12.345.678-9',
+endereco: 'Rua das Flores, 123',
+bairro: 'Centro',
+cep: '01234-567',
+cidade: 0,
+fone: '(11) 99999-9999',
+fax: '(11) 88888-9999',
+email: 'test@email.com',
+site: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+obs: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+produtos: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+contatos: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
     };
 
     it('should add new fornecedores successfully', async () => {
@@ -487,7 +494,7 @@ describe('FornecedoresApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterFornecedores = { funcionario: 1 };
+      const mockFilter: FilterFornecedores = { : 1 };
       
       const result = fornecedoresApi.useFilter(mockFilter);
       

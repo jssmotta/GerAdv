@@ -54,14 +54,14 @@ public partial class DBTipoProDesposito
         // Checkpoint Carregar 
         try
         {
-            m_FNome = getValue(DBTipoProDespositoDicInfo.Nome)?.ToString() ?? string.Empty;
+            FNome = getValue(DBTipoProDespositoDicInfo.Nome)?.ToString() ?? string.Empty;
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -85,7 +85,7 @@ public partial class DBTipoProDesposito
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

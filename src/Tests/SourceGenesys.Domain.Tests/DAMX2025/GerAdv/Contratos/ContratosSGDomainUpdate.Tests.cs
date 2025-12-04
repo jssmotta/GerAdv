@@ -22,7 +22,7 @@ public class DBContratosUpdate : IDisposable
         var contratos = new DBContratos();
         // Assert
         contratos.Should().NotBeNull();
-        contratos.ITabelaName().Should().Be("Contratos");
+        contratos.ITableName().Should().Be("Contratos");
         contratos.ID.Should().Be(0);
     }
 
@@ -32,7 +32,6 @@ public class DBContratosUpdate : IDisposable
         // Arrange
         var contratos = new DBContratos
         {
-            FGUID = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FProtestar = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FJuros = "AAAAA",
             FDOCUMENTO = "AAAAAAAAAAAAAAA",
@@ -45,9 +44,9 @@ public class DBContratosUpdate : IDisposable
             FOBS = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FChaveContrato = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             FMulta = "AAAAAAAAAA",
+            FGuid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         };
-        // Assert - All properties should be set contratos.FGUID.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        contratos.FProtestar.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        // Assert - All properties should be set contratos.FProtestar.Should().Be( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         contratos.FJuros.Should().Be("AAAAA");
         contratos.FDOCUMENTO.Should().Be("AAAAAAAAAAAAAAA");
         contratos.FEMail1.Should().Be("menphis@menphis.com.br");
@@ -59,6 +58,7 @@ public class DBContratosUpdate : IDisposable
         contratos.FOBS.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         contratos.FChaveContrato.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         contratos.FMulta.Should().Be("AAAAAAAAAA");
+        contratos.FGuid.Should().Be("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     [Fact]
@@ -67,7 +67,6 @@ public class DBContratosUpdate : IDisposable
         // Arrange
         var contratos = new DBContratos();
         var longString = new string ('X', 300);
-        contratos.FGUID = longString; // MAX: 100
         contratos.FProtestar = longString; // MAX: 50
         contratos.FJuros = longString; // MAX: 5
         contratos.FDOCUMENTO = longString; // MAX: 15
@@ -76,8 +75,8 @@ public class DBContratosUpdate : IDisposable
         contratos.FPessoa3 = longString; // MAX: 100
         contratos.FChaveContrato = longString; // MAX: 50
         contratos.FMulta = longString; // MAX: 10
-        // Assert - All properties should be set contratos.FGUID.Should().HaveLength(100);
-        contratos.FProtestar.Should().HaveLength(50);
+        contratos.FGuid = longString; // MAX: 100
+        // Assert - All properties should be set contratos.FProtestar.Should().HaveLength(50);
         contratos.FJuros.Should().HaveLength(5);
         contratos.FDOCUMENTO.Should().HaveLength(15);
         contratos.FPessoa1.Should().HaveLength(100);
@@ -85,8 +84,25 @@ public class DBContratosUpdate : IDisposable
         contratos.FPessoa3.Should().HaveLength(100);
         contratos.FChaveContrato.Should().HaveLength(50);
         contratos.FMulta.Should().HaveLength(10);
+        contratos.FGuid.Should().HaveLength(100);
     }
 
+#region Testes de Guid
+    [Fact]
+    public void Guid_DefaultValue_ShouldBeEmpty()
+    {
+        Assert.Equal(string.Empty, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_SetValidGuid_ShouldStore()
+    {
+        var guid = Guid.NewGuid().ToString();
+        _instance.FGuid = guid;
+        Assert.Equal(guid, _instance.FGuid);
+    }
+
+#endregion
     [Theory]
     [InlineData(1000.50)]
     [InlineData(0)]
@@ -203,7 +219,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FProtestar);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -217,7 +233,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FProtestar);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -233,7 +249,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FProtestar);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -248,7 +264,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FProtestar = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -262,7 +278,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FProtestar = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -276,7 +292,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FProtestar = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -290,7 +306,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FProtestar);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -316,7 +332,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FProtestar = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -330,7 +346,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FProtestar = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -408,7 +424,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FJuros);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -422,7 +438,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FJuros);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -438,7 +454,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FJuros);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -453,7 +469,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FJuros = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -467,7 +483,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FJuros = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -481,7 +497,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FJuros = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -495,7 +511,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FJuros);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -521,7 +537,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FJuros = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -535,7 +551,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FJuros = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -627,7 +643,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDOCUMENTO);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -641,7 +657,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDOCUMENTO);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -657,7 +673,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FDOCUMENTO);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -672,7 +688,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FDOCUMENTO = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -686,7 +702,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FDOCUMENTO = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -700,7 +716,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FDOCUMENTO = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -714,7 +730,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FDOCUMENTO);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -740,7 +756,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FDOCUMENTO = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -754,7 +770,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FDOCUMENTO = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -832,7 +848,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -846,7 +862,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -862,7 +878,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FEMail1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -877,7 +893,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail1 = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -891,7 +907,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail1 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -905,7 +921,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail1 = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -919,7 +935,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -945,7 +961,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail1 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -959,7 +975,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail1 = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1037,7 +1053,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1051,7 +1067,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1067,7 +1083,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FEMail2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1082,7 +1098,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail2 = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1096,7 +1112,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail2 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1110,7 +1126,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail2 = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1124,7 +1140,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1150,7 +1166,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail2 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1164,7 +1180,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail2 = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1242,7 +1258,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1256,7 +1272,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1272,7 +1288,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FEMail3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1287,7 +1303,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail3 = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1301,7 +1317,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail3 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1315,7 +1331,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail3 = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1329,7 +1345,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FEMail3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1355,7 +1371,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail3 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1369,7 +1385,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FEMail3 = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1447,7 +1463,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1461,7 +1477,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1477,7 +1493,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FPessoa1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1492,7 +1508,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa1 = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1506,7 +1522,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa1 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1520,7 +1536,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa1 = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1534,7 +1550,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa1);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1560,7 +1576,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa1 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1574,7 +1590,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa1 = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1652,7 +1668,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1666,7 +1682,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1682,7 +1698,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FPessoa2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1697,7 +1713,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa2 = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1711,7 +1727,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa2 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1725,7 +1741,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa2 = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1739,7 +1755,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa2);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1765,7 +1781,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa2 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1779,7 +1795,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa2 = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1857,7 +1873,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1871,7 +1887,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -1887,7 +1903,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FPessoa3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1902,7 +1918,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa3 = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1916,7 +1932,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa3 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1930,7 +1946,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa3 = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1944,7 +1960,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FPessoa3);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1970,7 +1986,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa3 = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -1984,7 +2000,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FPessoa3 = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2050,7 +2066,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2064,7 +2080,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -2080,7 +2096,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2095,7 +2111,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FOBS = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2109,7 +2125,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FOBS = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2123,7 +2139,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FOBS = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2137,7 +2153,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FOBS);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2163,7 +2179,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FOBS = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2177,7 +2193,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FOBS = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2255,7 +2271,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FChaveContrato);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2269,7 +2285,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FChaveContrato);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -2285,7 +2301,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FChaveContrato);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2300,7 +2316,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FChaveContrato = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2314,7 +2330,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FChaveContrato = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2328,7 +2344,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FChaveContrato = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2342,7 +2358,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FChaveContrato);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2368,7 +2384,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FChaveContrato = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2382,7 +2398,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FChaveContrato = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2460,7 +2476,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FMulta);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2474,7 +2490,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FMulta);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.False(fieldValue);
     }
 
@@ -2490,7 +2506,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(expectedValue, _instance.FMulta);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2505,7 +2521,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FMulta = value;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2519,7 +2535,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FMulta = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2533,7 +2549,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FMulta = "Second Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2547,7 +2563,7 @@ public class DBContratosUpdate : IDisposable
         // Assert
         Assert.Equal(string.Empty, _instance.FMulta);
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2573,7 +2589,7 @@ public class DBContratosUpdate : IDisposable
         _instance.FMulta = "New Value";
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
@@ -2587,26 +2603,10 @@ public class DBContratosUpdate : IDisposable
         _instance.FMulta = null;
         // Assert
         var fieldValueObj = fieldInfo?.GetValue(_instance);
-        var fieldValue = fieldValueObj is bool b ? b : false;
+        var fieldValue = fieldValueObj is bool b && b;
         Assert.True(fieldValue);
     }
 
-#region Testes de GUID
-    [Fact]
-    public void GUID_DefaultValue_ShouldBeEmpty()
-    {
-        Assert.Equal(string.Empty, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_SetValidGUID_ShouldStore()
-    {
-        var guid = Guid.NewGuid().ToString();
-        _instance.FGUID = guid;
-        Assert.Equal(guid, _instance.FGUID);
-    }
-
-#endregion
     [Fact]
     public void TabelaNome_Property_ShouldReturnCorrectTableName()
     {

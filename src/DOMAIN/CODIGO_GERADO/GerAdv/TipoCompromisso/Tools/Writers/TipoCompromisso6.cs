@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface ITipoCompromissoWriter
 {
     Task<FTipoCompromisso> WriteAsync(Models.TipoCompromisso tipocompromisso, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(TipoCompromissoResponse tipocompromisso, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(TipoCompromissoResponse tipocompromisso, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class TipoCompromissoWriter(IFTipoCompromissoFactory tipocompromissoFactory) : ITipoCompromissoWriter
 {
     private readonly IFTipoCompromissoFactory _tipocompromissoFactory = tipocompromissoFactory ?? throw new ArgumentNullException(nameof(tipocompromissoFactory));
-    public virtual async Task Delete(TipoCompromissoResponse tipocompromisso, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(TipoCompromissoResponse tipocompromisso, int operadorId, MsiSqlConnection? oCnn)
     {
         await _tipocompromissoFactory.DeleteAsync(operadorId, tipocompromisso.Id, oCnn);
     }
@@ -23,10 +23,11 @@ public class TipoCompromissoWriter(IFTipoCompromissoFactory tipocompromissoFacto
     public virtual async Task<FTipoCompromisso> WriteAsync(Models.TipoCompromisso tipocompromisso, int auditorQuem, MsiSqlConnection? oCnn)
     {
         using var dbRec = await (tipocompromisso.Id.IsEmptyIDNumber() ? _tipocompromissoFactory.CreateAsync() : _tipocompromissoFactory.CreateFromIdAsync(tipocompromisso.Id, oCnn));
-        dbRec.FGUID = tipocompromisso.GUID;
         dbRec.FIcone = tipocompromisso.Icone;
         dbRec.FDescricao = tipocompromisso.Descricao;
         dbRec.FFinanceiro = tipocompromisso.Financeiro;
+        dbRec.FBold = tipocompromisso.Bold;
+        dbRec.FGuid = tipocompromisso.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

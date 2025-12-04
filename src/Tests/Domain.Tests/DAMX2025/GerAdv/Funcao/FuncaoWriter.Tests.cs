@@ -118,7 +118,7 @@ public class FuncaoWriterTests
         var operadorId = 456;
         _mockFuncaoFactory.Setup(x => x.DeleteAsync(operadorId, funcaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _funcaoWriter.Delete(funcaoResponse, operadorId, _mockConnection.Object);
+        await _funcaoWriter.DeleteAsync(funcaoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockFuncaoFactory.Verify(x => x.DeleteAsync(operadorId, funcaoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -134,7 +134,7 @@ public class FuncaoWriterTests
         var operadorId = 111;
         _mockFuncaoFactory.Setup(x => x.DeleteAsync(operadorId, funcaoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _funcaoWriter.Delete(funcaoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _funcaoWriter.DeleteAsync(funcaoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -151,7 +151,7 @@ public class FuncaoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockFuncaoFactory.Setup(x => x.DeleteAsync(operadorId, funcaoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _funcaoWriter.Delete(funcaoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _funcaoWriter.DeleteAsync(funcaoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 

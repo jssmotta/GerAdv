@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class ClientesSociosReader(IFClientesSociosFactory clientessociosFactory) : IClientesSociosReader
+public partial class ClientesSociosReader(IFClientesSociosFactory clientessociosFactory, IConnectionService connection) : IClientesSociosReader
 {
     private readonly IFClientesSociosFactory _clientessociosFactory = clientessociosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cscCodigo, cscNome", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<ClientesSociosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBClientesSocios.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<ClientesSociosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("cscCodigo, cscNome", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<ClientesSociosResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBClientesSocios.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<ClientesSociosResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<ClientesSociosResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,20 +48,19 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         return result;
     }
 
-    public async Task<ClientesSociosResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<ClientesSociosResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _clientessociosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.ClientesSocios?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.ClientesSocios?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _clientessociosFactory.CreateFromIdAsync(id, oCnn);
         var clientessocios = new Models.ClientesSocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
-            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -87,23 +92,27 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            clientessocios.DtNasc = dbRec.FDtNasc;
-            clientessocios.DtNasc_date = XDtNasc;
+            clientessocios.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            clientessocios.DtNasc_date = XDtNasc6;
         }
 
-        if (DateTime.TryParse(dbRec.FDataContrato, out DateTime XDataContrato))
+        if (DateTime.TryParse(dbRec.FDataContrato?.ToString(), out DateTime XDataContrato23))
         {
-            clientessocios.DataContrato = dbRec.FDataContrato;
-            clientessocios.DataContrato_date = XDataContrato;
+            clientessocios.DataContrato = XDataContrato23.ToString("dd/MM/yyyy");
+            clientessocios.DataContrato_date = XDataContrato23;
         }
 
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp31))
         {
-            clientessocios.RGDataExp = dbRec.FRGDataExp;
-            clientessocios.RGDataExp_date = XRGDataExp;
+            clientessocios.RGDataExp = XRGDataExp31.ToString("dd/MM/yyyy");
+            clientessocios.RGDataExp_date = XRGDataExp31;
         }
 
         return clientessocios;
@@ -131,7 +140,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
-            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -163,23 +171,27 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            clientessocios.DtNasc = dbRec.FDtNasc;
-            clientessocios.DtNasc_date = XDtNasc;
+            clientessocios.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            clientessocios.DtNasc_date = XDtNasc6;
         }
 
-        if (DateTime.TryParse(dbRec.FDataContrato, out DateTime XDataContrato))
+        if (DateTime.TryParse(dbRec.FDataContrato?.ToString(), out DateTime XDataContrato23))
         {
-            clientessocios.DataContrato = dbRec.FDataContrato;
-            clientessocios.DataContrato_date = XDataContrato;
+            clientessocios.DataContrato = XDataContrato23.ToString("dd/MM/yyyy");
+            clientessocios.DataContrato_date = XDataContrato23;
         }
 
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp31))
         {
-            clientessocios.RGDataExp = dbRec.FRGDataExp;
-            clientessocios.RGDataExp_date = XRGDataExp;
+            clientessocios.RGDataExp = XRGDataExp31.ToString("dd/MM/yyyy");
+            clientessocios.RGDataExp_date = XRGDataExp31;
         }
 
         return clientessocios;
@@ -196,7 +208,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
-            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -228,23 +239,27 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            clientessocios.DtNasc = dbRec.FDtNasc;
-            clientessocios.DtNasc_date = XDtNasc;
+            clientessocios.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            clientessocios.DtNasc_date = XDtNasc6;
         }
 
-        if (DateTime.TryParse(dbRec.FDataContrato, out DateTime XDataContrato))
+        if (DateTime.TryParse(dbRec.FDataContrato?.ToString(), out DateTime XDataContrato23))
         {
-            clientessocios.DataContrato = dbRec.FDataContrato;
-            clientessocios.DataContrato_date = XDataContrato;
+            clientessocios.DataContrato = XDataContrato23.ToString("dd/MM/yyyy");
+            clientessocios.DataContrato_date = XDataContrato23;
         }
 
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp31))
         {
-            clientessocios.RGDataExp = dbRec.FRGDataExp;
-            clientessocios.RGDataExp_date = XRGDataExp;
+            clientessocios.RGDataExp = XRGDataExp31.ToString("dd/MM/yyyy");
+            clientessocios.RGDataExp_date = XRGDataExp31;
         }
 
         return clientessocios;
@@ -261,7 +276,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
-            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -293,23 +307,27 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            clientessocios.DtNasc = dbRec.FDtNasc;
-            clientessocios.DtNasc_date = XDtNasc;
+            clientessocios.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            clientessocios.DtNasc_date = XDtNasc6;
         }
 
-        if (DateTime.TryParse(dbRec.FDataContrato, out DateTime XDataContrato))
+        if (DateTime.TryParse(dbRec.FDataContrato?.ToString(), out DateTime XDataContrato23))
         {
-            clientessocios.DataContrato = dbRec.FDataContrato;
-            clientessocios.DataContrato_date = XDataContrato;
+            clientessocios.DataContrato = XDataContrato23.ToString("dd/MM/yyyy");
+            clientessocios.DataContrato_date = XDataContrato23;
         }
 
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp31))
         {
-            clientessocios.RGDataExp = dbRec.FRGDataExp;
-            clientessocios.RGDataExp_date = XRGDataExp;
+            clientessocios.RGDataExp = XRGDataExp31.ToString("dd/MM/yyyy");
+            clientessocios.RGDataExp_date = XRGDataExp31;
         }
 
         try
@@ -342,7 +360,6 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
         {
             Id = dbRec.ID,
             SomenteRepresentante = dbRec.FSomenteRepresentante,
-            GUID = dbRec.FGUID ?? string.Empty,
             Idade = dbRec.FIdade,
             IsRepresentanteLegal = dbRec.FIsRepresentanteLegal,
             Qualificacao = dbRec.FQualificacao ?? string.Empty,
@@ -374,23 +391,27 @@ public partial class ClientesSociosReader(IFClientesSociosFactory clientessocios
             Tipo = dbRec.FTipo,
             Fax = dbRec.FFax ?? string.Empty,
             Class = dbRec.FClass ?? string.Empty,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc6))
         {
-            clientessocios.DtNasc = dbRec.FDtNasc;
-            clientessocios.DtNasc_date = XDtNasc;
+            clientessocios.DtNasc = XDtNasc6.ToString("dd/MM/yyyy");
+            clientessocios.DtNasc_date = XDtNasc6;
         }
 
-        if (DateTime.TryParse(dbRec.FDataContrato, out DateTime XDataContrato))
+        if (DateTime.TryParse(dbRec.FDataContrato?.ToString(), out DateTime XDataContrato23))
         {
-            clientessocios.DataContrato = dbRec.FDataContrato;
-            clientessocios.DataContrato_date = XDataContrato;
+            clientessocios.DataContrato = XDataContrato23.ToString("dd/MM/yyyy");
+            clientessocios.DataContrato_date = XDataContrato23;
         }
 
-        if (DateTime.TryParse(dbRec.FRGDataExp, out DateTime XRGDataExp))
+        if (DateTime.TryParse(dbRec.FRGDataExp?.ToString(), out DateTime XRGDataExp31))
         {
-            clientessocios.RGDataExp = dbRec.FRGDataExp;
-            clientessocios.RGDataExp_date = XRGDataExp;
+            clientessocios.RGDataExp = XRGDataExp31.ToString("dd/MM/yyyy");
+            clientessocios.RGDataExp_date = XRGDataExp31;
         }
 
         try

@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IPenhoraStatusWriter
 {
     Task<FPenhoraStatus> WriteAsync(Models.PenhoraStatus penhorastatus, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(PenhoraStatusResponse penhorastatus, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(PenhoraStatusResponse penhorastatus, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class PenhoraStatusWriter(IFPenhoraStatusFactory penhorastatusFactory) : IPenhoraStatusWriter
 {
     private readonly IFPenhoraStatusFactory _penhorastatusFactory = penhorastatusFactory ?? throw new ArgumentNullException(nameof(penhorastatusFactory));
-    public virtual async Task Delete(PenhoraStatusResponse penhorastatus, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(PenhoraStatusResponse penhorastatus, int operadorId, MsiSqlConnection? oCnn)
     {
         await _penhorastatusFactory.DeleteAsync(operadorId, penhorastatus.Id, oCnn);
     }
@@ -24,7 +24,7 @@ public class PenhoraStatusWriter(IFPenhoraStatusFactory penhorastatusFactory) : 
     {
         using var dbRec = await (penhorastatus.Id.IsEmptyIDNumber() ? _penhorastatusFactory.CreateAsync() : _penhorastatusFactory.CreateFromIdAsync(penhorastatus.Id, oCnn));
         dbRec.FNome = penhorastatus.Nome;
-        dbRec.FGUID = penhorastatus.GUID;
+        dbRec.FGuid = penhorastatus.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

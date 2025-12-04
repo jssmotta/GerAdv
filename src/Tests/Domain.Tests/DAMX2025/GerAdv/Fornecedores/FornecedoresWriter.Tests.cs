@@ -74,6 +74,7 @@ public class FornecedoresWriterTests
         var result = await _fornecedoresWriter.WriteAsync(fornecedores, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFFornecedores.Object);
+        _mockFFornecedores.VerifySet(x => x.FGuid = fornecedores.Guid, Times.Once);
         _mockFFornecedores.VerifySet(x => x.FGrupo = fornecedores.Grupo, Times.Once);
         _mockFFornecedores.VerifySet(x => x.FNome = fornecedores.Nome, Times.Once);
         _mockFFornecedores.VerifySet(x => x.FSubGrupo = fornecedores.SubGrupo, Times.Once);
@@ -94,7 +95,6 @@ public class FornecedoresWriterTests
         _mockFFornecedores.VerifySet(x => x.FObs = fornecedores.Obs, Times.Once);
         _mockFFornecedores.VerifySet(x => x.FProdutos = fornecedores.Produtos, Times.Once);
         _mockFFornecedores.VerifySet(x => x.FContatos = fornecedores.Contatos, Times.Once);
-        _mockFFornecedores.VerifySet(x => x.FGUID = fornecedores.GUID, Times.Once);
         _mockFFornecedores.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -138,7 +138,7 @@ public class FornecedoresWriterTests
         var operadorId = 456;
         _mockFornecedoresFactory.Setup(x => x.DeleteAsync(operadorId, fornecedoresResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _fornecedoresWriter.Delete(fornecedoresResponse, operadorId, _mockConnection.Object);
+        await _fornecedoresWriter.DeleteAsync(fornecedoresResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockFornecedoresFactory.Verify(x => x.DeleteAsync(operadorId, fornecedoresResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -154,7 +154,7 @@ public class FornecedoresWriterTests
         var operadorId = 111;
         _mockFornecedoresFactory.Setup(x => x.DeleteAsync(operadorId, fornecedoresResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _fornecedoresWriter.Delete(fornecedoresResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _fornecedoresWriter.DeleteAsync(fornecedoresResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -171,7 +171,7 @@ public class FornecedoresWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockFornecedoresFactory.Setup(x => x.DeleteAsync(operadorId, fornecedoresResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _fornecedoresWriter.Delete(fornecedoresResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _fornecedoresWriter.DeleteAsync(fornecedoresResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -201,6 +201,7 @@ public class FornecedoresWriterTests
         return new Models.Fornecedores
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Grupo = 1,
             Nome = "João",
             SubGrupo = 1,
@@ -220,8 +221,7 @@ public class FornecedoresWriterTests
             Site = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Obs = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
             Produtos = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            Contatos = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
-            GUID = Guid.NewGuid().ToString()
+            Contatos = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
         };
     }
 #endregion

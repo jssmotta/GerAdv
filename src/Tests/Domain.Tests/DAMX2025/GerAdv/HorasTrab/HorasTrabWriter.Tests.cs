@@ -74,10 +74,11 @@ public class HorasTrabWriterTests
         var result = await _horastrabWriter.WriteAsync(horastrab, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFHorasTrab.Object);
+        _mockFHorasTrab.VerifySet(x => x.FGuid = horastrab.Guid, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FIDContatoCRM = horastrab.IDContatoCRM, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FHonorario = horastrab.Honorario, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FIDAgenda = horastrab.IDAgenda, Times.Once);
-        _mockFHorasTrab.VerifySet(x => x.FData = horastrab.Data, Times.Once);
+        _mockFHorasTrab.VerifySet(x => x.FData = horastrab.Data.ToString(), Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FCliente = horastrab.Cliente, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FStatus = horastrab.Status, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FProcesso = horastrab.Processo, Times.Once);
@@ -92,8 +93,22 @@ public class HorasTrabWriterTests
         _mockFHorasTrab.VerifySet(x => x.FAnexoComp = horastrab.AnexoComp, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FAnexoUNC = horastrab.AnexoUNC, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.FServico = horastrab.Servico, Times.Once);
-        _mockFHorasTrab.VerifySet(x => x.FGUID = horastrab.GUID, Times.Once);
         _mockFHorasTrab.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var horastrab = CreateValidHorasTrabModel();
+        horastrab.Data = null;
+        var auditorQuem = 123;
+        _mockHorasTrabFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFHorasTrab.Object);
+        _mockFHorasTrab.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _horastrabWriter.WriteAsync(horastrab, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFHorasTrab.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -136,7 +151,7 @@ public class HorasTrabWriterTests
         var operadorId = 456;
         _mockHorasTrabFactory.Setup(x => x.DeleteAsync(operadorId, horastrabResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _horastrabWriter.Delete(horastrabResponse, operadorId, _mockConnection.Object);
+        await _horastrabWriter.DeleteAsync(horastrabResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockHorasTrabFactory.Verify(x => x.DeleteAsync(operadorId, horastrabResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -152,7 +167,7 @@ public class HorasTrabWriterTests
         var operadorId = 111;
         _mockHorasTrabFactory.Setup(x => x.DeleteAsync(operadorId, horastrabResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _horastrabWriter.Delete(horastrabResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _horastrabWriter.DeleteAsync(horastrabResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -169,7 +184,7 @@ public class HorasTrabWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockHorasTrabFactory.Setup(x => x.DeleteAsync(operadorId, horastrabResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _horastrabWriter.Delete(horastrabResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _horastrabWriter.DeleteAsync(horastrabResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -199,10 +214,11 @@ public class HorasTrabWriterTests
         return new Models.HorasTrab
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             IDContatoCRM = 1,
             Honorario = false,
             IDAgenda = 1,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Cliente = 1,
             Status = 1,
             Processo = 1,
@@ -216,8 +232,7 @@ public class HorasTrabWriterTests
             Anexo = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             AnexoComp = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             AnexoUNC = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            Servico = 1,
-            GUID = Guid.NewGuid().ToString()
+            Servico = 1
         };
     }
 #endregion

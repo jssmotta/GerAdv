@@ -20,11 +20,16 @@ public partial class DocumentosWhere(IFDocumentosFactory documentosFactory) : ID
         var documentos = new DocumentosResponse
         {
             Id = dbRec.ID,
-            GUID = dbRec.FGUID ?? string.Empty,
             Processo = dbRec.FProcesso,
-            Data = dbRec.FData ?? string.Empty,
             Observacao = dbRec.FObservacao ?? string.Empty,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
+        if (DateTime.TryParse(dbRec.FData.ToString(), out DateTime XData))
+        {
+            documentos.Data = XData.ToString("dd/MM/yyyy");
+            documentos.Data_date = XData;
+        }
+
         return documentos;
     }
 }

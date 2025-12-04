@@ -36,8 +36,6 @@ public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
             throw new SGValidationException($"Descricao deve ter no máximo {DBOperadorEMailPopupDicInfo.OepDescricao.FTamanho} caracteres.");
         if (reg.Usuario != null && reg.Usuario.Length > DBOperadorEMailPopupDicInfo.OepUsuario.FTamanho)
             throw new SGValidationException($"Usuario deve ter no máximo {DBOperadorEMailPopupDicInfo.OepUsuario.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBOperadorEMailPopupDicInfo.OepGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBOperadorEMailPopupDicInfo.OepGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -47,13 +45,15 @@ public class OperadorEMailPopupValidation : IOperadorEMailPopupValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
         // Operador
         if (!reg.Operador.IsEmptyIDNumber())
         {
-            var regOperador = await operadorReader.Read(reg.Operador, oCnn);
+            var regOperador = await operadorReader.ReadAsync(reg.Operador, oCnn);
             if (regOperador == null || regOperador.Id != reg.Operador)
             {
                 throw new SGValidationException($"Operador não encontrado ({regOperador?.Id}).");

@@ -2,37 +2,43 @@
 // copyright © 2000-2025 Menphis - Sistemas Inteligentes
 // This file is part of the Source Genesys project                     
 namespace MenphisSI.GerAdv.Readers;
-public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnderecosReader
+public partial class EnderecosReader(IFEnderecosFactory enderecosFactory, IConnectionService connection) : IEnderecosReader
 {
     private readonly IFEnderecosFactory _enderecosFactory = enderecosFactory ?? throw new ArgumentNullException();
-    public async Task<IEnumerable<DBNomeID>> ListarN(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("endCodigo, endDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
-    public async Task<IEnumerable<EnderecosResponseAll>> Listar(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken) => await ListarTabela(BuildSqlQuery(DBEnderecos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
-    private async Task<IEnumerable<EnderecosResponseAll>> ListarTabela(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
+    private readonly IConnectionService _connection = connection ?? throw new ArgumentNullException();
+    public async Task<IEnumerable<DBNomeID>?> ListarNAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order) => await DevourerSqlData.ListarNomeID(BuildSqlQuery("endCodigo, endDescricao", cWhere, order, max), parameters, uri, caching: false, max: max);
+    public async Task<IEnumerable<EnderecosResponseAll>> ListarAsync(int max, string uri, string cWhere, List<SqlParameter>? parameters, string order, CancellationToken cancellationToken)
+    {
+        return await ListarTabelaAsync(BuildSqlQuery(DBEnderecos.CamposSqlX, cWhere, order, max), parameters, uri, caching: false, max: max, cancellationToken: cancellationToken);
+    }
+
+    private async Task<IEnumerable<EnderecosResponseAll>> ListarTabelaAsync(string sql, List<SqlParameter>? parameters, string uri, bool caching = false, int max = 200, CancellationToken cancellationToken = default)
     {
         var result = new List<EnderecosResponseAll>(max);
-        await using var connection = Configuracoes.GetConnectionByUri(uri);
+        await using var connection = _connection.GetConnectionByUri(uri);
         await using var cmd = new SqlCommand(cmdText: ConfiguracoesDBT.CmdSql(sql), connection: connection?.InnerConnection)
         {
             CommandTimeout = 30
         };
-        foreach (var param in parameters)
-        {
-            if (!cmd.Parameters.Contains(param.ParameterName))
+        if (parameters != null && parameters.Count > 0)
+            foreach (var param in parameters)
             {
-                var newParam = new SqlParameter(param.ParameterName, param.Value)
+                if (!cmd.Parameters.Contains(param.ParameterName))
                 {
-                    SqlDbType = param.SqlDbType,
-                    Direction = param.Direction,
-                    Size = param.Size,
-                    Precision = param.Precision,
-                    Scale = param.Scale
-                };
-                cmd.Parameters.Add(newParam);
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    cmd.Parameters.Add(newParam);
+                }
             }
-        }
 
-        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult);
-        while (await reader.ReadAsync())
+        await using var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult, cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
                 return result;
@@ -42,20 +48,19 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
         return result;
     }
 
-    public async Task<EnderecosResponse?> Read(int id, MsiSqlConnection? oCnn)
+    public async Task<EnderecosResponse?> ReadAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _enderecosFactory.CreateFromIdAsync(id, oCnn);
         return dbRec.ID.IsEmptyIDNumber() ? null : Read(dbRec);
     }
 
-    public async Task<Models.Enderecos?> ReadM(int id, MsiSqlConnection? oCnn)
+    public async Task<Models.Enderecos?> ReadMAsync(int id, MsiSqlConnection? oCnn)
     {
         using var dbRec = await _enderecosFactory.CreateFromIdAsync(id, oCnn);
         var enderecos = new Models.Enderecos
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -74,11 +79,15 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            enderecos.DtNasc = dbRec.FDtNasc;
-            enderecos.DtNasc_date = XDtNasc;
+            enderecos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            enderecos.DtNasc_date = XDtNasc4;
         }
 
         return enderecos;
@@ -106,7 +115,6 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -125,11 +133,15 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            enderecos.DtNasc = dbRec.FDtNasc;
-            enderecos.DtNasc_date = XDtNasc;
+            enderecos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            enderecos.DtNasc_date = XDtNasc4;
         }
 
         return enderecos;
@@ -146,7 +158,6 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -165,11 +176,15 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            enderecos.DtNasc = dbRec.FDtNasc;
-            enderecos.DtNasc_date = XDtNasc;
+            enderecos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            enderecos.DtNasc_date = XDtNasc4;
         }
 
         return enderecos;
@@ -186,7 +201,6 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -205,11 +219,15 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            enderecos.DtNasc = dbRec.FDtNasc;
-            enderecos.DtNasc_date = XDtNasc;
+            enderecos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            enderecos.DtNasc_date = XDtNasc4;
         }
 
         try
@@ -234,7 +252,6 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
         {
             Id = dbRec.ID,
             TopIndex = dbRec.FTopIndex,
-            GUID = dbRec.FGUID ?? string.Empty,
             Descricao = dbRec.FDescricao ?? string.Empty,
             Contato = dbRec.FContato ?? string.Empty,
             Endereco = dbRec.FEndereco ?? string.Empty,
@@ -253,11 +270,15 @@ public partial class EnderecosReader(IFEnderecosFactory enderecosFactory) : IEnd
             Quem = dbRec.FQuem,
             QuemIndicou = dbRec.FQuemIndicou ?? string.Empty,
             ReportECBOnly = dbRec.FReportECBOnly,
+            Etiqueta = dbRec.FEtiqueta,
+            Ani = dbRec.FAni,
+            Bold = dbRec.FBold,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
-        if (DateTime.TryParse(dbRec.FDtNasc, out DateTime XDtNasc))
+        if (DateTime.TryParse(dbRec.FDtNasc?.ToString(), out DateTime XDtNasc4))
         {
-            enderecos.DtNasc = dbRec.FDtNasc;
-            enderecos.DtNasc_date = XDtNasc;
+            enderecos.DtNasc = XDtNasc4.ToString("dd/MM/yyyy");
+            enderecos.DtNasc_date = XDtNasc4;
         }
 
         try

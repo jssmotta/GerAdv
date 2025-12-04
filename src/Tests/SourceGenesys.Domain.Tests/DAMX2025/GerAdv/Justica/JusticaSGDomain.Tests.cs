@@ -35,9 +35,23 @@ public class DBJusticaTests : IDisposable
         dt.Columns.Add("jusQuemAtu", typeof(int));
         dt.Columns.Add("jusDtAtu", typeof(DateTime));
         dt.Columns.Add("jusVisto", typeof(bool));
-        dt.Columns.Add("jusGUID", typeof(string));
         dt.Columns.Add("jusNome", typeof(string));
+        dt.Columns.Add("jusBold", typeof(string));
+        dt.Columns.Add("jusGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["jusCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBJustica(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -58,7 +72,7 @@ public class DBJusticaTests : IDisposable
     {
         var instance = new DBJustica();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Justica", instance.ITabelaName());
+        Assert.Equal("Justica", instance.ITableName());
         Assert.Equal("jus", instance.Prefixo);
     }
 
@@ -76,29 +90,16 @@ public class DBJusticaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["jusCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBJustica(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Justica", cadastro.ITabelaName());
-        Assert.Equal("jusCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("jusNome", cadastro.ICampoNome());
-        Assert.Equal("jus", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Justica", cadastro.ITableName());
+        Assert.Equal("jusCodigo", cadastro.IFieldId());
+        Assert.Equal("jusNome", cadastro.IFieldNameDescription());
+        Assert.Equal("jus", cadastro.IPrefix());
     }
 
 #endregion
@@ -158,30 +159,12 @@ public class DBJusticaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 100 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 100);
-    }
-
     [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
@@ -198,6 +181,24 @@ public class DBJusticaTests : IDisposable
         var longString = new string ('A', 50 + 10);
         _instance.FNome = longString;
         Assert.True(_instance.FNome.Length <= 50);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 100 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 100);
     }
 
     public virtual void Dispose()

@@ -14,6 +14,14 @@ public partial class DBProDespesas
         return registro;
     }
 
+    private void CreateGuid()
+    {
+        if (string.IsNullOrWhiteSpace(FGuid))
+        {
+            this.FGuid = Guid.NewGuid().ToString();
+        }
+    }
+
     /// <summary>
     /// Carregar dados async
     /// </summary>
@@ -31,7 +39,7 @@ public partial class DBProDespesas
 
         if (ds?.Rows.Count > 0)
         {
-            CarregarDadosBd(ds.Rows[0]);
+            LoadDataBd(ds.Rows[0]);
         }
     }
 
@@ -134,35 +142,35 @@ public partial class DBProDespesas
 
 #if (!NOTSTORED_ProDespesas)
     // Helper methods
-    private bool HasAnyFieldChanged() => pFldFGUID || pFldFLigacaoID || pFldFCliente || pFldFCorrigido || pFldFData || pFldFValorOriginal || pFldFProcesso || pFldFQuitado || pFldFDataCorrecao || pFldFValor || pFldFTipo || pFldFHistorico || pFldFLivroCaixa;
+    private bool HasAnyFieldChanged() => pFldFLigacaoID || pFldFCliente || pFldFCorrigido || pFldFData || pFldFValorOriginal || pFldFProcesso || pFldFQuitado || pFldFDataCorrecao || pFldFValor || pFldFTipo || pFldFHistorico || pFldFLivroCaixa || pFldFGuid;
     private void ConfigureUpdateFields(DBToolWTable32Async updateTool)
     {
-        if (pFldFGUID)
-            updateTool.Fields(DBProDespesasDicInfo.GUID, m_FGUID, ETiposCampos.FString);
         if (pFldFLigacaoID)
-            updateTool.Fields(DBProDespesasDicInfo.LigacaoID, m_FLigacaoID, ETiposCampos.FNumber);
+            updateTool.Fields(DBProDespesasDicInfo.LigacaoID, FLigacaoID, EGenericTypeFields.FNumber);
         if (pFldFCliente)
-            updateTool.Fields(DBProDespesasDicInfo.Cliente, m_FCliente, ETiposCampos.FNumber);
+            updateTool.Fields(DBProDespesasDicInfo.Cliente, FCliente, EGenericTypeFields.FNumber);
         if (pFldFCorrigido || updateTool.Insert)
-            updateTool.Fields(DBProDespesasDicInfo.Corrigido, m_FCorrigido, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProDespesasDicInfo.Corrigido, FCorrigido, EGenericTypeFields.FBoolean);
         if (pFldFData)
-            updateTool.Fields(DBProDespesasDicInfo.Data, m_FData, ETiposCampos.FString);
+            updateTool.Fields(DBProDespesasDicInfo.Data, FData, EGenericTypeFields.FDate);
         if (pFldFValorOriginal)
-            updateTool.Fields(DBProDespesasDicInfo.ValorOriginal, m_FValorOriginal, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProDespesasDicInfo.ValorOriginal, FValorOriginal, EGenericTypeFields.FDecimal);
         if (pFldFProcesso)
-            updateTool.Fields(DBProDespesasDicInfo.Processo, m_FProcesso, ETiposCampos.FNumber);
+            updateTool.Fields(DBProDespesasDicInfo.Processo, FProcesso, EGenericTypeFields.FNumber);
         if (pFldFQuitado)
-            updateTool.Fields(DBProDespesasDicInfo.Quitado, m_FQuitado, ETiposCampos.FNumber);
+            updateTool.Fields(DBProDespesasDicInfo.Quitado, FQuitado, EGenericTypeFields.FNumber);
         if (pFldFDataCorrecao)
-            updateTool.Fields(DBProDespesasDicInfo.DataCorrecao, m_FDataCorrecao, ETiposCampos.FDate);
+            updateTool.Fields(DBProDespesasDicInfo.DataCorrecao, FDataCorrecao, EGenericTypeFields.FDate);
         if (pFldFValor)
-            updateTool.Fields(DBProDespesasDicInfo.Valor, m_FValor, ETiposCampos.FDecimal);
+            updateTool.Fields(DBProDespesasDicInfo.Valor, FValor, EGenericTypeFields.FDecimal);
         if (pFldFTipo || updateTool.Insert)
-            updateTool.Fields(DBProDespesasDicInfo.Tipo, m_FTipo, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProDespesasDicInfo.Tipo, FTipo, EGenericTypeFields.FBoolean);
         if (pFldFHistorico)
-            updateTool.Fields(DBProDespesasDicInfo.Historico, m_FHistorico, ETiposCampos.FString);
+            updateTool.Fields(DBProDespesasDicInfo.Historico, FHistorico, EGenericTypeFields.FString);
         if (pFldFLivroCaixa || updateTool.Insert)
-            updateTool.Fields(DBProDespesasDicInfo.LivroCaixa, m_FLivroCaixa, ETiposCampos.FBoolean);
+            updateTool.Fields(DBProDespesasDicInfo.LivroCaixa, FLivroCaixa, EGenericTypeFields.FBoolean);
+        if (pFldFGuid)
+            updateTool.Fields(DBProDespesasDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
 #endif
@@ -174,24 +182,23 @@ public partial class DBProDespesas
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (isInsert)
-            updateTool.Fields(DBProDespesasDicInfo.QuemCad, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProDespesasDicInfo.QuemCad, AuditorQuem, EGenericTypeFields.FNumber);
         if (isInsert)
-            updateTool.Fields(DBProDespesasDicInfo.DtCad, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
+            updateTool.Fields(DBProDespesasDicInfo.DtCad, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
         if (!isInsert)
-            updateTool.Fields(DBProDespesasDicInfo.QuemAtu, AuditorQuem, ETiposCampos.FNumber);
+            updateTool.Fields(DBProDespesasDicInfo.QuemAtu, AuditorQuem, EGenericTypeFields.FNumber);
         if (!isInsert)
-            updateTool.Fields(DBProDespesasDicInfo.DtAtu, DevourerOne.DateTimeUtc, ETiposCampos.FDate);
-        updateTool.Fields(DBProDespesasDicInfo.Visto, false, ETiposCampos.FBoolean);
-        if (string.IsNullOrWhiteSpace(m_FGUID))
-        {
-            this.FGUID = Guid.NewGuid().ToString();
-        }
+            updateTool.Fields(DBProDespesasDicInfo.DtAtu, DevourerOne.DateTimeUtc, EGenericTypeFields.FDate);
+        updateTool.Fields(DBProDespesasDicInfo.Visto, false, EGenericTypeFields.FBoolean);
+        CreateGuid();
+        if (isInsert)
+            updateTool.Fields(DBProDespesasDicInfo.Guid, FGuid, EGenericTypeFields.FString);
     }
 
     private async Task<int> GravaNewIdAsync(DBToolWTable32Async updateTool, int insertId, MsiSqlConnection? oCnn, CancellationToken cancellationToken)
     {
         ID = insertId;
-        updateTool.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+        updateTool.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
         var result = await updateTool.RecUpdateAsync(oCnn, cancellationToken, true);
         return result == "OK" ? 0 : -3;
     }

@@ -37,13 +37,24 @@ public class NENotasValidation : INENotasValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         // Instancia
         if (!reg.Instancia.IsEmptyIDNumber())
         {
-            var regInstancia = await instanciaReader.Read(reg.Instancia, oCnn);
+            var regInstancia = await instanciaReader.ReadAsync(reg.Instancia, oCnn);
             if (regInstancia == null || regInstancia.Id != reg.Instancia)
             {
                 throw new SGValidationException($"Instancia não encontrado ({regInstancia?.Id}).");

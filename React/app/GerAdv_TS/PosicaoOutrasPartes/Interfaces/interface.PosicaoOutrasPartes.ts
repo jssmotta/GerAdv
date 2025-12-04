@@ -8,6 +8,7 @@ export interface IPosicaoOutrasPartes {
     id: number;
  
 	descricao: string,
+	bold: boolean,
 }
 
 export interface IPosicaoOutrasPartesFormProps {

@@ -5,21 +5,25 @@
 import { INavigator } from '@/app/interfaces/INavigator';
 import RitoInc from '../Crud/Inc/Rito';
 import { getParamFromUrl } from '@/app/tools/helpers';
+
 interface RitoIncContainerProps {
-  id: number;
-  navigator: INavigator;
-  onSuccess: (registro?: any) => void;
+    id: number;
+    navigator: INavigator;
+    onSuccess: (registro?: any) => void;
 }
+
 const RitoIncContainer: React.FC<RitoIncContainerProps> = ({ id, navigator, onSuccess }) => {
-  const handleClose = () => {};
-  const handleError = () => {};
-  return (
-  <RitoInc
-  id={id}
-  onClose={handleClose}
-  onSuccess={onSuccess}
-  onError={handleError}
-  />
-);
+    const handleClose = () => {};
+    const handleError = () => {};
+
+    return (
+        <RitoInc 
+            id={id}
+            onClose={handleClose}
+            onSuccess={onSuccess}
+            onError={handleError}
+        />
+    );
 };
+
 export default RitoIncContainer;

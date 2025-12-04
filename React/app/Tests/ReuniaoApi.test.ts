@@ -4,11 +4,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NotificationService, NotifySystemActions } from '@/app/tools/NotifySystem';
 import { decodeBase64Token } from '@/app/tools/Fetcher';
-import { ReuniaoApiError } from '../GerAdv_TS/Reuniao/Apis/ApiReuniao';
+import { ReuniaoApiError } from '@/app/GerAdv_TS/Reuniao/Apis/ApiReuniao';
 import { ReuniaoApi } from '@/app/GerAdv_TS/Reuniao/Apis/ApiReuniao';
-import { FilterReuniao } from '../GerAdv_TS/Reuniao/Filters/Reuniao';
-import { IReuniao } from '../GerAdv_TS/Reuniao/Interfaces/interface.Reuniao';
-import { ReuniaoTestEmpty } from '../GerAdv_TS/Models/Reuniao';
+import { FilterReuniao } from '@/app/GerAdv_TS/Reuniao/Filters/Reuniao';
+import { IReuniao } from '@/app/GerAdv_TS/Reuniao/Interfaces/interface.Reuniao';
+import { ReuniaoTestEmpty } from '@/app/GerAdv_TS/Models/Reuniao';
 import { decodeDataFromStorage, encodeDataForStorage } from '@/app/tools/crud';
 
 // Mock useSWR to avoid React context errors
@@ -286,8 +286,7 @@ describe('ReuniaoApi', () => {
 
   describe('filter', () => {
     const mockFilter: FilterReuniao = {
-      funcionario: 1,
-      data: '2024-01-01',
+      : 1      
     };
 
     const mockResponse: AxiosResponse = {
@@ -332,19 +331,18 @@ describe('ReuniaoApi', () => {
   describe('addAndUpdate', () => {
     const mockReuniao: IReuniao = {
       id: 0,
-      funcionario: 1,
-      tipocompromisso: 1,
-      fornecedor: 1,
-      boletos: 1,
-      cancelou: false,
-      recibo: false,
-      data: '2024-01-01',
-      hora: '10:00',
-      liberado: true,
-      importante: false,
-      concluido: false,
-      horafinal: '11:00',
-      compromisso: 'New compromisso',
+      
+cliente: 0,
+idagenda: 0,
+data: '24/04/1975',
+pauta: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+ata: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+horainicial: '04:04',
+horafinal: '04:04',
+externa: false,
+horasaida: '04:04',
+horaretorno: '04:04',
+principaisdecisoes: 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
     };
 
     it('should add new reuniao successfully', async () => {
@@ -487,7 +485,7 @@ describe('ReuniaoApi', () => {
 
   describe('useFilter', () => {
     it('should create SWR hook with correct parameters', () => {
-      const mockFilter: FilterReuniao = { funcionario: 1 };
+      const mockFilter: FilterReuniao = { : 1 };
       
       const result = reuniaoApi.useFilter(mockFilter);
       

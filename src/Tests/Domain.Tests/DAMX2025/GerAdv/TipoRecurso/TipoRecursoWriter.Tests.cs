@@ -74,10 +74,10 @@ public class TipoRecursoWriterTests
         var result = await _tiporecursoWriter.WriteAsync(tiporecurso, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoRecurso.Object);
+        _mockFTipoRecurso.VerifySet(x => x.FGuid = tiporecurso.Guid, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.FJustica = tiporecurso.Justica, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.FArea = tiporecurso.Area, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.FDescricao = tiporecurso.Descricao, Times.Once);
-        _mockFTipoRecurso.VerifySet(x => x.FGUID = tiporecurso.GUID, Times.Once);
         _mockFTipoRecurso.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -121,7 +121,7 @@ public class TipoRecursoWriterTests
         var operadorId = 456;
         _mockTipoRecursoFactory.Setup(x => x.DeleteAsync(operadorId, tiporecursoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tiporecursoWriter.Delete(tiporecursoResponse, operadorId, _mockConnection.Object);
+        await _tiporecursoWriter.DeleteAsync(tiporecursoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoRecursoFactory.Verify(x => x.DeleteAsync(operadorId, tiporecursoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -137,7 +137,7 @@ public class TipoRecursoWriterTests
         var operadorId = 111;
         _mockTipoRecursoFactory.Setup(x => x.DeleteAsync(operadorId, tiporecursoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tiporecursoWriter.Delete(tiporecursoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tiporecursoWriter.DeleteAsync(tiporecursoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -154,7 +154,7 @@ public class TipoRecursoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoRecursoFactory.Setup(x => x.DeleteAsync(operadorId, tiporecursoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tiporecursoWriter.Delete(tiporecursoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tiporecursoWriter.DeleteAsync(tiporecursoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -184,10 +184,10 @@ public class TipoRecursoWriterTests
         return new Models.TipoRecurso
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Justica = 1,
             Area = 1,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

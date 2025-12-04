@@ -28,8 +28,6 @@ public class ProObservacoesValidation : IProObservacoesValidation
     {
         if (reg.Nome != null && reg.Nome.Length > DBProObservacoesDicInfo.PobNome.FTamanho)
             throw new SGValidationException($"Nome deve ter no máximo {DBProObservacoesDicInfo.PobNome.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBProObservacoesDicInfo.PobGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBProObservacoesDicInfo.PobGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -39,9 +37,20 @@ public class ProObservacoesValidation : IProObservacoesValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Nome))
             throw new SGValidationException("Nome é obrigatório");
+        if (reg.Nome.Contains("%"))
+            throw new SGValidationException("Nome possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;
+        if (!string.IsNullOrWhiteSpace(reg.Data))
+        {
+            if (DateTime.TryParse(reg.Data, out DateTime dataAntiga))
+            {
+                if (dataAntiga < new DateTime(1900, 1, 1))
+                    throw new SGValidationException("Data não pode ser anterior a 01/01/1900.");
+            }
+        }
+
         await Task.Delay(0);
         return true;
     }

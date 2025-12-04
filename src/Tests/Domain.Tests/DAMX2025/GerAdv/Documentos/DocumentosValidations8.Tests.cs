@@ -54,7 +54,7 @@ public class DocumentosValidationTests : IDisposable
         {
             Id = 1,
             Processo = 0,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             Observacao = "Observação teste"
         };
     }
@@ -99,6 +99,74 @@ public class DocumentosValidationTests : IDisposable
         exception.Message.Should().Be("Objeto está nulo");
     }
 
+#region Data Validation Tests
+    [Theory]
+    [InlineData("01/01/1899")]
+    [InlineData("31/12/1899")]
+    public async Task ValidateReg_WithDataBeforeMinDate_ShouldThrowSGValidationException(string invalidDate)
+    {
+        // Arrange
+        var documentos = CreateValidDocumentos();
+        documentos.Data = invalidDate;
+        SetupValidMocks();
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SGValidationException>(() => _validation.ValidateReg(documentos, _mockDocumentosService.Object, _validUri, _mockConnection.Object));
+        exception.Message.Should().Contain("01/01/1900.");
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithValidData_ShouldPass()
+    {
+        // Arrange
+        var documentos = CreateValidDocumentos();
+        documentos.Data = "01/01/1990";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(documentos, _mockDocumentosService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithNullData_ShouldPass()
+    {
+        // Arrange
+        var documentos = CreateValidDocumentos();
+        documentos.Data = null;
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(documentos, _mockDocumentosService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithInvalidDateDataFormat_ShouldPass()
+    {
+        // Arrange
+        var documentos = CreateValidDocumentos();
+        documentos.Data = "invalid-date";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(documentos, _mockDocumentosService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue(); // Invalid format is ignored, not validated
+    }
+
+    [Fact]
+    public async Task ValidateReg_WithEmptyData_ShouldPass()
+    {
+        // Arrange
+        var documentos = CreateValidDocumentos();
+        documentos.Data = "";
+        SetupValidMocks();
+        // Act
+        var result = await _validation.ValidateReg(documentos, _mockDocumentosService.Object, _validUri, _mockConnection.Object);
+        // Assert
+        result.Should().BeTrue();
+    }
+
+#endregion
     public virtual void Dispose()
     {
         _service?.Dispose();

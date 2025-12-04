@@ -54,8 +54,32 @@ public partial class DBGUTAtividades
         // Checkpoint Carregar 
         try
         {
+            FGuid = getValue(DBGUTAtividadesDicInfo.Guid)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FNome = getValue(DBGUTAtividadesDicInfo.Nome)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            FObservacao = getValue(DBGUTAtividadesDicInfo.Observacao)?.ToString() ?? string.Empty;
+        }
+        catch
+        {
+        }
+
+        try
+        {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.Concluido)))
-                m_FConcluido = Convert.ToBoolean(getValue(DBGUTAtividadesDicInfo.Concluido));
+                FConcluido = Convert.ToBoolean(getValue(DBGUTAtividadesDicInfo.Concluido));
         }
         catch
         {
@@ -64,7 +88,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.DataConcluido)))
-                m_FDataConcluido = Convert.ToDateTime(getValue(DBGUTAtividadesDicInfo.DataConcluido));
+                FDataConcluido = DateOnly.FromDateTime(Convert.ToDateTime(getValue(DBGUTAtividadesDicInfo.DataConcluido)));
         }
         catch
         {
@@ -73,7 +97,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.DiasParaIniciar)))
-                m_FDiasParaIniciar = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.DiasParaIniciar));
+                FDiasParaIniciar = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.DiasParaIniciar));
         }
         catch
         {
@@ -100,7 +124,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.GUTGrupo)))
-                m_FGUTGrupo = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.GUTGrupo));
+                FGUTGrupo = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.GUTGrupo));
         }
         catch
         {
@@ -109,7 +133,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.GUTPeriodicidade)))
-                m_FGUTPeriodicidade = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.GUTPeriodicidade));
+                FGUTPeriodicidade = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.GUTPeriodicidade));
         }
         catch
         {
@@ -118,7 +142,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.MinutosParaRealizar)))
-                m_FMinutosParaRealizar = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.MinutosParaRealizar));
+                FMinutosParaRealizar = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.MinutosParaRealizar));
         }
         catch
         {
@@ -127,7 +151,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.Operador)))
-                m_FOperador = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.Operador));
+                FOperador = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.Operador));
         }
         catch
         {
@@ -136,7 +160,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.QuemAtu)))
-                m_FQuemAtu = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.QuemAtu));
+                FQuemAtu = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.QuemAtu));
         }
         catch
         {
@@ -145,7 +169,7 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.QuemCad)))
-                m_FQuemCad = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.QuemCad));
+                FQuemCad = Convert.ToInt32(getValue(DBGUTAtividadesDicInfo.QuemCad));
         }
         catch
         {
@@ -154,38 +178,14 @@ public partial class DBGUTAtividades
         try
         {
             if (!DBNull.Value.Equals(getValue(DBGUTAtividadesDicInfo.Visto)))
-                m_FVisto = Convert.ToBoolean(getValue(DBGUTAtividadesDicInfo.Visto));
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FGUID = getValue(DBGUTAtividadesDicInfo.GUID)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FNome = getValue(DBGUTAtividadesDicInfo.Nome)?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-        }
-
-        try
-        {
-            m_FObservacao = getValue(DBGUTAtividadesDicInfo.Observacao)?.ToString() ?? string.Empty;
+                FVisto = Convert.ToBoolean(getValue(DBGUTAtividadesDicInfo.Visto));
         }
         catch
         {
         }
     }
 
-    public void CarregarDadosBd(DataRow? dbRec)
+    public void LoadDataBd(DataRow? dbRec)
     {
         if (dbRec is null)
             return;
@@ -209,7 +209,7 @@ public partial class DBGUTAtividades
         }
     }
 
-    public void CarregarDadosBd(SqlDataReader? dbRec)
+    public void LoadDataBd(SqlDataReader? dbRec)
     {
         if (dbRec is null)
             return;

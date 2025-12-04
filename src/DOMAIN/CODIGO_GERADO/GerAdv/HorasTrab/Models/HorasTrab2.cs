@@ -26,7 +26,7 @@ namespace MenphisSI.GerAdv.Models
         public int Advogado { get; set; }
 
         /// <summary>
-        /// Funcionario - htbFuncionario  
+        /// Colaborador - htbFuncionario  
         /// </summary>
         [JsonPropertyName("funcionario")]
         public int Funcionario { get; set; }
@@ -36,12 +36,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("servico")]
         public int Servico { get; set; }
-
-        /// <summary>
-        /// GUID - htbGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// IDContatoCRM - htbIDContatoCRM  
@@ -66,6 +60,9 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
+
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// Status - htbStatus  
@@ -126,6 +123,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("anexounc")]
         public string AnexoUNC { get; set; } = "";
+
+        /// <summary>
+        /// GUID - htbGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -150,7 +153,7 @@ namespace MenphisSI.GerAdv.Models.All
         public int Advogado { get; set; }
 
         /// <summary>
-        /// Funcionario - htbFuncionario  
+        /// Colaborador - htbFuncionario  
         /// </summary>
         [JsonPropertyName("funcionario")]
         public int Funcionario { get; set; }
@@ -160,12 +163,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("servico")]
         public int Servico { get; set; }
-
-        /// <summary>
-        /// GUID - htbGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// IDContatoCRM - htbIDContatoCRM  
@@ -190,6 +187,9 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; } = "";
+
+        [JsonPropertyName("data_date")]
+        public DateTime? Data_date { get; set; }
 
         /// <summary>
         /// Status - htbStatus  
@@ -250,6 +250,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("anexounc")]
         public string AnexoUNC { get; set; } = "";
+
+        /// <summary>
+        /// GUID - htbGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeclientes")]
         public string NomeClientes { get; set; } = string.Empty;

@@ -23,12 +23,6 @@ public partial class FLivroCaixaFactory : IFLivroCaixaFactory, IDisposable
         return FLivroCaixa.CreateFromDataRow(dbRec);
     }
 
-    public async Task<FLivroCaixa> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
-    {
-        ThrowIfDisposed();
-        return await new FLivroCaixa().CreateFromIdAsync(id, oCnn);
-    }
-
     public async Task<FLivroCaixa> CreateAsync()
     {
         ThrowIfDisposed();
@@ -48,10 +42,15 @@ public partial class FLivroCaixaFactory : IFLivroCaixaFactory, IDisposable
         return FLivroCaixa.DeleteRecordAsync(operadorId, id, oCnn);
     }
 
+    public async Task<FLivroCaixa> CreateFromIdAsync(int id, MsiSqlConnection? oCnn)
+    {
+        ThrowIfDisposed();
+        return await new FLivroCaixa().CreateFromIdAsync(id, oCnn);
+    }
+
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(FLivroCaixaFactory));
+        ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
     public virtual void Dispose()

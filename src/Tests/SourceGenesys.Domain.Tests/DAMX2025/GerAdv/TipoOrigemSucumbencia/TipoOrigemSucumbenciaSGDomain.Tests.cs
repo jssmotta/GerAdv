@@ -34,6 +34,19 @@ public class DBTipoOrigemSucumbenciaTests : IDisposable
         return dt;
     }
 
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["tosCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBTipoOrigemSucumbencia(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
+    }
+
 #region Testes de Constantes e Propriedades Estáticas
     [Fact]
     public void Constants_ShouldHaveCorrectValues()
@@ -52,7 +65,7 @@ public class DBTipoOrigemSucumbenciaTests : IDisposable
     {
         var instance = new DBTipoOrigemSucumbencia();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("TipoOrigemSucumbencia", instance.ITabelaName());
+        Assert.Equal("TipoOrigemSucumbencia", instance.ITableName());
         Assert.Equal("tos", instance.Prefixo);
     }
 
@@ -70,29 +83,16 @@ public class DBTipoOrigemSucumbenciaTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["tosCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBTipoOrigemSucumbencia(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("TipoOrigemSucumbencia", cadastro.ITabelaName());
-        Assert.Equal("tosCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("tosNome", cadastro.ICampoNome());
-        Assert.Equal("tos", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("TipoOrigemSucumbencia", cadastro.ITableName());
+        Assert.Equal("tosCodigo", cadastro.IFieldId());
+        Assert.Equal("tosNome", cadastro.IFieldNameDescription());
+        Assert.Equal("tos", cadastro.IPrefix());
     }
 
 #endregion
@@ -152,9 +152,9 @@ public class DBTipoOrigemSucumbenciaTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion

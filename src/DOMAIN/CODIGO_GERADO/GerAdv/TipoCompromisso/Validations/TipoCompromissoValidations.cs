@@ -23,10 +23,10 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
             throw new SGValidationException($"Registro com id {id} não encontrado.");
         var agendaExists0 = await agendaService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterAgenda { TipoCompromisso = id ?? default }, uri);
         if (agendaExists0 != null && agendaExists0.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela Compromisso associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela Compromisso associados a ele.");
         var necompromissosExists1 = await necompromissosService.Filter(BaseConsts.DefaultCheckValidation, new Filters.FilterNECompromissos { TipoCompromisso = id ?? default }, uri);
         if (necompromissosExists1 != null && necompromissosExists1.Any())
-            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da tabela N E Compromissos associados a ele.");
+            throw new SGValidationException("Não é possível excluir o registro, pois existem registros da _tabela N E Compromissos associados a ele.");
         return true;
     }
 
@@ -34,8 +34,6 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
     {
         if (reg.Descricao != null && reg.Descricao.Length > DBTipoCompromissoDicInfo.TipDescricao.FTamanho)
             throw new SGValidationException($"Descricao deve ter no máximo {DBTipoCompromissoDicInfo.TipDescricao.FTamanho} caracteres.");
-        if (reg.GUID != null && reg.GUID.Length > DBTipoCompromissoDicInfo.TipGUID.FTamanho)
-            throw new SGValidationException($"GUID deve ter no máximo {DBTipoCompromissoDicInfo.TipGUID.FTamanho} caracteres.");
         return true;
     }
 
@@ -45,6 +43,8 @@ public class TipoCompromissoValidation : ITipoCompromissoValidation
             throw new SGValidationException("Objeto está nulo");
         if (string.IsNullOrWhiteSpace(reg.Descricao))
             throw new SGValidationException("Descrição é obrigatório");
+        if (reg.Descricao.Contains("%"))
+            throw new SGValidationException("Descrição possui caracter inválido (%)");
         var validSizes = ValidSizes(reg);
         if (!validSizes)
             return false;

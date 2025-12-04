@@ -5,7 +5,7 @@
 namespace MenphisSI.SG.GerAdv;
 [Serializable]
 // ReSharper disable once InconsistentNaming 2 
-public partial class DBGUTAtividades : VAuditor, ICadastros
+public partial class DBGUTAtividades : VAuditor, ICrud
 {
 #region TableDefinition_GUTAtividades
     [XmlIgnore]
@@ -33,17 +33,17 @@ public partial class DBGUTAtividades : VAuditor, ICadastros
 
         if (sqlWhere.NotIsEmpty() || fullSql.NotIsEmpty())
         {
-            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
+            using var ds = ConfiguracoesDBT.GetDataTable(parameters, fullSql.IsEmpty() ? $"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} {join}  WHERE {sqlWhere};" : fullSql, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
         else
         {
-            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} (NOLOCK) WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
+            using var cmd = new SqlCommand($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome.dbo(oCnn)} WHERE [{CampoNome}]  COLLATE SQL_Latin1_General_CP1_CI_AI  like @CampoNome", oCnn?.InnerConnection);
             cmd.Parameters.AddWithValue("@CampoNome", cNome?.trim() ?? string.Empty);
             using var ds = ConfiguracoesDBT.GetDataTable(cmd, CommandBehavior.SingleRow, oCnn);
             if (ds != null)
-                CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+                LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
         }
     }
 
@@ -52,9 +52,9 @@ public partial class DBGUTAtividades : VAuditor, ICadastros
     {
         if (oCnn == null)
             return;
-        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} (NOLOCK) WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
+        using var ds = ConfiguracoesDBT.GetDataTable($"SET NOCOUNT ON; SELECT TOP (1) {CamposSqlX} FROM {PTabelaNome} WHERE {sqlWhere};", CommandBehavior.SingleRow, oCnn);
         if (ds != null)
-            CarregarDadosBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
+            LoadDataBd(ds.Rows.Count.IsEmptyIDNumber() ? null : ds.Rows[0]);
     }
 
 #region GravarDados_GUTAtividades
@@ -62,7 +62,7 @@ public partial class DBGUTAtividades : VAuditor, ICadastros
     {
         var isInsert = insertId == 0 && ID == 0;
         if (!isInsert)
-            if (!(pFldFNome || pFldFObservacao || pFldFGUTGrupo || pFldFGUTPeriodicidade || pFldFOperador || pFldFGUID || pFldFConcluido || pFldFDataConcluido || pFldFDiasParaIniciar || pFldFMinutosParaRealizar))
+            if (!(pFldFNome || pFldFObservacao || pFldFGUTGrupo || pFldFGUTPeriodicidade || pFldFOperador || pFldFConcluido || pFldFDataConcluido || pFldFDiasParaIniciar || pFldFMinutosParaRealizar || pFldFGuid))
                 return 0;
         if (oCnn is null)
 #if (DEBUG)
@@ -92,32 +92,31 @@ public partial class DBGUTAtividades : VAuditor, ICadastros
             clsW.Where = $"{CampoCodigo}={ID}";
         }
 
-        if (string.IsNullOrEmpty(m_FGUID))
+        if (string.IsNullOrEmpty(FGuid))
         {
-            m_FGUID = Guid.NewGuid().ToString();
-            pFldFGUID = true;
+            FGuid = Guid.NewGuid().ToString();
         }
 
         if (pFldFNome)
-            clsW.Fields(DBGUTAtividadesDicInfo.Nome, m_FNome, ETiposCampos.FString);
+            clsW.Fields(DBGUTAtividadesDicInfo.Nome, FNome, EGenericTypeFields.FString);
         if (pFldFObservacao)
-            clsW.Fields(DBGUTAtividadesDicInfo.Observacao, m_FObservacao, ETiposCampos.FString);
+            clsW.Fields(DBGUTAtividadesDicInfo.Observacao, FObservacao, EGenericTypeFields.FString);
         if (pFldFGUTGrupo)
-            clsW.Fields(DBGUTAtividadesDicInfo.GUTGrupo, m_FGUTGrupo, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesDicInfo.GUTGrupo, FGUTGrupo, EGenericTypeFields.FNumberNull);
         if (pFldFGUTPeriodicidade)
-            clsW.Fields(DBGUTAtividadesDicInfo.GUTPeriodicidade, m_FGUTPeriodicidade, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesDicInfo.GUTPeriodicidade, FGUTPeriodicidade, EGenericTypeFields.FNumberNull);
         if (pFldFOperador)
-            clsW.Fields(DBGUTAtividadesDicInfo.Operador, m_FOperador, ETiposCampos.FNumberNull);
-        if (pFldFGUID)
-            clsW.Fields(DBGUTAtividadesDicInfo.GUID, m_FGUID, ETiposCampos.FString);
+            clsW.Fields(DBGUTAtividadesDicInfo.Operador, FOperador, EGenericTypeFields.FNumberNull);
         if (pFldFConcluido || ID.IsEmptyIDNumber())
-            clsW.Fields(DBGUTAtividadesDicInfo.Concluido, m_FConcluido, ETiposCampos.FBoolean);
+            clsW.Fields(DBGUTAtividadesDicInfo.Concluido, FConcluido, EGenericTypeFields.FBoolean);
         if (pFldFDataConcluido)
-            clsW.Fields(DBGUTAtividadesDicInfo.DataConcluido, m_FDataConcluido, ETiposCampos.FDate);
+            clsW.Fields(DBGUTAtividadesDicInfo.DataConcluido, FDataConcluido, EGenericTypeFields.FDate);
         if (pFldFDiasParaIniciar)
-            clsW.Fields(DBGUTAtividadesDicInfo.DiasParaIniciar, m_FDiasParaIniciar, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesDicInfo.DiasParaIniciar, FDiasParaIniciar, EGenericTypeFields.FNumberNull);
         if (pFldFMinutosParaRealizar)
-            clsW.Fields(DBGUTAtividadesDicInfo.MinutosParaRealizar, m_FMinutosParaRealizar, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesDicInfo.MinutosParaRealizar, FMinutosParaRealizar, EGenericTypeFields.FNumberNull);
+        if (pFldFGuid)
+            clsW.Fields(DBGUTAtividadesDicInfo.Guid, FGuid, EGenericTypeFields.FString);
 #if (!shadowsDisabled && !shadows_MenphisSI_SG_GerAdv && !shadows_MenphisSI_SG_GerAdv_GUTAtividades)
         if (clsW.HasUpdates)
         {
@@ -132,15 +131,15 @@ public partial class DBGUTAtividades : VAuditor, ICadastros
         if (m_AuditorQuem == 0)
             AuditorQuem = 1;
         if (pFldFQuemCad)
-            clsW.Fields(DBGUTAtividadesDicInfo.QuemCad, m_FQuemCad, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesDicInfo.QuemCad, FQuemCad, EGenericTypeFields.FNumberNull);
         if (pFldFDtCad)
-            clsW.Fields(DBGUTAtividadesDicInfo.DtCad, m_FDtCad, ETiposCampos.FDate);
+            clsW.Fields(DBGUTAtividadesDicInfo.DtCad, FDtCad, EGenericTypeFields.FDate);
         if (pFldFQuemAtu)
-            clsW.Fields(DBGUTAtividadesDicInfo.QuemAtu, m_FQuemAtu, ETiposCampos.FNumberNull);
+            clsW.Fields(DBGUTAtividadesDicInfo.QuemAtu, FQuemAtu, EGenericTypeFields.FNumberNull);
         if (pFldFDtAtu)
-            clsW.Fields(DBGUTAtividadesDicInfo.DtAtu, m_FDtAtu, ETiposCampos.FDate);
+            clsW.Fields(DBGUTAtividadesDicInfo.DtAtu, FDtAtu, EGenericTypeFields.FDate);
         if (pFldFVisto || ID.IsEmptyIDNumber())
-            clsW.Fields(DBGUTAtividadesDicInfo.Visto, m_FVisto, ETiposCampos.FBoolean);
+            clsW.Fields(DBGUTAtividadesDicInfo.Visto, FVisto, EGenericTypeFields.FBoolean);
         if (insertId != 0)
             return GravaNewId();
         var cRet = clsW.RecUpdate(oCnn);
@@ -164,7 +163,7 @@ public partial class DBGUTAtividades : VAuditor, ICadastros
         int GravaNewId()
         {
             ID = insertId;
-            clsW.Fields(CampoCodigo, insertId, ETiposCampos.FNumber);
+            clsW.Fields(CampoCodigo, insertId, EGenericTypeFields.FNumber);
             cRet = clsW.RecUpdate(oCnn, true);
             if (cRet.Equals("OK"))
                 return 0;

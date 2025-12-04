@@ -27,12 +27,12 @@ public partial class ProcessOutputEngineWhere(IFProcessOutputEngineFactory proce
             Valor = dbRec.FValor ?? string.Empty,
             Output = dbRec.FOutput ?? string.Empty,
             Administrador = dbRec.FAdministrador,
-            GUID = dbRec.FGUID ?? string.Empty,
             OutputSource = dbRec.FOutputSource,
             DisabledItem = dbRec.FDisabledItem,
             IDModulo = dbRec.FIDModulo,
             IsOnlyProcesso = dbRec.FIsOnlyProcesso,
             MyID = dbRec.FMyID,
+            Guid = dbRec.FGuid ?? string.Empty,
         };
         return processoutputengine;
     }

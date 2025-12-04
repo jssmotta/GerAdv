@@ -13,8 +13,8 @@ public static partial class DBObjetosDicInfo
     public const string Justica = "ojtJustica"; // LOCALIZACAO 170523
     public const string Area = "ojtArea"; // LOCALIZACAO 170523
     public const string Nome = "ojtNome"; // LOCALIZACAO 170523
-    public const string GUID = "ojtGUID"; // LOCALIZACAO 170523
     public const string Bold = "ojtBold"; // LOCALIZACAO 170523
+    public const string Guid = "ojtGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "ojtQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "ojtDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "ojtQuemAtu"; // LOCALIZACAO 170523
@@ -37,48 +37,16 @@ public static partial class DBObjetosDicInfo
 
     public const string PTabelaNome = "Objetos";
 #region PropriedadesDaTabela
-    public static DBInfoSystem OjtJustica => new(0, PTabelaNome, CampoCodigo, Justica, "Justiça", "Justiça", ETipoDadosSysteminfo.SysteminfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false)
-    {
-        Prefixo = "ojt"
-    }; // DBI 11 
-    public static DBInfoSystem OjtArea => new(0, PTabelaNome, CampoCodigo, Area, "Área", "Área", ETipoDadosSysteminfo.SysteminfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false)
-    {
-        Prefixo = "ojt"
-    }; // DBI 11 
-    public static DBInfoSystem OjtNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "ojt"
-    };
-    public static DBInfoSystem OjtGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "ojt"
-    };
-    public static DBInfoSystem OjtBold => new(0, PTabelaNome, CampoCodigo, Bold, "Bold", "Bold", ETipoDadosSysteminfo.SysteminfoBooleanBold)
-    {
-        IsRequired = true,
-        Prefixo = "ojt"
-    };
-    public static DBInfoSystem OjtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ojt"
-    }; // DBI 11 
-    public static DBInfoSystem OjtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "ojt"
-    };
-    public static DBInfoSystem OjtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "ojt"
-    }; // DBI 11 
-    public static DBInfoSystem OjtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "ojt"
-    };
-    public static DBInfoSystem OjtVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "ojt"
-    };
+    public static DBInfoSystem OjtJustica => new(0, PTabelaNome, CampoCodigo, Justica, Justica, Justica, EDataTypeSystemInfo.SystemInfoForeingkey, DBJusticaDicInfo.CampoCodigo, DBJusticaDicInfo.TabelaNome, new DBJusticaODicInfo(), false, prefixo: "ojt"); // DBI 11 
+    public static DBInfoSystem OjtArea => new(0, PTabelaNome, CampoCodigo, Area, Area, Area, EDataTypeSystemInfo.SystemInfoForeingkey, DBAreaDicInfo.CampoCodigo, DBAreaDicInfo.TabelaNome, new DBAreaODicInfo(), false, prefixo: "ojt"); // DBI 11 
+    public static DBInfoSystem OjtNome => new(0, PTabelaNome, CampoCodigo, Nome, 255, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "ojt");
+    public static DBInfoSystem OjtBold => new(0, PTabelaNome, CampoCodigo, Bold, Bold, Bold, EDataTypeSystemInfo.SystemInfoBooleanBold, prefixo: "ojt", isRequired: true);
+    public static DBInfoSystem OjtGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "ojt");
+    public static DBInfoSystem OjtQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ojt"); // DBI 11 
+    public static DBInfoSystem OjtDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "ojt");
+    public static DBInfoSystem OjtQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "ojt"); // DBI 11 
+    public static DBInfoSystem OjtDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "ojt");
+    public static DBInfoSystem OjtVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "ojt", isRequired: true);
 
 #endregion
     [Serializable]

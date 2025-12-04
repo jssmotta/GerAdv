@@ -74,8 +74,8 @@ public class TipoEnderecoWriterTests
         var result = await _tipoenderecoWriter.WriteAsync(tipoendereco, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFTipoEndereco.Object);
+        _mockFTipoEndereco.VerifySet(x => x.FGuid = tipoendereco.Guid, Times.Once);
         _mockFTipoEndereco.VerifySet(x => x.FDescricao = tipoendereco.Descricao, Times.Once);
-        _mockFTipoEndereco.VerifySet(x => x.FGUID = tipoendereco.GUID, Times.Once);
         _mockFTipoEndereco.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -119,7 +119,7 @@ public class TipoEnderecoWriterTests
         var operadorId = 456;
         _mockTipoEnderecoFactory.Setup(x => x.DeleteAsync(operadorId, tipoenderecoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _tipoenderecoWriter.Delete(tipoenderecoResponse, operadorId, _mockConnection.Object);
+        await _tipoenderecoWriter.DeleteAsync(tipoenderecoResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockTipoEnderecoFactory.Verify(x => x.DeleteAsync(operadorId, tipoenderecoResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -135,7 +135,7 @@ public class TipoEnderecoWriterTests
         var operadorId = 111;
         _mockTipoEnderecoFactory.Setup(x => x.DeleteAsync(operadorId, tipoenderecoResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _tipoenderecoWriter.Delete(tipoenderecoResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _tipoenderecoWriter.DeleteAsync(tipoenderecoResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -152,7 +152,7 @@ public class TipoEnderecoWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockTipoEnderecoFactory.Setup(x => x.DeleteAsync(operadorId, tipoenderecoResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoenderecoWriter.Delete(tipoenderecoResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tipoenderecoWriter.DeleteAsync(tipoenderecoResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -182,8 +182,8 @@ public class TipoEnderecoWriterTests
         return new Models.TipoEndereco
         {
             Id = 0,
-            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            GUID = Guid.NewGuid().ToString()
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         };
     }
 #endregion

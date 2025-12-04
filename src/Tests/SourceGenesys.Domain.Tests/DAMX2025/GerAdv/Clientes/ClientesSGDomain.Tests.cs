@@ -39,7 +39,6 @@ public class DBClientesTests : IDisposable
         dt.Columns.Add("cliIcone", typeof(string));
         dt.Columns.Add("cliNomeMae", typeof(string));
         dt.Columns.Add("cliRGDataExp", typeof(DateTime));
-        dt.Columns.Add("cliGUID", typeof(string));
         dt.Columns.Add("cliInativo", typeof(string));
         dt.Columns.Add("cliQuemIndicou", typeof(string));
         dt.Columns.Add("cliSendEMail", typeof(string));
@@ -66,7 +65,7 @@ public class DBClientesTests : IDisposable
         dt.Columns.Add("cliCEP", typeof(string));
         dt.Columns.Add("cliFax", typeof(string));
         dt.Columns.Add("cliFone", typeof(string));
-        dt.Columns.Add("cliData", typeof(string));
+        dt.Columns.Add("cliData", typeof(DateTime));
         dt.Columns.Add("cliHomePage", typeof(string));
         dt.Columns.Add("cliEMail", typeof(string));
         dt.Columns.Add("cliObito", typeof(string));
@@ -78,7 +77,24 @@ public class DBClientesTests : IDisposable
         dt.Columns.Add("cliProBono", typeof(string));
         dt.Columns.Add("cliCNH", typeof(string));
         dt.Columns.Add("cliPessoaContato", typeof(string));
+        dt.Columns.Add("cliEtiqueta", typeof(string));
+        dt.Columns.Add("cliAni", typeof(string));
+        dt.Columns.Add("cliBold", typeof(string));
+        dt.Columns.Add("cliGuid", typeof(string));
         return dt;
+    }
+
+    [Fact]
+    public void Constructor_WithValidDataRow_ShouldLoadData()
+    {
+        // Arrange
+        var row = _testDataTable.NewRow();
+        row["cliCodigo"] = 123;
+        _testDataTable.Rows.Add(row);
+        // Act
+        var instance = new DBClientes(_testDataTable.Rows[0]);
+        // Assert
+        Assert.Equal(123, instance.ID);
     }
 
 #region Testes de Constantes e Propriedades Estáticas
@@ -99,7 +115,7 @@ public class DBClientesTests : IDisposable
     {
         var instance = new DBClientes();
         Assert.Equal(0, instance.ID);
-        Assert.Equal("Clientes", instance.ITabelaName());
+        Assert.Equal("Clientes", instance.ITableName());
         Assert.Equal("cli", instance.Prefixo);
     }
 
@@ -117,29 +133,16 @@ public class DBClientesTests : IDisposable
         Assert.Equal(0, instance.ID);
     }
 
-    [Fact]
-    public void Constructor_WithValidDataRow_ShouldLoadData()
-    {
-        // Arrange
-        var row = _testDataTable.NewRow();
-        row["cliCodigo"] = 123;
-        _testDataTable.Rows.Add(row);
-        // Act
-        var instance = new DBClientes(_testDataTable.Rows[0]);
-        // Assert
-        Assert.Equal(123, instance.ID);
-    }
-
 #endregion
 #region Testes de Interfaces
     [Fact]
-    public void ICadastros_Implementation_ShouldWork()
+    public void ICrud_Implementation_ShouldWork()
     {
-        ICadastros cadastro = (ICadastros)_instance;
-        Assert.Equal("Clientes", cadastro.ITabelaName());
-        Assert.Equal("cliCodigo", cadastro.ICampoCodigo());
-        Assert.Equal("cliNome", cadastro.ICampoNome());
-        Assert.Equal("cli", cadastro.IPrefixo());
+        ICrud cadastro = (ICrud)_instance;
+        Assert.Equal("Clientes", cadastro.ITableName());
+        Assert.Equal("cliCodigo", cadastro.IFieldId());
+        Assert.Equal("cliNome", cadastro.IFieldNameDescription());
+        Assert.Equal("cli", cadastro.IPrefix());
     }
 
 #endregion
@@ -199,9 +202,9 @@ public class DBClientesTests : IDisposable
     }
 
     [Fact]
-    public void IIsStoredProcedureOrView_ShouldReturnFalse()
+    public void IsStoredProcedureOrView_ShouldReturnFalse()
     {
-        Assert.False(_instance.IIsStoredProcedureOrView());
+        Assert.False(_instance.IsStoredProcedureOrView());
     }
 
 #endregion
@@ -275,24 +278,6 @@ public class DBClientesTests : IDisposable
     {
         var instance = new DBClientes();
         Assert.Equal(string.Empty, instance.FRGDataExp);
-    }
-
-    [Theory]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("  Teste  ", "Teste")]
-    public void GUID_ShouldTrimAndHandleNulls(string input, string expected)
-    {
-        _instance.FGUID = input;
-        Assert.Equal(expected, _instance.FGUID);
-    }
-
-    [Fact]
-    public void GUID_ShouldRespectMaxLength()
-    {
-        var longString = new string ('A', 150 + 10);
-        _instance.FGUID = longString;
-        Assert.True(_instance.FGUID.Length <= 150);
     }
 
     [Theory]
@@ -677,6 +662,23 @@ public class DBClientesTests : IDisposable
     }
 
     [Theory]
+    [InlineData("01/01/2000")]
+    [InlineData("31/12/2023")]
+    [InlineData("15/08/2024")]
+    public void Data_ShouldFormatDateCorrectly(string dateString)
+    {
+        _instance.FData = dateString;
+        Assert.Equal(dateString, _instance.FData);
+    }
+
+    [Fact]
+    public void Data_EmptyDate_ShouldReturnEmptyString()
+    {
+        var instance = new DBClientes();
+        Assert.Equal(string.Empty, instance.FData);
+    }
+
+    [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("  Teste  ", "Teste")]
@@ -850,6 +852,24 @@ public class DBClientesTests : IDisposable
         var longString = new string ('A', 120 + 10);
         _instance.FPessoaContato = longString;
         Assert.True(_instance.FPessoaContato.Length <= 120);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("  Teste  ", "Teste")]
+    public void Guid_ShouldTrimAndHandleNulls(string input, string expected)
+    {
+        _instance.FGuid = input;
+        Assert.Equal(expected, _instance.FGuid);
+    }
+
+    [Fact]
+    public void Guid_ShouldRespectMaxLength()
+    {
+        var longString = new string ('A', 150 + 10);
+        _instance.FGuid = longString;
+        Assert.True(_instance.FGuid.Length <= 150);
     }
 
     public virtual void Dispose()

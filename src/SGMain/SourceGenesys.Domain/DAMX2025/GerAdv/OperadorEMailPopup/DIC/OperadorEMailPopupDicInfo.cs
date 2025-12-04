@@ -18,11 +18,11 @@ public static partial class DBOperadorEMailPopupDicInfo
     public const string Autenticacao = "oepAutenticacao"; // LOCALIZACAO 170523
     public const string Descricao = "oepDescricao"; // LOCALIZACAO 170523
     public const string Usuario = "oepUsuario"; // LOCALIZACAO 170523
-    public const string GUID = "oepGUID"; // LOCALIZACAO 170523
     public const string PortaSmtp = "oepPortaSmtp"; // LOCALIZACAO 170523
     public const string PortaPop3 = "oepPortaPop3"; // LOCALIZACAO 170523
     public const string Assinatura = "oepAssinatura"; // LOCALIZACAO 170523
     public const string Senha256 = "oepSenha256"; // LOCALIZACAO 170523
+    public const string Guid = "oepGuid"; // LOCALIZACAO 170523
     public const string QuemCad = "oepQuemCad"; // LOCALIZACAO 170523
     public const string DtCad = "oepDtCad"; // LOCALIZACAO 170523
     public const string QuemAtu = "oepQuemAtu"; // LOCALIZACAO 170523
@@ -53,80 +53,24 @@ public static partial class DBOperadorEMailPopupDicInfo
 
     public const string PTabelaNome = "OperadorEMailPopup";
 #region PropriedadesDaTabela
-    public static DBInfoSystem OepOperador => new(0, PTabelaNome, CampoCodigo, Operador, "Operador", "Operador", ETipoDadosSysteminfo.SysteminfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "oep"
-    }; // DBI 11 
-    public static DBInfoSystem OepNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, "Nome", "Nome", ETipoDadosSysteminfo.SysteminfoTextNome, true, true, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepSenha => new(0, PTabelaNome, CampoCodigo, Senha, 50, "Senha", "Senha", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepSMTP => new(0, PTabelaNome, CampoCodigo, SMTP, 255, "SMTP", "SMTP", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepPOP3 => new(0, PTabelaNome, CampoCodigo, POP3, 255, "POP3", "POP3", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepAutenticacao => new(0, PTabelaNome, CampoCodigo, Autenticacao, "Autenticacao", "Autenticacao", ETipoDadosSysteminfo.SysteminfoBoolean)
-    {
-        IsRequired = true,
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, "Descrição", "Descrição", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepUsuario => new(0, PTabelaNome, CampoCodigo, Usuario, 50, "Usuario", "Usuario", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepGUID => new(0, PTabelaNome, CampoCodigo, GUID, 100, "GUID", "GUID", ETipoDadosSysteminfo.SysteminfoTextGuid, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepPortaSmtp => new(0, PTabelaNome, CampoCodigo, PortaSmtp, "PortaSmtp", "PortaSmtp", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepPortaPop3 => new(0, PTabelaNome, CampoCodigo, PortaPop3, "PortaPop3", "PortaPop3", ETipoDadosSysteminfo.SysteminfoNumber)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepAssinatura => new(0, PTabelaNome, CampoCodigo, Assinatura, DevourerOne.PMaxSizeCampoMemo, "Assinatura", "Assinatura", ETipoDadosSysteminfo.SysteminfoMemo, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepSenha256 => new(0, PTabelaNome, CampoCodigo, Senha256, 4000, "Senha256", "Senha256", ETipoDadosSysteminfo.SysteminfoText, true, false, false)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, "Usuário de Cadastro", "Usuário de Cadastro", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "oep"
-    }; // DBI 11 
-    public static DBInfoSystem OepDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, "Data de Cadastro", "Data de Cadastro", ETipoDadosSysteminfo.SysteminfoDataCadastramento)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, "Usuário de Atualização", "Usuário de Atualização", ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false)
-    {
-        Prefixo = "oep"
-    }; // DBI 11 
-    public static DBInfoSystem OepDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, "Data de Atualização", "Data de Atualização", ETipoDadosSysteminfo.SysteminfoDataModificacao)
-    {
-        Prefixo = "oep"
-    };
-    public static DBInfoSystem OepVisto => new(0, PTabelaNome, CampoCodigo, Visto, "Visto", "Visto", ETipoDadosSysteminfo.SysteminfoBooleanVisto)
-    {
-        IsRequired = true,
-        Prefixo = "oep"
-    };
+    public static DBInfoSystem OepOperador => new(0, PTabelaNome, CampoCodigo, Operador, Operador, Operador, EDataTypeSystemInfo.SystemInfoForeingkey, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "oep"); // DBI 11 
+    public static DBInfoSystem OepNome => new(0, PTabelaNome, CampoCodigo, Nome, 80, Nome, Nome, EDataTypeSystemInfo.SystemInfoTextNameDescription, true, true, false, prefixo: "oep");
+    public static DBInfoSystem OepSenha => new(0, PTabelaNome, CampoCodigo, Senha, 50, Senha, Senha, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepSMTP => new(0, PTabelaNome, CampoCodigo, SMTP, 255, SMTP, SMTP, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepPOP3 => new(0, PTabelaNome, CampoCodigo, POP3, 255, POP3, POP3, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepAutenticacao => new(0, PTabelaNome, CampoCodigo, Autenticacao, Autenticacao, Autenticacao, EDataTypeSystemInfo.SystemInfoBoolean, prefixo: "oep", isRequired: true);
+    public static DBInfoSystem OepDescricao => new(0, PTabelaNome, CampoCodigo, Descricao, 100, Descricao, Descricao, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepUsuario => new(0, PTabelaNome, CampoCodigo, Usuario, 50, Usuario, Usuario, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepPortaSmtp => new(0, PTabelaNome, CampoCodigo, PortaSmtp, PortaSmtp, PortaSmtp, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oep");
+    public static DBInfoSystem OepPortaPop3 => new(0, PTabelaNome, CampoCodigo, PortaPop3, PortaPop3, PortaPop3, EDataTypeSystemInfo.SystemInfoNumber, prefixo: "oep");
+    public static DBInfoSystem OepAssinatura => new(0, PTabelaNome, CampoCodigo, Assinatura, DevourerOne.PMaxSizeCampoMemo, Assinatura, Assinatura, EDataTypeSystemInfo.SystemInfoMemo, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepSenha256 => new(0, PTabelaNome, CampoCodigo, Senha256, 4000, Senha256, Senha256, EDataTypeSystemInfo.SystemInfoText, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepGuid => new(0, PTabelaNome, CampoCodigo, Guid, 100, Guid, Guid, EDataTypeSystemInfo.SystemInfoTextGuid, true, false, false, prefixo: "oep");
+    public static DBInfoSystem OepQuemCad => new(0, PTabelaNome, CampoCodigo, QuemCad, QuemCad, QuemCad, EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "oep"); // DBI 11 
+    public static DBInfoSystem OepDtCad => new(0, PTabelaNome, CampoCodigo, DtCad, DtCad, DtCad, EDataTypeSystemInfo.SystemInfoDateAdd, prefixo: "oep");
+    public static DBInfoSystem OepQuemAtu => new(0, PTabelaNome, CampoCodigo, QuemAtu, QuemAtu, QuemAtu, EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt, DBOperadorDicInfo.CampoCodigo, DBOperadorDicInfo.TabelaNome, new DBOperadorODicInfo(), false, prefixo: "oep"); // DBI 11 
+    public static DBInfoSystem OepDtAtu => new(0, PTabelaNome, CampoCodigo, DtAtu, DtAtu, DtAtu, EDataTypeSystemInfo.SystemInfoDateUpdt, prefixo: "oep");
+    public static DBInfoSystem OepVisto => new(0, PTabelaNome, CampoCodigo, Visto, Visto, Visto, EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed, prefixo: "oep", isRequired: true);
 
 #endregion
     [Serializable]

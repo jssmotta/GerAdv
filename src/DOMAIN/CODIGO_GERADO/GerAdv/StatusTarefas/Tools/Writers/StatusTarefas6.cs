@@ -9,13 +9,13 @@ namespace MenphisSI.GerAdv.Writers;
 public partial interface IStatusTarefasWriter
 {
     Task<FStatusTarefas> WriteAsync(Models.StatusTarefas statustarefas, int auditorQuem, MsiSqlConnection? oCnn);
-    Task Delete(StatusTarefasResponse statustarefas, int operadorId, MsiSqlConnection? oCnn);
+    Task DeleteAsync(StatusTarefasResponse statustarefas, int operadorId, MsiSqlConnection? oCnn);
 }
 
 public class StatusTarefasWriter(IFStatusTarefasFactory statustarefasFactory) : IStatusTarefasWriter
 {
     private readonly IFStatusTarefasFactory _statustarefasFactory = statustarefasFactory ?? throw new ArgumentNullException(nameof(statustarefasFactory));
-    public virtual async Task Delete(StatusTarefasResponse statustarefas, int operadorId, MsiSqlConnection? oCnn)
+    public virtual async Task DeleteAsync(StatusTarefasResponse statustarefas, int operadorId, MsiSqlConnection? oCnn)
     {
         await _statustarefasFactory.DeleteAsync(operadorId, statustarefas.Id, oCnn);
     }
@@ -24,7 +24,7 @@ public class StatusTarefasWriter(IFStatusTarefasFactory statustarefasFactory) : 
     {
         using var dbRec = await (statustarefas.Id.IsEmptyIDNumber() ? _statustarefasFactory.CreateAsync() : _statustarefasFactory.CreateFromIdAsync(statustarefas.Id, oCnn));
         dbRec.FNome = statustarefas.Nome;
-        dbRec.FGUID = statustarefas.GUID;
+        dbRec.FGuid = statustarefas.Guid;
         dbRec.AuditorQuem = auditorQuem;
         await dbRec.UpdateAsync(oCnn);
         return dbRec;

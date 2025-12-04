@@ -74,10 +74,11 @@ public class ProDespesasWriterTests
         var result = await _prodespesasWriter.WriteAsync(prodespesas, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFProDespesas.Object);
+        _mockFProDespesas.VerifySet(x => x.FGuid = prodespesas.Guid, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FLigacaoID = prodespesas.LigacaoID, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FCliente = prodespesas.Cliente, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FCorrigido = prodespesas.Corrigido, Times.Once);
-        _mockFProDespesas.VerifySet(x => x.FData = prodespesas.Data, Times.Once);
+        _mockFProDespesas.VerifySet(x => x.FData = prodespesas.Data.ToString(), Times.Once);
         _mockFProDespesas.VerifySet(x => x.FValorOriginal = prodespesas.ValorOriginal, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FProcesso = prodespesas.Processo, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FQuitado = prodespesas.Quitado, Times.Once);
@@ -86,8 +87,22 @@ public class ProDespesasWriterTests
         _mockFProDespesas.VerifySet(x => x.FTipo = prodespesas.Tipo, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FHistorico = prodespesas.Historico, Times.Once);
         _mockFProDespesas.VerifySet(x => x.FLivroCaixa = prodespesas.LivroCaixa, Times.Once);
-        _mockFProDespesas.VerifySet(x => x.FGUID = prodespesas.GUID, Times.Once);
         _mockFProDespesas.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithNullData_ShouldNotSetFData()
+    {
+        // Arrange
+        var prodespesas = CreateValidProDespesasModel();
+        prodespesas.Data = null;
+        var auditorQuem = 123;
+        _mockProDespesasFactory.Setup(x => x.CreateAsync()).ReturnsAsync(_mockFProDespesas.Object);
+        _mockFProDespesas.Setup(x => x.UpdateAsync(It.IsAny<MsiSqlConnection>(), It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>())).ReturnsAsync(0);
+        // Act
+        await _prodespesasWriter.WriteAsync(prodespesas, auditorQuem, _mockConnection.Object);
+        // Assert
+        _mockFProDespesas.VerifySet(x => x.FData = It.IsAny<string>(), Times.Never);
     }
 
     [Fact]
@@ -145,7 +160,7 @@ public class ProDespesasWriterTests
         var operadorId = 456;
         _mockProDespesasFactory.Setup(x => x.DeleteAsync(operadorId, prodespesasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _prodespesasWriter.Delete(prodespesasResponse, operadorId, _mockConnection.Object);
+        await _prodespesasWriter.DeleteAsync(prodespesasResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockProDespesasFactory.Verify(x => x.DeleteAsync(operadorId, prodespesasResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -161,7 +176,7 @@ public class ProDespesasWriterTests
         var operadorId = 111;
         _mockProDespesasFactory.Setup(x => x.DeleteAsync(operadorId, prodespesasResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _prodespesasWriter.Delete(prodespesasResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _prodespesasWriter.DeleteAsync(prodespesasResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -178,7 +193,7 @@ public class ProDespesasWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockProDespesasFactory.Setup(x => x.DeleteAsync(operadorId, prodespesasResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _prodespesasWriter.Delete(prodespesasResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _prodespesasWriter.DeleteAsync(prodespesasResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -208,10 +223,11 @@ public class ProDespesasWriterTests
         return new Models.ProDespesas
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             LigacaoID = 1,
             Cliente = 1,
             Corrigido = false,
-            Data = "27/05/2022",
+            Data = "24/04/1975",
             ValorOriginal = 1m,
             Processo = 1,
             Quitado = 1,
@@ -219,8 +235,7 @@ public class ProDespesasWriterTests
             Valor = 1m,
             Tipo = false,
             Historico = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            LivroCaixa = false,
-            GUID = Guid.NewGuid().ToString()
+            LivroCaixa = false
         };
     }
 #endregion

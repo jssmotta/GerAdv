@@ -38,7 +38,7 @@ namespace MenphisSI.GerAdv.Models
         public bool Inativo { get; set; }
 
         /// <summary>
-        /// Descricao - grpDescricao - tamanho máximo: 50 
+        /// Descrições - grpDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -48,12 +48,6 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("observacoes")]
         public string Observacoes { get; set; } = "";
-
-        /// <summary>
-        /// GUID - grpGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// Icone - grpIcone - tamanho máximo: 255 
@@ -66,6 +60,12 @@ namespace MenphisSI.GerAdv.Models
         /// </summary>
         [JsonPropertyName("despesaunificada")]
         public bool DespesaUnificada { get; set; }
+
+        /// <summary>
+        /// GUID - grpGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
     }
 }
 
@@ -102,7 +102,7 @@ namespace MenphisSI.GerAdv.Models.All
         public bool Inativo { get; set; }
 
         /// <summary>
-        /// Descricao - grpDescricao - tamanho máximo: 50 
+        /// Descrições - grpDescricao - tamanho máximo: 50 
         /// </summary>
         [JsonPropertyName("descricao")]
         public string Descricao { get; set; } = "";
@@ -112,12 +112,6 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("observacoes")]
         public string Observacoes { get; set; } = "";
-
-        /// <summary>
-        /// GUID - grpGUID - tamanho máximo: 100 
-        /// </summary>
-        [JsonPropertyName("guid")]
-        public string GUID { get; set; } = "";
 
         /// <summary>
         /// Icone - grpIcone - tamanho máximo: 255 
@@ -130,6 +124,12 @@ namespace MenphisSI.GerAdv.Models.All
         /// </summary>
         [JsonPropertyName("despesaunificada")]
         public bool DespesaUnificada { get; set; }
+
+        /// <summary>
+        /// GUID - grpGuid - tamanho máximo: 100 
+        /// </summary>
+        [JsonPropertyName("guid")]
+        public string Guid { get; set; } = "";
 
         [JsonPropertyName("nomeoponentes")]
         public string NomeOponentes { get; set; } = string.Empty;

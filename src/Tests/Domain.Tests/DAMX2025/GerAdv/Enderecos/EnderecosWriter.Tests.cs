@@ -74,6 +74,7 @@ public class EnderecosWriterTests
         var result = await _enderecosWriter.WriteAsync(enderecos, auditorQuem, _mockConnection.Object);
         // Assert
         result.Should().Be(_mockFEnderecos.Object);
+        _mockFEnderecos.VerifySet(x => x.FGuid = enderecos.Guid, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FTopIndex = enderecos.TopIndex, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FDescricao = enderecos.Descricao, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FContato = enderecos.Contato, Times.Once);
@@ -94,7 +95,6 @@ public class EnderecosWriterTests
         _mockFEnderecos.VerifySet(x => x.FQuem = enderecos.Quem, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FQuemIndicou = enderecos.QuemIndicou, Times.Once);
         _mockFEnderecos.VerifySet(x => x.FReportECBOnly = enderecos.ReportECBOnly, Times.Once);
-        _mockFEnderecos.VerifySet(x => x.FGUID = enderecos.GUID, Times.Once);
         _mockFEnderecos.VerifySet(x => x.AuditorQuem = auditorQuem, Times.Once);
     }
 
@@ -153,7 +153,7 @@ public class EnderecosWriterTests
         var operadorId = 456;
         _mockEnderecosFactory.Setup(x => x.DeleteAsync(operadorId, enderecosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        await _enderecosWriter.Delete(enderecosResponse, operadorId, _mockConnection.Object);
+        await _enderecosWriter.DeleteAsync(enderecosResponse, operadorId, _mockConnection.Object);
         // Assert
         _mockEnderecosFactory.Verify(x => x.DeleteAsync(operadorId, enderecosResponse.Id, _mockConnection.Object), Times.Once);
     }
@@ -169,7 +169,7 @@ public class EnderecosWriterTests
         var operadorId = 111;
         _mockEnderecosFactory.Setup(x => x.DeleteAsync(operadorId, enderecosResponse.Id, _mockConnection.Object)).Returns(Task.CompletedTask);
         // Act
-        Func<Task> act = async () => await _enderecosWriter.Delete(enderecosResponse, operadorId, _mockConnection.Object);
+        Func<Task> act = async () => await _enderecosWriter.DeleteAsync(enderecosResponse, operadorId, _mockConnection.Object);
         // Assert
         await act.Should().NotThrowAsync();
     }
@@ -186,7 +186,7 @@ public class EnderecosWriterTests
         var expectedException = new InvalidOperationException("Delete failed");
         _mockEnderecosFactory.Setup(x => x.DeleteAsync(operadorId, enderecosResponse.Id, _mockConnection.Object)).ThrowsAsync(expectedException);
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _enderecosWriter.Delete(enderecosResponse, operadorId, _mockConnection.Object));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _enderecosWriter.DeleteAsync(enderecosResponse, operadorId, _mockConnection.Object));
         exception.Should().Be(expectedException);
     }
 
@@ -216,6 +216,7 @@ public class EnderecosWriterTests
         return new Models.Enderecos
         {
             Id = 0,
+            Guid = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             TopIndex = false,
             Descricao = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             Contato = "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
@@ -235,8 +236,7 @@ public class EnderecosWriterTests
             EMail = "test@email.com",
             Quem = 1,
             QuemIndicou = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            ReportECBOnly = false,
-            GUID = Guid.NewGuid().ToString()
+            ReportECBOnly = false
         };
     }
 #endregion
