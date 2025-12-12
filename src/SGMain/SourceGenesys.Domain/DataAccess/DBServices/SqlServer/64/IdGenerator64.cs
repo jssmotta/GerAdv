@@ -31,7 +31,7 @@ public partial class DBToolWTable
 
             if (addCampoCodigo)
             {
-                _parent.Fields(_parent.CampoCodigo, _parent._mID, ETiposCampos.FNumber);
+                _parent.Fields(_parent.CampoCodigo, _parent._mID, EGenericTypeFields.FNumber);
             }
         }
 

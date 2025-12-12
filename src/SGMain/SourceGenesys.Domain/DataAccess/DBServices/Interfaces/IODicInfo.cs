@@ -6,17 +6,22 @@ public interface IODicInfo
     ImmutableArray<DBInfoSystem> IListFields();
     ImmutableArray<DBInfoSystem> IFieldsRaw();
     ImmutableArray<DBInfoSystem> IPkFields();
-    ImmutableArray<DBInfoSystem> IPkIndicesFields();
+    ImmutableArray<DBInfoSystem> IPkIndexFields();
+
+    DBInfoSystem? GetFieldNameDescription()=> IListFields().FirstOrDefault(t=> t.FNome.Equals(this.IFieldNameDescription()));
+
     bool HasAuditor();    
     bool HasNameId();
-    string ICampoCodigo();
+    string IFieldId();
     string ITypeFieldCode();
     bool IdIsIdentity();
-    string ICampoNome();
-    string IPrefixo();
-    bool IIsStoredProcedureOrView();       
-    DBInfoSystem? GetInfoSystemByNameField(string campo);
-    string NomeSemPrefixo() => IPrefixo().Length > 0 && ICampoNome().StartsWith(IPrefixo()) ? ICampoNome().Substring(IPrefixo().Length) : ICampoNome();
+    string IFieldNameDescription();
+    string IPrefix();
+    bool IsStoredProcedureOrView();
 
+    bool IsView();
+    DBInfoSystem? GetInfoSystemByNameField(string campo);
+    string GetNameWithoutPrefix() => IPrefix().Length > 0 && IFieldNameDescription().StartsWith(IPrefix()) ? IFieldNameDescription().Substring(IPrefix().Length) : IFieldNameDescription();
+     
 }
 

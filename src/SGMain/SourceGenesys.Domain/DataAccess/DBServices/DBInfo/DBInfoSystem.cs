@@ -1,44 +1,51 @@
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace MenphisSI.DB;
 
 [Serializable]
 public partial class DBInfoSystem : IDBInfoSystem
 {
-    public string NomeSemPrefixo()
+    public string GetNameWithoutPrefix()
     {
         var result = Prefixo.Length > 0 && FNome.StartsWith(Prefixo) ? FNome.Substring(Prefixo.Length) : FNome;
         return result.Equals("") ? "CampoCodigo" : result;
     }
 
-    public string GetForeingTabela() => FForeingKeyTable ?? string.Empty; 
-     
+    public string GetForeingTable() => FForeingKeyTable ?? string.Empty;
+
 
     /// <summary>
     /// Criar objecto InfoSystem on TheFly
     /// </summary>
-    /// <param name="nome"></param>
-    /// <param name="tamanho"></param>
+    /// <param name="name"></param>
+    /// <param name="size"></param>
     /// <param name="caption"></param>
     public DBInfoSystem(byte grupo,
-                        string tabela, string tabelaCampoCodigo, string nome,
-                        int tamanho,
+                        string table, string tableFieldId, string name,
+                        int size,
                         string caption, string tooltip,
-                        ETipoDadosSysteminfo tipo,
+                        EDataTypeSystemInfo tipo,
                         bool pesquisavel,
                         bool keyNome,
-                        bool keyCodigo
+                        bool keyCodigo,
+                        string prefixo = "",
+                        bool isRequired = false
                         )
     {
-        TTabela = tabela;
-        TCampoCodigo = tabelaCampoCodigo;
-        FNome = nome;
+        TTabela = table;
+        TCampoCodigo = tableFieldId;
+        FNome = name;
         FCaption = caption;
         FTooltip = tooltip;
-        FTamanho = tamanho;
+        FTamanho = size;
         FTipo = tipo;
         FPesquisavel = pesquisavel;
         FIsKeyNome = keyNome;
         FIsKeyCodigo = keyCodigo;
         Grupo = (EGroupSepDados)grupo;
+        this.IsRequired = isRequired;
+        Prefixo = prefixo;
     }
     /// <summary>
     /// 26-01-2017 22:45
@@ -53,8 +60,9 @@ public partial class DBInfoSystem : IDBInfoSystem
     public DBInfoSystem(int grupo,
                    string tabela, string tabelaCampoCodigo, string nome,
                    string caption, string tooltip,
-                   ETipoDadosSysteminfo tipo
-                   )
+                   EDataTypeSystemInfo tipo,
+                   string prefixo = "",
+                   bool isRequired = false)
     {
         TTabela = tabela;
         TCampoCodigo = tabelaCampoCodigo;
@@ -67,6 +75,8 @@ public partial class DBInfoSystem : IDBInfoSystem
         FIsKeyNome = false;
         FIsKeyCodigo = false;
         Grupo = (EGroupSepDados)grupo;
+        this.IsRequired = isRequired;
+        Prefixo = prefixo;
     }
     /// <summary>
     /// Campos relacionados
@@ -82,12 +92,16 @@ public partial class DBInfoSystem : IDBInfoSystem
         string nome,
         //int tamanho,
         string caption, string tooltip,
-        ETipoDadosSysteminfo tipo,
+        EDataTypeSystemInfo tipo,
         string foreingKey,
         string foreingKeyTable,
         IODicInfo foreingObject,
-        bool foreingKeyObrigatoria)
+        bool foreingKeyObrigatoria,
+        string prefixo = "",
+        bool isRequired = false)
     {
+        this.IsRequired = isRequired;
+        Prefixo = prefixo;
         TTabela = tabela;
         TCampoCodigo = tabelaCampoCodigo;
         FNome = nome;
@@ -112,10 +126,13 @@ public partial class DBInfoSystem : IDBInfoSystem
     public DBInfoSystem(byte grupo, string tabela, string tabelaCampoCodigo, string nome,
                int tamanho,
                string caption, string tooltip,
-               ETipoDadosSysteminfo tipo,
-               bool pesquisavel
-               )
+               EDataTypeSystemInfo tipo,
+               bool pesquisavel,
+               string prefixo = "",
+               bool isRequired = false)
     {
+        this.IsRequired = isRequired;
+        Prefixo = prefixo;
         TTabela = tabela;
         FTooltip = tooltip;
         TCampoCodigo = tabelaCampoCodigo;
@@ -150,7 +167,7 @@ public partial class DBInfoSystem : IDBInfoSystem
     /// Tipo do dado no banco de dados
     /// </summary>
 
-    public ETipoDadosSysteminfo FTipo { get; set; }
+    public EDataTypeSystemInfo FTipo { get; set; }
     /// <summary>
     /// O campo nome é chave
     /// </summary>
@@ -181,7 +198,7 @@ public partial class DBInfoSystem : IDBInfoSystem
     /// </summary>
 
     public bool FPesquisavel { get; set; }
-     
+
 
     public bool FForeingKeyObrigatoria { get; set; }
     /// <summary>
@@ -197,9 +214,9 @@ public partial class DBInfoSystem : IDBInfoSystem
     {
         get
         {
-            if (FTipo == ETipoDadosSysteminfo.SysteminfoTextCpf) return FTamanho + 3;
-            else if (FTipo == ETipoDadosSysteminfo.SysteminfoTextCnpj) return FTamanho + 4;
-            else if (FTipo == ETipoDadosSysteminfo.SysteminfoTextCep) return 10;
+            if (FTipo == EDataTypeSystemInfo.SystemInfoTextCpf) return FTamanho + 3;
+            else if (FTipo == EDataTypeSystemInfo.SystemInfoTextCnpj) return FTamanho + 4;
+            else if (FTipo == EDataTypeSystemInfo.SystemInfoTextCep) return 10;
 
             return IsDataFixedSize(FTipo) ? 10 : FTamanho;
         }
@@ -219,8 +236,9 @@ public partial class DBInfoSystem : IDBInfoSystem
     public bool IsRequired { get; internal set; }
     // Changed Prefixo from internal set to public set for testability
     public string Prefixo { get; set; } = string.Empty;
-   
-    public string GetTabelaNome() => TTabela;
-    public string GetCampoNome() => FNome;
+
+    public string GetTableName() => TTabela;
+    public string GetFieldNameDescription() => FNome;
+
 
 }

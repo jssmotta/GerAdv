@@ -9,11 +9,21 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.0.0" />
+	  <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+	  <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+	  <PackageReference Include="NLog" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\GerEntity\src\MenphisSI.Crypto\MenphisSI.Crypto.csproj" />
     <ProjectReference Include="..\..\..\..\GerEntity\src\MenphisSI.GerEntityTools\MenphisSI.GerEntityTools.csproj" />
+    <ProjectReference Include="..\..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BaseCommon\" />
+    <Folder Include="Connections\2.0\" />
   </ItemGroup>
 
 </Project>

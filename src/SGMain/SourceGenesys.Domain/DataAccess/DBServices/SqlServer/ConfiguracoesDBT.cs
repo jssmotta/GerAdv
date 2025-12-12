@@ -346,7 +346,7 @@ public partial class ConfiguracoesDBT
         if (oCnn is null) return null;
         using var command = new SqlCommand($"{SQLNoCount}{cSql}", oCnn?.InnerConnection, null);
 
-        if (parameters != null)
+        if (parameters != null && parameters.Count > 0)
             foreach (var param in parameters)
             {
                 if (!command.Parameters.Contains(param.ParameterName))
@@ -392,6 +392,29 @@ public partial class ConfiguracoesDBT
         using var cmd = new SqlCommand(cmdText: $"Select TOP 1 {campoRetorno} From {cTabela.dbo(oCnn)} Where {cWhere}",
             connection: oCnn?.InnerConnection);
         return cmd.ExecuteScalar()?.ToString() ?? string.Empty;
+    }
+
+    public static string GetField(in string cWhere, in string campoRetorno, in string cTabela, List<SqlParameter>? parameters, in MsiSqlConnection? oCnn)
+    {
+        using var command = new SqlCommand(cmdText: $"Select TOP 1 {campoRetorno} From {cTabela.dbo(oCnn)} Where {cWhere}",
+            connection: oCnn?.InnerConnection);
+        if (parameters != null)
+            foreach (var param in parameters)
+            {
+                if (!command.Parameters.Contains(param.ParameterName))
+                {
+                    var newParam = new SqlParameter(param.ParameterName, param.Value)
+                    {
+                        SqlDbType = param.SqlDbType,
+                        Direction = param.Direction,
+                        Size = param.Size,
+                        Precision = param.Precision,
+                        Scale = param.Scale
+                    };
+                    command.Parameters.Add(newParam);
+                }
+            }
+        return command.ExecuteScalar()?.ToString() ?? string.Empty;
     }
 
 }

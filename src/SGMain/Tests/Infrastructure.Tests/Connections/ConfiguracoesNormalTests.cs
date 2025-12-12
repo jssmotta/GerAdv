@@ -109,7 +109,7 @@ public class ConfiguracoesNormalTests
             result.Should().Contain("Pooling=true");
             result.Should().Contain("Integrated Security=false");
             result.Should().Contain("Connect Timeout=30");
-            result.Should().Contain("Persist Security Info=True");
+            result.Should().Contain("Persist Security Info=False");
             result.Should().Contain("TrustServerCertificate=True");
         }
         catch (Exception ex)
@@ -250,7 +250,7 @@ public class ConfiguracoesNormalTests
             result.Should().Contain("Pooling=true");
             result.Should().Contain("Integrated Security=false");
             result.Should().Contain("Connect Timeout=30");
-            result.Should().Contain("Persist Security Info=True");
+            result.Should().Contain("Persist Security Info=False");
             result.Should().Contain("TrustServerCertificate=True");
         }
         catch (Exception ex)
@@ -349,7 +349,7 @@ public class ConfiguracoesNormalTests
                 "Pooling=true",
                 "Integrated Security=false",
                 "Connect Timeout=30",
-                "Persist Security Info=True",
+                "Persist Security Info=False",
                 "TrustServerCertificate=True"
             };
 

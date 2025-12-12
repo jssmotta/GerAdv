@@ -2,8 +2,8 @@
 
 public interface IDBInfoSystem
 {
-    string GetForeingTabela();
-    string GetTabelaNome();
-    string GetCampoNome();
+    string GetForeingTable();
+    string GetTableName();
+    string GetFieldNameDescription();
 }
 

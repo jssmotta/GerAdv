@@ -2,21 +2,52 @@
 
 public partial class DBInfoSystem
 {
-    public static bool IsDocumento(int tipo) =>
-       tipo == (int)ETipoDadosSysteminfo.SysteminfoTextCpf ||
-       tipo == (int)ETipoDadosSysteminfo.SysteminfoTextCnpj;
+    public static string[] AuditorFields =
+    [
+        "QuemCad",
+        "DtCad",
+        "QuemAtu",
+        "DtAtu",
+        "Visto"
+    ]; 
+
+    public static bool IsAuditor(DBInfoSystem campo)
+    {
+        var prefixo = campo.Prefixo;
+        return AuditorFields.Any(a => campo.FNome.Equals(prefixo + a));    
+    }
+
+    public static string AuditorCaption(DBInfoSystem campo)
+    {
+        var prefixo = campo.Prefixo;
+        var fieldName = campo.FNome;
+
+        return fieldName switch
+        {
+            var name when name.Equals(prefixo + AuditorFields[0]) => "Quem cadastrou",
+            var name when name.Equals(prefixo + AuditorFields[1]) => "Data de cadastro",
+            var name when name.Equals(prefixo + AuditorFields[2]) => "Quem atualizou",
+            var name when name.Equals(prefixo + AuditorFields[3]) => "Data de atualização",
+            var name when name.Equals(prefixo + AuditorFields[4]) => "Visto",
+            _ => campo.FCaption
+        };
+    }
+
+    public static bool IsDocumentId(int tipo) =>
+       tipo == (int)EDataTypeSystemInfo.SystemInfoTextCpf ||
+       tipo == (int)EDataTypeSystemInfo.SystemInfoTextCnpj;
 
     /// <summary>
     /// Tamanho fixo de 10 casas para as datas
     /// </summary>
-    /// <param name="eTipoDadosSysteminfo"></param>
+    /// <param name="eTipoDadosSystemInfo"></param>
     /// <returns></returns>
-    public static bool IsDataFixedSize(ETipoDadosSysteminfo eTipoDadosSysteminfo)
+    public static bool IsDataFixedSize(EDataTypeSystemInfo eTipoDadosSystemInfo)
 
-        => (eTipoDadosSysteminfo is ETipoDadosSysteminfo.SysteminfoDataInicio or
-                 ETipoDadosSysteminfo.SysteminfoDataTermino or
-                 ETipoDadosSysteminfo.SysteminfoDatetime or
-                 ETipoDadosSysteminfo.SysteminfoDataNascimento);
+        => (eTipoDadosSystemInfo is EDataTypeSystemInfo.SystemInfoDateStart or
+                 EDataTypeSystemInfo.SystemInfoDateEnds or
+                 EDataTypeSystemInfo.SystemInfoDatetime or
+                 EDataTypeSystemInfo.SystemInfoDateBirthday);
 
     public static string GetGroupSepDescription(EGroupSepDados grupo)
    =>
@@ -41,10 +72,10 @@ public partial class DBInfoSystem
     /// Indica se o campo é do tipo Texto
     /// </summary>
     public static bool IsText(int idTipo) =>
-               idTipo == (int)ETipoDadosSysteminfo.SysteminfoTextGuid ||
-               idTipo == (int)ETipoDadosSysteminfo.SysteminfoTextClassificacaoStar ||
+               idTipo == (int)EDataTypeSystemInfo.SystemInfoTextGuid ||
+               idTipo == (int)EDataTypeSystemInfo.SystemInfoTextClassificationStar ||
                (idTipo >= 20 && idTipo <= 39) ||
-               idTipo == (int)ETipoDadosSysteminfo.SysteminfoTextCnh ||
+               idTipo == (int)EDataTypeSystemInfo.SystemInfoTextCnh ||
                IsMemo(idTipo);
     /// <summary>
     /// Fone/fax repete com o isText
@@ -52,54 +83,53 @@ public partial class DBInfoSystem
     /// <param name="idTipo"></param>
     /// <returns></returns>
     public static bool IsMemo(int idTipo) =>
-               idTipo is ((int)ETipoDadosSysteminfo.SysteminfoMemo) or
-               ((int)ETipoDadosSysteminfo.SysteminfoMemoObservacao) or
-               ((int)ETipoDadosSysteminfo.SysteminfoTextFax) or
-               ((int)ETipoDadosSysteminfo.SysteminfoTextFone);
+               idTipo is ((int)EDataTypeSystemInfo.SystemInfoMemo) or
+               ((int)EDataTypeSystemInfo.SystemInfoMemoObservations) or
+               ((int)EDataTypeSystemInfo.SystemInfoTextFax) or
+               ((int)EDataTypeSystemInfo.SystemInfoTextPhoneNumber);
     /// <summary>
     /// Indica se é Int
     /// </summary>
     /// <param name="idTipo"></param>
     /// <returns></returns>
     public static bool IsForeingKey(int idTipo) =>
-               idTipo is ((int)ETipoDadosSysteminfo.SysteminfoForeingkey) or
-               ((int)ETipoDadosSysteminfo.SysteminfoForeingkeyCidade) or
-               ((int)ETipoDadosSysteminfo.SysteminfoForeingkeyQuemAtu) or
-               ((int)ETipoDadosSysteminfo.SysteminfoForeingkeyQuemCad);
+               idTipo is ((int)EDataTypeSystemInfo.SystemInfoForeingkey) or 
+               ((int)EDataTypeSystemInfo.SystemInfoForeingkeyWhoUpdt) or
+               ((int)EDataTypeSystemInfo.SystemInfoForeingkeyWhoAdd);
     /// <summary>
     /// Indica se é um tipo [int]
     /// </summary>
     /// <param name="idTipo"></param>
     /// <returns></returns>
     public static bool IsNumber(int idTipo) =>
-         idTipo == (int)ETipoDadosSysteminfo.SysteminfoNumber || IsForeingKey(idTipo);
+         idTipo == (int)EDataTypeSystemInfo.SystemInfoNumber || IsForeingKey(idTipo);
     /// <summary>
     /// indica se é um tipo [float]
     /// </summary>
     /// <param name="idTipo"></param>
     /// <returns></returns>
     public static bool IsDoubleOrDecimal(int idTipo) =>
-        idTipo is ((int)ETipoDadosSysteminfo.SysteminfoDouble) or
-        ((int)ETipoDadosSysteminfo.SysteminfoDoubleSalario);
+        idTipo is ((int)EDataTypeSystemInfo.SystemInfoDouble) or
+        ((int)EDataTypeSystemInfo.SystemInfoNumberSalary);
     /// <summary>
     /// Indica se é do tipo Bool
     /// </summary>
     /// <param name="idTipo"></param>
     /// <returns></returns>
     public static bool IsBoolean(int idTipo) =>
-        idTipo is ((int)ETipoDadosSysteminfo.SysteminfoBoolean) or
-        ((int)ETipoDadosSysteminfo.SysteminfoBooleanBold) or
-        ((int)ETipoDadosSysteminfo.SysteminfoBooleanEtiqueta) or
-        ((int)ETipoDadosSysteminfo.SysteminfoBooleanSexo) or
-        ((int)ETipoDadosSysteminfo.SysteminfoBooleanTipoPessoa) or
-        ((int)ETipoDadosSysteminfo.SysteminfoBooleanVisto) or
-        ((int)ETipoDadosSysteminfo.SysteminfoBooleanLembrarAniversario);
+        idTipo is ((int)EDataTypeSystemInfo.SystemInfoBoolean) or
+        ((int)EDataTypeSystemInfo.SystemInfoBooleanBold) or
+        ((int)EDataTypeSystemInfo.SystemInfoBooleanTag) or
+        ((int)EDataTypeSystemInfo.SystemInfoBooleanSex) or
+        ((int)EDataTypeSystemInfo.SystemInfoBooleanTypePerson) or
+        ((int)EDataTypeSystemInfo.SystemInfoBooleanAuditorReviewed) or
+        ((int)EDataTypeSystemInfo.SystemInfoBooleanRemmeberBirthday);
 
 
     public static bool IsEMail(int idTipo) =>
-         idTipo is ((int)ETipoDadosSysteminfo.SysteminfoTextEmail) or
-            ((int)ETipoDadosSysteminfo.SysteminfoTextEmailCob) or
-            ((int)ETipoDadosSysteminfo.SysteminfoTextEmailPro);
+         idTipo is ((int)EDataTypeSystemInfo.SystemInfoTextEmail) or
+            ((int)EDataTypeSystemInfo.SystemInfoTextEmailBilling) or
+            ((int)EDataTypeSystemInfo.SystemInfoTextEmailPro);
 
     /// <summary>
     /// Indica se o campo é tipo [DateTime]
@@ -107,12 +137,23 @@ public partial class DBInfoSystem
     /// <param name="idTipo"></param>
     /// <returns></returns>
     public static bool IsData(int idTipo) =>
-            idTipo is ((int)ETipoDadosSysteminfo.SysteminfoDataCadastramento) or
-            ((int)ETipoDadosSysteminfo.SysteminfoDataInicio) or
-            ((int)ETipoDadosSysteminfo.SysteminfoDataTermino) or
-            ((int)ETipoDadosSysteminfo.SysteminfoDataModificacao) or
-            ((int)ETipoDadosSysteminfo.SysteminfoDataNascimento) or
-            ((int)ETipoDadosSysteminfo.SysteminfoDatetime);
+            idTipo is ((int)EDataTypeSystemInfo.SystemInfoDateAdd) or
+            ((int)EDataTypeSystemInfo.SystemInfoDateOnly) or
+            ((int)EDataTypeSystemInfo.SystemInfoTimeOnly) or
+            ((int)EDataTypeSystemInfo.SystemInfoDateStart) or
+            ((int)EDataTypeSystemInfo.SystemInfoDateEnds) or
+            ((int)EDataTypeSystemInfo.SystemInfoDateUpdt) or
+            ((int)EDataTypeSystemInfo.SystemInfoDateBirthday) or
+            ((int)EDataTypeSystemInfo.SystemInfoDatetime);
+
+
+    public static bool IsDateOnly(int idTipo) =>
+        idTipo is
+        ((int)EDataTypeSystemInfo.SystemInfoDateOnly) or
+        ((int)EDataTypeSystemInfo.SystemInfoDateStart) or
+        ((int)EDataTypeSystemInfo.SystemInfoDateEnds) or
+        ((int)EDataTypeSystemInfo.SystemInfoDateBirthday);
+        
     /// <summary>
     /// Passa o tipo do campo para o SQLmontar o CreateTable
     /// </summary>
@@ -141,7 +182,7 @@ public partial class DBInfoSystem
     /// <param name="idTipo"></param>
     /// <returns></returns>
     private static bool IsInteger(int idTipo) =>
-         IsForeingKey(idTipo) || idTipo == (int)ETipoDadosSysteminfo.SysteminfoNumber;
+         IsForeingKey(idTipo) || idTipo == (int)EDataTypeSystemInfo.SystemInfoNumber;
 
     public static string SqlSizeByType(DBInfoSystem item)
      =>
@@ -150,17 +191,17 @@ public partial class DBInfoSystem
             ? (item.FTamanho > 2048 ? "(max)" : $"({item.FTamanho})") : string.Empty
         );
 
-    private static string GetNomeCampoByInfoSystem(ETipoDadosSysteminfo eTipoDadosSysteminfo, List<DBInfoSystem> lista)
+    private static string GetNomeCampoByInfoSystem(EDataTypeSystemInfo eTipoDadosSystemInfo, List<DBInfoSystem> lista)
     {
         for (var nt = 0; nt < lista.Count; nt++)
-            if ((int)eTipoDadosSysteminfo == (int)lista[nt].FTipo) return lista[nt].FNome;
+            if ((int)eTipoDadosSystemInfo == (int)lista[nt].FTipo) return lista[nt].FNome;
         return string.Empty;
     }
 
-    private static string GetNomeCampoByInfoSystem(ETipoDadosSysteminfo eTipoDadosSysteminfo, List<DBInfoSystem> lista, string cInclude)
+    private static string GetNomeCampoByInfoSystem(EDataTypeSystemInfo eTipoDadosSystemInfo, List<DBInfoSystem> lista, string cInclude)
     {
         for (var nt = 0; nt < lista.Count; nt++)
-            if ((int)eTipoDadosSysteminfo == (int)lista[nt].FTipo)
+            if ((int)eTipoDadosSystemInfo == (int)lista[nt].FTipo)
                 if (lista[nt].FNome.IndexOf(cInclude, StringComparison.CurrentCultureIgnoreCase) != -1) return lista[nt].FNome;
 
         return string.Empty;

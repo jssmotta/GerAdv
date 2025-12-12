@@ -253,11 +253,11 @@ public class DBToolWTableGuid
         return RRandom.Next(minValue: 2, maxValue: NRandom);
     }
 
-    public void Fields(in string nomeCampo, DateTime? value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, DateTime? value, EGenericTypeFields tipo)
     {
         string cSqlValue;
-        var cFormat = tipo == ETiposCampos.FDateUltraFull ? "yyyy-MM-dd HH:mm:ss.fff" : "yyyy-MM-dd HH:mm:ss";
-        if (tipo == ETiposCampos.FNow)
+        var cFormat = tipo == EGenericTypeFields.FDateUltraFull ? "yyyy-MM-dd HH:mm:ss.fff" : "yyyy-MM-dd HH:mm:ss";
+        if (tipo == EGenericTypeFields.FNow)
         {
             var cTime = DevourerOne.DateTimeUtc;
             cSqlValue = value == null ? cTime.ToString(cFormat) : Convert.ToDateTime(value).ToString(cFormat);
@@ -313,21 +313,21 @@ public class DBToolWTableGuid
         return $"@{nomeCampo}";
     }
 
-    private string PrixValue(in decimal cSqlValue, string nomeCampo, ETiposCampos tipo)
+    private string PrixValue(in decimal cSqlValue, string nomeCampo, EGenericTypeFields tipo)
     {
         var idx = _lstCampos.Select((n, i) => new { Value = n, Index = i }).FirstOrDefault(n => n.Value == nomeCampo);
         if (idx != null)
         {
-            _lstValue[idx.Index] = cSqlValue < 0.001m ? (tipo == ETiposCampos.FNumberNull ? DBNull.Value : 0) : cSqlValue;
+            _lstValue[idx.Index] = cSqlValue < 0.001m ? (tipo == EGenericTypeFields.FNumberNull ? DBNull.Value : 0) : cSqlValue;
         }
-        _lstValue.Add(cSqlValue < 0.001m ? (tipo == ETiposCampos.FNumberNull ? DBNull.Value : 0) : cSqlValue);
+        _lstValue.Add(cSqlValue < 0.001m ? (tipo == EGenericTypeFields.FNumberNull ? DBNull.Value : 0) : cSqlValue);
         _lstCampos.Add(nomeCampo);
         return $"@{nomeCampo}";
     }
 
-    public void Fields(in string nomeCampo, long value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, long value, EGenericTypeFields tipo)
     {
-        var cSqlValue = value == 0 && tipo == ETiposCampos.FNumberNull ? "null" : value.ToString();
+        var cSqlValue = value == 0 && tipo == EGenericTypeFields.FNumberNull ? "null" : value.ToString();
         var sqlParam = CheckIfExists(cSqlValue, nomeCampo);
         if (sqlParam == null) return;
         if (Insert)
@@ -341,9 +341,9 @@ public class DBToolWTableGuid
         }
     }
 
-    public void Fields(in string nomeCampo, int value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, int value, EGenericTypeFields tipo)
     {
-        var cSqlValue = value == 0 && tipo == ETiposCampos.FNumberNull ? "null" : value.ToString();
+        var cSqlValue = value == 0 && tipo == EGenericTypeFields.FNumberNull ? "null" : value.ToString();
         var sqlParam = CheckIfExists(cSqlValue, nomeCampo);
         if (sqlParam == null) return;
         if (Insert)
@@ -357,7 +357,7 @@ public class DBToolWTableGuid
         }
     }
 
-    public void Fields(in string nomeCampo, byte[]? value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, byte[]? value, EGenericTypeFields tipo)
     {
         var sqlParam = CheckIfExists(value, nomeCampo);
         if (sqlParam == null) return;
@@ -372,7 +372,7 @@ public class DBToolWTableGuid
         }
     }
 
-    public void Fields(in string nomeCampo, string? value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, string? value, EGenericTypeFields tipo)
     {
         value ??= string.Empty;
         var sqlParam = CheckIfExists(value.Trim(), nomeCampo);
@@ -388,7 +388,7 @@ public class DBToolWTableGuid
         }
     }
 
-    public void Fields(in string nomeCampo, decimal value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, decimal value, EGenericTypeFields tipo)
     {
         var sqlParam = PrixValue(value, nomeCampo, tipo);
         if (sqlParam == null) return;
@@ -403,7 +403,7 @@ public class DBToolWTableGuid
         }
     }
 
-    public void Fields(in string nomeCampo, bool value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, bool value, EGenericTypeFields tipo)
     {
         var sqlParam = CheckIfExists(value ? "1" : "0", nomeCampo);
         if (sqlParam == null) return;

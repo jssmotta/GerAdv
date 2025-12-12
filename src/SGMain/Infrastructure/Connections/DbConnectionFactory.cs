@@ -7,19 +7,16 @@ namespace MenphisSI.Connections;
 
 public static class DbConnectionFactory
 {
-    // Reduzir tamanhos do pool para evitar memory leak
-    private const int MaxPoolSize = 50;  // Reduzido de 100
-    private const int MinPoolSize = 5;   // Reduzido de 10
+    // Usar valores configuráveis
+    private const int MaxPoolSize = 100;
+    private const int MinPoolSize = 10;     
 
-    // Reduzir timeout para conexões ociosas
-    private const int IdleTimeout = 120; // Reduzido de 300 para 120 segundos
-    private const int ConnectionTimeout = 15; // Reduzido de 25 para 15 segundos
+    // Adicionar timeout configurável para conexões ociosas
+    private const int IdleTimeout = 300;
+    private const int ConnectionTimeout = 25; // 25 segundos
 
-    // Limpeza mais frequente
+    // Implementar limpeza periódica de conexões ociosas
     private static readonly System.Timers.Timer _cleanupTimer;
-    
-    // Adicionar limpeza agressiva periódica
-    private static readonly System.Timers.Timer _aggressiveCleanupTimer;
 
     // Pool de conexões gerenciado pela factory
     private static readonly ConcurrentDictionary<string, ConcurrentQueue<ConnectionWrapper>> _connectionPools = new();
@@ -29,20 +26,13 @@ public static class DbConnectionFactory
         _cleanupTimer = new System.Timers.Timer(IdleTimeout * 1000);
         _cleanupTimer.Elapsed += CleanupIdleConnections;
         _cleanupTimer.Start();
-        
-        // Limpeza agressiva a cada 5 minutos
-        _aggressiveCleanupTimer = new System.Timers.Timer(300000);
-        _aggressiveCleanupTimer.Elapsed += AggressiveCleanup;
-        _aggressiveCleanupTimer.Start();
-    }
+    }    
 
     public static async Task<MsiSqlConnection> GetConnectionAsync(string? connectionString)
     {
-        if (connectionString == null)
-        {
+        if (connectionString == null) {
             throw new ArgumentNullException(nameof(connectionString), "Connection string cannot be null.");
         }
-        
         if (!_connectionPools.TryGetValue(connectionString, out var pool))
         {
             pool = new ConcurrentQueue<ConnectionWrapper>();
@@ -53,57 +43,36 @@ public static class DbConnectionFactory
                     _connectionPools.TryAdd(connectionString, pool);
                 }
             }
-            catch (Exception)
+            catch (Exception) 
             {
+
             }
-            
             await InitializePoolAsync(connectionString, pool);
         }
 
         if (pool.TryDequeue(out var connectionWrapper))
         {
-            // Verificar se a conexão está válida
-            if (connectionWrapper?.Connection != null)
+            if (connectionWrapper?.Connection?.State == ConnectionState.Closed)
             {
-                // Se a conexão está há muito tempo ociosa, descartá-la
-                if ((DateTime.Now - connectionWrapper.LastUsed).TotalSeconds > IdleTimeout)
+                try
                 {
-                    try
-                    {
-                        connectionWrapper.Connection.Dispose();
-                    }
-                    catch { }
-                    
+                    await connectionWrapper.Connection.OpenAsync();
+                    connectionWrapper.LastUsed = DateTime.Now; // Update LastUsed
+                    return connectionWrapper.Connection!;
+                }
+                catch
+                {
                     return await CreateNewConnectionAsync(connectionString);
                 }
-                
-                if (connectionWrapper.Connection.State == ConnectionState.Closed)
-                {
-                    try
-                    {
-                        await connectionWrapper.Connection.OpenAsync();
-                        connectionWrapper.LastUsed = DateTime.Now;
-                        return connectionWrapper.Connection;
-                    }
-                    catch
-                    {
-                        connectionWrapper.Connection.Dispose();
-                        return await CreateNewConnectionAsync(connectionString);
-                    }
-                }
+            }
 
-                connectionWrapper.LastUsed = DateTime.Now;
+            if (connectionWrapper?.Connection != null)
+            {
+                connectionWrapper.LastUsed = DateTime.Now; // Update LastUsed
                 return connectionWrapper.Connection;
             }
-            
+            // If connectionWrapper or its Connection is null, create a new connection
             return await CreateNewConnectionAsync(connectionString);
-        }
-
-        // Limitar o tamanho do pool
-        if (pool.Count >= MaxPoolSize)
-        {
-            // Forçar limpeza se o pool está muito grande
-            CleanupPool(pool);
         }
 
         return await CreateNewConnectionAsync(connectionString);
@@ -125,17 +94,13 @@ public static class DbConnectionFactory
                 connection.Close();
             }
 
+            // Find the pool for this connection by checking all pools
+            // since the connection's ConnectionString may have been modified by SqlConnectionStringBuilder
             foreach (var kvp in _connectionPools)
             {
                 var pool = kvp.Value;
-                
-                // Limitar o tamanho do pool antes de retornar
-                if (pool.Count >= MaxPoolSize)
-                {
-                    connection.Dispose();
-                    return;
-                }
-                
+                // Check if this pool is for the same logical connection
+                // by trying to create a new connection with the original key and comparing the result
                 try
                 {
                     var builder = new SqlConnectionStringBuilder(kvp.Key)
@@ -146,6 +111,7 @@ public static class DbConnectionFactory
                         MaxPoolSize = MaxPoolSize
                     };
                     
+                    // If the normalized connection strings match, this is the right pool
                     if (builder.ConnectionString == connection.ConnectionString)
                     {
                         pool.Enqueue(new ConnectionWrapper(connection));
@@ -154,9 +120,11 @@ public static class DbConnectionFactory
                 }
                 catch
                 {
+                    // Continue to next pool if there's an issue with connection string comparison
                 }
             }
             
+            // If no matching pool found, dispose the connection
             connection.Dispose();
         }
         catch
@@ -169,15 +137,8 @@ public static class DbConnectionFactory
     {
         for (int i = 0; i < MinPoolSize; i++)
         {
-            try
-            {
-                var connection = await CreateNewConnectionAsync(connectionString);
-                pool.Enqueue(new ConnectionWrapper(connection));
-            }
-            catch
-            {
-                // Ignorar erros durante inicialização
-            }
+            var connection = await CreateNewConnectionAsync(connectionString);
+            pool.Enqueue(new ConnectionWrapper(connection));
         }
     }
 
@@ -200,65 +161,49 @@ public static class DbConnectionFactory
     {
         foreach (var pool in _connectionPools.Values)
         {
-            CleanupPool(pool);
-        }
-    }
-
-    private static void CleanupPool(ConcurrentQueue<ConnectionWrapper> pool)
-    {
-        var tempQueue = new ConcurrentQueue<ConnectionWrapper>();
-        
-        while (pool.TryDequeue(out var connectionWrapper))
-        {
-            if (connectionWrapper != null && 
-                (DateTime.Now - connectionWrapper.LastUsed).TotalSeconds <= IdleTimeout &&
-                connectionWrapper.Connection?.State != ConnectionState.Broken)
+            while (pool.TryPeek(out var connectionWrapper) && (DateTime.Now - connectionWrapper.LastUsed).TotalSeconds > IdleTimeout)
             {
-                tempQueue.Enqueue(connectionWrapper);
-            }
-            else
-            {
-                try
+                if (pool.TryDequeue(out connectionWrapper))
                 {
-                    connectionWrapper?.Connection?.Dispose();
+                    connectionWrapper.Connection?.Dispose();
                 }
-                catch { }
             }
-        }
-        
-        // Recolocar conexões válidas de volta no pool
-        while (tempQueue.TryDequeue(out var wrapper))
-        {
-            pool.Enqueue(wrapper);
-        }
-    }
-
-    private static void AggressiveCleanup(object? sender, ElapsedEventArgs e)
-    {
-        foreach (var kvp in _connectionPools)
-        {
-            var pool = kvp.Value;
-            
-            // Se o pool está muito grande, reduzir para o tamanho mínimo
-            while (pool.Count > MinPoolSize && pool.TryDequeue(out var wrapper))
-            {
-                try
-                {
-                    wrapper?.Connection?.Dispose();
-                }
-                catch { }
-            }
-        }
-        
-        // Forçar garbage collection se a memória está alta
-        var usedMemory = GC.GetTotalMemory(false) / 1024 / 1024;
-        if (usedMemory > 500) // Se usar mais de 500 MB
-        {
-            GC.Collect(2, GCCollectionMode.Aggressive, true, true);
-            GC.WaitForPendingFinalizers();
         }
     }
 
     public static ConnectionScope CreateScope(string connectionString)
-        => new ConnectionScope(GetConnection(connectionString));
+    =>
+        new ConnectionScope(GetConnection(connectionString));
+
+    /// <summary>
+    /// Gets statistics about the connection pool for monitoring
+    /// </summary>
+    public static ConnectionPoolStatistics GetPoolStatistics()
+    {
+        var stats = new ConnectionPoolStatistics();
+
+        foreach (var kvp in _connectionPools)
+        {
+            var poolSize = kvp.Value.Count;
+            stats.TotalConnections += poolSize;
+            stats.TotalIdleConnections += poolSize; // All connections in queue are idle
+            stats.TotalPools++;
+
+            if (poolSize > stats.LargestPoolSize)
+            {
+                stats.LargestPoolSize = poolSize;
+            }
+        }
+
+        return stats;
+    }
+
+}
+
+public class ConnectionPoolStatistics
+{
+    public int TotalPools { get; set; }
+    public int TotalConnections { get; set; }
+    public int TotalIdleConnections { get; set; }
+    public int LargestPoolSize { get; set; }
 }

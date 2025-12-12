@@ -109,7 +109,7 @@ public partial class DBToolWTable32
     #endregion
 
     #region Field Methods
-    public void Fields(in string nomeCampo, DateTime? value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, DateTime? value, EGenericTypeFields tipo)
     {
         var cSqlValue = BuildDateTimeValue(value, tipo);
         var parameterValue = CheckIfExists(cSqlValue, nomeCampo);
@@ -118,7 +118,26 @@ public partial class DBToolWTable32
             AddFieldToSql(nomeCampo, parameterValue);
     }
 
-    public void Fields(in string nomeCampo, long value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, TimeOnly? value, EGenericTypeFields tipo)
+    {
+        var cSqlValue = BuildDateTimeValue(value, tipo);
+        var parameterValue = CheckIfExists(cSqlValue, nomeCampo);
+
+        if (parameterValue != null)
+            AddFieldToSql(nomeCampo, parameterValue);
+    }
+
+    public void Fields(in string nomeCampo, DateOnly? value, EGenericTypeFields tipo)
+    {
+        var cSqlValue = BuildDateTimeValue(value, tipo);
+        var parameterValue = CheckIfExists(cSqlValue, nomeCampo);
+
+        if (parameterValue != null)
+            AddFieldToSql(nomeCampo, parameterValue);
+    }
+
+
+    public void Fields(in string nomeCampo, long value, EGenericTypeFields tipo)
     {
         var cSqlValue = BuildLongValue(value, tipo);
         var parameterValue = CheckIfExists(cSqlValue, nomeCampo);
@@ -127,7 +146,7 @@ public partial class DBToolWTable32
             AddFieldToSql(nomeCampo, parameterValue);
     }
 
-    public void Fields(in string nomeCampo, int value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, int value, EGenericTypeFields tipo)
     {
         var cSqlValue = BuildIntValue(value, tipo);
         var parameterValue = CheckIfExists(cSqlValue, nomeCampo);
@@ -136,7 +155,7 @@ public partial class DBToolWTable32
             AddFieldToSql(nomeCampo, parameterValue);
     }
 
-    public void Fields(in string nomeCampo, byte[]? value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, byte[]? value, EGenericTypeFields tipo)
     {
         var parameterValue = CheckIfExists(value, nomeCampo);
 
@@ -144,7 +163,7 @@ public partial class DBToolWTable32
             AddFieldToSql(nomeCampo, parameterValue);
     }
 
-    public void Fields(in string nomeCampo, string? value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, string? value, EGenericTypeFields tipo)
     {
         value ??= string.Empty;
         var parameterValue = CheckIfExists(value.Trim(), nomeCampo);
@@ -153,7 +172,7 @@ public partial class DBToolWTable32
             AddFieldToSql(nomeCampo, parameterValue);
     }
 
-    public void Fields(in string nomeCampo, decimal value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, decimal value, EGenericTypeFields tipo)
     {
         var parameterValue = PrixValue(value, nomeCampo, tipo);
 
@@ -161,7 +180,7 @@ public partial class DBToolWTable32
             AddFieldToSql(nomeCampo, parameterValue);
     }
 
-    public void Fields(in string nomeCampo, bool value, ETiposCampos tipo)
+    public void Fields(in string nomeCampo, bool value, EGenericTypeFields tipo)
     {
         var parameterValue = CheckIfExists(value ? "1" : "0", nomeCampo);
 
@@ -304,11 +323,11 @@ public partial class DBToolWTable32
              : throw new("Não conseguir obter o último Id da tabela " + Table);
     }
 
-    private string BuildDateTimeValue(DateTime? value, ETiposCampos tipo)
+    private string BuildDateTimeValue(DateTime? value, EGenericTypeFields tipo)
     {
-        var cFormat = tipo == ETiposCampos.FDateUltraFull ? "yyyy-MM-dd HH:mm:ss.fff" : "yyyy-MM-dd HH:mm:ss";
+        var cFormat = tipo == EGenericTypeFields.FDateUltraFull ? "yyyy-MM-dd HH:mm:ss.fff" : "yyyy-MM-dd HH:mm:ss";
 
-        if (tipo == ETiposCampos.FNow)
+        if (tipo == EGenericTypeFields.FNow)
         {
             return BuildNowValue(value, cFormat);
         }
@@ -318,6 +337,32 @@ public partial class DBToolWTable32
             : Convert.ToDateTime(value).ToString(value?.ToString().IndexOf(":", StringComparison.Ordinal) == -1
                 ? "yyyy-MM-dd"
                 : cFormat);
+    }
+
+    private string BuildDateTimeValue(TimeOnly? value, EGenericTypeFields tipo)
+    {
+        var cFormat = tipo == EGenericTypeFields.FDateUltraFull ? "HH:mm:ss.fff" : "HH:mm:ss";
+
+        if (tipo == EGenericTypeFields.FNow)
+        {
+            return BuildNowValue(value, cFormat);
+        }
+
+        return value == null
+            ? "null"
+            : value.Value.ToString(cFormat);
+    }
+
+    private string BuildDateTimeValue(DateOnly? value, EGenericTypeFields tipo)
+    {
+        if (tipo == EGenericTypeFields.FNow)
+        {
+            return BuildNowValue(value, "yyyy-MM-dd");
+        }
+
+        return value == null
+            ? "null"
+            : value.Value.ToString("yyyy-MM-dd");
     }
 
     private static string BuildNowValue(DateTime? value, string cFormat)
@@ -334,17 +379,46 @@ public partial class DBToolWTable32
         return convertedValue;
     }
 
-    private static string BuildLongValue(long value, ETiposCampos tipo)
+    private static string BuildNowValue(TimeOnly? value, string cFormat)
     {
-        if (value == 0 && tipo == ETiposCampos.FNumberNull)
+        var cTime = DevourerOne.DateTimeUtc;
+
+        if (value == null)
+            return cTime.ToString(format: cFormat);
+
+        // Combina a data atual (UTC) com o TimeOnly fornecido
+        var dateTimeValue = cTime.Date.Add(value.Value.ToTimeSpan());
+        var convertedValue = dateTimeValue.ToString(format: cFormat);
+
+        if (convertedValue.IndexOf("00:00:00", StringComparison.Ordinal) != -1)
+            convertedValue = cTime.ToString(format: cFormat);
+
+        return convertedValue;
+    }
+
+    private static string BuildNowValue(DateOnly? value, string cFormat)
+    {
+        var cTime = DevourerOne.DateTimeUtc;
+
+        if (value == null)
+            return cTime.ToString(format: "yyyy-MM-dd");
+
+        // DateOnly não tem componente de hora, então retorna apenas a data formatada
+        return value.Value.ToString("yyyy-MM-dd");
+    }
+
+
+    private static string BuildLongValue(long value, EGenericTypeFields tipo)
+    {
+        if (value == 0 && tipo == EGenericTypeFields.FNumberNull)
             return "null";
 
         return value.ToString();
     }
 
-    private static string BuildIntValue(int value, ETiposCampos tipo)
+    private static string BuildIntValue(int value, EGenericTypeFields tipo)
     {
-        return value == 0 && tipo == ETiposCampos.FNumberNull
+        return value == 0 && tipo == EGenericTypeFields.FNumberNull
             ? "null"
             : value.ToString();
     }
@@ -422,7 +496,7 @@ public partial class DBToolWTable32
             : sqlValue;
     }
 
-    private string PrixValue(in decimal cSqlValue, string nomeCampo, ETiposCampos tipo)
+    private string PrixValue(in decimal cSqlValue, string nomeCampo, EGenericTypeFields tipo)
     {
         var existingIndex = FindExistingField(nomeCampo);
 
@@ -437,11 +511,11 @@ public partial class DBToolWTable32
         return $"@{nomeCampo}";
     }
 
-    private static object GetDecimalValue(decimal cSqlValue, ETiposCampos tipo)
+    private static object GetDecimalValue(decimal cSqlValue, EGenericTypeFields tipo)
     {
         if (cSqlValue < Convert.ToDecimal(0.001))
         {
-            return tipo == ETiposCampos.FNumberNull ? DBNull.Value : 0;
+            return tipo == EGenericTypeFields.FNumberNull ? DBNull.Value : 0;
         }
 
         return cSqlValue;

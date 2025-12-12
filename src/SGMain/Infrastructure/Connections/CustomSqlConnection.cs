@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Data.SqlClient;
+﻿using MenphisSI;
+
+namespace Microsoft.Data.SqlClient;
 
 public class MsiSqlConnection : IDisposable
 {
@@ -14,10 +16,17 @@ public class MsiSqlConnection : IDisposable
             throw new ArgumentNullException(nameof(connectionString));
 
         _ConnectionString = connectionString;
-        _SqlConnection = new SqlConnection()
+        try
         {
-            ConnectionString = _ConnectionString
-        };
+            _SqlConnection = new SqlConnection()
+            {
+                ConnectionString = _ConnectionString
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseConnectionException("Erro ao criar conexão SQL");
+        }
     }
 
     public MsiSqlConnection()

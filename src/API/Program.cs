@@ -1,328 +1,265 @@
-using Domain.BaseCommon.Helpers;
-using MenphisSI;
-using MenphisSI.GerAdv.HealthCheck;
-using MenphisSI.GerEntityTools.Entity;
-using MenphisSI.GerEntityTools.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using NLog.Web;
-using System.Globalization;
-using System.Security.Authentication;
+using MenphisSI.BaseCommon.Controllers;
+using MenphisSI.BaseCommon.Helpers;
 
-
-var logger = MenphisSI.WebApi.BaseCommon.Helpers.ProgramNLog.ConfigureNLog();
-
+var logger = ProgramNLog.ConfigureNLog();
 
 try
 {
-
-    logger.Info("Iniciado WebApi");
+    logger.Info("=== INICIANDO WEBAPI ===");
+    logger.Info($"Versão: {typeof(Program).Assembly.GetName().Version}");
+    logger.Info($"Diretório de trabalho: {Directory.GetCurrentDirectory()}");
 
     var builder = WebApplication.CreateBuilder(args);
 
+    logger.Info($"Environment: {builder.Environment.EnvironmentName}");
+    logger.Info($"ApplicationName: {builder.Environment.ApplicationName}");
+    logger.Info($"ContentRootPath: {builder.Environment.ContentRootPath}");
 
+    // Determinar configuração baseada no ambiente
+    // O ASP.NET Core automaticamente carrega appsettings.{Environment}.json
+    ConfiguracaoInicializacao? configuracao = null;
 
     if (builder.Environment.IsDevelopment())
     {
-        builder.Configuration
-                .SetBasePath(Directory.GetCurrentDirectory())
-                //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables(); 
+        logger.Info("Ambiente de desenvolvimento detectado - usando CriarConfiguracaoDesenvolvimento()");
+        configuracao = IniciarAppsAvancado.CriarConfiguracaoDesenvolvimento();
+
+        // Personalizar configuração para desenvolvimento se necessário
+        configuracao.RegistrarServicosCustomizados = (builder) =>
+        {
+            logger.Info("Registrando serviços customizados para desenvolvimento");
+        };
     }
     else
     {
-        builder.Configuration
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddEnvironmentVariables(); ;
+        // Para todos os outros ambientes (Production, PIXBOL, Staging, etc.)
+        // Usa a configuração de produção que irá ler as origens CORS do appsettings.{Environment}.json
+        logger.Info($"Ambiente '{builder.Environment.EnvironmentName}' detectado - usando configuração de produção");
+        logger.Info("As configurações CORS serão lidas do arquivo appsettings.{Environment}.json");
+        configuracao = IniciarAppsAvancado.CriarConfiguracaoSistemaMenphis();
     }
 
-    builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
-
-    //var uris = builder.Configuration["AppSettings:ValidUris"]?.ToString() ?? "";
-    //if (uris.IsEmpty())
-    //{
-    //    throw new Exception("AppSettings:ValidUris não configurado");
-    //}
-
-    builder.Host.UseNLog();
-
-    // Add services to the container.
-    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-    builder.Services.AddOpenApi();
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddScoped<IUserService, UserService>(); 
-
-    //builder.Services.AddSingleton<MenphisSI.DB.ITokenService, TokenService>();
-
-    builder.Services.AddResponseCompression(options =>
+    logger.Info("=== FASE 1: Inicializando UriApi ===");
+    try
     {
-        options.EnableForHttps = true;
-        options.Providers.Add<BrotliCompressionProvider>();
-        options.Providers.Add<GzipCompressionProvider>();
-    });
-
-    var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
-
-    // Register HttpClient
-    builder.Services.AddHttpClient();
-
-    // Register email and notification services
-    builder.Services.AddScoped<IEntityService, EntityServices>();
-    builder.Services.AddScoped<SendEmailApi>();
-    builder.Services.AddScoped<EnvioNotificacoes>();
-    builder.Services.AddScoped<EnvioNotificacoesAniversariantes>();
-
-    MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
-    MenphisSI.GerEntityTools.Helper.Token.InitializeConfiguration(builder.Configuration);
-
-    MenphisSI.GerAdv.Services.AddServices.Add(builder);
-
-    MenphisSI.GerAdv.Validations.AddServices.Add(builder);
-    MenphisSI.GerAdv.Readers.AddServices.Add(builder);
-    MenphisSI.GerAdv.Writers.AddServices.Add(builder);
-    MenphisSI.GerAdv.Entity.AddServices.Add(builder);
-
-    MenphisSI.GerAdv.Serialization.AddServices.Add(builder);
-
-    // AppSettingsMediator.AddMediatorConfig(builder);
-     
-    AppSettingsHealthCheck.Add(builder); // Add HealthCheck
-    AppSettingsHealthCheck.Add(builder, logger, settings); // Add HealthCheck
-    //AppSettingsHealthCheck.AddHealthCheck(builder);
-
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddApiVersioning(options =>
+        MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
+        logger.Info("? UriApi inicializado com sucesso");
+    }
+    catch (Exception ex)
     {
-        options.ReportApiVersions = true;
-        options.AssumeDefaultVersionWhenUnspecified = true;
-        options.DefaultApiVersion = new ApiVersion(1, 0);
-    });
+        logger.Error(ex, "? ERRO CRÍTICO ao inicializar UriApi");
+        throw;
+    }
 
-    builder.Services.AddAuthorization();
-    builder.Services.AddMemoryCache();
-    builder.Services.AddHybridCache();
-
-
-    builder.WebHost.ConfigureKestrel(options =>
+    logger.Info("=== FASE 2: Configurando Builder ===");
+    try
     {
-        options.ConfigureHttpsDefaults(httpsOptions =>
+        IniciarAppsAvancado.ConfigurarBuilder(builder, configuracao, logger);
+        logger.Info("? Builder configurado com sucesso");
+        logger.Info($"? Política CORS '{configuracao.NomePoliticaCORS}' configurada");
+
+        // Log das origens CORS carregadas para debug
+        var corsOrigins = builder.Configuration.GetSection("AppSettings:CORS:AllowedOrigins").Get<string[]>();
+        if (corsOrigins != null && corsOrigins.Length > 0)
         {
-            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-        });
-    });
-
-
-    builder.Services.AddControllers()
-       .AddJsonOptions(options =>
-       {
-           options.JsonSerializerOptions.PropertyNamingPolicy = null;
-           options.JsonSerializerOptions.DictionaryKeyPolicy = null;
-       });
-
-    //builder.Services.AddCors(options =>
-    //{
-    //    options.AddPolicy("AllowSpecificOrigins",
-    //        builder =>
-    //        { 
-    //            builder.WithOrigins(
-    //                    Uris.WebClientsUri)
-    //                    .AllowAnyHeader()
-    //                    .AllowAnyMethod();
-    //        });
-    //});
-
-    string[] corsSites = builder.Configuration.GetSection("AppSettings:CORS:AllowedOrigins").Get<string[]>() ?? [];
-
-#if (DEBUG)
-    var listCors = new List<string>() { "http://localhost:3000" };   
-#else
-    var listCors = new List<string>();
-#endif
-
-    listCors.AddRange(corsSites);
-
-    if (System.Diagnostics.Debugger.IsAttached)
-    {
-        listCors.Add("http://localhost:3000");
-    }
-
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowSpecificOrigins",
-            builder =>
+            logger.Info($"? Origens CORS carregadas do appsettings.{builder.Environment.EnvironmentName}.json:");
+            foreach (var origin in corsOrigins)
             {
-                builder.WithOrigins([.. listCors])
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-            });
-    });
-
-    var swaggerVersion = builder.Configuration["Swagger:Version"]?.ToString() ?? "v1";
-
-    builder.Services.AddSwaggerGen(swagger =>
-    {
-        //This is to generate the Default UI of Swagger Documentation
-        swagger.SwaggerDoc(swaggerVersion, new OpenApiInfo
+                logger.Info($"  - {origin}");
+            }
+        }
+        else
         {
-            Version = swaggerVersion,
-            Title = "JWT Token Authentication API",
-            Description = "Medical System.NET 9 Web API"
+            logger.Warn("? Nenhuma origem CORS encontrada na configuração");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? ERRO CRÍTICO ao configurar builder");
+        throw;
+    }
+
+    logger.Info("=== FASE 3: Registrando Serviços Customizados ===");
+    try
+    {
+        // Registrar GerarSKUService e suas dependências
+        logger.Info("Registrando GerarSKUService...");
+        builder.Services.AddScoped<MenphisSI.GerAdv.Interface.IGerarSKUService, GerarSKUService>();
+        builder.Services.AddScoped<SubiProdutoECriarSKU>();
+
+        // Registrar ImageProcessorService
+        logger.Info("Registrando ImageProcessorService...");
+        builder.Services.Configure<ImageProcessorSettings>(options =>
+        {
+            options.TempFolderPath = "temp";
+            options.AssetsFolderPath = "assets";
+            options.FontPath = "fonts";
         });
-        // To Enable authorization using Swagger (JWT)
-        swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-        {
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-        });
-        //swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-        //    {
-        //        {
-        //            new OpenApiSecurityScheme
-        //            {
-        //                Reference = new OpenApiReference
-        //                {
-        //                    Type = ReferenceType.SecurityScheme,
-        //                    Id = "Bearer"
-        //                }
-        //            },
-        //            Array.Empty<string>()
-        //        }
-        //    });
-    });
+        builder.Services.AddScoped<IImageProcessorService, ImageProcessorService>();
 
+        logger.Info("? Serviços customizados registrados com sucesso");
+    }
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? ERRO ao registrar serviços customizados");
+        throw;
+    }
 
-    var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"] ?? "");
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
+    logger.Info("=== FASE 4: Construindo aplicação (builder.Build()) ===");
+    logger.Info("Aguardando construção da aplicação...");
 
     var app = builder.Build();
 
-    //EndpointRegistration.AddApiServices(app);
+    logger.Info("? Aplicação construída com sucesso");
 
-    // Configure the HTTP request pipeline.
-    //if (app.Environment.IsDevelopment())
-    //{
-    //    app.MapOpenApi();
-    //    app.UseSwagger();
-    //    app.UseSwaggerUI(c =>
-    //    {
-    //        c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
-    //        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-    //        c.DefaultModelsExpandDepth(-1);
-    //    });
-    //}
-    //else
-    //{
-    //    app.UseSwagger();
-    //    app.UseSwaggerUI(c =>
-    //    {
-    //        c.SwaggerEndpoint($"/swagger/{swaggerVersion}/swagger.json", $"Medical System.NET API {swaggerVersion}");
-    //        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-    //        c.DefaultModelsExpandDepth(-1);
-    //    });
-    //}
-
-
-
-
-    app.UseHttpsRedirection();
-    app.UseResponseCompression();
-    //app.UseCors("AllowSpecificOrigins");
-    app.UseCors("AllowAllOrigins");
-
-    app.UseAuthentication();
-    app.UseMiddleware<JwtMiddleware>();
-    app.UseAuthorization();
-
-    AppSettingsHealthCheck.Use(app);
-
-    app.MapControllers();
-
-
-    var cultureInfo = new CultureInfo("pt-BR");
-    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-    app.MapGet("/",
-        (context) =>
-        {
-            var ipAddress = context.Connection.RemoteIpAddress?.ToString();
-#if (!DEBUG)
-            logger.Info($"Redirecionado para Menphis - IP: {ipAddress}");
-#endif
-            context.Response.Redirect("https://menphis.com.br/?ur=apiadv");
-            return Task.CompletedTask;
-        }
-  ).ShortCircuit(200);
-
-    app.MapGet("/api/v1/",
-          (context) =>
-          {
-              var ipAddress = context.Connection.RemoteIpAddress?.ToString();
-#if (!DEBUG)
-            logger.Info($"Redirecionado para Menphis - IP: {ipAddress}");
-#endif
-              context.Response.Redirect("https://menphis.com.br/?urapiadvi");
-              return Task.CompletedTask;
-          }
-  ).ShortCircuit(200);
-
-    /*
-    var sqlCommands = @"alter table PreClientes ADD cliAssCPF2[nvarchar](11) NULL;
-update PreClientes Set cliAssCPF=cliAssCPF2;
-alter table PreClientes drop column cliAssCPF;
-alter table PreClientes ADD cliAssCPF[nvarchar](11) NULL;
-update PreClientes Set cliAssCPF=cliAssCPF2;
-alter table PreClientes drop column cliAssCPF2;";
-
-    using var oCnn = Configuracoes.GetConnectionByUriRw("IBRADV");
-    foreach (var commandText in sqlCommands.Split(";", StringSplitOptions.RemoveEmptyEntries))
+    logger.Info("=== FASE 5: Configurando Lifetime Events ===");
+    try
     {
-        ConfiguracoesDBT.ExecuteSqlCreate(commandText, oCnn);
+        app.Lifetime.ApplicationStarted.Register(() =>
+        {
+            try
+            {
+                var addresses = app.Urls;
+                var urlList = addresses != null && addresses.Any() ? string.Join(", ", addresses) : "(nenhuma URL configurada)";
+                logger.Info($"? ApplicationStarted - URLs: {urlList}");
+                logger.Info($"? Aplicação está RODANDO e pronta para receber requisições");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "? Erro ao processar ApplicationStarted");
+            }
+        });
+
+        app.Lifetime.ApplicationStopping.Register(() =>
+        {
+            logger.Info("ApplicationStopping - Aplicação está sendo encerrada");
+        });
+
+        app.Lifetime.ApplicationStopped.Register(() =>
+        {
+            logger.Info("ApplicationStopped - Aplicação foi encerrada");
+        });
+
+        logger.Info("? Lifetime events configurados");
     }
-    */
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? Erro ao configurar lifetime events (não crítico, continuando...)");
+    }
+
+    logger.Info("=== FASE 6: Configurando Aplicação ===");
+    try
+    {
+        IniciarAppsAvancado.ConfigurarAplicacao(app, configuracao, logger);
+        logger.Info("? Aplicação configurada com sucesso");
+        logger.Info($"? Middleware CORS '{configuracao.NomePoliticaCORS}' ativado");
+    }
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? ERRO CRÍTICO ao configurar aplicação");
+        throw;
+    }
+
+    logger.Info("=== FASE 7: Configurando Endpoints ===");
+
+    // Auditor
+    try
+    {
+        AuditorController.ConfigureAuditorEndpoints(app);
+        logger.Info("? Endpoints Auditor configurados");
+    }
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? ERRO ao configurar endpoints Auditor");
+        throw;
+    }
+
+    // Robots
+    try
+    {
+        Robots.ConfigureRobotEndpoints(app);
+        logger.Info("? Endpoints Robots configurados");
+    }
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? ERRO ao configurar endpoints Robots");
+        throw;
+    }
+
+    // Agenda V2
+    try
+    {
+        // app.MapAgendaEndpointsV2();
+        logger.Info("? Endpoints AgendaEndpointsV2 configurados");
+    }
+    catch (Exception ex)
+    {
+        logger.Error(ex, "? ERRO ao configurar endpoints AgendaEndpointsV2");
+        throw;
+    }
+
+    // HealthCheck
+    if (configuracao.HabilitarHealthChecks)
+    {
+        try
+        {
+            HealthCheckController.ConfigureHealthCheckEndpoints(app);
+            logger.Info("? Endpoints HealthCheckController configurados");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "? ERRO ao configurar endpoints HealthCheckController");
+            throw;
+        }
+    }
+
+    logger.Info("=== TODAS AS CONFIGURAÇÕES CONCLUÍDAS COM SUCESSO ===");
+    logger.Info($"Ambiente: {builder.Environment.EnvironmentName}");
+    logger.Info($"ContentRootPath: {builder.Environment.ContentRootPath}");
+    logger.Info($"Política CORS ativa: {configuracao.NomePoliticaCORS}");
+
+    // Garantir que todos os logs foram escritos
+    LogManager.Flush(TimeSpan.FromSeconds(2));
+
+    logger.Info("=== CHAMANDO app.Run() - INICIANDO SERVIDOR HTTP ===");
+    logger.Info("A aplicação está pronta e aguardando requisições HTTP...");
 
 
-    //using var oCnn = Configuracoes.GetConnectionByUri("SIEBRA");
+    //using var oCnn = ConfiguracoesSys.GetConnectionByUriRw("FTC");
+    //ConfiguracoesDBT.ExecuteSqlCreate($"delete from {DBProdutoFichaTecnicaTemporariaDicInfo.PTabelaNome};", oCnn);
 
-    //var notificationService = new EnvioNotificacoes();
-    //int sentCount = await notificationService.EnviarEmailsParaAdvogados(E_TIPO_ENVIO.DIA, "SIEBRA", oCnn);
+
+
+    // Esta linha BLOQUEIA até a aplicação ser encerrada
     app.Run();
+
+    // Código após app.Run() só executa quando a aplicação é encerrada
+    logger.Info("? app.Run() retornou - Aplicação foi encerrada normalmente");
 }
 catch (Exception exception)
 {
+    logger.Error(exception, "??? ERRO FATAL - Aplicação foi encerrada devido a uma exceção ???");
+    logger.Error($"Tipo de exceção: {exception.GetType().Name}");
+    logger.Error($"Mensagem: {exception.Message}");
+    logger.Error($"StackTrace: {exception.StackTrace}");
 
-    logger.Error(exception, "Stopped program because of exception");
+    if (exception.InnerException != null)
+    {
+        logger.Error($"Inner Exception: {exception.InnerException.Message}");
+        logger.Error($"Inner StackTrace: {exception.InnerException.StackTrace}");
+    }
+
+    // Garantir que os logs de erro foram escritos
+    LogManager.Flush(TimeSpan.FromSeconds(5));
+
+    // Aguarda para garantir que os logs foram salvos
+    System.Threading.Thread.Sleep(2000);
 
     throw;
 }
 finally
 {
+    logger.Info("=== FINALIZANDO APLICAÇÃO - LogManager.Shutdown() ===");
     LogManager.Shutdown();
 }
 

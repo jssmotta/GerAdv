@@ -63,7 +63,7 @@ public partial class ConfiguracoesDBT
             CommandTimeout = timeoutSeconds
         };
 
-        if (parameters != null)
+        if (parameters != null && parameters.Count > 0)
             foreach (var param in parameters)
             {
                 if (!command.Parameters.Contains(param.ParameterName))

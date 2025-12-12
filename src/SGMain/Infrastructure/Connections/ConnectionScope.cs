@@ -4,7 +4,7 @@ public class ConnectionScope : IDisposable
 {
     public MsiSqlConnection Connection { get; }
 
-    internal ConnectionScope(MsiSqlConnection connection)
+    public ConnectionScope(MsiSqlConnection connection)
     {
         Connection = connection;
     }
