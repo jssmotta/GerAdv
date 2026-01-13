@@ -1,4 +1,6 @@
-﻿namespace MenphisSI.BaseCommon;
+﻿using MenphisSI.BaseCommon.UserController;
+
+namespace MenphisSI.BaseCommon;
 
 [Route("api/v{version:apiVersion}/{uri}/[controller]/[action]")]
 [ApiController]
@@ -42,7 +44,7 @@ public partial class UsersController(IUserService userService) : ControllerBase
         {
             return BadRequest(new { message = "Error setting password, operator" });
         }
-        if (SGHelpers.IsSenhaFraca(model.Password.DecodeBase64(), dbOper!.Nome))
+        if (await SGHelpers.IsSenhaFraca(model.Password.DecodeBase64(), dbOper!.Nome))
         {
             return BadRequest(new { message = "Weak passord" });
         }

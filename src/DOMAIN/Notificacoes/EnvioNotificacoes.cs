@@ -81,7 +81,7 @@ END;
 
 
 ";
-        using var conexao = Configuracoes.GetConnectionByUriRw(uri);
+        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript2, conexao);
     }
@@ -176,7 +176,7 @@ ORDER BY vqaData;";
         var reader = new OperadorReader(new FOperadorFactory());
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
        // var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
-        var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
       
         var assunto = tipo == E_TIPO_ENVIO.NOVOS ? "Novos compromissos e atualizados do dia de hoje" : "Compromissos da Agenda do Advocati.NET para ";
         var count = 0;
@@ -189,7 +189,7 @@ ORDER BY vqaData;";
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
                     :  "";
 
             if (cNome == null || cNome.Equals("")) continue;

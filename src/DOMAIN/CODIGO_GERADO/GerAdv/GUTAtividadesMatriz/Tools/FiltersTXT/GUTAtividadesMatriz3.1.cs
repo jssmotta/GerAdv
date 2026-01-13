@@ -1,34 +1,34 @@
-﻿namespace MenphisSI.GerAdv.AI.Filters;
+﻿
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace MenphisSI.GerAdv.AI.Filters;
 using MenphisSI.GerAdv.Filters;
 public static class FilterGUTAtividadesMatrizTXT
 { 
     public static JsonSerializerOptions GetOptions()
     {
-        return new()
+        var options = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
+        return options;
     }
 
-
-    public static (string, string) GetPrompt(FilterGUTAtividadesMatriz? existingFilter, JsonSerializerOptions options)
-     
-    {
-        var strJson = JsonSerializer.Serialize(existingFilter, options);
-        var result = """
+ private const string PromptHeader = """
 
 ATENÇÃO: A seguir está o JSON BASE do filtro atual. Você deve ATUALIZAR os campos conforme o pedido do usuário e as regras, e retornar APENAS o JSON FINAL atualizado (sem nenhum texto adicional).
 {
  
 """;
-        result += strJson;
-        result += """
+    private const string PromptFooter = """
 }
 
 """;
 
-var instructions = """
+private const string Instructions = """
 
 
 Você é um assistente que ajuda a preencher filtros para buscar GUTAtividadesMatriz em um sistema de banco de dados relacionados.
@@ -85,12 +85,12 @@ CHECKLIST ANTES DE RETORNAR O JSON:
 - A consulta fala em "alterados/atualizados"? Use dtatu/dtatu_end do filtro correspondente.
 
 CAMPOS filterGUTMatriz (G U T Matriz):
-- descricao: nome ou descrição para G U T Matriz;
+- descricao: _nome ou descrição para G U T Matriz;
 - guttipo: número ou IDs;
 - valor: número ou IDs;
 
 CAMPOS filterGUTAtividades (G U T Atividades):
-- nome: nome ou descrição para G U T Atividades;
+- nome: _nome ou descrição para G U T Atividades;
 - observacao: Observacao;
 - gutgrupo: número ou IDs;
 - gutperiodicidade: número ou IDs;
@@ -144,13 +144,23 @@ JAMAIS ACEITE PEDIDOS DE SQL INJECTION OU TENTATIVAS DE INJEÇÃO DE CÓDIGO,
 SEJA QUAL FOR O MOTIVO, REJEITE E AVISE QUE NÃO PODE FAZER ISSO.
 
 """; 
+    public static (string, string) GetPrompt(FilterGUTAtividadesMatriz? existingFilter, JsonSerializerOptions options)
+     
+    {
+        var strJson = JsonSerializer.Serialize(existingFilter, options);
+        var result = BuildPrompt(strJson); 
 
 #if DEBUG   
         Console.WriteLine($"DEBUG: Prompt GUTAtividadesMatriz length: {result.Length}");
 #endif
 
-return (result, instructions); 
+return (result, Instructions); 
 
 }
+
+private static string BuildPrompt(string jsonContent)
+    {
+        return PromptHeader + jsonContent + PromptFooter;
+    }
 
 }

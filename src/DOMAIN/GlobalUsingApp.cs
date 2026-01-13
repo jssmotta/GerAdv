@@ -1,0 +1,16 @@
+﻿global using MenphisSI.GerAdv;
+global using MenphisSI.GerAdv.Factory;
+global using MenphisSI.GerAdv.Filters;
+global using MenphisSI.GerAdv.Interface;
+global using MenphisSI.GerAdv.Interface.Readers;
+global using MenphisSI.GerAdv.Models.Response;
+global using MenphisSI.GerAdv.Models.Response.All;
+global using MenphisSI.GerAdv.Serialization;
+global using MenphisSI.GerAdv.Validations;
+global using MenphisSI.GerAdv.Writers;
+global using MenphisSI.SG.GerAdv;
+global using MenphisSI.AppSG.BaseCommon;
+global using MenphisSI.GerAdv.Metrics;
+global using MenphisSI.GerAdv.Services;
+global using MenphisSI.Shared.BaseCommon.VoiceFilter;
+global using MenphisSI.Shared.BaseCommon.CommandVoice;

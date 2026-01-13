@@ -7,3 +7,6 @@ global using System.Text;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.AspNetCore.RateLimiting;
 global using Domain.BaseCommon.Models;
+global using System.Diagnostics.CodeAnalysis;
+global using API.Bulkhead;
+global using Polly.Bulkhead;

@@ -1,34 +1,34 @@
-﻿namespace MenphisSI.GerAdv.AI.Filters;
+﻿
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace MenphisSI.GerAdv.AI.Filters;
 using MenphisSI.GerAdv.Filters;
 public static class FilterOperadorEMailPopupTXT
 { 
     public static JsonSerializerOptions GetOptions()
     {
-        return new()
+        var options = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
+        return options;
     }
 
-
-    public static (string, string) GetPrompt(FilterOperadorEMailPopup? existingFilter, JsonSerializerOptions options)
-     
-    {
-        var strJson = JsonSerializer.Serialize(existingFilter, options);
-        var result = """
+ private const string PromptHeader = """
 
 ATENÇÃO: A seguir está o JSON BASE do filtro atual. Você deve ATUALIZAR os campos conforme o pedido do usuário e as regras, e retornar APENAS o JSON FINAL atualizado (sem nenhum texto adicional).
 {
  
 """;
-        result += strJson;
-        result += """
+    private const string PromptFooter = """
 }
 
 """;
 
-var instructions = """
+private const string Instructions = """
 
 
 Você é um assistente que ajuda a preencher filtros para buscar OperadorEMailPopup em um sistema de banco de dados relacionados.
@@ -84,36 +84,36 @@ CHECKLIST ANTES DE RETORNAR O JSON:
 - A consulta fala em "alterados/atualizados"? Use dtatu/dtatu_end do filtro correspondente.
 
 CAMPOS filterOperador (Operador):
-- email: operEMail;
-- pasta: operPasta;
-- telefonista: operTelefonista;
-- master: operMaster;
-- nome: nome ou descrição para Operador;
-- nick: operNick;
-- ramal: operRamal;
+- email: EMail;
+- pasta: Pasta;
+- telefonista: Telefonista;
+- master: Master;
+- nome: _nome ou descrição para Operador;
+- nick: Nick;
+- ramal: Ramal;
 - cadid: número ou IDs;
-- excluido: operExcluido;
-- situacao: operSituacao;
+- excluido: Excluido;
+- situacao: Situação;
 - computador: número ou IDs;
-- minhadescricao: operMinhaDescricao;
-- ultimologoff: operUltimoLogoff;
-- emailnet: operEMailNet;
-- onlineip: operOnlineIP;
-- online: operOnLine;
-- sysop: operSysOp;
+- minhadescricao: MinhaDescricao;
+- ultimologoff: UltimoLogoff;
+- emailnet: EMailNet;
+- onlineip: OnlineIP;
+- online: OnLine;
+- sysop: SysOp;
 - statusid: número ou IDs;
-- statusmessage: operStatusMessage;
-- isfinanceiro: operIsFinanceiro;
-- top: operTop;
+- statusmessage: StatusMessage;
+- isfinanceiro: IsFinanceiro;
+- top: Top;
 - sexo: sexo do Operador: 1=Homem; 0=Mulher; -2147483648=ambos;
-- basico: operBasico;
-- externo: operExterno;
-- emailconfirmado: operEMailConfirmado;
-- datalimitereset: operDataLimiteReset;
-- suportemaxage: operSuporteMaxAge;
-- suportenomesolicitante: operSuporteNomeSolicitante;
-- suporteultimoacesso: operSuporteUltimoAcesso;
-- suporteipultimoacesso: operSuporteIpUltimoAcesso;
+- basico: Basico;
+- externo: Externo;
+- emailconfirmado: EMailConfirmado;
+- datalimitereset: DataLimiteReset;
+- suportemaxage: SuporteMaxAge;
+- suportenomesolicitante: SuporteNomeSolicitante;
+- suporteultimoacesso: SuporteUltimoAcesso;
+- suporteipultimoacesso: SuporteIpUltimoAcesso;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
 - dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
@@ -124,7 +124,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
 
 CAMPOS filterOperadorEMailPopup:(Operador E Mail Popup)
 - operador: número ou IDs;
-- nome: nome ou descrição para Operador E Mail Popup;
+- nome: _nome ou descrição para Operador E Mail Popup;
 - senha: Senha;
 - smtp: SMTP;
 - pop3: POP3;
@@ -168,13 +168,23 @@ JAMAIS ACEITE PEDIDOS DE SQL INJECTION OU TENTATIVAS DE INJEÇÃO DE CÓDIGO,
 SEJA QUAL FOR O MOTIVO, REJEITE E AVISE QUE NÃO PODE FAZER ISSO.
 
 """; 
+    public static (string, string) GetPrompt(FilterOperadorEMailPopup? existingFilter, JsonSerializerOptions options)
+     
+    {
+        var strJson = JsonSerializer.Serialize(existingFilter, options);
+        var result = BuildPrompt(strJson); 
 
 #if DEBUG   
         Console.WriteLine($"DEBUG: Prompt OperadorEMailPopup length: {result.Length}");
 #endif
 
-return (result, instructions); 
+return (result, Instructions); 
 
 }
+
+private static string BuildPrompt(string jsonContent)
+    {
+        return PromptHeader + jsonContent + PromptFooter;
+    }
 
 }

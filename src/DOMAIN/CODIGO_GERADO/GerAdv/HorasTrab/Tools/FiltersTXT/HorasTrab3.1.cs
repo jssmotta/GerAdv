@@ -1,34 +1,34 @@
-﻿namespace MenphisSI.GerAdv.AI.Filters;
+﻿
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace MenphisSI.GerAdv.AI.Filters;
 using MenphisSI.GerAdv.Filters;
 public static class FilterHorasTrabTXT
 { 
     public static JsonSerializerOptions GetOptions()
     {
-        return new()
+        var options = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
+        return options;
     }
 
-
-    public static (string, string) GetPrompt(FilterHorasTrab? existingFilter, JsonSerializerOptions options)
-     
-    {
-        var strJson = JsonSerializer.Serialize(existingFilter, options);
-        var result = """
+ private const string PromptHeader = """
 
 ATENÇÃO: A seguir está o JSON BASE do filtro atual. Você deve ATUALIZAR os campos conforme o pedido do usuário e as regras, e retornar APENAS o JSON FINAL atualizado (sem nenhum texto adicional).
 {
  
 """;
-        result += strJson;
-        result += """
+    private const string PromptFooter = """
 }
 
 """;
 
-var instructions = """
+private const string Instructions = """
 
 
 Você é um assistente que ajuda a preencher filtros para buscar HorasTrab em um sistema de banco de dados relacionados.
@@ -95,7 +95,7 @@ CAMPOS filterClientes (Clientes):
 - inativo: Inativo;
 - quemindicou: QuemIndicou;
 - sendemail: SendEMail;
-- nome: nome ou descrição para Clientes;
+- nome: _nome ou descrição para Clientes;
 - adv: número ou IDs;
 - idrep: número ou IDs;
 - juridica: Juridica;
@@ -145,7 +145,7 @@ CAMPOS filterAdvogados (Advogados):
 - cargo: número ou IDs;
 - emailpro: EMailPro;
 - cpf: somente os 11 caracteres sem mascara;
-- nome: nome ou descrição para Advogados;
+- nome: _nome ou descrição para Advogados;
 - rg: RG;
 - casa: Casa;
 - nomemae: NomeMae;
@@ -191,7 +191,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
 CAMPOS filterFuncionarios (Colaborador):
 - emailpro: EMailPro;
 - cargo: número ou IDs;
-- nome: nome ou descrição para Colaborador;
+- nome: _nome ou descrição para Colaborador;
 - funcao: número ou IDs;
 - sexo: sexo do Funcionarios: 1=Homem; 0=Mulher; -2147483648=ambos;
 - registro: Registro;
@@ -232,7 +232,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
 
 CAMPOS filterServicos (Serviços):
 - cobrar: Cobrar;
-- descricao: nome ou descrição para Serviços;
+- descricao: _nome ou descrição para Serviços;
 - basico: Basico;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
@@ -295,13 +295,23 @@ JAMAIS ACEITE PEDIDOS DE SQL INJECTION OU TENTATIVAS DE INJEÇÃO DE CÓDIGO,
 SEJA QUAL FOR O MOTIVO, REJEITE E AVISE QUE NÃO PODE FAZER ISSO.
 
 """; 
+    public static (string, string) GetPrompt(FilterHorasTrab? existingFilter, JsonSerializerOptions options)
+     
+    {
+        var strJson = JsonSerializer.Serialize(existingFilter, options);
+        var result = BuildPrompt(strJson); 
 
 #if DEBUG   
         Console.WriteLine($"DEBUG: Prompt HorasTrab length: {result.Length}");
 #endif
 
-return (result, instructions); 
+return (result, Instructions); 
 
 }
+
+private static string BuildPrompt(string jsonContent)
+    {
+        return PromptHeader + jsonContent + PromptFooter;
+    }
 
 }

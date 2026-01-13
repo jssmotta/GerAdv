@@ -18,7 +18,7 @@
 		<Optimize>True</Optimize>
 	</PropertyGroup>
 <ItemGroup>
-<PackageReference Include="KubernetesClient" Version="18.0.5" />
+<PackageReference Include="KubernetesClient" Version="18.0.13" />
 <PackageReference Include="Microsoft.Build.Tasks.Core" Version="18.0.2" />
 <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
 <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
@@ -28,28 +28,28 @@
 
 	<ItemGroup>
 		<Compile Remove="BaseCommon\Web\**" />
-		<Compile Remove="CODIGO_GERADO\GerMDS_TS\**" />
-		<Compile Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<Compile Remove="CODIGO_GERADO\GerAdv_TS\**" />
+		<Compile Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<Compile Remove="Devourer\**" />
-		<Compile Remove="GerMDS_AngularReact\**" />
+		<Compile Remove="GerAdv_AngularReact\**" />
 		<Compile Remove="ReactCode\**" />
 		<Content Remove="BaseCommon\Web\**" />
-		<Content Remove="CODIGO_GERADO\GerMDS_TS\**" />
-		<Content Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<Content Remove="CODIGO_GERADO\GerAdv_TS\**" />
+		<Content Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<Content Remove="Devourer\**" />
-		<Content Remove="GerMDS_AngularReact\**" />
+		<Content Remove="GerAdv_AngularReact\**" />
 		<Content Remove="ReactCode\**" />
 		<EmbeddedResource Remove="BaseCommon\Web\**" />
-		<EmbeddedResource Remove="CODIGO_GERADO\GerMDS_TS\**" />
-		<EmbeddedResource Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<EmbeddedResource Remove="CODIGO_GERADO\GerAdv_TS\**" />
+		<EmbeddedResource Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<EmbeddedResource Remove="Devourer\**" />
-		<EmbeddedResource Remove="GerMDS_AngularReact\**" />
+		<EmbeddedResource Remove="GerAdv_AngularReact\**" />
 		<EmbeddedResource Remove="ReactCode\**" />
 		<None Remove="BaseCommon\Web\**" />
-		<None Remove="CODIGO_GERADO\GerMDS_TS\**" />
-		<None Remove="CODIGO_GERADO\MenphisSI.GerMDS-Postman\**" />
+		<None Remove="CODIGO_GERADO\GerAdv_TS\**" />
+		<None Remove="CODIGO_GERADO\MenphisSI.GerAdv-Postman\**" />
 		<None Remove="Devourer\**" />
-		<None Remove="GerMDS_AngularReact\**" />
+		<None Remove="GerAdv_AngularReact\**" />
 		<None Remove="ReactCode\**" />
 	</ItemGroup>
 
@@ -266,12 +266,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
-		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
 
 
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0">
@@ -279,19 +279,18 @@
 		</PackageReference>
  
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.0" />
-		<PackageReference Include="NLog" Version="6.0.6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.1.0" />
+		<PackageReference Include="NLog" Version="6.0.7" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="6.1.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.1" />
-		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
+		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -301,9 +300,12 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.BaseCommon.csproj" />
-		<ProjectReference Include="..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SourgeGenesys.Shared\MenphisSI.Shared.SourgeGenesys.Shared.csproj" />
+		<ProjectReference Include="..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.Infrastructure\MenphisSI.Shared.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\..\GerEntity\src\SHARED\MenphisSI.Shared.BaseCommon\MenphisSI.Shared.SGMain\MenphisSI.Shared.SGMain.csproj" />
+		<ProjectReference Include="..\..\..\GerLCK\src\TOOLS\DevToolApiInterface\DevToolApiInterface.csproj" />
 		<ProjectReference Include="..\DOMAIN\Domain.csproj" />
 		<ProjectReference Include="..\SGMain\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\SGMain\SourceGenesys.Domain\SourceGenesys.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

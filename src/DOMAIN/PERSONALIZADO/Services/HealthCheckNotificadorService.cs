@@ -1,12 +1,14 @@
 ﻿using Domain.BaseCommon.Helpers;
+using MenphisSI.GerEntityTools.Entity;
 
 namespace MenphisSI.GerAdv.HealthCheck;
 
-public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck, IDisposable
+public class HealthCheckNotificadorService([Required] string uri, [Required] SendEmailApi sendEmailApi) : IHealthCheck, IDisposable
 {
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private bool _disposed;
     private readonly string _uri = uri;
+    private readonly SendEmailApi _sendEmailApi = sendEmailApi ?? throw new ArgumentNullException(nameof(sendEmailApi));
 
 
     private const int PHoraParaDia = 8;
@@ -28,7 +30,7 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
 
             if (DateTime.Now.Hour == PHoraParaDia)
             {
-                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                using var oCnn = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)
                 {
                     return CreateUnhealthyResult("Conexão não disponível");
@@ -38,7 +40,7 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
             }
             else if (DateTime.Now.Hour == PHoraParaNovos)
             {
-                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                using var oCnn = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)
                 {
                     return CreateUnhealthyResult("Conexão não disponível");
@@ -79,12 +81,12 @@ public class HealthCheckNotificadorService([Required] string uri) : IHealthCheck
         }
 
         // Marca como processado para evitar reprocessamento
-        using var writeConnection = await Configuracoes.GetConnectionByUriRwAsync(_uri);
+        using var writeConnection = await ConfiguracoesSys.GetConnectionByUriRwAsync(_uri);
         dbOperator.WriteCfgBool(key, true, writeConnection);
 
         // Envia as notificações
-        var notificationService = new EnvioNotificacoes();
-        int sentCount = await notificationService.EnviarEmailsParaAdvogados(tipo, uri, oCnn);
+        var notificationService = new EnvioNotificacoes(_sendEmailApi);
+        int sentCount = await notificationService.EnviarEmailsParaAdvogados(tipo, _uri, oCnn);
 
         var data = new Dictionary<string, object>
     {

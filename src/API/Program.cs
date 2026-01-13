@@ -1,265 +1,263 @@
+ï»¿/*
+ 
+Ajuda para a IA: Os Health Checks ESTÃƒO REGISTRADOS corretamente!
+O fluxo completo Ã©:
+1.	Program.cs chama Start upAppAdvanced.ConfigurarBuilder(builder, configuracao, logger)
+2.	ConfigurarBuilder(WebApplicationBuilder, ConfiguracaoInicializacao?, Logger?) chama configuracao.ConfigurarHealthChecksCustomizados?.Invoke(builder, logger)
+3.	ConfigurarHealthChecksAppSG(WebApplicationBuilder, Logger?) chama AppSettingsHealthCheckDefault.Add(builder)
+4.	Add(WebApplicationBuilder) registra os 4 Health Check services no DI com AddHealthChecks().AddCheck<T>()
+
+ */
+
+using API.Bulkhead;
+using API.OpenTelemetry;
+using API.Resilience;
+using API.Services;
+using API.Sistemas.Auditor;
+using DevToolApiInterface;
 using MenphisSI.BaseCommon.Controllers;
 using MenphisSI.BaseCommon.Helpers;
+using MenphisSI.BaseCommon.Metrics;
+using MenphisSI.BaseCommon.UserController;
+using MenphisSI.SGSys.StartApp;
+using MenphisSI.Shared.BaseCommon.API.Guardian;
+using MenphisSI.Shared.BaseCommon.API.Prometheus;
+using MenphisSI.Shared.StartApp;
 
 var logger = ProgramNLog.ConfigureNLog();
 
 try
 {
-    logger.Info("=== INICIANDO WEBAPI ===");
-    logger.Info($"Versão: {typeof(Program).Assembly.GetName().Version}");
-    logger.Info($"Diretório de trabalho: {Directory.GetCurrentDirectory()}");
+    logger.Info("Iniciado WebApi");
 
     var builder = WebApplication.CreateBuilder(args);
 
-    logger.Info($"Environment: {builder.Environment.EnvironmentName}");
-    logger.Info($"ApplicationName: {builder.Environment.ApplicationName}");
-    logger.Info($"ContentRootPath: {builder.Environment.ContentRootPath}");
+    
 
-    // Determinar configuração baseada no ambiente
-    // O ASP.NET Core automaticamente carrega appsettings.{Environment}.json
-    ConfiguracaoInicializacao? configuracao = null;
+    // Registrar IUsersMetrics para o controller genÃ©rico
+    builder.Services.AddSingleton<IUsersMetrics, UsersMetricsAdapter>();
+
+    // Configurar URLs incluindo porta para mÃ©tricas Prometheus (apenas se porta separada configurada)
+    var openTelemetrySettings = builder.Configuration
+        .GetSection(OpenTelemetrySettings.SectionName)
+        .Get<OpenTelemetrySettings>() ?? new OpenTelemetrySettings();
+
+    // Apenas configura porta separada se PrometheusPort > 0
+    if (openTelemetrySettings.Enabled && openTelemetrySettings.UseSeparatePort)
+    {
+        var currentUrls = builder.Configuration["urls"] ?? builder.Configuration["ASPNETCORE_URLS"] ?? "http://*:80";
+        var prometheusUrl = $"http://localhost:{openTelemetrySettings.PrometheusPort}";
+
+        // Adicionar porta do Prometheus se nÃ£o estiver jÃ¡ configurada
+        if (!currentUrls.Contains($":{openTelemetrySettings.PrometheusPort}"))
+        {
+            builder.WebHost.UseUrls(currentUrls, prometheusUrl);
+            logger.Info($"Configurado Prometheus em porta separada: {prometheusUrl}{openTelemetrySettings.PrometheusEndpoint}");
+        }
+    }
+    else if (openTelemetrySettings.Enabled)
+    {
+        logger.Info($"Prometheus configurado no mesmo endpoint da API: {openTelemetrySettings.PrometheusEndpoint}");
+    }
+
+    
+
+    // Adicionar configuraÃ§Ã£o de resiliÃªncia (Polly Circuit Breaker)
+    builder.Services.AddResilienceConfiguration(builder.Configuration);
+
+    // Adicionar configuraÃ§Ã£o de Bulkhead (controle de concorrÃªncia)
+    builder.Services.AddBulkheadPolicies(builder.Configuration);
+
+    SettingsMetrics.ConfigurarBuilder(builder);
+
+    // Determinar configuraÃ§Ã£o baseada no ambiente usando a nova estrutura
+    ConfiguracaoInicializacao configuracao = builder.Environment.IsDevelopment()
+        ? AppSGStartup.CriarConfiguracaoAppSG(isDevelopment: true)
+        : AppSGStartup.CriarConfiguracaoAppSG(isDevelopment: false);
 
     if (builder.Environment.IsDevelopment())
     {
-        logger.Info("Ambiente de desenvolvimento detectado - usando CriarConfiguracaoDesenvolvimento()");
-        configuracao = IniciarAppsAvancado.CriarConfiguracaoDesenvolvimento();
+        logger.Info("Ambiente de desenvolvimento detectado");
 
-        // Personalizar configuração para desenvolvimento se necessário
-        configuracao.RegistrarServicosCustomizados = (builder) =>
+        // Personalizar configuraÃ§Ã£o para desenvolvimento se necessÃ¡rio
+        configuracao.ConfigurarEndpointsCustomizados = (app) =>
         {
-            logger.Info("Registrando serviços customizados para desenvolvimento");
+            // Endpoints Ãºteis para desenvolvimento
+            app.MapGet("/dev/info", () => new
+            {
+                Environment = "Development",
+                Version = "1.0.0-dev",
+                Timestamp = DateTime.Now,
+                MachineName = Environment.MachineName
+            });
+
+            app.MapGet("/dev/config", () => new
+            {
+                Message = "Usando configuraÃ§Ã£o de desenvolvimento",
+                CORS = configuracao.OrigensCORSDesenvolvimento,
+                JWT_RequireHttps = configuracao.ConfiguracaoJWT.RequireHttpsMetadata
+            });
         };
+    }
+    else if (builder.Environment.IsProduction())
+    {
+        logger.Info("Ambiente de produÃ§Ã£o detectado");
     }
     else
     {
-        // Para todos os outros ambientes (Production, PIXBOL, Staging, etc.)
-        // Usa a configuração de produção que irá ler as origens CORS do appsettings.{Environment}.json
-        logger.Info($"Ambiente '{builder.Environment.EnvironmentName}' detectado - usando configuração de produção");
-        logger.Info("As configurações CORS serão lidas do arquivo appsettings.{Environment}.json");
-        configuracao = IniciarAppsAvancado.CriarConfiguracaoSistemaMenphis();
+        logger.Info("Ambiente nÃ£o especÃ­fico detectado - usando configuraÃ§Ã£o padrÃ£o");
     }
 
-    logger.Info("=== FASE 1: Inicializando UriApi ===");
-    try
+    // Obter configuraÃ§Ãµes de resiliÃªncia
+    var resilienceSettings = builder.Configuration
+        .GetSection(ResilienceSettings.SectionName)
+        .Get<ResilienceSettings>() ?? new ResilienceSettings();
+
+    // Configurar HttpClient Factory para DevToolsApi com polÃ­ticas de resiliÃªncia
+    builder.Services.AddHttpClient<IDevToolsApiClient, DevToolsApiClient>((sp, client) =>
     {
-        MenphisSI.GerEntityTools.Apis.UriApi.InitializeConfiguration(builder.Configuration);
-        logger.Info("? UriApi inicializado com sucesso");
-    }
-    catch (Exception ex)
+        var config = sp.GetRequiredService<IConfiguration>();
+        var baseUrl = config["DevToolsApi:BaseUrl"]!;
+        client.BaseAddress = new Uri(baseUrl);
+        client.Timeout = TimeSpan.FromSeconds(config.GetValue<int>("DevToolsApi:TimeoutSeconds", 30));
+    })
+    .AddResiliencePolicies(resilienceSettings)
+    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {
-        logger.Error(ex, "? ERRO CRÍTICO ao inicializar UriApi");
-        throw;
-    }
+        MaxConnectionsPerServer = 10,
+        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
+    });
 
-    logger.Info("=== FASE 2: Configurando Builder ===");
-    try
+    // Registrar ILoginValidationService usando DevToolsApiClient
+    builder.Services.AddScoped<ILoginValidationService, DevToolsLoginValidationService>();
+
+    // Configurar HttpClient para reCAPTCHA com polÃ­ticas de resiliiÃªncia
+    var reCaptchaResilienceSettings = new ResilienceSettings
     {
-        IniciarAppsAvancado.ConfigurarBuilder(builder, configuracao, logger);
-        logger.Info("? Builder configurado com sucesso");
-        logger.Info($"? Política CORS '{configuracao.NomePoliticaCORS}' configurada");
+        MaxRetryAttempts = 3,
+        RetryDelaySeconds = 1,
+        TimeoutSeconds = 10,
+        CircuitBreakerFailureThreshold = 5,
+        CircuitBreakerDurationSeconds = 30
+    };
 
-        // Log das origens CORS carregadas para debug
-        var corsOrigins = builder.Configuration.GetSection("AppSettings:CORS:AllowedOrigins").Get<string[]>();
-        if (corsOrigins != null && corsOrigins.Length > 0)
-        {
-            logger.Info($"? Origens CORS carregadas do appsettings.{builder.Environment.EnvironmentName}.json:");
-            foreach (var origin in corsOrigins)
-            {
-                logger.Info($"  - {origin}");
-            }
-        }
-        else
-        {
-            logger.Warn("? Nenhuma origem CORS encontrada na configuração");
-        }
-    }
-    catch (Exception ex)
+    builder.Services.AddHttpClient("ReCaptcha", client =>
     {
-        logger.Error(ex, "? ERRO CRÍTICO ao configurar builder");
-        throw;
-    }
-
-    logger.Info("=== FASE 3: Registrando Serviços Customizados ===");
-    try
+        client.Timeout = TimeSpan.FromSeconds(15);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+    })
+    .AddResiliencePolicies(reCaptchaResilienceSettings)
+    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {
-        // Registrar GerarSKUService e suas dependências
-        logger.Info("Registrando GerarSKUService...");
-        builder.Services.AddScoped<MenphisSI.GerAdv.Interface.IGerarSKUService, GerarSKUService>();
-        builder.Services.AddScoped<SubiProdutoECriarSKU>();
+        MaxConnectionsPerServer = 5,
+        AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
+    });
 
-        // Registrar ImageProcessorService
-        logger.Info("Registrando ImageProcessorService...");
-        builder.Services.Configure<ImageProcessorSettings>(options =>
-        {
-            options.TempFolderPath = "temp";
-            options.AssetsFolderPath = "assets";
-            options.FontPath = "fonts";
-        });
-        builder.Services.AddScoped<IImageProcessorService, ImageProcessorService>();
+    // Configurar serviÃ§os de voz especÃ­ficos do AppSG
+    AppSGStartup.ConfigurarVoiceServices(builder);
 
-        logger.Info("? Serviços customizados registrados com sucesso");
-    }
-    catch (Exception ex)
-    {
-        logger.Error(ex, "? ERRO ao registrar serviços customizados");
-        throw;
-    }
+    // Inicializar configuraÃ§Ãµes externas do AppSG
+    AppSGStartup.InicializarConfiguracoes(builder);
 
-    logger.Info("=== FASE 4: Construindo aplicação (builder.Build()) ===");
-    logger.Info("Aguardando construção da aplicação...");
+    // Configurar builder usando a classe StartupAppAdvanced genÃ©rica com configuraÃ§Ã£o especÃ­fica do APPSG
+    StartupAppAdvanced.ConfigurarBuilder(builder, configuracao, logger);
 
     var app = builder.Build();
 
-    logger.Info("? Aplicação construída com sucesso");
-
-    logger.Info("=== FASE 5: Configurando Lifetime Events ===");
-    try
+    // Enable Developer Exception Page in development for detailed errors
+    if (builder.Environment.IsDevelopment())
     {
-        app.Lifetime.ApplicationStarted.Register(() =>
+        app.UseDeveloperExceptionPage();
+        logger.Info("Developer exception page enabled");
+    }
+    else
+    {
+        // PROMETHEU E GUARDIAN - RestriÃ§Ãµes de acesso aos endpoints
+        AddTelemetryService.UsePrometheusEndpointRestriction(app, builder.Configuration);
+        GuardianDashboard.UseGuardianEndpointRestriction(app, builder.Configuration, logger);
+    }
+
+    //// 07-01-2026 - Aplicar rate limiting apenas para endpoints que nÃ£o sejam /metrics
+    //app.UseWhen(
+    //context => !context.Request.Path.StartsWithSegments("/metrics"),
+    //appBuilder => {
+    //    appBuilder.UseRateLimiter(); // ou seu middleware de rate limit
+    //    }
+    //);
+
+    // Configurar endpoint do Prometheus para mÃ©tricas OpenTelemetry
+    app.UseGenesysPrometheus(builder.Configuration);
+
+    // Configurar middlewares especÃ­ficos do AppSG (geo-blocking)
+    AppSGStartup.ConfigurarMiddlewaresAppSG(app);
+
+    // Configurar aplicaÃ§Ã£o usando a classe StartupAppAdvanced genÃ©rica
+    StartupAppAdvanced.ConfigurarAplicacao(app, configuracao, logger);
+
+    AuditorController.ConfigureAuditorEndpoints(app);
+
+    Robots.ConfigureRobotEndpoints(app);
+
+    // Endpoint para verificar status do Circuit Breaker
+    app.MapGet("/resilience/status", (IResilienceService resilienceService) =>
+    {
+        return Results.Ok(new
         {
-            try
-            {
-                var addresses = app.Urls;
-                var urlList = addresses != null && addresses.Any() ? string.Join(", ", addresses) : "(nenhuma URL configurada)";
-                logger.Info($"? ApplicationStarted - URLs: {urlList}");
-                logger.Info($"? Aplicação está RODANDO e pronta para receber requisições");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "? Erro ao processar ApplicationStarted");
-            }
+            Status = "Resilience Service Active",
+            Timestamp = DateTime.UtcNow
         });
+    }).AllowAnonymous();
 
-        app.Lifetime.ApplicationStopping.Register(() =>
-        {
-            logger.Info("ApplicationStopping - Aplicação está sendo encerrada");
-        });
+    // Servir arquivos estÃ¡ticos (incluindo monitor.html)
+    app.UseStaticFiles();
 
-        app.Lifetime.ApplicationStopped.Register(() =>
-        {
-            logger.Info("ApplicationStopped - Aplicação foi encerrada");
-        });
-
-        logger.Info("? Lifetime events configurados");
-    }
-    catch (Exception ex)
-    {
-        logger.Error(ex, "? Erro ao configurar lifetime events (não crítico, continuando...)");
-    }
-
-    logger.Info("=== FASE 6: Configurando Aplicação ===");
-    try
-    {
-        IniciarAppsAvancado.ConfigurarAplicacao(app, configuracao, logger);
-        logger.Info("? Aplicação configurada com sucesso");
-        logger.Info($"? Middleware CORS '{configuracao.NomePoliticaCORS}' ativado");
-    }
-    catch (Exception ex)
-    {
-        logger.Error(ex, "? ERRO CRÍTICO ao configurar aplicação");
-        throw;
-    }
-
-    logger.Info("=== FASE 7: Configurando Endpoints ===");
-
-    // Auditor
-    try
-    {
-        AuditorController.ConfigureAuditorEndpoints(app);
-        logger.Info("? Endpoints Auditor configurados");
-    }
-    catch (Exception ex)
-    {
-        logger.Error(ex, "? ERRO ao configurar endpoints Auditor");
-        throw;
-    }
-
-    // Robots
-    try
-    {
-        Robots.ConfigureRobotEndpoints(app);
-        logger.Info("? Endpoints Robots configurados");
-    }
-    catch (Exception ex)
-    {
-        logger.Error(ex, "? ERRO ao configurar endpoints Robots");
-        throw;
-    }
-
-    // Agenda V2
-    try
-    {
-        // app.MapAgendaEndpointsV2();
-        logger.Info("? Endpoints AgendaEndpointsV2 configurados");
-    }
-    catch (Exception ex)
-    {
-        logger.Error(ex, "? ERRO ao configurar endpoints AgendaEndpointsV2");
-        throw;
-    }
-
-    // HealthCheck
+    // Configurar endpoints especÃ­ficos do HealthCheckController diretamente aqui no Program.cs
     if (configuracao.HabilitarHealthChecks)
     {
         try
         {
             HealthCheckController.ConfigureHealthCheckEndpoints(app);
-            logger.Info("? Endpoints HealthCheckController configurados");
+            logger.Info("Endpoints do HealthCheckController configurados com sucesso");
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "? ERRO ao configurar endpoints HealthCheckController");
-            throw;
+            logger.Error(ex, "Erro ao configurar endpoints do HealthCheckController");
         }
     }
-
-    logger.Info("=== TODAS AS CONFIGURAÇÕES CONCLUÍDAS COM SUCESSO ===");
-    logger.Info($"Ambiente: {builder.Environment.EnvironmentName}");
-    logger.Info($"ContentRootPath: {builder.Environment.ContentRootPath}");
-    logger.Info($"Política CORS ativa: {configuracao.NomePoliticaCORS}");
-
-    // Garantir que todos os logs foram escritos
-    LogManager.Flush(TimeSpan.FromSeconds(2));
-
-    logger.Info("=== CHAMANDO app.Run() - INICIANDO SERVIDOR HTTP ===");
-    logger.Info("A aplicação está pronta e aguardando requisições HTTP...");
-
-
-    //using var oCnn = ConfiguracoesSys.GetConnectionByUriRw("FTC");
-    //ConfiguracoesDBT.ExecuteSqlCreate($"delete from {DBProdutoFichaTecnicaTemporariaDicInfo.PTabelaNome};", oCnn);
-
-
-
-    // Esta linha BLOQUEIA até a aplicação ser encerrada
+    /*
+    // Diagnostic: list mapped endpoints to help debug routing
+    try
+    {
+        var endpoints = app.Services.GetService<EndpointDataSource>();
+        logger.Info("---- MAPPED ENDPOINTS ----");
+        if (endpoints != null)
+        {
+            foreach (var ep in endpoints.Endpoints)
+            {
+                logger.Info(ep.DisplayName ?? ep.ToString());
+            }
+        }
+        else
+        {
+            logger.Warn("EndpointDataSource not available");
+        }
+        logger.Info("--------------------------");
+    }
+    catch (Exception ex)
+    {
+        logger.Warn(ex, "Falha ao listar endpoints");
+    }
+    */
     app.Run();
-
-    // Código após app.Run() só executa quando a aplicação é encerrada
-    logger.Info("? app.Run() retornou - Aplicação foi encerrada normalmente");
 }
 catch (Exception exception)
 {
-    logger.Error(exception, "??? ERRO FATAL - Aplicação foi encerrada devido a uma exceção ???");
-    logger.Error($"Tipo de exceção: {exception.GetType().Name}");
-    logger.Error($"Mensagem: {exception.Message}");
-    logger.Error($"StackTrace: {exception.StackTrace}");
-
-    if (exception.InnerException != null)
-    {
-        logger.Error($"Inner Exception: {exception.InnerException.Message}");
-        logger.Error($"Inner StackTrace: {exception.InnerException.StackTrace}");
-    }
-
-    // Garantir que os logs de erro foram escritos
-    LogManager.Flush(TimeSpan.FromSeconds(5));
-
-    // Aguarda para garantir que os logs foram salvos
-    System.Threading.Thread.Sleep(2000);
-
+    logger.Error(exception, "Stopped program because of exception");
     throw;
 }
 finally
 {
-    logger.Info("=== FINALIZANDO APLICAÇÃO - LogManager.Shutdown() ===");
     LogManager.Shutdown();
 }
-

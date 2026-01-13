@@ -12,31 +12,20 @@ public interface IConnectionService
     /// Serviço de entidades para obter informações de conexão
     /// </summary>
     IEntityService EntityService { get; }
-
-    /// <summary>
-    /// Obtém uma conexão somente leitura do pool para a URI especificada
-    /// </summary>
-    MsiSqlConnection? GetConnectionByUri(in string uri);
+ 
 
     /// <summary>
     /// Obtém uma conexão somente leitura do pool para a URI especificada (assíncrono)
     /// </summary>
-    Task<MsiSqlConnection?> GetConnectionByUriAsync(string uri);
+    Task<MsiSqlConnection> GetConnectionByUriAsync(string uri);
 
-    /// <summary>
-    /// Obtém uma conexão de leitura/escrita do pool para a URI especificada
-    /// </summary>
-    MsiSqlConnection? GetConnectionByUriRw(in string uri);
+ 
 
     /// <summary>
     /// Obtém uma conexão de leitura/escrita do pool para a URI especificada (assíncrono)
     /// </summary>
-    Task<MsiSqlConnection?> GetConnectionByUriRwAsync(string uri);
-
-    /// <summary>
-    /// Obtém a string de conexão para a URI especificada
-    /// </summary>
-    string? ConnectionByUri(in string uri);
+    Task<MsiSqlConnection> GetConnectionByUriRwAsync(string uri);
+ 
 
     /// <summary>
     /// Cria um escopo de conexão para a URI especificada

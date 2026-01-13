@@ -13,7 +13,7 @@ public partial class UsersController
             return Unauthorized(new { message = "Invalid token" });
         }
 
-        _ = await _userService.ResetSenha(model, uri);
+        _ = await _userService.ResetPassword(model, uri);
 
         var response = new AuthenticateResponse(new OperadorResponse { Id = 0, Nome = "RESET" }, "", "", uri)
         {

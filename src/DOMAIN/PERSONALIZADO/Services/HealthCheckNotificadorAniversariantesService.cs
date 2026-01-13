@@ -31,7 +31,7 @@ public class HealthCheckNotificadorAniversariantesService : IHealthCheck, IDispo
             if (IsHoraProcessamento())
 #endif
             {
-                using var oCnn = await Configuracoes.GetConnectionByUriAsync(_uri);
+                using var oCnn = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
                 if (oCnn is null)
                 {
                     return CreateUnhealthyResult("Conexão não disponível");
@@ -78,7 +78,7 @@ public class HealthCheckNotificadorAniversariantesService : IHealthCheck, IDispo
         }
 
         // Marca como processado para evitar reprocessamento
-        using var writeConnection = await Configuracoes.GetConnectionByUriRwAsync(_uri);
+        using var writeConnection = await ConfiguracoesSys.GetConnectionByUriRwAsync(_uri);
         dbOperator.WriteCfgBool(key, true, writeConnection);
 
         // Envia as notificações

@@ -13,16 +13,16 @@ public static partial class AgendaSemana
             var agendasemana = new AgendaSemanaResponse
             {
                 Id = dbRec.ID,
-                Data = dbRec.FData,
+                Data = dbRec.FData.ToString(),
                 Funcionario = dbRec.FFuncionario,
-                Hora = dbRec.FHora,
+                Hora = dbRec.FHora.ToString(),
                 TipoCompromisso = dbRec.FTipoCompromisso,
                 Compromisso = dbRec.FCompromisso,
                 Concluido = dbRec.FConcluido,
                 Liberado = dbRec.FLiberado,
  
                 Importante = dbRec.FImportante,
-                HoraFinal = dbRec.FHoraFinal,
+                HoraFinal = dbRec.FHoraFinal.ToString(),
                 Nome = dbRec.FNome ?? string.Empty,
             };
             result.Add(agendasemana);
@@ -76,9 +76,9 @@ public static partial class AgendaSemana
  
                 FImportante = row["xxxImportante"] != DBNull.Value && Convert.ToBoolean(row["xxxImportante"]),
                 FNome = row["xxxNome"] != DBNull.Value ? row["xxxNome"].ToString() : "",
-                FData = row["xxxData"] != DBNull.Value ? DateTime.Parse(row["xxxData"]?.ToString() ?? "").ToString("dd/MM/yyyy HH:mm:ss") : "",
-                FHora = row["xxxHora"] != DBNull.Value ? DateTime.Parse(row["xxxHora"]?.ToString()??"").ToString("dd/MM/yyyy HH:mm:ss") : "",
-                FHoraFinal = row["xxxHoraFinal"] != DBNull.Value ? DateTime.Parse(row["xxxHoraFinal"]?.ToString()??"").ToString("dd/MM/yyyy HH:mm:ss"):""
+               /// FData = row["xxxData"] != DBNull.Value ? DateTime.Parse(row["xxxData"]?.ToString() ?? "").ToString("dd/MM/yyyy HH:mm:ss") : "",
+               // FHora = row["xxxHora"] != DBNull.Value ? DateTime.Parse(row["xxxHora"]?.ToString()??"").ToString("dd/MM/yyyy HH:mm:ss") : "",
+               // FHoraFinal = row["xxxHoraFinal"] != DBNull.Value ? DateTime.Parse(row["xxxHoraFinal"]?.ToString()??"").ToString("dd/MM/yyyy HH:mm:ss"):""
             };
 
             var prontuario = DBNull.Value == row["xxxProntuario"] ? "" : $"{row["xxxProntuario"]}";

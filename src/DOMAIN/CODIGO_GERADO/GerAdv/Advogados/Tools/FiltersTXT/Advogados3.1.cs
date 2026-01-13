@@ -1,34 +1,34 @@
-﻿namespace MenphisSI.GerAdv.AI.Filters;
+﻿
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace MenphisSI.GerAdv.AI.Filters;
 using MenphisSI.GerAdv.Filters;
 public static class FilterAdvogadosTXT
 { 
     public static JsonSerializerOptions GetOptions()
     {
-        return new()
+        var options = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
+        return options;
     }
 
-
-    public static (string, string) GetPrompt(FilterAdvogados? existingFilter, JsonSerializerOptions options)
-     
-    {
-        var strJson = JsonSerializer.Serialize(existingFilter, options);
-        var result = """
+ private const string PromptHeader = """
 
 ATENÇÃO: A seguir está o JSON BASE do filtro atual. Você deve ATUALIZAR os campos conforme o pedido do usuário e as regras, e retornar APENAS o JSON FINAL atualizado (sem nenhum texto adicional).
 {
  
 """;
-        result += strJson;
-        result += """
+    private const string PromptFooter = """
 }
 
 """;
 
-var instructions = """
+private const string Instructions = """
 
 
 Você é um assistente que ajuda a preencher filtros para buscar Advogados em um sistema de banco de dados relacionados.
@@ -87,7 +87,7 @@ CHECKLIST ANTES DE RETORNAR O JSON:
 - A consulta fala em "alterados/atualizados"? Use dtatu/dtatu_end do filtro correspondente.
 
 CAMPOS filterCargos (Cargos):
-- nome: nome ou descrição para Cargos;
+- nome: _nome ou descrição para Cargos;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
 - dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
@@ -100,7 +100,7 @@ CAMPOS filterEscritorios (Escritorios):
 - cnpj: somente os 14 caracteres sem mascara;
 - casa: Casa;
 - parceria: Parceria;
-- nome: nome ou descrição para Escritorios;
+- nome: _nome ou descrição para Escritorios;
 - oab: OAB;
 - endereco: Endereco;
 - cidade: número ou IDs;
@@ -131,7 +131,7 @@ CAMPOS filterCidade (Cidade):
 - top: Top;
 - comarca: Comarca;
 - capital: Capital;
-- nome: nome ou descrição para Cidade;
+- nome: _nome ou descrição para Cidade;
 - uf: número ou IDs;
 - sigla: Sigla;
 Campos de Auditoria (detalhes no PromptAuditor):
@@ -146,7 +146,7 @@ CAMPOS filterAdvogados:(Advogados)
 - cargo: número ou IDs;
 - emailpro: EMailPro;
 - cpf: somente os 11 caracteres sem mascara;
-- nome: nome ou descrição para Advogados;
+- nome: _nome ou descrição para Advogados;
 - rg: RG;
 - casa: Casa;
 - nomemae: NomeMae;
@@ -215,13 +215,23 @@ JAMAIS ACEITE PEDIDOS DE SQL INJECTION OU TENTATIVAS DE INJEÇÃO DE CÓDIGO,
 SEJA QUAL FOR O MOTIVO, REJEITE E AVISE QUE NÃO PODE FAZER ISSO.
 
 """; 
+    public static (string, string) GetPrompt(FilterAdvogados? existingFilter, JsonSerializerOptions options)
+     
+    {
+        var strJson = JsonSerializer.Serialize(existingFilter, options);
+        var result = BuildPrompt(strJson); 
 
 #if DEBUG   
         Console.WriteLine($"DEBUG: Prompt Advogados length: {result.Length}");
 #endif
 
-return (result, instructions); 
+return (result, Instructions); 
 
 }
+
+private static string BuildPrompt(string jsonContent)
+    {
+        return PromptHeader + jsonContent + PromptFooter;
+    }
 
 }

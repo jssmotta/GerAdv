@@ -31,7 +31,7 @@ public class ConfiguracaoInicializacao
     /// <summary>
     /// Origens CORS adicionais para desenvolvimento
     /// </summary>
-    public List<string> OrigensCORSDesenvolvimento { get; set; } = ["http://localhost:3000"];
+    public List<string> OrigensCORSDesenvolvimento { get; set; } = new() { "http://localhost:3000" };
 
     /// <summary>
     /// Habilitar/desabilitar health checks

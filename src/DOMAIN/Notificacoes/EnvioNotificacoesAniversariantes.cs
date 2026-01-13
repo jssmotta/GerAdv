@@ -84,7 +84,7 @@ END;
                     ;";
 
 
-        using var conexao = Configuracoes.GetConnectionByUriRw(uri);
+        using var conexao = ConfiguracoesSys.GetConnectionByUriRwAsync(uri).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
     private DataTable ObterAniversariantesComCompromissos(
@@ -196,7 +196,7 @@ ORDER BY ageData;
         var reader = new OperadorReader(new FOperadorFactory());
         var readerAdv = new AdvogadosReader(new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader(new FFuncionariosFactory());
-        var operadores = await reader.Listar(100, uri, filtroOperadores,[], "operNome",new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores,[], "operNome",new CancellationToken());
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
 
@@ -208,8 +208,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-               (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-              : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+               (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+              : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -394,7 +394,7 @@ ORDER BY ageData;
         var reader = new OperadorReader( new FOperadorFactory());
         var readerAdv = new AdvogadosReader( new FAdvogadosFactory());
         var readerFunc = new FuncionariosReader( new FFuncionariosFactory());
-        var operadores = await reader.Listar(100, uri, filtroOperadores, [], "operNome", new CancellationToken());
+        var operadores = await reader.ListarAsync(oCnn, 100, uri, filtroOperadores, [], "operNome", new CancellationToken());
 
         var assunto = "Aniversariantes próximos 7 dias";
         var count = 0;
@@ -407,8 +407,8 @@ ORDER BY ageData;
             }
 
             var cNome = operador.CadID == 1 ?
-                     (await readerAdv.ListarN(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
-                    : (await readerFunc.ListarN(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
+                     (await readerAdv.ListarNAsync(1, uri, DBAdvogadosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBAdvogadosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? ""
+                    : (await readerFunc.ListarNAsync(1, uri, DBFuncionariosDicInfo.CampoCodigo + "=" + operador.CadCod, [], DBFuncionariosDicInfo.Nome)).ToList()?.FirstOrDefault()?.Nome() ?? "";
 
             if (cNome == null || cNome.Equals("")) continue;
 
@@ -497,7 +497,7 @@ END;
                     ;";
 
 
-        using var conexao = Configuracoes.GetConnectionByUriRw(uri);
+        using var conexao = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
         ConfiguracoesDBT.ExecuteSqlCreate(createViewScript1, conexao);
     }
 

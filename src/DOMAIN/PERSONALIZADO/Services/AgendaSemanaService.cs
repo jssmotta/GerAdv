@@ -8,12 +8,12 @@ public partial class AgendaSemanaService
         throw new NotImplementedException();
     }
 #pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
-    public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string uri) => !Uris.ValidaUri(uri, _appSettings)
+    public async Task<IEnumerable<AgendaSemanaResponse?>?> Filter30(DateTime? data, int paciente, int isMobile, string uri) => !(await Uris.ValidaUriAsync(uri, _entityService))
             ? throw new Exception("AgendaSemana: URI inválida")
             : (IEnumerable<AgendaSemanaResponse?>?)await Task.Run(() =>
             {
 
-                using var scope = Configuracoes.CreateConnectionScope(uri);
+                using var scope = ConfiguracoesSys.CreateConnectionScope(uri);
                 var oCnn = scope.Connection;
                 if (oCnn == null || (data == null))
                 {
@@ -40,7 +40,7 @@ public partial class AgendaSemanaService
 
     public async Task<IEnumerable<MenuAgendaSemana>?>? Monta(DateTime dataInicial, bool isMobile, string uri)
     {
-        if (!Uris.ValidaUri(uri, _appSettings))
+        if (!(await Uris.ValidaUriAsync(uri, _entityService)))
         {
             throw new Exception("AgendaSemana: URI inválida");
         }
@@ -79,7 +79,7 @@ public partial class AgendaSemanaService
     order by YEAR([xxxData]), MONTH([xxxData]), DAY([xxxData]), CONVERT(TIME, [xxxHora]), [xxxFuncionario]";
         ;
 
-        using var oCnn = Configuracoes.GetConnectionByUri(uri);
+        using var oCnn = ConfiguracoesSys.GetConnectionByUriAsync(uri).GetAwaiter().GetResult();
         if (oCnn == null)
         {
             return null;

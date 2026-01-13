@@ -1,34 +1,34 @@
-﻿namespace MenphisSI.GerAdv.AI.Filters;
+﻿
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace MenphisSI.GerAdv.AI.Filters;
 using MenphisSI.GerAdv.Filters;
 public static class FilterAgendaTXT
 { 
     public static JsonSerializerOptions GetOptions()
     {
-        return new()
+        var options = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
+        return options;
     }
 
-
-    public static (string, string) GetPrompt(FilterAgenda? existingFilter, JsonSerializerOptions options)
-     
-    {
-        var strJson = JsonSerializer.Serialize(existingFilter, options);
-        var result = """
+ private const string PromptHeader = """
 
 ATENÇÃO: A seguir está o JSON BASE do filtro atual. Você deve ATUALIZAR os campos conforme o pedido do usuário e as regras, e retornar APENAS o JSON FINAL atualizado (sem nenhum texto adicional).
 {
  
 """;
-        result += strJson;
-        result += """
+    private const string PromptFooter = """
 }
 
 """;
 
-var instructions = """
+private const string Instructions = """
 
 
 Você é um assistente que ajuda a preencher filtros para buscar Agenda em um sistema de banco de dados relacionados.
@@ -99,7 +99,7 @@ CAMPOS filterCidade (Cidade):
 - top: Top;
 - comarca: Comarca;
 - capital: Capital;
-- nome: nome ou descrição para Cidade;
+- nome: _nome ou descrição para Cidade;
 - uf: número ou IDs;
 - sigla: Sigla;
 Campos de Auditoria (detalhes no PromptAuditor):
@@ -114,7 +114,7 @@ CAMPOS filterAdvogados (Advogados):
 - cargo: número ou IDs;
 - emailpro: EMailPro;
 - cpf: somente os 11 caracteres sem mascara;
-- nome: nome ou descrição para Advogados;
+- nome: _nome ou descrição para Advogados;
 - rg: RG;
 - casa: Casa;
 - nomemae: NomeMae;
@@ -160,7 +160,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
 CAMPOS filterFuncionarios (Colaborador):
 - emailpro: EMailPro;
 - cargo: número ou IDs;
-- nome: nome ou descrição para Colaborador;
+- nome: _nome ou descrição para Colaborador;
 - funcao: número ou IDs;
 - sexo: sexo do Funcionarios: 1=Homem; 0=Mulher; -2147483648=ambos;
 - registro: Registro;
@@ -201,7 +201,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
 
 CAMPOS filterTipoCompromisso (Tipo Compromisso):
 - icone: número ou IDs;
-- descricao: nome ou descrição para Tipo Compromisso;
+- descricao: _nome ou descrição para Tipo Compromisso;
 - financeiro: Financeiro;
 - bold: Bold;
 Campos de Auditoria (detalhes no PromptAuditor):
@@ -220,7 +220,7 @@ CAMPOS filterClientes (Clientes):
 - inativo: Inativo;
 - quemindicou: QuemIndicou;
 - sendemail: SendEMail;
-- nome: nome ou descrição para Clientes;
+- nome: _nome ou descrição para Clientes;
 - adv: número ou IDs;
 - idrep: número ou IDs;
 - juridica: Juridica;
@@ -267,7 +267,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
          
 
 CAMPOS filterArea (Área):
-- descricao: nome ou descrição para Área;
+- descricao: _nome ou descrição para Área;
 - top: Top;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
@@ -278,8 +278,8 @@ Campos de Auditoria (detalhes no PromptAuditor):
          
 
 CAMPOS filterJustica (Justiça):
-- nome: nome ou descrição para Justiça;
-- bold: jusBold;
+- nome: _nome ou descrição para Justiça;
+- bold: Bold;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
 - dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
@@ -289,36 +289,36 @@ Campos de Auditoria (detalhes no PromptAuditor):
          
 
 CAMPOS filterOperador (Operador):
-- email: operEMail;
-- pasta: operPasta;
-- telefonista: operTelefonista;
-- master: operMaster;
-- nome: nome ou descrição para Operador;
-- nick: operNick;
-- ramal: operRamal;
+- email: EMail;
+- pasta: Pasta;
+- telefonista: Telefonista;
+- master: Master;
+- nome: _nome ou descrição para Operador;
+- nick: Nick;
+- ramal: Ramal;
 - cadid: número ou IDs;
-- excluido: operExcluido;
-- situacao: operSituacao;
+- excluido: Excluido;
+- situacao: Situação;
 - computador: número ou IDs;
-- minhadescricao: operMinhaDescricao;
-- ultimologoff: operUltimoLogoff;
-- emailnet: operEMailNet;
-- onlineip: operOnlineIP;
-- online: operOnLine;
-- sysop: operSysOp;
+- minhadescricao: MinhaDescricao;
+- ultimologoff: UltimoLogoff;
+- emailnet: EMailNet;
+- onlineip: OnlineIP;
+- online: OnLine;
+- sysop: SysOp;
 - statusid: número ou IDs;
-- statusmessage: operStatusMessage;
-- isfinanceiro: operIsFinanceiro;
-- top: operTop;
+- statusmessage: StatusMessage;
+- isfinanceiro: IsFinanceiro;
+- top: Top;
 - sexo: sexo do Operador: 1=Homem; 0=Mulher; -2147483648=ambos;
-- basico: operBasico;
-- externo: operExterno;
-- emailconfirmado: operEMailConfirmado;
-- datalimitereset: operDataLimiteReset;
-- suportemaxage: operSuporteMaxAge;
-- suportenomesolicitante: operSuporteNomeSolicitante;
-- suporteultimoacesso: operSuporteUltimoAcesso;
-- suporteipultimoacesso: operSuporteIpUltimoAcesso;
+- basico: Basico;
+- externo: Externo;
+- emailconfirmado: EMailConfirmado;
+- datalimitereset: DataLimiteReset;
+- suportemaxage: SuporteMaxAge;
+- suportenomesolicitante: SuporteNomeSolicitante;
+- suporteultimoacesso: SuporteUltimoAcesso;
+- suporteipultimoacesso: SuporteIpUltimoAcesso;
 Campos de Auditoria (detalhes no PromptAuditor):
 - dtcad, dtcad_end: quando o Tipo foi CADASTRADO no sistema
 - dtatu, dtatu_end: quando o Tipo foi ALTERADO no sistema
@@ -328,7 +328,7 @@ Campos de Auditoria (detalhes no PromptAuditor):
          
 
 CAMPOS filterPrepostos (Prepostos):
-- nome: nome ou descrição para Prepostos;
+- nome: _nome ou descrição para Prepostos;
 - funcao: número ou IDs;
 - setor: número ou IDs;
 - dtnasc: DtNasc;
@@ -442,13 +442,23 @@ JAMAIS ACEITE PEDIDOS DE SQL INJECTION OU TENTATIVAS DE INJEÇÃO DE CÓDIGO,
 SEJA QUAL FOR O MOTIVO, REJEITE E AVISE QUE NÃO PODE FAZER ISSO.
 
 """; 
+    public static (string, string) GetPrompt(FilterAgenda? existingFilter, JsonSerializerOptions options)
+     
+    {
+        var strJson = JsonSerializer.Serialize(existingFilter, options);
+        var result = BuildPrompt(strJson); 
 
 #if DEBUG   
         Console.WriteLine($"DEBUG: Prompt Agenda length: {result.Length}");
 #endif
 
-return (result, instructions); 
+return (result, Instructions); 
 
 }
+
+private static string BuildPrompt(string jsonContent)
+    {
+        return PromptHeader + jsonContent + PromptFooter;
+    }
 
 }

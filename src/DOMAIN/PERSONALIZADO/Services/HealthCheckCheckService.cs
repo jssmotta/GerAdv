@@ -17,7 +17,7 @@ public class HealthCheckCheckService([Required] string uri) : IHealthCheck, IDis
                 return CreateHealthyResult("Notificador operacional");
             }
 
-            using var writeConnection = await Configuracoes.GetConnectionByUriAsync(_uri);
+            using var writeConnection = await ConfiguracoesSys.GetConnectionByUriAsync(_uri);
 
             if (writeConnection is null)
             {
